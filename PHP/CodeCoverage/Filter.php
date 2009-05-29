@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit
+ * PHP_CodeCoverage
  *
  * Copyright (c) 2009, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
@@ -34,8 +34,8 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @category   Testing
- * @package    PHPUnit
+ * @category   PHP
+ * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2009 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License

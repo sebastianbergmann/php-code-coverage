@@ -64,14 +64,14 @@ class PHP_CodeCoverage_Filter
      *
      * @var array
      */
-    protected static $blacklistedFiles = array();
+    protected $blacklistedFiles = array();
 
     /**
      * Source files that are whitelisted.
      *
      * @var array
      */
-    protected static $whitelistedFiles = array();
+    protected $whitelistedFiles = array();
 
     /**
      * List of covered files.

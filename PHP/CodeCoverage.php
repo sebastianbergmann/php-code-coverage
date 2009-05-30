@@ -187,12 +187,12 @@ class PHP_CodeCoverage
     public function clear()
     {
         switch ($this->storageType) {
-            case STORAGE_ARRAY: {
+            case self::STORAGE_ARRAY: {
                 $this->data = array();
             }
             break;
 
-            case STORAGE_SPLOBJECTSTORAGE:
+            case self::STORAGE_SPLOBJECTSTORAGE:
             default: {
                 $this->data = new SplObjectStorage;
             }

@@ -348,5 +348,50 @@ class PHP_CodeCoverage
 
         return $result;
     }
+
+    /**
+     * Processes whitelisted files that are not covered.
+     */
+    protected function processUncoveredFilesFromWhitelist()
+    {
+        $data = array();
+
+        $uncoveredFiles = array_diff(
+          $this->filter->getWhitelist(), $this->coveredFiles
+        );
+
+        foreach ($uncoveredFiles as $uncoveredFile) {
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+            include_once $uncoveredFile;
+            $coverage = xdebug_get_code_coverage();
+            xdebug_stop_code_coverage();
+
+            if (isset($coverage[$uncoveredFile])) {
+                foreach ($coverage[$uncoveredFile] as $line => $flag) {
+                    if ($flag > 0) {
+                        $coverage[$uncoveredFile][$line] = -1;
+                    }
+                }
+
+                $data[$uncoveredFile]               = $coverage[$uncoveredFile];
+                $this->coveredFiles[$uncoveredFile] = TRUE;
+            }
+        }
+
+        switch ($this->storageType) {
+            case self::STORAGE_ARRAY: {
+                $id = 'UNCOVERED_FILES_FROM_WHITELIST';
+            }
+            break;
+
+            case self::STORAGE_SPLOBJECTSTORAGE:
+            default: {
+                $id = new StdClass;
+            }
+            break;
+        }
+
+        $this->append($data, $id);
+    }
 }
 ?>

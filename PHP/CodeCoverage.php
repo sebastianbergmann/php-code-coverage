@@ -62,12 +62,11 @@ class PHP_CodeCoverage
     const STORAGE_ARRAY            = 0;
     const STORAGE_SPLOBJECTSTORAGE = 1;
 
+    protected $filter;
     protected $storageType;
 
     protected $currentId;
     protected $data;
-
-    public $filter;
 
     /**
      * List of covered files.
@@ -79,13 +78,19 @@ class PHP_CodeCoverage
     /**
      * Constructor.
      *
-     * @param integer $storageType
+     * @param PHP_CodeCoverage_Filter $filter
+     * @param integer                 $storageType
      */
-    public function __construct($storageType = self::STORAGE_SPLOBJECTSTORAGE)
+    public function __construct(PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE)
     {
+        if ($filter === NULL) {
+            $filter = new PHP_CodeCoverage_Filter;
+        }
+
+        $this->filter      = $filter;
         $this->storageType = $storageType;
+
         $this->clear();
-        $this->filter = new PHP_CodeCoverage_Filter;
     }
 
     /**
@@ -245,6 +250,16 @@ class PHP_CodeCoverage
     public function getDeadLines(array $data)
     {
         return $this->getLinesByStatus($data, -2);
+    }
+
+    /**
+     * Returns the PHP_CodeCoverage_Filter used.
+     *
+     * @return PHP_CodeCoverage_Filter
+     */
+    public function filter()
+    {
+        return $this->filter;
     }
 
     /**

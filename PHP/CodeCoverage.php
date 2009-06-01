@@ -62,10 +62,24 @@ class PHP_CodeCoverage
     const STORAGE_ARRAY            = 0;
     const STORAGE_SPLOBJECTSTORAGE = 1;
 
+    /**
+     * @var PHP_CodeCoverage_Filter
+     */
     protected $filter;
+
+    /**
+     * @var integer
+     */
     protected $storageType;
 
+    /**
+     * @var mixed
+     */
     protected $currentId;
+
+    /**
+     * @var array|SplObjectStorage
+     */
     protected $data;
 
     /**
@@ -140,12 +154,14 @@ class PHP_CodeCoverage
         $dead       = array();
         $executable = array();
 
+        // Apply blacklist/whitelist filtering.
         foreach (array_keys($data) as $filename) {
             if ($this->filter->isFiltered($filename)) {
                 unset($data[$filename]);
             }
         }
 
+        // Process files that are covered for the first time.
         $newFilesToCollect = array_diff_key($data, $this->coveredFiles);
 
         if (count($newFilesToCollect) > 0) {
@@ -159,6 +175,7 @@ class PHP_CodeCoverage
             unset($newFilesToCollect);
         }
 
+        // Apply @covers filtering.
         if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
             require_once 'PHPUnit/Util/Test.php';
 

@@ -43,10 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHPUnit/Util/Filter.php';
-
-PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
-
 /**
  * 
  *

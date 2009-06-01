@@ -194,10 +194,8 @@ class PHP_CodeCoverage
             }
         }
 
-        $executed = $this->getExecutedLines($data);
-
         $this->data[$id] = array(
-          'executed'   => $executed,
+          'executed'   => $this->getExecutedLines($data),
           'dead'       => $dead,
           'executable' => $executable,
         );

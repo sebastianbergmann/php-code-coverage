@@ -274,6 +274,14 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * @return array
+     */
+    public function getWhitelist()
+    {
+        return $this->whitelistedFiles;
+    }
+
+    /**
      * Returns a PHP_CodeCoverage_Filter_Iterator that iterates
      * over all files in the given directory that have the
      * given suffix and prefix.

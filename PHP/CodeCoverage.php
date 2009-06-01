@@ -78,16 +78,18 @@ class PHP_CodeCoverage
     protected $currentId;
 
     /**
-     * @var array|SplObjectStorage
-     */
-    protected $data;
-
-    /**
      * List of covered files.
      *
      * @var array
      */
     protected $coveredFiles;
+
+    /**
+     * Raw code coverage data.
+     *
+     * @var array|SplObjectStorage
+     */
+    protected $data;
 
     /**
      * Constructor.

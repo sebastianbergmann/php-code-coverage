@@ -92,6 +92,13 @@ class PHP_CodeCoverage
     protected $data;
 
     /**
+     * Summarized code coverage data.
+     *
+     * @var array
+     */
+    protected $summary;
+
+    /**
      * Constructor.
      *
      * @param PHP_CodeCoverage_Filter $filter
@@ -201,6 +208,31 @@ class PHP_CodeCoverage
           'dead'       => $dead,
           'executable' => $executable,
         );
+
+        $this->summary = array();
+    }
+
+    /**
+     * Returns summarized code coverage data.
+     *
+     * Format of the result array:
+     *
+     * <code>
+     * array(
+     *   "/tested/code.php" => array(
+     *     linenumber => array(tests that executed the line)
+     *   )
+     * )
+     * </code>
+     *
+     * @return array
+     */
+    public function getSummary()
+    {
+        if (empty($this->summary)) {
+        }
+
+        return $this->summary;
     }
 
     /**
@@ -222,6 +254,7 @@ class PHP_CodeCoverage
         }
 
         $this->coveredFiles = array();
+        $this->summary      = array();
         $this->currentId    = NULL;
     }
 

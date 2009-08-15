@@ -44,6 +44,7 @@
  */
 
 require_once 'PHP/CodeCoverage/Filter.php';
+require_once 'PHP/CodeCoverage/Util.php';
 
 /**
  * Wrapper around Xdebug's code coverage functionality.
@@ -186,9 +187,7 @@ class PHP_CodeCoverage
 
         // Apply @covers filtering.
         if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
-            require_once 'PHPUnit/Util/Test.php';
-
-            $linesToBeCovered = PHPUnit_Util_Test::getLinesToBeCovered(
+            $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
               get_class($id), $id->getName()
             );
 

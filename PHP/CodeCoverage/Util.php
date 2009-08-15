@@ -58,6 +58,13 @@
 class PHP_CodeCoverage_Util
 {
     /**
+     * @var array
+     */
+    protected static $cache = array(
+      'getLinesToBeIgnored' => array()
+    );
+
+    /**
      * Returns the files and lines a test method wants to cover.
      *
      * @param  string $className
@@ -118,6 +125,40 @@ class PHP_CodeCoverage_Util
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the lines of a source file that should be ignored.
+     *
+     * @param  string $filename
+     * @return array
+     */
+    public static function getLinesToBeIgnored($filename)
+    {
+        if (!isset(self::$cache['getLinesToBeIgnored'][$filename])) {
+            self::$cache['getLinesToBeIgnored'][$filename] = array();
+
+            $ignore  = FALSE;
+            $lineNum = 1;
+
+            foreach (file($filename) as $line) {
+                if (strpos($line, '@codeCoverageIgnoreStart') !== FALSE) {
+                    $ignore = TRUE;
+                }
+
+                if ($ignore) {
+                    self::$cache['getLinesToBeIgnored'][$filename][] = $lineNum;
+
+                    if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
+                        $ignore = FALSE;
+                    }
+                }
+
+                $lineNum++;
+            }
+        }
+
+        return self::$cache['getLinesToBeIgnored'][$filename];
     }
 
     /**

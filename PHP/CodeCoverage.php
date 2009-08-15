@@ -181,9 +181,9 @@ class PHP_CodeCoverage
             foreach (array_keys($newFilesToCollect) as $filename) {
                 $this->coveredFiles[$filename] = TRUE;
             }
-
-            unset($newFilesToCollect);
         }
+
+        unset($newFilesToCollect);
 
         // Apply @covers filtering.
         if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {

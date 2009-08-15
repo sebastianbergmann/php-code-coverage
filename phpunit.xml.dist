@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         syntaxCheck="false">
+  <testsuites>
+    <testsuite name="PHP_CodeCoverage">
+      <directory suffix="Test.php">Tests</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist addUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">PHP</directory>
+    </whitelist>
+  </filter>
+</phpunit>

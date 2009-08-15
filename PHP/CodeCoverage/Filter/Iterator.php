@@ -68,11 +68,11 @@ class PHP_CodeCoverage_Filter_Iterator extends FilterIterator
     protected $prefixes = array();
 
     /**
-     * @param  Iterator $iterator
-     * @param  array    $suffixes
-     * @param  array    $prefixes
+     * @param RecursiveIteratorIterator $iterator
+     * @param array|string              $suffixes
+     * @param array|string              $prefixes
      */
-    public function __construct(Iterator $iterator, $suffixes = array(), $prefixes = array())
+    public function __construct(RecursiveIteratorIterator $iterator, $suffixes = array(), $prefixes = array())
     {
         if (is_string($suffixes)) {
             if (!empty($suffixes)) {
@@ -110,13 +110,20 @@ class PHP_CodeCoverage_Filter_Iterator extends FilterIterator
      */
     public function accept()
     {
-        $string = (string)$this->getInnerIterator()->current();
+        $filename = $this->getInnerIterator()->current()->getFilename();
+
+        if (strpos($filename, '.') === 0 ||
+            preg_match(
+              '=/\.[^/]*/=',
+              $this->getInnerIterator()->current()->getPathname())) {
+            return FALSE;
+        }
 
         if (!empty($this->prefixes)) {
             $matched = FALSE;
 
             foreach ($this->prefixes as $prefix) {
-                if (strpos($string, $prefix) === 0) {
+                if (strpos($filename, $prefix) === 0) {
                     $matched = TRUE;
                     break;
                 }
@@ -131,7 +138,7 @@ class PHP_CodeCoverage_Filter_Iterator extends FilterIterator
             $matched = FALSE;
 
             foreach ($this->suffixes as $suffix) {
-                if (substr($string, -1 * strlen($suffix)) == $suffix) {
+                if (substr($filename, -1 * strlen($suffix)) == $suffix) {
                     $matched = TRUE;
                     break;
                 }

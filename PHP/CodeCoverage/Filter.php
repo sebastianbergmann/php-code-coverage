@@ -286,19 +286,19 @@ class PHP_CodeCoverage_Filter
      * over all files in the given directory that have the
      * given suffix and prefix.
      *
-     * @param  string $directory
-     * @param  string $suffix
-     * @param  string $prefix
+     * @param  string       $directory
+     * @param  array|string $suffixes
+     * @param  array|string $prefixes
      * @return PHP_CodeCoverage_Filter_Iterator
      */
-    protected function getIterator($directory, $suffix, $prefix)
+    protected function getIterator($directory, $suffixes, $prefixes)
     {
         return new PHP_CodeCoverage_Filter_Iterator(
           new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($directory)
           ),
-          $suffix,
-          $prefix
+          $suffixes,
+          $prefixes
         );
     }
 }

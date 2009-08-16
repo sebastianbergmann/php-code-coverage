@@ -5,7 +5,7 @@
          syntaxCheck="false">
   <testsuites>
     <testsuite name="PHP_CodeCoverage">
-      <directory suffix="Test.php">Tests</directory>
+      <directory suffix="Test.php">Tests/PHP</directory>
     </testsuite>
   </testsuites>
   <filter>

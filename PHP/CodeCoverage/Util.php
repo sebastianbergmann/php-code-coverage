@@ -87,48 +87,44 @@ class PHP_CodeCoverage_Util
             $methodName = substr($methodName, 0, $pos);
         }
 
-        try {
-            $class      = new ReflectionClass($className);
-            $method     = new ReflectionMethod($className, $methodName);
-            $docComment = $class->getDocComment() . $method->getDocComment();
+        $class      = new ReflectionClass($className);
+        $method     = new ReflectionMethod($className, $methodName);
+        $docComment = $class->getDocComment() . $method->getDocComment();
 
-            foreach (self::$templateMethods as $templateMethod) {
-                if ($class->hasMethod($templateMethod)) {
-                    $reflector = $class->getMethod($templateMethod);
-                    $docComment .= $reflector->getDocComment();
-                    unset($reflector);
-                }
-            }
-
-            if (preg_match_all('/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/', $docComment, $matches)) {
-                foreach ($matches[1] as $i => $method) {
-                    $codeToCoverList = array_merge(
-                        $codeToCoverList,
-                        self::resolveCoversToReflectionObjects(
-                          $method, !empty($matches[2][$i])
-                        )
-                    );
-                }
-
-                foreach ($codeToCoverList as $codeToCover) {
-                    $fileName  = $codeToCover->getFileName();
-                    $startLine = $codeToCover->getStartLine();
-                    $endLine   = $codeToCover->getEndLine();
-
-                    if (!isset($result[$fileName])) {
-                        $result[$fileName] = array();
-                    }
-
-                    $result[$fileName] = array_unique(
-                      array_merge(
-                        $result[$fileName], range($startLine, $endLine)
-                      )
-                    );
-                }
+        foreach (self::$templateMethods as $templateMethod) {
+            if ($class->hasMethod($templateMethod)) {
+                $reflector = $class->getMethod($templateMethod);
+                $docComment .= $reflector->getDocComment();
+                unset($reflector);
             }
         }
 
-        catch (ReflectionException $e) {
+        if (preg_match_all('/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/', $docComment, $matches)) {
+            var_dump($matches);
+            foreach ($matches[1] as $i => $method) {
+                $codeToCoverList = array_merge(
+                    $codeToCoverList,
+                    self::resolveCoversToReflectionObjects(
+                      $method, !empty($matches[2][$i])
+                    )
+                );
+            }
+
+            foreach ($codeToCoverList as $codeToCover) {
+                $fileName  = $codeToCover->getFileName();
+                $startLine = $codeToCover->getStartLine();
+                $endLine   = $codeToCover->getEndLine();
+
+                if (!isset($result[$fileName])) {
+                    $result[$fileName] = array();
+                }
+
+                $result[$fileName] = array_unique(
+                  array_merge(
+                    $result[$fileName], range($startLine, $endLine)
+                  )
+                );
+            }
         }
 
         return $result;
@@ -246,7 +242,9 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($classes as $className) {
-                $codeToCoverList[] = new ReflectionClass($className);
+                if (class_exists($className)) {
+                    $codeToCoverList[] = new ReflectionClass($className);
+                }
             }
         }
 

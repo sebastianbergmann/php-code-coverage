@@ -212,6 +212,12 @@ class PHP_CodeCoverage
             }
         }
 
+        if (is_object($id) && $this->storageType == self::STORAGE_ARRAY) {
+            if ($id instanceof PHPUnit_Framework_TestCase) {
+                $id = get_class($id) . '::' . $id->getName();
+            }
+        }
+
         $this->data[$id] = array(
           'executed'   => $this->getLinesByStatus($data, 1),
           'dead'       => $dead,

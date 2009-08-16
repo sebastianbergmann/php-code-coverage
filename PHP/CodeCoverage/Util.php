@@ -100,7 +100,6 @@ class PHP_CodeCoverage_Util
         }
 
         if (preg_match_all('/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/', $docComment, $matches)) {
-            var_dump($matches);
             foreach ($matches[1] as $i => $method) {
                 $codeToCoverList = array_merge(
                     $codeToCoverList,

@@ -58,6 +58,8 @@
    </dir>
    <dir name="Tests">
     <dir name="_files">
+     <file baseinstalldir="/" name="BankAccount.php" role="test"/>
+     <file baseinstalldir="/" name="BankAccountTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageClassExtendedTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageClassTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageMethodTest.php" role="test"/>
@@ -77,6 +79,9 @@
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
+     <file baseinstalldir="/" name="CodeCoverageTest.php" role="test">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
     </dir>
    </dir>
   </dir>

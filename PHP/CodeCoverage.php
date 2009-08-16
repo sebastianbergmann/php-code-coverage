@@ -182,18 +182,18 @@ class PHP_CodeCoverage
         }
 
         // Process files that are covered for the first time.
-        $newFilesToCollect = array_diff_key($data, $this->coveredFiles);
+        $newFiles = array_diff_key($data, $this->coveredFiles);
 
-        if (count($newFilesToCollect) > 0) {
-            $dead       = $this->getDeadLines($newFilesToCollect);
-            $executable = $this->getExecutableLines($newFilesToCollect);
+        if (count($newFiles) > 0) {
+            $dead       = $this->getLinesByStatus($newFiles, -2)
+            $executable = $this->getLinesByStatus($newFiles, array(-1, 1));
 
-            foreach (array_keys($newFilesToCollect) as $filename) {
+            foreach (array_keys($newFiles) as $filename) {
                 $this->coveredFiles[$filename] = TRUE;
             }
         }
 
-        unset($newFilesToCollect);
+        unset($newFiles);
 
         // Apply @covers filtering.
         if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
@@ -213,7 +213,7 @@ class PHP_CodeCoverage
         }
 
         $this->data[$id] = array(
-          'executed'   => $this->getExecutedLines($data),
+          'executed'   => $this->getLinesByStatus($data, 1),
           'dead'       => $dead,
           'executable' => $executable,
         );
@@ -265,50 +265,6 @@ class PHP_CodeCoverage
         $this->coveredFiles = array();
         $this->summary      = array();
         $this->currentId    = NULL;
-    }
-
-    /**
-     * Returns only the executed lines.
-     *
-     * @param  array $data
-     * @return array
-     */
-    public function getExecutedLines(array $data)
-    {
-        return $this->getLinesByStatus($data, 1);
-    }
-
-    /**
-     * Returns only the executable lines.
-     *
-     * @param  array $data
-     * @return array
-     */
-    public function getExecutableLines(array $data)
-    {
-        return $this->getLinesByStatus($data, array(-1, 1));
-    }
-
-    /**
-     * Returns only the lines that were not executed.
-     *
-     * @param  array $data
-     * @return array
-     */
-    public function getNotExecutedLines(array $data)
-    {
-        return $this->getLinesByStatus($data, -1);
-    }
-
-    /**
-     * Returns only the dead code lines.
-     *
-     * @param  array $data
-     * @return array
-     */
-    public function getDeadLines(array $data)
-    {
-        return $this->getLinesByStatus($data, -2);
     }
 
     /**

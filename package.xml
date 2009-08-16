@@ -9,8 +9,8 @@
                       http://pear.php.net/dtd/package-2.0.xsd">
  <name>PHP_CodeCoverage</name>
  <channel>pear.phpunit.de</channel>
- <summary>Wrapper around Xdebug's code coverage functionality.</summary>
- <description>Wrapper around Xdebug's code coverage functionality.</description>
+ <summary>...</summary>
+ <description>...</description>
  <lead>
   <name>Sebastian Bergmann</name>
   <user>sb</user>
@@ -32,11 +32,19 @@
   <dir name="/">
    <dir name="PHP">
     <dir name="CodeCoverage">
+     <dir name="Driver">
+      <file baseinstalldir="/" name="Xdebug.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
      <dir name="Filter">
       <file baseinstalldir="/" name="Iterator.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
+     <file baseinstalldir="/" name="Driver.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
      <file baseinstalldir="/" name="Filter.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>

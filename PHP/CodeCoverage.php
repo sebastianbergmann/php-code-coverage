@@ -43,11 +43,12 @@
  * @since      File available since Release 1.0.0
  */
 
+require_once 'PHP/CodeCoverage/Driver/Xdebug.php';
 require_once 'PHP/CodeCoverage/Filter.php';
 require_once 'PHP/CodeCoverage/Util.php';
 
 /**
- * Wrapper around Xdebug's code coverage functionality.
+ * ...
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -62,6 +63,11 @@ class PHP_CodeCoverage
 {
     const STORAGE_ARRAY            = 0;
     const STORAGE_SPLOBJECTSTORAGE = 1;
+
+    /**
+     * @var PHP_CodeCoverage_Driver
+     */
+    protected $driver;
 
     /**
      * @var PHP_CodeCoverage_Filter
@@ -102,15 +108,21 @@ class PHP_CodeCoverage
     /**
      * Constructor.
      *
+     * @param PHP_CodeCoverage_Driver $driver
      * @param PHP_CodeCoverage_Filter $filter
      * @param integer                 $storageType
      */
-    public function __construct(PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE)
+    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE)
     {
+        if ($driver === NULL) {
+            $driver = new PHP_CodeCoverage_Driver_Xdebug;
+        }
+
         if ($filter === NULL) {
             $filter = new PHP_CodeCoverage_Filter;
         }
 
+        $this->driver      = $driver;
         $this->filter      = $filter;
         $this->storageType = $storageType;
 
@@ -118,7 +130,7 @@ class PHP_CodeCoverage
     }
 
     /**
-     * Wrapper for xdebug_start_code_coverage().
+     * Start collection of code coverage information.
      *
      * @param mixed   $id
      * @param boolean $clear
@@ -131,17 +143,15 @@ class PHP_CodeCoverage
 
         $this->currentId = $id;
 
-        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        $this->driver->start();
     }
 
     /**
-     * Wrapper for xdebug_get_code_coverage() and xdebug_stop_code_coverage().
+     * Stop collection of code coverage information.
      */
     public function stop()
     {
-        $codeCoverage = xdebug_get_code_coverage();
-        xdebug_stop_code_coverage();
-        $this->append($codeCoverage);
+        $this->append($this->driver->stop());
         $this->currentId = NULL;
     }
 
@@ -360,10 +370,9 @@ class PHP_CodeCoverage
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+            $this->driver->start();
             include_once $uncoveredFile;
-            $coverage = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage();
+            $coverage = $this->driver->stop();
 
             if (isset($coverage[$uncoveredFile])) {
                 foreach ($coverage[$uncoveredFile] as $line => $flag) {

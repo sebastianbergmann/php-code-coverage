@@ -48,7 +48,7 @@ require_once 'PHP/CodeCoverage/Filter.php';
 require_once 'PHP/CodeCoverage/Util.php';
 
 /**
- * ...
+ * Provides collection functionality for PHP code coverage information.
  *
  * @category   PHP
  * @package    CodeCoverage

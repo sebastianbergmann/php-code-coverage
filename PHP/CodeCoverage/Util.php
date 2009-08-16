@@ -93,19 +93,17 @@ class PHP_CodeCoverage_Util
 
         foreach (self::$templateMethods as $templateMethod) {
             if ($class->hasMethod($templateMethod)) {
-                $reflector = $class->getMethod($templateMethod);
+                $reflector   = $class->getMethod($templateMethod);
                 $docComment .= $reflector->getDocComment();
                 unset($reflector);
             }
         }
 
         if (preg_match_all('/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/', $docComment, $matches)) {
-            foreach ($matches[1] as $i => $method) {
+            foreach ($matches[1] as $coveredElement) {
                 $codeToCoverList = array_merge(
                     $codeToCoverList,
-                    self::resolveCoversToReflectionObjects(
-                      $method, !empty($matches[2][$i])
-                    )
+                    self::resolveCoversToReflectionObjects($coveredElement)
                 );
             }
 
@@ -166,16 +164,22 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * @param  string  $method
-     * @param  boolean $extended
+     * @param  string $coveredElement
      * @return array
      */
-    protected static function resolveCoversToReflectionObjects($method, $extended)
+    protected static function resolveCoversToReflectionObjects($coveredElement)
     {
+        $extended = FALSE;
+
+        if (strpos($coveredElement, '<extended>') !== FALSE) {
+            $extended = TRUE;
+            $coveredElement = str_replace('<extended>', '', $coveredElement);
+        }
+
         $codeToCoverList = array();
 
-        if (strpos($method, '::') !== FALSE) {
-            list($className, $methodName) = explode('::', $method);
+        if (strpos($coveredElement, '::') !== FALSE) {
+            list($className, $methodName) = explode('::', $coveredElement);
 
             if ($methodName{0} == '<') {
                 $classes = array($className);
@@ -230,13 +234,13 @@ class PHP_CodeCoverage_Util
                 }
             }
         } else {
-            $classes = array($method);
+            $classes = array($coveredElement);
 
             if ($extended) {
                 $classes = array_merge(
                   $classes,
-                  class_implements($method),
-                  class_parents($method)
+                  class_implements($coveredElement),
+                  class_parents($coveredElement)
                 );
             }
 

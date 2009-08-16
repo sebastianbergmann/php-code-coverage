@@ -86,7 +86,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           array(
             '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            array_merge(range(2, 17), range(19, 36))
+            array_merge(range(19, 36), range(2, 17))
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageClassExtendedTest', 'testPublicMethod'

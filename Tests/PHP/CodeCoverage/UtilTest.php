@@ -46,6 +46,22 @@
 
 require_once 'PHP/CodeCoverage/Util.php';
 
+$path = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
+        '_files' . DIRECTORY_SEPARATOR;
+
+require_once $path . 'CoverageClassExtendedTest.php';
+require_once $path . 'CoverageClassTest.php';
+require_once $path . 'CoverageMethodTest.php';
+require_once $path . 'CoverageNotPrivateTest.php';
+require_once $path . 'CoverageNotProtectedTest.php';
+require_once $path . 'CoverageNotPublicTest.php';
+require_once $path . 'CoveragePrivateTest.php';
+require_once $path . 'CoverageProtectedTest.php';
+require_once $path . 'CoveragePublicTest.php';
+require_once $path . 'CoveredClass.php';
+
+unset($path);
+
 /**
  * Tests for the PHP_CodeCoverage_Util class.
  *
@@ -61,6 +77,159 @@ require_once 'PHP/CodeCoverage/Util.php';
  */
 class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            array_merge(range(2, 17), range(19, 36))
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageClassExtendedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered2()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            range(19, 36)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageClassTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered3()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            range(31, 35)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageMethodTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered4()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            array_merge(range(25, 29), range(31, 35))
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageNotPrivateTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered5()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            array_merge(range(21, 23), range(31, 35))
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageNotProtectedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered6()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            array_merge(range(21, 23), range(25, 29))
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageNotPublicTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered7()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            range(21, 23)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoveragePrivateTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered8()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            range(25, 29)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoverageProtectedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered9()
+    {
+        $this->assertEquals(
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
+            range(31, 35)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'CoveragePublicTest', 'testPublicMethod'
+          )
+        );
+    }
+
     /**
      * @covers PHP_CodeCoverage_Util::getLinesToBeIgnored
      */

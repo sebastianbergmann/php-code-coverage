@@ -58,12 +58,18 @@
    </dir>
    <dir name="Tests">
     <dir name="_files">
-     <file baseinstalldir="/" name="source_with_ignore.php" role="test">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="source_without_ignore.php" role="test">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
+     <file baseinstalldir="/" name="CoverageClassExtendedTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageClassTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageMethodTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageNotPrivateTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageNotProtectedTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageNotPublicTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoveragePrivateTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageProtectedTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoveragePublicTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoveredClass.php" role="test"/>
+     <file baseinstalldir="/" name="source_with_ignore.php" role="test"/>
+     <file baseinstalldir="/" name="source_without_ignore.php" role="test"/>
     </dir>
     <dir name="PHP">
      <dir name="CodeCoverage">

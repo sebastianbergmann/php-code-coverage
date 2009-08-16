@@ -65,6 +65,13 @@ class PHP_CodeCoverage_Util
     );
 
     /**
+     * @var array
+     */
+    protected static $templateMethods = array(
+      'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
+    );
+
+    /**
      * Returns the files and lines a test method wants to cover.
      *
      * @param  string $className
@@ -85,7 +92,7 @@ class PHP_CodeCoverage_Util
             $method     = new ReflectionMethod($className, $methodName);
             $docComment = $class->getDocComment() . $method->getDocComment();
 
-            foreach (array('setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown') as $templateMethod) {
+            foreach (self::$templateMethods as $templateMethod) {
                 if ($class->hasMethod($templateMethod)) {
                     $reflector = $class->getMethod($templateMethod);
                     $docComment .= $reflector->getDocComment();

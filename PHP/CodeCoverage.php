@@ -185,7 +185,7 @@ class PHP_CodeCoverage
         $newFiles = array_diff_key($data, $this->coveredFiles);
 
         if (count($newFiles) > 0) {
-            $dead       = $this->getLinesByStatus($newFiles, -2)
+            $dead       = $this->getLinesByStatus($newFiles, -2);
             $executable = $this->getLinesByStatus($newFiles, array(-1, 1));
 
             foreach (array_keys($newFiles) as $filename) {

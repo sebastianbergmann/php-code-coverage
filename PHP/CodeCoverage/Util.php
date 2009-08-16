@@ -169,13 +169,6 @@ class PHP_CodeCoverage_Util
      */
     protected static function resolveCoversToReflectionObjects($coveredElement)
     {
-        $extended = FALSE;
-
-        if (strpos($coveredElement, '<extended>') !== FALSE) {
-            $extended = TRUE;
-            $coveredElement = str_replace('<extended>', '', $coveredElement);
-        }
-
         $codeToCoverList = array();
 
         if (strpos($coveredElement, '::') !== FALSE) {
@@ -183,14 +176,6 @@ class PHP_CodeCoverage_Util
 
             if ($methodName{0} == '<') {
                 $classes = array($className);
-
-                if ($extended) {
-                    $classes = array_merge(
-                      $classes,
-                      class_implements($className),
-                      class_parents($className)
-                    );
-                }
 
                 foreach ($classes as $className)
                 {
@@ -223,10 +208,6 @@ class PHP_CodeCoverage_Util
             } else {
                 $classes = array($className);
 
-                if ($extended) {
-                    $classes = array_merge($classes, class_parents($className));
-                }
-
                 foreach ($classes as $className) {
                     $codeToCoverList[] = new ReflectionMethod(
                       $className, $methodName
@@ -234,6 +215,13 @@ class PHP_CodeCoverage_Util
                 }
             }
         } else {
+            $extended = FALSE;
+
+            if (strpos($coveredElement, '<extended>') !== FALSE) {
+                $extended = TRUE;
+                $coveredElement = str_replace('<extended>', '', $coveredElement);
+            }
+
             $classes = array($coveredElement);
 
             if ($extended) {

@@ -46,7 +46,7 @@
 require_once 'PHP/CodeCoverage/Filter/Iterator.php';
 
 /**
- * 
+ * Filter for blacklisting and whitelisting of code coverage information.
  *
  * @category   PHP
  * @package    CodeCoverage

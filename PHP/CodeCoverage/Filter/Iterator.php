@@ -44,7 +44,8 @@
  */
 
 /**
- * 
+ * FilterIterator implementation that filters files based on prefix(es) and/or
+ * suffix(es). Hidden files and files from hidden directories are also filtered.
  *
  * @category   PHP
  * @package    CodeCoverage

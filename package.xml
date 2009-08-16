@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.10" version="2.0"
+  xmlns="http://pear.php.net/dtd/package-2.0"
+  xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                      http://pear.php.net/dtd/tasks-1.0.xsd
+                      http://pear.php.net/dtd/package-2.0
+                      http://pear.php.net/dtd/package-2.0.xsd">
+ <name>PHP_CodeCoverage</name>
+ <channel>pear.phpunit.de</channel>
+ <summary>Wrapper around Xdebug's code coverage functionality.</summary>
+ <description>Wrapper around Xdebug's code coverage functionality.</description>
+ <lead>
+  <name>Sebastian Bergmann</name>
+  <user>sb</user>
+  <email>sb@sebastian-bergmann.de</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-MM-DD</date>
+ <version>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>devel</release>
+  <api>devel</api>
+ </stability>
+ <license>BSD License</license>
+ <notes>http://github.com/sebastianbergmann/php-code-coverage/</notes>
+ <contents>
+  <dir name="/">
+   <dir name="PHP">
+    <dir name="CodeCoverage">
+     <dir name="Filter">
+      <file baseinstalldir="/" name="Iterator.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
+     <file baseinstalldir="/" name="Filter.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+     <file baseinstalldir="/" name="Util.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+    </dir>
+    <file baseinstalldir="/" name="CodeCoverage.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info" />
+    </file>
+   </dir>
+   <dir name="Tests">
+    <dir name="_files">
+     <file baseinstalldir="/" name="source_with_ignore.php" role="test">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+     <file baseinstalldir="/" name="source_without_ignore.php" role="test">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+    </dir>
+    <dir name="PHP">
+     <dir name="CodeCoverage">
+      <file baseinstalldir="/" name="UtilTest.php" role="test">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
+    </dir>
+   </dir>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.3.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.8.1</min>
+   </pearinstaller>
+   <extension>
+    <name>xdebug</name>
+    <min>2.0.5</min>
+   </extension>
+  </required>
+ </dependencies>
+ <phprelease/>
+</package>

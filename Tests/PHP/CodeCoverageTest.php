@@ -70,6 +70,41 @@ unset($path);
 class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers PHP_CodeCoverage::__construct
+     * @covers PHP_CodeCoverage::clear
+     * @covers PHP_CodeCoverage::filter
+     */
+    public function testConstructor()
+    {
+        $coverage = new PHP_CodeCoverage;
+
+        $this->assertAttributeType(
+          'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
+        );
+
+        $this->assertType('PHP_CodeCoverage_Filter', $coverage->filter());
+
+        $this->assertAttributeEquals(
+          PHP_CodeCoverage::STORAGE_SPLOBJECTSTORAGE, 'storageType', $coverage
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::__construct
+     * @covers PHP_CodeCoverage::clear
+     */
+    public function testConstructor2()
+    {
+        $coverage = new PHP_CodeCoverage(
+          NULL, NULL, PHP_CodeCoverage::STORAGE_ARRAY
+        );
+
+        $this->assertAttributeEquals(
+          PHP_CodeCoverage::STORAGE_ARRAY, 'storageType', $coverage
+        );
+    }
+
+    /**
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append

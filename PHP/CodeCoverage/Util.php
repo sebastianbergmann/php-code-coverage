@@ -107,8 +107,8 @@ class PHP_CodeCoverage_Util
         if (preg_match_all(self::REGEX, $docComment, $matches)) {
             foreach ($matches['coveredElement'] as $coveredElement) {
                 $codeToCoverList = array_merge(
-                    $codeToCoverList,
-                    self::resolveCoversToReflectionObjects($coveredElement)
+                  $codeToCoverList,
+                  self::resolveCoversToReflectionObjects($coveredElement)
                 );
             }
 

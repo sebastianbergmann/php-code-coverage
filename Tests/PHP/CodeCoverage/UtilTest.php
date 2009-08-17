@@ -57,6 +57,7 @@ if (!defined('TEST_FILES_PATH')) {
 require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
 require_once TEST_FILES_PATH . 'CoverageClassTest.php';
 require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'CoverageNoneTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotPrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotPublicTest.php';
@@ -111,10 +112,14 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             $file = 'CoveredClass.php';
         }
 
+        if ($test != 'CoverageNoneTest') {
+          $expected = array(TEST_FILES_PATH . $file => $lines);
+        } else {
+          $expected = array();
+        }
+
         $this->assertEquals(
-          array(
-            TEST_FILES_PATH . $file => $lines
-          ),
+          $expected,
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             $test, 'testPublicMethod'
           )
@@ -186,6 +191,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function getLinesToBeCoveredProvider()
     {
         return array(
+          array(
+            'CoverageNoneTest',
+            array()
+          ),
           array(
             'CoverageClassExtendedTest',
             array_merge(range(19, 36), range(2, 17))

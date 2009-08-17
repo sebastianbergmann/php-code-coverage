@@ -63,6 +63,7 @@
      <file baseinstalldir="/" name="CoverageClassExtendedTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageClassTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageMethodTest.php" role="test"/>
+     <file baseinstalldir="/" name="CoverageNoneTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageNotPrivateTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageNotProtectedTest.php" role="test"/>
      <file baseinstalldir="/" name="CoverageNotPublicTest.php" role="test"/>

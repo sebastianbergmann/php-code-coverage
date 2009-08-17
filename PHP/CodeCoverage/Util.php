@@ -192,8 +192,7 @@ class PHP_CodeCoverage_Util
             if ($methodName{0} == '<') {
                 $classes = array($className);
 
-                foreach ($classes as $className)
-                {
+                foreach ($classes as $className) {
                     if (!class_exists($className)) {
                         throw new RuntimeException(
                           sprintf(

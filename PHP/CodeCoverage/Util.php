@@ -60,7 +60,7 @@ class PHP_CodeCoverage_Util
     /**
      * @var string
      */
-    const REGEX = '/@covers[\s]+([A-Za-z!<>:.\\\\]+)([\s]+<extended>)?/';
+    const REGEX = '(@(?P<name>[A-Za-z_-]+)\s+(?P<value>.*?)\s*$)m';
 
     /**
      * @var array
@@ -85,8 +85,8 @@ class PHP_CodeCoverage_Util
      */
     public static function getLinesToBeCovered($className, $methodName)
     {
-        $result          = array();
         $codeToCoverList = array();
+        $result          = array();
 
         if (($pos = strpos($methodName, ' ')) !== FALSE) {
             $methodName = substr($methodName, 0, $pos);
@@ -104,8 +104,18 @@ class PHP_CodeCoverage_Util
             }
         }
 
+        $annotations = array();
+
         if (preg_match_all(self::REGEX, $docComment, $matches)) {
-            foreach ($matches[1] as $coveredElement) {
+            $numMatches = count($matches[0]);
+
+            for ($i = 0; $i < $numMatches; ++$i) {
+                $annotations[$matches['name'][$i]][] = $matches['value'][$i];
+            }
+        }
+
+        if (isset($annotations['covers'])) {
+            foreach ($annotations['covers'] as $coveredElement) {
                 $codeToCoverList = array_merge(
                     $codeToCoverList,
                     self::resolveCoversToReflectionObjects($coveredElement)
@@ -184,6 +194,15 @@ class PHP_CodeCoverage_Util
 
                 foreach ($classes as $className)
                 {
+                    if (!class_exists($className)) {
+                        throw new RuntimeException(
+                          sprintf(
+                            'Trying to @cover not existing class "%s".',
+                            $className
+                          )
+                        );
+                    }
+
                     $class   = new ReflectionClass($className);
                     $methods = $class->getMethods();
                     $inverse = isset($methodName{1}) && $methodName{1} == '!';
@@ -214,6 +233,17 @@ class PHP_CodeCoverage_Util
                 $classes = array($className);
 
                 foreach ($classes as $className) {
+                    if (!(class_exists($className) &&
+                          method_exists($className, $methodName))) {
+                        throw new RuntimeException(
+                          sprintf(
+                            'Trying to @cover not existing method "%s:%s".',
+                            $className,
+                            $methodName
+                          )
+                        );
+                    }
+
                     $codeToCoverList[] = new ReflectionMethod(
                       $className, $methodName
                     );
@@ -241,9 +271,16 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($classes as $className) {
-                if (class_exists($className)) {
-                    $codeToCoverList[] = new ReflectionClass($className);
+                if (!class_exists($className)) {
+                    throw new RuntimeException(
+                      sprintf(
+                        'Trying to @cover not existing class "%s".',
+                        $className
+                      )
+                    );
                 }
+
+                $codeToCoverList[] = new ReflectionClass($className);
             }
         }
 

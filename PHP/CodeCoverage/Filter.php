@@ -91,7 +91,9 @@ class PHP_CodeCoverage_Filter
     public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            foreach ($this->getIterator($directory, $suffix, $prefix) as $file) {
+            $files = $this->getIterator($directory, $suffix, $prefix);
+
+            foreach ($files as $file) {
                 $this->addFileToFilter($file->getPathName());
             }
         } else {
@@ -129,7 +131,9 @@ class PHP_CodeCoverage_Filter
     public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            foreach ($this->getIterator($directory, $suffix, $prefix) as $file) {
+            $files = $this->getIterator($directory, $suffix, $prefix);
+
+            foreach ($files as $file) {
                 $this->removeFileFromFilter($file->getPathName());
             }
         } else {
@@ -169,7 +173,9 @@ class PHP_CodeCoverage_Filter
     public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            foreach ($this->getIterator($directory, $suffix, $prefix) as $file) {
+            $files = $this->getIterator($directory, $suffix, $prefix);
+
+            foreach ($files as $file) {
                 $this->addFileToWhitelist($file->getPathName());
             }
         } else {
@@ -210,7 +216,9 @@ class PHP_CodeCoverage_Filter
     public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            foreach ($this->getIterator($directory, $suffix, $prefix) as $file) {
+            $files = $this->getIterator($directory, $suffix, $prefix);
+
+            foreach ($files as $file) {
                 $this->removeFileFromWhitelist($file->getPathName());
             }
         } else {

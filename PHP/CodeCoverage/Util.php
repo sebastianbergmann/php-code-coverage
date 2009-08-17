@@ -58,6 +58,11 @@
 class PHP_CodeCoverage_Util
 {
     /**
+     * @var string
+     */
+    const REGEX = '/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/';
+
+    /**
      * @var array
      */
     protected static $cache = array(
@@ -99,7 +104,7 @@ class PHP_CodeCoverage_Util
             }
         }
 
-        if (preg_match_all('/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/', $docComment, $matches)) {
+        if (preg_match_all(self::REGEX, $docComment, $matches)) {
             foreach ($matches[1] as $coveredElement) {
                 $codeToCoverList = array_merge(
                     $codeToCoverList,
@@ -218,8 +223,11 @@ class PHP_CodeCoverage_Util
             $extended = FALSE;
 
             if (strpos($coveredElement, '<extended>') !== FALSE) {
+                $coveredElement = str_replace(
+                  '<extended>', '', $coveredElement
+                );
+
                 $extended = TRUE;
-                $coveredElement = str_replace('<extended>', '', $coveredElement);
             }
 
             $classes = array($coveredElement);

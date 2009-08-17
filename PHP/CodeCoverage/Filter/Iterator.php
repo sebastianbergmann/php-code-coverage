@@ -84,7 +84,10 @@ class PHP_CodeCoverage_Filter_Iterator extends FilterIterator
         }
 
         if (!is_array($suffixes)) {
-            throw new InvalidArgumentException('Argument #2 of PHP_CodeCoverage_Filter_Iterator:__construct() is no array or string.');
+            throw new InvalidArgumentException(
+              'Argument #2 of PHP_CodeCoverage_Filter_Iterator:__construct()' .
+              ' is no array or string.'
+            );
         }
 
         $this->suffixes = $suffixes;
@@ -98,7 +101,10 @@ class PHP_CodeCoverage_Filter_Iterator extends FilterIterator
         }
 
         if (!is_array($prefixes)) {
-            throw new InvalidArgumentException('Argument #3 of PHP_CodeCoverage_Filter_Iterator:__construct() is no array or string.');
+            throw new InvalidArgumentException(
+              'Argument #3 of PHP_CodeCoverage_Filter_Iterator:__construct()' .
+              ' is no array or string.'
+            );
         }
 
         $this->prefixes = $prefixes;

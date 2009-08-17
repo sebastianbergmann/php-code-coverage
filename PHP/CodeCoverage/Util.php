@@ -60,7 +60,7 @@ class PHP_CodeCoverage_Util
     /**
      * @var string
      */
-    const REGEX = '(@(?P<name>[A-Za-z_-]+)\s+(?P<value>.*?)\s*$)m';
+    const REGEX = '(@covers\s+(?P<coveredElement>.*?)\s*$)m';
 
     /**
      * @var array
@@ -104,18 +104,8 @@ class PHP_CodeCoverage_Util
             }
         }
 
-        $annotations = array();
-
         if (preg_match_all(self::REGEX, $docComment, $matches)) {
-            $numMatches = count($matches[0]);
-
-            for ($i = 0; $i < $numMatches; ++$i) {
-                $annotations[$matches['name'][$i]][] = $matches['value'][$i];
-            }
-        }
-
-        if (isset($annotations['covers'])) {
-            foreach ($annotations['covers'] as $coveredElement) {
+            foreach ($matches['coveredElement'] as $coveredElement) {
                 $codeToCoverList = array_merge(
                     $codeToCoverList,
                     self::resolveCoversToReflectionObjects($coveredElement)
@@ -123,9 +113,7 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($codeToCoverList as $codeToCover) {
-                $fileName  = $codeToCover->getFileName();
-                $startLine = $codeToCover->getStartLine();
-                $endLine   = $codeToCover->getEndLine();
+                $fileName = $codeToCover->getFileName();
 
                 if (!isset($result[$fileName])) {
                     $result[$fileName] = array();
@@ -133,7 +121,10 @@ class PHP_CodeCoverage_Util
 
                 $result[$fileName] = array_unique(
                   array_merge(
-                    $result[$fileName], range($startLine, $endLine)
+                    $result[$fileName],
+                    range(
+                      $codeToCover->getStartLine(), $codeToCover->getEndLine()
+                    )
                   )
                 );
             }

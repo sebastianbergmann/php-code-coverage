@@ -64,6 +64,7 @@ require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
+require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
 
 if (version_compare(PHP_VERSION, '5.3', '>')) {
     require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
@@ -117,6 +118,42 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             $test, 'testPublicMethod'
           )
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException RuntimeException
+     */
+    public function testGetLinesToBeCovered2()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          'NotExistingCoveredElementTest', 'testOne'
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException RuntimeException
+     */
+    public function testGetLinesToBeCovered3()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          'NotExistingCoveredElementTest', 'testTwo'
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException RuntimeException
+     */
+    public function testGetLinesToBeCovered4()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          'NotExistingCoveredElementTest', 'testThree'
         );
     }
 

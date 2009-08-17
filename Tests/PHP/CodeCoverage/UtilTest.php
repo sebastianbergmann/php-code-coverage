@@ -65,6 +65,19 @@ require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
 
+if (version_compare(PHP_VERSION, '5.3', '>')) {
+    require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageClassTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php';
+    require_once TEST_FILES_PATH . 'NamespaceCoveredClass.php';
+}
+
 /**
  * Tests for the PHP_CodeCoverage_Util class.
  *
@@ -228,6 +241,194 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoveragePublicTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered10()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => array_merge(
+              range(21, 38), range(4, 19)
+            )
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageClassExtendedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered11()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => range(21, 38)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageClassTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered12()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => range(33, 37)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageMethodTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered13()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => array_merge(
+              range(27, 31), range(33, 37)
+            )
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageNotPrivateTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered14()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => array_merge(
+              range(23, 25), range(33, 37)
+            )
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageNotProtectedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered15()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => array_merge(
+              range(23, 25), range(27, 31)
+            )
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageNotPublicTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered16()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => range(23, 25)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoveragePrivateTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered17()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => range(27, 31)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoverageProtectedTest', 'testPublicMethod'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     */
+    public function testGetLinesToBeCovered18()
+    {
+        if (!version_compare(PHP_VERSION, '5.3', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
+            TEST_FILES_PATH . 'NamespaceCoveredClass.php' => range(33, 37)
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NamespaceCoveragePublicTest', 'testPublicMethod'
           )
         );
     }

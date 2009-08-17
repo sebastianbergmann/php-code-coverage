@@ -60,7 +60,7 @@ class PHP_CodeCoverage_Util
     /**
      * @var string
      */
-    const REGEX = '/@covers[\s]+([\!<>\:\.\w]+)([\s]+<extended>)?/';
+    const REGEX = '/@covers[\s]+([A-Za-z!<>:.\\\\]+)([\s]+<extended>)?/';
 
     /**
      * @var array

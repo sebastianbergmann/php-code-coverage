@@ -70,6 +70,16 @@
      <file baseinstalldir="/" name="CoverageProtectedTest.php" role="test"/>
      <file baseinstalldir="/" name="CoveragePublicTest.php" role="test"/>
      <file baseinstalldir="/" name="CoveredClass.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageClassExtendedTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageClassTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageMethodTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageNotPrivateTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageNotProtectedTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageNotPublicTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoveragePrivateTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoverageProtectedTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoveragePublicTest.php" role="test"/>
+     <file baseinstalldir="/" name="NamespaceCoveredClass.php" role="test"/>
      <file baseinstalldir="/" name="source_with_ignore.php" role="test"/>
      <file baseinstalldir="/" name="source_without_ignore.php" role="test"/>
     </dir>

@@ -46,13 +46,16 @@
 
 require_once 'PHP/CodeCoverage.php';
 
-$path = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .
-        '_files' . DIRECTORY_SEPARATOR;
+if (!defined('TEST_FILES_PATH')) {
+    define(
+      'TEST_FILES_PATH',
+      dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .
+      '_files' . DIRECTORY_SEPARATOR
+    );
+}
 
-require_once $path . 'BankAccount.php';
-require_once $path . 'BankAccountTest.php';
-
-unset($path);
+require_once TEST_FILES_PATH . 'BankAccount.php';
+require_once TEST_FILES_PATH . 'BankAccountTest.php';
 
 /**
  * Tests for the PHP_CodeCoverage class.
@@ -140,19 +143,19 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
           array(
             'BankAccountTest::testBalanceIsInitiallyZero' => array(
               'executed' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1
                 )
               ),
               'dead' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                    9 => -2,
                   25 => -2,
                   32 => -2
                 )
               ),
               'executable' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                    8 => 1,
                   13 => -1,
                   14 => -1,
@@ -168,7 +171,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative' => array(
               'executed' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   29 => 1
                 )
               ),
@@ -177,7 +180,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative2' => array(
               'executed' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   22 => 1
                 )
               ),
@@ -186,7 +189,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
             ),
             'BankAccountTest::testDepositWithdrawMoney' => array(
               'executed' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                    8 => 1,
                   22 => 1,
                   24 => 1,
@@ -205,15 +208,12 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
 
     protected function setUpStub()
     {
-        $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .
-                '_files' . DIRECTORY_SEPARATOR . 'BankAccount.php';
-
         $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
         $stub->expects($this->any())
              ->method('stop')
              ->will($this->onConsecutiveCalls(
                array(
-                 $file => array(
+                 TEST_FILES_PATH . 'BankAccount.php' => array(
                     8 =>  1,
                     9 => -2,
                    13 => -1,
@@ -230,7 +230,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
                  )
                ),
                array(
-                 $file => array(
+                 TEST_FILES_PATH . 'BankAccount.php' => array(
                     8 => 1,
                    13 => 1,
                    16 => 1,
@@ -238,7 +238,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
                  )
                ),
                array(
-                 $file => array(
+                 TEST_FILES_PATH . 'BankAccount.php' => array(
                     8 => 1,
                    13 => 1,
                    16 => 1,
@@ -246,7 +246,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
                  )
                ),
                array(
-                 $file => array(
+                 TEST_FILES_PATH . 'BankAccount.php' => array(
                     8 => 1,
                    13 => 1,
                    14 => 1,

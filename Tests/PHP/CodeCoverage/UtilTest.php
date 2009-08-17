@@ -46,21 +46,24 @@
 
 require_once 'PHP/CodeCoverage/Util.php';
 
-$path = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-        '_files' . DIRECTORY_SEPARATOR;
+if (!defined('TEST_FILES_PATH')) {
+    define(
+      'TEST_FILES_PATH',
+      dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
+      '_files' . DIRECTORY_SEPARATOR
+    );
+}
 
-require_once $path . 'CoverageClassExtendedTest.php';
-require_once $path . 'CoverageClassTest.php';
-require_once $path . 'CoverageMethodTest.php';
-require_once $path . 'CoverageNotPrivateTest.php';
-require_once $path . 'CoverageNotProtectedTest.php';
-require_once $path . 'CoverageNotPublicTest.php';
-require_once $path . 'CoveragePrivateTest.php';
-require_once $path . 'CoverageProtectedTest.php';
-require_once $path . 'CoveragePublicTest.php';
-require_once $path . 'CoveredClass.php';
-
-unset($path);
+require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
+require_once TEST_FILES_PATH . 'CoverageClassTest.php';
+require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotPrivateTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotProtectedTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotPublicTest.php';
+require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
+require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
+require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
+require_once TEST_FILES_PATH . 'CoveredClass.php';
 
 /**
  * Tests for the PHP_CodeCoverage_Util class.
@@ -85,8 +88,9 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            array_merge(range(19, 36), range(2, 17))
+            TEST_FILES_PATH . 'CoveredClass.php' => array_merge(
+              range(19, 36), range(2, 17)
+            )
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageClassExtendedTest', 'testPublicMethod'
@@ -102,8 +106,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            range(19, 36)
+            TEST_FILES_PATH . 'CoveredClass.php' => range(19, 36)
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageClassTest', 'testPublicMethod'
@@ -119,8 +122,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            range(31, 35)
+            TEST_FILES_PATH . 'CoveredClass.php' => range(31, 35)
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageMethodTest', 'testPublicMethod'
@@ -136,8 +138,9 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            array_merge(range(25, 29), range(31, 35))
+            TEST_FILES_PATH . 'CoveredClass.php' => array_merge(
+              range(25, 29), range(31, 35)
+            )
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageNotPrivateTest', 'testPublicMethod'
@@ -153,8 +156,9 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            array_merge(range(21, 23), range(31, 35))
+            TEST_FILES_PATH . 'CoveredClass.php' => array_merge(
+              range(21, 23), range(31, 35)
+            )
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageNotProtectedTest', 'testPublicMethod'
@@ -170,8 +174,9 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            array_merge(range(21, 23), range(25, 29))
+            TEST_FILES_PATH . 'CoveredClass.php' => array_merge(
+              range(21, 23), range(25, 29)
+            )
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageNotPublicTest', 'testPublicMethod'
@@ -187,8 +192,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            range(21, 23)
+            TEST_FILES_PATH . 'CoveredClass.php' => range(21, 23)
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoveragePrivateTest', 'testPublicMethod'
@@ -204,8 +208,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            range(25, 29)
+            TEST_FILES_PATH . 'CoveredClass.php' => range(25, 29)
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoverageProtectedTest', 'testPublicMethod'
@@ -221,8 +224,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/CoveredClass.php' =>
-            range(31, 35)
+            TEST_FILES_PATH . 'CoveredClass.php' => range(31, 35)
           ),
           PHP_CodeCoverage_Util::getLinesToBeCovered(
             'CoveragePublicTest', 'testPublicMethod'
@@ -238,8 +240,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           array(3, 4, 5),
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
-            dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-            '_files' . DIRECTORY_SEPARATOR . 'source_with_ignore.php'
+            TEST_FILES_PATH . 'source_with_ignore.php'
           )
         );
     }
@@ -252,8 +253,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           array(),
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
-            dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-            '_files' . DIRECTORY_SEPARATOR . 'source_without_ignore.php'
+            TEST_FILES_PATH . 'source_without_ignore.php'
           )
         );
     }

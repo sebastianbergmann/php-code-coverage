@@ -101,6 +101,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeCovered($test, $lines)
     {
         if (strpos($test, 'Namespace') === 0) {
+            if (!version_compare(PHP_VERSION, '5.3', '>')) {
+                $this->markTestSkipped('PHP 5.3 (or later) is required.');
+            }
+
             $file = 'NamespaceCoveredClass.php';
         } else {
             $file = 'CoveredClass.php';

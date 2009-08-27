@@ -80,6 +80,11 @@ class PHP_CodeCoverage
     protected $storageType;
 
     /**
+     * @var boolean
+     */
+    protected $forceCoversAnnotation;
+
+    /**
      * @var mixed
      */
     protected $currentId;
@@ -111,8 +116,9 @@ class PHP_CodeCoverage
      * @param PHP_CodeCoverage_Driver $driver
      * @param PHP_CodeCoverage_Filter $filter
      * @param integer                 $storageType
+     * @param boolean                 $forceCoversAnnotation
      */
-    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE)
+    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE, $forceCoversAnnotation = FALSE)
     {
         if ($driver === NULL) {
             $driver = new PHP_CodeCoverage_Driver_Xdebug;
@@ -122,9 +128,10 @@ class PHP_CodeCoverage
             $filter = new PHP_CodeCoverage_Filter;
         }
 
-        $this->driver      = $driver;
-        $this->filter      = $filter;
-        $this->storageType = $storageType;
+        $this->driver                = $driver;
+        $this->filter                = $filter;
+        $this->storageType           = $storageType;
+        $this->forceCoversAnnotation = $forceCoversAnnotation;
 
         $this->clear();
     }
@@ -171,16 +178,6 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
-        $dead       = array();
-        $executable = array();
-
-        // Apply blacklist/whitelist filtering.
-        foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename)) {
-                unset($data[$filename]);
-            }
-        }
-
         // Process files that are covered for the first time.
         $newFiles = array_diff_key($data, $this->coveredFiles);
 
@@ -191,6 +188,9 @@ class PHP_CodeCoverage
             foreach (array_keys($newFiles) as $filename) {
                 $this->coveredFiles[$filename] = TRUE;
             }
+        } else {
+            $dead       = array();
+            $executable = array();
         }
 
         unset($newFiles);
@@ -200,31 +200,46 @@ class PHP_CodeCoverage
             $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
               get_class($id), $id->getName()
             );
+        } else {
+            $linesToBeCovered = array();
+        }
 
-            if (!empty($linesToBeCovered)) {
-                $data = array_intersect_key($data, $linesToBeCovered);
+        if (!empty($linesToBeCovered)) {
+            $data = array_intersect_key($data, $linesToBeCovered);
 
-                foreach (array_keys($data) as $filename) {
-                    $data[$filename] = array_intersect_key(
-                      $data[$filename], array_flip($linesToBeCovered[$filename])
-                    );
+            foreach (array_keys($data) as $filename) {
+                $data[$filename] = array_intersect_key(
+                  $data[$filename], array_flip($linesToBeCovered[$filename])
+                );
+            }
+        }
+
+        else if ($this->forceCoversAnnotation) {
+            $data = array();
+        }
+
+        // Apply blacklist/whitelist filtering.
+        foreach (array_keys($data) as $filename) {
+            if ($this->filter->isFiltered($filename)) {
+                unset($data[$filename]);
+            }
+        }
+
+        if (!empty($data)) {
+            if (is_object($id) && $this->storageType == self::STORAGE_ARRAY) {
+                if ($id instanceof PHPUnit_Framework_TestCase) {
+                    $id = get_class($id) . '::' . $id->getName();
                 }
             }
+
+            $this->data[$id] = array(
+              'executed'   => $this->getLinesByStatus($data, 1),
+              'dead'       => $dead,
+              'executable' => $executable,
+            );
+
+            $this->summary = array();
         }
-
-        if (is_object($id) && $this->storageType == self::STORAGE_ARRAY) {
-            if ($id instanceof PHPUnit_Framework_TestCase) {
-                $id = get_class($id) . '::' . $id->getName();
-            }
-        }
-
-        $this->data[$id] = array(
-          'executed'   => $this->getLinesByStatus($data, 1),
-          'dead'       => $dead,
-          'executable' => $executable,
-        );
-
-        $this->summary = array();
     }
 
     /**

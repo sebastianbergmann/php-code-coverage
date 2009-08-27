@@ -227,7 +227,7 @@ class PHP_CodeCoverage_Util
                           method_exists($className, $methodName))) {
                         throw new RuntimeException(
                           sprintf(
-                            'Trying to @cover not existing method "%s:%s".',
+                            'Trying to @cover not existing method "%s::%s".',
                             $className,
                             $methodName
                           )

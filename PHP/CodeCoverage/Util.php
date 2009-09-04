@@ -184,10 +184,12 @@ class PHP_CodeCoverage_Util
                 $classes = array($className);
 
                 foreach ($classes as $className) {
-                    if (!class_exists($className)) {
-                        throw new RuntimeException(
+                    if (!class_exists($className) &&
+                        !interface_exists($className)) {
+                        throw new PHPUnit_Framework_Exception(
                           sprintf(
-                            'Trying to @cover not existing class "%s".',
+                            'Trying to @cover not existing class or ' .
+                            'interface "%s".',
                             $className
                           )
                         );
@@ -223,9 +225,10 @@ class PHP_CodeCoverage_Util
                 $classes = array($className);
 
                 foreach ($classes as $className) {
-                    if (!(class_exists($className) &&
+                    if (!((class_exists($className) ||
+                           interface_exists($className)) &&
                           method_exists($className, $methodName))) {
-                        throw new RuntimeException(
+                        throw new PHPUnit_Framework_Exception(
                           sprintf(
                             'Trying to @cover not existing method "%s::%s".',
                             $className,
@@ -261,10 +264,12 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($classes as $className) {
-                if (!class_exists($className)) {
-                    throw new RuntimeException(
+                if (!class_exists($className) &&
+                    !interface_exists($className)) {
+                    throw new PHPUnit_Framework_Exception(
                       sprintf(
-                        'Trying to @cover not existing class "%s".',
+                        'Trying to @cover not existing class or ' .
+                        'interface "%s".',
                         $className
                       )
                     );

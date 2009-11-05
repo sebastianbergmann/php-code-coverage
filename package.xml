@@ -37,11 +37,6 @@
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
-     <dir name="Filter">
-      <file baseinstalldir="/" name="Iterator.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-     </dir>
      <file baseinstalldir="/" name="Driver.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
@@ -106,6 +101,11 @@
    <pearinstaller>
     <min>1.8.1</min>
    </pearinstaller>
+   <package>
+    <name>File_Iterator</name>
+    <channel>pear.phpunit.de</channel>
+    <min>1.0.0</min>
+   </package>
    <extension>
     <name>xdebug</name>
     <min>2.0.5</min>

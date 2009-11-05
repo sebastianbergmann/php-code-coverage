@@ -43,7 +43,7 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Filter/Iterator.php';
+require_once 'File/Iterator.php';
 
 /**
  * Filter for blacklisting and whitelisting of code coverage information.
@@ -290,18 +290,18 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Returns a PHP_CodeCoverage_Filter_Iterator that iterates
+     * Returns a File_Iterator that iterates
      * over all files in the given directory that have the
      * given suffix and prefix.
      *
      * @param  string       $directory
      * @param  array|string $suffixes
      * @param  array|string $prefixes
-     * @return PHP_CodeCoverage_Filter_Iterator
+     * @return File_Iterator
      */
     protected function getIterator($directory, $suffixes, $prefixes)
     {
-        return new PHP_CodeCoverage_Filter_Iterator(
+        return new File_Iterator(
           new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($directory)
           ),

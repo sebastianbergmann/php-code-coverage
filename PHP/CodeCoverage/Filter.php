@@ -292,6 +292,14 @@ class PHP_CodeCoverage_Filter
     /**
      * @return array
      */
+    public function getBlacklist()
+    {
+        return $this->blacklistedFiles;
+    }
+
+    /**
+     * @return array
+     */
     public function getWhitelist()
     {
         return $this->whitelistedFiles;

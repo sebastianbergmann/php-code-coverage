@@ -43,7 +43,7 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'File/Iterator.php';
+require_once 'File/Iterator/Factory.php';
 
 /**
  * Filter for blacklisting and whitelisting of code coverage information.
@@ -91,7 +91,9 @@ class PHP_CodeCoverage_Filter
     public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            $files = $this->getIterator($directory, $suffix, $prefix);
+            $files = File_Iterator_Factory::getFileIterator(
+              $directory, $suffix, $prefix
+            );
 
             foreach ($files as $file) {
                 $this->addFileToFilter($file->getPathName());
@@ -131,7 +133,9 @@ class PHP_CodeCoverage_Filter
     public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            $files = $this->getIterator($directory, $suffix, $prefix);
+            $files = File_Iterator_Factory::getFileIterator(
+              $directory, $suffix, $prefix
+            );
 
             foreach ($files as $file) {
                 $this->removeFileFromFilter($file->getPathName());
@@ -173,7 +177,9 @@ class PHP_CodeCoverage_Filter
     public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            $files = $this->getIterator($directory, $suffix, $prefix);
+            $files = File_Iterator_Factory::getFileIterator(
+              $directory, $suffix, $prefix
+            );
 
             foreach ($files as $file) {
                 $this->addFileToWhitelist($file->getPathName());
@@ -216,7 +222,9 @@ class PHP_CodeCoverage_Filter
     public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
     {
         if (file_exists($directory)) {
-            $files = $this->getIterator($directory, $suffix, $prefix);
+            $files = File_Iterator_Factory::getFileIterator(
+              $directory, $suffix, $prefix
+            );
 
             foreach ($files as $file) {
                 $this->removeFileFromWhitelist($file->getPathName());
@@ -287,27 +295,6 @@ class PHP_CodeCoverage_Filter
     public function getWhitelist()
     {
         return $this->whitelistedFiles;
-    }
-
-    /**
-     * Returns a File_Iterator that iterates
-     * over all files in the given directory that have the
-     * given suffix and prefix.
-     *
-     * @param  string       $directory
-     * @param  array|string $suffixes
-     * @param  array|string $prefixes
-     * @return File_Iterator
-     */
-    protected function getIterator($directory, $suffixes, $prefixes)
-    {
-        return new File_Iterator(
-          new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory)
-          ),
-          $suffixes,
-          $prefixes
-        );
     }
 }
 ?>

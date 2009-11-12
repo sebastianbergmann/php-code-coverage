@@ -104,7 +104,7 @@
    <package>
     <name>File_Iterator</name>
     <channel>pear.phpunit.de</channel>
-    <min>1.0.0</min>
+    <min>1.1.0</min>
    </package>
    <extension>
     <name>xdebug</name>

@@ -96,7 +96,7 @@ class PHP_CodeCoverage_Filter
             );
 
             foreach ($files as $file) {
-                $this->addFileToFilter($file->getPathName());
+                $this->addFileToBlacklist($file->getPathName());
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');

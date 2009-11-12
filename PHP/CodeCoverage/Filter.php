@@ -260,10 +260,10 @@ class PHP_CodeCoverage_Filter
      */
     public function isFile($filename)
     {
-        if (strpos($filename, 'eval()\'d code') ||
-            strpos($filename, 'runtime-created function') ||
-            strpos($filename, 'assert code') ||
-            strpos($filename, 'regexp code')) {
+        if (strpos($filename, 'eval()\'d code') !== FALSE ||
+            strpos($filename, 'runtime-created function') !== FALSE ||
+            strpos($filename, 'assert code') !== FALSE ||
+            strpos($filename, 'regexp code') !== FALSE) {
             return FALSE;
         }
 

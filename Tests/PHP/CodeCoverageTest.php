@@ -182,6 +182,22 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
           'data',
           $coverage
         );
+
+        return $coverage;
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getSummary
+     * @depends testCollect
+     */
+    public function testSummary(PHP_CodeCoverage $coverage)
+    {
+        $this->markTestIncomplete();
+
+        $this->assertEquals(
+          array(),
+          $coverage->getSummary()
+        );
     }
 
     protected function setUpStub()

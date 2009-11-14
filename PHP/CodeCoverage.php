@@ -184,7 +184,7 @@ class PHP_CodeCoverage
         unset($newFiles);
 
         // Apply @covers filtering.
-        if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
+        if ($id instanceof PHPUnit_Framework_TestCase) {
             $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
               get_class($id), $id->getName()
             );
@@ -214,7 +214,7 @@ class PHP_CodeCoverage
         }
 
         if (!empty($data)) {
-            if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
+            if ($id instanceof PHPUnit_Framework_TestCase) {
                 $id = get_class($id) . '::' . $id->getName();
             }
 

@@ -77,6 +77,245 @@ class PHP_CodeCoverage_Util
     );
 
     /**
+     * Counts LOC, CLOC, and NCLOC for a file.
+     *
+     * @param  string $filename
+     * @return array
+     */
+    public static function countLines($filename)
+    {
+        $buffer = file_get_contents($filename);
+        $loc    = substr_count($buffer, "\n");
+        $cloc   = 0;
+
+        foreach (token_get_all($buffer) as $i => $token) {
+            if (is_string($token)) {
+                continue;
+            }
+
+            list ($token, $value) = $token;
+
+            if ($token == T_COMMENT || $token == T_DOC_COMMENT) {
+                $cloc += substr_count($value, "\n") + 1;
+            }
+        }
+
+        return array('loc' => $loc, 'cloc' => $cloc, 'ncloc' => $loc - $cloc);
+    }
+
+    /**
+     * Returns information on the classes declared in a sourcefile.
+     *
+     * @param  string $filename
+     * @return array
+     */
+    public static function getClassesInFile($filename)
+    {
+        $tokens                     = token_get_all(
+                                        file_get_contents($filename)
+                                      );
+        $numTokens                  = count($tokens);
+        $classes                    = array();
+        $blocks                     = array();
+        $line                       = 1;
+        $currentBlock               = FALSE;
+        $currentNamespace           = FALSE;
+        $currentClass               = FALSE;
+        $currentFunction            = FALSE;
+        $currentFunctionStartLine   = FALSE;
+        $currentFunctionTokens      = array();
+        $currentDocComment          = FALSE;
+        $currentSignature           = FALSE;
+        $currentSignatureStartToken = FALSE;
+
+        for ($i = 0; $i < $numTokens; $i++) {
+            if ($currentFunction !== FALSE) {
+                $currentFunctionTokens[] = $tokens[$i];
+            }
+
+            if (is_string($tokens[$i])) {
+                if ($tokens[$i] == '{') {
+                    if ($currentBlock == T_CLASS) {
+                        $block = $currentClass;
+                    }
+
+                    else if ($currentBlock == T_FUNCTION) {
+                        $currentSignature = '';
+
+                        for ($j = $currentSignatureStartToken; $j < $i; $j++) {
+                            if (is_string($tokens[$j])) {
+                                $currentSignature .= $tokens[$j];
+                            } else {
+                                $currentSignature .= $tokens[$j][1];
+                            }
+                        }
+
+                        $currentSignature = trim($currentSignature);
+
+                        $block                      = $currentFunction;
+                        $currentSignatureStartToken = FALSE;
+                    }
+
+                    else {
+                        $block = FALSE;
+                    }
+
+                    array_push($blocks, $block);
+
+                    $currentBlock = FALSE;
+                }
+
+                else if ($tokens[$i] == '}') {
+                    $block = array_pop($blocks);
+
+                    if ($block !== FALSE && $block !== NULL) {
+                        if ($block == $currentFunction) {
+                            if ($currentDocComment !== FALSE) {
+                                $docComment        = $currentDocComment;
+                                $currentDocComment = FALSE;
+                            } else {
+                                $docComment = '';
+                            }
+
+                            $tmp = array(
+                              'docComment' => $docComment,
+                              'signature'  => $currentSignature,
+                              'startLine'  => $currentFunctionStartLine,
+                              'endLine'    => $line,
+                              'tokens'     => $currentFunctionTokens
+                            );
+
+                            if ($currentClass !== FALSE) {
+                                $classes[$currentClass]['methods'][$currentFunction] = $tmp;
+                            }
+
+                            $currentFunction          = FALSE;
+                            $currentFunctionStartLine = FALSE;
+                            $currentFunctionTokens    = array();
+                            $currentSignature         = FALSE;
+                        }
+
+                        else if ($block == $currentClass) {
+                            $classes[$currentClass]['endLine'] = $line;
+
+                            $currentClass          = FALSE;
+                            $currentClassStartLine = FALSE;
+                        }
+                    }
+                }
+
+                continue;
+            }
+
+            switch ($tokens[$i][0]) {
+                case T_NAMESPACE: {
+                    $currentNamespace = $tokens[$i+2][1];
+
+                    for ($j = $i+3; $j < $numTokens; $j += 2) {
+                        if ($tokens[$j][0] == T_NS_SEPARATOR) {
+                            $currentNamespace .= '\\' . $tokens[$j+1][1];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                break;
+
+                case T_CURLY_OPEN: {
+                    $currentBlock = T_CURLY_OPEN;
+                    array_push($blocks, $currentBlock);
+                }
+                break;
+
+                case T_DOLLAR_OPEN_CURLY_BRACES: {
+                    $currentBlock = T_DOLLAR_OPEN_CURLY_BRACES;
+                    array_push($blocks, $currentBlock);
+                }
+                break;
+
+                case T_CLASS: {
+                    $currentBlock = T_CLASS;
+
+                    if ($currentNamespace === FALSE) {
+                        $currentClass = $tokens[$i+2][1];
+                    } else {
+                        $currentClass = $currentNamespace . '\\' .
+                                        $tokens[$i+2][1];
+                    }
+
+                    if ($currentDocComment !== FALSE) {
+                        $docComment        = $currentDocComment;
+                        $currentDocComment = FALSE;
+                    } else {
+                        $docComment = '';
+                    }
+
+                    $classes[$currentClass] = array(
+                      'methods'    => array(),
+                      'docComment' => $docComment,
+                      'startLine'  => $line
+                    );
+                }
+                break;
+
+                case T_FUNCTION: {
+                    $currentBlock             = T_FUNCTION;
+                    $currentFunctionStartLine = $line;
+
+                    $done                       = FALSE;
+                    $currentSignatureStartToken = $i - 1;
+
+                    do {
+                        switch ($tokens[$currentSignatureStartToken][0]) {
+                            case T_ABSTRACT:
+                            case T_FINAL:
+                            case T_PRIVATE:
+                            case T_PUBLIC:
+                            case T_PROTECTED:
+                            case T_STATIC:
+                            case T_WHITESPACE: {
+                                $currentSignatureStartToken--;
+                            }
+                            break;
+
+                            default: {
+                                $currentSignatureStartToken++;
+                                $done = TRUE;
+                            }
+                        }
+                    }
+                    while (!$done);
+
+                    if (isset($tokens[$i+2][1])) {
+                        $functionName = $tokens[$i+2][1];
+                    }
+
+                    else if (isset($tokens[$i+3][1])) {
+                        $functionName = $tokens[$i+3][1];
+                    }
+
+                    if ($currentNamespace === FALSE) {
+                        $currentFunction = $functionName;
+                    } else {
+                        $currentFunction = $currentNamespace . '\\' .
+                                           $functionName;
+                    }
+                }
+                break;
+
+                case T_DOC_COMMENT: {
+                    $currentDocComment = $tokens[$i][1];
+                }
+                break;
+            }
+
+            $line += substr_count($tokens[$i][1], "\n");
+        }
+
+        return $classes;
+    }
+
+    /**
      * Returns the files and lines a test method wants to cover.
      *
      * @param  string $className
@@ -167,6 +406,72 @@ class PHP_CodeCoverage_Util
         }
 
         return self::$cache['getLinesToBeIgnored'][$filename];
+    }
+
+    /**
+     * Returns the package information of a user-defined class.
+     *
+     * @param  string $className
+     * @param  string $docComment
+     * @return array
+     */
+    public static function getPackageInformation($className, $docComment)
+    {
+        $result = array(
+          'namespace'   => '',
+          'fullPackage' => '',
+          'category'    => '',
+          'package'     => '',
+          'subpackage'  => ''
+        );
+
+        if (strpos($className, '\\') !== FALSE) {
+            $result['namespace'] = self::arrayToName(
+              explode('\\', $className)
+            );
+        }
+
+        if (preg_match('/@category[\s]+([\.\w]+)/', $docComment, $matches)) {
+            $result['category'] = $matches[1];
+        }
+
+        if (preg_match('/@package[\s]+([\.\w]+)/', $docComment, $matches)) {
+            $result['package']     = $matches[1];
+            $result['fullPackage'] = $matches[1];
+        }
+
+        if (preg_match('/@subpackage[\s]+([\.\w]+)/', $docComment, $matches)) {
+            $result['subpackage']   = $matches[1];
+            $result['fullPackage'] .= '.' . $matches[1];
+        }
+
+        if (empty($result['fullPackage'])) {
+            $result['fullPackage'] = self::arrayToName(
+              explode('_', str_replace('\\', '_', $className)), '.'
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the package information of a user-defined class.
+     *
+     * @param  array  $parts
+     * @param  string $join
+     * @return string
+     */
+    protected static function arrayToName(array $parts, $join = '\\')
+    {
+        $result = '';
+
+        if (count($parts) > 1) {
+            array_pop($parts);
+
+            $result = join($join, $parts);
+        }
+
+        return $result;
     }
 
     /**

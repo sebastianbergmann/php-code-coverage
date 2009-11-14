@@ -93,6 +93,9 @@
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
     </dir>
+    <file baseinstalldir="/" name="TestCase.php" role="test">
+     <tasks:replace from="@package_version@" to="version" type="package-info" />
+    </file>
    </dir>
   </dir>
  </contents>

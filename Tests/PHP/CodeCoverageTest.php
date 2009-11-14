@@ -54,6 +54,8 @@ if (!defined('TEST_FILES_PATH')) {
     );
 }
 
+require_once TEST_FILES_PATH . '../TestCase.php';
+
 require_once TEST_FILES_PATH . 'BankAccount.php';
 require_once TEST_FILES_PATH . 'BankAccountTest.php';
 
@@ -70,7 +72,7 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
  */
-class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
+class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
     /**
      * @covers PHP_CodeCoverage::__construct
@@ -104,7 +106,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
      */
     public function testCollect()
     {
-        $coverage = new PHP_CodeCoverage($this->setUpStub());
+        $coverage = new PHP_CodeCoverage($this->setUpXdebugStub());
 
         $coverage->start(
           new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
@@ -193,104 +195,6 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
         );
 
         return $coverage;
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getSummary
-     * @depends testCollect
-     */
-    public function testSummary(PHP_CodeCoverage $coverage)
-    {
-        $this->assertEquals(
-          array(
-            '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
-              8 => array(
-                0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              ),
-              9 => -2,
-              13 => -1,
-              14 => -1,
-              15 => -1,
-              16 => -1,
-              18 => -1,
-              22 => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              ),
-              24 => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney'
-              ),
-              25 => -2,
-              29 => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              ),
-              31 => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney'
-              ),
-              32 => -2
-            )
-          ),
-          $coverage->getSummary()
-        );
-    }
-
-    protected function setUpStub()
-    {
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
-        $stub->expects($this->any())
-             ->method('stop')
-             ->will($this->onConsecutiveCalls(
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 =>  1,
-                    9 => -2,
-                   13 => -1,
-                   14 => -1,
-                   15 => -1,
-                   16 => -1,
-                   18 => -1,
-                   22 => -1,
-                   24 => -1,
-                   25 => -2,
-                   29 => -1,
-                   31 => -1,
-                   32 => -2
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   16 => 1,
-                   29 => 1,
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   16 => 1,
-                   22 => 1,
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   14 => 1,
-                   15 => 1,
-                   18 => 1,
-                   22 => 1,
-                   24 => 1,
-                   29 => 1,
-                   31 => 1,
-                 )
-               )
-             ));
-
-        return $stub;
     }
 }
 ?>

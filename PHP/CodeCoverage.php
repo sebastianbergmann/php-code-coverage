@@ -251,6 +251,40 @@ class PHP_CodeCoverage
     public function getSummary()
     {
         if (empty($this->summary)) {
+            foreach ($this->data as $test => $coverage) {
+                foreach ($coverage['executed'] as $file => $lines) {
+                    foreach ($lines as $line => $flag) {
+                        if (isset($this->summary[$file][$line][0])) {
+                            $this->summary[$file][$line][] = $test;
+                        } else {
+                            $this->summary[$file][$line] = array($test);
+                        }
+                    }
+                }
+
+                foreach ($coverage['executable'] as $file => $lines) {
+                    foreach ($lines as $line => $flag) {
+                        if ($flag == -1 &&
+                            !isset($this->summary[$file][$line][0])) {
+                            $this->summary[$file][$line] = -1;
+                        }
+                    }
+                }
+
+                foreach ($coverage['dead'] as $file => $lines) {
+                    foreach ($lines as $line => $flag) {
+                        if (!isset($this->summary[$file][$line][0])) {
+                            $this->summary[$file][$line] = -2;
+                        }
+                    }
+                }
+            }
+
+            foreach ($this->summary as &$file) {
+                ksort($file);
+            }
+
+            ksort($this->summary);
         }
 
         return $this->summary;

@@ -201,10 +201,37 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
      */
     public function testSummary(PHP_CodeCoverage $coverage)
     {
-        $this->markTestIncomplete();
-
         $this->assertEquals(
-          array(),
+          array(
+            '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+              8 => array(
+                0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+                1 => 'BankAccountTest::testDepositWithdrawMoney'
+              ),
+              9 => -2,
+              13 => -1,
+              14 => -1,
+              15 => -1,
+              16 => -1,
+              18 => -1,
+              22 => array(
+                0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+                1 => 'BankAccountTest::testDepositWithdrawMoney'
+              ),
+              24 => array(
+                0 => 'BankAccountTest::testDepositWithdrawMoney'
+              ),
+              25 => -2,
+              29 => array(
+                0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+                1 => 'BankAccountTest::testDepositWithdrawMoney'
+              ),
+              31 => array(
+                0 => 'BankAccountTest::testDepositWithdrawMoney'
+              ),
+              32 => -2
+            )
+          ),
           $coverage->getSummary()
         );
     }

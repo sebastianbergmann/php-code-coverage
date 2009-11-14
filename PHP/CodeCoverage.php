@@ -105,9 +105,10 @@ class PHP_CodeCoverage
     /**
      * Constructor.
      *
-     * @param PHP_CodeCoverage_Driver $driver
-     * @param PHP_CodeCoverage_Filter $filter
-     * @param boolean                 $forceCoversAnnotation
+     * @param  PHP_CodeCoverage_Driver $driver
+     * @param  PHP_CodeCoverage_Filter $filter
+     * @param  boolean                 $forceCoversAnnotation
+     * @throws InvalidArgumentException
      */
     public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $forceCoversAnnotation = FALSE)
     {
@@ -117,6 +118,10 @@ class PHP_CodeCoverage
 
         if ($filter === NULL) {
             $filter = new PHP_CodeCoverage_Filter;
+        }
+
+        if (!is_bool($forceCoversAnnotation)) {
+            throw new InvalidArgumentException;
         }
 
         $this->driver                = $driver;

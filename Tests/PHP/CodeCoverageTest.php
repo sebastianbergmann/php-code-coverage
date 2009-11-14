@@ -88,6 +88,15 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::__construct
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructor2()
+    {
+        $coverage = new PHP_CodeCoverage(NULL, NULL, NULL);
+    }
+
+    /**
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append

@@ -37,6 +37,11 @@
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
+     <dir name="Report">
+      <file baseinstalldir="/" name="Clover.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
      <file baseinstalldir="/" name="Driver.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>

@@ -106,27 +106,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testCollect()
     {
-        $coverage = new PHP_CodeCoverage($this->setUpXdebugStub());
-
-        $coverage->start(
-          new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
-        );
-        $coverage->stop();
-
-        $coverage->start(new BankAccountTest(
-          'testBalanceCannotBecomeNegative')
-        );
-        $coverage->stop();
-
-        $coverage->start(
-          new BankAccountTest('testBalanceCannotBecomeNegative2')
-        );
-        $coverage->stop();
-
-        $coverage->start(
-          new BankAccountTest('testDepositWithdrawMoney')
-        );
-        $coverage->stop();
 
         $this->assertAttributeEquals(
           array(
@@ -191,17 +170,14 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             )
           ),
           'data',
-          $coverage
+          $this->getBankAccountCoverage()
         );
-
-        return $coverage;
     }
 
     /**
-     * @covers  PHP_CodeCoverage::getSummary
-     * @depends testCollect
+     * @covers PHP_CodeCoverage::getSummary
      */
-    public function testSummary(PHP_CodeCoverage $coverage)
+    public function testSummary()
     {
         $this->assertEquals(
           array(
@@ -234,7 +210,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
               32 => -2
             )
           ),
-          $coverage->getSummary()
+          $this->getBankAccountCoverage()->getSummary()
         );
     }
 }

@@ -61,9 +61,6 @@ require_once 'PHP/CodeCoverage/Util.php';
  */
 class PHP_CodeCoverage
 {
-    const STORAGE_ARRAY            = 0;
-    const STORAGE_SPLOBJECTSTORAGE = 1;
-
     /**
      * @var PHP_CodeCoverage_Driver
      */
@@ -75,14 +72,9 @@ class PHP_CodeCoverage
     protected $filter;
 
     /**
-     * @var integer
-     */
-    protected $storageType;
-
-    /**
      * @var boolean
      */
-    protected $forceCoversAnnotation;
+    protected $forceCoversAnnotation = FALSE;
 
     /**
      * @var mixed
@@ -94,31 +86,30 @@ class PHP_CodeCoverage
      *
      * @var array
      */
-    protected $coveredFiles;
+    protected $coveredFiles = array();
 
     /**
      * Raw code coverage data.
      *
-     * @var array|SplObjectStorage
+     * @var array
      */
-    protected $data;
+    protected $data = array();
 
     /**
      * Summarized code coverage data.
      *
      * @var array
      */
-    protected $summary;
+    protected $summary = array();
 
     /**
      * Constructor.
      *
      * @param PHP_CodeCoverage_Driver $driver
      * @param PHP_CodeCoverage_Filter $filter
-     * @param integer                 $storageType
      * @param boolean                 $forceCoversAnnotation
      */
-    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $storageType = self::STORAGE_SPLOBJECTSTORAGE, $forceCoversAnnotation = FALSE)
+    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $forceCoversAnnotation = FALSE)
     {
         if ($driver === NULL) {
             $driver = new PHP_CodeCoverage_Driver_Xdebug;
@@ -130,10 +121,7 @@ class PHP_CodeCoverage
 
         $this->driver                = $driver;
         $this->filter                = $filter;
-        $this->storageType           = $storageType;
         $this->forceCoversAnnotation = $forceCoversAnnotation;
-
-        $this->clear();
     }
 
     /**
@@ -226,10 +214,8 @@ class PHP_CodeCoverage
         }
 
         if (!empty($data)) {
-            if (is_object($id) && $this->storageType == self::STORAGE_ARRAY) {
-                if ($id instanceof PHPUnit_Framework_TestCase) {
-                    $id = get_class($id) . '::' . $id->getName();
-                }
+            if (is_object($id) && $id instanceof PHPUnit_Framework_TestCase) {
+                $id = get_class($id) . '::' . $id->getName();
             }
 
             $this->data[$id] = array(
@@ -270,19 +256,7 @@ class PHP_CodeCoverage
      */
     public function clear()
     {
-        switch ($this->storageType) {
-            case self::STORAGE_ARRAY: {
-                $this->data = array();
-            }
-            break;
-
-            case self::STORAGE_SPLOBJECTSTORAGE:
-            default: {
-                $this->data = new SplObjectStorage;
-            }
-            break;
-        }
-
+        $this->data         = array();
         $this->coveredFiles = array();
         $this->summary      = array();
         $this->currentId    = NULL;
@@ -363,20 +337,7 @@ class PHP_CodeCoverage
             }
         }
 
-        switch ($this->storageType) {
-            case self::STORAGE_ARRAY: {
-                $id = 'UNCOVERED_FILES_FROM_WHITELIST';
-            }
-            break;
-
-            case self::STORAGE_SPLOBJECTSTORAGE:
-            default: {
-                $id = new StdClass;
-            }
-            break;
-        }
-
-        $this->append($data, $id);
+        $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
     }
 }
 ?>

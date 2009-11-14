@@ -74,7 +74,6 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers PHP_CodeCoverage::__construct
-     * @covers PHP_CodeCoverage::clear
      * @covers PHP_CodeCoverage::filter
      */
     public function testConstructor()
@@ -86,25 +85,6 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertType('PHP_CodeCoverage_Filter', $coverage->filter());
-
-        $this->assertAttributeEquals(
-          PHP_CodeCoverage::STORAGE_SPLOBJECTSTORAGE, 'storageType', $coverage
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::__construct
-     * @covers PHP_CodeCoverage::clear
-     */
-    public function testConstructor2()
-    {
-        $coverage = new PHP_CodeCoverage(
-          NULL, NULL, PHP_CodeCoverage::STORAGE_ARRAY
-        );
-
-        $this->assertAttributeEquals(
-          PHP_CodeCoverage::STORAGE_ARRAY, 'storageType', $coverage
-        );
     }
 
     /**
@@ -115,9 +95,7 @@ class PHP_CodeCoverageTest extends PHPUnit_Framework_TestCase
      */
     public function testCollect()
     {
-        $coverage = new PHP_CodeCoverage(
-          $this->setUpStub(), NULL, PHP_CodeCoverage::STORAGE_ARRAY
-        );
+        $coverage = new PHP_CodeCoverage($this->setUpStub());
 
         $coverage->start(
           new BankAccountTest('testBalanceIsInitiallyZero'), TRUE

@@ -106,7 +106,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testCollect()
     {
-
         $this->assertAttributeEquals(
           array(
             'BankAccountTest::testBalanceIsInitiallyZero' => array(

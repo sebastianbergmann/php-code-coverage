@@ -87,6 +87,11 @@
     </dir>
     <dir name="PHP">
      <dir name="CodeCoverage">
+      <dir name="Report">
+       <file baseinstalldir="/" name="CloverTest.php" role="test">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
       <file baseinstalldir="/" name="FilterTest.php" role="test">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>

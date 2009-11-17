@@ -44,7 +44,7 @@
  */
 
 /**
- * Interface for code coverage drivers.
+ * Abstract base class for code coverage drivers.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -55,18 +55,34 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
  */
-interface PHP_CodeCoverage_Driver
+abstract class PHP_CodeCoverage_Driver
 {
+    /**
+     * @param array $codeCoverage
+     */
+    protected function filter(&$codeCoverage)
+    {
+        $dir = dirname(dirname(__FILE__));
+
+        foreach (array_keys($codeCoverage) as $file) {
+            if (strpos($file, $dir) === 0 ||
+                substr($file, -17) == 'File/Iterator.php' ||
+                substr($file, -25) == 'File/Iterator/Factory.php') {
+                unset($codeCoverage[$file]);
+            }
+        }
+    }
+
     /**
      * Start collection of code coverage information.
      */
-    public function start();
+    abstract public function start();
 
     /**
      * Stop collection of code coverage information.
      *
      * @return array
      */
-    public function stop();
+    abstract public function stop();
 }
 ?>

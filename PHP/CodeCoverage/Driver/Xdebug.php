@@ -57,7 +57,7 @@ require_once 'PHP/CodeCoverage/Driver.php';
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
  */
-class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
+class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
 {
     /**
      * Start collection of code coverage information.
@@ -76,6 +76,8 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     {
         $codeCoverage = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
+
+        $this->filter($codeCoverage);
 
         return $codeCoverage;
     }

@@ -77,32 +77,32 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter = new PHP_CodeCoverage_Filter;
 
         $this->files = array(
-          TEST_FILES_PATH . 'NotExistingCoveredElementTest.php',
-          TEST_FILES_PATH . 'NamespaceCoveredClass.php',
-          TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php',
-          TEST_FILES_PATH . 'CoverageClassTest.php',
-          TEST_FILES_PATH . 'NamespaceCoverageClassTest.php',
-          TEST_FILES_PATH . 'CoveragePrivateTest.php',
-          TEST_FILES_PATH . 'CoverageNotProtectedTest.php',
-          TEST_FILES_PATH . 'CoverageNoneTest.php',
-          TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php',
-          TEST_FILES_PATH . 'CoverageProtectedTest.php',
-          TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php',
           TEST_FILES_PATH . 'BankAccount.php',
-          TEST_FILES_PATH . 'CoveredClass.php',
-          TEST_FILES_PATH . 'CoverageNotPublicTest.php',
           TEST_FILES_PATH . 'BankAccountTest.php',
-          TEST_FILES_PATH . 'source_with_ignore.php',
-          TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php',
           TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
+          TEST_FILES_PATH . 'CoverageClassTest.php',
+          TEST_FILES_PATH . 'CoverageMethodTest.php',
+          TEST_FILES_PATH . 'CoverageNoneTest.php',
+          TEST_FILES_PATH . 'CoverageNotPrivateTest.php',
+          TEST_FILES_PATH . 'CoverageNotProtectedTest.php',
+          TEST_FILES_PATH . 'CoverageNotPublicTest.php',
+          TEST_FILES_PATH . 'CoveragePrivateTest.php',
+          TEST_FILES_PATH . 'CoverageProtectedTest.php',
+          TEST_FILES_PATH . 'CoveragePublicTest.php',
+          TEST_FILES_PATH . 'CoveredClass.php',
+          TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php',
+          TEST_FILES_PATH . 'NamespaceCoverageClassTest.php',
           TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php',
+          TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php',
+          TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php',
           TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php',
+          TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php',
           TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php',
           TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php',
-          TEST_FILES_PATH . 'CoverageNotPrivateTest.php',
-          TEST_FILES_PATH . 'CoverageMethodTest.php',
-          TEST_FILES_PATH . 'source_without_ignore.php',
-          TEST_FILES_PATH . 'CoveragePublicTest.php',
+          TEST_FILES_PATH . 'NamespaceCoveredClass.php',
+          TEST_FILES_PATH . 'NotExistingCoveredElementTest.php',
+          TEST_FILES_PATH . 'source_with_ignore.php',
+          TEST_FILES_PATH . 'source_without_ignore.php'
         );
     }
 
@@ -158,7 +158,10 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     {
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
 
-        $this->assertEquals($this->files, $this->filter->getBlacklist());
+        $blacklist = $this->filter->getBlacklist();
+        sort($blacklist);
+
+        $this->assertEquals($this->files, $blacklist);
     }
 
     /**
@@ -245,7 +248,10 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     {
         $this->filter->addDirectoryToWhitelist(TEST_FILES_PATH);
 
-        $this->assertEquals($this->files, $this->filter->getWhitelist());
+        $whitelist = $this->filter->getWhitelist();
+        sort($whitelist);
+
+        $this->assertEquals($this->files, $whitelist);
     }
 
     /**

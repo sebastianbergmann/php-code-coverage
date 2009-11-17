@@ -103,6 +103,13 @@ class PHP_CodeCoverage
     protected $summary = array();
 
     /**
+     * Test data.
+     *
+     * @var array
+     */
+    protected $tests = array();
+
+    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver $driver
@@ -220,7 +227,9 @@ class PHP_CodeCoverage
 
         if (!empty($data)) {
             if ($id instanceof PHPUnit_Framework_TestCase) {
-                $id = get_class($id) . '::' . $id->getName();
+                $status           = $id->getStatus();
+                $id               = get_class($id) . '::' . $id->getName();
+                $this->tests[$id] = $status;
             }
 
             $this->data[$id] = array(

@@ -178,6 +178,18 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
+        $dir = dirname(__FILE__);
+
+        foreach (array_keys($data) as $file) {
+            if (strpos($file, $dir) === 0 ||
+                substr($file, -17) == 'File/Iterator.php' ||
+                substr($file, -25) == 'File/Iterator/Factory.php') {
+                unset($data[$file]);
+            }
+        }
+
+        unset($dir, $file);
+
         // Process files that are covered for the first time.
         $newFiles = array_diff_key($data, $this->coveredFiles);
 

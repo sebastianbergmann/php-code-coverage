@@ -46,9 +46,7 @@
 require_once 'PHP/CodeCoverage.php';
 
 /**
- * Generates an XML logfile with code coverage information using the
- * Clover format "documented" at
- * http://svn.atlassian.com/svn/public/contrib/bamboo/bamboo-coverage-plugin/trunk/src/test/resources/test-clover-report.xml
+ * Generates a Clover XML logfile from an PHP_CodeCoverage object.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -62,8 +60,8 @@ require_once 'PHP/CodeCoverage.php';
 class PHP_CodeCoverage_Report_Clover
 {
     /**
-     * @param  string $filename
-     * @param  string $name
+     * @param  PHP_CodeCoverage $coverage
+     * @param  string           $name
      * @return string
      */
     public function process(PHP_CodeCoverage $coverage, $name = NULL)

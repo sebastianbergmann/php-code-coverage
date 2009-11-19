@@ -279,9 +279,14 @@ class PHP_CodeCoverage
                             $this->summary[$file][$line] = array();
                         }
 
+                        if (isset($this->tests[$test])) {
+                            $status = $this->tests[$test];
+                        } else {
+                            $status = NULL;
+                        }
+
                         $this->summary[$file][$line][] = array(
-                          'id'     => $test,
-                          'status' => $this->tests[$test]
+                          'id' => $test, 'status' => $status
                         );
                     }
                 }

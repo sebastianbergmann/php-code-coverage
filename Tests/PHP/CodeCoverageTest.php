@@ -182,8 +182,14 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           array(
             '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
               8 => array(
-                0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
+                0 => array(
+                  'id'     => 'BankAccountTest::testBalanceIsInitiallyZero',
+                  'status' => NULL
+                ),
+                1 => array(
+                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
+                  'status' => NULL
+                )
               ),
               9 => -2,
               13 => -1,
@@ -192,19 +198,37 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
               16 => -1,
               18 => -1,
               22 => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
+                0 => array(
+                  'id'     => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+                  'status' => NULL
+                ),
+                1 => array(
+                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
+                  'status' => NULL
+                )
               ),
               24 => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney'
+                0 => array(
+                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
+                  'status' => NULL
+                )
               ),
               25 => -2,
               29 => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
+                0 => array(
+                  'id'     => 'BankAccountTest::testBalanceCannotBecomeNegative',
+                  'status' => NULL
+                ),
+                1 => array(
+                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
+                  'status' => NULL
+                )
               ),
               31 => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney'
+                0 => array(
+                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
+                  'status' => NULL
+                )
               ),
               32 => -2
             )

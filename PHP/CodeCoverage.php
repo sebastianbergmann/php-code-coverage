@@ -275,11 +275,14 @@ class PHP_CodeCoverage
             foreach ($this->data as $test => $coverage) {
                 foreach ($coverage['executed'] as $file => $lines) {
                     foreach ($lines as $line => $flag) {
-                        if (isset($this->summary[$file][$line][0])) {
-                            $this->summary[$file][$line][] = $test;
-                        } else {
-                            $this->summary[$file][$line] = array($test);
+                        if (!isset($this->summary[$file][$line][0])) {
+                            $this->summary[$file][$line] = array();
                         }
+
+                        $this->summary[$file][$line][] = array(
+                          'id'     => $test,
+                          'status' => $this->tests[$test]
+                        );
                     }
                 }
 

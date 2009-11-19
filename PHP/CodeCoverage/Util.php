@@ -66,7 +66,8 @@ class PHP_CodeCoverage_Util
      * @var array
      */
     protected static $cache = array(
-      'getLinesToBeIgnored' => array()
+      'classesFunctionsCache' => array(),
+      'getLinesToBeIgnored'   => array()
     );
 
     /**
@@ -75,6 +76,74 @@ class PHP_CodeCoverage_Util
     protected static $templateMethods = array(
       'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
     );
+
+    /**
+     * Builds an array representation of the directory structure.
+     *
+     * For instance,
+     *
+     * <code>
+     * Array
+     * (
+     *     [Money.php] => Array
+     *         (
+     *             ...
+     *         )
+     *
+     *     [MoneyBag.php] => Array
+     *         (
+     *             ...
+     *         )
+     * )
+     * </code>
+     *
+     * is transformed into
+     *
+     * <code>
+     * Array
+     * (
+     *     [.] => Array
+     *         (
+     *             [Money.php] => Array
+     *                 (
+     *                     ...
+     *                 )
+     *
+     *             [MoneyBag.php] => Array
+     *                 (
+     *                     ...
+     *                 )
+     *         )
+     * )
+     * </code>
+     *
+     * @param  array $files
+     * @return array
+     */
+    public static function buildDirectoryStructure($files)
+    {
+        $result = array();
+
+        foreach ($files as $path => $file) {
+            $path    = explode('/', $path);
+            $pointer = &$result;
+            $max     = count($path);
+
+            for ($i = 0; $i < $max; $i++) {
+                if ($i == ($max - 1)) {
+                    $type = '/f';
+                } else {
+                    $type = '';
+                }
+
+                $pointer = &$pointer[$path[$i] . $type];
+            }
+
+            $pointer = $file;
+        }
+
+        return $result;
+    }
 
     /**
      * Counts LOC, CLOC, and NCLOC for a file.
@@ -104,6 +173,29 @@ class PHP_CodeCoverage_Util
     }
 
     /**
+     * @param  string $directory
+     * @return string
+     * @throws RuntimeException
+     */
+    public static function getDirectory($directory)
+    {
+        if (substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
+            $directory .= DIRECTORY_SEPARATOR;
+        }
+
+        if (is_dir($directory) || mkdir($directory, 0777, TRUE)) {
+            return $directory;
+        } else {
+            throw new RuntimeException(
+              sprintf(
+                'Directory "%s" does not exist.',
+                $directory
+              )
+            );
+        }
+    }
+
+    /**
      * Returns information on the classes declared in a sourcefile.
      *
      * @param  string $filename
@@ -111,208 +203,26 @@ class PHP_CodeCoverage_Util
      */
     public static function getClassesInFile($filename)
     {
-        $tokens                     = token_get_all(
-                                        file_get_contents($filename)
-                                      );
-        $numTokens                  = count($tokens);
-        $classes                    = array();
-        $blocks                     = array();
-        $line                       = 1;
-        $currentBlock               = FALSE;
-        $currentNamespace           = FALSE;
-        $currentClass               = FALSE;
-        $currentFunction            = FALSE;
-        $currentFunctionStartLine   = FALSE;
-        $currentFunctionTokens      = array();
-        $currentDocComment          = FALSE;
-        $currentSignature           = FALSE;
-        $currentSignatureStartToken = FALSE;
-
-        for ($i = 0; $i < $numTokens; $i++) {
-            if ($currentFunction !== FALSE) {
-                $currentFunctionTokens[] = $tokens[$i];
-            }
-
-            if (is_string($tokens[$i])) {
-                if ($tokens[$i] == '{') {
-                    if ($currentBlock == T_CLASS) {
-                        $block = $currentClass;
-                    }
-
-                    else if ($currentBlock == T_FUNCTION) {
-                        $currentSignature = '';
-
-                        for ($j = $currentSignatureStartToken; $j < $i; $j++) {
-                            if (is_string($tokens[$j])) {
-                                $currentSignature .= $tokens[$j];
-                            } else {
-                                $currentSignature .= $tokens[$j][1];
-                            }
-                        }
-
-                        $currentSignature = trim($currentSignature);
-
-                        $block                      = $currentFunction;
-                        $currentSignatureStartToken = FALSE;
-                    }
-
-                    else {
-                        $block = FALSE;
-                    }
-
-                    array_push($blocks, $block);
-
-                    $currentBlock = FALSE;
-                }
-
-                else if ($tokens[$i] == '}') {
-                    $block = array_pop($blocks);
-
-                    if ($block !== FALSE && $block !== NULL) {
-                        if ($block == $currentFunction) {
-                            if ($currentDocComment !== FALSE) {
-                                $docComment        = $currentDocComment;
-                                $currentDocComment = FALSE;
-                            } else {
-                                $docComment = '';
-                            }
-
-                            $tmp = array(
-                              'docComment' => $docComment,
-                              'signature'  => $currentSignature,
-                              'startLine'  => $currentFunctionStartLine,
-                              'endLine'    => $line,
-                              'tokens'     => $currentFunctionTokens
-                            );
-
-                            if ($currentClass !== FALSE) {
-                                $classes[$currentClass]['methods'][$currentFunction] = $tmp;
-                            }
-
-                            $currentFunction          = FALSE;
-                            $currentFunctionStartLine = FALSE;
-                            $currentFunctionTokens    = array();
-                            $currentSignature         = FALSE;
-                        }
-
-                        else if ($block == $currentClass) {
-                            $classes[$currentClass]['endLine'] = $line;
-
-                            $currentClass          = FALSE;
-                            $currentClassStartLine = FALSE;
-                        }
-                    }
-                }
-
-                continue;
-            }
-
-            switch ($tokens[$i][0]) {
-                case T_NAMESPACE: {
-                    $currentNamespace = $tokens[$i+2][1];
-
-                    for ($j = $i+3; $j < $numTokens; $j += 2) {
-                        if ($tokens[$j][0] == T_NS_SEPARATOR) {
-                            $currentNamespace .= '\\' . $tokens[$j+1][1];
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                break;
-
-                case T_CURLY_OPEN: {
-                    $currentBlock = T_CURLY_OPEN;
-                    array_push($blocks, $currentBlock);
-                }
-                break;
-
-                case T_DOLLAR_OPEN_CURLY_BRACES: {
-                    $currentBlock = T_DOLLAR_OPEN_CURLY_BRACES;
-                    array_push($blocks, $currentBlock);
-                }
-                break;
-
-                case T_CLASS: {
-                    $currentBlock = T_CLASS;
-
-                    if ($currentNamespace === FALSE) {
-                        $currentClass = $tokens[$i+2][1];
-                    } else {
-                        $currentClass = $currentNamespace . '\\' .
-                                        $tokens[$i+2][1];
-                    }
-
-                    if ($currentDocComment !== FALSE) {
-                        $docComment        = $currentDocComment;
-                        $currentDocComment = FALSE;
-                    } else {
-                        $docComment = '';
-                    }
-
-                    $classes[$currentClass] = array(
-                      'methods'    => array(),
-                      'docComment' => $docComment,
-                      'startLine'  => $line
-                    );
-                }
-                break;
-
-                case T_FUNCTION: {
-                    $currentBlock             = T_FUNCTION;
-                    $currentFunctionStartLine = $line;
-
-                    $done                       = FALSE;
-                    $currentSignatureStartToken = $i - 1;
-
-                    do {
-                        switch ($tokens[$currentSignatureStartToken][0]) {
-                            case T_ABSTRACT:
-                            case T_FINAL:
-                            case T_PRIVATE:
-                            case T_PUBLIC:
-                            case T_PROTECTED:
-                            case T_STATIC:
-                            case T_WHITESPACE: {
-                                $currentSignatureStartToken--;
-                            }
-                            break;
-
-                            default: {
-                                $currentSignatureStartToken++;
-                                $done = TRUE;
-                            }
-                        }
-                    }
-                    while (!$done);
-
-                    if (isset($tokens[$i+2][1])) {
-                        $functionName = $tokens[$i+2][1];
-                    }
-
-                    else if (isset($tokens[$i+3][1])) {
-                        $functionName = $tokens[$i+3][1];
-                    }
-
-                    if ($currentNamespace === FALSE) {
-                        $currentFunction = $functionName;
-                    } else {
-                        $currentFunction = $currentNamespace . '\\' .
-                                           $functionName;
-                    }
-                }
-                break;
-
-                case T_DOC_COMMENT: {
-                    $currentDocComment = $tokens[$i][1];
-                }
-                break;
-            }
-
-            $line += substr_count($tokens[$i][1], "\n");
+        if (!isset(self::$cache['classesFunctionsCache'][$filename])) {
+            self::parseFile($filename);
         }
 
-        return $classes;
+        return self::$cache['classesFunctionsCache'][$filename]['classes'];
+    }
+
+    /**
+     * Returns information on the functions declared in a sourcefile.
+     *
+     * @param  string $filename
+     * @return array
+     */
+    public static function getFunctionsInFile($filename)
+    {
+        if (!isset(self::$cache['classesFunctionsCache'][$filename])) {
+            self::parseFile($filename);
+        }
+
+        return self::$cache['classesFunctionsCache'][$filename]['functions'];
     }
 
     /**
@@ -455,6 +365,123 @@ class PHP_CodeCoverage_Util
     }
 
     /**
+     * Returns a filesystem safe version of the passed filename.
+     * This function does not operate on full paths, just filenames.
+     *
+     * @param  string $filename
+     * @return string
+     * @author Michael Lively Jr. <m@digitalsandwich.com>
+     */
+    public static function getSafeFilename($filename)
+    {
+        /* characters allowed: A-Z, a-z, 0-9, _ and . */
+        return preg_replace('#[^\w.]#', '_', $filename);
+    }
+
+    /**
+     * Reduces the paths by cutting the longest common start path.
+     *
+     * For instance,
+     *
+     * <code>
+     * Array
+     * (
+     *     [/home/sb/Money/Money.php] => Array
+     *         (
+     *             ...
+     *         )
+     *
+     *     [/home/sb/Money/MoneyBag.php] => Array
+     *         (
+     *             ...
+     *         )
+     * )
+     * </code>
+     *
+     * is reduced to
+     *
+     * <code>
+     * Array
+     * (
+     *     [Money.php] => Array
+     *         (
+     *             ...
+     *         )
+     *
+     *     [MoneyBag.php] => Array
+     *         (
+     *             ...
+     *         )
+     * )
+     * </code>
+     *
+     * @param  array $files
+     * @return string
+     */
+    public static function reducePaths(&$files)
+    {
+        if (empty($files)) {
+            return '.';
+        }
+
+        $commonPath = '';
+        $paths      = array_keys($files);
+
+        if (count($files) == 1) {
+            $commonPath                 = dirname($paths[0]);
+            $files[basename($paths[0])] = $files[$paths[0]];
+
+            unset($files[$paths[0]]);
+
+            return $commonPath;
+        }
+
+        $max = count($paths);
+
+        for ($i = 0; $i < $max; $i++) {
+            $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
+
+            if (empty($paths[$i][0])) {
+                $paths[$i][0] = DIRECTORY_SEPARATOR;
+            }
+        }
+
+        $done = FALSE;
+        $max  = count($paths);
+
+        while (!$done) {
+            for ($i = 0; $i < $max - 1; $i++) {
+                if (!isset($paths[$i][0]) ||
+                    !isset($paths[$i+1][0]) ||
+                    $paths[$i][0] != $paths[$i+1][0]) {
+                    $done = TRUE;
+                    break;
+                }
+            }
+
+            if (!$done) {
+                $commonPath .= $paths[0][0] . (($paths[0][0] != DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '');
+
+                for ($i = 0; $i < $max; $i++) {
+                    array_shift($paths[$i]);
+                }
+            }
+        }
+
+        $original = array_keys($files);
+        $max      = count($original);
+
+        for ($i = 0; $i < $max; $i++) {
+            $files[join('/', $paths[$i])] = $files[$original[$i]];
+            unset($files[$original[$i]]);
+        }
+
+        ksort($files);
+
+        return $commonPath;
+    }
+
+    /**
      * Returns the package information of a user-defined class.
      *
      * @param  array  $parts
@@ -475,6 +502,220 @@ class PHP_CodeCoverage_Util
     }
 
     /**
+     * Parses a file for class, method, and function information.
+     *
+     * @param string $filename
+     */
+    protected static function parseFile($filename)
+    {
+        self::$cache['classesFunctionsCache'][$filename] = array(
+          'classes' => array(), 'functions' => array()
+        );
+
+        $tokens                     = token_get_all(
+                                        file_get_contents($filename)
+                                      );
+        $numTokens                  = count($tokens);
+        $blocks                     = array();
+        $line                       = 1;
+        $currentBlock               = FALSE;
+        $currentNamespace           = FALSE;
+        $currentClass               = FALSE;
+        $currentFunction            = FALSE;
+        $currentFunctionStartLine   = FALSE;
+        $currentFunctionTokens      = array();
+        $currentDocComment          = FALSE;
+        $currentSignature           = FALSE;
+        $currentSignatureStartToken = FALSE;
+
+        for ($i = 0; $i < $numTokens; $i++) {
+            if ($currentFunction !== FALSE) {
+                $currentFunctionTokens[] = $tokens[$i];
+            }
+
+            if (is_string($tokens[$i])) {
+                if ($tokens[$i] == '{') {
+                    if ($currentBlock == T_CLASS) {
+                        $block = $currentClass;
+                    }
+
+                    else if ($currentBlock == T_FUNCTION) {
+                        $currentSignature = '';
+
+                        for ($j = $currentSignatureStartToken; $j < $i; $j++) {
+                            if (is_string($tokens[$j])) {
+                                $currentSignature .= $tokens[$j];
+                            } else {
+                                $currentSignature .= $tokens[$j][1];
+                            }
+                        }
+
+                        $currentSignature = trim($currentSignature);
+
+                        $block                      = $currentFunction;
+                        $currentSignatureStartToken = FALSE;
+                    }
+
+                    else {
+                        $block = FALSE;
+                    }
+
+                    array_push($blocks, $block);
+
+                    $currentBlock = FALSE;
+                }
+
+                else if ($tokens[$i] == '}') {
+                    $block = array_pop($blocks);
+
+                    if ($block !== FALSE && $block !== NULL) {
+                        if ($block == $currentFunction) {
+                            if ($currentDocComment !== FALSE) {
+                                $docComment        = $currentDocComment;
+                                $currentDocComment = FALSE;
+                            } else {
+                                $docComment = '';
+                            }
+
+                            $tmp = array(
+                              'docComment' => $docComment,
+                              'signature'  => $currentSignature,
+                              'startLine'  => $currentFunctionStartLine,
+                              'endLine'    => $line,
+                              'tokens'     => $currentFunctionTokens
+                            );
+
+                            if ($currentClass === FALSE) {
+                                self::$cache['classesFunctionsCache'][$filename]['functions'][$currentFunction] = $tmp;
+                            } else {
+                                self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass]['methods'][$currentFunction] = $tmp;
+                            }
+
+                            $currentFunction          = FALSE;
+                            $currentFunctionStartLine = FALSE;
+                            $currentFunctionTokens    = array();
+                            $currentSignature         = FALSE;
+                        }
+
+                        else if ($block == $currentClass) {
+                            self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass]['endLine'] = $line;
+
+                            $currentClass          = FALSE;
+                            $currentClassStartLine = FALSE;
+                        }
+                    }
+                }
+
+                continue;
+            }
+
+            switch ($tokens[$i][0]) {
+                case T_NAMESPACE: {
+                    $currentNamespace = $tokens[$i+2][1];
+
+                    for ($j = $i+3; $j < $numTokens; $j += 2) {
+                        if ($tokens[$j][0] == T_NS_SEPARATOR) {
+                            $currentNamespace .= '\\' . $tokens[$j+1][1];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                break;
+
+                case T_CURLY_OPEN: {
+                    $currentBlock = T_CURLY_OPEN;
+                    array_push($blocks, $currentBlock);
+                }
+                break;
+
+                case T_DOLLAR_OPEN_CURLY_BRACES: {
+                    $currentBlock = T_DOLLAR_OPEN_CURLY_BRACES;
+                    array_push($blocks, $currentBlock);
+                }
+                break;
+
+                case T_CLASS: {
+                    $currentBlock = T_CLASS;
+
+                    if ($currentNamespace === FALSE) {
+                        $currentClass = $tokens[$i+2][1];
+                    } else {
+                        $currentClass = $currentNamespace . '\\' .
+                                        $tokens[$i+2][1];
+                    }
+
+                    if ($currentDocComment !== FALSE) {
+                        $docComment        = $currentDocComment;
+                        $currentDocComment = FALSE;
+                    } else {
+                        $docComment = '';
+                    }
+
+                    self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass] = array(
+                      'methods'    => array(),
+                      'docComment' => $docComment,
+                      'startLine'  => $line
+                    );
+                }
+                break;
+
+                case T_FUNCTION: {
+                    $currentBlock             = T_FUNCTION;
+                    $currentFunctionStartLine = $line;
+
+                    $done                       = FALSE;
+                    $currentSignatureStartToken = $i - 1;
+
+                    do {
+                        switch ($tokens[$currentSignatureStartToken][0]) {
+                            case T_ABSTRACT:
+                            case T_FINAL:
+                            case T_PRIVATE:
+                            case T_PUBLIC:
+                            case T_PROTECTED:
+                            case T_STATIC:
+                            case T_WHITESPACE: {
+                                $currentSignatureStartToken--;
+                            }
+                            break;
+
+                            default: {
+                                $currentSignatureStartToken++;
+                                $done = TRUE;
+                            }
+                        }
+                    }
+                    while (!$done);
+
+                    if (isset($tokens[$i+2][1])) {
+                        $functionName = $tokens[$i+2][1];
+                    }
+
+                    else if (isset($tokens[$i+3][1])) {
+                        $functionName = $tokens[$i+3][1];
+                    }
+
+                    if ($currentNamespace === FALSE) {
+                        $currentFunction = $functionName;
+                    } else {
+                        $currentFunction = $currentNamespace . '\\' .
+                                           $functionName;
+                    }
+                }
+                break;
+
+                case T_DOC_COMMENT: {
+                    $currentDocComment = $tokens[$i][1];
+                }
+                break;
+            }
+
+            $line += substr_count($tokens[$i][1], "\n");
+        }
+    }
+
+    /**
      * @param  string $coveredElement
      * @return array
      */
@@ -491,7 +732,7 @@ class PHP_CodeCoverage_Util
                 foreach ($classes as $className) {
                     if (!class_exists($className) &&
                         !interface_exists($className)) {
-                        throw new PHPUnit_Framework_Exception(
+                        throw new RuntimeException(
                           sprintf(
                             'Trying to @cover not existing class or ' .
                             'interface "%s".',
@@ -533,7 +774,7 @@ class PHP_CodeCoverage_Util
                     if (!((class_exists($className) ||
                            interface_exists($className)) &&
                           method_exists($className, $methodName))) {
-                        throw new PHPUnit_Framework_Exception(
+                        throw new RuntimeException(
                           sprintf(
                             'Trying to @cover not existing method "%s::%s".',
                             $className,
@@ -571,7 +812,7 @@ class PHP_CodeCoverage_Util
             foreach ($classes as $className) {
                 if (!class_exists($className) &&
                     !interface_exists($className)) {
-                    throw new PHPUnit_Framework_Exception(
+                    throw new RuntimeException(
                       sprintf(
                         'Trying to @cover not existing class or ' .
                         'interface "%s".',

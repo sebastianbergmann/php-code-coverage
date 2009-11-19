@@ -38,6 +38,38 @@
       </file>
      </dir>
      <dir name="Report">
+      <dir name="HTML">
+       <dir name="Node">
+        <file baseinstalldir="/" name="Directory.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="File.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <file baseinstalldir="/" name="Node.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <dir name="Template">
+        <file baseinstalldir="/" name="butter.png" role="php" />
+        <file baseinstalldir="/" name="chameleon.png" role="php" />
+        <file baseinstalldir="/" name="close12_1.gif" role="php" />
+        <file baseinstalldir="/" name="container.css" role="php" />
+        <file baseinstalldir="/" name="container-min.js" role="php" />
+        <file baseinstalldir="/" name="directory.html.dist" role="php" />
+        <file baseinstalldir="/" name="file.html.dist" role="php" />
+        <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
+        <file baseinstalldir="/" name="glass.png" role="php" />
+        <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
+        <file baseinstalldir="/" name="file_item.html.dist" role="php" />
+        <file baseinstalldir="/" name="method_item.html.dist" role="php" />
+        <file baseinstalldir="/" name="scarlet_red.png" role="php" />
+        <file baseinstalldir="/" name="snow.png" role="php" />
+        <file baseinstalldir="/" name="style.css" role="php" />
+        <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
+        <file baseinstalldir="/" name="yui_item.js" role="php" />
+       </dir>
+      </dir>
       <file baseinstalldir="/" name="Clover.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
@@ -121,6 +153,11 @@
     <name>File_Iterator</name>
     <channel>pear.phpunit.de</channel>
     <min>1.1.0</min>
+   </package>
+   <package>
+    <name>Text_Template</name>
+    <channel>pear.phpunit.de</channel>
+    <min>1.0.0</min>
    </package>
    <extension>
     <name>xdebug</name>

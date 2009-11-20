@@ -61,10 +61,11 @@ class PHP_CodeCoverage_Report_Clover
 {
     /**
      * @param  PHP_CodeCoverage $coverage
+     * @param  string           $target
      * @param  string           $name
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $name = NULL)
+    public function process(PHP_CodeCoverage $coverage, $target = NULL, $name = NULL)
     {
         $time = time();
 
@@ -427,7 +428,11 @@ class PHP_CodeCoverage_Report_Clover
 
         $project->appendChild($metrics);
 
-        return $document->saveXML();
+        if ($target !== NULL) {
+            return $document->save($target);
+        } else {
+            return $document->saveXML();
+        }
     }
 }
 ?>

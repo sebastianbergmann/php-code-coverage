@@ -159,11 +159,13 @@
     <channel>pear.phpunit.de</channel>
     <min>1.0.0</min>
    </package>
+  </required>
+  <optional>
    <extension>
     <name>xdebug</name>
     <min>2.0.5</min>
    </extension>
-  </required>
+  </optional>
  </dependencies>
  <phprelease/>
 </package>

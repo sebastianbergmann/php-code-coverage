@@ -372,7 +372,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             }
 
             $lines .= sprintf(
-              '<span class="lineNum" id="container%d"><a name="%d"></a><a href="#%d" id="line%d">%8d</a> </span>%s%s%s' . "\n",
+              '<span class="lineNum" id="container%d"><a name="%d"></a>'.
+              '<a href="#%d" id="line%d">%8d</a> </span>%s%s%s' . "\n",
 
               $i,
               $i,
@@ -417,7 +418,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 ),
                 'numClasses'           => 1,
                 'numTestedClasses'     => $numTestedClasses,
-                'testedClassesPercent' => sprintf('%01.2f', $testedClassesPercent),
+                'testedClassesPercent' => sprintf(
+                                            '%01.2f', $testedClassesPercent
+                                          ),
                 'numMethods'           => $numMethods,
                 'numTestedMethods'     => $numTestedMethods,
                 'testedMethodsPercent' => $this->calculatePercent(
@@ -434,7 +437,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             );
 
             foreach ($classData['methods'] as $methodName => $methodData) {
-                if ($methodData['executedLines'] == $methodData['executableLines']) {
+                if ($methodData['executedLines'] ==
+                    $methodData['executableLines']) {
                     $numTestedMethods     = 1;
                     $testedMethodsPercent = 100;
                 } else {
@@ -455,11 +459,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                     'testedClassesPercent' => '',
                     'numMethods'           => 1,
                     'numTestedMethods'     => $numTestedMethods,
-                    'testedMethodsPercent' => sprintf('%01.2f', $testedMethodsPercent),
+                    'testedMethodsPercent' => sprintf(
+                                                '%01.2f', $testedMethodsPercent
+                                              ),
                     'numExecutableLines'   => $methodData['executableLines'],
                     'numExecutedLines'     => $methodData['executedLines'],
                     'executedLinesPercent' => $this->calculatePercent(
-                      $methodData['executedLines'], $methodData['executableLines']
+                      $methodData['executedLines'],
+                      $methodData['executableLines']
                     )
                   ),
                   $lowUpperBound,
@@ -474,7 +481,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $template->setVar(
           array(
             'lines'      => $lines,
-            'total_item' => $this->renderTotalItem($lowUpperBound, $highLowerBound, FALSE),
+            'total_item' => $this->renderTotalItem(
+                              $lowUpperBound, $highLowerBound, FALSE
+                            ),
             'items'      => $items,
             'yuiPanelJS' => $this->yuiPanelJS
           )
@@ -602,8 +611,11 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     protected function loadFile($file)
     {
-        $lines  = explode("\n", str_replace("\t", '    ', file_get_contents($file)));
         $result = array();
+
+        $lines = explode(
+          "\n", str_replace("\t", '    ', file_get_contents($file))
+        );
 
         if (count($lines) == 0) {
             return $result;

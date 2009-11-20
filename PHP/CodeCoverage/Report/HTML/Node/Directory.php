@@ -114,7 +114,9 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      */
     public function addDirectory($name)
     {
-        $directory = new PHP_CodeCoverage_Report_HTML_Node_Directory($name, $this);
+        $directory = new PHP_CodeCoverage_Report_HTML_Node_Directory(
+          $name, $this
+        );
 
         $this->children[]    = $directory;
         $this->directories[] = &$this->children[count($this->children) - 1];

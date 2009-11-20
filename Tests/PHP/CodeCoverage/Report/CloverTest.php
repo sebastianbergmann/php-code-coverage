@@ -80,7 +80,7 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
   <project timestamp="%i">
     <file name="%s/BankAccount.php">
       <class name="BankAccount" namespace="global">
-        <metrics methods="4" coveredmethods="3" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
+        <metrics methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
       </class>
       <line num="6" type="method" name="getBalance" count="2"/>
       <line num="8" type="stmt" count="2"/>
@@ -96,9 +96,9 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
       <line num="27" type="method" name="withdrawMoney" count="2"/>
       <line num="29" type="stmt" count="2"/>
       <line num="31" type="stmt" count="1"/>
-      <metrics loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
+      <metrics loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
     </file>
-    <metrics files="1" loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
+    <metrics files="1" loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
   </project>
 </coverage>',
           $clover->process($this->getBankAccountCoverage())

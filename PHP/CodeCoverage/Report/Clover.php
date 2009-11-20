@@ -137,7 +137,9 @@ class PHP_CodeCoverage_Report_Clover
 
                         $methodCount = 0;
 
-                        for ($i = $method['startLine']; $i <= $method['endLine']; $i++) {
+                        for ($i  = $method['startLine'];
+                             $i <= $method['endLine'];
+                             $i++) {
                             $add   = TRUE;
                             $count = 0;
 
@@ -179,53 +181,86 @@ class PHP_CodeCoverage_Report_Clover
                         );
                     }
 
-                    $packageInformation = PHP_CodeCoverage_Util::getPackageInformation(
+                    $package = PHP_CodeCoverage_Util::getPackageInformation(
                       $className, $_class['docComment']
                     );
 
-                    if (!empty($packageInformation['namespace'])) {
-                        $namespace = $packageInformation['namespace'];
+                    if (!empty($package['namespace'])) {
+                        $namespace = $package['namespace'];
                     }
 
                     $class = $document->createElement('class');
                     $class->setAttribute('name', $className);
                     $class->setAttribute('namespace', $namespace);
 
-                    if (!empty($packageInformation['fullPackage'])) {
+                    if (!empty($package['fullPackage'])) {
                         $class->setAttribute(
-                          'fullPackage', $packageInformation['fullPackage']
+                          'fullPackage', $package['fullPackage']
                         );
                     }
 
-                    if (!empty($packageInformation['category'])) {
+                    if (!empty($package['category'])) {
                         $class->setAttribute(
-                          'category', $packageInformation['category']
+                          'category', $package['category']
                         );
                     }
 
-                    if (!empty($packageInformation['package'])) {
+                    if (!empty($package['package'])) {
                         $class->setAttribute(
-                          'package', $packageInformation['package']
+                          'package', $package['package']
                         );
                     }
 
-                    if (!empty($packageInformation['subpackage'])) {
+                    if (!empty($package['subpackage'])) {
                         $class->setAttribute(
-                          'subpackage', $packageInformation['subpackage']
+                          'subpackage', $package['subpackage']
                         );
                     }
 
                     $file->appendChild($class);
 
                     $metrics = $document->createElement('metrics');
-                    $metrics->setAttribute('methods', $classStatistics['methods']);
-                    $metrics->setAttribute('coveredmethods', $classStatistics['coveredMethods']);
-                    //$metrics->setAttribute('conditionals', $classStatistics['conditionals']);
-                    //$metrics->setAttribute('coveredconditionals', $classStatistics['coveredConditionals']);
-                    $metrics->setAttribute('statements', $classStatistics['statements']);
-                    $metrics->setAttribute('coveredstatements', $classStatistics['coveredStatements']);
-                    $metrics->setAttribute('elements', $classStatistics['conditionals'] + $classStatistics['statements'] + $classStatistics['methods']);
-                    $metrics->setAttribute('coveredelements', $classStatistics['coveredConditionals'] + $classStatistics['coveredStatements'] + $classStatistics['coveredMethods']);
+
+                    $metrics->setAttribute(
+                      'methods', $classStatistics['methods']
+                    );
+
+                    $metrics->setAttribute(
+                      'coveredmethods', $classStatistics['coveredMethods']
+                    );
+
+                    $metrics->setAttribute(
+                      'conditionals', $classStatistics['conditionals']
+                    );
+
+                    $metrics->setAttribute(
+                      'coveredconditionals',
+                      $classStatistics['coveredConditionals']
+                    );
+
+                    $metrics->setAttribute(
+                      'statements', $classStatistics['statements']
+                    );
+
+                    $metrics->setAttribute(
+                      'coveredstatements',
+                      $classStatistics['coveredStatements']
+                    );
+
+                    $metrics->setAttribute(
+                      'elements',
+                      $classStatistics['conditionals'] +
+                      $classStatistics['statements']   +
+                      $classStatistics['methods']
+                    );
+
+                    $metrics->setAttribute(
+                      'coveredelements',
+                      $classStatistics['coveredConditionals'] +
+                      $classStatistics['coveredStatements']   +
+                      $classStatistics['coveredMethods']
+                    );
+
                     $class->appendChild($metrics);
 
                     $fileStatistics['methods']             += $classStatistics['methods'];
@@ -278,17 +313,45 @@ class PHP_CodeCoverage_Report_Clover
                 $count = PHP_CodeCoverage_Util::countLines($filename);
 
                 $metrics = $document->createElement('metrics');
+
                 $metrics->setAttribute('loc', $count['loc']);
                 $metrics->setAttribute('ncloc', $count['ncloc']);
                 $metrics->setAttribute('classes', $fileStatistics['classes']);
                 $metrics->setAttribute('methods', $fileStatistics['methods']);
-                $metrics->setAttribute('coveredmethods', $fileStatistics['coveredMethods']);
-                //$metrics->setAttribute('conditionals', $fileStatistics['conditionals']);
-                //$metrics->setAttribute('coveredconditionals', $fileStatistics['coveredConditionals']);
-                $metrics->setAttribute('statements', $fileStatistics['statements']);
-                $metrics->setAttribute('coveredstatements', $fileStatistics['coveredStatements']);
-                $metrics->setAttribute('elements', $fileStatistics['conditionals'] + $fileStatistics['statements'] + $fileStatistics['methods']);
-                $metrics->setAttribute('coveredelements', $fileStatistics['coveredConditionals'] + $fileStatistics['coveredStatements'] + $fileStatistics['coveredMethods']);
+
+                $metrics->setAttribute(
+                  'coveredmethods', $fileStatistics['coveredMethods']
+                );
+
+                $metrics->setAttribute(
+                  'conditionals', $fileStatistics['conditionals']
+                );
+
+                $metrics->setAttribute(
+                  'coveredconditionals', $fileStatistics['coveredConditionals']
+                );
+
+                $metrics->setAttribute(
+                  'statements', $fileStatistics['statements']
+                );
+
+                $metrics->setAttribute(
+                  'coveredstatements', $fileStatistics['coveredStatements']
+                );
+
+                $metrics->setAttribute(
+                  'elements',
+                  $fileStatistics['conditionals'] +
+                  $fileStatistics['statements']   +
+                  $fileStatistics['methods']
+                );
+
+                $metrics->setAttribute(
+                  'coveredelements',
+                  $fileStatistics['coveredConditionals'] +
+                  $fileStatistics['coveredStatements']   +
+                  $fileStatistics['coveredMethods']
+                );
 
                 $file->appendChild($metrics);
 
@@ -321,18 +384,47 @@ class PHP_CodeCoverage_Report_Clover
         }
 
         $metrics = $document->createElement('metrics');
+
         $metrics->setAttribute('files', $projectStatistics['files']);
         $metrics->setAttribute('loc', $projectStatistics['loc']);
         $metrics->setAttribute('ncloc', $projectStatistics['ncloc']);
         $metrics->setAttribute('classes', $projectStatistics['classes']);
         $metrics->setAttribute('methods', $projectStatistics['methods']);
-        $metrics->setAttribute('coveredmethods', $projectStatistics['coveredMethods']);
-        //$metrics->setAttribute('conditionals', $projectStatistics['conditionals']);
-        //$metrics->setAttribute('coveredconditionals', $projectStatistics['coveredConditionals']);
-        $metrics->setAttribute('statements', $projectStatistics['statements']);
-        $metrics->setAttribute('coveredstatements', $projectStatistics['coveredStatements']);
-        $metrics->setAttribute('elements', $projectStatistics['conditionals'] + $projectStatistics['statements'] + $projectStatistics['methods']);
-        $metrics->setAttribute('coveredelements', $projectStatistics['coveredConditionals'] + $projectStatistics['coveredStatements'] + $projectStatistics['coveredMethods']);
+
+        $metrics->setAttribute(
+          'coveredmethods', $projectStatistics['coveredMethods']
+        );
+
+        $metrics->setAttribute(
+          'conditionals', $projectStatistics['conditionals']
+        );
+
+        $metrics->setAttribute(
+          'coveredconditionals', $projectStatistics['coveredConditionals']
+        );
+
+        $metrics->setAttribute(
+          'statements', $projectStatistics['statements']
+        );
+
+        $metrics->setAttribute(
+          'coveredstatements', $projectStatistics['coveredStatements']
+        );
+
+        $metrics->setAttribute(
+          'elements',
+          $projectStatistics['conditionals'] +
+          $projectStatistics['statements']   +
+          $projectStatistics['methods']
+        );
+
+        $metrics->setAttribute(
+          'coveredelements',
+          $projectStatistics['coveredConditionals'] +
+          $projectStatistics['coveredStatements']   +
+          $projectStatistics['coveredMethods']
+        );
+
         $project->appendChild($metrics);
 
         return $document->saveXML();

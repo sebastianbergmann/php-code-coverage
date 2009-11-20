@@ -226,15 +226,17 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             if ($this->parent === NULL) {
                 $this->cache['path'] = $this->getName(FALSE, TRUE);
             } else {
-                if (substr($this->parent->getPath(), -1) == DIRECTORY_SEPARATOR) {
-                    $this->cache['path'] = $this->parent->getPath() .
+                $parentPath = $this->parent->getPath();
+
+                if (substr($parentPath, -1) == DIRECTORY_SEPARATOR) {
+                    $this->cache['path'] = $parentPath .
                                            $this->getName(FALSE, TRUE);
                 } else {
-                    $this->cache['path'] = $this->parent->getPath() .
+                    $this->cache['path'] = $parentPath .
                                            DIRECTORY_SEPARATOR .
                                            $this->getName(FALSE, TRUE);
 
-                    if ($this->parent->getPath() === '' &&
+                    if ($parentPath === '' &&
                         realpath($this->cache['path']) === FALSE &&
                         realpath($this->getName(FALSE, TRUE)) !== FALSE) {
                         $this->cache['path'] = $this->getName(FALSE, TRUE);
@@ -271,7 +273,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
     {
         return $this->doRenderItem(
           array(
-            'name'                 => $link != NULL ? $link : $item->getLink(FALSE),
+            'name'                 => $link != NULL ? $link : $item->getLink(
+                                                                FALSE
+                                                              ),
             'itemClass'            => $itemClass,
             'numClasses'           => $item->getNumClasses(),
             'numTestedClasses'     => $item->getNumTestedClasses(),
@@ -307,7 +311,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
               $data['testedClassesPercent'], $lowUpperBound, $highLowerBound
             );
 
-            $classesNumber = $data['numTestedClasses'] . ' / ' . $data['numClasses'];
+            $classesNumber = $data['numTestedClasses'] . ' / ' .
+                             $data['numClasses'];
         } else {
             $classesColor  = 'snow';
             $classesLevel  = 'None';
@@ -319,7 +324,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
               $data['testedMethodsPercent'], $lowUpperBound, $highLowerBound
             );
 
-            $methodsNumber = $data['numTestedMethods'] . ' / ' . $data['numMethods'];
+            $methodsNumber = $data['numTestedMethods'] . ' / ' .
+                             $data['numMethods'];
         } else {
             $methodsColor  = 'snow';
             $methodsLevel  = 'None';
@@ -390,14 +396,18 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
 
     protected function renderTotalItem($lowUpperBound, $highLowerBound, $directory = TRUE)
     {
-        if ($directory && empty($this->directories) && count($this->files) == 1) {
+        if ($directory &&
+            empty($this->directories) &&
+            count($this->files) == 1) {
             return '';
         }
 
-        return $this->doRenderItemObject($this, $lowUpperBound, $highLowerBound, 'Total') .
+        return $this->doRenderItemObject(
+                 $this, $lowUpperBound, $highLowerBound, 'Total'
+               ) .
                "        <tr>\n" .
-               '          <td class="tableHead" colspan="10">&nbsp;</td>' . "\n" .
-               "        </tr>\n";
+               '          <td class="tableHead" colspan="10">&nbsp;</td>' .
+               "\n        </tr>\n";
     }
 
     /**

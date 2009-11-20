@@ -258,7 +258,7 @@ class PHP_CodeCoverage_Filter
     /**
      * @param string $filename
      */
-    public function isFile($filename)
+    public static function isFile($filename)
     {
         if (strpos($filename, 'eval()\'d code') !== FALSE ||
             strpos($filename, 'runtime-created function') !== FALSE ||

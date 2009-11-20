@@ -110,6 +110,13 @@ class PHP_CodeCoverage
     protected $tests = array();
 
     /**
+     * Default PHP_CodeCoverage object.
+     *
+     * @var PHP_CodeCoverage
+     */
+    protected static $instance;
+
+    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver $driver
@@ -134,6 +141,20 @@ class PHP_CodeCoverage
         $this->driver                = $driver;
         $this->filter                = $filter;
         $this->forceCoversAnnotation = $forceCoversAnnotation;
+    }
+
+    /**
+     * Returns the default instance.
+     *
+     * @return PHP_CodeCoverage
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === NULL) {
+            self::$instance = new PHP_CodeCoverage;
+        }
+
+        return self::$instance;
     }
 
     /**

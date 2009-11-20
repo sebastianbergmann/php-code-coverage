@@ -105,7 +105,7 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Adds a new file to be filtered (blacklist).
+     * Adds a new file to the blacklist.
      *
      * @param  string $filename
      * @param  string $group
@@ -153,7 +153,7 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Removes a file from the filter (blacklist).
+     * Removes a file from the blacklist.
      *
      * @param  string $filename
      * @param  string $group

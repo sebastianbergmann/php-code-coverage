@@ -115,7 +115,8 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
 
         $this->assertEquals(
-          array($this->files[0]), $this->filter->getBlacklist()
+          array('DEFAULT' => array($this->files[0])),
+          $this->filter->getBlacklist()
         );
     }
 
@@ -137,7 +138,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
         $this->filter->removeFileFromBlacklist($this->files[0]);
 
-        $this->assertEquals(array(), $this->filter->getBlacklist());
+        $this->assertEquals(
+          array('DEFAULT' => array()), $this->filter->getBlacklist()
+        );
     }
 
     /**
@@ -159,9 +162,12 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
 
         $blacklist = $this->filter->getBlacklist();
-        sort($blacklist);
 
-        $this->assertEquals($this->files, $blacklist);
+        foreach (array_keys($blacklist) as $group) {
+            sort($blacklist[$group]);
+        }
+
+        $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
     }
 
     /**
@@ -184,7 +190,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
         $this->filter->removeDirectoryFromBlacklist(TEST_FILES_PATH);
 
-        $this->assertEquals(array(), $this->filter->getBlacklist());
+        $this->assertEquals(
+          array('DEFAULT' => array()), $this->filter->getBlacklist()
+        );
     }
 
     /**

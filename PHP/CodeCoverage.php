@@ -160,11 +160,16 @@ class PHP_CodeCoverage
     /**
      * Start collection of code coverage information.
      *
-     * @param mixed   $id
-     * @param boolean $clear
+     * @param  mixed   $id
+     * @param  boolean $clear
+     * @throws InvalidArgumentException
      */
     public function start($id, $clear = FALSE)
     {
+        if (!is_bool($clear)) {
+            throw new InvalidArgumentException;
+        }
+
         if ($clear) {
             $this->clear();
         }

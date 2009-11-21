@@ -181,11 +181,26 @@ class PHP_CodeCoverage
 
     /**
      * Stop collection of code coverage information.
+     *
+     * @param  boolean $append
+     * @return array
+     * @throws InvalidArgumentException
      */
-    public function stop()
+    public function stop($append = TRUE)
     {
-        $this->append($this->driver->stop());
+        if (!is_bool($append)) {
+            throw new InvalidArgumentException;
+        }
+
+        $data = $this->driver->stop();
+
+        if ($append) {
+            $this->append($data);
+        }
+
         $this->currentId = NULL;
+
+        return $data;
     }
 
     /**

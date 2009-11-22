@@ -64,7 +64,9 @@ class PHP_CodeCoverage_Filter
      *
      * @var array
      */
-    protected $blacklistedFiles = array();
+    protected $blacklistedFiles = array(
+      'DEFAULT' => array()
+    );
 
     /**
      * Source files that are whitelisted.

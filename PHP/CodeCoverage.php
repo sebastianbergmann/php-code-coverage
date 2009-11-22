@@ -219,10 +219,8 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
-        $dir = dirname(__FILE__);
-
         foreach (array_keys($data) as $filename) {
-            if (strpos($filename, $dir) === 0 ||
+            if (strpos($filename, dirname(__FILE__)) === 0 ||
                 substr($filename, -17) == 'Text/Template.php' ||
                 substr($filename, -17) == 'File/Iterator.php' ||
                 substr($filename, -25) == 'File/Iterator/Factory.php') {
@@ -230,7 +228,7 @@ class PHP_CodeCoverage
             }
         }
 
-        unset($dir, $filename);
+        unset($filename);
 
         // Process files that are covered for the first time.
         $newFiles = array_diff_key($data, $this->coveredFiles);

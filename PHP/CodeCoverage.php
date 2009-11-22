@@ -131,7 +131,7 @@ class PHP_CodeCoverage
         }
 
         if ($filter === NULL) {
-            $filter = new PHP_CodeCoverage_Filter;
+            $filter = PHP_CodeCoverage_Filter::getInstance();
         }
 
         if (!is_bool($forceCoversAnnotation)) {

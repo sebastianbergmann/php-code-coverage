@@ -208,8 +208,9 @@ class PHP_CodeCoverage
      *
      * @param array $data
      * @param mixed $id
+     * @param array $filterGroups
      */
-    public function append(array $data, $id = NULL)
+    public function append(array $data, $id = NULL, array $filterGroups = array('DEFAULT'))
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -230,7 +231,7 @@ class PHP_CodeCoverage
 
         // Apply blacklist/whitelist filtering.
         foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename)) {
+            if ($this->filter->isFiltered($filename, $filterGroups)) {
                 unset($data[$filename]);
             }
         }

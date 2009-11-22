@@ -283,15 +283,21 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * @param  string $filename
-     * @param  array  $groups
+     * @param  string  $filename
+     * @param  array   $groups
+     * @param  boolean $ignoreWhitelist
      * @return boolean
+     * @throws InvalidArgumentException
      */
-    public function isFiltered($filename, array $groups = array('DEFAULT'))
+    public function isFiltered($filename, array $groups = array('DEFAULT'), $ignoreWhitelist = FALSE)
     {
+        if (!is_bool($ignoreWhitelist)) {
+            throw new InvalidArgumentException;
+        }
+
         $filename = realpath($filename);
 
-        if (!empty($this->whitelistedFiles)) {
+        if (!$ignoreWhitelist && !empty($this->whitelistedFiles)) {
             return !in_array($filename, $this->whitelistedFiles);
         }
 

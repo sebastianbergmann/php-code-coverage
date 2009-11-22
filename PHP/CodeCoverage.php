@@ -228,7 +228,12 @@ class PHP_CodeCoverage
             }
         }
 
-        unset($filename);
+        // Apply blacklist/whitelist filtering.
+        foreach (array_keys($data) as $filename) {
+            if ($this->filter->isFiltered($filename)) {
+                unset($data[$filename]);
+            }
+        }
 
         // Process files that are covered for the first time.
         $newFiles = array_diff_key($data, $this->coveredFiles);
@@ -268,13 +273,6 @@ class PHP_CodeCoverage
 
         else if ($this->forceCoversAnnotation) {
             $data = array();
-        }
-
-        // Apply blacklist/whitelist filtering.
-        foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename)) {
-                unset($data[$filename]);
-            }
         }
 
         if (!empty($data)) {

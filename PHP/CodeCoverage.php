@@ -223,6 +223,7 @@ class PHP_CodeCoverage
 
         foreach (array_keys($data) as $filename) {
             if (strpos($filename, $dir) === 0 ||
+                substr($filename, -17) == 'Text/Template.php' ||
                 substr($filename, -17) == 'File/Iterator.php' ||
                 substr($filename, -25) == 'File/Iterator/Factory.php') {
                 unset($data[$filename]);

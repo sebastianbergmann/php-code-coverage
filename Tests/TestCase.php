@@ -61,7 +61,9 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
     protected function getBankAccountCoverage()
     {
-        $coverage = new PHP_CodeCoverage($this->setUpXdebugStub());
+        $coverage = new PHP_CodeCoverage(
+          $this->setUpXdebugStub(), new PHP_CodeCoverage_Filter
+        );
 
         $coverage->start(
           new BankAccountTest('testBalanceIsInitiallyZero'), TRUE

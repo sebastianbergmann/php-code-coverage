@@ -80,13 +80,14 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testConstructor()
     {
-        $coverage = new PHP_CodeCoverage;
+        $filter   = new PHP_CodeCoverage_Filter;
+        $coverage = new PHP_CodeCoverage(NULL, $filter);
 
         $this->assertAttributeType(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
         );
 
-        $this->assertType('PHP_CodeCoverage_Filter', $coverage->filter());
+        $this->assertSame($filter, $coverage->filter());
     }
 
     /**

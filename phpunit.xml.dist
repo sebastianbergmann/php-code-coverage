@@ -4,7 +4,7 @@
          backupStaticAttributes="false"
          syntaxCheck="false">
   <testsuites>
-    <testsuite name="PHP_CodeCoverage">
+    <testsuite name="php-code-coverage">
       <directory suffix="Test.php">Tests/PHP</directory>
     </testsuite>
   </testsuites>

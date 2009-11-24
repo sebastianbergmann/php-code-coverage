@@ -126,10 +126,9 @@ class PHP_CodeCoverage
      *
      * @param  PHP_CodeCoverage_Driver $driver
      * @param  PHP_CodeCoverage_Filter $filter
-     * @param  boolean                 $forceCoversAnnotation
      * @throws InvalidArgumentException
      */
-    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL, $forceCoversAnnotation = FALSE)
+    public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL)
     {
         if ($driver === NULL) {
             $driver = new PHP_CodeCoverage_Driver_Xdebug;
@@ -139,13 +138,8 @@ class PHP_CodeCoverage
             $filter = PHP_CodeCoverage_Filter::getInstance();
         }
 
-        if (!is_bool($forceCoversAnnotation)) {
-            throw new InvalidArgumentException;
-        }
-
-        $this->driver                = $driver;
-        $this->filter                = $filter;
-        $this->forceCoversAnnotation = $forceCoversAnnotation;
+        $this->driver = $driver;
+        $this->filter = $filter;
     }
 
     /**
@@ -387,6 +381,19 @@ class PHP_CodeCoverage
     public function filter()
     {
         return $this->filter;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
+     */
+    public function setForceCoversAnnotation($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->forceCoversAnnotation = $flag;
     }
 
     /**

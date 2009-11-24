@@ -3,6 +3,9 @@
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
          syntaxCheck="false">
+  <php>
+    <const name="PHP_CODECOVERAGE_TESTSUITE" value="true"/>
+  </php>
   <testsuites>
     <testsuite name="php-code-coverage">
       <directory suffix="Test.php">Tests/PHP</directory>

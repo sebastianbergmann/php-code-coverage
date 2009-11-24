@@ -221,7 +221,8 @@ class PHP_CodeCoverage
         }
 
         foreach (array_keys($data) as $filename) {
-            if (strpos($filename, dirname(__FILE__)) === 0 ||
+            if ((!defined('PHP_CODECOVERAGE_TESTSUITE') &&
+                strpos($filename, dirname(__FILE__)) === 0) ||
                 substr($filename, -17) == 'Text/Template.php' ||
                 substr($filename, -17) == 'File/Iterator.php' ||
                 substr($filename, -25) == 'File/Iterator/Factory.php') {

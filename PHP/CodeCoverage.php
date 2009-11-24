@@ -420,7 +420,7 @@ class PHP_CodeCoverage
     /**
      * Processes whitelisted files that are not covered.
      */
-    public function processUncoveredFilesFromWhitelist()
+    protected function processUncoveredFilesFromWhitelist()
     {
         $data = array();
 

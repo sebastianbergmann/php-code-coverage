@@ -419,7 +419,7 @@ class PHP_CodeCoverage
     /**
      * Processes whitelisted files that are not covered.
      */
-    protected function processUncoveredFilesFromWhitelist()
+    public function processUncoveredFilesFromWhitelist()
     {
         $data = array();
 

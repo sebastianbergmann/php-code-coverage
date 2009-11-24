@@ -77,6 +77,11 @@ class PHP_CodeCoverage
     protected $forceCoversAnnotation = FALSE;
 
     /**
+     * @var boolean
+     */
+    protected $processUncoveredFilesFromWhitelist = TRUE;
+
+    /**
      * @var mixed
      */
     protected $currentId;
@@ -312,6 +317,10 @@ class PHP_CodeCoverage
     public function getSummary()
     {
         if (empty($this->summary)) {
+            if ($this->processUncoveredFilesFromWhitelist) {
+                $this->processUncoveredFilesFromWhitelist();
+            }
+
             foreach ($this->data as $test => $coverage) {
                 foreach ($coverage['executed'] as $file => $lines) {
                     foreach ($lines as $line => $flag) {
@@ -378,6 +387,19 @@ class PHP_CodeCoverage
     public function filter()
     {
         return $this->filter;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
+     */
+    public function setProcessUncoveredFilesFromWhitelist($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->processUncoveredFilesFromWhitelist = $flag;
     }
 
     /**

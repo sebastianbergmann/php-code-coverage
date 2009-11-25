@@ -80,6 +80,23 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testConstructor()
     {
+        $coverage = new PHP_CodeCoverage;
+
+        $this->assertAttributeType(
+          'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
+        );
+
+        $this->assertAttributeType(
+          'PHP_CodeCoverage_Filter', 'filter', $coverage
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::__construct
+     * @covers PHP_CodeCoverage::filter
+     */
+    public function testConstructor2()
+    {
         $filter   = new PHP_CodeCoverage_Filter;
         $coverage = new PHP_CodeCoverage(NULL, $filter);
 
@@ -88,6 +105,45 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         );
 
         $this->assertSame($filter, $coverage->filter());
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getInstance
+     */
+    public function testFactory()
+    {
+        $coverage = PHP_CodeCoverage::getInstance();
+        $this->assertSame($coverage, PHP_CodeCoverage::getInstance());
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::start
+     * @expectedException InvalidArgumentException
+     */
+    public function testStartThrowsExceptionForInvalidArgument()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->start(NULL, NULL);
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::stop
+     * @expectedException InvalidArgumentException
+     */
+    public function testStopThrowsExceptionForInvalidArgument()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->stop(NULL);
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::append
+     * @expectedException InvalidArgumentException
+     */
+    public function testAppendThrowsExceptionForInvalidArgument()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->append(array(), NULL);
     }
 
     /**

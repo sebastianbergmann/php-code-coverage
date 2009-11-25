@@ -150,9 +150,10 @@ class PHP_CodeCoverage
     public static function getInstance()
     {
         if (self::$instance === NULL) {
+        // @codeCoverageIgnoreStart
             self::$instance = new PHP_CodeCoverage;
         }
-
+        // @codeCoverageIgnoreEnd
         return self::$instance;
     }
 

@@ -167,6 +167,20 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage::clear
+     */
+    public function testClear()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->clear();
+
+        $this->assertAttributeEquals(array(), 'data', $coverage);
+        $this->assertAttributeEquals(array(), 'coveredFiles', $coverage);
+        $this->assertAttributeEquals(array(), 'summary', $coverage);
+        $this->assertAttributeEquals(NULL, 'currentId', $coverage);
+    }
+
+    /**
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append

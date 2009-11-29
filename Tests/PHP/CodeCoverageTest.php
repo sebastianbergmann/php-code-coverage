@@ -147,6 +147,26 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::setForceCoversAnnotation
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetForceCoversAnnotationThrowsExceptionForInvalidArgument()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->setForceCoversAnnotation(NULL);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::setForceCoversAnnotation
+     */
+    public function testSetForceCoversAnnotation()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->setForceCoversAnnotation(TRUE);
+        $this->assertAttributeEquals(TRUE, 'forceCoversAnnotation', $coverage);
+    }
+
+    /**
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append

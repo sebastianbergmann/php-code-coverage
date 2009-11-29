@@ -328,5 +328,41 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->filter->isFile('regexp code'));
         $this->assertTrue($this->filter->isFile('filename'));
     }
+
+    /**
+     * @covers PHP_CodeCoverage_Filter::isFiltered
+     */
+    public function testBlacklistedFileIsFiltered()
+    {
+        $this->filter->addFileToBlacklist($this->files[0]);
+        $this->assertTrue($this->filter->isFiltered($this->files[0]));
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Filter::isFiltered
+     */
+    public function testWhitelistedFileIsNotFiltered()
+    {
+        $this->filter->addFileToWhitelist($this->files[0]);
+        $this->assertFalse($this->filter->isFiltered($this->files[0]));
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Filter::isFiltered
+     */
+    public function testNotWhitelistedFileIsFiltered()
+    {
+        $this->filter->addFileToWhitelist($this->files[0]);
+        $this->assertTrue($this->filter->isFiltered($this->files[1]));
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Filter::isFiltered
+     * @expectedException InvalidArgumentException
+     */
+    public function testIsFilteredThrowsExceptionForInvalidArgument()
+    {
+        $this->filter->isFiltered('foo', array(), NULL);
+    }
 }
 ?>

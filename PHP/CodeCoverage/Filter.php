@@ -97,8 +97,10 @@ class PHP_CodeCoverage_Filter
     public static function getInstance()
     {
         if (self::$instance === NULL) {
+        // @codeCoverageIgnoreStart
             self::$instance = new PHP_CodeCoverage_Filter;
         }
+        // @codeCoverageIgnoreEnd
 
         return self::$instance;
     }

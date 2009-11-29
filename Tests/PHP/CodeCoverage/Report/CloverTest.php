@@ -70,6 +70,9 @@ require_once 'PHP/CodeCoverage/Report/Clover.php';
  */
 class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
 {
+    /**
+     * @covers PHP_CodeCoverage_Report_Clover
+     */
     public function testCloverForBankAccountTest()
     {
         $clover = new PHP_CodeCoverage_Report_Clover;

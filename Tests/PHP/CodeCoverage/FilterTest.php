@@ -130,10 +130,24 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage_Filter::addFileToBlacklist
+     * @covers PHP_CodeCoverage_Filter::getBlacklist
+     */
+    public function testAddingAFileToTheBlacklistWorks2()
+    {
+        $this->filter->addFileToBlacklist($this->files[0], 'group');
+
+        $this->assertEquals(
+          array('DEFAULT' => array(), 'group' => array($this->files[0])),
+          $this->filter->getBlacklist()
+        );
+    }
+
+    /**
      * @covers            PHP_CodeCoverage_Filter::addFileToBlacklist
      * @expectedException RuntimeException
      */
-    public function testAddingAFileToTheBlacklistWorks2()
+    public function testAddingAFileToTheBlacklistWorks3()
     {
         $this->filter->addFileToBlacklist('/does/not/exist');
     }

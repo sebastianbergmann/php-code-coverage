@@ -64,7 +64,9 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function start()
     {
+        // @codeCoverageIgnoreStart
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -74,10 +76,12 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
+        // @codeCoverageIgnoreStart
         $codeCoverage = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
 
         return $codeCoverage;
+        // @codeCoverageIgnoreEnd
     }
 }
 ?>

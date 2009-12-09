@@ -460,7 +460,11 @@ class PHP_CodeCoverage_Util
             }
 
             if (!$done) {
-                $commonPath .= $paths[0][0] . (($paths[0][0] != DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '');
+                $commonPath .= $paths[0][0];
+
+                if ($paths[0][0] != DIRECTORY_SEPARATOR) {
+                    $commonPath .= DIRECTORY_SEPARATOR;
+                }
 
                 for ($i = 0; $i < $max; $i++) {
                     array_shift($paths[$i]);

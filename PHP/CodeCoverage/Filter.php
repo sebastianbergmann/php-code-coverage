@@ -97,7 +97,7 @@ class PHP_CodeCoverage_Filter
     public static function getInstance()
     {
         if (self::$instance === NULL) {
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
             self::$instance = new PHP_CodeCoverage_Filter;
         }
         // @codeCoverageIgnoreEnd
@@ -190,8 +190,8 @@ class PHP_CodeCoverage_Filter
             if (isset($this->blacklistedFiles[$group])) {
                 $filename = realpath($filename);
 
-                foreach ($this->blacklistedFiles[$group] as $key => $_filename) {
-                    if ($filename == $_filename) {
+                foreach ($this->blacklistedFiles[$group] as $key => $value) {
+                    if ($filename == $value) {
                         unset($this->blacklistedFiles[$group][$key]);
                     }
                 }

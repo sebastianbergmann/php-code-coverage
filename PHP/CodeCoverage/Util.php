@@ -527,16 +527,11 @@ class PHP_CodeCoverage_Util
         $currentClass               = FALSE;
         $currentFunction            = FALSE;
         $currentFunctionStartLine   = FALSE;
-        $currentFunctionTokens      = array();
         $currentDocComment          = FALSE;
         $currentSignature           = FALSE;
         $currentSignatureStartToken = FALSE;
 
         for ($i = 0; $i < $numTokens; $i++) {
-            if ($currentFunction !== FALSE) {
-                $currentFunctionTokens[] = $tokens[$i];
-            }
-
             if (is_string($tokens[$i])) {
                 if ($tokens[$i] == '{') {
                     if ($currentBlock == T_CLASS) {
@@ -585,8 +580,7 @@ class PHP_CodeCoverage_Util
                               'docComment' => $docComment,
                               'signature'  => $currentSignature,
                               'startLine'  => $currentFunctionStartLine,
-                              'endLine'    => $line,
-                              'tokens'     => $currentFunctionTokens
+                              'endLine'    => $line
                             );
 
                             if ($currentClass === FALSE) {
@@ -597,7 +591,6 @@ class PHP_CodeCoverage_Util
 
                             $currentFunction          = FALSE;
                             $currentFunctionStartLine = FALSE;
-                            $currentFunctionTokens    = array();
                             $currentSignature         = FALSE;
                         }
 

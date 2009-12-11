@@ -96,6 +96,53 @@ if (version_compare(PHP_VERSION, '5.3', '>')) {
 class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers PHP_CodeCoverage_Util::getClassesInFile
+     * @covers PHP_CodeCoverage_Util::parseFile
+     */
+    public function testGetClassesInFile()
+    {
+        $this->assertEquals(
+          array(
+            'BankAccount' => array(
+              'methods' => array(
+                'getBalance' => array(
+                  'docComment' => '',
+                  'signature'  => 'public function getBalance()',
+                  'startLine'  => 6,
+                  'endLine'    => 9
+                ),
+                'setBalance' => array(
+                  'docComment' => '',
+                  'signature'  => 'protected function setBalance($balance)',
+                  'startLine'  => 11,
+                  'endLine'    => 18
+                ),
+                'depositMoney' => array(
+                  'docComment' => '',
+                  'signature'  => 'public function depositMoney($balance)',
+                  'startLine'  => 20,
+                  'endLine'    => 25
+                ),
+                'withdrawMoney' => array(
+                  'docComment' => '',
+                  'signature'  => 'public function withdrawMoney($balance)',
+                  'startLine'  => 27,
+                  'endLine'    => 32
+                )
+              ),
+              'docComment' => '',
+              'startLine' => 2,
+              'endLine' => 33
+            )
+          ),
+          PHP_CodeCoverage_Util::getClassesInFile(
+            TEST_FILES_PATH . 'BankAccount.php',
+            FALSE
+          )
+        );
+    }
+
+    /**
      * @covers       PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers       PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredProvider

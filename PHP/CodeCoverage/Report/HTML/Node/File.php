@@ -762,6 +762,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                 case T_THROW:
                                 case T_TRY:
                                 case T_UNSET_CAST:
+                                case T_USE:
                                 case T_VAR:
                                 case T_WHILE: {
                                     $colour = 'keyword';

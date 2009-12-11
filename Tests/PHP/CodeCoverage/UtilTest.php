@@ -109,25 +109,29 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
                   'docComment' => '',
                   'signature'  => 'public function getBalance()',
                   'startLine'  => 6,
-                  'endLine'    => 9
+                  'endLine'    => 9,
+                  'ccn'        => 1
                 ),
                 'setBalance' => array(
                   'docComment' => '',
                   'signature'  => 'protected function setBalance($balance)',
                   'startLine'  => 11,
-                  'endLine'    => 18
+                  'endLine'    => 18,
+                  'ccn'        => 2
                 ),
                 'depositMoney' => array(
                   'docComment' => '',
                   'signature'  => 'public function depositMoney($balance)',
                   'startLine'  => 20,
-                  'endLine'    => 25
+                  'endLine'    => 25,
+                  'ccn'        => 1
                 ),
                 'withdrawMoney' => array(
                   'docComment' => '',
                   'signature'  => 'public function withdrawMoney($balance)',
                   'startLine'  => 27,
-                  'endLine'    => 32
+                  'endLine'    => 32,
+                  'ccn'        => 1
                 )
               ),
               'docComment' => '',

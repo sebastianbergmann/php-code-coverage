@@ -530,6 +530,7 @@ class PHP_CodeCoverage_Util
         $currentNamespace           = FALSE;
         $currentClass               = FALSE;
         $currentFunction            = FALSE;
+        $currentFunctionCCN         = 1;
         $currentFunctionStartLine   = FALSE;
         $currentDocComment          = FALSE;
         $currentSignature           = FALSE;
@@ -537,7 +538,9 @@ class PHP_CodeCoverage_Util
 
         for ($i = 0; $i < $numTokens; $i++) {
             if (is_string($tokens[$i])) {
-                if ($tokens[$i] == '{') {
+                $token = trim($tokens[$i]);
+
+                if ($token == '{') {
                     if ($currentBlock == T_CLASS) {
                         $block = $currentClass;
                     }
@@ -568,7 +571,7 @@ class PHP_CodeCoverage_Util
                     $currentBlock = FALSE;
                 }
 
-                else if ($tokens[$i] == '}') {
+                else if ($token == '}') {
                     $block = array_pop($blocks);
 
                     if ($block !== FALSE && $block !== NULL) {
@@ -584,7 +587,8 @@ class PHP_CodeCoverage_Util
                               'docComment' => $docComment,
                               'signature'  => $currentSignature,
                               'startLine'  => $currentFunctionStartLine,
-                              'endLine'    => $line
+                              'endLine'    => $line,
+                              'ccn'        => $currentFunctionCCN
                             );
 
                             if ($currentClass === FALSE) {
@@ -594,6 +598,7 @@ class PHP_CodeCoverage_Util
                             }
 
                             $currentFunction          = FALSE;
+                            $currentFunctionCCN       = 1;
                             $currentFunctionStartLine = FALSE;
                             $currentSignature         = FALSE;
                         }
@@ -605,6 +610,10 @@ class PHP_CodeCoverage_Util
                             $currentClassStartLine = FALSE;
                         }
                     }
+                }
+
+                else if ($token == '?') {
+                    $currentFunctionCCN++;
                 }
 
                 continue;
@@ -708,6 +717,21 @@ class PHP_CodeCoverage_Util
 
                 case T_DOC_COMMENT: {
                     $currentDocComment = $tokens[$i][1];
+                }
+                break;
+
+                case T_IF:
+                case T_ELSEIF:
+                case T_FOR:
+                case T_FOREACH:
+                case T_WHILE:
+                case T_CASE:
+                case T_CATCH:
+                case T_BOOLEAN_AND:
+                case T_LOGICAL_AND:
+                case T_BOOLEAN_OR:
+                case T_LOGICAL_OR: {
+                    $currentFunctionCCN++;
                 }
                 break;
             }

@@ -43,6 +43,10 @@
  * @since      File available since Release 1.0.0
  */
 
+if (!defined('T_NAMESPACE')) {
+    define('T_NAMESPACE', 377);
+}
+
 /**
  * Represents a file in the code coverage information tree.
  *
@@ -737,6 +741,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                 case T_IS_IDENTICAL:
                                 case T_IS_NOT_IDENTICAL:
                                 case T_IS_SMALLER_OR_EQUAL:
+                                case T_NAMESPACE:
                                 case T_NEW:
                                 case T_OBJECT_CAST:
                                 case T_OBJECT_OPERATOR:

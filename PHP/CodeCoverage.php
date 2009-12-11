@@ -298,6 +298,36 @@ class PHP_CodeCoverage
     }
 
     /**
+     * Merges the data from another instance of PHP_CodeCoverage.
+     *
+     * @param PHP_CodeCoverage $that
+     */
+    public function merge(PHP_CodeCoverage $that)
+    {
+        foreach ($that->data as $id => $data) {
+            if (!isset($this->data[$id])) {
+                $this->data[$id] = $data;
+            } else {
+                throw new RuntimeException('TODO');
+            }
+        }
+
+        foreach ($that->tests as $id => $status) {
+            if (!isset($this->tests[$id])) {
+                $this->tests[$id] = $status;
+            } else {
+                throw new RuntimeException('TODO');
+            }
+        }
+
+        $this->coveredFiles = array_merge(
+          $this->coveredFiles, $that->coveredFiles
+        );
+
+        $this->summary = array();
+    }
+
+    /**
      * Returns summarized code coverage data.
      *
      * Format of the result array:

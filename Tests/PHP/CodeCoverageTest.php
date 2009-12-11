@@ -278,6 +278,22 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage::merge
+     */
+    public function testMerge()
+    {
+        $coverage = new PHP_CodeCoverage(
+          $this->setUpXdebugStub(), new PHP_CodeCoverage_Filter
+        );
+
+        $coverage->merge($this->getBankAccountCoverage());
+
+        $this->assertEquals(
+          $this->getBankAccountCoverage()->getSummary(), $coverage->getSummary()
+        );
+    }
+
+    /**
      * @covers PHP_CodeCoverage::getSummary
      */
     public function testSummary()

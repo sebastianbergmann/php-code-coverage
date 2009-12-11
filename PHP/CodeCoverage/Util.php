@@ -198,12 +198,14 @@ class PHP_CodeCoverage_Util
     /**
      * Returns information on the classes declared in a sourcefile.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $useCache
      * @return array
      */
-    public static function getClassesInFile($filename)
+    public static function getClassesInFile($filename, $useCache = TRUE)
     {
-        if (!isset(self::$cache['classesFunctionsCache'][$filename])) {
+        if (!$useCache ||
+            !isset(self::$cache['classesFunctionsCache'][$filename])) {
             self::parseFile($filename);
         }
 
@@ -213,12 +215,14 @@ class PHP_CodeCoverage_Util
     /**
      * Returns information on the functions declared in a sourcefile.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $useCache
      * @return array
      */
-    public static function getFunctionsInFile($filename)
+    public static function getFunctionsInFile($filename, $useCache = TRUE)
     {
-        if (!isset(self::$cache['classesFunctionsCache'][$filename])) {
+        if (!$useCache ||
+            !isset(self::$cache['classesFunctionsCache'][$filename])) {
             self::parseFile($filename);
         }
 

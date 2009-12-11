@@ -458,6 +458,7 @@ class PHP_CodeCoverage
 
         $isFileCache = array();
         $result      = array();
+        $status      = array_flip($status);
 
         foreach ($data as $file => $coverage) {
             if (!isset($isFileCache[$file])) {
@@ -471,7 +472,7 @@ class PHP_CodeCoverage
             $result[$file] = array();
 
             foreach ($coverage as $line => $_status) {
-                if (in_array($_status, $status)) {
+                if (isset($status[$_status])) {
                     $result[$file][$line] = $_status;
                 }
             }

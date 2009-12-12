@@ -290,7 +290,7 @@ class PHP_CodeCoverage
             $this->data[$id] = array(
               'executed'   => $this->getLinesByStatus($data, 1),
               'dead'       => $dead,
-              'executable' => $executable,
+              'executable' => $executable
             );
 
             $this->summary = array();

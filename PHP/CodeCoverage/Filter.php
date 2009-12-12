@@ -144,15 +144,7 @@ class PHP_CodeCoverage_Filter
     public function addFileToBlacklist($filename, $group = 'DEFAULT')
     {
         if (!$this->strict || file_exists($filename)) {
-            $filename = realpath($filename);
-
-            if (!isset($this->blacklistedFiles[$group])) {
-                $this->blacklistedFiles[$group] = array($filename);
-            }
-
-            else if (!in_array($filename, $this->blacklistedFiles[$group])) {
-                $this->blacklistedFiles[$group][] = $filename;
-            }
+            $this->blacklistedFiles[$group][realpath($filename)] = TRUE;
         } else {
             throw new RuntimeException($filename . ' does not exist');
         }
@@ -195,10 +187,8 @@ class PHP_CodeCoverage_Filter
             if (isset($this->blacklistedFiles[$group])) {
                 $filename = realpath($filename);
 
-                foreach ($this->blacklistedFiles[$group] as $key => $value) {
-                    if ($filename == $value) {
-                        unset($this->blacklistedFiles[$group][$key]);
-                    }
+                if (isset($this->blacklistedFiles[$group][$filename])) {
+                    unset($this->blacklistedFiles[$group][$filename]);
                 }
             }
         } else {
@@ -241,11 +231,7 @@ class PHP_CodeCoverage_Filter
     public function addFileToWhitelist($filename)
     {
         if (!$this->strict || file_exists($filename)) {
-            $filename = realpath($filename);
-
-            if (!in_array($filename, $this->whitelistedFiles)) {
-                $this->whitelistedFiles[] = $filename;
-            }
+            $this->whitelistedFiles[realpath($filename)] = TRUE;
         } else {
             throw new RuntimeException($filename . ' does not exist');
         }
@@ -285,10 +271,8 @@ class PHP_CodeCoverage_Filter
         if (!$this->strict || file_exists($filename)) {
             $filename = realpath($filename);
 
-            foreach ($this->whitelistedFiles as $key => $_filename) {
-                if ($filename == $_filename) {
-                    unset($this->whitelistedFiles[$key]);
-                }
+            if (isset($this->whitelistedFiles[$filename])) {
+                unset($this->whitelistedFiles[$filename]);
             }
         } else {
             throw new RuntimeException($filename . ' does not exist');
@@ -326,7 +310,7 @@ class PHP_CodeCoverage_Filter
         $filename = realpath($filename);
 
         if (!$ignoreWhitelist && !empty($this->whitelistedFiles)) {
-            return !in_array($filename, $this->whitelistedFiles);
+            return !isset($this->whitelistedFiles[$filename]);
         }
 
         $blacklistedFiles = array();
@@ -340,7 +324,7 @@ class PHP_CodeCoverage_Filter
             }
         }
 
-        return in_array($filename, $blacklistedFiles);
+        return isset($blacklistedFiles[$filename]);
     }
 
     /**
@@ -348,7 +332,13 @@ class PHP_CodeCoverage_Filter
      */
     public function getBlacklist()
     {
-        return $this->blacklistedFiles;
+        $blacklistedFiles = array();
+
+        foreach ($this->blacklistedFiles as $group => $list) {
+            $blacklistedFiles[$group] = array_keys($list);
+        }
+
+        return $blacklistedFiles;
     }
 
     /**
@@ -356,7 +346,7 @@ class PHP_CodeCoverage_Filter
      */
     public function getWhitelist()
     {
-        return $this->whitelistedFiles;
+        return array_keys($this->whitelistedFiles);
     }
 
     /**

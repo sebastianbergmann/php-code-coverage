@@ -237,11 +237,7 @@ class PHP_CodeCoverage
             }
         }
 
-        if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
-            $newFiles = array_diff_key($data, $this->coveredFiles);
-        } else {
-            $newFiles = $data;
-        }
+        $newFiles = array_diff_key($data, $this->coveredFiles);
 
         if (count($newFiles) > 0) {
             $dead       = $this->getLinesByStatus($newFiles, -2);
@@ -489,23 +485,20 @@ class PHP_CodeCoverage
         $data = array();
 
         $uncoveredFiles = array_diff(
-          $this->filter->getWhitelist(), $this->coveredFiles
+          $this->filter->getWhitelist(), array_keys($this->coveredFiles)
         );
+
+        $processed = array();
 
         foreach ($uncoveredFiles as $uncoveredFile) {
             $this->driver->start();
             include_once $uncoveredFile;
             $coverage = $this->driver->stop();
 
-            if (isset($coverage[$uncoveredFile])) {
-                foreach ($coverage[$uncoveredFile] as $line => $flag) {
-                    if ($flag > 0) {
-                        $coverage[$uncoveredFile][$line] = -1;
-                    }
+            foreach ($coverage as $file => $fileCoverage) {
+                if (!isset($data[$file])) {
+                    $data[$file] = $fileCoverage;
                 }
-
-                $data[$uncoveredFile]               = $coverage[$uncoveredFile];
-                $this->coveredFiles[$uncoveredFile] = TRUE;
             }
         }
 

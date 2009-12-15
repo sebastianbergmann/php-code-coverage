@@ -177,6 +177,28 @@ class PHP_CodeCoverage_Util
     }
 
     /**
+     * Calculates the Change Risk Analysis Prediction Index (CRAP)
+     * for a unit of code based on its cyclomatic complexity and
+     * percentage of code coverage.
+     *
+     * @param  integer $ccn
+     * @param  float   $coverage
+     * @return float
+     */
+    public static function crap($ccn, $coverage)
+    {
+        if ($coverage == 0) {
+            return pow($ccn, 2) + $ccn;
+        }
+
+        if ($coverage >= 95) {
+            return $ccn;
+        }
+
+        return pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn;
+    }
+
+    /**
      * @param  string $directory
      * @return string
      * @throws RuntimeException

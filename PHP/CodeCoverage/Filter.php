@@ -165,9 +165,7 @@ class PHP_CodeCoverage_Filter
             );
 
             foreach ($files as $file) {
-                $this->removeFileFromBlacklist(
-                  $file->getPathName(), $group, FALSE
-                );
+                $this->removeFileFromBlacklist($file->getPathName(), $group);
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -177,23 +175,13 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a file from the blacklist.
      *
-     * @param  string  $filename
-     * @param  string  $group
-     * @param  boolean $check
-     * @throws RuntimeException
+     * @param string $filename
+     * @param string $group
      */
-    public function removeFileFromBlacklist($filename, $group = 'DEFAULT', $check = TRUE)
+    public function removeFileFromBlacklist($filename, $group = 'DEFAULT')
     {
-        if (!$check || file_exists($filename)) {
-            if (isset($this->blacklistedFiles[$group])) {
-                $filename = realpath($filename);
-
-                if (isset($this->blacklistedFiles[$group][$filename])) {
-                    unset($this->blacklistedFiles[$group][$filename]);
-                }
-            }
-        } else {
-            throw new RuntimeException($filename . ' does not exist');
+        if (isset($this->blacklistedFiles[$group][$filename])) {
+            unset($this->blacklistedFiles[$group][$filename]);
         }
     }
 
@@ -257,9 +245,7 @@ class PHP_CodeCoverage_Filter
             );
 
             foreach ($files as $file) {
-                $this->removeFileFromWhitelist(
-                  $file->getPathName(), FALSE
-                );
+                $this->removeFileFromWhitelist($file->getPathName());
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -269,20 +255,12 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a file from the whitelist.
      *
-     * @param  string  $filename
-     * @param  boolean $check
-     * @throws RuntimeException
+     * @param string $filename
      */
-    public function removeFileFromWhitelist($filename, $check = TRUE)
+    public function removeFileFromWhitelist($filename)
     {
-        if (!$check || file_exists($filename)) {
-            $filename = realpath($filename);
-
-            if (isset($this->whitelistedFiles[$filename])) {
-                unset($this->whitelistedFiles[$filename]);
-            }
-        } else {
-            throw new RuntimeException($filename . ' does not exist');
+        if (isset($this->whitelistedFiles[$filename])) {
+            unset($this->whitelistedFiles[$filename]);
         }
     }
 

@@ -167,15 +167,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers            PHP_CodeCoverage_Filter::removeFileFromBlacklist
-     * @expectedException RuntimeException
-     */
-    public function testRemovingAFileFromTheBlacklistWorks2()
-    {
-        $this->filter->removeFileFromBlacklist('/does/not/exist');
-    }
-
-    /**
      * @covers  PHP_CodeCoverage_Filter::addDirectoryToBlacklist
      * @covers  PHP_CodeCoverage_Filter::getBlacklist
      * @depends testAddingAFileToTheBlacklistWorks
@@ -259,15 +250,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->removeFileFromWhitelist($this->files[0]);
 
         $this->assertEquals(array(), $this->filter->getWhitelist());
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Filter::removeFileFromWhitelist
-     * @expectedException RuntimeException
-     */
-    public function testRemovingAFileFromTheWhitelistWorks2()
-    {
-        $this->filter->removeFileFromWhitelist('/does/not/exist');
     }
 
     /**

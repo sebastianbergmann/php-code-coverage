@@ -409,6 +409,26 @@ class PHP_CodeCoverage_Util
     }
 
     /**
+     * @param  float $a
+     * @param  float $b
+     * @return float ($a / $b) * 100
+     */
+    public static function percent($a, $b, $asString = FALSE)
+    {
+        if ($b > 0) {
+            $percent = ($a / $b) * 100;
+        } else {
+            $percent = 100;
+        }
+
+        if ($asString) {
+            return sprintf('%01.2F', $percent);
+        } else {
+            return $percent;
+        }
+    }
+
+    /**
      * Reduces the paths by cutting the longest common start path.
      *
      * For instance,

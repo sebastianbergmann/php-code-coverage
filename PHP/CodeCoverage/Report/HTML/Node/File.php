@@ -427,13 +427,15 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                           ),
                 'numMethods'           => $numMethods,
                 'numTestedMethods'     => $numTestedMethods,
-                'testedMethodsPercent' => $this->calculatePercent(
-                  $numTestedMethods, $numMethods
+                'testedMethodsPercent' => PHP_CodeCoverage_Util::percent(
+                  $numTestedMethods, $numMethods, TRUE
                 ),
                 'numExecutableLines'   => $classData['executableLines'],
                 'numExecutedLines'     => $classData['executedLines'],
-                'executedLinesPercent' => $this->calculatePercent(
-                  $classData['executedLines'], $classData['executableLines']
+                'executedLinesPercent' => PHP_CodeCoverage_Util::percent(
+                  $classData['executedLines'],
+                  $classData['executableLines'],
+                  TRUE
                 )
               ),
               $lowUpperBound,
@@ -468,9 +470,10 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                               ),
                     'numExecutableLines'   => $methodData['executableLines'],
                     'numExecutedLines'     => $methodData['executedLines'],
-                    'executedLinesPercent' => $this->calculatePercent(
+                    'executedLinesPercent' => PHP_CodeCoverage_Util::percent(
                       $methodData['executedLines'],
-                      $methodData['executableLines']
+                      $methodData['executableLines'],
+                      TRUE
                     )
                   ),
                   $lowUpperBound,

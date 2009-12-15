@@ -91,9 +91,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      */
     public function getTestedClassesPercent()
     {
-        return $this->calculatePercent(
+        return PHP_CodeCoverage_Util::percent(
           $this->getNumTestedClasses(),
-          $this->getNumClasses()
+          $this->getNumClasses(),
+          TRUE
         );
     }
 
@@ -104,9 +105,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      */
     public function getTestedMethodsPercent()
     {
-        return $this->calculatePercent(
+        return PHP_CodeCoverage_Util::percent(
           $this->getNumTestedMethods(),
-          $this->getNumMethods()
+          $this->getNumMethods(),
+          TRUE
         );
     }
 
@@ -117,9 +119,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      */
     public function getLineExecutedPercent()
     {
-        return $this->calculatePercent(
+        return PHP_CodeCoverage_Util::percent(
           $this->getNumExecutedLines(),
-          $this->getNumExecutableLines()
+          $this->getNumExecutableLines(),
+          TRUE
         );
     }
 
@@ -246,27 +249,6 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
         }
 
         return $this->cache['path'];
-    }
-
-    /**
-     * Calculates a percentage value.
-     *
-     * @param  integer $a
-     * @param  integer $b
-     * @return float   ($a / $b) * 100
-     */
-    protected function calculatePercent($a, $b)
-    {
-        if ($b > 0) {
-            $percent = ($a / $b) * 100;
-        } else {
-            $percent = 100;
-        }
-
-        return sprintf(
-          '%01.2F',
-          $percent
-        );
     }
 
     protected function doRenderItemObject(PHP_CodeCoverage_Report_HTML_Node $item, $lowUpperBound, $highLowerBound, $link = NULL, $itemClass = 'coverItem')

@@ -136,7 +136,9 @@ class PHP_CodeCoverage_Report_Clover
                     foreach ($_class['methods'] as $methodName => $method) {
                         $classStatistics['methods']++;
 
-                        $methodCount = 0;
+                        $methodCount        = 0;
+                        $methodLines        = 0;
+                        $methodLinesCovered = 0;
 
                         for ($i  = $method['startLine'];
                              $i <= $method['endLine'];
@@ -147,10 +149,12 @@ class PHP_CodeCoverage_Report_Clover
                             if (isset($files[$filename][$i])) {
                                 if ($files[$filename][$i] != -2) {
                                     $classStatistics['statements']++;
+                                    $methodLines++;
                                 }
 
                                 if (is_array($files[$filename][$i])) {
                                     $classStatistics['coveredStatements']++;
+                                    $methodLinesCovered++;
                                     $count = count($files[$filename][$i]);
                                 }
 
@@ -177,6 +181,13 @@ class PHP_CodeCoverage_Report_Clover
 
                         $lines[$method['startLine']] = array(
                           'count' => $methodCount,
+                          'crap'  => PHP_CodeCoverage_Util::crap(
+                                       $method['ccn'],
+                                       PHP_CodeCoverage_Util::percent(
+                                         $methodLinesCovered,
+                                         $methodLines
+                                       )
+                                     ),
                           'type'  => 'method',
                           'name'  => $methodName
                         );
@@ -304,6 +315,10 @@ class PHP_CodeCoverage_Report_Clover
 
                     if (isset($_data['name'])) {
                         $line->setAttribute('name', $_data['name']);
+                    }
+
+                    if (isset($_data['crap'])) {
+                        $line->setAttribute('crap', $_data['crap']);
                     }
 
                     $line->setAttribute('count', $_data['count']);

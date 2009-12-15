@@ -82,6 +82,11 @@ class PHP_CodeCoverage
     protected $processUncoveredFilesFromWhitelist = TRUE;
 
     /**
+     * @var boolean
+     */
+    protected $promoteGlobals = FALSE;
+
+    /**
      * @var mixed
      */
     protected $currentId;
@@ -440,6 +445,19 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
+     */
+    public function setPromoteGlobals($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->promoteGlobals = $flag;
+    }
+
+    /**
      * Filters lines by status.
      *
      * @param  array         $data
@@ -488,12 +506,35 @@ class PHP_CodeCoverage
           $this->filter->getWhitelist(), array_keys($this->coveredFiles)
         );
 
-        $processed = array();
+        $newVariables       = array();
+        $newVariablesNamees = array();
+        $oldVariableNames   = array();
+        $processed          = array();
+        $uncoveredFile      = NULL;
+        $variableName       = NULL;
 
         foreach ($uncoveredFiles as $uncoveredFile) {
+            if ($this->promoteGlobals) {
+                $oldVariableNames = array_keys(get_defined_vars());
+            }
+
             $this->driver->start();
             include_once $uncoveredFile;
             $coverage = $this->driver->stop();
+
+            if ($this->promoteGlobals) {
+                $newVariables = get_defined_vars();
+
+                $newVariableNames = array_diff(
+                  array_keys($newVariables), $oldVariableNames
+                );
+
+                foreach ($newVariableNames as $variableName) {
+                    if ($variableName != 'oldVariableNames') {
+                        $GLOBALS[$variableName] = $newVariables[$variableName];
+                    }
+                }
+            }
 
             foreach ($coverage as $file => $fileCoverage) {
                 if (!isset($data[$file])) {

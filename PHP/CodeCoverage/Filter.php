@@ -90,11 +90,6 @@ class PHP_CodeCoverage_Filter
     protected static $instance;
 
     /**
-     * @var boolean
-     */
-    protected $strict = FALSE;
-
-    /**
      * Returns the default instance.
      *
      * @return PHP_CodeCoverage_Filter
@@ -113,21 +108,22 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a directory to the blacklist (recursively).
      *
-     * @param  string $directory
-     * @param  string $suffix
-     * @param  string $prefix
-     * @param  string $group
+     * @param  string  $directory
+     * @param  string  $suffix
+     * @param  string  $prefix
+     * @param  string  $group
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
+    public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT', $check = TRUE)
     {
-        if (!$this->strict || file_exists($directory)) {
+        if (!$check || file_exists($directory)) {
             $files = File_Iterator_Factory::getFileIterator(
               $directory, $suffix, $prefix
             );
 
             foreach ($files as $file) {
-                $this->addFileToBlacklist($file->getPathName(), $group);
+                $this->addFileToBlacklist($file->getPathName(), $group, FALSE);
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -137,13 +133,14 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a new file to the blacklist.
      *
-     * @param  string $filename
-     * @param  string $group
+     * @param  string  $filename
+     * @param  string  $group
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function addFileToBlacklist($filename, $group = 'DEFAULT')
+    public function addFileToBlacklist($filename, $group = 'DEFAULT', $check = TRUE)
     {
-        if (!$this->strict || file_exists($filename)) {
+        if (!$check || file_exists($filename)) {
             $this->blacklistedFiles[$group][realpath($filename)] = TRUE;
         } else {
             throw new RuntimeException($filename . ' does not exist');
@@ -153,21 +150,24 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a directory from the blacklist (recursively).
      *
-     * @param  string $directory
-     * @param  string $suffix
-     * @param  string $prefix
-     * @param  string $group
+     * @param  string  $directory
+     * @param  string  $suffix
+     * @param  string  $prefix
+     * @param  string  $group
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
+    public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT', $check = TRUE)
     {
-        if (!$this->strict || file_exists($directory)) {
+        if (!$check || file_exists($directory)) {
             $files = File_Iterator_Factory::getFileIterator(
               $directory, $suffix, $prefix
             );
 
             foreach ($files as $file) {
-                $this->removeFileFromBlacklist($file->getPathName(), $group);
+                $this->removeFileFromBlacklist(
+                  $file->getPathName(), $group, FALSE
+                );
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -177,13 +177,14 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a file from the blacklist.
      *
-     * @param  string $filename
-     * @param  string $group
+     * @param  string  $filename
+     * @param  string  $group
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function removeFileFromBlacklist($filename, $group = 'DEFAULT')
+    public function removeFileFromBlacklist($filename, $group = 'DEFAULT', $check = TRUE)
     {
-        if (!$this->strict || file_exists($filename)) {
+        if (!$check || file_exists($filename)) {
             if (isset($this->blacklistedFiles[$group])) {
                 $filename = realpath($filename);
 
@@ -199,20 +200,21 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a directory to the whitelist (recursively).
      *
-     * @param  string $directory
-     * @param  string $suffix
-     * @param  string $prefix
+     * @param  string  $directory
+     * @param  string  $suffix
+     * @param  string  $prefix
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
+    public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '', $check = TRUE)
     {
-        if (!$this->strict || file_exists($directory)) {
+        if (!$check || file_exists($directory)) {
             $files = File_Iterator_Factory::getFileIterator(
               $directory, $suffix, $prefix
             );
 
             foreach ($files as $file) {
-                $this->addFileToWhitelist($file->getPathName());
+                $this->addFileToWhitelist($file->getPathName(), FALSE);
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -225,12 +227,13 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is empty (default), blacklisting is used.
      * When the whitelist is not empty, whitelisting is used.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function addFileToWhitelist($filename)
+    public function addFileToWhitelist($filename, $check = TRUE)
     {
-        if (!$this->strict || file_exists($filename)) {
+        if (!$check || file_exists($filename)) {
             $this->whitelistedFiles[realpath($filename)] = TRUE;
         } else {
             throw new RuntimeException($filename . ' does not exist');
@@ -240,20 +243,23 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a directory from the whitelist (recursively).
      *
-     * @param  string $directory
-     * @param  string $suffix
-     * @param  string $prefix
+     * @param  string  $directory
+     * @param  string  $suffix
+     * @param  string  $prefix
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
+    public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '', $check = TRUE)
     {
-        if (!$this->strict || file_exists($directory)) {
+        if (!$check || file_exists($directory)) {
             $files = File_Iterator_Factory::getFileIterator(
               $directory, $suffix, $prefix
             );
 
             foreach ($files as $file) {
-                $this->removeFileFromWhitelist($file->getPathName());
+                $this->removeFileFromWhitelist(
+                  $file->getPathName(), FALSE
+                );
             }
         } else {
             throw new RuntimeException($directory . ' does not exist');
@@ -263,12 +269,13 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a file from the whitelist.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $check
      * @throws RuntimeException
      */
-    public function removeFileFromWhitelist($filename)
+    public function removeFileFromWhitelist($filename, $check = TRUE)
     {
-        if (!$this->strict || file_exists($filename)) {
+        if (!$check || file_exists($filename)) {
             $filename = realpath($filename);
 
             if (isset($this->whitelistedFiles[$filename])) {
@@ -347,22 +354,6 @@ class PHP_CodeCoverage_Filter
     public function getWhitelist()
     {
         return array_keys($this->whitelistedFiles);
-    }
-
-    /**
-     * Sets whether or not {add|remove}*list() should check
-     * whether or not a directory or file exists.
-     *
-     * @param  boolean $flag
-     * @throws InvalidArgumentException
-     */
-    public function setStrict($flag)
-    {
-        if (is_bool($flag)) {
-            $this->strict = $flag;
-        } else {
-            throw new InvalidArgumentException;
-        }
     }
 }
 ?>

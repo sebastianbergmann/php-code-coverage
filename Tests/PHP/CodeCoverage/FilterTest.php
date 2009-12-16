@@ -201,7 +201,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testAddingFilesToTheBlacklistWorks()
     {
         $this->filter->addFilesToBlacklist(
-          File_Iterator_Factory::getFileIterator(
+          File_Iterator_Factory::getFilesAsArray(
             TEST_FILES_PATH, $suffixes = '.php'
           )
         );
@@ -305,7 +305,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testAddingFilesToTheWhitelistWorks()
     {
         $this->filter->addFilesToWhitelist(
-          File_Iterator_Factory::getFileIterator(
+          File_Iterator_Factory::getFilesAsArray(
             TEST_FILES_PATH, $suffixes = '.php'
           )
         );

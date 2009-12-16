@@ -148,15 +148,15 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Adds files to the blacklist using a a File_Iterator.
+     * Adds files to the blacklist.
      *
-     * @param File_Iterator $files
-     * @param string        $group
+     * @param array  $files
+     * @param string $group
      */
-    public function addFilesToBlacklist(File_Iterator $files, $group = 'DEFAULT')
+    public function addFilesToBlacklist(array $files, $group = 'DEFAULT')
     {
         foreach ($files as $file) {
-            $this->blacklistedFiles[$group][$file->getRealPath()] = TRUE;
+            $this->blacklistedFiles[$group][$file] = TRUE;
         }
     }
 
@@ -242,14 +242,14 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Adds files to the whitelist using a a File_Iterator.
+     * Adds files to the whitelist.
      *
-     * @param File_Iterator $files
+     * @param array $files
      */
-    public function addFilesToWhitelist(File_Iterator $files)
+    public function addFilesToWhitelist(array $files)
     {
         foreach ($files as $file) {
-            $this->whitelistedFiles[$file->getRealPath()] = TRUE;
+            $this->whitelistedFiles[$file] = TRUE;
         }
     }
 

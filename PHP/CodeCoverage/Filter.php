@@ -148,6 +148,19 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * Adds files to the blacklist using a a File_Iterator.
+     *
+     * @param File_Iterator $files
+     * @param string        $group
+     */
+    public function addFilesToBlacklist(File_Iterator $files, $group = 'DEFAULT')
+    {
+        foreach ($files as $file) {
+            $this->blacklistedFiles[$group][$file->getRealPath()] = TRUE;
+        }
+    }
+
+    /**
      * Removes a directory from the blacklist (recursively).
      *
      * @param  string  $directory
@@ -225,6 +238,18 @@ class PHP_CodeCoverage_Filter
             $this->whitelistedFiles[realpath($filename)] = TRUE;
         } else {
             throw new RuntimeException($filename . ' does not exist');
+        }
+    }
+
+    /**
+     * Adds files to the whitelist using a a File_Iterator.
+     *
+     * @param File_Iterator $files
+     */
+    public function addFilesToWhitelist(File_Iterator $files)
+    {
+        foreach ($files as $file) {
+            $this->whitelistedFiles[$file->getRealPath()] = TRUE;
         }
     }
 

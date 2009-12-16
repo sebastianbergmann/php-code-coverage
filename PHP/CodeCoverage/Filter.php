@@ -131,7 +131,7 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Adds a new file to the blacklist.
+     * Adds a file to the blacklist.
      *
      * @param  string  $filename
      * @param  string  $group
@@ -210,7 +210,7 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
-     * Adds a new file to the whitelist.
+     * Adds a file to the whitelist.
      *
      * When the whitelist is empty (default), blacklisting is used.
      * When the whitelist is not empty, whitelisting is used.
@@ -265,6 +265,8 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * Checks whether a filename is a real filename.
+     *
      * @param string $filename
      */
     public static function isFile($filename)
@@ -280,6 +282,11 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * Checks whether or not a file is filtered.
+     *
+     * When the whitelist is empty (default), blacklisting is used.
+     * When the whitelist is not empty, whitelisting is used.
+     *
      * @param  string  $filename
      * @param  array   $groups
      * @param  boolean $ignoreWhitelist
@@ -313,6 +320,8 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * Returns the list of blacklisted files.
+     *
      * @return array
      */
     public function getBlacklist()
@@ -327,6 +336,8 @@ class PHP_CodeCoverage_Filter
     }
 
     /**
+     * Returns the list of whitelisted files.
+     *
      * @return array
      */
     public function getWhitelist()

@@ -183,19 +183,21 @@ class PHP_CodeCoverage_Util
      *
      * @param  integer $ccn
      * @param  float   $coverage
-     * @return float
+     * @return string
      */
     public static function crap($ccn, $coverage)
     {
         if ($coverage == 0) {
-            return pow($ccn, 2) + $ccn;
+            return (string)pow($ccn, 2) + $ccn;
         }
 
         if ($coverage >= 95) {
-            return $ccn;
+            return (string)$ccn;
         }
 
-        return pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn;
+        return sprintf(
+          '%01.2F', pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn
+        );
     }
 
     /**

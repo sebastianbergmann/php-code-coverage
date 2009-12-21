@@ -267,7 +267,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             'testedMethodsPercent' => $item->getTestedMethodsPercent(),
             'numExecutableLines'   => $item->getNumExecutableLines(),
             'numExecutedLines'     => $item->getNumExecutedLines(),
-            'executedLinesPercent' => $item->getLineExecutedPercent()
+            'executedLinesPercent' => $item->getLineExecutedPercent(),
+            'crap'                 => $link == 'Total' ? '<acronym title="Change Risk Analysis Prediction Index">CRAP</acronym>' : ''
           ),
           $lowUpperBound,
           $highLowerBound
@@ -346,7 +347,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             'lines_executed_percent'   => $data['executedLinesPercent'] . '%',
             'lines_not_executed_width' => 100 - floor($data['executedLinesPercent']),
             'num_executable_lines'     => $data['numExecutableLines'],
-            'num_executed_lines'       => $data['numExecutedLines']
+            'num_executed_lines'       => $data['numExecutedLines'],
+            'crap'                     => isset($data['crap']) ? $data['crap'] : ''
           )
         );
 
@@ -388,7 +390,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
                  $this, $lowUpperBound, $highLowerBound, 'Total'
                ) .
                "        <tr>\n" .
-               '          <td class="tableHead" colspan="10">&nbsp;</td>' .
+               '          <td class="tableHead" colspan="11">&nbsp;</td>' .
                "\n        </tr>\n";
     }
 

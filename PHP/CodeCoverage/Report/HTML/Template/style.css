@@ -428,6 +428,15 @@ li.testIncomplete
   background-color: #fcaf3e;
 }
 
+/* CRAP */
+td.crap
+{
+  text-align: right;
+  padding-left: 10px;
+  padding-right: 20px;
+  background-color: #d3d7cf;
+}
+
 pre span.comment {
   color: #888a85;
 }

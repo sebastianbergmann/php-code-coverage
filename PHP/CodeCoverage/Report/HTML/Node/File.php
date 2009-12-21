@@ -474,7 +474,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                       $methodData['executedLines'],
                       $methodData['executableLines'],
                       TRUE
-                    )
+                    ),
+                    'crap'                 => PHP_CodeCoverage_Util::crap(
+                                                $methodData['ccn'],
+                                                PHP_CodeCoverage_Util::percent(
+                                                  $methodData['executedLines'],
+                                                  $methodData['executableLines']
+                                                )
+                                              )
                   ),
                   $lowUpperBound,
                   $highLowerBound,
@@ -818,7 +825,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                   'signature'       => $method['signature'],
                   'startLine'       => $method['startLine'],
                   'executableLines' => 0,
-                  'executedLines'   => 0
+                  'executedLines'   => 0,
+                  'ccn'             => $method['ccn']
                 );
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
@@ -840,7 +848,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'methods'         => array(),
               'startLine'       => 0,
               'executableLines' => 0,
-              'executedLines'   => 0
+              'executedLines'   => 0,
+              'ccn'             => 0
             );
         }
 
@@ -849,7 +858,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'signature'       => $function['signature'],
               'startLine'       => $function['startLine'],
               'executableLines' => 0,
-              'executedLines'   => 0
+              'executedLines'   => 0,
+              'ccn'             => $function['ccn']
             );
 
             $this->startLines[$function['startLine']] = &$this->classes['*']['methods'][$functionName];

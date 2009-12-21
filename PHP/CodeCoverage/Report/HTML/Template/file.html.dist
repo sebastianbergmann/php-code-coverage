@@ -45,12 +45,12 @@
       <table width="90%" cellpadding="2" cellspacing="1" border="0">
         <tr>
           <td class="tableHead" width="30%">&nbsp;</td>
-          <td class="tableHead" colspan="9">Coverage</td>
+          <td class="tableHead" colspan="10">Coverage</td>
         </tr>
         <tr>
           <td class="tableHead">&nbsp;</td>
           <td class="tableHead" colspan="3">Classes</td>
-          <td class="tableHead" colspan="3">Functions / Methods</td>
+          <td class="tableHead" colspan="4">Functions / Methods</td>
           <td class="tableHead" colspan="3">Lines</td>
         </tr>
 {total_item}{items}

@@ -18,6 +18,7 @@
           </td>
           <td class="coverPer{methods_level}">{methods_tested_percent}</td>
           <td class="coverNum{methods_level}">{methods_number}</td>
+          <td class="crap">{crap}</td>
           <td class="coverBar" align="center" width="100">
             <table border="0" cellspacing="0" cellpadding="1">
               <tr>

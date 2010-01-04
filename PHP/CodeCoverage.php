@@ -226,7 +226,8 @@ class PHP_CodeCoverage
         }
 
         foreach (array_keys($data) as $filename) {
-            if ((!defined('PHP_CODECOVERAGE_TESTSUITE') &&
+            if (!$this->filter->isFile($filename) ||
+                (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
                 strpos($filename, dirname(__FILE__)) === 0) ||
                 substr($filename, -17) == 'Text/Template.php' ||
                 substr($filename, -17) == 'File/Iterator.php' ||
@@ -242,21 +243,7 @@ class PHP_CodeCoverage
             }
         }
 
-        $newFiles = array_diff_key($data, $this->coveredFiles);
-
-        if (count($newFiles) > 0) {
-            $dead       = $this->getLinesByStatus($newFiles, -2);
-            $executable = $this->getLinesByStatus($newFiles, array(-1, 1));
-
-            foreach (array_keys($newFiles) as $filename) {
-                $this->coveredFiles[$filename] = TRUE;
-            }
-        } else {
-            $dead       = array();
-            $executable = array();
-        }
-
-        unset($newFiles);
+        $raw = $data;
 
         // Apply @covers filtering.
         if ($id instanceof PHPUnit_Framework_TestCase) {
@@ -288,13 +275,12 @@ class PHP_CodeCoverage
                 $this->tests[$id] = $status;
             }
 
-            $this->data[$id] = array(
-              'executed'   => $this->getLinesByStatus($data, 1),
-              'dead'       => $dead,
-              'executable' => $executable
+            $this->coveredFiles = array_unique(
+              array_merge($this->coveredFiles, array_keys($data))
             );
 
-            $this->summary = array();
+            $this->data[$id] = array('filtered' => $data, 'raw' => $raw);
+            $this->summary   = array();
         }
     }
 
@@ -321,8 +307,8 @@ class PHP_CodeCoverage
             }
         }
 
-        $this->coveredFiles = array_merge(
-          $this->coveredFiles, $that->coveredFiles
+        $this->coveredFiles = array_unique(
+          array_merge($this->coveredFiles, $that->coveredFiles)
         );
 
         $this->summary = array();
@@ -351,37 +337,31 @@ class PHP_CodeCoverage
             }
 
             foreach ($this->data as $test => $coverage) {
-                foreach ($coverage['executed'] as $file => $lines) {
+                foreach ($coverage['filtered'] as $file => $lines) {
                     foreach ($lines as $line => $flag) {
-                        if (!isset($this->summary[$file][$line][0])) {
-                            $this->summary[$file][$line] = array();
-                        }
+                        if ($flag == 1) {
+                            if (!isset($this->summary[$file][$line][0])) {
+                                $this->summary[$file][$line] = array();
+                            }
 
-                        if (isset($this->tests[$test])) {
-                            $status = $this->tests[$test];
-                        } else {
-                            $status = NULL;
-                        }
+                            if (isset($this->tests[$test])) {
+                                $status = $this->tests[$test];
+                            } else {
+                                $status = NULL;
+                            }
 
-                        $this->summary[$file][$line][] = array(
-                          'id' => $test, 'status' => $status
-                        );
+                            $this->summary[$file][$line][] = array(
+                              'id' => $test, 'status' => $status
+                            );
+                        }
                     }
                 }
 
-                foreach ($coverage['executable'] as $file => $lines) {
+                foreach ($coverage['raw'] as $file => $lines) {
                     foreach ($lines as $line => $flag) {
-                        if ($flag == -1 &&
+                        if ($flag != 1 &&
                             !isset($this->summary[$file][$line][0])) {
-                            $this->summary[$file][$line] = -1;
-                        }
-                    }
-                }
-
-                foreach ($coverage['dead'] as $file => $lines) {
-                    foreach ($lines as $line => $flag) {
-                        if (!isset($this->summary[$file][$line][0])) {
-                            $this->summary[$file][$line] = -2;
+                            $this->summary[$file][$line] = $flag;
                         }
                     }
                 }
@@ -455,44 +435,6 @@ class PHP_CodeCoverage
         }
 
         $this->promoteGlobals = $flag;
-    }
-
-    /**
-     * Filters lines by status.
-     *
-     * @param  array         $data
-     * @param  array|integer $status
-     * @return array
-     */
-    protected function getLinesByStatus(array $data, $status)
-    {
-        if (!is_array($status)) {
-            $status = array($status);
-        }
-
-        $isFileCache = array();
-        $result      = array();
-        $status      = array_flip($status);
-
-        foreach ($data as $file => $coverage) {
-            if (!isset($isFileCache[$file])) {
-                $isFileCache[$file] = $this->filter->isFile($file);
-            }
-
-            if (!$isFileCache[$file]) {
-                continue;
-            }
-
-            $result[$file] = array();
-
-            foreach ($coverage as $line => $_status) {
-                if (isset($status[$_status])) {
-                    $result[$file][$line] = $_status;
-                }
-            }
-        }
-
-        return $result;
     }
 
     /**

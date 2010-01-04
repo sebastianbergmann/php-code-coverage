@@ -206,28 +206,22 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append
-     * @covers PHP_CodeCoverage::getLinesByStatus
      */
     public function testCollect()
     {
         $this->assertAttributeEquals(
           array(
             'BankAccountTest::testBalanceIsInitiallyZero' => array(
-              'executed' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1
+              'filtered' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
+                  9 => -2
                 )
               ),
-              'dead' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                   9 => -2,
-                  25 => -2,
-                  32 => -2
-                )
-              ),
-              'executable' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                   8 => 1,
+              'raw' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
+                  9 => -2,
                   13 => -1,
                   14 => -1,
                   15 => -1,
@@ -235,41 +229,66 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
                   18 => -1,
                   22 => -1,
                   24 => -1,
+                  25 => -2,
                   29 => -1,
-                  31 => -1
+                  31 => -1,
+                  32 => -2
                 )
               )
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative' => array(
-              'executed' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+              'filtered' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
                   29 => 1
                 )
               ),
-              'dead' => array(),
-              'executable' => array()
+              'raw' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
+                  13 => 1,
+                  16 => 1,
+                  29 => 1
+                )
+              )
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative2' => array(
-              'executed' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+              'filtered' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
                   22 => 1
                 )
               ),
-              'dead' => array(),
-              'executable' => array()
+              'raw' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
+                  13 => 1,
+                  16 => 1,
+                  22 => 1
+                )
+              )
             ),
             'BankAccountTest::testDepositWithdrawMoney' => array(
-              'executed' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                   8 => 1,
+              'filtered' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
                   22 => 1,
                   24 => 1,
                   29 => 1,
                   31 => 1
                 )
               ),
-              'dead' => array(),
-              'executable' => array()
+              'raw' => array(
+                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                  8 => 1,
+                  13 => 1,
+                  14 => 1,
+                  15 => 1,
+                  18 => 1,
+                  22 => 1,
+                  24 => 1,
+                  29 => 1,
+                  31 => 1
+                )
+              )
             )
           ),
           'data',

@@ -76,13 +76,6 @@ class PHP_CodeCoverage_Filter
     protected $whitelistedFiles = array();
 
     /**
-     * List of covered files.
-     *
-     * @var array
-     */
-    protected $coveredFiles;
-
-    /**
      * Default PHP_CodeCoverage object.
      *
      * @var PHP_CodeCoverage

@@ -157,6 +157,31 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage_Util::getFunctionsInFile
+     * @covers PHP_CodeCoverage_Util::parseFile
+     */
+    public function testGetFunctionsInFile()
+    {
+        $this->assertEquals(
+          array(
+            'foo' => array (
+              'docComment' => '/**
+ * @param mixed $bar
+ */',
+              'signature' => 'function foo($bar)',
+              'startLine' => 5,
+              'endLine' => 8,
+              'ccn' => 1
+            )
+          ),
+          PHP_CodeCoverage_Util::getFunctionsInFile(
+            TEST_FILES_PATH . 'function.php',
+            FALSE
+          )
+        );
+    }
+
+    /**
      * @covers       PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers       PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredProvider

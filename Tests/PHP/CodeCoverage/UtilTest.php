@@ -96,6 +96,21 @@ if (version_compare(PHP_VERSION, '5.3', '>')) {
 class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers PHP_CodeCoverage_Util::countLines
+     */
+    public function testCountLines()
+    {
+        $this->assertEquals(
+          array(
+            'loc' => 8,
+            'cloc' => 3,
+            'ncloc' => 5
+          ),
+          PHP_CodeCoverage_Util::countLines(TEST_FILES_PATH . 'function.php')
+        );
+    }
+
+    /**
      * @covers PHP_CodeCoverage_Util::crap
      */
     public function testCrap()

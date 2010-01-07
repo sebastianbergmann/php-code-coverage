@@ -266,13 +266,11 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $ignore = FALSE;
 
         foreach ($this->codeLines as $line) {
-            $trimmedLine = trim($line);
-
-            if ($trimmedLine == '// @codeCoverageIgnoreStart') {
+            if (strpos($line, '@codeCoverageIgnoreStart') !== FALSE) {
                 $ignore = TRUE;
             }
 
-            else if ($trimmedLine == '// @codeCoverageIgnoreEnd') {
+            else if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
                 $ignore = FALSE;
             }
 

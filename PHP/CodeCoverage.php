@@ -275,6 +275,10 @@ class PHP_CodeCoverage
                 $this->tests[$id] = $status;
             }
 
+            else if ($id instanceof PHPUnit_Extensions_PhptTestCase) {
+                $id = $id->getName();
+            }
+
             $this->coveredFiles = array_unique(
               array_merge($this->coveredFiles, array_keys($data))
             );

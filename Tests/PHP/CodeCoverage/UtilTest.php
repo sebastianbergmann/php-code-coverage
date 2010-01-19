@@ -289,6 +289,75 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers PHP_CodeCoverage_Util::getPackageInformation
+     */
+    public function testGetPackageInformation()
+    {
+        $this->assertEquals(
+          array(
+            'category' => 'Foo',
+            'fullPackage' => 'Bar.Baz',
+            'namespace' => '',
+            'package' => 'Bar',
+            'subpackage' => 'Baz'
+          ),
+          PHP_CodeCoverage_Util::getPackageInformation(
+            'Foo',
+            '/**
+ * @category Foo
+ * @package Bar
+ * @subpackage Baz
+ */'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getPackageInformation
+     * @covers PHP_CodeCoverage_Util::arrayToName
+     */
+    public function testGetPackageInformation2()
+    {
+        $this->assertEquals(
+          array(
+            'category' => 'Foo',
+            'fullPackage' => 'Bar.Baz',
+            'namespace' => 'Foo',
+            'package' => 'Bar',
+            'subpackage' => 'Baz'
+          ),
+          PHP_CodeCoverage_Util::getPackageInformation(
+            'Foo\\Bar',
+            '/**
+ * @category Foo
+ * @package Bar
+ * @subpackage Baz
+ */'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getPackageInformation
+     */
+    public function testGetPackageInformation3()
+    {
+        $this->assertEquals(
+          array(
+            'category' => '',
+            'fullPackage' => '',
+            'namespace' => '',
+            'package' => '',
+            'subpackage' => ''
+          ),
+          PHP_CodeCoverage_Util::getPackageInformation(
+            'Foo',
+            ''
+          )
+        );
+    }
+
     public function getLinesToBeCoveredProvider()
     {
         return array(

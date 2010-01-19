@@ -162,6 +162,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $this->highlight     = $highlight;
         $this->yui           = $yui;
         $this->codeLines     = $this->loadFile($path);
+        $this->ignoredLines  = PHP_CodeCoverage_Util::getLinesToBeIgnored(
+                                 $path
+                               );
 
         $this->calculateStatistics();
     }
@@ -261,22 +264,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             );
         }
 
-        $i      = 1;
-        $lines  = '';
-        $ignore = FALSE;
+        $i     = 1;
+        $lines = '';
 
         foreach ($this->codeLines as $line) {
-            if (strpos($line, '@codeCoverageIgnoreStart') !== FALSE) {
-                $ignore = TRUE;
-            }
-
-            else if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
-                $ignore = FALSE;
-            }
-
             $css = '';
 
-            if (!$ignore && isset($this->executedLines[$i])) {
+            if (!isset($this->ignoredLines[$i]) &&
+                 isset($this->executedLines[$i])) {
                 $count = '';
 
                 // Array: Line is executable and was executed.
@@ -517,8 +512,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $this->processClasses();
         $this->processFunctions();
 
-        $ignoreStart = -1;
-        $lineNumber  = 1;
+        $lineNumber = 1;
 
         foreach ($this->codeLines as $line) {
             if (isset($this->startLines[$lineNumber])) {
@@ -530,16 +524,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 // Start line of a method.
                 else {
                     $currentMethod = &$this->startLines[$lineNumber];
-                }
-            }
-
-            if (strpos($line, '@codeCoverageIgnore') !== FALSE) {
-                if (strpos($line, '@codeCoverageIgnoreStart') !== FALSE) {
-                    $ignoreStart = $lineNumber;
-                }
-
-                else if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
-                    $ignoreStart = -1;
                 }
             }
 
@@ -572,7 +556,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
                     $this->numExecutableLines++;
 
-                    if ($ignoreStart != -1 && $lineNumber > $ignoreStart) {
+                    if (isset($this->ignoredLines[$lineNumber])) {
                         if (isset($currentClass)) {
                             $currentClass['executedLines']++;
                         }

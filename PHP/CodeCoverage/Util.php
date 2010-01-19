@@ -478,7 +478,7 @@ class PHP_CodeCoverage_Util
         $paths      = array_keys($files);
 
         if (count($files) == 1) {
-            $commonPath                 = dirname($paths[0]);
+            $commonPath                 = dirname($paths[0]) . '/';
             $files[basename($paths[0])] = $files[$paths[0]];
 
             unset($files[$paths[0]]);

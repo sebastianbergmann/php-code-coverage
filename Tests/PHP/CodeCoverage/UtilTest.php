@@ -358,6 +358,62 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers PHP_CodeCoverage_Util::reducePaths
+     */
+    public function testReducePaths()
+    {
+        $files = array(
+          '/home/sb/Money/Money.php'    => array(),
+          '/home/sb/Money/MoneyBag.php' => array()
+        );
+
+        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
+
+        $this->assertEquals(
+          array(
+            'Money.php'    => array(),
+            'MoneyBag.php' => array()
+          ),
+          $files
+        );
+
+        $this->assertEquals('/home/sb/Money/', $commonPath);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::reducePaths
+     */
+    public function testReducePaths2()
+    {
+        $files = array();
+
+        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
+
+        $this->assertEquals('.', $commonPath);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::reducePaths
+     */
+    public function testReducePaths3()
+    {
+        $files = array(
+          '/home/sb/Money/Money.php' => array()
+        );
+
+        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
+
+        $this->assertEquals(
+          array(
+            'Money.php' => array()
+          ),
+          $files
+        );
+
+        $this->assertEquals('/home/sb/Money/', $commonPath);
+    }
+
     public function getLinesToBeCoveredProvider()
     {
         return array(

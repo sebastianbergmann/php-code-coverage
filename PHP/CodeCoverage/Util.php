@@ -268,11 +268,11 @@ class PHP_CodeCoverage_Util
     {
         $codeToCoverList = array();
         $result          = array();
-
+        // @codeCoverageIgnoreStart
         if (($pos = strpos($methodName, ' ')) !== FALSE) {
             $methodName = substr($methodName, 0, $pos);
         }
-
+        // @codeCoverageIgnoreEnd
         $class      = new ReflectionClass($className);
         $method     = new ReflectionMethod($className, $methodName);
         $docComment = $class->getDocComment() . $method->getDocComment();

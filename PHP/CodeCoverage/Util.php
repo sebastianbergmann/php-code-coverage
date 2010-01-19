@@ -334,7 +334,7 @@ class PHP_CodeCoverage_Util
                 }
 
                 if ($ignore) {
-                    self::$cache['getLinesToBeIgnored'][$filename][] = $lineNum;
+                    self::$cache['getLinesToBeIgnored'][$filename][$lineNum] = TRUE;
 
                     if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
                         $ignore = FALSE;

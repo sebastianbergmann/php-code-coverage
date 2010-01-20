@@ -333,14 +333,16 @@ class PHP_CodeCoverage_Util
             $lineNum = 1;
 
             foreach (file($filename) as $line) {
-                if (strpos($line, '@codeCoverageIgnoreStart') !== FALSE) {
+                $trimmedLine = trim($line);
+
+                if ($trimmedLine == '// @codeCoverageIgnoreStart') {
                     $ignore = TRUE;
                 }
 
                 if ($ignore) {
                     self::$cache['getLinesToBeIgnored'][$filename][$lineNum] = TRUE;
 
-                    if (strpos($line, '@codeCoverageIgnoreEnd') !== FALSE) {
+                    if ($trimmedLine == '// @codeCoverageIgnoreEnd') {
                         $ignore = FALSE;
                     }
                 }

@@ -70,8 +70,8 @@ class PHP_CodeCoverage_Util
      * @var array
      */
     protected static $cache = array(
-      'classesFunctionsCache' => array(),
-      'getLinesToBeIgnored'   => array()
+      'classesFunctions' => array(),
+      'ignoredLines'     => array()
     );
 
     /**
@@ -237,11 +237,11 @@ class PHP_CodeCoverage_Util
     public static function getClassesInFile($filename, $useCache = TRUE)
     {
         if (!$useCache ||
-            !isset(self::$cache['classesFunctionsCache'][$filename])) {
+            !isset(self::$cache['classesFunctions'][$filename])) {
             self::parseFile($filename);
         }
 
-        return self::$cache['classesFunctionsCache'][$filename]['classes'];
+        return self::$cache['classesFunctions'][$filename]['classes'];
     }
 
     /**
@@ -254,11 +254,11 @@ class PHP_CodeCoverage_Util
     public static function getFunctionsInFile($filename, $useCache = TRUE)
     {
         if (!$useCache ||
-            !isset(self::$cache['classesFunctionsCache'][$filename])) {
+            !isset(self::$cache['classesFunctions'][$filename])) {
             self::parseFile($filename);
         }
 
-        return self::$cache['classesFunctionsCache'][$filename]['functions'];
+        return self::$cache['classesFunctions'][$filename]['functions'];
     }
 
     /**
@@ -326,8 +326,10 @@ class PHP_CodeCoverage_Util
      */
     public static function getLinesToBeIgnored($filename)
     {
-        if (!isset(self::$cache['getLinesToBeIgnored'][$filename])) {
-            self::$cache['getLinesToBeIgnored'][$filename] = array();
+        $cache = &self::$cache['ignoredLines'];
+
+        if (!isset($cache[$filename])) {
+            $cache[$filename] = array();
 
             $ignore  = FALSE;
             $lineNum = 1;
@@ -340,7 +342,7 @@ class PHP_CodeCoverage_Util
                 }
 
                 if ($ignore) {
-                    self::$cache['getLinesToBeIgnored'][$filename][$lineNum] = TRUE;
+                    $cache[$filename][$lineNum] = TRUE;
 
                     if ($trimmedLine == '// @codeCoverageIgnoreEnd') {
                         $ignore = FALSE;
@@ -351,7 +353,7 @@ class PHP_CodeCoverage_Util
             }
         }
 
-        return self::$cache['getLinesToBeIgnored'][$filename];
+        return $cache[$filename];
     }
 
     /**
@@ -568,25 +570,24 @@ class PHP_CodeCoverage_Util
      */
     protected static function parseFile($filename)
     {
-        self::$cache['classesFunctionsCache'][$filename] = array(
+        self::$cache['classesFunctions'][$filename] = array(
           'classes' => array(), 'functions' => array()
         );
 
-        $tokens                     = token_get_all(
-                                        file_get_contents($filename)
-                                      );
-        $numTokens                  = count($tokens);
-        $blocks                     = array();
-        $line                       = 1;
-        $currentBlock               = FALSE;
-        $currentNamespace           = FALSE;
-        $currentClass               = FALSE;
-        $currentFunction            = FALSE;
-        $currentFunctionCCN         = 1;
-        $currentFunctionStartLine   = FALSE;
-        $currentDocComment          = FALSE;
-        $currentSignature           = FALSE;
-        $currentSignatureStartToken = FALSE;
+        $cache               = &self::$cache['classesFunctions'][$filename];
+        $tokens              = token_get_all(file_get_contents($filename));
+        $numTokens           = count($tokens);
+        $blocks              = array();
+        $line                = 1;
+        $currentBlock        = FALSE;
+        $namespace           = FALSE;
+        $class               = FALSE;
+        $function            = FALSE;
+        $functionCCN         = 1;
+        $functionStartLine   = FALSE;
+        $currentDocComment   = FALSE;
+        $signature           = FALSE;
+        $signatureStartToken = FALSE;
 
         for ($i = 0; $i < $numTokens; $i++) {
             if (is_string($tokens[$i])) {
@@ -594,24 +595,23 @@ class PHP_CodeCoverage_Util
 
                 if ($token == '{') {
                     if ($currentBlock == T_CLASS) {
-                        $block = $currentClass;
+                        $block = $class;
                     }
 
                     else if ($currentBlock == T_FUNCTION) {
-                        $currentSignature = '';
+                        $signature = '';
 
-                        for ($j = $currentSignatureStartToken; $j < $i; $j++) {
+                        for ($j = $signatureStartToken; $j < $i; $j++) {
                             if (is_string($tokens[$j])) {
-                                $currentSignature .= $tokens[$j];
+                                $signature .= $tokens[$j];
                             } else {
-                                $currentSignature .= $tokens[$j][1];
+                                $signature .= $tokens[$j][1];
                             }
                         }
 
-                        $currentSignature = trim($currentSignature);
-
-                        $block                      = $currentFunction;
-                        $currentSignatureStartToken = FALSE;
+                        $block               = $function;
+                        $signatureStartToken = FALSE;
+                        $signature           = trim($signature);
                     }
 
                     else {
@@ -627,7 +627,7 @@ class PHP_CodeCoverage_Util
                     $block = array_pop($blocks);
 
                     if ($block !== FALSE && $block !== NULL) {
-                        if ($block == $currentFunction) {
+                        if ($block == $function) {
                             if ($currentDocComment !== FALSE) {
                                 $docComment        = $currentDocComment;
                                 $currentDocComment = FALSE;
@@ -637,35 +637,34 @@ class PHP_CodeCoverage_Util
 
                             $tmp = array(
                               'docComment' => $docComment,
-                              'signature'  => $currentSignature,
-                              'startLine'  => $currentFunctionStartLine,
+                              'signature'  => $signature,
+                              'startLine'  => $functionStartLine,
                               'endLine'    => $line,
-                              'ccn'        => $currentFunctionCCN
+                              'ccn'        => $functionCCN
                             );
 
-                            if ($currentClass === FALSE) {
-                                self::$cache['classesFunctionsCache'][$filename]['functions'][$currentFunction] = $tmp;
+                            if ($class === FALSE) {
+                                $cache['functions'][$function] = $tmp;
                             } else {
-                                self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass]['methods'][$currentFunction] = $tmp;
+                                $cache['classes'][$class]['methods'][$function] = $tmp;
                             }
 
-                            $currentFunction          = FALSE;
-                            $currentFunctionCCN       = 1;
-                            $currentFunctionStartLine = FALSE;
-                            $currentSignature         = FALSE;
+                            $function          = FALSE;
+                            $functionCCN       = 1;
+                            $functionStartLine = FALSE;
+                            $signature         = FALSE;
                         }
 
-                        else if ($block == $currentClass) {
-                            self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass]['endLine'] = $line;
-
-                            $currentClass          = FALSE;
-                            $currentClassStartLine = FALSE;
+                        else if ($block == $class) {
+                            $cache['classes'][$class]['endLine'] = $line;
+                            $class                               = FALSE;
+                            $classStartLine                      = FALSE;
                         }
                     }
                 }
 
                 else if ($token == '?') {
-                    $currentFunctionCCN++;
+                    $functionCCN++;
                 }
 
                 continue;
@@ -673,11 +672,11 @@ class PHP_CodeCoverage_Util
 
             switch ($tokens[$i][0]) {
                 case T_NAMESPACE: {
-                    $currentNamespace = $tokens[$i+2][1];
+                    $namespace = $tokens[$i+2][1];
 
                     for ($j = $i+3; $j < $numTokens; $j += 2) {
                         if ($tokens[$j][0] == T_NS_SEPARATOR) {
-                            $currentNamespace .= '\\' . $tokens[$j+1][1];
+                            $namespace .= '\\' . $tokens[$j+1][1];
                         } else {
                             break;
                         }
@@ -700,11 +699,10 @@ class PHP_CodeCoverage_Util
                 case T_CLASS: {
                     $currentBlock = T_CLASS;
 
-                    if ($currentNamespace === FALSE) {
-                        $currentClass = $tokens[$i+2][1];
+                    if ($namespace === FALSE) {
+                        $class = $tokens[$i+2][1];
                     } else {
-                        $currentClass = $currentNamespace . '\\' .
-                                        $tokens[$i+2][1];
+                        $class = $namespace . '\\' . $tokens[$i+2][1];
                     }
 
                     if ($currentDocComment !== FALSE) {
@@ -714,7 +712,7 @@ class PHP_CodeCoverage_Util
                         $docComment = '';
                     }
 
-                    self::$cache['classesFunctionsCache'][$filename]['classes'][$currentClass] = array(
+                    $cache['classes'][$class] = array(
                       'methods'    => array(),
                       'docComment' => $docComment,
                       'startLine'  => $line
@@ -732,14 +730,13 @@ class PHP_CodeCoverage_Util
                         continue;
                     }
 
-                    $currentBlock             = T_FUNCTION;
-                    $currentFunctionStartLine = $line;
-
-                    $done                       = FALSE;
-                    $currentSignatureStartToken = $i - 1;
+                    $currentBlock        = T_FUNCTION;
+                    $functionStartLine   = $line;
+                    $done                = FALSE;
+                    $signatureStartToken = $i - 1;
 
                     do {
-                        switch ($tokens[$currentSignatureStartToken][0]) {
+                        switch ($tokens[$signatureStartToken][0]) {
                             case T_ABSTRACT:
                             case T_FINAL:
                             case T_PRIVATE:
@@ -747,12 +744,12 @@ class PHP_CodeCoverage_Util
                             case T_PROTECTED:
                             case T_STATIC:
                             case T_WHITESPACE: {
-                                $currentSignatureStartToken--;
+                                $signatureStartToken--;
                             }
                             break;
 
                             default: {
-                                $currentSignatureStartToken++;
+                                $signatureStartToken++;
                                 $done = TRUE;
                             }
                         }
@@ -767,11 +764,10 @@ class PHP_CodeCoverage_Util
                         $functionName = $tokens[$i+3][1];
                     }
 
-                    if ($currentNamespace === FALSE) {
-                        $currentFunction = $functionName;
+                    if ($namespace === FALSE) {
+                        $function = $functionName;
                     } else {
-                        $currentFunction = $currentNamespace . '\\' .
-                                           $functionName;
+                        $function = $namespace . '\\' . $functionName;
                     }
                 }
                 break;
@@ -792,7 +788,7 @@ class PHP_CodeCoverage_Util
                 case T_LOGICAL_AND:
                 case T_BOOLEAN_OR:
                 case T_LOGICAL_OR: {
-                    $currentFunctionCCN++;
+                    $functionCCN++;
                 }
                 break;
             }

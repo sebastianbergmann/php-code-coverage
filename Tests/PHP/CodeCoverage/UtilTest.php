@@ -127,11 +127,11 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            'loc' => 8,
-            'cloc' => 3,
-            'ncloc' => 5
+            'loc' => 20,
+            'cloc' => 6,
+            'ncloc' => 14
           ),
-          PHP_CodeCoverage_Util::countLines(TEST_FILES_PATH . 'function.php')
+          PHP_CodeCoverage_Util::countLines(TEST_FILES_PATH . 'source.php')
         );
     }
 
@@ -204,18 +204,18 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
-            'foo' => array (
+            'bar\\baz\\foo' => array (
               'docComment' => '/**
  * @param mixed $bar
  */',
-              'signature' => 'function foo($bar)',
-              'startLine' => 5,
-              'endLine' => 8,
-              'ccn' => 1
+              'signature' => 'function &foo($bar)',
+              'startLine' => 14,
+              'endLine' => 20,
+              'ccn' => 2
             )
           ),
           PHP_CodeCoverage_Util::getFunctionsInFile(
-            TEST_FILES_PATH . 'function.php',
+            TEST_FILES_PATH . 'source.php',
             FALSE
           )
         );

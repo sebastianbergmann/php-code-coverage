@@ -45,6 +45,7 @@
  */
 
 require_once 'PHP/CodeCoverage/Util.php';
+@include_once 'vfsStream/vfsStream.php';
 
 if (!defined('TEST_FILES_PATH')) {
     define(
@@ -95,6 +96,12 @@ if (version_compare(PHP_VERSION, '5.3', '>')) {
  */
 class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        vfsStreamWrapper::register();
+        vfsStreamWrapper::setRoot(new vfsStreamDirectory('UtilTest'));
+    }
+
     /**
      * @covers PHP_CodeCoverage_Util::countLines
      */
@@ -412,6 +419,52 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('/home/sb/Money/', $commonPath);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getDirectory
+     */
+    public function testGetDirectory()
+    {
+        if (!class_exists('vfsStreamWrapper')) {
+            $this->markTestSkipped('vfsStream is not installed');
+        }
+
+        $this->assertEquals(
+          vfsStream::url('UtilTest') . '/',
+          PHP_CodeCoverage_Util::getDirectory(vfsStream::url('UtilTest'))
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getDirectory
+     */
+    public function testGetDirectory2()
+    {
+        if (!class_exists('vfsStreamWrapper')) {
+            $this->markTestSkipped('vfsStream is not installed');
+        }
+
+        PHP_CodeCoverage_Util::getDirectory(
+          vfsStream::url('UtilTest') . '/report'
+        );
+
+        $this->assertTrue(vfsStreamWrapper::getRoot()->hasChild('report'));
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getDirectory
+     * @expectedException RuntimeException
+     */
+    public function testGetDirectory3()
+    {
+        if (!class_exists('vfsStreamWrapper')) {
+            $this->markTestSkipped('vfsStream is not installed');
+        }
+
+        PHP_CodeCoverage_Util::getDirectory(
+          vfsStream::url('/not/existing/path')
+        );
     }
 
     public function getLinesToBeCoveredProvider()

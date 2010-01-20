@@ -211,16 +211,20 @@ class PHP_CodeCoverage_Util
             $directory .= DIRECTORY_SEPARATOR;
         }
 
-        if (is_dir($directory) || mkdir($directory, 0777, TRUE)) {
+        if (is_dir($directory)) {
             return $directory;
-        } else {
-            throw new RuntimeException(
-              sprintf(
-                'Directory "%s" does not exist.',
-                $directory
-              )
-            );
         }
+
+        if (mkdir($directory, 0777, TRUE)) {
+            return $directory;
+        }
+
+        throw new RuntimeException(
+          sprintf(
+            'Directory "%s" does not exist.',
+            $directory
+          )
+        );
     }
 
     /**

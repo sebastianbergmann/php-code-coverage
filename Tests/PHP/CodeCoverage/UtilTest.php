@@ -103,6 +103,24 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage_Util::buildDirectoryStructure
+     */
+    public function testBuildDirectoryStructure()
+    {
+        $this->assertEquals(
+          array(
+            'src' => array(
+              'Money.php/f' => array(),
+              'MoneyBag.php/f' => array()
+            )
+          ),
+          PHP_CodeCoverage_Util::buildDirectoryStructure(
+            array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
+          )
+        );
+    }
+
+    /**
      * @covers PHP_CodeCoverage_Util::countLines
      */
     public function testCountLines()

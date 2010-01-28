@@ -67,17 +67,15 @@ class PHP_CodeCoverage_Report_Clover
      */
     public function process(PHP_CodeCoverage $coverage, $target = NULL, $name = NULL)
     {
-        $time = time();
-
         $document = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = TRUE;
 
         $root = $document->createElement('coverage');
-        $root->setAttribute('generated', $time);
+        $root->setAttribute('generated', $_SERVER['REQUEST_TIME']);
         $document->appendChild($root);
 
         $project = $document->createElement('project');
-        $project->setAttribute('timestamp', $time);
+        $project->setAttribute('timestamp', $_SERVER['REQUEST_TIME']);
 
         if (is_string($name)) {
             $project->setAttribute('name', $name);

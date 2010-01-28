@@ -409,7 +409,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             'num_executable_lines'   => $this->getNumExecutableLines(),
             'num_executed_lines'     => $this->getNumExecutedLines(),
             'lines_executed_percent' => $this->getLineExecutedPercent(),
-            'date'                   => date('D M j G:i:s T Y'),
+            'date'                   => date(
+                                          'D M j G:i:s T Y',
+                                          $_SERVER['REQUEST_TIME']
+                                        ),
             'version'                => '@package_version@',
             'php_version'            => PHP_VERSION
           )

@@ -88,57 +88,6 @@
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
    </dir>
-   <dir name="Tests">
-    <dir name="_files">
-     <file baseinstalldir="/" name="BankAccount.php" role="test"/>
-     <file baseinstalldir="/" name="BankAccountTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageClassExtendedTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageClassTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageMethodTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageNoneTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageNotPrivateTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageNotProtectedTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageNotPublicTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoveragePrivateTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoverageProtectedTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoveragePublicTest.php" role="test"/>
-     <file baseinstalldir="/" name="CoveredClass.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageClassExtendedTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageClassTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageMethodTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageNotPrivateTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageNotProtectedTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageNotPublicTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoveragePrivateTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoverageProtectedTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoveragePublicTest.php" role="test"/>
-     <file baseinstalldir="/" name="NamespaceCoveredClass.php" role="test"/>
-     <file baseinstalldir="/" name="NotExistingCoveredElementTest.php" role="test"/>
-     <file baseinstalldir="/" name="source_with_ignore.php" role="test"/>
-     <file baseinstalldir="/" name="source_without_ignore.php" role="test"/>
-    </dir>
-    <dir name="PHP">
-     <dir name="CodeCoverage">
-      <dir name="Report">
-       <file baseinstalldir="/" name="CloverTest.php" role="test">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
-      </dir>
-      <file baseinstalldir="/" name="FilterTest.php" role="test">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="UtilTest.php" role="test">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-     </dir>
-     <file baseinstalldir="/" name="CodeCoverageTest.php" role="test">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-    </dir>
-    <file baseinstalldir="/" name="TestCase.php" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-   </dir>
   </dir>
  </contents>
  <dependencies>

@@ -127,11 +127,34 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
+            'loc' => 18,
+            'cloc' => 6,
+            'ncloc' => 12
+          ),
+          PHP_CodeCoverage_Util::countLines(
+            TEST_FILES_PATH . 'source_without_namespace.php'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::countLines
+     */
+    public function testCountLines2()
+    {
+        if (!version_compare(PHP_VERSION, '5.3.0', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
             'loc' => 20,
             'cloc' => 6,
             'ncloc' => 14
           ),
-          PHP_CodeCoverage_Util::countLines(TEST_FILES_PATH . 'source.php')
+          PHP_CodeCoverage_Util::countLines(
+            TEST_FILES_PATH . 'source_with_namespace.php'
+          )
         );
     }
 
@@ -204,6 +227,35 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
           array(
+            'foo' => array (
+              'docComment' => '/**
+ * @param mixed $bar
+ */',
+              'signature' => 'function &foo($bar)',
+              'startLine' => 12,
+              'endLine' => 18,
+              'ccn' => 2
+            )
+          ),
+          PHP_CodeCoverage_Util::getFunctionsInFile(
+            TEST_FILES_PATH . 'source_without_namespace.php',
+            FALSE
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Util::getFunctionsInFile
+     * @covers PHP_CodeCoverage_Util::parseFile
+     */
+    public function testGetFunctionsInFile2()
+    {
+        if (!version_compare(PHP_VERSION, '5.3.0', '>')) {
+            $this->markTestSkipped('PHP 5.3 (or later) is required.');
+        }
+
+        $this->assertEquals(
+          array(
             'bar\\baz\\foo' => array (
               'docComment' => '/**
  * @param mixed $bar
@@ -215,7 +267,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             )
           ),
           PHP_CodeCoverage_Util::getFunctionsInFile(
-            TEST_FILES_PATH . 'source.php',
+            TEST_FILES_PATH . 'source_with_namespace.php',
             FALSE
           )
         );

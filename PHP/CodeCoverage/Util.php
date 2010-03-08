@@ -808,7 +808,7 @@ class PHP_CodeCoverage_Util
         if (strpos($coveredElement, '::') !== FALSE) {
             list($className, $methodName) = explode('::', $coveredElement);
 
-            if ($methodName{0} == '<') {
+            if ($methodName[0] == '<') {
                 $classes = array($className);
 
                 foreach ($classes as $className) {
@@ -825,7 +825,7 @@ class PHP_CodeCoverage_Util
 
                     $class   = new ReflectionClass($className);
                     $methods = $class->getMethods();
-                    $inverse = isset($methodName{1}) && $methodName{1} == '!';
+                    $inverse = isset($methodName[1]) && $methodName[1] == '!';
 
                     if (strpos($methodName, 'protected')) {
                         $visibility = 'isProtected';

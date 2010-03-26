@@ -145,11 +145,12 @@ class PHP_CodeCoverage_Filter
      *
      * @param array  $files
      * @param string $group
+     * @param  boolean $check
      */
-    public function addFilesToBlacklist(array $files, $group = 'DEFAULT')
+    public function addFilesToBlacklist(array $files, $group = 'DEFAULT', $check = TRUE)
     {
         foreach ($files as $file) {
-            $this->blacklistedFiles[$group][$file] = TRUE;
+            $this->addFileToBlacklist($file, $group, $check);
         }
     }
 
@@ -238,11 +239,12 @@ class PHP_CodeCoverage_Filter
      * Adds files to the whitelist.
      *
      * @param array $files
+     * @param  boolean $check
      */
-    public function addFilesToWhitelist(array $files)
+    public function addFilesToWhitelist(array $files, $check = TRUE)
     {
         foreach ($files as $file) {
-            $this->whitelistedFiles[$file] = TRUE;
+            $this->addFileToWhitelist($file, TRUE);
         }
     }
 

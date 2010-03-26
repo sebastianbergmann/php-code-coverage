@@ -187,8 +187,8 @@ class PHP_CodeCoverage_Filter
      */
     public function removeFileFromBlacklist($filename, $group = 'DEFAULT')
     {
-        if (isset($this->blacklistedFiles[$group][$filename])) {
-            unset($this->blacklistedFiles[$group][$filename]);
+        if (isset($this->blacklistedFiles[$group][realpath($filename)])) {
+            unset($this->blacklistedFiles[$group][realpath($filename)]);
         }
     }
 
@@ -279,8 +279,8 @@ class PHP_CodeCoverage_Filter
      */
     public function removeFileFromWhitelist($filename)
     {
-        if (isset($this->whitelistedFiles[$filename])) {
-            unset($this->whitelistedFiles[$filename]);
+        if (isset($this->whitelistedFiles[realpath($filename)])) {
+            unset($this->whitelistedFiles[realpath($filename)]);
         }
     }
 

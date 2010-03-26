@@ -74,6 +74,11 @@
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
+     <dir name="TextUI">
+      <file baseinstalldir="/" name="Command.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
      <file baseinstalldir="/" name="Driver.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
@@ -88,6 +93,16 @@
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
    </dir>
+   <file baseinstalldir="/" name="phpcov.php" role="script">
+    <tasks:replace from="/usr/bin/env php" to="php_bin" type="pear-config"/>
+    <tasks:replace from="@php_bin@" to="php_bin" type="pear-config" />
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" name="phpcov.bat" role="script">
+    <tasks:replace from="@php_bin@" to="php_bin" type="pear-config" />
+    <tasks:replace from="@bin_dir@" to="bin_dir" type="pear-config" />
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
   </dir>
  </contents>
  <dependencies>
@@ -98,6 +113,11 @@
    <pearinstaller>
     <min>1.8.1</min>
    </pearinstaller>
+   <package>
+    <name>ConsoleTools</name>
+    <channel>components.ez.no</channel>
+    <min>1.6</min>
+   </package>
    <package>
     <name>File_Iterator</name>
     <channel>pear.phpunit.de</channel>
@@ -116,5 +136,21 @@
    </extension>
   </optional>
  </dependencies>
- <phprelease/>
+ <phprelease>
+  <installconditions>
+   <os>
+    <name>windows</name>
+   </os>
+  </installconditions>
+  <filelist>
+   <install as="phpcov" name="phpcov.php" />
+   <install as="phpcov.bat" name="phpcov.bat" />
+  </filelist>
+ </phprelease>
+ <phprelease>
+  <filelist>
+   <install as="phpcov" name="phpcov.php" />
+   <ignore name="phpcov.bat" />
+  </filelist>
+ </phprelease>
 </package>

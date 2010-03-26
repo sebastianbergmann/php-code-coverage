@@ -69,4 +69,3 @@ interface PHP_CodeCoverage_Driver
      */
     public function stop();
 }
-?>

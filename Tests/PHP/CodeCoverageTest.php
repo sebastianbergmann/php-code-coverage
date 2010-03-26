@@ -396,4 +396,3 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         );
     }
 }
-?>

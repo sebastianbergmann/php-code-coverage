@@ -910,4 +910,3 @@ class PHP_CodeCoverage_Util
         return $codeToCoverList;
     }
 }
-?>

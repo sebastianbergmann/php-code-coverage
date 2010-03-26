@@ -84,4 +84,3 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
         // @codeCoverageIgnoreEnd
     }
 }
-?>

@@ -645,4 +645,3 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 }
-?>

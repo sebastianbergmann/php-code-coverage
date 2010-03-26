@@ -448,4 +448,3 @@ class PHP_CodeCoverage_Report_Clover
         }
     }
 }
-?>

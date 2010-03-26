@@ -157,4 +157,3 @@ class PHP_CodeCoverage_Report_HTML
         }
     }
 }
-?>

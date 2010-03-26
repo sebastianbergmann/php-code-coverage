@@ -492,4 +492,3 @@ class PHP_CodeCoverage
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
     }
 }
-?>

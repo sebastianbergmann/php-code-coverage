@@ -482,4 +482,3 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
 
 require_once 'PHP/CodeCoverage/Report/HTML/Node/Directory.php';
 require_once 'PHP/CodeCoverage/Report/HTML/Node/File.php';
-?>

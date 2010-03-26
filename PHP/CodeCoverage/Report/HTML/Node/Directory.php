@@ -396,4 +396,3 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
         return $result;
     }
 }
-?>

@@ -388,4 +388,3 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->isFiltered('foo', array(), NULL);
     }
 }
-?>

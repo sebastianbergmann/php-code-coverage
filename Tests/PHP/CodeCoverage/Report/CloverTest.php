@@ -83,4 +83,3 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
         );
     }
 }
-?>

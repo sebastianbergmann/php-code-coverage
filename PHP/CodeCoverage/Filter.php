@@ -363,4 +363,3 @@ class PHP_CodeCoverage_Filter
         return array_keys($this->whitelistedFiles);
     }
 }
-?>

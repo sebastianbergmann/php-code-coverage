@@ -34,4 +34,3 @@ class CoveredClass extends CoveredParentClass
         $this->protectedMethod();
     }
 }
-

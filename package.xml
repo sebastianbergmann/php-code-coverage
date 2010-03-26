@@ -73,6 +73,9 @@
       <file baseinstalldir="/" name="Clover.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
+      <file baseinstalldir="/" name="HTML.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
      </dir>
      <dir name="TextUI">
       <file baseinstalldir="/" name="Command.php" role="php">

@@ -146,15 +146,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers            PHP_CodeCoverage_Filter::addFileToBlacklist
-     * @expectedException RuntimeException
-     */
-    public function testAddingAFileToTheBlacklistWorks3()
-    {
-        $this->filter->addFileToBlacklist('/does/not/exist');
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Filter::removeFileFromBlacklist
      * @covers PHP_CodeCoverage_Filter::getBlacklist
      */
@@ -184,16 +175,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Filter::addDirectoryToBlacklist
-     * @expectedException RuntimeException
-     * @depends           testAddingAFileToTheBlacklistWorks
-     */
-    public function testAddingADirectoryToTheBlacklistWorks2()
-    {
-        $this->filter->addDirectoryToBlacklist('/does/not/exist');
     }
 
     /**
@@ -233,15 +214,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers            PHP_CodeCoverage_Filter::removeDirectoryFromBlacklist
-     * @expectedException RuntimeException
-     */
-    public function testRemovingADirectoryFromTheBlacklistWorks2()
-    {
-        $this->filter->removeDirectoryFromBlacklist('/does/not/exist');
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Filter::addFileToWhitelist
      * @covers PHP_CodeCoverage_Filter::getWhitelist
      */
@@ -252,15 +224,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           array($this->files[0]), $this->filter->getWhitelist()
         );
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Filter::addFileToWhitelist
-     * @expectedException RuntimeException
-     */
-    public function testAddingAFileToTheWhitelistWorks2()
-    {
-        $this->filter->addFileToWhitelist('/does/not/exist');
     }
 
     /**
@@ -288,16 +251,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Filter::addDirectoryToWhitelist
-     * @depends           testAddingAFileToTheWhitelistWorks
-     * @expectedException RuntimeException
-     */
-    public function testAddingADirectoryToTheWhitelistWorks2()
-    {
-        $this->filter->addDirectoryToWhitelist('/does/not/exist');
     }
 
     /**
@@ -329,15 +282,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->removeDirectoryFromWhitelist(TEST_FILES_PATH);
 
         $this->assertEquals(array(), $this->filter->getWhitelist());
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Filter::removeDirectoryFromWhitelist
-     * @expectedException RuntimeException
-     */
-    public function testRemovingADirectoryFromTheWhitelistWorks2()
-    {
-        $this->filter->removeDirectoryFromWhitelist('/does/not/exist');
     }
 
     /**

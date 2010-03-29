@@ -75,8 +75,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
     /**
      * Constructor.
      *
-     * @param  string                            $name
-     * @param  PHP_CodeCoverage_Report_HTML_Node $parent
+     * @param string                            $name
+     * @param PHP_CodeCoverage_Report_HTML_Node $parent
      */
     public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent = NULL)
     {
@@ -395,9 +395,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
     }
 
     /**
-     * @param  Text_Template $template
-     * @param  string                $title
-     * @param  string                $charset
+     * @param Text_Template $template
+     * @param string        $title
+     * @param string        $charset
      */
     protected function setTemplateVars(Text_Template $template, $title, $charset)
     {

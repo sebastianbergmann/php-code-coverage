@@ -67,14 +67,14 @@ class PHP_CodeCoverage_Report_HTML
     public static $templatePath;
 
     /**
-     * @param  PHP_CodeCoverage $coverage
-     * @param  string           $target
-     * @param  string           $title
-     * @param  string           $charset
-     * @param  boolean          $yui
-     * @param  boolean          $highlight
-     * @param  integer          $lowUpperBound
-     * @param  integer          $highLowerBound
+     * @param PHP_CodeCoverage $coverage
+     * @param string           $target
+     * @param string           $title
+     * @param string           $charset
+     * @param boolean          $yui
+     * @param boolean          $highlight
+     * @param integer          $lowUpperBound
+     * @param integer          $highLowerBound
      */
     public function process(PHP_CodeCoverage $coverage, $target, $title = '', $charset = 'ISO-8859-1', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70)
     {

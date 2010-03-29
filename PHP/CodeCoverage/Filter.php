@@ -101,10 +101,10 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a directory to the blacklist (recursively).
      *
-     * @param  string  $directory
-     * @param  string  $suffix
-     * @param  string  $prefix
-     * @param  string  $group
+     * @param string $directory
+     * @param string $suffix
+     * @param string $prefix
+     * @param string $group
      */
     public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
     {
@@ -120,8 +120,8 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a file to the blacklist.
      *
-     * @param  string  $filename
-     * @param  string  $group
+     * @param string $filename
+     * @param string $group
      */
     public function addFileToBlacklist($filename, $group = 'DEFAULT')
     {
@@ -144,10 +144,10 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a directory from the blacklist (recursively).
      *
-     * @param  string  $directory
-     * @param  string  $suffix
-     * @param  string  $prefix
-     * @param  string  $group
+     * @param string $directory
+     * @param string $suffix
+     * @param string $prefix
+     * @param string $group
      */
     public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
     {
@@ -178,9 +178,9 @@ class PHP_CodeCoverage_Filter
     /**
      * Adds a directory to the whitelist (recursively).
      *
-     * @param  string  $directory
-     * @param  string  $suffix
-     * @param  string  $prefix
+     * @param string $directory
+     * @param string $suffix
+     * @param string $prefix
      */
     public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
     {
@@ -199,7 +199,7 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is empty (default), blacklisting is used.
      * When the whitelist is not empty, whitelisting is used.
      *
-     * @param  string  $filename
+     * @param string $filename
      */
     public function addFileToWhitelist($filename)
     {
@@ -221,9 +221,9 @@ class PHP_CodeCoverage_Filter
     /**
      * Removes a directory from the whitelist (recursively).
      *
-     * @param  string  $directory
-     * @param  string  $suffix
-     * @param  string  $prefix
+     * @param string $directory
+     * @param string $suffix
+     * @param string $prefix
      */
     public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
     {

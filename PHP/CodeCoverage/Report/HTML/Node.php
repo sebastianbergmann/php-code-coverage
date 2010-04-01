@@ -477,7 +477,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      */
-    abstract public function render($target, $title, $charset = 'ISO-8859-1', $lowUpperBound = 35, $highLowerBound = 70);
+    abstract public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70);
 }
 
 require_once 'PHP/CodeCoverage/Report/HTML/Node/Directory.php';

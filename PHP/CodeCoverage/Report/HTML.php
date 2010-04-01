@@ -76,7 +76,7 @@ class PHP_CodeCoverage_Report_HTML
      * @param integer          $lowUpperBound
      * @param integer          $highLowerBound
      */
-    public function process(PHP_CodeCoverage $coverage, $target, $title = '', $charset = 'ISO-8859-1', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70)
+    public function process(PHP_CodeCoverage $coverage, $target, $title = '', $charset = 'UTF-8', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70)
     {
         self::$templatePath = sprintf(
           '%s%sHTML%sTemplate%s',

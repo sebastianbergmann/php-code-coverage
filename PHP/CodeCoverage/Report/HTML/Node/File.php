@@ -248,7 +248,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      */
-    public function render($target, $title, $charset = 'ISO-8859-1', $lowUpperBound = 35, $highLowerBound = 70)
+    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70)
     {
         if ($this->yui) {
             $template = new Text_Template(

@@ -132,6 +132,7 @@ class PHP_CodeCoverage_Report_HTML
                       );
 
         $this->addItems($root, $items, $files);
+        $classes = $this->classes($root);
 
         $root->render(
           $target,
@@ -140,6 +141,8 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['lowUpperBound'],
           $this->options['highLowerBound']
         );
+
+        $this->classCoverageDistributionChart($classes, $target);
 
         $this->copyFiles($target);
     }

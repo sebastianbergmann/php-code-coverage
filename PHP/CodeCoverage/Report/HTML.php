@@ -105,6 +105,10 @@ class PHP_CodeCoverage_Report_HTML
             $options['highLowerBound'] = 70;
         }
 
+        if (!isset($options['generator'])) {
+            $options['generator'] = '';
+        }
+
         $this->options = $options;
 
         self::$templatePath = sprintf(
@@ -139,7 +143,8 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['title'],
           $this->options['charset'],
           $this->options['lowUpperBound'],
-          $this->options['highLowerBound']
+          $this->options['highLowerBound'],
+          $this->options['generator']
         );
 
         $this->classCoverageDistributionChart($classes, $target);

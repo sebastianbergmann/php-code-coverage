@@ -329,16 +329,22 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @param string  $charset
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param string  $generator
      */
-    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70)
+    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
     {
         $this->doRender(
-          $target, $title, $charset, $lowUpperBound, $highLowerBound
+          $target, $title, $charset, $lowUpperBound, $highLowerBound, $generator
         );
 
         foreach ($this->children as $child) {
             $child->render(
-              $target, $title, $charset, $lowUpperBound, $highLowerBound
+              $target,
+              $title,
+              $charset,
+              $lowUpperBound,
+              $highLowerBound,
+              $generator
             );
         }
 
@@ -351,8 +357,9 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @param string  $charset
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param string  $generator
      */
-    protected function doRender($target, $title, $charset, $lowUpperBound, $highLowerBound)
+    protected function doRender($target, $title, $charset, $lowUpperBound, $highLowerBound, $generator)
     {
         $cleanId = PHP_CodeCoverage_Util::getSafeFilename($this->getId());
         $file    = $target . $cleanId . '.html';
@@ -361,7 +368,7 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
           PHP_CodeCoverage_Report_HTML::$templatePath . 'directory.html'
         );
 
-        $this->setTemplateVars($template, $title, $charset);
+        $this->setTemplateVars($template, $title, $charset, $generator);
 
         $template->setVar(
           array(

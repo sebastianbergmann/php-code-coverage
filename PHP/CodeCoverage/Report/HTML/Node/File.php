@@ -247,8 +247,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param string  $charset
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param string  $generator
      */
-    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70)
+    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
     {
         if ($this->yui) {
             $template = new Text_Template(
@@ -483,7 +484,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             }
         }
 
-        $this->setTemplateVars($template, $title, $charset);
+        $this->setTemplateVars($template, $title, $charset, $generator);
 
         $template->setVar(
           array(

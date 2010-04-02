@@ -398,8 +398,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      * @param Text_Template $template
      * @param string        $title
      * @param string        $charset
+     * @param string        $generator
      */
-    protected function setTemplateVars(Text_Template $template, $title, $charset)
+    protected function setTemplateVars(Text_Template $template, $title, $charset, $generator)
     {
         $template->setVar(
           array(
@@ -414,7 +415,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
                                           $_SERVER['REQUEST_TIME']
                                         ),
             'version'                => '@package_version@',
-            'php_version'            => PHP_VERSION
+            'php_version'            => PHP_VERSION,
+            'generator'              => $generator
           )
         );
     }
@@ -476,8 +478,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      * @param string  $charset
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param string  $generator
      */
-    abstract public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70);
+    abstract public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70, $generator = '');
 }
 
 require_once 'PHP/CodeCoverage/Report/HTML/Node/Directory.php';

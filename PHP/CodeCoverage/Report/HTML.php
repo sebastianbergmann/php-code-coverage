@@ -140,6 +140,12 @@ class PHP_CodeCoverage_Report_HTML
      */
     protected function render(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $target)
     {
+        $classes = array();
+
+        foreach ($root as $node) {
+            $classes = array_merge($classes, $node->getClasses());
+        }
+
         $root->render(
           $target,
           $this->options['title'],

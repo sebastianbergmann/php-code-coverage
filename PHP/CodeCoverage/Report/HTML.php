@@ -131,14 +131,22 @@ class PHP_CodeCoverage_Report_HTML
         $this->addItems($root, $items, $files);
         $this->copyFiles($target);
 
-        $this->render($root, $target);
+        $root->render(
+          $target,
+          $this->options['title'],
+          $this->options['charset'],
+          $this->options['lowUpperBound'],
+          $this->options['highLowerBound']
+        );
     }
 
     /**
-     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @param string                                      $target
+     * Returns the classes.
+     *
+     * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root
+     * @return array
      */
-    protected function render(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $target)
+    protected function classes(PHP_CodeCoverage_Report_HTML_Node_Directory $root)
     {
         $classes = array();
 
@@ -148,13 +156,7 @@ class PHP_CodeCoverage_Report_HTML
 
         ksort($classes);
 
-        $root->render(
-          $target,
-          $this->options['title'],
-          $this->options['charset'],
-          $this->options['lowUpperBound'],
-          $this->options['highLowerBound']
-        );
+        return $classes;
     }
 
     /**

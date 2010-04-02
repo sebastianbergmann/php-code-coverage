@@ -43,6 +43,8 @@
  * @since      File available since Release 1.0.0
  */
 
+require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
+
 /**
  * Represents a directory in the code coverage information tree.
  *
@@ -55,7 +57,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
  */
-class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Report_HTML_Node
+class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Report_HTML_Node implements IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Report_HTML_Node[]
@@ -106,6 +108,18 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @var integer
      */
     protected $numTestedMethods = -1;
+
+    /**
+     * Returns an iterator for this node.
+     *
+     * @return RecursiveIteratorIterator
+     */
+    public function getIterator()
+    {
+        return new RecursiveIteratorIterator(
+          new PHP_CodeCoverage_Report_HTML_Node_Iterator($this)
+        );
+    }
 
     /**
      * Adds a new directory.
@@ -167,6 +181,16 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     public function getFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * Returns the child nodes of this node.
+     *
+     * @return array
+     */
+    public function getChildNodes()
+    {
+        return $this->children;
     }
 
     /**

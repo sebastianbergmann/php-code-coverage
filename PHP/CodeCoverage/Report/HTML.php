@@ -225,44 +225,10 @@ class PHP_CodeCoverage_Report_HTML
                 $data['100%']++;
             }
 
-            else if ($class['coverage'] > 0 && $class['coverage'] <= 10) {
-                $data['0-10%']++;
-            }
-
-            else if ($class['coverage'] > 10 && $class['coverage'] <= 20) {
-                $data['10-20%']++;
-            }
-
-            else if ($class['coverage'] > 20 && $class['coverage'] <= 30) {
-                $data['20-30%']++;
-            }
-
-            else if ($class['coverage'] > 30 && $class['coverage'] <= 40) {
-                $data['30-40%']++;
-            }
-
-            else if ($class['coverage'] > 40 && $class['coverage'] <= 50) {
-                $data['40-50%']++;
-            }
-
-            else if ($class['coverage'] > 50 && $class['coverage'] <= 60) {
-                $data['50-60%']++;
-            }
-
-            else if ($class['coverage'] > 60 && $class['coverage'] <= 70) {
-                $data['60-70%']++;
-            }
-
-            else if ($class['coverage'] > 70 && $class['coverage'] <= 80) {
-                $data['70-80%']++;
-            }
-
-            else if ($class['coverage'] > 80 && $class['coverage'] <= 90) {
-                $data['80-90%']++;
-            }
-
-            else if ($class['coverage'] > 90) {
-                $data['90-100%']++;
+            else {
+                $key = floor($class['coverage']/10)*10;
+                $key = $key . '-' . ($key + 10) . '%';
+                $data[$key]++;
             }
         }
 

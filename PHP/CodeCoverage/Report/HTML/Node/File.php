@@ -587,7 +587,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
         foreach ($this->classes as $className => &$class) {
             foreach ($class['methods'] as &$method) {
-                if ($method['executedLines'] == $method['executableLines']) {
+                if ($method['executableLines'] > 0) {
+                    $method['coverage'] = ($method['executedLines'] /
+                                           $method['executableLines']) * 100;
+                } else {
+                    $method['coverage'] = 100;
+                }
+
+                if ($method['coverage'] == 100) {
                     $this->numTestedMethods++;
                 }
 
@@ -595,7 +602,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             }
 
             if ($className != '*') {
-                if ($class['executedLines'] == $class['executableLines']) {
+                if ($class['executableLines'] > 0) {
+                    $class['coverage'] = ($class['executedLines'] /
+                                          $class['executableLines']) * 100;
+                } else {
+                    $class['coverage'] = 100;
+                }
+
+                if ($class['coverage'] == 100) {
                     $this->numTestedClasses++;
                 }
             }
@@ -799,7 +813,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'startLine'       => $class['startLine'],
               'executableLines' => 0,
               'executedLines'   => 0,
-              'ccn'             => 0
+              'ccn'             => 0,
+              'coverage'        => 0
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];
@@ -811,7 +826,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                   'startLine'       => $method['startLine'],
                   'executableLines' => 0,
                   'executedLines'   => 0,
-                  'ccn'             => $method['ccn']
+                  'ccn'             => $method['ccn'],
+                  'coverage'        => 0
                 );
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];

@@ -148,6 +148,53 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
+     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
+     * @param array                                       $items
+     * @param array                                       $files
+     */
+    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files)
+    {
+        foreach ($items as $key => $value) {
+            if (substr($key, -2) == '/f') {
+                try {
+                    $file = $root->addFile(
+                      substr($key, 0, -2),
+                      $value,
+                      $this->options['yui'],
+                      $this->options['highlight']
+                    );
+                }
+
+                catch (RuntimeException $e) {
+                    continue;
+                }
+            } else {
+                $child = $root->addDirectory($key);
+                $this->addItems($child, $value, $files);
+            }
+        }
+    }
+
+    /**
+     * Returns the classes.
+     *
+     * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root
+     * @return array
+     */
+    protected function classes(PHP_CodeCoverage_Report_HTML_Node_Directory $root)
+    {
+        $classes = array();
+
+        foreach ($root as $node) {
+            $classes = array_merge($classes, $node->getClasses());
+        }
+
+        ksort($classes);
+
+        return $classes;
+    }
+
+    /**
      * Renders the Class Coverage Distribution chart.
      *
      * @param array $classes
@@ -232,42 +279,26 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
-     * Returns the classes.
-     *
-     * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @return array
+     * @param string $target
      */
-    protected function classes(PHP_CodeCoverage_Report_HTML_Node_Directory $root)
+    protected function copyFiles($target)
     {
-        $classes = array();
+        $files = array(
+          'butter.png',
+          'chameleon.png',
+          'close12_1.gif',
+          'container.css',
+          'container-min.js',
+          'glass.png',
+          'scarlet_red.png',
+          'snow.png',
+          'style.css',
+          'yahoo-dom-event.js'
+        );
 
-        foreach ($root as $node) {
-            $classes = array_merge($classes, $node->getClasses());
+        foreach ($files as $file) {
+            copy(self::$templatePath . $file, $target . $file);
         }
-
-        ksort($classes);
-
-        return $classes;
-    }
-
-    /**
-     * Returns the top project risks according to the CRAP index.
-     *
-     * @param  array   $classes
-     * @param  integer $max
-     * @return array
-     */
-    protected function topProjectRisks(array $classes, $max = 20)
-    {
-        $risks = array();
-
-        foreach ($classes as $className => $class) {
-            $risks[$className] = $class['crap'];
-        }
-
-        asort($risks);
-
-        return array_reverse(array_slice($risks, 0, max($max, count($risks))));
     }
 
     /**
@@ -301,53 +332,22 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
-     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @param array                                       $items
-     * @param array                                       $files
+     * Returns the top project risks according to the CRAP index.
+     *
+     * @param  array   $classes
+     * @param  integer $max
+     * @return array
      */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files)
+    protected function topProjectRisks(array $classes, $max = 20)
     {
-        foreach ($items as $key => $value) {
-            if (substr($key, -2) == '/f') {
-                try {
-                    $file = $root->addFile(
-                      substr($key, 0, -2),
-                      $value,
-                      $this->options['yui'],
-                      $this->options['highlight']
-                    );
-                }
+        $risks = array();
 
-                catch (RuntimeException $e) {
-                    continue;
-                }
-            } else {
-                $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $files);
-            }
+        foreach ($classes as $className => $class) {
+            $risks[$className] = $class['crap'];
         }
-    }
 
-    /**
-     * @param string $target
-     */
-    protected function copyFiles($target)
-    {
-        $files = array(
-          'butter.png',
-          'chameleon.png',
-          'close12_1.gif',
-          'container.css',
-          'container-min.js',
-          'glass.png',
-          'scarlet_red.png',
-          'snow.png',
-          'style.css',
-          'yahoo-dom-event.js'
-        );
+        asort($risks);
 
-        foreach ($files as $file) {
-            copy(self::$templatePath . $file, $target . $file);
-        }
+        return array_reverse(array_slice($risks, 0, max($max, count($risks))));
     }
 }

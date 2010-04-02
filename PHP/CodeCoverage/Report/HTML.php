@@ -321,7 +321,7 @@ class PHP_CodeCoverage_Report_HTML
 
         asort($methods);
 
-        return array_slice($risks, 0, max($max, count($risks)));
+        return array_slice($methods, 0, min($max, count($methods)));
     }
 
     /**
@@ -341,6 +341,6 @@ class PHP_CodeCoverage_Report_HTML
 
         asort($risks);
 
-        return array_reverse(array_slice($risks, 0, max($max, count($risks))));
+        return array_reverse(array_slice($risks, 0, min($max, count($risks))));
     }
 }

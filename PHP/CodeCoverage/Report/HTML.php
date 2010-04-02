@@ -67,17 +67,43 @@ class PHP_CodeCoverage_Report_HTML
     public static $templatePath;
 
     /**
-     * @param PHP_CodeCoverage $coverage
-     * @param string           $target
-     * @param string           $title
-     * @param string           $charset
-     * @param boolean          $yui
-     * @param boolean          $highlight
-     * @param integer          $lowUpperBound
-     * @param integer          $highLowerBound
+     * @var array
      */
-    public function process(PHP_CodeCoverage $coverage, $target, $title = '', $charset = 'UTF-8', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70)
+    protected $options;
+
+    /**
+     * Constructor.
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = array())
     {
+        if (!isset($options['title'])) {
+            $options['title'] = '';
+        }
+
+        if (!isset($options['charset'])) {
+            $options['charset'] = 'UTF-8';
+        }
+
+        if (!isset($options['yui'])) {
+            $options['yui'] = TRUE;
+        }
+
+        if (!isset($options['highlight'])) {
+            $options['highlight'] = FALSE;
+        }
+
+        if (!isset($options['lowUpperBound'])) {
+            $options['lowUpperBound'] = 35;
+        }
+
+        if (!isset($options['highLowerBound'])) {
+            $options['highLowerBound'] = 70;
+        }
+
+        $this->options = $options;
+
         self::$templatePath = sprintf(
           '%s%sHTML%sTemplate%s',
 
@@ -86,7 +112,14 @@ class PHP_CodeCoverage_Report_HTML
           DIRECTORY_SEPARATOR,
           DIRECTORY_SEPARATOR
         );
+    }
 
+    /**
+     * @param PHP_CodeCoverage $coverage
+     * @param string           $target
+     */
+    public function process(PHP_CodeCoverage $coverage, $target)
+    {
         $target     = PHP_CodeCoverage_Util::getDirectory($target);
         $files      = $coverage->getSummary();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
@@ -95,15 +128,15 @@ class PHP_CodeCoverage_Report_HTML
                         $commonPath, NULL
                       );
 
-        $this->addItems($root, $items, $files, $yui, $highlight);
+        $this->addItems($root, $items, $files);
         $this->copyFiles($target);
 
         $root->render(
           $target,
-          $title,
-          $charset,
-          $lowUpperBound,
-          $highLowerBound
+          $this->options['title'],
+          $this->options['charset'],
+          $this->options['lowUpperBound'],
+          $this->options['highLowerBound']
         );
     }
 
@@ -111,16 +144,17 @@ class PHP_CodeCoverage_Report_HTML
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param array                                       $items
      * @param array                                       $files
-     * @param boolean                                     $yui
-     * @param boolean                                     $highlight
      */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files, $yui, $highlight)
+    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
                 try {
                     $file = $root->addFile(
-                      substr($key, 0, -2), $value, $yui, $highlight
+                      substr($key, 0, -2),
+                      $value,
+                      $this->options['yui'],
+                      $this->options['highlight']
                     );
                 }
 
@@ -129,7 +163,7 @@ class PHP_CodeCoverage_Report_HTML
                 }
             } else {
                 $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $files, $yui, $highlight);
+                $this->addItems($child, $value, $files);
             }
         }
     }

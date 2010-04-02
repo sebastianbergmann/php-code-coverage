@@ -158,6 +158,35 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
+     * Returns the least tested methods.
+     *
+     * @param  array $classes
+     * @return array
+     */
+    protected function leastTestedMethods(array $classes)
+    {
+        $methods = array();
+
+        foreach ($classes as $className => $class) {
+            foreach ($class['methods'] as $methodName => $method) {
+                if ($method['coverage'] < 100) {
+                    if ($className != '*') {
+                        $key = $className . '::' . $methodName;
+                    } else {
+                        $key = $methodName;
+                    }
+
+                    $methods[$key] = $method['coverage'];
+                }
+            }
+        }
+
+        asort($methods);
+
+        return $methods;
+    }
+
+    /**
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param array                                       $items
      * @param array                                       $files

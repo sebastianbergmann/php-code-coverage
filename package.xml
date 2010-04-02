@@ -125,6 +125,11 @@
     <min>1.6</min>
    </package>
    <package>
+    <name>Graph</name>
+    <channel>components.ez.no</channel>
+    <min>1.5</min>
+   </package>
+   <package>
     <name>File_Iterator</name>
     <channel>pear.phpunit.de</channel>
     <min>1.1.0</min>

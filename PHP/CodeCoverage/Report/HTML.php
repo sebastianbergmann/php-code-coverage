@@ -47,6 +47,9 @@ require_once 'PHP/CodeCoverage.php';
 require_once 'PHP/CodeCoverage/Report/HTML/Node.php';
 require_once 'Text/Template.php';
 
+require_once 'ezc/Base/base.php';
+spl_autoload_register(array('ezcBase', 'autoload'));
+
 /**
  * Generates an HTML report from an PHP_CodeCoverage object.
  *

@@ -169,7 +169,7 @@ class PHP_CodeCoverage_Report_HTML
           )
         );
 
-        $template->renderTo($target . 'index.html');
+        $template->renderTo($target . 'dashboard.html');
 
         $this->copyFiles($target);
     }

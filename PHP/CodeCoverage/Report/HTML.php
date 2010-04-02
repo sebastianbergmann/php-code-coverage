@@ -149,6 +149,26 @@ class PHP_CodeCoverage_Report_HTML
 
         $this->classCoverageDistributionChart($classes, $target);
 
+        $template = new Text_Template(
+          PHP_CodeCoverage_Report_HTML::$templatePath . 'dashboard.html'
+        );
+
+        $template->setVar(
+          array(
+            'title'                  => $this->options['title'],
+            'charset'                => $this->options['charset'],
+            'date'                   => date(
+                                          'D M j G:i:s T Y',
+                                          $_SERVER['REQUEST_TIME']
+                                        ),
+            'version'                => '@package_version@',
+            'php_version'            => PHP_VERSION,
+            'generator'              => $this->options['generator']
+          )
+        );
+
+        $template->renderTo($target . 'index.html');
+
         $this->copyFiles($target);
     }
 
@@ -264,6 +284,8 @@ class PHP_CodeCoverage_Report_HTML
           'scarlet_red.png',
           'snow.png',
           'style.css',
+          'typogridphy.css',
+          'typogridphy_ie.css',
           'yahoo-dom-event.js'
         );
 

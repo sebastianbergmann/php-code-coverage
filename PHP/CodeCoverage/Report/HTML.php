@@ -144,6 +144,89 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
+     * Renders the Coverage Distribution Chart.
+     *
+     * @param array $classes
+     */
+    protected function classCoverageDistributionChart(array $classes, $target)
+    {
+        $data = array(
+          '0%'      => 0,
+          '0-10%'   => 0,
+          '10-20%'  => 0,
+          '20-30%'  => 0,
+          '30-40%'  => 0,
+          '40-50%'  => 0,
+          '50-60%'  => 0,
+          '60-70%'  => 0,
+          '70-80%'  => 0,
+          '80-90%'  => 0,
+          '90-100%' => 0,
+          '100%'    => 0
+        );
+
+        foreach ($classes as $class) {
+            if ($class['coverage'] == 0) {
+                $data['0%']++;
+            }
+
+            else if ($class['coverage'] == 100) {
+                $data['100%']++;
+            }
+
+            else if ($class['coverage'] > 0 && $class['coverage'] <= 10) {
+                $data['0-10%']++;
+            }
+
+            else if ($class['coverage'] > 10 && $class['coverage'] <= 20) {
+                $data['10-20%']++;
+            }
+
+            else if ($class['coverage'] > 20 && $class['coverage'] <= 30) {
+                $data['20-30%']++;
+            }
+
+            else if ($class['coverage'] > 30 && $class['coverage'] <= 40) {
+                $data['30-40%']++;
+            }
+
+            else if ($class['coverage'] > 40 && $class['coverage'] <= 50) {
+                $data['40-50%']++;
+            }
+
+            else if ($class['coverage'] > 50 && $class['coverage'] <= 60) {
+                $data['50-60%']++;
+            }
+
+            else if ($class['coverage'] > 60 && $class['coverage'] <= 70) {
+                $data['60-70%']++;
+            }
+
+            else if ($class['coverage'] > 70 && $class['coverage'] <= 80) {
+                $data['70-80%']++;
+            }
+
+            else if ($class['coverage'] > 80 && $class['coverage'] <= 90) {
+                $data['80-90%']++;
+            }
+
+            else if ($class['coverage'] > 90) {
+                $data['90-100%']++;
+            }
+        }
+
+        $graph               = new ezcGraphBarChart;
+        $graph->data['data'] = new ezcGraphArrayDataSet($data);
+        $graph->legend       = FALSE;
+        $graph->xAxis->label = 'Coverage';
+        $graph->yAxis->label = '#Classes';
+
+        $graph->render(
+          390, 250, $target . '/' . 'class_coverage_distribution.svg'
+        );
+    }
+
+    /**
      * Returns the classes.
      *
      * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root

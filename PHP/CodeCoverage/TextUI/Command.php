@@ -46,13 +46,7 @@
 require_once 'PHP/CodeCoverage.php';
 
 require_once 'ezc/Base/base.php';
-
-function phpcov_autoload($className)
-{
-    ezcBase::autoload($className);
-}
-
-spl_autoload_register('phpcov_autoload');
+spl_autoload_register(array('ezcBase', 'autoload'));
 
 /**
  * TextUI frontend for PHP_CodeCoverage.

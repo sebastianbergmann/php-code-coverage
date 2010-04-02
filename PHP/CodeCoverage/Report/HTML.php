@@ -251,6 +251,26 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
+     * Returns the top project risks according to the CRAP index.
+     *
+     * @param  array   $classes
+     * @param  integer $max
+     * @return array
+     */
+    protected function topProjectRisks(array $classes, $max = 20)
+    {
+        $risks = array();
+
+        foreach ($classes as $className => $class) {
+            $risks[$className] = $class['crap'];
+        }
+
+        asort($risks);
+
+        return array_reverse(array_slice($risks, 0, max($max, count($risks))));
+    }
+
+    /**
      * Returns the least tested methods.
      *
      * @param  array $classes

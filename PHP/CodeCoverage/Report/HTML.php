@@ -148,7 +148,7 @@ class PHP_CodeCoverage_Report_HTML
     }
 
     /**
-     * Renders the Coverage Distribution Chart.
+     * Renders the Class Coverage Distribution chart.
      *
      * @param array $classes
      */

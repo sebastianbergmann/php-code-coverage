@@ -131,6 +131,15 @@ class PHP_CodeCoverage_Report_HTML
         $this->addItems($root, $items, $files);
         $this->copyFiles($target);
 
+        $this->render($root, $target);
+    }
+
+    /**
+     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
+     * @param string                                      $target
+     */
+    protected function render(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $target)
+    {
         $root->render(
           $target,
           $this->options['title'],

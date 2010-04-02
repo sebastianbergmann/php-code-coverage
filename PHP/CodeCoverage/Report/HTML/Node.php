@@ -135,11 +135,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
     {
         if (!isset($this->cache['id'])) {
             if ($this->parent === NULL) {
-                $this->cache['id'] = 'root';
+                $this->cache['id'] = 'index';
             } else {
                 $parentId = $this->parent->getId();
 
-                if ($parentId == 'root') {
+                if ($parentId == 'index') {
                     $this->cache['id'] = $this->getName();
                 } else {
                     $this->cache['id'] = $parentId . '_' . $this->getName();

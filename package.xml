@@ -59,7 +59,6 @@
         <file baseinstalldir="/" name="close12_1.gif" role="php" />
         <file baseinstalldir="/" name="container.css" role="php" />
         <file baseinstalldir="/" name="container-min.js" role="php" />
-        <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
         <file baseinstalldir="/" name="directory.html.dist" role="php" />
         <file baseinstalldir="/" name="file.html.dist" role="php" />
         <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
@@ -70,8 +69,6 @@
         <file baseinstalldir="/" name="scarlet_red.png" role="php" />
         <file baseinstalldir="/" name="snow.png" role="php" />
         <file baseinstalldir="/" name="style.css" role="php" />
-        <file baseinstalldir="/" name="typogridphy.css" role="php" />
-        <file baseinstalldir="/" name="typogridphy_ie.css" role="php" />
         <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
         <file baseinstalldir="/" name="yui_item.js" role="php" />
        </dir>

@@ -245,7 +245,7 @@ class PHP_CodeCoverage_Report_HTML
         $graph->yAxis->label      = '#Classes';
 
         $graph->render(
-          400, 250, $target . '/' . 'class_coverage_distribution.svg'
+          400, 250, $target . 'class_coverage_distribution.svg'
         );
     }
 

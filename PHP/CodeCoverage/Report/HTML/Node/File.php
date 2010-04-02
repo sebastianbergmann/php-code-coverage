@@ -598,6 +598,10 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                     $this->numTestedMethods++;
                 }
 
+                $method['crap'] = PHP_CodeCoverage_Util::crap(
+                  $method['ccn'], $method['coverage']
+                );
+
                 $class['ccn'] += $method['ccn'];
             }
 
@@ -612,6 +616,10 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 if ($class['coverage'] == 100) {
                     $this->numTestedClasses++;
                 }
+
+                $class['crap'] = PHP_CodeCoverage_Util::crap(
+                  $class['ccn'], $class['coverage']
+                );
             }
         }
     }
@@ -814,7 +822,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'executableLines' => 0,
               'executedLines'   => 0,
               'ccn'             => 0,
-              'coverage'        => 0
+              'coverage'        => 0,
+              'crap'            => 0
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];
@@ -827,7 +836,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                   'executableLines' => 0,
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],
-                  'coverage'        => 0
+                  'coverage'        => 0,
+                  'crap'            => 0
                 );
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];

@@ -132,7 +132,6 @@ class PHP_CodeCoverage_Report_HTML
                       );
 
         $this->addItems($root, $items, $files);
-        $this->copyFiles($target);
 
         $root->render(
           $target,
@@ -141,6 +140,8 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['lowUpperBound'],
           $this->options['highLowerBound']
         );
+
+        $this->copyFiles($target);
     }
 
     /**

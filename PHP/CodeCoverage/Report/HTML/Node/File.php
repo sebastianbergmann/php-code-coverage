@@ -814,6 +814,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     protected function processClasses()
     {
         $classes = PHP_CodeCoverage_Util::getClassesInFile($this->getPath());
+        $file    = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
             $this->classes[$className] = array(
@@ -823,7 +824,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'executedLines'   => 0,
               'ccn'             => 0,
               'coverage'        => 0,
-              'crap'            => 0
+              'crap'            => 0,
+              'file'            => $file . $class['startLine']
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];
@@ -837,7 +839,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],
                   'coverage'        => 0,
-                  'crap'            => 0
+                  'crap'            => 0,
+                  'file'            => $file . $method['startLine']
                 );
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];

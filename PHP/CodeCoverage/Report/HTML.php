@@ -273,10 +273,11 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * Returns the least tested methods.
      *
-     * @param  array $classes
+     * @param  array   $classes
+     * @param  integer $max
      * @return array
      */
-    protected function leastTestedMethods(array $classes)
+    protected function leastTestedMethods(array $classes, $max = 20)
     {
         $methods = array();
 
@@ -296,7 +297,7 @@ class PHP_CodeCoverage_Report_HTML
 
         asort($methods);
 
-        return $methods;
+        return array_slice($risks, 0, max($max, count($risks)));
     }
 
     /**

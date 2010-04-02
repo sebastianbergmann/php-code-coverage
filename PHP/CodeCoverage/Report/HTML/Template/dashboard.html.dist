@@ -22,13 +22,13 @@
    <div class="generic foursixty break">
     <h2>Top Project Risks</h2>
     <ul>
-     <li>...</li>
+{top_project_risks}
     </ul>
    </div>
    <div class="generic foursixty end">
     <h2>Least Tested Methods</h2>
     <ul>
-     <li>...</li>
+{least_tested_methods}
     </ul>
    </div>
    <div align="center" class="generic nineforty">

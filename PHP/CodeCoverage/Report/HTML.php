@@ -163,7 +163,9 @@ class PHP_CodeCoverage_Report_HTML
                                         ),
             'version'                => '@package_version@',
             'php_version'            => PHP_VERSION,
-            'generator'              => $this->options['generator']
+            'generator'              => $this->options['generator'],
+            'least_tested_methods'   => $this->leastTestedMethods($classes),
+            'top_project_risks'      => $this->topProjectRisks($classes)
           )
         );
 
@@ -299,7 +301,7 @@ class PHP_CodeCoverage_Report_HTML
      *
      * @param  array   $classes
      * @param  integer $max
-     * @return array
+     * @return string
      */
     protected function leastTestedMethods(array $classes, $max = 20)
     {
@@ -321,7 +323,21 @@ class PHP_CodeCoverage_Report_HTML
 
         asort($methods);
 
-        return array_slice($methods, 0, min($max, count($methods)));
+        $methods = array_slice($methods, 0, min($max, count($methods)));
+        $buffer  = '';
+
+        foreach ($methods as $name => $coverage) {
+            list($class, $method) = explode('::', $name);
+
+            $buffer .= sprintf(
+              '     <li><a href="%s">%s</a> (%d%%)</li>',
+              $classes[$class]['methods'][$method]['file'],
+              $name,
+              $coverage
+            );
+        }
+
+        return $buffer;
     }
 
     /**
@@ -329,7 +345,7 @@ class PHP_CodeCoverage_Report_HTML
      *
      * @param  array   $classes
      * @param  integer $max
-     * @return array
+     * @return string
      */
     protected function topProjectRisks(array $classes, $max = 20)
     {
@@ -341,6 +357,21 @@ class PHP_CodeCoverage_Report_HTML
 
         asort($risks);
 
-        return array_reverse(array_slice($risks, 0, min($max, count($risks))));
+        $risks = array_reverse(
+          array_slice($risks, 0, min($max, count($risks)))
+        );
+
+        $buffer = '';
+
+        foreach ($risks as $name => $crap) {
+            $buffer .= sprintf(
+              '     <li><a href="%s">%s</a> (%d)</li>',
+              $classes[$name]['file'],
+              $name,
+              $crap
+            );
+        }
+
+        return $buffer;
     }
 }

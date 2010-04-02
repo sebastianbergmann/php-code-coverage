@@ -585,11 +585,13 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             $lineNumber++;
         }
 
-        foreach ($this->classes as $className => $class) {
-            foreach ($class['methods'] as $method) {
+        foreach ($this->classes as $className => &$class) {
+            foreach ($class['methods'] as &$method) {
                 if ($method['executedLines'] == $method['executableLines']) {
                     $this->numTestedMethods++;
                 }
+
+                $class['ccn'] += $method['ccn'];
             }
 
             if ($className != '*') {
@@ -796,7 +798,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               'methods'         => array(),
               'startLine'       => $class['startLine'],
               'executableLines' => 0,
-              'executedLines'   => 0
+              'executedLines'   => 0,
+              'ccn'             => 0
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];

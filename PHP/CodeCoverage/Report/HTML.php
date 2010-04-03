@@ -255,17 +255,6 @@ class PHP_CodeCoverage_Report_HTML
                 $data[$key]++;
             }
         }
-
-        $graph                    = new ezcGraphBarChart;
-        $graph->data['data']      = new ezcGraphArrayDataSet($data);
-        $graph->legend            = FALSE;
-        $graph->xAxis->label      = 'Coverage';
-        $graph->xAxis->labelCount = 12;
-        $graph->yAxis->label      = '#Classes';
-
-        $graph->render(
-          400, 250, $target . 'class_coverage_distribution.svg'
-        );
     }
 
     /**

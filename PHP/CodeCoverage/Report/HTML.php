@@ -294,8 +294,6 @@ class PHP_CodeCoverage_Report_HTML
           'scarlet_red.png',
           'snow.png',
           'style.css',
-          'typogridphy.css',
-          'typogridphy_ie.css',
           'yahoo-dom-event.js'
         );
 
@@ -338,7 +336,7 @@ class PHP_CodeCoverage_Report_HTML
             list($class, $method) = explode('::', $name);
 
             $buffer .= sprintf(
-              '     <li><a href="%s">%s</a> (%d%%)</li>',
+              '              <li><a href="%s">%s</a> (%d%%)</li>' . "\n",
               $classes[$class]['methods'][$method]['file'],
               $name,
               $coverage
@@ -373,7 +371,7 @@ class PHP_CodeCoverage_Report_HTML
 
         foreach ($risks as $name => $crap) {
             $buffer .= sprintf(
-              '     <li><a href="%s">%s</a> (%d)</li>',
+              '              <li><a href="%s">%s</a> (%d)</li>' . "\n",
               $classes[$name]['file'],
               $name,
               $crap

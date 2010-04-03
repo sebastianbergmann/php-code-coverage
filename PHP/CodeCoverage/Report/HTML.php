@@ -294,7 +294,7 @@ class PHP_CodeCoverage_Report_HTML
      * @param  integer $max
      * @return string
      */
-    protected function leastTestedMethods(array $classes, $max = 20)
+    protected function leastTestedMethods(array $classes, $max = 10)
     {
         $methods = array();
 
@@ -338,7 +338,7 @@ class PHP_CodeCoverage_Report_HTML
      * @param  integer $max
      * @return string
      */
-    protected function topProjectRisks(array $classes, $max = 20)
+    protected function topProjectRisks(array $classes, $max = 10)
     {
         $risks = array();
 

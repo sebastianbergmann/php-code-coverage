@@ -213,8 +213,6 @@ class PHP_CodeCoverage_Report_HTML
             $classes = array_merge($classes, $node->getClasses());
         }
 
-        ksort($classes);
-
         return $classes;
     }
 

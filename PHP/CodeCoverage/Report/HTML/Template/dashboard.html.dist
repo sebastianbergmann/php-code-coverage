@@ -21,7 +21,7 @@
     <center>
       <table width="90%" cellpadding="2" cellspacing="1" border="0">
         <tr>
-          <td>
+          <td valign="top">
             <h2>Class Coverage Distribution</h2>
             <canvas id="classCoverageDistribution" width="475" height="200"></canvas>
             <script>
@@ -38,7 +38,7 @@
             </script>
           </td>
 
-          <td>
+          <td valign="top">
             <h2>Class Complexity</h2>
             <canvas id="classComplexity" width="475" height="200"></canvas>
             <script>
@@ -55,14 +55,14 @@
           </td>
         </tr>
         <tr>
-          <td>
+          <td valign="top">
             <h2>Top Project Risks</h2>
             <ul>
 {top_project_risks}
             </ul>
           </td>
 
-          <td>
+          <td valign="top">
             <h2>Least Tested Methods</h2>
             <ul>
 {least_tested_methods}

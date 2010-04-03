@@ -161,6 +161,7 @@ class PHP_CodeCoverage_Report_HTML
             'generator'              => $this->options['generator'],
             'least_tested_methods'   => $this->leastTestedMethods($classes),
             'top_project_risks'      => $this->topProjectRisks($classes),
+            'cc_values'              => $this->classComplexity($classes),
             'ccd_values'             => $this->classCoverageDistribution($classes)
           )
         );
@@ -215,6 +216,23 @@ class PHP_CodeCoverage_Report_HTML
         ksort($classes);
 
         return $classes;
+    }
+
+    /**
+     * Returns the data for the Class Complexity chart.
+     *
+     * @param  array $classes
+     * @return string
+     */
+    protected function classComplexity(array $classes)
+    {
+        $data = array();
+
+        foreach ($classes as $name => $class) {
+            $data[] = array($class['coverage'], $class['ccn'], 'blue', $name);
+        }
+
+        return json_encode($data);
     }
 
     /**
@@ -274,6 +292,7 @@ class PHP_CodeCoverage_Report_HTML
           'glass.png',
           'RGraph.bar.js',
           'RGraph.common.js',
+          'RGraph.scatter.js',
           'scarlet_red.png',
           'snow.png',
           'style.css',

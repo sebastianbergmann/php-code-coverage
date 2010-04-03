@@ -70,6 +70,7 @@
         <file baseinstalldir="/" name="method_item.html.dist" role="php" />
         <file baseinstalldir="/" name="RGraph.bar.js" role="php" />
         <file baseinstalldir="/" name="RGraph.common.js" role="php" />
+        <file baseinstalldir="/" name="RGraph.scatter.js" role="php" />
         <file baseinstalldir="/" name="scarlet_red.png" role="php" />
         <file baseinstalldir="/" name="snow.png" role="php" />
         <file baseinstalldir="/" name="style.css" role="php" />

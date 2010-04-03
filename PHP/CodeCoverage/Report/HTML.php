@@ -358,7 +358,10 @@ class PHP_CodeCoverage_Report_HTML
         $risks = array();
 
         foreach ($classes as $className => $class) {
-            $risks[$className] = $class['crap'];
+            if ($class['coverage'] < 100 &&
+                $class['ccn'] > count($class['methods'])) {
+                $risks[$className] = $class['crap'];
+            }
         }
 
         asort($risks);

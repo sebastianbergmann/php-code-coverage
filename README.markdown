@@ -1,0 +1,29 @@
+PHP_CodeCoverage
+================
+
+**PHP_CodeCoverage** is a library that provides collection, processing, and rendering functionality for PHP code coverage information.
+
+Installation
+------------
+
+PHP_CodeCoverage should be installed using the [PEAR Installer](http://pear.php.net/). This installer is the backbone of PEAR, which provides a distribution system for PHP packages, and is shipped with every release of PHP since version 4.3.0.
+
+The PEAR channel (`pear.phpunit.de`) that is used to distribute PHP_CodeCoverage needs to be registered with the local PEAR environment. Furthermore, a component that PHP_CodeCoverage depends upon is hosted on the eZ Components PEAR channel (`components.ez.no`).
+
+    sb@ubuntu ~ % pear channel-discover pear.phpunit.de
+    Adding Channel "pear.phpunit.de" succeeded
+    Discovery of channel "pear.phpunit.de" succeeded
+
+    sb@ubuntu ~ % pear channel-discover components.ez.no
+    Adding Channel "components.ez.no" succeeded
+    Discovery of channel "components.ez.no" succeeded
+
+This has to be done only once. Now the PEAR Installer can be used to install packages from the PHPUnit channel:
+
+    sb@vmware ~ % pear install phpunit/PHP_CodeCoverage
+    downloading PHP_CodeCoverage-0.9.0.tgz ...
+    Starting to download PHP_CodeCoverage-0.9.0.tgz (108,376 bytes)
+    .........................done: 108,376 bytes
+    install ok: channel://pear.phpunit.de/PHP_CodeCoverage-0.9.0
+
+After the installation you can find the PHP_CodeCoverage source files inside your local PEAR directory; the path is usually `/usr/lib/php/PHP/CodeCoverage`.

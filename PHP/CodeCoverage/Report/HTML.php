@@ -144,8 +144,6 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['generator']
         );
 
-        $this->classCoverageDistributionChart($classes, $target);
-
         $template = new Text_Template(
           PHP_CodeCoverage_Report_HTML::$templatePath . 'dashboard.html'
         );
@@ -162,7 +160,8 @@ class PHP_CodeCoverage_Report_HTML
             'php_version'            => PHP_VERSION,
             'generator'              => $this->options['generator'],
             'least_tested_methods'   => $this->leastTestedMethods($classes),
-            'top_project_risks'      => $this->topProjectRisks($classes)
+            'top_project_risks'      => $this->topProjectRisks($classes),
+            'ccd_values'             => $this->classCoverageDistribution($classes)
           )
         );
 
@@ -221,9 +220,10 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * Renders the Class Coverage Distribution chart.
      *
-     * @param array $classes
+     * @param  array $classes
+     * @return string
      */
-    protected function classCoverageDistributionChart(array $classes, $target)
+    protected function classCoverageDistribution(array $classes)
     {
         $data = array(
           '0%'      => 0,
@@ -255,6 +255,8 @@ class PHP_CodeCoverage_Report_HTML
                 $data[$key]++;
             }
         }
+
+        return json_encode(array_values($data));
     }
 
     /**
@@ -268,7 +270,10 @@ class PHP_CodeCoverage_Report_HTML
           'close12_1.gif',
           'container.css',
           'container-min.js',
+          'excanvas.compressed.js',
           'glass.png',
+          'RGraph.bar.js',
+          'RGraph.common.js',
           'scarlet_red.png',
           'snow.png',
           'style.css',

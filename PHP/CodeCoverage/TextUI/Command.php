@@ -146,6 +146,17 @@ class PHP_CodeCoverage_TextUI_Command
             self::printVersionString();
 
             $coverage = new PHP_CodeCoverage;
+
+            $class = new ReflectionClass('ezcBase');
+            $coverage->filter()->addDirectoryToBlacklist(
+              dirname($class->getFileName())
+            );
+
+            $class = new ReflectionClass('ezcConsoleInput');
+            $coverage->filter()->addDirectoryToBlacklist(
+              dirname($class->getFileName())
+            );
+
             $coverage->start('phpcov');
 
             require $arguments[0];

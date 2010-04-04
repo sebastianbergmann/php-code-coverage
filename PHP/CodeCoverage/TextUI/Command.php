@@ -87,6 +87,26 @@ class PHP_CodeCoverage_TextUI_Command
 
         $input->registerOption(
           new ezcConsoleOption(
+            '',
+            'blacklist',
+            ezcConsoleInput::TYPE_STRING,
+            array(),
+            TRUE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
+            '',
+            'whitelist',
+            ezcConsoleInput::TYPE_STRING,
+            array(),
+            TRUE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
             'h',
             'help',
             ezcConsoleInput::TYPE_NONE,
@@ -141,21 +161,41 @@ class PHP_CodeCoverage_TextUI_Command
         $arguments = $input->getArguments();
         $clover    = $input->getOption('clover')->value;
         $html      = $input->getOption('html')->value;
+        $blacklist = $input->getOption('blacklist')->value;
+        $whitelist = $input->getOption('whitelist')->value;
 
         if (count($arguments) == 1) {
             self::printVersionString();
 
             $coverage = new PHP_CodeCoverage;
+            $filter   = $coverage->filter();
 
-            $class = new ReflectionClass('ezcBase');
-            $coverage->filter()->addDirectoryToBlacklist(
-              dirname($class->getFileName())
-            );
+            if (empty($whitelist)) {
+                $c = new ReflectionClass('ezcBase');
+                $filter->addDirectoryToBlacklist(dirname($c->getFileName()));
+                $c = new ReflectionClass('ezcConsoleInput');
+                $filter->addDirectoryToBlacklist(dirname($c->getFileName()));
 
-            $class = new ReflectionClass('ezcConsoleInput');
-            $coverage->filter()->addDirectoryToBlacklist(
-              dirname($class->getFileName())
-            );
+                foreach ($blacklist as $item) {
+                    if (is_dir($item)) {
+                        $filter->addDirectoryToBlacklist($item);
+                    }
+
+                    else if (is_dir($item)) {
+                        $filter->addFileToBlacklist($item);
+                    }
+                }
+            } else {
+                foreach ($whitelist as $item) {
+                    if (is_dir($item)) {
+                        $filter->addDirectoryToWhitelist($item);
+                    }
+
+                    else if (is_dir($item)) {
+                        $filter->addFileToWhitelist($item);
+                    }
+                }
+            }
 
             $coverage->start('phpcov');
 
@@ -206,11 +246,14 @@ class PHP_CodeCoverage_TextUI_Command
         print <<<EOT
 Usage: phpcov [switches] <file>
 
-  --clover <file>  Write code coverage data in Clover XML format.
-  --html <dir>     Generate code coverage report in HTML format.
+  --clover <file>         Write code coverage data in Clover XML format.
+  --html <dir>            Generate code coverage report in HTML format.
 
-  --help           Prints this usage information.
-  --version        Prints the version and exits.
+  --blacklist <dir|file>  Adds <dir|file> to the blacklist.
+  --whitelist <dir|file>  Adds <dir|file> to the whitelist.
+
+  --help                  Prints this usage information.
+  --version               Prints the version and exits.
 
 EOT
 ;

@@ -181,7 +181,7 @@ class PHP_CodeCoverage_TextUI_Command
                         $filter->addDirectoryToBlacklist($item);
                     }
 
-                    else if (is_dir($item)) {
+                    else if (is_file($item)) {
                         $filter->addFileToBlacklist($item);
                     }
                 }
@@ -191,7 +191,7 @@ class PHP_CodeCoverage_TextUI_Command
                         $filter->addDirectoryToWhitelist($item);
                     }
 
-                    else if (is_dir($item)) {
+                    else if (is_file($item)) {
                         $filter->addFileToWhitelist($item);
                     }
                 }

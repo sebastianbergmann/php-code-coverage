@@ -60,9 +60,11 @@
         <file baseinstalldir="/" name="container.css" role="php" />
         <file baseinstalldir="/" name="container-min.js" role="php" />
         <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
+        <file baseinstalldir="/" name="directory.png" role="php" />
         <file baseinstalldir="/" name="directory.html.dist" role="php" />
         <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
         <file baseinstalldir="/" name="excanvas.compressed.js" role="php" />
+        <file baseinstalldir="/" name="file.png" role="php" />
         <file baseinstalldir="/" name="file.html.dist" role="php" />
         <file baseinstalldir="/" name="file_item.html.dist" role="php" />
         <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />

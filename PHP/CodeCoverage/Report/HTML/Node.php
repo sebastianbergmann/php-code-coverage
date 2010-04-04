@@ -325,9 +325,22 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             $functions = FALSE;
         }
 
+        $icon = '';
+
+        if (isset($data['itemClass'])) {
+            if ($data['itemClass'] == 'coverDirectory') {
+                $icon = '<img alt="directory" src="directory.png"/> ';
+            }
+
+            else if ($data['itemClass'] == 'coverFile') {
+                $icon = '<img alt="file" src="file.png"/> ';
+            }
+        }
+
         $itemTemplate->setVar(
           array(
             'name'                     => $functions ? 'Functions' : $data['name'],
+            'icon'                     => $icon,
             'itemClass'                => isset($data['itemClass']) ? $data['itemClass'] : 'coverItem',
             'classes_color'            => $classesColor,
             'classes_level'            => $functions ? 'None' : $classesLevel,

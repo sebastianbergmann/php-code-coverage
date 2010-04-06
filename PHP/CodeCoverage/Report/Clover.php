@@ -455,6 +455,11 @@ class PHP_CodeCoverage_Report_Clover
         $project->appendChild($metrics);
 
         if ($target !== NULL) {
+            if (!is_dir(dirname($target)))
+            {
+              mkdir(dirname($target), 0, true);
+            }
+
             return $document->save($target);
         } else {
             return $document->saveXML();

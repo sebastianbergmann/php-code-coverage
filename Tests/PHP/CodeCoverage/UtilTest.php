@@ -98,6 +98,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        if (!class_exists('vfsStreamWrapper')) {
+            $this->markTestSkipped('vfsStreamWrapper is not available.');
+        }
+
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('UtilTest'));
     }

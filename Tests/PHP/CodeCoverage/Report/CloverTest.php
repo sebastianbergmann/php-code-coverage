@@ -82,4 +82,17 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
           $clover->process($this->getCoverageForBankAccount(), NULL, 'BankAccount')
         );
     }
+
+    /**
+     * @covers PHP_CodeCoverage_Report_Clover
+     */
+    public function testCloverForFileWithIgnoredLines()
+    {
+        $clover = new PHP_CodeCoverage_Report_Clover;
+
+        $this->assertStringMatchesFormatFile(
+          TEST_FILES_PATH . 'ignored-lines-clover.xml',
+          $clover->process($this->getCoverageForFileWithIgnoredLines())
+        );
+    }
 }

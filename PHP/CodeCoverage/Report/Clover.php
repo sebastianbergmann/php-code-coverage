@@ -117,9 +117,14 @@ class PHP_CodeCoverage_Report_Clover
                 $file->setAttribute('name', $filename);
 
                 $classesInFile = PHP_CodeCoverage_Util::getClassesInFile(
-                                   $filename
-                                 );
-                $lines         = array();
+                  $filename
+                );
+
+                $ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
+                  $filename
+                );
+
+                $lines = array();
 
                 foreach ($classesInFile as $className => $_class) {
                     $classStatistics = array(
@@ -141,6 +146,10 @@ class PHP_CodeCoverage_Report_Clover
                         for ($i  = $method['startLine'];
                              $i <= $method['endLine'];
                              $i++) {
+                            if (isset($ignoredLines[$i])) {
+                                continue;
+                            }
+
                             $add   = TRUE;
                             $count = 0;
 
@@ -283,7 +292,7 @@ class PHP_CodeCoverage_Report_Clover
                 }
 
                 foreach ($data as $_line => $_data) {
-                    if (isset($lines[$_line])) {
+                    if (isset($lines[$_line]) || isset($ignoredLines[$_line])) {
                         continue;
                     }
 
@@ -307,6 +316,10 @@ class PHP_CodeCoverage_Report_Clover
                 ksort($lines);
 
                 foreach ($lines as $_line => $_data) {
+                    if (isset($ignoredLines[$_line])) {
+                        continue;
+                    }
+
                     $line = $document->createElement('line');
                     $line->setAttribute('num', $_line);
                     $line->setAttribute('type', $_data['type']);

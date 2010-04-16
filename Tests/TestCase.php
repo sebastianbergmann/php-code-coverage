@@ -144,4 +144,36 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         return $stub;
     }
+
+    protected function getCoverageForFileWithIgnoredLines()
+    {
+        $coverage = new PHP_CodeCoverage(
+          $this->setUpXdebugStubForFileWithIgnoredLines(),
+          new PHP_CodeCoverage_Filter
+        );
+
+        $coverage->start('FileWithIgnoredLines', TRUE);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function setUpXdebugStubForFileWithIgnoredLines()
+    {
+        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub->expects($this->any())
+             ->method('stop')
+             ->will($this->returnValue(
+               array(
+                 TEST_FILES_PATH . 'source_with_ignore.php' => array(
+                   2 => 1,
+                   4 => -1,
+                   6 => -1,
+                   7 => 1
+                 )
+               )
+            ));
+
+        return $stub;
+    }
 }

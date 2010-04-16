@@ -324,8 +324,7 @@ class PHP_CodeCoverage_Report_Clover
                     $file->appendChild($line);
                 }
 
-                $count = PHP_CodeCoverage_Util::countLines($filename);
-
+                $count  = PHP_CodeCoverage_Util::countLines($filename);
                 $metrics = $document->createElement('metrics');
 
                 $metrics->setAttribute('loc', $count['loc']);

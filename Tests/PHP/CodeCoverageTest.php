@@ -312,7 +312,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             )
           ),
           'data',
-          $this->getBankAccountCoverage()
+          $this->getCoverageForBankAccount()
         );
     }
 
@@ -322,13 +322,13 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function testMerge()
     {
         $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStub(), new PHP_CodeCoverage_Filter
+          $this->setUpXdebugStubForBankAccount(), new PHP_CodeCoverage_Filter
         );
 
-        $coverage->merge($this->getBankAccountCoverage());
+        $coverage->merge($this->getCoverageForBankAccount());
 
         $this->assertEquals(
-          $this->getBankAccountCoverage()->getSummary(), $coverage->getSummary()
+          $this->getCoverageForBankAccount()->getSummary(), $coverage->getSummary()
         );
     }
 
@@ -392,7 +392,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
               32 => -2
             )
           ),
-          $this->getBankAccountCoverage()->getSummary()
+          $this->getCoverageForBankAccount()->getSummary()
         );
     }
 }

@@ -59,10 +59,10 @@
  */
 abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
-    protected function getBankAccountCoverage()
+    protected function getCoverageForBankAccount()
     {
         $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStub(), new PHP_CodeCoverage_Filter
+          $this->setUpXdebugStubForBankAccount(), new PHP_CodeCoverage_Filter
         );
 
         $coverage->start(
@@ -88,7 +88,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStub()
+    protected function setUpXdebugStubForBankAccount()
     {
         $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
         $stub->expects($this->any())

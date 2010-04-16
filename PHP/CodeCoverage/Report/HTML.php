@@ -213,6 +213,10 @@ class PHP_CodeCoverage_Report_HTML
             $classes = array_merge($classes, $node->getClasses());
         }
 
+        if (isset($classes['*'])) {
+            unset($classes['*']);
+        }
+
         return $classes;
     }
 

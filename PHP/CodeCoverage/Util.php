@@ -892,7 +892,12 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($classes as $className) {
-                if (!class_exists($className) &&
+                if (function_exists($className)) {
+                    $codeToCoverList[] = new ReflectionFunction($className);
+                    continue;
+                }
+
+                else if (!class_exists($className) &&
                     !interface_exists($className)) {
                     throw new RuntimeException(
                       sprintf(

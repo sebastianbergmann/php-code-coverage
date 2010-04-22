@@ -303,7 +303,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           $expected,
           PHP_CodeCoverage_Util::getLinesToBeCovered(
-            $test, 'testPublicMethod'
+            $test, 'testSomething'
           )
         );
     }

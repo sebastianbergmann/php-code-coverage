@@ -57,6 +57,7 @@ if (!defined('TEST_FILES_PATH')) {
 
 require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
 require_once TEST_FILES_PATH . 'CoverageClassTest.php';
+require_once TEST_FILES_PATH . 'CoverageFunctionTest.php';
 require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
 require_once TEST_FILES_PATH . 'CoverageNoneTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotPrivateTest.php';
@@ -66,6 +67,7 @@ require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
+require_once TEST_FILES_PATH . 'CoveredFunction.php';
 require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
 
 if (version_compare(PHP_VERSION, '5.3', '>')) {
@@ -289,15 +291,23 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
                 $this->markTestSkipped('PHP 5.3 (or later) is required.');
             }
 
-            $file = 'NamespaceCoveredClass.php';
-        } else {
-            $file = 'CoveredClass.php';
+            $expected = array(
+              TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
+            );
         }
 
-        if ($test != 'CoverageNoneTest') {
-          $expected = array(TEST_FILES_PATH . $file => $lines);
-        } else {
-          $expected = array();
+        else if ($test === 'CoverageNoneTest') {
+            $expected = array();
+        }
+
+        else if ($test === 'CoverageFunctionTest') {
+            $expected = array(
+              TEST_FILES_PATH . 'CoveredFunction.php' => $lines
+            );
+        }
+
+        else {
+            $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
         }
 
         $this->assertEquals(
@@ -609,6 +619,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           array(
             'CoveragePublicTest',
             range(31, 35)
+          ),
+          array(
+            'CoverageFunctionTest',
+            range(2, 4)
           ),
           array(
             'NamespaceCoverageClassExtendedTest',

@@ -853,21 +853,27 @@ class PHP_CodeCoverage_Util
                 $classes = array($className);
 
                 foreach ($classes as $className) {
-                    if (!((class_exists($className) ||
-                           interface_exists($className)) &&
-                          method_exists($className, $methodName))) {
-                        throw new RuntimeException(
-                          sprintf(
-                            'Trying to @cover not existing method "%s::%s".',
-                            $className,
-                            $methodName
-                          )
+                    if ($className == '' && function_exists($methodName)) {
+                        $codeToCoverList[] = new ReflectionFunction(
+                          $methodName
+                        );
+                    } else {
+                        if (!((class_exists($className) ||
+                               interface_exists($className)) &&
+                              method_exists($className, $methodName))) {
+                            throw new RuntimeException(
+                              sprintf(
+                                'Trying to @cover not existing method "%s::%s".',
+                                $className,
+                                $methodName
+                              )
+                            );
+                        }
+
+                        $codeToCoverList[] = new ReflectionMethod(
+                          $className, $methodName
                         );
                     }
-
-                    $codeToCoverList[] = new ReflectionMethod(
-                      $className, $methodName
-                    );
                 }
             }
         } else {
@@ -892,12 +898,7 @@ class PHP_CodeCoverage_Util
             }
 
             foreach ($classes as $className) {
-                if (function_exists($className)) {
-                    $codeToCoverList[] = new ReflectionFunction($className);
-                    continue;
-                }
-
-                else if (!class_exists($className) &&
+                if (!class_exists($className) &&
                     !interface_exists($className)) {
                     throw new RuntimeException(
                       sprintf(

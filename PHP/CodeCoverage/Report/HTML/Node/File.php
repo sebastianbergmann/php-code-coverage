@@ -452,7 +452,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                       '&nbsp;<a href="#%d">%s</a>',
 
                       $methodData['startLine'],
-                      $methodData['signature']
+                      htmlspecialchars($methodData['signature'])
                     ),
                     'numClasses'           => '',
                     'numTestedClasses'     => '',

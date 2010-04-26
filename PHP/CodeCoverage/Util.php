@@ -177,9 +177,8 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * Calculates the Change Risk Analysis Prediction Index (CRAP)
-     * for a unit of code based on its cyclomatic complexity and
-     * percentage of code coverage.
+     * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
+     * based on its cyclomatic complexity and percentage of code coverage.
      *
      * @param  integer $ccn
      * @param  float   $coverage

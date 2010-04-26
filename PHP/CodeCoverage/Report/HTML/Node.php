@@ -268,7 +268,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
             'numExecutableLines'   => $item->getNumExecutableLines(),
             'numExecutedLines'     => $item->getNumExecutedLines(),
             'executedLinesPercent' => $item->getLineExecutedPercent(),
-            'crap'                 => $link == 'Total' ? '<acronym title="Change Risk Analysis Prediction Index">CRAP</acronym>' : ''
+            'crap'                 => $link == 'Total' ? '<acronym title="Change Risk Anti-Patterns (CRAP) Index">CRAP</acronym>' : ''
           ),
           $lowUpperBound,
           $highLowerBound

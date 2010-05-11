@@ -436,7 +436,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
               $highLowerBound
             );
 
-            foreach ($classData['methods'] as $methodName => $methodData) {
+            foreach ($classData['methods'] as $methodData) {
                 if ($methodData['executedLines'] ==
                     $methodData['executableLines']) {
                     $numTestedMethods     = 1;

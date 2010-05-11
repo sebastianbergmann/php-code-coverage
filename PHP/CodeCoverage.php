@@ -452,12 +452,12 @@ class PHP_CodeCoverage
           $this->filter->getWhitelist(), array_keys($this->coveredFiles)
         );
 
-        $newVariables       = array();
-        $newVariablesNamees = array();
-        $oldVariableNames   = array();
-        $processed          = array();
-        $uncoveredFile      = NULL;
-        $variableName       = NULL;
+        $newVariables     = array();
+        $newVariableNames = array();
+        $oldVariableNames = array();
+        $processed        = array();
+        $uncoveredFile    = NULL;
+        $variableName     = NULL;
 
         foreach ($uncoveredFiles as $uncoveredFile) {
             if ($this->promoteGlobals) {

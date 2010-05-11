@@ -181,7 +181,7 @@ class PHP_CodeCoverage_Report_HTML
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
                 try {
-                    $file = $root->addFile(
+                    $root->addFile(
                       substr($key, 0, -2),
                       $value,
                       $this->options['yui'],

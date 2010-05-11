@@ -161,7 +161,7 @@ class PHP_CodeCoverage_Util
         $loc    = substr_count($buffer, "\n");
         $cloc   = 0;
 
-        foreach (token_get_all($buffer) as $i => $token) {
+        foreach (token_get_all($buffer) as $token) {
             if (is_string($token)) {
                 continue;
             }

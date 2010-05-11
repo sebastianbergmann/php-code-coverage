@@ -513,9 +513,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $this->processClasses();
         $this->processFunctions();
 
-        $lineNumber = 1;
+        $max = count($this->codeLines);
 
-        foreach ($this->codeLines as $line) {
+        for ($lineNumber = 1; $lineNumber <= $max; $lineNumber++) {
             if (isset($this->startLines[$lineNumber])) {
                 // Start line of a class.
                 if (isset($this->startLines[$lineNumber]['methods'])) {
@@ -582,8 +582,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                     unset($currentMethod);
                 }
             }
-
-            $lineNumber++;
         }
 
         foreach ($this->classes as $className => &$class) {

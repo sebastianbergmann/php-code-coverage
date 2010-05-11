@@ -146,7 +146,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param  boolean                           $highlight
      * @throws RuntimeException
      */
-    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent = NULL, array $executedLines, $yui = TRUE, $highlight = FALSE)
+    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $executedLines, $yui = TRUE, $highlight = FALSE)
     {
         parent::__construct($name, $parent);
 

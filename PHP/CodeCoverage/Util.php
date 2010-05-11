@@ -657,7 +657,6 @@ class PHP_CodeCoverage_Util
                         else if ($block == $class) {
                             $cache['classes'][$class]['endLine'] = $line;
                             $class                               = FALSE;
-                            $classStartLine                      = FALSE;
                         }
                     }
                 }

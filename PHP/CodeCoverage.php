@@ -225,48 +225,10 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
-        foreach (array_keys($data) as $filename) {
-            if (!$this->filter->isFile($filename) ||
-                (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
-                strpos($filename, dirname(__FILE__)) === 0) ||
-                substr($filename, -17) == 'Text/Template.php' ||
-                substr($filename, -17) == 'File/Iterator.php' ||
-                substr($filename, -25) == 'File/Iterator/Factory.php') {
-                unset($data[$filename]);
-            }
-        }
-
-        // Apply blacklist/whitelist filtering.
-        foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename, $filterGroups)) {
-                unset($data[$filename]);
-            }
-        }
-
+        $this->applySelfFilter($data);
+        $this->applyListsFilter($data, $filterGroups);
         $raw = $data;
-
-        // Apply @covers filtering.
-        if ($id instanceof PHPUnit_Framework_TestCase) {
-            $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
-              get_class($id), $id->getName()
-            );
-        } else {
-            $linesToBeCovered = array();
-        }
-
-        if (!empty($linesToBeCovered)) {
-            $data = array_intersect_key($data, $linesToBeCovered);
-
-            foreach (array_keys($data) as $filename) {
-                $data[$filename] = array_intersect_key(
-                  $data[$filename], array_flip($linesToBeCovered[$filename])
-                );
-            }
-        }
-
-        else if ($this->forceCoversAnnotation) {
-            $data = array();
-        }
+        $this->applyCoversAnnotationFilter($data, $id);
 
         if (!empty($data)) {
             if ($id instanceof PHPUnit_Framework_TestCase) {
@@ -439,6 +401,72 @@ class PHP_CodeCoverage
         }
 
         $this->promoteGlobals = $flag;
+    }
+
+    /**
+     * Filters sourcecode files from PHP_CodeCoverage, Text_Template, and
+     * File_Iterator.
+     *
+     * @param array $data
+     */
+    protected function applySelfFilter(&$data)
+    {
+        foreach (array_keys($data) as $filename) {
+            if (!$this->filter->isFile($filename) ||
+                (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
+                strpos($filename, dirname(__FILE__)) === 0) ||
+                substr($filename, -17) == 'Text/Template.php' ||
+                substr($filename, -17) == 'File/Iterator.php' ||
+                substr($filename, -25) == 'File/Iterator/Factory.php') {
+                unset($data[$filename]);
+            }
+        }
+    }
+
+    /**
+     * Applies the blacklist/whitelist filtering.
+     *
+     * @param array $data
+     * @param array $filterGroups
+     */
+    protected function applyListsFilter(&$data, $filterGroups)
+    {
+        foreach (array_keys($data) as $filename) {
+            if ($this->filter->isFiltered($filename, $filterGroups)) {
+                unset($data[$filename]);
+            }
+        }
+    }
+
+    /**
+     * Applies the @covers annotation filtering.
+     *
+     * @param array $data
+     * @param mixed $id
+     */
+    protected function applyCoversAnnotationFilter(&$data, $id)
+    {
+        if ($id instanceof PHPUnit_Framework_TestCase) {
+            $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
+              get_class($id), $id->getName()
+            );
+        } else {
+            $linesToBeCovered = array();
+        }
+
+        if (!empty($linesToBeCovered)) {
+            $data = array_intersect_key($data, $linesToBeCovered);
+
+            foreach (array_keys($data) as $filename) {
+                $data[$filename] = array_intersect_key(
+                  $data[$filename], array_flip($linesToBeCovered[$filename])
+                );
+            }
+        }
+
+        else if ($this->forceCoversAnnotation) {
+            $data = array();
+        }
     }
 
     /**

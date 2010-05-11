@@ -455,7 +455,6 @@ class PHP_CodeCoverage
         $newVariables     = array();
         $newVariableNames = array();
         $oldVariableNames = array();
-        $processed        = array();
         $uncoveredFile    = NULL;
         $variableName     = NULL;
 

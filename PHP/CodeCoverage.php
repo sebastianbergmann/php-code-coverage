@@ -79,6 +79,11 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
+    protected $mapTestClassNameToCoveredClassName = FALSE;
+
+    /**
+     * @var boolean
+     */
     protected $processUncoveredFilesFromWhitelist = TRUE;
 
     /**
@@ -375,6 +380,19 @@ class PHP_CodeCoverage
         }
 
         $this->forceCoversAnnotation = $flag;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
+     */
+    public function setMapTestClassNameToCoveredClassName($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->mapTestClassNameToCoveredClassName = $flag;
     }
 
     /**

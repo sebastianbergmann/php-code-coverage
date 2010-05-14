@@ -226,6 +226,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append
+     * @covers PHP_CodeCoverage::applySelfFilter
+     * @covers PHP_CodeCoverage::applyListsFilter
+     * @covers PHP_CodeCoverage::applyCoversAnnotationFilter
      */
     public function testCollect()
     {

@@ -47,6 +47,8 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
+require_once 'PHP/Token/Stream.php';
+
 /**
  * Utility methods.
  *
@@ -264,25 +266,32 @@ class PHP_CodeCoverage_Util
         if (!isset(self::$ignoredLines[$filename])) {
             self::$ignoredLines[$filename] = array();
 
-            $ignore  = FALSE;
-            $lineNum = 1;
+            $ignore = FALSE;
+            $stop   = FALSE;
+            $tokens = new PHP_Token_Stream($filename);
 
-            foreach (file($filename) as $line) {
-                $trimmedLine = trim($line);
+            foreach ($tokens as $token) {
+                switch (get_class($token)) {
+                    case 'PHP_Token_COMMENT': {
+                        if (trim($token) == '// @codeCoverageIgnoreStart') {
+                            $ignore = TRUE;
+                        }
 
-                if ($trimmedLine == '// @codeCoverageIgnoreStart') {
-                    $ignore = TRUE;
+                        else if (trim($token) == '// @codeCoverageIgnoreEnd') {
+                            $stop = TRUE;
+                        }
+                    }
+                    break;
                 }
 
                 if ($ignore) {
-                    self::$ignoredLines[$filename][$lineNum] = TRUE;
+                    self::$ignoredLines[$filename][$token->getLine()] = TRUE;
 
-                    if ($trimmedLine == '// @codeCoverageIgnoreEnd') {
+                    if ($stop) {
                         $ignore = FALSE;
+                        $stop   = FALSE;
                     }
                 }
-
-                $lineNum++;
             }
         }
 

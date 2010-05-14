@@ -217,7 +217,20 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeIgnored()
     {
         $this->assertEquals(
-          array(3 => TRUE, 4 => TRUE, 5 => TRUE),
+          array(
+             3 => TRUE,
+             4 => TRUE,
+             5 => TRUE,
+            11 => TRUE,
+            12 => TRUE,
+            13 => TRUE,
+            14 => TRUE,
+            15 => TRUE,
+            16 => TRUE,
+            23 => TRUE,
+            24 => TRUE,
+            25 => TRUE
+          ),
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
             TEST_FILES_PATH . 'source_with_ignore.php'
           )

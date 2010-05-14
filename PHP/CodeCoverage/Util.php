@@ -272,6 +272,19 @@ class PHP_CodeCoverage_Util
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
+                    case 'PHP_Token_CLASS':
+                    case 'PHP_Token_FUNCTION': {
+                        $docblock = $token->getDocblock();
+                        $endLine  = $token->getEndLine();
+
+                        if (strpos($docblock, '@codeCoverageIgnore')) {
+                            for ($i = $token->getLine(); $i <= $endLine; $i++) {
+                                self::$ignoredLines[$filename][$i] = TRUE;
+                            }
+                        }
+                    }
+                    break;
+
                     case 'PHP_Token_COMMENT': {
                         if (trim($token) == '// @codeCoverageIgnoreStart') {
                             $ignore = TRUE;

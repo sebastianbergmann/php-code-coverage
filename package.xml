@@ -137,6 +137,11 @@
     <min>1.1.0</min>
    </package>
    <package>
+    <name>PHP_TokenStream</name>
+    <channel>pear.phpunit.de</channel>
+    <min>0.9.2</min>
+   </package>
+   <package>
     <name>Text_Template</name>
     <channel>pear.phpunit.de</channel>
     <min>1.0.0</min>

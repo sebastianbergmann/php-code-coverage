@@ -69,10 +69,7 @@ class PHP_CodeCoverage_Util
     /**
      * @var array
      */
-    protected static $cache = array(
-      'classesFunctions' => array(),
-      'ignoredLines'     => array()
-    );
+    protected static $ignoredLines = array();
 
     /**
      * @var array
@@ -150,33 +147,6 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * Counts LOC, CLOC, and NCLOC for a file.
-     *
-     * @param  string $filename
-     * @return array
-     */
-    public static function countLines($filename)
-    {
-        $buffer = file_get_contents($filename);
-        $loc    = substr_count($buffer, "\n");
-        $cloc   = 0;
-
-        foreach (token_get_all($buffer) as $token) {
-            if (is_string($token)) {
-                continue;
-            }
-
-            list ($token, $value) = $token;
-
-            if ($token == T_COMMENT || $token == T_DOC_COMMENT) {
-                $cloc += substr_count($value, "\n") + 1;
-            }
-        }
-
-        return array('loc' => $loc, 'cloc' => $cloc, 'ncloc' => $loc - $cloc);
-    }
-
-    /**
      * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
      * based on its cyclomatic complexity and percentage of code coverage.
      *
@@ -224,40 +194,6 @@ class PHP_CodeCoverage_Util
             $directory
           )
         );
-    }
-
-    /**
-     * Returns information on the classes declared in a sourcefile.
-     *
-     * @param  string  $filename
-     * @param  boolean $useCache
-     * @return array
-     */
-    public static function getClassesInFile($filename, $useCache = TRUE)
-    {
-        if (!$useCache ||
-            !isset(self::$cache['classesFunctions'][$filename])) {
-            self::parseFile($filename);
-        }
-
-        return self::$cache['classesFunctions'][$filename]['classes'];
-    }
-
-    /**
-     * Returns information on the functions declared in a sourcefile.
-     *
-     * @param  string  $filename
-     * @param  boolean $useCache
-     * @return array
-     */
-    public static function getFunctionsInFile($filename, $useCache = TRUE)
-    {
-        if (!$useCache ||
-            !isset(self::$cache['classesFunctions'][$filename])) {
-            self::parseFile($filename);
-        }
-
-        return self::$cache['classesFunctions'][$filename]['functions'];
     }
 
     /**
@@ -325,10 +261,8 @@ class PHP_CodeCoverage_Util
      */
     public static function getLinesToBeIgnored($filename)
     {
-        $cache = &self::$cache['ignoredLines'];
-
-        if (!isset($cache[$filename])) {
-            $cache[$filename] = array();
+        if (!isset(self::$ignoredLines[$filename])) {
+            self::$ignoredLines[$filename] = array();
 
             $ignore  = FALSE;
             $lineNum = 1;
@@ -341,7 +275,7 @@ class PHP_CodeCoverage_Util
                 }
 
                 if ($ignore) {
-                    $cache[$filename][$lineNum] = TRUE;
+                    self::$ignoredLines[$filename][$lineNum] = TRUE;
 
                     if ($trimmedLine == '// @codeCoverageIgnoreEnd') {
                         $ignore = FALSE;
@@ -352,7 +286,7 @@ class PHP_CodeCoverage_Util
             }
         }
 
-        return $cache[$filename];
+        return self::$ignoredLines[$filename];
     }
 
     /**
@@ -560,239 +494,6 @@ class PHP_CodeCoverage_Util
         }
 
         return $result;
-    }
-
-    /**
-     * Parses a file for class, method, and function information.
-     *
-     * @param string $filename
-     */
-    protected static function parseFile($filename)
-    {
-        self::$cache['classesFunctions'][$filename] = array(
-          'classes' => array(), 'functions' => array()
-        );
-
-        $cache               = &self::$cache['classesFunctions'][$filename];
-        $tokens              = token_get_all(file_get_contents($filename));
-        $numTokens           = count($tokens);
-        $blocks              = array();
-        $line                = 1;
-        $currentBlock        = FALSE;
-        $namespace           = FALSE;
-        $class               = FALSE;
-        $function            = FALSE;
-        $functionCCN         = 1;
-        $functionStartLine   = FALSE;
-        $currentDocComment   = FALSE;
-        $signature           = FALSE;
-        $signatureStartToken = FALSE;
-
-        for ($i = 0; $i < $numTokens; $i++) {
-            if (is_string($tokens[$i])) {
-                $token = trim($tokens[$i]);
-
-                if ($token == '{') {
-                    if ($currentBlock == T_CLASS) {
-                        $block = $class;
-                    }
-
-                    else if ($currentBlock == T_FUNCTION) {
-                        $signature = '';
-
-                        for ($j = $signatureStartToken; $j < $i; $j++) {
-                            if (is_string($tokens[$j])) {
-                                $signature .= $tokens[$j];
-                            } else {
-                                $signature .= $tokens[$j][1];
-                            }
-                        }
-
-                        $block               = $function;
-                        $signatureStartToken = FALSE;
-                        $signature           = trim($signature);
-                    }
-
-                    else {
-                        $block = FALSE;
-                    }
-
-                    array_push($blocks, $block);
-
-                    $currentBlock = FALSE;
-                }
-
-                else if ($token == '}') {
-                    $block = array_pop($blocks);
-
-                    if ($block !== FALSE && $block !== NULL) {
-                        if ($block == $function) {
-                            if ($currentDocComment !== FALSE) {
-                                $docComment        = $currentDocComment;
-                                $currentDocComment = FALSE;
-                            } else {
-                                $docComment = '';
-                            }
-
-                            $tmp = array(
-                              'docComment' => $docComment,
-                              'signature'  => $signature,
-                              'startLine'  => $functionStartLine,
-                              'endLine'    => $line,
-                              'ccn'        => $functionCCN
-                            );
-
-                            if ($class === FALSE) {
-                                $cache['functions'][$function] = $tmp;
-                            } else {
-                                $cache['classes'][$class]['methods'][$function] = $tmp;
-                            }
-
-                            $function          = FALSE;
-                            $functionCCN       = 1;
-                            $functionStartLine = FALSE;
-                            $signature         = FALSE;
-                        }
-
-                        else if ($block == $class) {
-                            $cache['classes'][$class]['endLine'] = $line;
-                            $class                               = FALSE;
-                        }
-                    }
-                }
-
-                else if ($token == '?') {
-                    $functionCCN++;
-                }
-
-                continue;
-            }
-
-            switch ($tokens[$i][0]) {
-                case T_NAMESPACE: {
-                    $namespace = $tokens[$i+2][1];
-
-                    for ($j = $i+3; $j < $numTokens; $j += 2) {
-                        if ($tokens[$j][0] == T_NS_SEPARATOR) {
-                            $namespace .= '\\' . $tokens[$j+1][1];
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                break;
-
-                case T_CURLY_OPEN: {
-                    $currentBlock = T_CURLY_OPEN;
-                    array_push($blocks, $currentBlock);
-                }
-                break;
-
-                case T_DOLLAR_OPEN_CURLY_BRACES: {
-                    $currentBlock = T_DOLLAR_OPEN_CURLY_BRACES;
-                    array_push($blocks, $currentBlock);
-                }
-                break;
-
-                case T_CLASS: {
-                    $currentBlock = T_CLASS;
-
-                    if ($namespace === FALSE) {
-                        $class = $tokens[$i+2][1];
-                    } else {
-                        $class = $namespace . '\\' . $tokens[$i+2][1];
-                    }
-
-                    if ($currentDocComment !== FALSE) {
-                        $docComment        = $currentDocComment;
-                        $currentDocComment = FALSE;
-                    } else {
-                        $docComment = '';
-                    }
-
-                    $cache['classes'][$class] = array(
-                      'methods'    => array(),
-                      'docComment' => $docComment,
-                      'startLine'  => $line
-                    );
-                }
-                break;
-
-                case T_FUNCTION: {
-                    if (!((is_array($tokens[$i+2]) &&
-                          $tokens[$i+2][0] == T_STRING) ||
-                         (is_string($tokens[$i+2]) &&
-                          $tokens[$i+2] == '&' &&
-                          is_array($tokens[$i+3]) &&
-                          $tokens[$i+3][0] == T_STRING))) {
-                        continue;
-                    }
-
-                    $currentBlock        = T_FUNCTION;
-                    $functionStartLine   = $line;
-                    $done                = FALSE;
-                    $signatureStartToken = $i - 1;
-
-                    do {
-                        switch ($tokens[$signatureStartToken][0]) {
-                            case T_ABSTRACT:
-                            case T_FINAL:
-                            case T_PRIVATE:
-                            case T_PUBLIC:
-                            case T_PROTECTED:
-                            case T_STATIC:
-                            case T_WHITESPACE: {
-                                $signatureStartToken--;
-                            }
-                            break;
-
-                            default: {
-                                $signatureStartToken++;
-                                $done = TRUE;
-                            }
-                        }
-                    }
-                    while (!$done);
-
-                    if (isset($tokens[$i+2][1])) {
-                        $functionName = $tokens[$i+2][1];
-                    }
-
-                    else if (isset($tokens[$i+3][1])) {
-                        $functionName = $tokens[$i+3][1];
-                    }
-
-                    if ($namespace === FALSE) {
-                        $function = $functionName;
-                    } else {
-                        $function = $namespace . '\\' . $functionName;
-                    }
-                }
-                break;
-
-                case T_DOC_COMMENT: {
-                    $currentDocComment = $tokens[$i][1];
-                }
-                break;
-
-                case T_IF:
-                case T_ELSEIF:
-                case T_FOR:
-                case T_FOREACH:
-                case T_WHILE:
-                case T_CASE:
-                case T_CATCH:
-                case T_BOOLEAN_AND:
-                case T_LOGICAL_AND:
-                case T_BOOLEAN_OR:
-                case T_LOGICAL_OR: {
-                    $functionCCN++;
-                }
-                break;
-            }
-
-            $line += substr_count($tokens[$i][1], "\n");
-        }
     }
 
     /**

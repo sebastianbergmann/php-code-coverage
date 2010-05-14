@@ -44,6 +44,7 @@
  */
 
 require_once 'PHP/CodeCoverage.php';
+require_once 'PHP/Token/Stream.php';
 
 /**
  * Generates a Clover XML logfile from an PHP_CodeCoverage object.
@@ -116,9 +117,9 @@ class PHP_CodeCoverage_Report_Clover
                 $file = $document->createElement('file');
                 $file->setAttribute('name', $filename);
 
-                $classesInFile = PHP_CodeCoverage_Util::getClassesInFile(
-                  $filename
-                );
+                $tokens        = new PHP_Token_Stream($filename);
+                $classesInFile = $tokens->getClasses();
+                $linesOfCode   = $tokens->getLinesOfCode();
 
                 $ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
                   $filename
@@ -201,7 +202,7 @@ class PHP_CodeCoverage_Report_Clover
                     }
 
                     $package = PHP_CodeCoverage_Util::getPackageInformation(
-                      $className, $_class['docComment']
+                      $className, $_class['docblock']
                     );
 
                     if (!empty($package['namespace'])) {
@@ -337,11 +338,10 @@ class PHP_CodeCoverage_Report_Clover
                     $file->appendChild($line);
                 }
 
-                $count   = PHP_CodeCoverage_Util::countLines($filename);
                 $metrics = $document->createElement('metrics');
 
-                $metrics->setAttribute('loc', $count['loc']);
-                $metrics->setAttribute('ncloc', $count['ncloc']);
+                $metrics->setAttribute('loc', $linesOfCode['loc']);
+                $metrics->setAttribute('ncloc', $linesOfCode['ncloc']);
                 $metrics->setAttribute('classes', $fileStatistics['classes']);
                 $metrics->setAttribute('methods', $fileStatistics['methods']);
 
@@ -396,8 +396,8 @@ class PHP_CodeCoverage_Report_Clover
                     $packages[$namespace]->appendChild($file);
                 }
 
-                $projectStatistics['loc']                 += $count['loc'];
-                $projectStatistics['ncloc']               += $count['ncloc'];
+                $projectStatistics['loc']                 += $linesOfCode['loc'];
+                $projectStatistics['ncloc']               += $linesOfCode['ncloc'];
                 $projectStatistics['classes']             += $fileStatistics['classes'];
                 $projectStatistics['methods']             += $fileStatistics['methods'];
                 $projectStatistics['coveredMethods']      += $fileStatistics['coveredMethods'];

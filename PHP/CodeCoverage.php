@@ -465,9 +465,25 @@ class PHP_CodeCoverage
     protected function applyCoversAnnotationFilter(&$data, $id)
     {
         if ($id instanceof PHPUnit_Framework_TestCase) {
+            $testClassName    = get_class($id);
             $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
-              get_class($id), $id->getName()
+              $testClassName, $id->getName()
             );
+
+            if ($this->mapTestClassNameToCoveredClassName &&
+                empty($linesToBeCovered)) {
+                $testedClass = substr($testClassName, 0, -4);
+
+                if (class_exists($testedClass)) {
+                    $class = new ReflectionClass($testedClass);
+
+                    $linesToBeCovered = array(
+                      $class->getFileName() => range(
+                        $class->getStartLine(), $class->getEndLine()
+                      )
+                    );
+                }
+            }
         } else {
             $linesToBeCovered = array();
         }

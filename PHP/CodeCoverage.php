@@ -266,15 +266,26 @@ class PHP_CodeCoverage
             if (!isset($this->data[$id])) {
                 $this->data[$id] = $data;
             } else {
-                throw new RuntimeException('TODO');
+                foreach (array('filtered', 'raw') as $type) {
+                    foreach ($data[$type] as $file => $lines) {
+                        if (!isset($this->data[$id][$type][$file])) {
+                            $this->data[$id][$type][$file] = $lines;
+                        } else {
+                            foreach ($lines as $line => $flag) {
+                                if (!isset($this->data[$id][$type][$file][$line]) ||
+                                    $flag > $this->data[$id][$type][$file][$line]) {
+                                    $this->data[$id][$type][$file][$line] = $flag;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         foreach ($that->tests as $id => $status) {
-            if (!isset($this->tests[$id])) {
+            if (!isset($this->tests[$id]) || $status > $this->tests[$id]) {
                 $this->tests[$id] = $status;
-            } else {
-                throw new RuntimeException('TODO');
             }
         }
 

@@ -433,9 +433,11 @@ class PHP_CodeCoverage
             if (!$this->filter->isFile($filename) ||
                 (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
                 strpos($filename, dirname(__FILE__)) === 0) ||
-                substr($filename, -17) == 'Text/Template.php' ||
                 substr($filename, -17) == 'File/Iterator.php' ||
-                substr($filename, -25) == 'File/Iterator/Factory.php') {
+                substr($filename, -25) == 'File/Iterator/Factory.php' ||
+                substr($filename, -17) == 'Text/Template.php' ||
+                substr($filename, -13) == 'PHP/Token.php' ||
+                substr($filename, -20) == 'PHP/Token/Stream.php') {
                 unset($data[$filename]);
             }
         }

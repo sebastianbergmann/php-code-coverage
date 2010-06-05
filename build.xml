@@ -23,6 +23,7 @@
    <antcall target="phpmd"/>
    <antcall target="phpcpd"/>
    <antcall target="phpcs"/>
+   <antcall target="phpdoc"/>
   </parallel>
  </target>
 
@@ -58,6 +59,13 @@
               --standard=Sebastian
               --extensions=php
               PHP" />
+  </exec>
+ </target>
+
+ <!-- Generate API documentation -->
+ <target name="phpdoc">
+  <exec executable="phpdoc">
+   <arg line="-d PHP -t build/api" />
   </exec>
  </target>
 

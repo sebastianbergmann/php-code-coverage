@@ -17,14 +17,14 @@
   <email>sb@sebastian-bergmann.de</email>
   <active>yes</active>
  </lead>
- <date>2010-05-11</date>
+ <date>2010-06-08</date>
  <version>
-  <release>0.9.1</release>
-  <api>0.9.1</api>
+  <release>1.0.0beta1</release>
+  <api>1.0.0</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license>BSD License</license>
  <notes>http://github.com/sebastianbergmann/php-code-coverage/</notes>
@@ -139,7 +139,7 @@
    <package>
     <name>PHP_TokenStream</name>
     <channel>pear.phpunit.de</channel>
-    <min>0.9.2</min>
+    <min>1.0.0beta1</min>
    </package>
    <package>
     <name>Text_Template</name>

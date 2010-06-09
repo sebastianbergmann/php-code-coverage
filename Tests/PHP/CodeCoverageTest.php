@@ -258,13 +258,13 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           array(
             'BankAccountTest::testBalanceIsInitiallyZero' => array(
               'filtered' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   9 => -2
                 )
               ),
               'raw' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   9 => -2,
                   13 => -1,
@@ -283,12 +283,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative' => array(
               'filtered' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   29 => 1
                 )
               ),
               'raw' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   13 => 1,
                   16 => 1,
@@ -298,12 +298,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             ),
             'BankAccountTest::testBalanceCannotBecomeNegative2' => array(
               'filtered' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   22 => 1
                 )
               ),
               'raw' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   13 => 1,
                   16 => 1,
@@ -313,7 +313,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             ),
             'BankAccountTest::testDepositWithdrawMoney' => array(
               'filtered' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   22 => 1,
                   24 => 1,
@@ -322,7 +322,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
                 )
               ),
               'raw' => array(
-                '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+                TEST_FILES_PATH . 'BankAccount.php' => array(
                   8 => 1,
                   13 => 1,
                   14 => 1,
@@ -364,7 +364,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $this->assertEquals(
           array(
-            '/usr/local/src/code-coverage/Tests/_files/BankAccount.php' => array(
+            TEST_FILES_PATH . 'BankAccount.php' => array(
               8 => array(
                 0 => array(
                   'id'     => 'BankAccountTest::testBalanceIsInitiallyZero',

@@ -433,22 +433,40 @@ class PHP_CodeCoverage
     }
 
     /**
-     * Filters sourcecode files from PHP_CodeCoverage, Text_Template, and
-     * File_Iterator.
+     * Filters sourcecode files from PHP_CodeCoverage, PHP_TokenStream,
+     * Text_Template, and File_Iterator.
      *
      * @param array $data
      */
     protected function applySelfFilter(&$data)
     {
         foreach (array_keys($data) as $filename) {
-            if (!$this->filter->isFile($filename) ||
-                (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
-                strpos($filename, dirname(__FILE__)) === 0) ||
-                substr($filename, -17) == 'File/Iterator.php' ||
-                substr($filename, -25) == 'File/Iterator/Factory.php' ||
-                substr($filename, -17) == 'Text/Template.php' ||
-                substr($filename, -13) == 'PHP/Token.php' ||
-                substr($filename, -20) == 'PHP/Token/Stream.php') {
+            if (!$this->filter->isFile($filename)) {
+                unset($data[$filename]);
+                continue;
+            }
+
+            if (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
+                strpos($filename, dirname(__FILE__)) === 0) {
+                unset($data[$filename]);
+                continue;
+            }
+
+            if (!defined('FILE_ITERATOR_TESTSUITE') &&
+                (substr($filename, -17) == 'File/Iterator.php' ||
+                 substr($filename, -25) == 'File/Iterator/Factory.php')) {
+                unset($data[$filename]);
+                continue;
+            }
+
+            if (!defined('PHP_TOKENSTREAM_TESTSUITE') &&
+                (substr($filename, -13) == 'PHP/Token.php' ||
+                 substr($filename, -20) == 'PHP/Token/Stream.php')) {
+                unset($data[$filename]);
+                continue;
+            }
+
+            if (substr($filename, -17) == 'Text/Template.php') {
                 unset($data[$filename]);
             }
         }

@@ -133,7 +133,10 @@ class PHP_CodeCoverage_Report_HTML
                       );
 
         $this->addItems($root, $items, $files);
-        $this->renderDashboard($root, $target . 'index.dashboard.html');
+
+        $this->renderDashboard(
+          $root, $target . 'index.dashboard.html', $this->options['title']
+        );
 
         foreach ($root as $node) {
             if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_Directory) {
@@ -141,7 +144,8 @@ class PHP_CodeCoverage_Report_HTML
                   $node,
                   $target . PHP_CodeCoverage_Util::getSafeFilename(
                               $node->getId()
-                            ) . '.dashboard.html'
+                            ) . '.dashboard.html',
+                  $node->getName(TRUE)
                 );
             }
         }
@@ -161,8 +165,9 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param string                                      $file
+     * @param string                                      $title
      */
-    protected function renderDashboard(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $file)
+    protected function renderDashboard(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $file, $title)
     {
         $classes  = $this->classes($root);
         $template = new Text_Template(
@@ -171,7 +176,7 @@ class PHP_CodeCoverage_Report_HTML
 
         $template->setVar(
           array(
-            'title'                  => $this->options['title'],
+            'title'                  => $title,
             'charset'                => $this->options['charset'],
             'date'                   => date(
                                           'D M j G:i:s T Y',

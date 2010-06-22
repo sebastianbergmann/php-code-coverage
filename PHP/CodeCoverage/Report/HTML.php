@@ -133,7 +133,7 @@ class PHP_CodeCoverage_Report_HTML
                       );
 
         $this->addItems($root, $items, $files);
-        $classes = $this->classes($root);
+        $this->renderDashboard($root, $target . 'dashboard.html');
 
         $root->render(
           $target,
@@ -144,6 +144,16 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['generator']
         );
 
+        $this->copyFiles($target);
+    }
+
+    /**
+     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
+     * @param string                                      $file
+     */
+    protected function renderDashboard(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $file)
+    {
+        $classes  = $this->classes($root);
         $template = new Text_Template(
           PHP_CodeCoverage_Report_HTML::$templatePath . 'dashboard.html'
         );
@@ -166,9 +176,7 @@ class PHP_CodeCoverage_Report_HTML
           )
         );
 
-        $template->renderTo($target . 'dashboard.html');
-
-        $this->copyFiles($target);
+        $template->renderTo($file);
     }
 
     /**

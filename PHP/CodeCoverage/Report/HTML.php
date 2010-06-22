@@ -133,7 +133,7 @@ class PHP_CodeCoverage_Report_HTML
                       );
 
         $this->addItems($root, $items, $files);
-        $this->renderDashboard($root, $target . 'dashboard.html');
+        $this->renderDashboard($root, $target . 'index.dashboard.html');
 
         foreach ($root as $node) {
             if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_Directory) {

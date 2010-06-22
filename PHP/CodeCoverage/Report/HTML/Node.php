@@ -415,11 +415,23 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      */
     protected function setTemplateVars(Text_Template $template, $title, $charset, $generator)
     {
+        $dashboard = '';
+
+        if ($this instanceof PHP_CodeCoverage_Report_HTML_Node_Directory) {
+            $dashboard = sprintf(
+              '<a href="%s">dashboard</a>',
+              PHP_CodeCoverage_Util::getSafeFilename(
+                $this->getId()
+              ) . '.dashboard.html'
+            );
+        }
+
         $template->setVar(
           array(
             'title'                  => $title,
             'charset'                => $charset,
             'link'                   => $this->getLink(TRUE),
+            'dashboard_link'         => $dashboard,
             'num_executable_lines'   => $this->getNumExecutableLines(),
             'num_executed_lines'     => $this->getNumExecutedLines(),
             'lines_executed_percent' => $this->getLineExecutedPercent(),

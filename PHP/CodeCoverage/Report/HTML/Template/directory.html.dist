@@ -17,7 +17,7 @@
           <table cellpadding="1" border="0" width="100%">
             <tr>
               <td class="headerItem" width="20%">Current directory:</td>
-              <td class="headerValue" width="80%">{link}</td>
+              <td class="headerValue" width="80%">{link} ({dashboard_link})</td>
             </tr>
             <tr>
               <td class="legendItem" width="20%">Legend:</td>

@@ -188,7 +188,8 @@ class PHP_CodeCoverage_Report_HTML
             'least_tested_methods'   => $this->leastTestedMethods($classes),
             'top_project_risks'      => $this->topProjectRisks($classes),
             'cc_values'              => $this->classComplexity($classes),
-            'ccd_values'             => $this->classCoverageDistribution($classes)
+            'ccd_values'             => $this->classCoverageDistribution($classes),
+            'backlink'               => str_replace('.dashboard', '', $file)
           )
         );
 

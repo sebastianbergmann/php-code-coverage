@@ -13,6 +13,7 @@
   <body>
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr><td class="title">{title}</td></tr>
+      <tr><td><div align="center"><p><a href="{backlink}">Back to Code Coverage report</a></p></div></td></tr>
       <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
     </table>
 

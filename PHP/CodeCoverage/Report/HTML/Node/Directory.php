@@ -117,7 +117,8 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     public function getIterator()
     {
         return new RecursiveIteratorIterator(
-          new PHP_CodeCoverage_Report_HTML_Node_Iterator($this)
+          new PHP_CodeCoverage_Report_HTML_Node_Iterator($this),
+          RecursiveIteratorIterator::SELF_FIRST
         );
     }
 

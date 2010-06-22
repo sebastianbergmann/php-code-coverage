@@ -135,6 +135,17 @@ class PHP_CodeCoverage_Report_HTML
         $this->addItems($root, $items, $files);
         $this->renderDashboard($root, $target . 'dashboard.html');
 
+        foreach ($root as $node) {
+            if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_Directory) {
+                $this->renderDashboard(
+                  $node,
+                  $target . PHP_CodeCoverage_Util::getSafeFilename(
+                              $node->getId()
+                            ) . '.dashboard.html'
+                );
+            }
+        }
+
         $root->render(
           $target,
           $this->options['title'],
@@ -218,7 +229,9 @@ class PHP_CodeCoverage_Report_HTML
         $classes = array();
 
         foreach ($root as $node) {
-            $classes = array_merge($classes, $node->getClasses());
+            if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_File) {
+                $classes = array_merge($classes, $node->getClasses());
+            }
         }
 
         if (isset($classes['*'])) {

@@ -40,7 +40,7 @@
  <!-- Generate pmd.xml -->
  <target name="phpmd">
   <exec executable="phpmd">
-   <arg line="PHP xml codesize,unusedcode --reportfile ${basedir}/build/logs/pmd.xml" />
+   <arg line="PHP xml codesize,design,naming,unusedcode --reportfile ${basedir}/build/logs/pmd.xml" />
   </exec>
  </target>
 

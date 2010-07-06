@@ -44,7 +44,7 @@
  */
 
 require_once 'PHP/CodeCoverage.php';
-require_once 'PHP/Token/Stream.php';
+require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Generates a Clover XML logfile from an PHP_CodeCoverage object.
@@ -117,7 +117,7 @@ class PHP_CodeCoverage_Report_Clover
                 $file = $document->createElement('file');
                 $file->setAttribute('name', $filename);
 
-                $tokens        = new PHP_Token_Stream($filename);
+                $tokens        = PHP_Token_Stream_CachingFactory::get($filename);
                 $classesInFile = $tokens->getClasses();
                 $linesOfCode   = $tokens->getLinesOfCode();
 

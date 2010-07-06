@@ -47,7 +47,7 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
-require_once 'PHP/Token/Stream.php';
+require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Utility methods.
@@ -268,7 +268,7 @@ class PHP_CodeCoverage_Util
 
             $ignore = FALSE;
             $stop   = FALSE;
-            $tokens = new PHP_Token_Stream($filename);
+            $tokens = PHP_Token_Stream_CachingFactory::get($filename);
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {

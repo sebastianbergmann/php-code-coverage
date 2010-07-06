@@ -47,7 +47,7 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
-require_once 'PHP/Token/Stream.php';
+require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Represents a file in the code coverage information tree.
@@ -814,7 +814,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processClasses()
     {
-        $tokens  = new PHP_Token_Stream($this->getPath());
+        $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $classes = $tokens->getClasses();
         $file    = $this->getId() . '.html#';
 
@@ -857,7 +857,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processFunctions()
     {
-        $tokens    = new PHP_Token_Stream($this->getPath());
+        $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $functions = $tokens->getFunctions();
 
         if (count($functions) > 0 && !isset($this->classes['*'])) {

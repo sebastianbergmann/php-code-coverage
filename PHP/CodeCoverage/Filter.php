@@ -257,7 +257,8 @@ class PHP_CodeCoverage_Filter
      */
     public static function isFile($filename)
     {
-        if (strpos($filename, 'eval()\'d code') !== FALSE ||
+        if ($filename == '-' ||
+            strpos($filename, 'eval()\'d code') !== FALSE ||
             strpos($filename, 'runtime-created function') !== FALSE ||
             strpos($filename, 'assert code') !== FALSE ||
             strpos($filename, 'regexp code') !== FALSE) {

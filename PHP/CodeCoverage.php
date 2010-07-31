@@ -459,9 +459,16 @@ class PHP_CodeCoverage
                 continue;
             }
 
+            if (!defined('PHP_TIMER_TESTSUITE') &&
+                (substr($filename, -13) == 'PHP/Timer.php')) {
+                unset($data[$filename]);
+                continue;
+            }
+
             if (!defined('PHP_TOKENSTREAM_TESTSUITE') &&
                 (substr($filename, -13) == 'PHP/Token.php' ||
-                 substr($filename, -20) == 'PHP/Token/Stream.php')) {
+                 substr($filename, -20) == 'PHP/Token/Stream.php' ||
+                 substr($filename, -35) == 'PHP/Token/Stream/CachingFactory.php')) {
                 unset($data[$filename]);
                 continue;
             }

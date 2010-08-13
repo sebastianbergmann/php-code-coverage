@@ -48,6 +48,7 @@ if (!defined('T_NAMESPACE')) {
 }
 
 require_once 'PHP/Token/Stream/CachingFactory.php';
+require_once 'PHP/CodeCoverage/ReflectionFile.php';
 
 /**
  * Utility methods.
@@ -626,6 +627,7 @@ class PHP_CodeCoverage_Util
             );
         } else {
             $extended = FALSE;
+            $found    = FALSE;
 
             if (strpos($coveredElement, '<extended>') !== FALSE) {
                 $coveredElement = str_replace(
@@ -635,29 +637,48 @@ class PHP_CodeCoverage_Util
                 $extended = TRUE;
             }
 
-            $classes = array($coveredElement);
+            if (class_exists($coveredElement) ||
+                interface_exists($coveredElement)) {
+                $found   = TRUE;
+                $classes = array($coveredElement);
 
-            if ($extended) {
-                $classes = array_merge(
-                  $classes,
-                  class_implements($coveredElement),
-                  class_parents($coveredElement)
-                );
-            }
-
-            foreach ($classes as $className) {
-                if (!class_exists($className) &&
-                    !interface_exists($className)) {
-                    throw new RuntimeException(
-                      sprintf(
-                        'Trying to @cover not existing class or ' .
-                        'interface "%s".',
-                        $className
-                      )
+                if ($extended) {
+                    $classes = array_merge(
+                      $classes,
+                      class_implements($coveredElement),
+                      class_parents($coveredElement)
                     );
                 }
 
-                $codeToCoverList[] = new ReflectionClass($className);
+                foreach ($classes as $className) {
+                    if (!class_exists($className) &&
+                        !interface_exists($className)) {
+                        throw new RuntimeException(
+                          sprintf(
+                            'Trying to @cover not existing class or ' .
+                            'interface "%s".',
+                            $className
+                          )
+                        );
+                    }
+
+                    $codeToCoverList[] = new ReflectionClass($className);
+                }
+            }
+
+            if (function_exists($coveredElement)) {
+                $found             = TRUE;
+                $codeToCoverList[] = new ReflectionFunction($coveredElement);
+            }
+
+            if (!$found) {
+                throw new RuntimeException(
+                  sprintf(
+                    'Trying to @cover not existing class, interface, or ' .
+                    'function "%s".',
+                    $coveredElement
+                  )
+                );
             }
         }
 

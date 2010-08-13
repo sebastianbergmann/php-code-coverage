@@ -161,7 +161,7 @@ class PHP_CodeCoverage_ReflectionFile implements Reflector
      *
      * @param PHPUnit_Util_ReflectionFile $reflector
      */
-    public static function export($reflector)
+    public static function export($reflector, $return = FALSE)
     {
         /* cannot export files */
     }

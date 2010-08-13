@@ -597,6 +597,33 @@ class PHP_CodeCoverage_Util
                     }
                 }
             }
+        } elseif (strpos($coveredElement, '.') !== FALSE) {
+            if (is_file($coveredElement)) {
+                $file = $coveredElement;
+            } else {
+                $found = FALSE;
+
+                foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+                    $file = $path . DIRECTORY_SEPARATOR . $coveredElement;
+                    if (is_file($file)) {
+                        $found = TRUE;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    throw new RuntimeException(
+                      sprintf(
+                        'Trying to @cover not existing file "%s".',
+                        $coveredElement
+                      )
+                    );
+                }
+            }
+
+            $codeToCoverList[] = new PHP_CodeCoverage_ReflectionFile(
+              realpath($file)
+            );
         } else {
             $extended = FALSE;
 

@@ -189,7 +189,7 @@ class PHP_CodeCoverage_Report_HTML
             'top_project_risks'      => $this->topProjectRisks($classes),
             'cc_values'              => $this->classComplexity($classes),
             'ccd_values'             => $this->classCoverageDistribution($classes),
-            'backlink'               => str_replace('.dashboard', '', $file)
+            'backlink'               => basename(str_replace('.dashboard', '', $file))
           )
         );
 

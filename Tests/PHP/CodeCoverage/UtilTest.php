@@ -100,12 +100,11 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('vfsStreamWrapper')) {
-            $this->markTestSkipped('vfsStreamWrapper is not available.');
+        if (!class_exists('vfsStream')) {
+            $this->markTestSkipped('vfsStream is not available.');
         }
 
-        vfsStreamWrapper::register();
-        vfsStreamWrapper::setRoot(new vfsStreamDirectory('UtilTest'));
+        vfsStream::setup('UtilTest');
     }
 
     /**
@@ -380,7 +379,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDirectory()
     {
-        if (!class_exists('vfsStreamWrapper')) {
+        if (!class_exists('vfsStream')) {
             $this->markTestSkipped('vfsStream is not installed');
         }
 
@@ -395,7 +394,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDirectory2()
     {
-        if (!class_exists('vfsStreamWrapper')) {
+        if (!class_exists('vfsStream')) {
             $this->markTestSkipped('vfsStream is not installed');
         }
 
@@ -412,7 +411,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDirectory3()
     {
-        if (!class_exists('vfsStreamWrapper')) {
+        if (!class_exists('vfsStream')) {
             $this->markTestSkipped('vfsStream is not installed');
         }
 

@@ -106,6 +106,14 @@ class PHP_CodeCoverage_Report_HTML
             $options['generator'] = '';
         }
 
+        if (!isset($options['methodCoverageThreshold'])) {
+            $options['methodCoverageThreshold'] = 100;
+        }
+
+        if (!isset($options['classCoverageThreshold'])) {
+            $options['classCoverageThreshold'] = 100;
+        }
+
         $this->options = $options;
 
         self::$templatePath = sprintf(
@@ -210,7 +218,10 @@ class PHP_CodeCoverage_Report_HTML
                       substr($key, 0, -2),
                       $value,
                       $this->options['yui'],
-                      $this->options['highlight']
+                      $this->options['highlight'],
+                      $this->options['methodCoverageThreshold'],
+                      $this->options['classCoverageThreshold']
+
                     );
                 }
 

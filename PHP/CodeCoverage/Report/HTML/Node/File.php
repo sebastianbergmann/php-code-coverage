@@ -138,6 +138,16 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     protected $endLines = array();
 
+	/**
+	* @var string
+	*/
+	protected $methodCoverageThreshold;
+
+	/**
+	* @var string
+	*/
+	protected $classCoverageThreshold;
+
     /**
      * Constructor.
      *
@@ -146,9 +156,11 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param  array                             $executedLines
      * @param  boolean                           $yui
      * @param  boolean                           $highlight
+	 * @param  string							 $methodCoverageThreshold
+	 * @param  string							 $classCoverageThreshold
      * @throws RuntimeException
      */
-    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $executedLines, $yui = TRUE, $highlight = FALSE)
+    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $executedLines, $yui = TRUE, $highlight = FALSE, $methodCoverageThreshold = 100, $classCoverageThreshold = 100)
     {
         parent::__construct($name, $parent);
 
@@ -167,7 +179,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $this->ignoredLines  = PHP_CodeCoverage_Util::getLinesToBeIgnored(
                                  $path
                                );
-
+		$this->methodCoverageThreshold = $methodCoverageThreshold;
+		$this->classCoverageThreshold = $classCoverageThreshold;
+		
         $this->calculateStatistics();
     }
 
@@ -391,7 +405,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $items = '';
 
         foreach ($this->classes as $className => $classData) {
-            if ($classData['executedLines'] == $classData['executableLines']) {
+            if ($classData['coverage'] >= $this->classCoverageThreshold) {
                 $numTestedClasses     = 1;
                 $testedClassesPercent = 100;
             } else {
@@ -403,7 +417,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             $numMethods       = count($classData['methods']);
 
             foreach ($classData['methods'] as $method) {
-                if ($method['executedLines'] == $method['executableLines']) {
+				
+                if ($method['coverage'] >= $this->methodCoverageThreshold) {
                     $numTestedMethods++;
                 }
             }
@@ -439,8 +454,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             );
 
             foreach ($classData['methods'] as $methodData) {
-                if ($methodData['executedLines'] ==
-                    $methodData['executableLines']) {
+
+                if ($methodData['coverage'] >= $this->methodCoverageThreshold) {
                     $numTestedMethods     = 1;
                     $testedMethodsPercent = 100;
                 } else {
@@ -595,7 +610,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                     $method['coverage'] = 100;
                 }
 
-                if ($method['coverage'] == 100) {
+                if ($method['coverage'] >= $this->methodCoverageThreshold) {
                     $this->numTestedMethods++;
                 }
 
@@ -614,7 +629,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                     $class['coverage'] = 100;
                 }
 
-                if ($class['coverage'] == 100) {
+                if ($class['coverage'] >= $this->classCoverageThreshold) {
                     $this->numTestedClasses++;
                 }
 

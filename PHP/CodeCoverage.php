@@ -563,9 +563,10 @@ class PHP_CodeCoverage
                 $oldVariableNames = array_keys(get_defined_vars());
             }
 
-            $this->driver->start();
-            include_once $uncoveredFile;
-            $coverage = $this->driver->stop();
+            $fileContents = file($uncoveredFile);
+            $coverage = array(
+                $uncoveredFile => array_pad(array(), count($fileContents), -1)
+            );
 
             if ($this->promoteGlobals) {
                 $newVariables = get_defined_vars();

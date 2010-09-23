@@ -125,6 +125,13 @@ class PHP_CodeCoverage
     protected $tests = array();
 
     /**
+     * Files that are in the empty dataset.
+     *
+     * @var array
+     */
+    private $untouchedFiles = array();
+
+    /**
      * Default PHP_CodeCoverage object.
      *
      * @var PHP_CodeCoverage
@@ -296,7 +303,6 @@ class PHP_CodeCoverage
         $this->summary = array();
     }
 
-    private $untouchedFiles = array();
 
     /**
      * Returns summarized code coverage data.

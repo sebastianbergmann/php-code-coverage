@@ -296,6 +296,8 @@ class PHP_CodeCoverage
         $this->summary = array();
     }
 
+    private $untouchedFiles = array();
+
     /**
      * Returns summarized code coverage data.
      *
@@ -318,8 +320,23 @@ class PHP_CodeCoverage
                 $this->processUncoveredFilesFromWhitelist();
             }
 
+            $emptyDataset = $this->data['UNCOVERED_FILES_FROM_WHITELIST'];
+
+            // position the empty dataset to the beginning of the array
+            unset($this->data['UNCOVERED_FILES_FROM_WHITELIST']);
+            array_unshift($this->data, $emptyDataset);
+
             foreach ($this->data as $test => $coverage) {
                 foreach ($coverage['filtered'] as $file => $lines) {
+
+                    if ($test !== 0) {
+                        // when overwriting a file in the empty dataset,
+                        // rewrite instead of merge.
+                        if (in_array($file, $this->untouchedFiles)) {
+                            $this->summary[$file] = $lines;
+                            unset($this->untouchedFiles[$file]);
+                        }
+                    }
                     foreach ($lines as $line => $flag) {
                         if ($flag == 1) {
                             if (!isset($this->summary[$file][$line][0])) {
@@ -541,6 +558,7 @@ class PHP_CodeCoverage
         }
     }
 
+
     /**
      * Processes whitelisted files that are not covered.
      */
@@ -559,6 +577,7 @@ class PHP_CodeCoverage
         $variableName     = NULL;
 
         foreach ($uncoveredFiles as $uncoveredFile) {
+            $this->untouchedFiles[] = $uncoveredFile;
             if ($this->promoteGlobals) {
                 $oldVariableNames = array_keys(get_defined_vars());
             }

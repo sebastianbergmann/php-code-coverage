@@ -338,9 +338,10 @@ class PHP_CodeCoverage
                     if ($test !== 0) {
                         // when overwriting a file in the empty dataset,
                         // rewrite instead of merge.
-                        if (in_array($file, $this->untouchedFiles)) {
+                        $untouchedIndex = array_search($file, $this->untouchedFiles);
+                        if (false !== $untouchedIndex) {
                             $this->summary[$file] = $lines;
-                            unset($this->untouchedFiles[$file]);
+                            unset($this->untouchedFiles[$untouchedIndex]);
                         }
                     }
                     foreach ($lines as $line => $flag) {

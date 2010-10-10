@@ -107,6 +107,15 @@ class PHP_CodeCoverage_TextUI_Command
 
         $input->registerOption(
           new ezcConsoleOption(
+            '',
+            'merge',
+            ezcConsoleInput::TYPE_NONE,
+            FALSE
+           )
+        );
+
+        $input->registerOption(
+          new ezcConsoleOption(
             'h',
             'help',
             ezcConsoleInput::TYPE_NONE,
@@ -163,6 +172,7 @@ class PHP_CodeCoverage_TextUI_Command
         $html      = $input->getOption('html')->value;
         $blacklist = $input->getOption('blacklist')->value;
         $whitelist = $input->getOption('whitelist')->value;
+        $merge     = $input->getOption('merge')->value;
 
         if (count($arguments) == 1) {
             self::printVersionString();
@@ -197,11 +207,23 @@ class PHP_CodeCoverage_TextUI_Command
                 }
             }
 
-            $coverage->start('phpcov');
+            if (!$merge) {
+                $coverage->start('phpcov');
 
-            require $arguments[0];
+                require $arguments[0];
 
-            $coverage->stop();
+                $coverage->stop();
+            } else {
+                require_once 'File/Iterator/Factory.php';
+
+                $files = File_Iterator_Factory::getFilesAsArray(
+                  $arguments[0], '.cov'
+                );
+
+                foreach ($files as $file) {
+                    $coverage->merge(unserialize(file_get_contents($file)));
+                }
+            }
 
             if ($clover) {
                 require 'PHP/CodeCoverage/Report/Clover.php';
@@ -245,12 +267,15 @@ class PHP_CodeCoverage_TextUI_Command
 
         print <<<EOT
 Usage: phpcov [switches] <file>
+       phpcov --merge [switches] <directory>
 
   --clover <file>         Write code coverage data in Clover XML format.
   --html <dir>            Generate code coverage report in HTML format.
 
   --blacklist <dir|file>  Adds <dir|file> to the blacklist.
   --whitelist <dir|file>  Adds <dir|file> to the whitelist.
+
+  --merge                 Merges serialized code coverage data.
 
   --help                  Prints this usage information.
   --version               Prints the version and exits.

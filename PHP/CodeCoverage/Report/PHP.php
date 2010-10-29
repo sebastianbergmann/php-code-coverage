@@ -44,7 +44,6 @@
  */
 
 require_once 'PHP/CodeCoverage.php';
-require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Uses serialize() to write a PHP_CodeCoverage object to a file.

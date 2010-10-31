@@ -268,7 +268,7 @@ class PHP_CodeCoverage_Util
 
             $ignore = FALSE;
             $stop   = FALSE;
-            $tokens = PHP_Token_Stream_CachingFactory::get($filename);
+            $tokens = PHP_Token_Stream_CachingFactory::get($filename)->tokens();
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {

@@ -125,6 +125,26 @@ class PHP_CodeCoverage
     protected $tests = array();
 
     /**
+     * @var boolean
+     */
+    protected $isCodeCoverageTestSuite = FALSE;
+
+    /**
+     * @var boolean
+     */
+    protected $isFileIteratorTestSuite = FALSE;
+
+    /**
+     * @var boolean
+     */
+    protected $isTimerTestSuite = FALSE;
+
+    /**
+     * @var boolean
+     */
+    protected $isTokenStreamTestSuite = FALSE;
+
+    /**
      * Default PHP_CodeCoverage object.
      *
      * @var PHP_CodeCoverage
@@ -150,6 +170,22 @@ class PHP_CodeCoverage
 
         $this->driver = $driver;
         $this->filter = $filter;
+
+        if (defined('PHP_CODECOVERAGE_TESTSUITE')) {
+            $this->isCodeCoverageTestSuite = TRUE;
+        }
+
+        if (defined('FILE_ITERATOR_TESTSUITE')) {
+            $this->isFileIteratorTestSuite = TRUE;
+        }
+
+        if (defined('PHP_TIMER_TESTSUITE')) {
+            $this->isTimerTestSuite = TRUE;
+        }
+
+        if (defined('PHP_TOKENSTREAM_TESTSUITE')) {
+            $this->isTokenStreamTestSuite = TRUE;
+        }
     }
 
     /**
@@ -446,26 +482,26 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            if (!defined('PHP_CODECOVERAGE_TESTSUITE') &&
+            if (!$this->isCodeCoverageTestSuite &&
                 strpos($filename, dirname(__FILE__)) === 0) {
                 unset($data[$filename]);
                 continue;
             }
 
-            if (!defined('FILE_ITERATOR_TESTSUITE') &&
+            if (!$this->isFileIteratorTestSuite &&
                 (substr($filename, -17) == 'File/Iterator.php' ||
                  substr($filename, -25) == 'File/Iterator/Factory.php')) {
                 unset($data[$filename]);
                 continue;
             }
 
-            if (!defined('PHP_TIMER_TESTSUITE') &&
+            if (!$this->isTimerTestSuite &&
                 (substr($filename, -13) == 'PHP/Timer.php')) {
                 unset($data[$filename]);
                 continue;
             }
 
-            if (!defined('PHP_TOKENSTREAM_TESTSUITE') &&
+            if (!$this->isTokenStreamTestSuite &&
                 (substr($filename, -13) == 'PHP/Token.php' ||
                  substr($filename, -20) == 'PHP/Token/Stream.php' ||
                  substr($filename, -35) == 'PHP/Token/Stream/CachingFactory.php')) {

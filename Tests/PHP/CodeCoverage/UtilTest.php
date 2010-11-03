@@ -67,6 +67,7 @@ require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
+require_once TEST_FILES_PATH . 'CoveredFile.php';
 require_once TEST_FILES_PATH . 'CoveredFunction.php';
 require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
 
@@ -218,6 +219,21 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         PHP_CodeCoverage_Util::getLinesToBeCovered(
           PHP_CodeCoverage_Util::getCoversAnnotations(
             'NotExistingCoveredElementTest', 'testThree'
+          )
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException RuntimeException
+     */
+    public function testGetLinesToBeCovered5()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          PHP_CodeCoverage_Util::getCoversAnnotations(
+            'NotExistingCoveredElementTest', 'testFour'
           )
         );
     }

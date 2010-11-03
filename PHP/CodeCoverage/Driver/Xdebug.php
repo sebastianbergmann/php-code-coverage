@@ -45,6 +45,11 @@
 
 require_once 'PHP/CodeCoverage/Driver.php';
 
+if (version_compare('2.2.0-dev', phpversion('xdebug'), '>=') &&
+    !ini_get('xdebug.coverage_enable')) {
+    die("You need to set xdebug.coverage_enable=On in your php.ini.\n");
+}
+
 /**
  * Driver for Xdebug's code coverage functionality.
  *

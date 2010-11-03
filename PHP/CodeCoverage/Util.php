@@ -205,7 +205,7 @@ class PHP_CodeCoverage_Util
         $docComment = $class->getDocComment();
 
         if (is_string($methodNames)) {
-            $methodsNames = array($methodNames);
+            $methodNames = array($methodNames);
         }
         foreach ($methodNames as $methodName) {
             // @codeCoverageIgnoreStart
@@ -227,7 +227,7 @@ class PHP_CodeCoverage_Util
     /**
      * Returns the files and lines for a list of covered elements.
      *
-     * @param  array $coveredElements
+     * @param  string|array $coveredElements
      * @return array
      */
     public static function getLinesToBeCovered($coveredElements)
@@ -235,6 +235,9 @@ class PHP_CodeCoverage_Util
         $codeToCoverList = array();
         $result          = array();
 
+        if (is_string($coveredElements)) {
+            $coveredElements = array($coveredElements);
+        }
         foreach ($coveredElements as $coveredElement) {
             $codeToCoverList = array_merge(
               $codeToCoverList,

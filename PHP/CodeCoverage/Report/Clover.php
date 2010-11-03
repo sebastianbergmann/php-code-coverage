@@ -120,6 +120,7 @@ class PHP_CodeCoverage_Report_Clover
                 $tokens        = PHP_Token_Stream_CachingFactory::get($filename);
                 $classesInFile = $tokens->getClasses();
                 $linesOfCode   = $tokens->getLinesOfCode();
+                unset($tokens);
 
                 $ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
                   $filename

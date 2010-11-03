@@ -812,9 +812,10 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processClasses()
     {
+        $file    = $this->getId() . '.html#';
         $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $classes = $tokens->getClasses();
-        $file    = $this->getId() . '.html#';
+        unset($tokens);
 
         foreach ($classes as $className => $class) {
             $this->classes[$className] = array(
@@ -857,6 +858,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     {
         $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $functions = $tokens->getFunctions();
+        unset($tokens);
 
         if (count($functions) > 0 && !isset($this->classes['*'])) {
             $this->classes['*'] = array(

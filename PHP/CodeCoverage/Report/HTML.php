@@ -180,7 +180,7 @@ class PHP_CodeCoverage_Report_HTML
             'charset'                => $this->options['charset'],
             'date'                   => date(
                                           'D M j G:i:s T Y',
-                                          $_SERVER['REQUEST_TIME']
+                                          (int)$_SERVER['REQUEST_TIME']
                                         ),
             'version'                => '@package_version@',
             'php_version'            => PHP_VERSION,

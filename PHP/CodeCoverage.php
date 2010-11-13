@@ -585,7 +585,7 @@ class PHP_CodeCoverage
         $data = array();
 
         $uncoveredFiles = array_diff(
-          $this->filter->getWhitelist(), array_keys($this->coveredFiles)
+          $this->filter->getWhitelist(), $this->coveredFiles
         );
 
         $newVariables     = array();

@@ -619,6 +619,12 @@ class PHP_CodeCoverage
 
             foreach ($coverage as $file => $fileCoverage) {
                 if (!isset($data[$file])) {
+                    foreach (array_keys($fileCoverage) as $key) {
+                        if ($fileCoverage[$key] == 1) {
+                            $fileCoverage[$key] = -1;
+                        }
+                    }
+
                     $data[$file] = $fileCoverage;
                 }
             }

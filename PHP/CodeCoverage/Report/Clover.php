@@ -72,11 +72,11 @@ class PHP_CodeCoverage_Report_Clover
         $document->formatOutput = TRUE;
 
         $root = $document->createElement('coverage');
-        $root->setAttribute('generated', $_SERVER['REQUEST_TIME']);
+        $root->setAttribute('generated', (int)$_SERVER['REQUEST_TIME']);
         $document->appendChild($root);
 
         $project = $document->createElement('project');
-        $project->setAttribute('timestamp', $_SERVER['REQUEST_TIME']);
+        $project->setAttribute('timestamp', (int)$_SERVER['REQUEST_TIME']);
 
         if (is_string($name)) {
             $project->setAttribute('name', $name);

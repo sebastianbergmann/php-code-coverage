@@ -585,7 +585,7 @@ class PHP_CodeCoverage
         $data = array();
 
         $uncoveredFiles = array_diff(
-          $this->filter->getWhitelist(), array_keys($this->coveredFiles)
+          $this->filter->getWhitelist(), $this->coveredFiles
         );
 
         $newVariables     = array();
@@ -619,6 +619,12 @@ class PHP_CodeCoverage
 
             foreach ($coverage as $file => $fileCoverage) {
                 if (!isset($data[$file])) {
+                    foreach (array_keys($fileCoverage) as $key) {
+                        if ($fileCoverage[$key] == 1) {
+                            $fileCoverage[$key] = -1;
+                        }
+                    }
+
                     $data[$file] = $fileCoverage;
                 }
             }

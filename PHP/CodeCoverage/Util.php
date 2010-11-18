@@ -286,11 +286,15 @@ class PHP_CodeCoverage_Util
                     break;
 
                     case 'PHP_Token_COMMENT': {
-                        if (trim($token) == '// @codeCoverageIgnoreStart') {
+                        $_token = trim($token);
+
+                        if ($_token == '// @codeCoverageIgnoreStart' ||
+                            $_token == '//@codeCoverageIgnoreStart') {
                             $ignore = TRUE;
                         }
 
-                        else if (trim($token) == '// @codeCoverageIgnoreEnd') {
+                        else if ($_token == '// @codeCoverageIgnoreEnd' ||
+                                 $_token == '//@codeCoverageIgnoreEnd') {
                             $stop = TRUE;
                         }
                     }

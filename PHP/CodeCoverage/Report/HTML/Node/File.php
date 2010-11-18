@@ -111,6 +111,11 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     /**
      * @var integer
      */
+    protected $numClasses = NULL;
+
+    /**
+     * @var integer
+     */
     protected $numMethods = NULL;
 
     /**
@@ -203,7 +208,15 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     public function getNumClasses()
     {
-        return count($this->classes);
+        if ($this->numClasses === NULL) {
+            $this->numClasses = count($this->classes);
+
+            if (isset($this->classes['*'])) {
+                $this->numClasses--;
+            }
+        }
+
+        return $this->numClasses;
     }
 
     /**

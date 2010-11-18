@@ -288,11 +288,13 @@ class PHP_CodeCoverage_Util
                     case 'PHP_Token_COMMENT': {
                         $_token = trim($token);
 
-                        if ($_token == '// @codeCoverageIgnoreStart') {
+                        if ($_token == '// @codeCoverageIgnoreStart' ||
+                            $_token == '//@codeCoverageIgnoreStart') {
                             $ignore = TRUE;
                         }
 
-                        else if ($_token == '// @codeCoverageIgnoreEnd') {
+                        else if ($_token == '// @codeCoverageIgnoreEnd' ||
+                                 $_token == '//@codeCoverageIgnoreEnd') {
                             $stop = TRUE;
                         }
                     }

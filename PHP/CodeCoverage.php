@@ -564,26 +564,46 @@ class PHP_CodeCoverage
      */
     protected function processUncoveredFilesFromWhitelist()
     {
-        $data = array();
-
+        $data           = array();
+        $includedFiles  = array_flip(get_included_files());
         $uncoveredFiles = array_diff(
           $this->filter->getWhitelist(), $this->coveredFiles
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            $this->driver->start();
-            include_once $uncoveredFile;
-            $coverage = $this->driver->stop();
+            if (isset($includedFiles[$uncoveredFile])) {
+                foreach (array_keys($this->data) as $test) {
+                    if (isset($this->data[$test]['raw'][$uncoveredFile])) {
+                        $coverage = $this->data[$test]['raw'][$uncoveredFile];
 
-            foreach ($coverage as $file => $fileCoverage) {
-                if (!isset($data[$file])) {
-                    foreach (array_keys($fileCoverage) as $key) {
-                        if ($fileCoverage[$key] == 1) {
-                            $fileCoverage[$key] = -1;
+                        foreach (array_keys($coverage) as $key) {
+                            if ($coverage[$key] == 1) {
+                                $coverage[$key] = -1;
+                            }
                         }
-                    }
 
-                    $data[$file] = $fileCoverage;
+                        $data[$uncoveredFile] = $coverage;
+
+                        break;
+                    }
+                }
+            } else {
+                $this->driver->start();
+                include_once $uncoveredFile;
+                $coverage = $this->driver->stop();
+
+                foreach ($coverage as $file => $fileCoverage) {
+                    if (!isset($data[$file]) &&
+                        in_array($file, $uncoveredFiles)) {
+                        foreach (array_keys($fileCoverage) as $key) {
+                            if ($fileCoverage[$key] == 1) {
+                                $fileCoverage[$key] = -1;
+                            }
+                        }
+
+                        $data[$file]          = $fileCoverage;
+                        $includedFiles[$file] = TRUE;
+                    }
                 }
             }
         }

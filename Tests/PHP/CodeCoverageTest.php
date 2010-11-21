@@ -189,26 +189,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage::setPromoteGlobals
-     */
-    public function testSetPromoteGlobals()
-    {
-        $coverage = new PHP_CodeCoverage;
-        $coverage->setPromoteGlobals(TRUE);
-        $this->assertAttributeEquals(TRUE, 'promoteGlobals', $coverage);
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage::setPromoteGlobals
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetPromoteGlobalsThrowsExceptionForInvalidArgument()
-    {
-        $coverage = new PHP_CodeCoverage;
-        $coverage->setPromoteGlobals(NULL);
-    }
-
-    /**
      * @covers PHP_CodeCoverage::setMapTestClassNameToCoveredClassName
      */
     public function testSetMapTestClassNameToCoveredClassName()

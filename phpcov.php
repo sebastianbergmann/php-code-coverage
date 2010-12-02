@@ -46,6 +46,6 @@ if (strpos('@php_bin@', '@php_bin') === 0) {
     set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 }
 
-require 'PHP/CodeCoverage/TextUI/Command.php';
+require 'PHP/CodeCoverage/Autoload.php';
 
 PHP_CodeCoverage_TextUI_Command::main();

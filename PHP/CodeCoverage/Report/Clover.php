@@ -43,7 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage.php';
 require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**

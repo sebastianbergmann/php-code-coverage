@@ -44,7 +44,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Util.php';
 @include_once 'vfsStream/vfsStream.php';
 
 if (!defined('TEST_FILES_PATH')) {

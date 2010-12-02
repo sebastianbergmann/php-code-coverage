@@ -43,10 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Driver/Xdebug.php';
-require_once 'PHP/CodeCoverage/Filter.php';
-require_once 'PHP/CodeCoverage/Util.php';
-
 /**
  * Provides collection functionality for PHP code coverage information.
  *

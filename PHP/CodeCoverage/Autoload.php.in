@@ -36,62 +36,30 @@
  *
  * @category   PHP
  * @package    CodeCoverage
- * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 1.1.0
  */
 
-if (!defined('TEST_FILES_PATH')) {
-    define(
-      'TEST_FILES_PATH',
-      dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-      '_files' . DIRECTORY_SEPARATOR
-    );
-}
+function php_codecoverage_autoload($class) {
+    static $classes = NULL;
+    static $path = NULL;;
 
-require_once TEST_FILES_PATH . '../TestCase.php';
-
-/**
- * Tests for the PHP_CodeCoverage_Report_Clover class.
- *
- * @category   PHP
- * @package    CodeCoverage
- * @subpackage Tests
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: @package_version@
- * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
- */
-class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
-{
-    /**
-     * @covers PHP_CodeCoverage_Report_Clover
-     */
-    public function testCloverForBankAccountTest()
-    {
-        $clover = new PHP_CodeCoverage_Report_Clover;
-
-        $this->assertStringMatchesFormatFile(
-          TEST_FILES_PATH . 'BankAccount-clover.xml',
-          $clover->process($this->getCoverageForBankAccount(), NULL, 'BankAccount')
+    if ($classes === NULL) {
+        $classes = array(
+          ___CLASSLIST___
         );
+
+        $path = dirname(dirname(__FILE__));
     }
 
-    /**
-     * @covers PHP_CodeCoverage_Report_Clover
-     */
-    public function testCloverForFileWithIgnoredLines()
-    {
-        $clover = new PHP_CodeCoverage_Report_Clover;
+    $cn = strtolower($class);
 
-        $this->assertStringMatchesFormatFile(
-          TEST_FILES_PATH . 'ignored-lines-clover.xml',
-          $clover->process($this->getCoverageForFileWithIgnoredLines())
-        );
+    if (isset($classes[$cn])) {
+        require $path . $classes[$cn];
     }
 }
+
+spl_autoload_register('php_codecoverage_autoload');

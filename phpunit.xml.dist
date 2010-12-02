@@ -2,7 +2,8 @@
 
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         syntaxCheck="false">
+         syntaxCheck="false"
+         bootstrap="PHP/CodeCoverage/Autoload.php">
   <testsuites>
     <testsuite name="php-code-coverage">
       <directory suffix="Test.php">Tests/PHP</directory>

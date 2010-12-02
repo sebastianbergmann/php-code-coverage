@@ -43,8 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
-
 /**
  * Represents a directory in the code coverage information tree.
  *

@@ -43,8 +43,6 @@
  * @since      File available since Release 1.1.0
  */
 
-require_once 'PHP/CodeCoverage.php';
-
 /**
  * Uses serialize() to write a PHP_CodeCoverage object to a file.
  *

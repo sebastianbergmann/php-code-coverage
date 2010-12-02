@@ -44,8 +44,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Filter.php';
-
 if (!defined('TEST_FILES_PATH')) {
     define(
       'TEST_FILES_PATH',

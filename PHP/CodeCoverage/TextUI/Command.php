@@ -212,8 +212,6 @@ class PHP_CodeCoverage_TextUI_Command
 
                 $coverage->stop();
             } else {
-                require_once 'File/Iterator/Factory.php';
-
                 $files = File_Iterator_Factory::getFilesAsArray(
                   $arguments[0], '.cov'
                 );

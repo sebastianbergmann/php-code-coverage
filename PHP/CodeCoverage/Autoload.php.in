@@ -43,6 +43,7 @@
  * @since      File available since Release 1.1.0
  */
 
+require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
 
 function php_codecoverage_autoload($class) {

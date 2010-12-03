@@ -43,8 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'File/Iterator/Factory.php';
-
 /**
  * Filter for blacklisting and whitelisting of code coverage information.
  *

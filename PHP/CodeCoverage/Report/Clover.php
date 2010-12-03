@@ -43,8 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/Token/Stream/CachingFactory.php';
-
 /**
  * Generates a Clover XML logfile from an PHP_CodeCoverage object.
  *

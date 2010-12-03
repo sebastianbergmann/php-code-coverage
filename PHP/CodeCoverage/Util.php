@@ -47,8 +47,6 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
-require_once 'PHP/Token/Stream/CachingFactory.php';
-
 /**
  * Utility methods.
  *

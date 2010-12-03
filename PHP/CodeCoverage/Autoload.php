@@ -43,6 +43,8 @@
  * @since      File available since Release 1.1.0
  */
 
+require_once 'PHP/Token/Stream/Autoload.php';
+
 function php_codecoverage_autoload($class) {
     static $classes = NULL;
     static $path = NULL;;

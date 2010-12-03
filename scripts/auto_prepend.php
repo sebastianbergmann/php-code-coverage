@@ -1,5 +1,5 @@
 <?php
-require_once 'PHP/CodeCoverage.php';
+require_once 'PHP/CodeCoverage/Autoload.php';
 
 $coverage = new PHP_CodeCoverage;
 $filter   = $coverage->filter();

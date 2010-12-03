@@ -43,9 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'ezc/Base/base.php';
-spl_autoload_register(array('ezcBase', 'autoload'));
-
 /**
  * TextUI frontend for PHP_CodeCoverage.
  *
@@ -222,15 +219,11 @@ class PHP_CodeCoverage_TextUI_Command
             }
 
             if ($clover) {
-                require 'PHP/CodeCoverage/Report/Clover.php';
-
                 $writer = new PHP_CodeCoverage_Report_Clover;
                 $writer->process($coverage, $clover);
             }
 
             if ($html) {
-                require 'PHP/CodeCoverage/Report/HTML.php';
-
                 $writer = new PHP_CodeCoverage_Report_HTML;
                 $writer->process($coverage, $html);
             }

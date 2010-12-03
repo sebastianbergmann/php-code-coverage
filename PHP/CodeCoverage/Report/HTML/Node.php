@@ -507,6 +507,3 @@ abstract class PHP_CodeCoverage_Report_HTML_Node
      */
     abstract public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70, $generator = '');
 }
-
-require_once 'PHP/CodeCoverage/Report/HTML/Node/Directory.php';
-require_once 'PHP/CodeCoverage/Report/HTML/Node/File.php';

@@ -45,6 +45,7 @@
 
 require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
+require_once 'Text/Template/Autoload.php';
 
 function php_codecoverage_autoload($class) {
     static $classes = NULL;

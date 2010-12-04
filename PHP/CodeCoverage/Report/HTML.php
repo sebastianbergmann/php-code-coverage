@@ -43,8 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-require_once 'Text/Template.php';
-
 /**
  * Generates an HTML report from an PHP_CodeCoverage object.
  *

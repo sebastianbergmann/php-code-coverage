@@ -48,7 +48,7 @@ require_once 'PHP/Token/Stream/Autoload.php';
 
 function php_codecoverage_autoload($class) {
     static $classes = NULL;
-    static $path = NULL;;
+    static $path = NULL;
 
     if ($classes === NULL) {
         $classes = array(

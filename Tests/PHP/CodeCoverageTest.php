@@ -80,11 +80,11 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $coverage = new PHP_CodeCoverage;
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
         );
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Filter', 'filter', $coverage
         );
     }
@@ -98,7 +98,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $filter   = new PHP_CodeCoverage_Filter;
         $coverage = new PHP_CodeCoverage(NULL, $filter);
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
         );
 

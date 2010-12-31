@@ -25,6 +25,9 @@
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">PHP</directory>
+      <exclude>
+        <file>PHP/CodeCoverage/Autoload.php</file>
+      </exclude>
     </whitelist>
   </filter>
 </phpunit>

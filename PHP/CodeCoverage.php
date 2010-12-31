@@ -152,6 +152,7 @@ class PHP_CodeCoverage
             $this->isCodeCoverageTestSuite = TRUE;
         }
 
+        // @codeCoverageIgnoreStart
         if (defined('FILE_ITERATOR_TESTSUITE')) {
             $this->isFileIteratorTestSuite = TRUE;
         }
@@ -163,6 +164,7 @@ class PHP_CodeCoverage
         if (defined('PHP_TOKENSTREAM_TESTSUITE')) {
             $this->isTokenStreamTestSuite = TRUE;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**

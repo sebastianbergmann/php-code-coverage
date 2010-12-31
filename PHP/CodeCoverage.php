@@ -310,7 +310,7 @@ class PHP_CodeCoverage
         foreach ($data as $file => $lines) {
             foreach ($lines as $k => $v) {
                 if ($v == 1) {
-                    $this->data[$file][$k]['executed'][] = $id;
+                    $this->data[$file][$k][] = $id;
                 }
             }
         }
@@ -330,11 +330,11 @@ class PHP_CodeCoverage
             }
 
             foreach ($lines as $line => $data) {
-                $this->data[$file][$line]['executed'] = array_unique(
-                  array_merge(
-                    $this->data[$file][$line]['executed'], $data['executed']
-                  )
-                );
+                if ($data !== NULL) {
+                    $this->data[$file][$line] = array_unique(
+                      array_merge($this->data[$file][$line], $data)
+                    );
+                }
             }
         }
     }
@@ -497,9 +497,7 @@ class PHP_CodeCoverage
                 $this->data[$file] = array();
 
                 foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = array(
-                      'dead_code' => $v == -2, 'executed' => array()
-                    );
+                    $this->data[$file][$k] = $v == -2 ? NULL : array();
                 }
             }
         }

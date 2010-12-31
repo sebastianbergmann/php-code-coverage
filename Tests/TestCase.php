@@ -206,70 +206,31 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return array(
           TEST_FILES_PATH . 'BankAccount.php' => array(
             8 => array(
-              'dead_code' => FALSE,
-              'executed'  => array(
-                0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              )
+              0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
             ),
-            9 => array(
-              'dead_code' => TRUE,
-              'executed'  => array()
-            ),
-            13 => array(
-              'dead_code' => FALSE,
-              'executed'  => array()
-            ),
-            14 => array(
-              'dead_code' => FALSE,
-              'executed'  => array()
-            ),
-            15 => array(
-              'dead_code' => FALSE,
-              'executed'  => array()
-            ),
-            16 => array(
-              'dead_code' => FALSE,
-              'executed'  => array()
-            ),
-            18 => array(
-              'dead_code' => FALSE,
-              'executed'  => array()
-            ),
+            9 => NULL,
+            13 => array(),
+            14 => array(),
+            15 => array(),
+            16 => array(),
+            18 => array(),
             22 => array(
-              'dead_code' => FALSE,
-              'executed'  => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              )
+              0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
             ),
             24 => array(
-              'dead_code' => FALSE,
-              'executed'  => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney',
-              ),
+              0 => 'BankAccountTest::testDepositWithdrawMoney',
             ),
-            25 => array(
-              'dead_code' => TRUE,
-              'executed'  => array()
-            ),
+            25 => NULL,
             29 => array(
-              'dead_code' => FALSE,
-              'executed'  => array(
-                0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                1 => 'BankAccountTest::testDepositWithdrawMoney'
-              )
+              0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
             ),
             31 => array(
-              'dead_code' => FALSE,
-              'executed'  => array(
-                0 => 'BankAccountTest::testDepositWithdrawMoney'
-              )
+              0 => 'BankAccountTest::testDepositWithdrawMoney'
             ),
-            32 => array(
-              'dead_code' => TRUE,
-              'executed'  => array()
-            )
+            32 => NULL
           )
         );
     }

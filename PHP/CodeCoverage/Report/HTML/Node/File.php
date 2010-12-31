@@ -314,9 +314,9 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             if (!isset($this->ignoredLines[$i]) &&
                  isset($this->coverageData[$i])) {
                 $count    = '';
-                $numTests = count($this->coverageData[$i]['executed']);
+                $numTests = count($this->coverageData[$i]);
 
-                if ($this->coverageData[$i]['dead_code']) {
+                if ($this->coverageData[$i] === NULL) {
                     $color = 'lineDeadCode';
                     $count = '        ';
                 }
@@ -334,7 +334,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                         $buffer  = '';
                         $testCSS = '';
 
-                        foreach ($this->coverageData[$i]['executed'] as $test) {
+                        foreach ($this->coverageData[$i] as $test) {
                             switch ($this->testData[$test]) {
                                 case 0: {
                                     $testCSS = ' class=\"testPassed\"';
@@ -570,7 +570,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             }
 
             if (isset($this->coverageData[$lineNumber]) &&
-                !$this->coverageData[$lineNumber]['dead_code']) {
+                $this->coverageData[$lineNumber] !== NULL) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
                 }
@@ -581,7 +581,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
                 $this->numExecutableLines++;
 
-                if (count($this->coverageData[$lineNumber]['executed']) > 0 ||
+                if (count($this->coverageData[$lineNumber]) > 0 ||
                     isset($this->ignoredLines[$lineNumber])) {
                     if (isset($currentClass)) {
                         $currentClass['executedLines']++;

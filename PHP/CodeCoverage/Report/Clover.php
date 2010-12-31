@@ -153,16 +153,14 @@ class PHP_CodeCoverage_Report_Clover
                             $count = 0;
 
                             if (isset($files[$filename][$i])) {
-                                if (!$files[$filename][$i]['dead_code']) {
+                                if ($files[$filename][$i] !== NULL) {
                                     $classStatistics['statements']++;
                                     $methodLines++;
                                 } else {
                                     $add = FALSE;
                                 }
 
-                                $count = count(
-                                  $files[$filename][$i]['executed']
-                                );
+                                $count = count($files[$filename][$i]);
 
                                 if ($count > 0) {
                                     $classStatistics['coveredStatements']++;
@@ -295,10 +293,10 @@ class PHP_CodeCoverage_Report_Clover
                         continue;
                     }
 
-                    if (!$_data['dead_code']) {
+                    if ($_data !== NULL) {
                         $fileStatistics['statements']++;
 
-                        $count = count($_data['executed']);
+                        $count = count($_data);
 
                         if ($count > 0) {
                             $fileStatistics['coveredStatements']++;

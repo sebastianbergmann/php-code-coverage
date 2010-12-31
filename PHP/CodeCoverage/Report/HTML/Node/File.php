@@ -74,7 +74,12 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     /**
      * @var array
      */
-    protected $executedLines;
+    protected $coverageData;
+
+    /**
+     * @var array
+     */
+    protected $testData;
 
     /**
      * @var boolean
@@ -141,12 +146,13 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      *
      * @param  string                            $name
      * @param  PHP_CodeCoverage_Report_HTML_Node $parent
-     * @param  array                             $executedLines
+     * @param  array                             $coverageData
+     * @param  array                             $testData
      * @param  boolean                           $yui
      * @param  boolean                           $highlight
      * @throws RuntimeException
      */
-    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $executedLines, $yui = TRUE, $highlight = FALSE)
+    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $coverageData, array $testData, $yui = TRUE, $highlight = FALSE)
     {
         parent::__construct($name, $parent);
 
@@ -158,13 +164,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             );
         }
 
-        $this->executedLines = $executedLines;
-        $this->highlight     = $highlight;
-        $this->yui           = $yui;
-        $this->codeLines     = $this->loadFile($path);
-        $this->ignoredLines  = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                 $path
-                               );
+        $this->coverageData = $coverageData;
+        $this->testData     = $testData;
+        $this->highlight    = $highlight;
+        $this->yui          = $yui;
+        $this->codeLines    = $this->loadFile($path);
+        $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
+                                $path
+                              );
 
         $this->calculateStatistics();
     }
@@ -305,22 +312,30 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             $css = '';
 
             if (!isset($this->ignoredLines[$i]) &&
-                 isset($this->executedLines[$i])) {
-                $count = '';
+                 isset($this->coverageData[$i])) {
+                $count    = '';
+                $numTests = count($this->coverageData[$i]['executed']);
 
-                // Array: Line is executable and was executed.
-                // count(Array) = Number of tests that hit this line.
-                if (is_array($this->executedLines[$i])) {
-                    $color    = 'lineCov';
-                    $numTests = count($this->executedLines[$i]);
-                    $count    = sprintf('%8d', $numTests);
+                if ($this->coverageData[$i]['dead_code']) {
+                    $color = 'lineDeadCode';
+                    $count = '        ';
+                }
+
+                else if ($numTests == 0) {
+                    $color = 'lineNoCov';
+                    $count = sprintf('%8d', 0);
+                }
+
+                else {
+                    $color = 'lineCov';
+                    $count = sprintf('%8d', $numTests);
 
                     if ($this->yui) {
                         $buffer  = '';
                         $testCSS = '';
 
-                        foreach ($this->executedLines[$i] as $test) {
-                            switch ($test['status']) {
+                        foreach ($this->coverageData[$i]['executed'] as $test) {
+                            switch ($this->testData[$test]) {
                                 case 0: {
                                     $testCSS = ' class=\"testPassed\"';
                                 }
@@ -351,7 +366,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                               '<li%s>%s</li>',
 
                               $testCSS,
-                              addslashes(htmlspecialchars($test['id']))
+                              addslashes(htmlspecialchars($test))
                             );
                         }
 
@@ -374,18 +389,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
                         $this->yuiPanelJS .= $yuiTemplate->render();
                     }
-                }
-
-                // -1: Line is executable and was not executed.
-                else if ($this->executedLines[$i] == -1) {
-                    $color = 'lineNoCov';
-                    $count = sprintf('%8d', 0);
-                }
-
-                // -2: Line is dead code.
-                else {
-                    $color = 'lineDeadCode';
-                    $count = '        ';
                 }
 
                 $css = sprintf(
@@ -538,8 +541,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $cleanId = PHP_CodeCoverage_Util::getSafeFilename($this->getId());
         $template->renderTo($target . $cleanId . '.html');
 
-        $this->yuiPanelJS    = '';
-        $this->executedLines = array();
+        $this->yuiPanelJS   = '';
+        $this->coverageData = array();
     }
 
     /**
@@ -566,46 +569,29 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 }
             }
 
-            if (isset($this->executedLines[$lineNumber])) {
-                // Array: Line is executable and was executed.
-                if (is_array($this->executedLines[$lineNumber])) {
+            if (isset($this->coverageData[$lineNumber]) &&
+                !$this->coverageData[$lineNumber]['dead_code']) {
+                if (isset($currentClass)) {
+                    $currentClass['executableLines']++;
+                }
+
+                if (isset($currentMethod)) {
+                    $currentMethod['executableLines']++;
+                }
+
+                $this->numExecutableLines++;
+
+                if (count($this->coverageData[$lineNumber]['executed']) > 0 ||
+                    isset($this->ignoredLines[$lineNumber])) {
                     if (isset($currentClass)) {
-                        $currentClass['executableLines']++;
                         $currentClass['executedLines']++;
                     }
 
                     if (isset($currentMethod)) {
-                        $currentMethod['executableLines']++;
                         $currentMethod['executedLines']++;
                     }
 
-                    $this->numExecutableLines++;
                     $this->numExecutedLines++;
-                }
-
-                // -1: Line is executable and was not executed.
-                else if ($this->executedLines[$lineNumber] == -1) {
-                    if (isset($currentClass)) {
-                        $currentClass['executableLines']++;
-                    }
-
-                    if (isset($currentMethod)) {
-                        $currentMethod['executableLines']++;
-                    }
-
-                    $this->numExecutableLines++;
-
-                    if (isset($this->ignoredLines[$lineNumber])) {
-                        if (isset($currentClass)) {
-                            $currentClass['executedLines']++;
-                        }
-
-                        if (isset($currentMethod)) {
-                            $currentMethod['executedLines']++;
-                        }
-
-                        $this->numExecutedLines++;
-                    }
                 }
             }
 

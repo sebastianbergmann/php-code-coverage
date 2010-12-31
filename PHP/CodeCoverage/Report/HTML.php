@@ -121,14 +121,14 @@ class PHP_CodeCoverage_Report_HTML
     public function process(PHP_CodeCoverage $coverage, $target)
     {
         $target     = PHP_CodeCoverage_Util::getDirectory($target);
-        $files      = $coverage->getSummary();
+        $files      = $coverage->getData();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
         $items      = PHP_CodeCoverage_Util::buildDirectoryStructure($files);
         $root       = new PHP_CodeCoverage_Report_HTML_Node_Directory(
                         $commonPath, NULL
                       );
 
-        $this->addItems($root, $items);
+        $this->addItems($root, $items, $coverage->getTests());
 
         $this->renderDashboard(
           $root, $target . 'index.dashboard.html', $this->options['title']
@@ -195,8 +195,9 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param array                                       $items
+     * @param array                                       $tests
      */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items)
+    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $tests)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
@@ -204,6 +205,7 @@ class PHP_CodeCoverage_Report_HTML
                     $root->addFile(
                       substr($key, 0, -2),
                       $value,
+                      $tests,
                       $this->options['yui'],
                       $this->options['highlight']
                     );
@@ -214,7 +216,7 @@ class PHP_CodeCoverage_Report_HTML
                 }
             } else {
                 $child = $root->addDirectory($key);
-                $this->addItems($child, $value);
+                $this->addItems($child, $value, $tests);
             }
         }
     }

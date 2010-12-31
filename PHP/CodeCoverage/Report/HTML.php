@@ -132,7 +132,7 @@ class PHP_CodeCoverage_Report_HTML
                         $commonPath, NULL
                       );
 
-        $this->addItems($root, $items, $files);
+        $this->addItems($root, $items);
 
         $this->renderDashboard(
           $root, $target . 'index.dashboard.html', $this->options['title']
@@ -199,9 +199,8 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param array                                       $items
-     * @param array                                       $files
      */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files)
+    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
@@ -219,7 +218,7 @@ class PHP_CodeCoverage_Report_HTML
                 }
             } else {
                 $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $files);
+                $this->addItems($child, $value);
             }
         }
     }

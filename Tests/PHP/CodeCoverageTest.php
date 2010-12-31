@@ -263,4 +263,22 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
         );
     }
+
+    /**
+     * @covers PHP_CodeCoverage::getData
+     * @covers PHP_CodeCoverage::merge
+     */
+    public function testMerge2()
+    {
+        $coverage = new PHP_CodeCoverage(
+          $this->getMock('PHP_CodeCoverage_Driver_Xdebug'),
+          new PHP_CodeCoverage_Filter
+        );
+
+        $coverage->merge($this->getCoverageForBankAccount());
+
+        $this->assertEquals(
+          $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
+        );
+    }
 }

@@ -447,6 +447,7 @@ class PHP_CodeCoverage
      * Text_Template, and File_Iterator.
      *
      * @param array $data
+     * @codeCoverageIgnore
      */
     protected function applySelfFilter(&$data)
     {

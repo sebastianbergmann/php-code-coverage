@@ -210,6 +210,10 @@ class PHP_CodeCoverage
      */
     public function getData()
     {
+        if ($this->processUncoveredFilesFromWhitelist) {
+            $this->processUncoveredFilesFromWhitelist();
+        }
+
         return $this->data;
     }
 

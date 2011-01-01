@@ -5,7 +5,8 @@
     <title>{title}</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!--[if IE]><script src="excanvas.compressed.js"></script><![endif]-->
-    <script src="RGraph.common.js" ></script>
+    <script src="RGraph.common.core.js" ></script>
+    <script src="RGraph.common.tooltips.js" ></script>
     <script src="RGraph.bar.js" ></script>
     <script src="RGraph.scatter.js" ></script>
   </head>

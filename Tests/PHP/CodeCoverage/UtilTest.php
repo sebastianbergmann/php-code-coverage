@@ -225,6 +225,11 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             14 => TRUE,
             15 => TRUE,
             16 => TRUE,
+            18 => TRUE,
+            19 => TRUE,
+            20 => TRUE,
+            21 => TRUE,
+            22 => TRUE,
             23 => TRUE,
             24 => TRUE,
             25 => TRUE

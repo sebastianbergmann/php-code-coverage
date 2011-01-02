@@ -264,9 +264,12 @@ class PHP_CodeCoverage_Util
         if (!isset(self::$ignoredLines[$filename])) {
             self::$ignoredLines[$filename] = array();
 
-            $ignore = FALSE;
-            $stop   = FALSE;
-            $tokens = PHP_Token_Stream_CachingFactory::get($filename)->tokens();
+            $ignore  = FALSE;
+            $stop    = FALSE;
+            $stream  = PHP_Token_Stream_CachingFactory::get($filename);
+            $tokens  = $stream->tokens();
+            $classes = $stream->getClasses();
+            unset($stream);
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
@@ -278,6 +281,17 @@ class PHP_CodeCoverage_Util
                             $endLine = $token->getEndLine();
 
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {
+                                self::$ignoredLines[$filename][$i] = TRUE;
+                            }
+                        }
+
+                        else if ($token instanceof PHP_Token_CLASS &&
+                                 !empty($classes[$token->getName()]['methods'])) {
+                            $firstMethod = array_shift(
+                              $classes[$token->getName()]['methods']
+                            );
+
+                            for ($i = $token->getLine(); $i < $firstMethod['startLine']; $i++) {
                                 self::$ignoredLines[$filename][$i] = TRUE;
                             }
                         }

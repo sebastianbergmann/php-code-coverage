@@ -84,5 +84,7 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         $this->assertEquals(0, $root->getTestedClassesPercent());
         $this->assertEquals(75, $root->getTestedMethodsPercent());
         $this->assertEquals(50, $root->getLineExecutedPercent());
+        $this->assertEquals(0, $root->getNumFunctions());
+        $this->assertEquals(0, $root->getNumFunctions());
     }
 }

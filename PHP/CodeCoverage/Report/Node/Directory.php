@@ -78,6 +78,11 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     protected $classes;
 
     /**
+     * @var array
+     */
+    protected $functions;
+
+    /**
      * @var integer
      */
     protected $numExecutableLines = -1;
@@ -106,6 +111,16 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * @var integer
      */
     protected $numTestedMethods = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numFunctions = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedFunctions = -1;
 
     /**
      * Returns an iterator for this node.
@@ -215,6 +230,26 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     }
 
     /**
+     * Returns the functions of this node.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+        if ($this->functions === NULL) {
+            $this->functions = array();
+
+            foreach ($this->children as $child) {
+                $this->functions = array_merge(
+                  $this->functions, $child->getFunctions()
+                );
+            }
+        }
+
+        return $this->functions;
+    }
+
+    /**
      * Returns the number of executable lines.
      *
      * @return integer
@@ -320,5 +355,41 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->numTestedMethods;
+    }
+
+    /**
+     * Returns the number of functions.
+     *
+     * @return integer
+     */
+    public function getNumFunctions()
+    {
+        if ($this->numFunctions == -1) {
+            $this->numFunctions = 0;
+
+            foreach ($this->children as $child) {
+                $this->numFunctions += $child->getNumFunctions();
+            }
+        }
+
+        return $this->numFunctions;
+    }
+
+    /**
+     * Returns the number of tested functions.
+     *
+     * @return integer
+     */
+    public function getNumTestedFunctions()
+    {
+        if ($this->numTestedFunctions == -1) {
+            $this->numTestedFunctions = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedFunctions += $child->getNumTestedFunctions();
+            }
+        }
+
+        return $this->numTestedFunctions;
     }
 }

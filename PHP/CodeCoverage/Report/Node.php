@@ -160,6 +160,13 @@ abstract class PHP_CodeCoverage_Report_Node
     abstract public function getClasses();
 
     /**
+     * Returns the functions of this node.
+     *
+     * @return array
+     */
+    abstract public function getFunctions();
+
+    /**
      * Returns the number of executable lines.
      *
      * @return integer
@@ -200,4 +207,18 @@ abstract class PHP_CodeCoverage_Report_Node
      * @return integer
      */
     abstract public function getNumTestedMethods();
+
+    /**
+     * Returns the number of functions.
+     *
+     * @return integer
+     */
+    abstract public function getNumFunctions();
+
+    /**
+     * Returns the number of tested functions.
+     *
+     * @return integer
+     */
+    abstract public function getNumTestedFunctions();
 }

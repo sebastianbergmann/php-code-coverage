@@ -169,7 +169,7 @@ class PHP_CodeCoverage_Report_HTML
      */
     protected function renderDashboard(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $file, $title)
     {
-        $classes  = $this->classes($root);
+        $classes  = $root->getClasses();
         $template = new Text_Template(
           PHP_CodeCoverage_Report_HTML::$templatePath . 'dashboard.html'
         );
@@ -221,29 +221,6 @@ class PHP_CodeCoverage_Report_HTML
                 $this->addItems($child, $value);
             }
         }
-    }
-
-    /**
-     * Returns the classes.
-     *
-     * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @return array
-     */
-    protected function classes(PHP_CodeCoverage_Report_HTML_Node_Directory $root)
-    {
-        $classes = array();
-
-        foreach ($root as $node) {
-            if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_File) {
-                $classes = array_merge($classes, $node->getClasses());
-            }
-        }
-
-        if (isset($classes['*'])) {
-            unset($classes['*']);
-        }
-
-        return $classes;
     }
 
     /**

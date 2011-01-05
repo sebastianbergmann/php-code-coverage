@@ -53,19 +53,24 @@ function php_codecoverage_autoload($class) {
 
     if ($classes === NULL) {
         $classes = array(
-          'php_codecoverage' => '/CodeCoverage.php',
           'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
-          'php_codecoverage_util' => '/CodeCoverage/Util.php',
-          'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
-          'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
           'php_codecoverage_textui_command' => '/CodeCoverage/TextUI/Command.php',
-          'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
-          'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
           'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
+          'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
+          'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
           'php_codecoverage_report_html_node' => '/CodeCoverage/Report/HTML/Node.php',
-          'php_codecoverage_report_html_node_iterator' => '/CodeCoverage/Report/HTML/Node/Iterator.php',
           'php_codecoverage_report_html_node_file' => '/CodeCoverage/Report/HTML/Node/File.php',
-          'php_codecoverage_report_html_node_directory' => '/CodeCoverage/Report/HTML/Node/Directory.php'
+          'php_codecoverage_report_html_node_iterator' => '/CodeCoverage/Report/HTML/Node/Iterator.php',
+          'php_codecoverage_report_html_node_directory' => '/CodeCoverage/Report/HTML/Node/Directory.php',
+          'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
+          'php_codecoverage_report_node' => '/CodeCoverage/Report/Node.php',
+          'php_codecoverage_report_node_file' => '/CodeCoverage/Report/Node/File.php',
+          'php_codecoverage_report_node_iterator' => '/CodeCoverage/Report/Node/Iterator.php',
+          'php_codecoverage_report_node_directory' => '/CodeCoverage/Report/Node/Directory.php',
+          'php_codecoverage_util' => '/CodeCoverage/Util.php',
+          'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
+          'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
+          'php_codecoverage' => '/CodeCoverage.php'
         );
 
         $path = dirname(dirname(__FILE__));

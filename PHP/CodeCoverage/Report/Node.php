@@ -75,8 +75,8 @@ abstract class PHP_CodeCoverage_Report_Node
     /**
      * Constructor.
      *
-     * @param string                            $name
-     * @param string                            $path
+     * @param string                       $name
+     * @param string                       $path
      * @param PHP_CodeCoverage_Report_Node $parent
      */
     public function __construct($name, $path, PHP_CodeCoverage_Report_Node $parent = NULL)

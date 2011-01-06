@@ -65,7 +65,7 @@ class PHP_CodeCoverage_Report_Factory
         $files      = $coverage->getData();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
         $root       = new PHP_CodeCoverage_Report_Node_Directory(
-                        $commonPath, NULL
+                        $commonPath, $commonPath, NULL
                       );
 
         self::addItems(

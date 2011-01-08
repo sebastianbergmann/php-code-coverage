@@ -71,9 +71,7 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
 {
     public function testSomething()
     {
-        $root = PHP_CodeCoverage_Report_Factory::create(
-          $this->getCoverageForBankAccount()
-        );
+        $root = $this->getCoverageForBankAccount()->getReport();
 
         $this->assertEquals('/usr/local/src/code-coverage/Tests/_files/', $root->getName());
         $this->assertEquals('/usr/local/src/code-coverage/Tests/_files/', $root->getPath());

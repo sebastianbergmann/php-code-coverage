@@ -183,6 +183,18 @@ class PHP_CodeCoverage
     }
 
     /**
+     * Returns the PHP_CodeCoverage_Report_Node_* object graph
+     * for this PHP_CodeCoverage object.
+     *
+     * @return PHP_CodeCoverage_Report_Node_Directory
+     * @since  Method available since Release 1.1.0
+     */
+    public function getReport()
+    {
+        return PHP_CodeCoverage_Report_Factory::create($this);
+    }
+
+    /**
      * Clears collected code coverage data.
      */
     public function clear()

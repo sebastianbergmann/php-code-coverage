@@ -329,52 +329,6 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * Returns the package information of a user-defined class.
-     *
-     * @param  string $className
-     * @param  string $docComment
-     * @return array
-     */
-    public static function getPackageInformation($className, $docComment)
-    {
-        $result = array(
-          'namespace'   => '',
-          'fullPackage' => '',
-          'category'    => '',
-          'package'     => '',
-          'subpackage'  => ''
-        );
-
-        if (strpos($className, '\\') !== FALSE) {
-            $result['namespace'] = self::arrayToName(
-              explode('\\', $className)
-            );
-        }
-
-        if (preg_match('/@category[\s]+([\.\w]+)/', $docComment, $matches)) {
-            $result['category'] = $matches[1];
-        }
-
-        if (preg_match('/@package[\s]+([\.\w]+)/', $docComment, $matches)) {
-            $result['package']     = $matches[1];
-            $result['fullPackage'] = $matches[1];
-        }
-
-        if (preg_match('/@subpackage[\s]+([\.\w]+)/', $docComment, $matches)) {
-            $result['subpackage']   = $matches[1];
-            $result['fullPackage'] .= '.' . $matches[1];
-        }
-
-        if (empty($result['fullPackage'])) {
-            $result['fullPackage'] = self::arrayToName(
-              explode('_', str_replace('\\', '_', $className)), '.'
-            );
-        }
-
-        return $result;
-    }
-
-    /**
      * Returns a filesystem safe version of the passed filename.
      * This function does not operate on full paths, just filenames.
      *
@@ -513,26 +467,6 @@ class PHP_CodeCoverage_Util
         ksort($files);
 
         return $commonPath;
-    }
-
-    /**
-     * Returns the package information of a user-defined class.
-     *
-     * @param  array  $parts
-     * @param  string $join
-     * @return string
-     */
-    protected static function arrayToName(array $parts, $join = '\\')
-    {
-        $result = '';
-
-        if (count($parts) > 1) {
-            array_pop($parts);
-
-            $result = join($join, $parts);
-        }
-
-        return $result;
     }
 
     /**

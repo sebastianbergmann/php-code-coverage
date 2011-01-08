@@ -197,39 +197,35 @@ class PHP_CodeCoverage_Report_Clover
                         );
                     }
 
-                    $package = PHP_CodeCoverage_Util::getPackageInformation(
-                      $className, $_class['docblock']
-                    );
-
-                    if (!empty($package['namespace'])) {
-                        $namespace = $package['namespace'];
+                    if (!empty($_class['package']['namespace'])) {
+                        $namespace = $_class['package']['namespace'];
                     }
 
                     $class = $document->createElement('class');
                     $class->setAttribute('name', $className);
                     $class->setAttribute('namespace', $namespace);
 
-                    if (!empty($package['fullPackage'])) {
+                    if (!empty($_class['package']['fullPackage'])) {
                         $class->setAttribute(
-                          'fullPackage', $package['fullPackage']
+                          'fullPackage', $_class['package']['fullPackage']
                         );
                     }
 
-                    if (!empty($package['category'])) {
+                    if (!empty($_class['package']['category'])) {
                         $class->setAttribute(
-                          'category', $package['category']
+                          'category', $_class['package']['category']
                         );
                     }
 
-                    if (!empty($package['package'])) {
+                    if (!empty($_class['package']['package'])) {
                         $class->setAttribute(
-                          'package', $package['package']
+                          'package', $_class['package']['package']
                         );
                     }
 
-                    if (!empty($package['subpackage'])) {
+                    if (!empty($_class['package']['subpackage'])) {
                         $class->setAttribute(
-                          'subpackage', $package['subpackage']
+                          'subpackage', $_class['package']['subpackage']
                         );
                     }
 

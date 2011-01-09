@@ -77,6 +77,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected $testData;
 
     /**
+     * @var array
+     */
+    protected $ignoredLines;
+
+    /**
      * @var integer
      */
     protected $numExecutableLines = 0;

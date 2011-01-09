@@ -396,7 +396,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
               'executedLines'   => 0,
               'ccn'             => 0,
               'coverage'        => 0,
-              'crap'            => 0
+              'crap'            => 0,
+              'package'         => $class['package']
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];

@@ -534,6 +534,36 @@ class PHP_CodeCoverage
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
+            $tokens     = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+            $classes    = $tokens->getClasses();
+            $interfaces = $tokens->getInterfaces();
+            $functions  = $tokens->getFunctions();
+            unset($tokens);
+
+            foreach (array_keys($classes) as $class) {
+                if (class_exists($class, FALSE)) {
+                    continue 2;
+                }
+            }
+
+            unset($classes);
+
+            foreach (array_keys($interfaces) as $interface) {
+                if (interface_exists($interface, FALSE)) {
+                    continue 2;
+                }
+            }
+
+            unset($interfaces);
+
+            foreach (array_keys($functions) as $function) {
+                if (function_exists($function)) {
+                    continue 2;
+                }
+            }
+
+            unset($functions);
+
             $this->driver->start();
             include_once $uncoveredFile;
             $coverage = $this->driver->stop();

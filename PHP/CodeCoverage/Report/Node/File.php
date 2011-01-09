@@ -285,6 +285,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * @param  integer $line
+     * @return boolean
+     */
+    public function isLineIgnored($line)
+    {
+        return isset($this->ignoredLines[$line]);
+    }
+
+    /**
      * Calculates coverage statistics for the file.
      */
     protected function calculateStatistics()

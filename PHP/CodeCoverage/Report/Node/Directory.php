@@ -80,6 +80,11 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var array
      */
+    protected $traits;
+
+    /**
+     * @var array
+     */
     protected $functions;
 
     /**
@@ -101,6 +106,16 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * @var integer
      */
     protected $numTestedClasses = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTraits = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedTraits = -1;
 
     /**
      * @var integer
@@ -230,6 +245,26 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     }
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    public function getTraits()
+    {
+        if ($this->traits === NULL) {
+            $this->traits = array();
+
+            foreach ($this->children as $child) {
+                $this->traits = array_merge(
+                  $this->traits, $child->getTraits()
+                );
+            }
+        }
+
+        return $this->traits;
+    }
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
@@ -319,6 +354,42 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->numTestedClasses;
+    }
+
+    /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    public function getNumTraits()
+    {
+        if ($this->numTraits == -1) {
+            $this->numTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTraits += $child->getNumTraits();
+            }
+        }
+
+        return $this->numTraits;
+    }
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    public function getNumTestedTraits()
+    {
+        if ($this->numTestedTraits == -1) {
+            $this->numTestedTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedTraits += $child->getNumTestedTraits();
+            }
+        }
+
+        return $this->numTestedTraits;
     }
 
     /**

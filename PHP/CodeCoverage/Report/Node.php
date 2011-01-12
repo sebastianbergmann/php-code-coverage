@@ -160,6 +160,13 @@ abstract class PHP_CodeCoverage_Report_Node
     abstract public function getClasses();
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    abstract public function getTraits();
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
@@ -193,6 +200,20 @@ abstract class PHP_CodeCoverage_Report_Node
      * @return integer
      */
     abstract public function getNumTestedClasses();
+
+    /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    abstract public function getNumTraits();
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    abstract public function getNumTestedTraits();
 
     /**
      * Returns the number of methods.

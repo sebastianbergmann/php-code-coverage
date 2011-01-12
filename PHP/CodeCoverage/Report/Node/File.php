@@ -99,6 +99,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * @var array
      */
+    protected $traits = array();
+
+    /**
+     * @var array
+     */
     protected $functions = array();
 
     /**
@@ -164,6 +169,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    public function getTraits()
+    {
+        return $this->traits;
+    }
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
@@ -214,6 +229,26 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    public function getNumTraits()
+    {
+        return count($this->traits);
+    }
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    public function getNumTestedTraits()
+    {
+        return $this->numTestedTraits;
+    }
+
+    /**
      * Returns the number of methods.
      *
      * @return integer
@@ -225,6 +260,14 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0) {
+                        $this->numMethods++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0) {
                         $this->numMethods++;
                     }
@@ -247,6 +290,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0 &&
+                        $method['coverage'] == 100) {
+                        $this->numTestedMethods++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
                         $method['coverage'] == 100) {
                         $this->numTestedMethods++;
@@ -304,6 +356,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected function calculateStatistics()
     {
         $this->processClasses();
+        $this->processTraits();
         $this->processFunctions();
 
         $max = count(file($this->getPath()));
@@ -430,6 +483,47 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->classes[$className]['methods'][$methodName];
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    protected function processTraits()
+    {
+        $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        $traits = $tokens->getTraits();
+        unset($tokens);
+
+        foreach ($traits as $traitName => $trait) {
+            $this->traits[$traitName] = array(
+              'methods'         => array(),
+              'startLine'       => $trait['startLine'],
+              'executableLines' => 0,
+              'executedLines'   => 0,
+              'ccn'             => 0,
+              'coverage'        => 0,
+              'crap'            => 0,
+              'package'         => $trait['package']
+            );
+
+            $this->startLines[$trait['startLine']] = &$this->traits[$traitName];
+            $this->endLines[$trait['endLine']]     = &$this->traits[$traitName];
+
+            foreach ($trait['methods'] as $methodName => $method) {
+                $this->traits[$traitName]['methods'][$methodName] = array(
+                  'signature'       => $method['signature'],
+                  'startLine'       => $method['startLine'],
+                  'executableLines' => 0,
+                  'executedLines'   => 0,
+                  'ccn'             => $method['ccn'],
+                  'coverage'        => 0,
+                  'crap'            => 0
+                );
+
+                $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
+                $this->endLines[$method['endLine']]     = &$this->traits[$traitName]['methods'][$methodName];
             }
         }
     }

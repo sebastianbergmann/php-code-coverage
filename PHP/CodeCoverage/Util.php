@@ -47,6 +47,13 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
+if (!function_exists('trait_exists')) {
+    function trait_exists($name)
+    {
+        return FALSE;
+    }
+}
+
 /**
  * Utility methods.
  *

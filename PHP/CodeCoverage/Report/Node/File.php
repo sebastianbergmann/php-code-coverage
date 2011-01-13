@@ -397,9 +397,9 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $this->processFunctions($tokens);
         $this->linesOfCode = $tokens->getLinesOfCode();
         unset($tokens);
-var_dump($this->linesOfCode);
+
         $max = count(file($this->getPath()));
-var_dump($max);
+
         for ($lineNumber = 1; $lineNumber <= $max; $lineNumber++) {
             if (isset($this->startLines[$lineNumber])) {
                 // Start line of a class.

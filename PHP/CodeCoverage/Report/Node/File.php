@@ -413,7 +413,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber]) &&
+            if (!isset($this->ignoredLines[$lineNumber]) &&
+                isset($this->coverageData[$lineNumber]) &&
                 $this->coverageData[$lineNumber] !== NULL) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;

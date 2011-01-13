@@ -47,6 +47,13 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
+if (!function_exists('trait_exists')) {
+    function trait_exists($name)
+    {
+        return FALSE;
+    }
+}
+
 /**
  * Utility methods.
  *
@@ -531,7 +538,8 @@ class PHP_CodeCoverage_Util
                         );
                     } else {
                         if (!((class_exists($className) ||
-                               interface_exists($className)) &&
+                               interface_exists($className) ||
+                               trait_exists($className)) &&
                               method_exists($className, $methodName))) {
                             throw new RuntimeException(
                               sprintf(
@@ -571,7 +579,8 @@ class PHP_CodeCoverage_Util
 
             foreach ($classes as $className) {
                 if (!class_exists($className) &&
-                    !interface_exists($className)) {
+                    !interface_exists($className) &&
+                    !trait_exists($className)) {
                     throw new RuntimeException(
                       sprintf(
                         'Trying to @cover not existing class or ' .

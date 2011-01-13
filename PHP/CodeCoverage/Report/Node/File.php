@@ -99,7 +99,17 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * @var array
      */
+    protected $traits = array();
+
+    /**
+     * @var array
+     */
     protected $functions = array();
+
+    /**
+     * @var array
+     */
+    protected $linesOfCode = array();
 
     /**
      * @var integer
@@ -154,6 +164,26 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the number of files in/under this node.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        return 1;
+    }
+
+    /**
+     * Returns the code coverage data of this node.
+     *
+     * @return array
+     */
+    public function getCoverageData()
+    {
+        return $this->coverageData;
+    }
+
+    /**
      * Returns the classes of this node.
      *
      * @return array
@@ -164,6 +194,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    public function getTraits()
+    {
+        return $this->traits;
+    }
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
@@ -171,6 +211,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     public function getFunctions()
     {
         return $this->functions;
+    }
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    public function getLinesOfCode()
+    {
+        return $this->linesOfCode;
     }
 
     /**
@@ -214,6 +264,26 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    public function getNumTraits()
+    {
+        return count($this->traits);
+    }
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    public function getNumTestedTraits()
+    {
+        return $this->numTestedTraits;
+    }
+
+    /**
      * Returns the number of methods.
      *
      * @return integer
@@ -225,6 +295,14 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0) {
+                        $this->numMethods++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0) {
                         $this->numMethods++;
                     }
@@ -247,6 +325,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0 &&
+                        $method['coverage'] == 100) {
+                        $this->numTestedMethods++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
                         $method['coverage'] == 100) {
                         $this->numTestedMethods++;
@@ -303,12 +390,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     protected function calculateStatistics()
     {
-        $this->processClasses();
-        $this->processFunctions();
+        $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
 
-        $max = count(file($this->getPath()));
+        $this->processClasses($tokens);
+        $this->processTraits($tokens);
+        $this->processFunctions($tokens);
+        $this->linesOfCode = $tokens->getLinesOfCode();
+        unset($tokens);
 
-        for ($lineNumber = 1; $lineNumber <= $max; $lineNumber++) {
+        for ($lineNumber = 1; $lineNumber <= $this->linesOfCode['loc']; $lineNumber++) {
             if (isset($this->startLines[$lineNumber])) {
                 // Start line of a class.
                 if (isset($this->startLines[$lineNumber]['methods'])) {
@@ -321,7 +411,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber]) &&
+            if (!isset($this->ignoredLines[$lineNumber]) &&
+                isset($this->coverageData[$lineNumber]) &&
                 $this->coverageData[$lineNumber] !== NULL) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
@@ -394,11 +485,10 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
-     *
+     * @param PHP_Token_Stream $tokens
      */
-    protected function processClasses()
+    protected function processClasses(PHP_Token_Stream $tokens)
     {
-        $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $classes = $tokens->getClasses();
         unset($tokens);
 
@@ -421,6 +511,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 $this->classes[$className]['methods'][$methodName] = array(
                   'signature'       => $method['signature'],
                   'startLine'       => $method['startLine'],
+                  'endLine'         => $method['endLine'],
                   'executableLines' => 0,
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],
@@ -435,11 +526,50 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
-     *
+     * @param PHP_Token_Stream $tokens
      */
-    protected function processFunctions()
+    protected function processTraits(PHP_Token_Stream $tokens)
     {
-        $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        $traits = $tokens->getTraits();
+        unset($tokens);
+
+        foreach ($traits as $traitName => $trait) {
+            $this->traits[$traitName] = array(
+              'methods'         => array(),
+              'startLine'       => $trait['startLine'],
+              'executableLines' => 0,
+              'executedLines'   => 0,
+              'ccn'             => 0,
+              'coverage'        => 0,
+              'crap'            => 0,
+              'package'         => $trait['package']
+            );
+
+            $this->startLines[$trait['startLine']] = &$this->traits[$traitName];
+            $this->endLines[$trait['endLine']]     = &$this->traits[$traitName];
+
+            foreach ($trait['methods'] as $methodName => $method) {
+                $this->traits[$traitName]['methods'][$methodName] = array(
+                  'signature'       => $method['signature'],
+                  'startLine'       => $method['startLine'],
+                  'executableLines' => 0,
+                  'executedLines'   => 0,
+                  'ccn'             => $method['ccn'],
+                  'coverage'        => 0,
+                  'crap'            => 0
+                );
+
+                $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
+                $this->endLines[$method['endLine']]     = &$this->traits[$traitName]['methods'][$methodName];
+            }
+        }
+    }
+
+    /**
+     * @param PHP_Token_Stream $tokens
+     */
+    protected function processFunctions(PHP_Token_Stream $tokens)
+    {
         $functions = $tokens->getFunctions();
         unset($tokens);
 

@@ -55,7 +55,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.1.0
  */
-abstract class PHP_CodeCoverage_Report_Node
+abstract class PHP_CodeCoverage_Report_Node implements Countable
 {
     /**
      * @var string
@@ -160,11 +160,25 @@ abstract class PHP_CodeCoverage_Report_Node
     abstract public function getClasses();
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    abstract public function getTraits();
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
      */
     abstract public function getFunctions();
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    abstract public function getLinesOfCode();
 
     /**
      * Returns the number of executable lines.
@@ -193,6 +207,20 @@ abstract class PHP_CodeCoverage_Report_Node
      * @return integer
      */
     abstract public function getNumTestedClasses();
+
+    /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    abstract public function getNumTraits();
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    abstract public function getNumTestedTraits();
 
     /**
      * Returns the number of methods.

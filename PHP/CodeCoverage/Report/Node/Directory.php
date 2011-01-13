@@ -80,7 +80,22 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var array
      */
+    protected $traits;
+
+    /**
+     * @var array
+     */
     protected $functions;
+
+    /**
+     * @var array
+     */
+    protected $linesOfCode = NULL;
+
+    /**
+     * @var integer
+     */
+    protected $numFiles = -1;
 
     /**
      * @var integer
@@ -105,6 +120,16 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var integer
      */
+    protected $numTraits = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedTraits = -1;
+
+    /**
+     * @var integer
+     */
     protected $numMethods = -1;
 
     /**
@@ -121,6 +146,24 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * @var integer
      */
     protected $numTestedFunctions = -1;
+
+    /**
+     * Returns the number of files in/under this node.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        if ($this->numFiles == -1) {
+            $this->numFiles = 0;
+
+            foreach ($this->children as $child) {
+                $this->numFiles += count($child);
+            }
+        }
+
+        return $this->numFiles;
+    }
 
     /**
      * Returns an iterator for this node.
@@ -230,6 +273,26 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     }
 
     /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    public function getTraits()
+    {
+        if ($this->traits === NULL) {
+            $this->traits = array();
+
+            foreach ($this->children as $child) {
+                $this->traits = array_merge(
+                  $this->traits, $child->getTraits()
+                );
+            }
+        }
+
+        return $this->traits;
+    }
+
+    /**
      * Returns the functions of this node.
      *
      * @return array
@@ -247,6 +310,28 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->functions;
+    }
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    public function getLinesOfCode()
+    {
+        if ($this->linesOfCode === NULL) {
+            $this->linesOfCode = array('loc' => 0, 'cloc' => 0, 'ncloc' => 0);
+
+            foreach ($this->children as $child) {
+                $linesOfCode = $child->getLinesOfCode();
+
+                $this->linesOfCode['loc']   += $linesOfCode['loc'];
+                $this->linesOfCode['cloc']  += $linesOfCode['cloc'];
+                $this->linesOfCode['ncloc'] += $linesOfCode['ncloc'];
+            }
+        }
+
+        return $this->linesOfCode;
     }
 
     /**
@@ -319,6 +404,42 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->numTestedClasses;
+    }
+
+    /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    public function getNumTraits()
+    {
+        if ($this->numTraits == -1) {
+            $this->numTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTraits += $child->getNumTraits();
+            }
+        }
+
+        return $this->numTraits;
+    }
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    public function getNumTestedTraits()
+    {
+        if ($this->numTestedTraits == -1) {
+            $this->numTestedTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedTraits += $child->getNumTestedTraits();
+            }
+        }
+
+        return $this->numTestedTraits;
     }
 
     /**

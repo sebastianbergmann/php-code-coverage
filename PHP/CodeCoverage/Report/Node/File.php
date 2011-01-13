@@ -107,6 +107,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected $functions = array();
 
     /**
+     * @var array
+     */
+    protected $linesOfCode = array();
+
+    /**
      * @var integer
      */
     protected $numTestedClasses = 0;
@@ -186,6 +191,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     public function getFunctions()
     {
         return $this->functions;
+    }
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    public function getLinesOfCode()
+    {
+        return $this->linesOfCode;
     }
 
     /**
@@ -360,6 +375,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $this->processClasses($tokens);
         $this->processTraits($tokens);
         $this->processFunctions($tokens);
+        $this->linesOfCode = $tokens->getLinesOfCode();
         unset($tokens);
 
         $max = count(file($this->getPath()));

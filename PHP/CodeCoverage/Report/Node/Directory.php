@@ -88,6 +88,11 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     protected $functions;
 
     /**
+     * @var array
+     */
+    protected $linesOfCode = NULL;
+
+    /**
      * @var integer
      */
     protected $numExecutableLines = -1;
@@ -282,6 +287,28 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->functions;
+    }
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    public function getLinesOfCode()
+    {
+        if ($this->linesOfCode === NULL) {
+            $this->linesOfCode = array('loc' => 0, 'cloc' => 0, 'ncloc' => 0);
+
+            foreach ($this->children as $child) {
+                $linesOfCode = $child->getLinesOfCode();
+
+                $this->linesOfCode['loc']   += $linesOfCode['loc'];
+                $this->linesOfCode['cloc']  += $linesOfCode['cloc'];
+                $this->linesOfCode['ncloc'] += $linesOfCode['ncloc'];
+            }
+        }
+
+        return $this->linesOfCode;
     }
 
     /**

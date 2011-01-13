@@ -174,6 +174,13 @@ abstract class PHP_CodeCoverage_Report_Node
     abstract public function getFunctions();
 
     /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    abstract public function getLinesOfCode();
+
+    /**
      * Returns the number of executable lines.
      *
      * @return integer

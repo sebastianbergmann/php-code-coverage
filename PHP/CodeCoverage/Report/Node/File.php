@@ -355,9 +355,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     protected function calculateStatistics()
     {
-        $this->processClasses();
-        $this->processTraits();
-        $this->processFunctions();
+        $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+
+        $this->processClasses($tokens);
+        $this->processTraits($tokens);
+        $this->processFunctions($tokens);
+        unset($tokens);
 
         $max = count(file($this->getPath()));
 
@@ -447,11 +450,10 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
-     *
+     * @param PHP_Token_Stream $tokens
      */
-    protected function processClasses()
+    protected function processClasses(PHP_Token_Stream $tokens)
     {
-        $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $classes = $tokens->getClasses();
         unset($tokens);
 
@@ -488,11 +490,10 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
-     *
+     * @param PHP_Token_Stream $tokens
      */
-    protected function processTraits()
+    protected function processTraits(PHP_Token_Stream $tokens)
     {
-        $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $traits = $tokens->getTraits();
         unset($tokens);
 
@@ -529,11 +530,10 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
-     *
+     * @param PHP_Token_Stream $tokens
      */
-    protected function processFunctions()
+    protected function processFunctions(PHP_Token_Stream $tokens)
     {
-        $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $functions = $tokens->getFunctions();
         unset($tokens);
 

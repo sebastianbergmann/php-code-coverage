@@ -85,6 +85,71 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         $this->assertEquals(75, $root->getTestedMethodsPercent());
         $this->assertEquals(50, $root->getLineExecutedPercent());
         $this->assertEquals(0, $root->getNumFunctions());
-        $this->assertEquals(0, $root->getNumFunctions());
+        $this->assertEquals(0, $root->getNumTestedFunctions());
+        $this->assertNull($root->getParent());
+        $this->assertEquals(array(), $root->getDirectories());
+        #$this->assertEquals(array(), $root->getFiles());
+        #$this->assertEquals(array(), $root->getChildNodes());
+
+        $this->assertEquals(
+          array(
+            'BankAccount' => array(
+              'methods' => array(
+                'getBalance' => array(
+                  'signature' => 'getBalance()',
+                  'startLine' => 6,
+                  'executableLines' => 1,
+                  'executedLines' => 1,
+                  'ccn' => 1,
+                  'coverage' => 100,
+                  'crap' => '1'
+                ),
+                'setBalance' => array(
+                  'signature' => 'setBalance($balance)',
+                  'startLine' => 11,
+                  'executableLines' => 5,
+                  'executedLines' => 0,
+                  'ccn' => 2,
+                  'coverage' => 0,
+                  'crap' => 6
+                ),
+                'depositMoney' => array(
+                  'signature' => 'depositMoney($balance)',
+                  'startLine' => 20,
+                  'executableLines' => 2,
+                  'executedLines' => 2,
+                  'ccn' => 1,
+                  'coverage' => 100,
+                  'crap' => '1'
+                ),
+                'withdrawMoney' => array(
+                  'signature' => 'withdrawMoney($balance)',
+                  'startLine' => 27,
+                  'executableLines' => 2,
+                  'executedLines' => 2,
+                  'ccn' => 1,
+                  'coverage' => 100,
+                  'crap' => '1'
+                ),
+              ),
+              'startLine' => 2,
+              'executableLines' => 10,
+              'executedLines' => 5,
+              'ccn' => 5,
+              'coverage' => 50,
+              'crap' => '8.12',
+              'package' => array(
+                'namespace' => '',
+                'fullPackage' => '',
+                'category' => '',
+                'package' => '',
+                'subpackage' => ''
+              )
+            )
+          ),
+          $root->getClasses()
+        );
+
+        $this->assertEquals(array(), $root->getFunctions());
     }
 }

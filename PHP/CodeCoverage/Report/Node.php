@@ -55,7 +55,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.1.0
  */
-abstract class PHP_CodeCoverage_Report_Node
+abstract class PHP_CodeCoverage_Report_Node implements Countable
 {
     /**
      * @var string

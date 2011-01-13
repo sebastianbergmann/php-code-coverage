@@ -95,6 +95,11 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var integer
      */
+    protected $numFiles = -1;
+
+    /**
+     * @var integer
+     */
     protected $numExecutableLines = -1;
 
     /**
@@ -141,6 +146,24 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * @var integer
      */
     protected $numTestedFunctions = -1;
+
+    /**
+     * Returns the number of files in/under this node.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        if ($this->numFiles == -1) {
+            $this->numFiles = 0;
+
+            foreach ($this->children as $child) {
+                $this->numFiles += count($child);
+            }
+        }
+
+        return $this->numFiles;
+    }
 
     /**
      * Returns an iterator for this node.

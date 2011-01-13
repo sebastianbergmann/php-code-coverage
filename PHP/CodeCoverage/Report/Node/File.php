@@ -164,6 +164,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * Returns the number of files in/under this node.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        return 1;
+    }
+
+    /**
      * Returns the classes of this node.
      *
      * @return array

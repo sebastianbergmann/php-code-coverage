@@ -182,14 +182,11 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * Adds a new directory.
      *
      * @param  string $name
-     * @param  string $path
      * @return PHP_CodeCoverage_Report_Node_Directory
      */
-    public function addDirectory($name, $path)
+    public function addDirectory($name)
     {
-        $directory = new PHP_CodeCoverage_Report_Node_Directory(
-          $name, $path, $this
-        );
+        $directory = new PHP_CodeCoverage_Report_Node_Directory($name, $this);
 
         $this->children[]    = $directory;
         $this->directories[] = &$this->children[count($this->children) - 1];
@@ -201,16 +198,15 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * Adds a new file.
      *
      * @param  string $name
-     * @param  string $path
      * @param  array  $coverageData
      * @param  array  $testData
      * @return PHP_CodeCoverage_Report_Node_File
      * @throws RuntimeException
      */
-    public function addFile($name, $path, array $coverageData, array $testData)
+    public function addFile($name, array $coverageData, array $testData)
     {
         $file = new PHP_CodeCoverage_Report_Node_File(
-          $name, $path, $this, $coverageData, $testData
+          $name, $this, $coverageData, $testData
         );
 
         $this->children[] = $file;

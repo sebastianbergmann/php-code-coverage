@@ -273,7 +273,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           $files
         );
 
-        $this->assertEquals('/home/sb/Money/', $commonPath);
+        $this->assertEquals('/home/sb/Money', $commonPath);
     }
 
     /**

@@ -473,7 +473,7 @@ class PHP_CodeCoverage_Util
 
         ksort($files);
 
-        return $commonPath;
+        return substr($commonPath, 0, -1);
     }
 
     /**

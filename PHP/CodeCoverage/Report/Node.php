@@ -76,13 +76,11 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * Constructor.
      *
      * @param string                       $name
-     * @param string                       $path
      * @param PHP_CodeCoverage_Report_Node $parent
      */
-    public function __construct($name, $path, PHP_CodeCoverage_Report_Node $parent = NULL)
+    public function __construct($name, PHP_CodeCoverage_Report_Node $parent = NULL)
     {
         $this->name   = $name;
-        $this->path   = $path;
         $this->parent = $parent;
     }
 
@@ -99,6 +97,14 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function getPath()
     {
+        if ($this->path === NULL) {
+            if ($this->parent === NULL) {
+                $this->path = $this->name;
+            } else {
+                $this->path = $this->parent->getPath() . '/' . $this->name;
+            }
+        }
+
         return $this->path;
     }
 

@@ -62,11 +62,6 @@ if (!defined('T_NAMESPACE')) {
 class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 {
     /**
-     * @var string
-     */
-    protected $path;
-
-    /**
      * @var array
      */
     protected $coverageData;
@@ -145,19 +140,18 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      * Constructor.
      *
      * @param  string                       $name
-     * @param  string                       $path
      * @param  PHP_CodeCoverage_Report_Node $parent
      * @param  array                        $coverageData
      * @param  array                        $testData
      */
-    public function __construct($name, $path, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData)
+    public function __construct($name, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData)
     {
-        parent::__construct($name, $path, $parent);
+        parent::__construct($name, $parent);
 
         $this->coverageData = $coverageData;
         $this->testData     = $testData;
         $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                $path
+                                $this->getPath()
                               );
 
         $this->calculateStatistics();

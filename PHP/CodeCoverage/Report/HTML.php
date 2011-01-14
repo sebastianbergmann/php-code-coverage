@@ -60,7 +60,7 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @var string
      */
-    public static $templatePath;
+    protected $templatePath;
 
     /**
      * @var array
@@ -104,7 +104,7 @@ class PHP_CodeCoverage_Report_HTML
 
         $this->options = $options;
 
-        self::$templatePath = sprintf(
+        $this->templatePath = sprintf(
           '%s%sHTML%sTemplate%s',
 
           dirname(__FILE__),
@@ -120,187 +120,27 @@ class PHP_CodeCoverage_Report_HTML
      */
     public function process(PHP_CodeCoverage $coverage, $target)
     {
-        $target     = PHP_CodeCoverage_Util::getDirectory($target);
-        $files      = $coverage->getData();
-        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
-        $items      = PHP_CodeCoverage_Util::buildDirectoryStructure($files);
-        $root       = new PHP_CodeCoverage_Report_HTML_Node_Directory(
-                        $commonPath, NULL
-                      );
+        $target = PHP_CodeCoverage_Util::getDirectory($target);
+        $report = $coverage->getReport();
+        unset($coverage);
 
-        $this->addItems($root, $items, $coverage->getTests());
-
-        $this->renderDashboard(
-          $root, $target . 'index.dashboard.html', $this->options['title']
-        );
-
-        foreach ($root as $node) {
-            if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_Directory) {
-                $this->renderDashboard(
-                  $node,
-                  $target . PHP_CodeCoverage_Util::getSafeFilename(
-                              $node->getId()
-                            ) . '.dashboard.html',
-                  $node->getName(TRUE)
-                );
-            }
-        }
-
-        $root->render(
-          $target,
-          $this->options['title'],
+        $dashboard = new PHP_CodeCoverage_Report_HTML_Dashboard(
+          $this->templatePath,
           $this->options['charset'],
-          $this->options['lowUpperBound'],
-          $this->options['highLowerBound'],
           $this->options['generator']
         );
 
+        $dashboard->render(
+          $report, $target . 'index.dashboard.html', $this->options['title']
+        );
+
+        foreach ($report as $node) {
+            if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
+                $dashboard->render($node, $target . PHP_CodeCoverage_Util::nodeToId($node) . '.html');
+            }
+        }
+
         $this->copyFiles($target);
-    }
-
-    /**
-     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @param string                                      $file
-     * @param string                                      $title
-     */
-    protected function renderDashboard(PHP_CodeCoverage_Report_HTML_Node_Directory $root, $file, $title)
-    {
-        $classes  = $this->classes($root);
-        $template = new Text_Template(
-          PHP_CodeCoverage_Report_HTML::$templatePath . 'dashboard.html'
-        );
-
-        $template->setVar(
-          array(
-            'title'                  => $title,
-            'charset'                => $this->options['charset'],
-            'date'                   => date(
-                                          'D M j G:i:s T Y',
-                                          $_SERVER['REQUEST_TIME']
-                                        ),
-            'version'                => '@package_version@',
-            'php_version'            => PHP_VERSION,
-            'generator'              => $this->options['generator'],
-            'least_tested_methods'   => $this->leastTestedMethods($classes),
-            'top_project_risks'      => $this->topProjectRisks($classes),
-            'cc_values'              => $this->classComplexity($classes),
-            'ccd_values'             => $this->classCoverageDistribution($classes),
-            'backlink'               => basename(str_replace('.dashboard', '', $file))
-          )
-        );
-
-        $template->renderTo($file);
-    }
-
-    /**
-     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @param array                                       $items
-     * @param array                                       $tests
-     */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $tests)
-    {
-        foreach ($items as $key => $value) {
-            if (substr($key, -2) == '/f') {
-                try {
-                    $root->addFile(
-                      substr($key, 0, -2),
-                      $value,
-                      $tests,
-                      $this->options['yui'],
-                      $this->options['highlight']
-                    );
-                }
-
-                catch (RuntimeException $e) {
-                    continue;
-                }
-            } else {
-                $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $tests);
-            }
-        }
-    }
-
-    /**
-     * Returns the classes.
-     *
-     * @param  PHP_CodeCoverage_Report_HTML_Node_Directory $root
-     * @return array
-     */
-    protected function classes(PHP_CodeCoverage_Report_HTML_Node_Directory $root)
-    {
-        $classes = array();
-
-        foreach ($root as $node) {
-            if ($node instanceof PHP_CodeCoverage_Report_HTML_Node_File) {
-                $classes = array_merge($classes, $node->getClasses());
-            }
-        }
-
-        if (isset($classes['*'])) {
-            unset($classes['*']);
-        }
-
-        return $classes;
-    }
-
-    /**
-     * Returns the data for the Class Complexity chart.
-     *
-     * @param  array $classes
-     * @return string
-     */
-    protected function classComplexity(array $classes)
-    {
-        $data = array();
-
-        foreach ($classes as $name => $class) {
-            $data[] = array($class['coverage'], $class['ccn'], 'blue', $name);
-        }
-
-        return json_encode($data);
-    }
-
-    /**
-     * Returns the data for the Class Coverage Distribution chart.
-     *
-     * @param  array $classes
-     * @return string
-     */
-    protected function classCoverageDistribution(array $classes)
-    {
-        $data = array(
-          '0%'      => 0,
-          '0-10%'   => 0,
-          '10-20%'  => 0,
-          '20-30%'  => 0,
-          '30-40%'  => 0,
-          '40-50%'  => 0,
-          '50-60%'  => 0,
-          '60-70%'  => 0,
-          '70-80%'  => 0,
-          '80-90%'  => 0,
-          '90-100%' => 0,
-          '100%'    => 0
-        );
-
-        foreach ($classes as $class) {
-            if ($class['coverage'] == 0) {
-                $data['0%']++;
-            }
-
-            else if ($class['coverage'] == 100) {
-                $data['100%']++;
-            }
-
-            else {
-                $key = floor($class['coverage']/10)*10;
-                $key = $key . '-' . ($key + 10) . '%';
-                $data[$key]++;
-            }
-        }
-
-        return json_encode(array_values($data));
     }
 
     /**
@@ -329,89 +169,7 @@ class PHP_CodeCoverage_Report_HTML
         );
 
         foreach ($files as $file) {
-            copy(self::$templatePath . $file, $target . $file);
+            copy($this->templatePath . $file, $target . $file);
         }
-    }
-
-    /**
-     * Returns the least tested methods.
-     *
-     * @param  array   $classes
-     * @param  integer $max
-     * @return string
-     */
-    protected function leastTestedMethods(array $classes, $max = 10)
-    {
-        $methods = array();
-
-        foreach ($classes as $className => $class) {
-            foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < 100) {
-                    if ($className != '*') {
-                        $key = $className . '::' . $methodName;
-                    } else {
-                        $key = $methodName;
-                    }
-
-                    $methods[$key] = $method['coverage'];
-                }
-            }
-        }
-
-        asort($methods);
-
-        $methods = array_slice($methods, 0, min($max, count($methods)));
-        $buffer  = '';
-
-        foreach ($methods as $name => $coverage) {
-            list($class, $method) = explode('::', $name);
-
-            $buffer .= sprintf(
-              '              <li><a href="%s">%s</a> (%d%%)</li>' . "\n",
-              $classes[$class]['methods'][$method]['file'],
-              $name,
-              $coverage
-            );
-        }
-
-        return $buffer;
-    }
-
-    /**
-     * Returns the top project risks according to the CRAP index.
-     *
-     * @param  array   $classes
-     * @param  integer $max
-     * @return string
-     */
-    protected function topProjectRisks(array $classes, $max = 10)
-    {
-        $risks = array();
-
-        foreach ($classes as $className => $class) {
-            if ($class['coverage'] < 100 &&
-                $class['ccn'] > count($class['methods'])) {
-                $risks[$className] = $class['crap'];
-            }
-        }
-
-        asort($risks);
-
-        $risks = array_reverse(
-          array_slice($risks, 0, min($max, count($risks)))
-        );
-
-        $buffer = '';
-
-        foreach ($risks as $name => $crap) {
-            $buffer .= sprintf(
-              '              <li><a href="%s">%s</a> (%d)</li>' . "\n",
-              $classes[$name]['file'],
-              $name,
-              $crap
-            );
-        }
-
-        return $buffer;
     }
 }

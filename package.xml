@@ -39,20 +39,6 @@
      </dir>
      <dir name="Report">
       <dir name="HTML">
-       <dir name="Node">
-        <file baseinstalldir="/" name="Directory.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
-        <file baseinstalldir="/" name="File.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
-        <file baseinstalldir="/" name="Iterator.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
-       </dir>
-       <file baseinstalldir="/" name="Node.php" role="php">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
        <dir name="Template">
         <file baseinstalldir="/" name="butter.png" role="php" />
         <file baseinstalldir="/" name="chameleon.png" role="php" />
@@ -80,6 +66,9 @@
         <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
         <file baseinstalldir="/" name="yui_item.js" role="php" />
        </dir>
+       <file baseinstalldir="/" name="Dashboard.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
       </dir>
       <file baseinstalldir="/" name="Clover.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />

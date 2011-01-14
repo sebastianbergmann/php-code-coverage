@@ -173,25 +173,25 @@ class PHP_CodeCoverage_Report_Clover
                 $xmlClass->setAttribute('namespace', $namespace);
 
                 if (!empty($class['package']['fullPackage'])) {
-                    $class->setAttribute(
+                    $xmlClass->setAttribute(
                       'fullPackage', $class['package']['fullPackage']
                     );
                 }
 
                 if (!empty($class['package']['category'])) {
-                    $class->setAttribute(
+                    $xmlClass->setAttribute(
                       'category', $class['package']['category']
                     );
                 }
 
                 if (!empty($class['package']['package'])) {
-                    $class->setAttribute(
+                    $xmlClass->setAttribute(
                       'package', $class['package']['package']
                     );
                 }
 
                 if (!empty($class['package']['subpackage'])) {
-                    $class->setAttribute(
+                    $xmlClass->setAttribute(
                       'subpackage', $class['package']['subpackage']
                     );
                 }

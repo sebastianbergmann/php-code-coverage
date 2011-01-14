@@ -184,6 +184,14 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     }
 
     /**
+     * @return array
+     */
+    public function getIgnoredLines()
+    {
+        return $this->ignoredLines;
+    }
+
+    /**
      * Returns the classes of this node.
      *
      * @return array
@@ -374,15 +382,6 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         }
 
         return $this->numTestedFunctions;
-    }
-
-    /**
-     * @param  integer $line
-     * @return boolean
-     */
-    public function isLineIgnored($line)
-    {
-        return isset($this->ignoredLines[$line]);
     }
 
     /**

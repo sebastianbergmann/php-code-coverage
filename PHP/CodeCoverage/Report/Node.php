@@ -80,6 +80,10 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function __construct($name, PHP_CodeCoverage_Report_Node $parent = NULL)
     {
+        if (substr($name, -1) == '/') {
+            $name = substr($name, 0, -1);
+        }
+
         $this->name   = $name;
         $this->parent = $parent;
     }

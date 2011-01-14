@@ -485,6 +485,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $classes = $tokens->getClasses();
         unset($tokens);
 
+        $link = PHP_CodeCoverage_Util::nodeToId($this) . '.html#';
+
         foreach ($classes as $className => $class) {
             $this->classes[$className] = array(
               'methods'         => array(),
@@ -494,7 +496,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
               'ccn'             => 0,
               'coverage'        => 0,
               'crap'            => 0,
-              'package'         => $class['package']
+              'package'         => $class['package'],
+              'link'            => $link . $class['startLine']
             );
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];
@@ -509,7 +512,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],
                   'coverage'        => 0,
-                  'crap'            => 0
+                  'crap'            => 0,
+                  'link'            => $link . $method['startLine']
                 );
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];

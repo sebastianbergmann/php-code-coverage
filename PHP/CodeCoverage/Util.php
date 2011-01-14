@@ -86,6 +86,11 @@ class PHP_CodeCoverage_Util
     );
 
     /**
+     * @var array
+     */
+    protected static $ids = array();
+
+    /**
      * Builds an array representation of the directory structure.
      *
      * For instance,
@@ -474,6 +479,32 @@ class PHP_CodeCoverage_Util
         ksort($files);
 
         return substr($commonPath, 0, -1);
+    }
+
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @return string
+     */
+    public static function nodeToId(PHP_CodeCoverage_Report_Node $node)
+    {
+        if (!isset(self::$ids[$node->getPath()])) {
+            $parent = $node->getParent();
+
+            if ($parent === NULL) {
+                self::$ids[$node->getPath()] = 'index';
+            } else {
+                $parentId = self::nodeToId($parent);
+
+                if ($parentId == 'index') {
+                    self::$ids[$node->getPath()] = $node->getName();
+                } else {
+                    self::$ids[$node->getPath()] = $parentId . '_' .
+                                                   $node->getName();
+                }
+            }
+        }
+
+        return self::$ids[$node->getPath()];
     }
 
     /**

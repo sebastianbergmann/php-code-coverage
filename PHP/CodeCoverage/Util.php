@@ -43,6 +43,7 @@
  * @since      File available since Release 1.0.0
  */
 
+// @codeCoverageIgnoreStart
 if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
@@ -53,6 +54,7 @@ if (!function_exists('trait_exists')) {
         return FALSE;
     }
 }
+// @codeCoverageIgnoreEnd
 
 /**
  * Utility methods.

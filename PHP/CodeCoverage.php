@@ -359,6 +359,8 @@ class PHP_CodeCoverage
                 }
             }
         }
+
+        $this->tests = array_merge($this->tests, $that->getTests());
     }
 
     /**

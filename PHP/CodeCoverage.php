@@ -343,7 +343,10 @@ class PHP_CodeCoverage
     {
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {
-                $this->data[$file] = $lines;
+                if (!$this->filter->isFiltered($file, $this->currentFilterGroups)) {
+                    $this->data[$file] = $lines;
+                }
+
                 continue;
             }
 

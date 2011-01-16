@@ -121,7 +121,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function testStartThrowsExceptionForInvalidArgument()
     {
         $coverage = new PHP_CodeCoverage;
-        $coverage->start(NULL, NULL);
+        $coverage->start(NULL, array(), NULL);
     }
 
     /**

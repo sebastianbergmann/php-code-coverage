@@ -361,9 +361,13 @@ class PHP_CodeCoverage
 
             foreach ($lines as $line => $data) {
                 if ($data !== NULL) {
-                    $this->data[$file][$line] = array_unique(
-                      array_merge($this->data[$file][$line], $data)
-                    );
+                    if (!isset($this->data[$file][$line])) {
+                        $this->data[$file][$line] = $data;
+                    } else {
+                        $this->data[$file][$line] = array_unique(
+                          array_merge($this->data[$file][$line], $data)
+                        );
+                    }
                 }
             }
         }

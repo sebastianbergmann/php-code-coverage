@@ -88,6 +88,11 @@ class PHP_CodeCoverage
     protected $currentId;
 
     /**
+     * @var array
+     */
+    protected $currentFilterGroups = array('DEFAULT');
+
+    /**
      * Code coverage data.
      *
      * @var array
@@ -199,9 +204,10 @@ class PHP_CodeCoverage
      */
     public function clear()
     {
-        $this->currentId = NULL;
-        $this->data      = array();
-        $this->tests     = array();
+        $this->currentId           = NULL;
+        $this->currentFilterGroups = array('DEFAULT');
+        $this->data                = array();
+        $this->tests               = array();
     }
 
     /**
@@ -244,10 +250,11 @@ class PHP_CodeCoverage
      * Start collection of code coverage information.
      *
      * @param  mixed   $id
+     * @param  array   $filterGroups
      * @param  boolean $clear
      * @throws InvalidArgumentException
      */
-    public function start($id, $clear = FALSE)
+    public function start($id, array $filterGroups = array('DEFAULT'), $clear = FALSE)
     {
         if (!is_bool($clear)) {
             throw new InvalidArgumentException;
@@ -257,7 +264,8 @@ class PHP_CodeCoverage
             $this->clear();
         }
 
-        $this->currentId = $id;
+        $this->currentId           = $id;
+        $this->currentFilterGroups = $filterGroups;
 
         $this->driver->start();
     }
@@ -293,7 +301,7 @@ class PHP_CodeCoverage
      * @param mixed $id
      * @param array $filterGroups
      */
-    public function append(array $data, $id = NULL, array $filterGroups = array('DEFAULT'))
+    public function append(array $data, $id = NULL, array $filterGroups = NULL)
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -301,6 +309,10 @@ class PHP_CodeCoverage
 
         if ($id === NULL) {
             throw new InvalidArgumentException;
+        }
+
+        if ($filterGroups === NULL) {
+            $filterGroups = $this->currentFilterGroups;
         }
 
         $this->applySelfFilter($data);

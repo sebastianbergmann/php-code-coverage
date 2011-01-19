@@ -97,9 +97,7 @@ class PHP_CodeCoverage_Report_HTML_Directory
             $title = $node->getName();
         }
 
-        $template = new Text_Template(
-          $this->templatePath . 'directory.html'
-        );
+        $template = new Text_Template($this->templatePath . 'directory.html');
 
         $template->renderTo($file);
     }

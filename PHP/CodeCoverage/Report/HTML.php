@@ -136,7 +136,7 @@ class PHP_CodeCoverage_Report_HTML
 
         foreach ($report as $node) {
             if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
-                $dashboard->render($node, $target . PHP_CodeCoverage_Util::nodeToId($node) . '.html');
+                $dashboard->render($node, $target . PHP_CodeCoverage_Util::nodeToId($node) . '.dashboard.html');
             }
         }
 

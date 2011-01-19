@@ -130,13 +130,31 @@ class PHP_CodeCoverage_Report_HTML
           $this->options['generator']
         );
 
+        $directory = new PHP_CodeCoverage_Report_HTML_Directory(
+          $this->templatePath,
+          $this->options['charset'],
+          $this->options['generator']
+        );
+
+        $file = new PHP_CodeCoverage_Report_HTML_File(
+          $this->templatePath,
+          $this->options['charset'],
+          $this->options['generator'],
+          $this->options['yui']
+        );
+
         $dashboard->render(
           $report, $target . 'index.dashboard.html', $this->options['title']
         );
 
         foreach ($report as $node) {
+            $id = PHP_CodeCoverage_Util::nodeToId($node);
+
             if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
-                $dashboard->render($node, $target . PHP_CodeCoverage_Util::nodeToId($node) . '.dashboard.html');
+                $dashboard->render($node, $target . $id . '.dashboard.html');
+                $directory->render($node, $target . $id . '.html');
+            } else {
+                $file->render($node, $target . $id . '.html');
             }
         }
 

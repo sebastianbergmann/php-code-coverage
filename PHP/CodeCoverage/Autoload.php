@@ -62,6 +62,8 @@ function php_codecoverage_autoload($class) {
           'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
           'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
           'php_codecoverage_report_html_dashboard' => '/CodeCoverage/Report/HTML/Dashboard.php',
+          'php_codecoverage_report_html_directory' => '/CodeCoverage/Report/HTML/Directory.php',
+          'php_codecoverage_report_html_file' => '/CodeCoverage/Report/HTML/File.php',
           'php_codecoverage_report_node' => '/CodeCoverage/Report/Node.php',
           'php_codecoverage_report_node_directory' => '/CodeCoverage/Report/Node/Directory.php',
           'php_codecoverage_report_node_file' => '/CodeCoverage/Report/Node/File.php',

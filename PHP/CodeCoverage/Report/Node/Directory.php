@@ -201,7 +201,7 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
      * @param  array  $coverageData
      * @param  array  $testData
      * @return PHP_CodeCoverage_Report_Node_File
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function addFile($name, array $coverageData, array $testData)
     {

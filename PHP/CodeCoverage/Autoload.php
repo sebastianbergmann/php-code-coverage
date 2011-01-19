@@ -56,6 +56,7 @@ function php_codecoverage_autoload($class) {
           'php_codecoverage' => '/CodeCoverage.php',
           'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
           'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
+          'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
           'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
           'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
           'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',

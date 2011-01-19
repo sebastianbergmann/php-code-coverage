@@ -133,6 +133,20 @@ class PHP_CodeCoverage_Report_HTML_File
             );
         }
 
+        $template->setVar(
+          array(
+            'title'       => $title,
+            'charset'     => $this->charset,
+            'date'        => date(
+                               'D M j G:i:s T Y',
+                               $_SERVER['REQUEST_TIME']
+                             ),
+            'version'     => '@package_version@',
+            'php_version' => PHP_VERSION,
+            'generator'   => $this->generator
+          )
+        );
+
         $template->renderTo($file);
     }
 }

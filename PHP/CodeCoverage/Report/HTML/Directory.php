@@ -113,6 +113,22 @@ class PHP_CodeCoverage_Report_HTML_Directory
 
         $template = new Text_Template($this->templatePath . 'directory.html');
 
+        $template->setVar(
+          array(
+            'title'            => $title,
+            'charset'          => $this->charset,
+            'low_upper_bound'  => $this->lowUpperBound,
+            'high_lower_bound' => $this->highLowerBound,
+            'date'             => date(
+                                    'D M j G:i:s T Y',
+                                    $_SERVER['REQUEST_TIME']
+                                  ),
+            'version'          => '@package_version@',
+            'php_version'      => PHP_VERSION,
+            'generator'        => $this->generator
+          )
+        );
+
         $template->renderTo($file);
     }
 }

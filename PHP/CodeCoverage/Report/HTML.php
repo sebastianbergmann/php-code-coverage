@@ -63,46 +63,54 @@ class PHP_CodeCoverage_Report_HTML
     protected $templatePath;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $options;
+    protected $charset;
+
+    /**
+     * @var string
+     */
+    protected $generator;
+
+    /**
+     * @var integer
+     */
+    protected $lowUpperBound;
+
+    /**
+     * @var integer
+     */
+    protected $highLowerBound;
+
+    /**
+     * @var boolean
+     */
+    protected $highlight;
+
+    /**
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @var boolean
+     */
+    protected $yui;
 
     /**
      * Constructor.
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct($title = '', $charset = 'UTF-8', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
     {
-        if (!isset($options['title'])) {
-            $options['title'] = '';
-        }
-
-        if (!isset($options['charset'])) {
-            $options['charset'] = 'UTF-8';
-        }
-
-        if (!isset($options['yui'])) {
-            $options['yui'] = TRUE;
-        }
-
-        if (!isset($options['highlight'])) {
-            $options['highlight'] = FALSE;
-        }
-
-        if (!isset($options['lowUpperBound'])) {
-            $options['lowUpperBound'] = 35;
-        }
-
-        if (!isset($options['highLowerBound'])) {
-            $options['highLowerBound'] = 70;
-        }
-
-        if (!isset($options['generator'])) {
-            $options['generator'] = '';
-        }
-
-        $this->options = $options;
+        $this->charset        = $charset;
+        $this->generator      = $generator;
+        $this->highLowerBound = $highLowerBound;
+        $this->highlight      = $highlight;
+        $this->lowUpperBound  = $lowUpperBound;
+        $this->title          = $title;
+        $this->yui            = $yui;
 
         $this->templatePath = sprintf(
           '%s%sHTML%sTemplate%s',
@@ -125,31 +133,29 @@ class PHP_CodeCoverage_Report_HTML
         unset($coverage);
 
         $dashboard = new PHP_CodeCoverage_Report_HTML_Dashboard(
-          $this->templatePath,
-          $this->options['charset'],
-          $this->options['generator']
+          $this->templatePath, $this->charset, $this->generator
         );
 
         $directory = new PHP_CodeCoverage_Report_HTML_Directory(
           $this->templatePath,
-          $this->options['charset'],
-          $this->options['generator'],
-          $this->options['lowUpperBound'],
-          $this->options['highLowerBound']
+          $this->charset,
+          $this->generator,
+          $this->lowUpperBound,
+          $this->highLowerBound
         );
 
         $file = new PHP_CodeCoverage_Report_HTML_File(
           $this->templatePath,
-          $this->options['charset'],
-          $this->options['generator'],
-          $this->options['lowUpperBound'],
-          $this->options['highLowerBound'],
-          $this->options['highlight'],
-          $this->options['yui']
+          $this->charset,
+          $this->generator,
+          $this->lowUpperBound,
+          $this->highLowerBound,
+          $this->highlight,
+          $this->yui
         );
 
         $dashboard->render(
-          $report, $target . 'index.dashboard.html', $this->options['title']
+          $report, $target . 'index.dashboard.html', $this->title
         );
 
         foreach ($report as $node) {

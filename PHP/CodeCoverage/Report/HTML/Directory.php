@@ -73,17 +73,31 @@ class PHP_CodeCoverage_Report_HTML_Directory
     protected $generator;
 
     /**
+     * @var integer
+     */
+    protected $lowUpperBound;
+
+    /**
+     * @var integer
+     */
+    protected $highLowerBound;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
      * @param string  $charset
      * @param string  $generator
+     * @param integer $lowUpperBound
+     * @param integer $highLowerBound
      */
-    public function __construct($templatePath, $charset, $generator)
+    public function __construct($templatePath, $charset, $generator, $lowUpperBound, $highLowerBound)
     {
-        $this->templatePath = $templatePath;
-        $this->charset      = $charset;
-        $this->generator    = $generator;
+        $this->templatePath   = $templatePath;
+        $this->charset        = $charset;
+        $this->generator      = $generator;
+        $this->lowUpperBound  = $lowUpperBound;
+        $this->highLowerBound = $highLowerBound;
     }
 
     /**

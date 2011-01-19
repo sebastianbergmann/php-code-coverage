@@ -133,13 +133,18 @@ class PHP_CodeCoverage_Report_HTML
         $directory = new PHP_CodeCoverage_Report_HTML_Directory(
           $this->templatePath,
           $this->options['charset'],
-          $this->options['generator']
+          $this->options['generator'],
+          $this->options['lowUpperBound'],
+          $this->options['highLowerBound']
         );
 
         $file = new PHP_CodeCoverage_Report_HTML_File(
           $this->templatePath,
           $this->options['charset'],
           $this->options['generator'],
+          $this->options['lowUpperBound'],
+          $this->options['highLowerBound'],
+          $this->options['highlight'],
           $this->options['yui']
         );
 

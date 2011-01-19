@@ -73,6 +73,21 @@ class PHP_CodeCoverage_Report_HTML_File
     protected $generator;
 
     /**
+     * @var integer
+     */
+    protected $lowUpperBound;
+
+    /**
+     * @var integer
+     */
+    protected $highLowerBound;
+
+    /**
+     * @var boolean
+     */
+    protected $highlight;
+
+    /**
      * @var boolean
      */
     protected $yui;
@@ -83,14 +98,20 @@ class PHP_CodeCoverage_Report_HTML_File
      * @param string  $templatePath
      * @param string  $charset
      * @param string  $generator
+     * @param integer $lowUpperBound
+     * @param integer $highLowerBound
+     * @param boolean $highlight
      * @param boolean $yui
      */
-    public function __construct($templatePath, $charset, $generator, $yui)
+    public function __construct($templatePath, $charset, $generator, $lowUpperBound, $highLowerBound, $highlight, $yui)
     {
-        $this->templatePath = $templatePath;
-        $this->charset      = $charset;
-        $this->generator    = $generator;
-        $this->yui          = $yui;
+        $this->templatePath   = $templatePath;
+        $this->charset        = $charset;
+        $this->generator      = $generator;
+        $this->lowUpperBound  = $lowUpperBound;
+        $this->highLowerBound = $highLowerBound;
+        $this->highlight      = $highlight;
+        $this->yui            = $yui;
     }
 
     /**

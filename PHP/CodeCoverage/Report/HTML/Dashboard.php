@@ -75,7 +75,9 @@ class PHP_CodeCoverage_Report_HTML_Dashboard
     /**
      * Constructor.
      *
-     * @param array $options
+     * @param string  $templatePath
+     * @param string  $charset
+     * @param string  $generator
      */
     public function __construct($templatePath, $charset, $generator)
     {

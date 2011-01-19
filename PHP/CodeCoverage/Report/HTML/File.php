@@ -80,7 +80,10 @@ class PHP_CodeCoverage_Report_HTML_File
     /**
      * Constructor.
      *
-     * @param array $options
+     * @param string  $templatePath
+     * @param string  $charset
+     * @param string  $generator
+     * @param boolean $yui
      */
     public function __construct($templatePath, $charset, $generator, $yui)
     {

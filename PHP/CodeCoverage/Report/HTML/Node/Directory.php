@@ -146,7 +146,7 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @param  boolean $yui
      * @param  boolean $highlight
      * @return PHP_CodeCoverage_Report_HTML_Node_File
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function addFile($name, array $coverageData, array $testData, $yui, $highlight)
     {

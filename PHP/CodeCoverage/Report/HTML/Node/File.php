@@ -150,7 +150,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param  array                             $testData
      * @param  boolean                           $yui
      * @param  boolean                           $highlight
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $coverageData, array $testData, $yui = TRUE, $highlight = FALSE)
     {
@@ -159,7 +159,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $path = $this->getPath();
 
         if (!file_exists($path)) {
-            throw new RuntimeException(
+            throw new PHP_CodeCoverage_Exception(
               sprintf('Path "%s" does not exist.', $path)
             );
         }

@@ -181,7 +181,7 @@ class PHP_CodeCoverage_Util
     /**
      * @param  string $directory
      * @return string
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
     public static function getDirectory($directory)
     {
@@ -197,7 +197,7 @@ class PHP_CodeCoverage_Util
             return $directory;
         }
 
-        throw new RuntimeException(
+        throw new PHP_CodeCoverage_Exception(
           sprintf(
             'Directory "%s" does not exist.',
             $directory
@@ -561,7 +561,7 @@ class PHP_CodeCoverage_Util
                 foreach ($classes as $className) {
                     if (!class_exists($className) &&
                         !interface_exists($className)) {
-                        throw new RuntimeException(
+                        throw new PHP_CodeCoverage_Exception(
                           sprintf(
                             'Trying to @cover not existing class or ' .
                             'interface "%s".',
@@ -609,7 +609,7 @@ class PHP_CodeCoverage_Util
                                interface_exists($className) ||
                                trait_exists($className)) &&
                               method_exists($className, $methodName))) {
-                            throw new RuntimeException(
+                            throw new PHP_CodeCoverage_Exception(
                               sprintf(
                                 'Trying to @cover not existing method "%s::%s".',
                                 $className,
@@ -649,7 +649,7 @@ class PHP_CodeCoverage_Util
                 if (!class_exists($className) &&
                     !interface_exists($className) &&
                     !trait_exists($className)) {
-                    throw new RuntimeException(
+                    throw new PHP_CodeCoverage_Exception(
                       sprintf(
                         'Trying to @cover not existing class or ' .
                         'interface "%s".',

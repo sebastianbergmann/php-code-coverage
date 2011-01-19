@@ -176,7 +176,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     /**
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered2()
     {
@@ -188,7 +188,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     /**
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered3()
     {
@@ -200,7 +200,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     /**
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered4()
     {
@@ -411,7 +411,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers            PHP_CodeCoverage_Util::getDirectory
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetDirectory3()
     {

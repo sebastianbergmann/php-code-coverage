@@ -99,6 +99,9 @@
      <file baseinstalldir="/" name="Driver.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
+     <file baseinstalldir="/" name="Exception.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
      <file baseinstalldir="/" name="Filter.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>

@@ -163,6 +163,8 @@ class PHP_CodeCoverage_Report_HTML
           $report, $target . 'index.dashboard.html', $this->title
         );
 
+        $directory->render($report, $target . 'index.html');
+
         foreach ($report as $node) {
             $id = PHP_CodeCoverage_Util::nodeToId($node);
 

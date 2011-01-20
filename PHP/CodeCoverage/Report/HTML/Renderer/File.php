@@ -58,16 +58,6 @@
 class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report_HTML_Renderer
 {
     /**
-     * @var integer
-     */
-    protected $lowUpperBound;
-
-    /**
-     * @var integer
-     */
-    protected $highLowerBound;
-
-    /**
      * @var boolean
      */
     protected $highlight;
@@ -91,12 +81,17 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound, $highlight, $yui)
     {
-        parent::__construct($templatePath, $charset, $generator, $date);
+        parent::__construct(
+          $templatePath,
+          $charset,
+          $generator,
+          $date,
+          $lowUpperBound,
+          $highLowerBound
+        );
 
-        $this->lowUpperBound  = $lowUpperBound;
-        $this->highLowerBound = $highLowerBound;
-        $this->highlight      = $highlight;
-        $this->yui            = $yui;
+        $this->highlight = $highlight;
+        $this->yui       = $yui;
     }
 
     /**

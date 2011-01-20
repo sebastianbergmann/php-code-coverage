@@ -78,19 +78,33 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected $date;
 
     /**
+     * @var integer
+     */
+    protected $lowUpperBound;
+
+    /**
+     * @var integer
+     */
+    protected $highLowerBound;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
      * @param string  $charset
      * @param string  $generator
      * @param string  $date
+     * @param integer $lowUpperBound
+     * @param integer $highLowerBound
      */
-    public function __construct($templatePath, $charset, $generator, $date)
+    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound)
     {
-        $this->templatePath = $templatePath;
-        $this->charset      = $charset;
-        $this->generator    = $generator;
-        $this->date         = $date;
+        $this->templatePath   = $templatePath;
+        $this->charset        = $charset;
+        $this->generator      = $generator;
+        $this->date           = $date;
+        $this->lowUpperBound  = $lowUpperBound;
+        $this->highLowerBound = $highLowerBound;
     }
 
     /**
@@ -100,12 +114,14 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     {
         $template->setVar(
           array(
-            'title'       => $title,
-            'charset'     => $this->charset,
-            'date'        => $this->date,
-            'version'     => '@package_version@',
-            'php_version' => PHP_VERSION,
-            'generator'   => $this->generator
+            'title'            => $title,
+            'charset'          => $this->charset,
+            'date'             => $this->date,
+            'version'          => '@package_version@',
+            'php_version'      => PHP_VERSION,
+            'generator'        => $this->generator,
+            'low_upper_bound'  => $this->lowUpperBound,
+            'high_lower_bound' => $this->highLowerBound
           )
         );
     }

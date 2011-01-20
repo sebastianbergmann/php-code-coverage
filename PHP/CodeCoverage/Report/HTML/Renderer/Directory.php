@@ -58,34 +58,6 @@
 class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_Report_HTML_Renderer
 {
     /**
-     * @var integer
-     */
-    protected $lowUpperBound;
-
-    /**
-     * @var integer
-     */
-    protected $highLowerBound;
-
-    /**
-     * Constructor.
-     *
-     * @param string  $templatePath
-     * @param string  $charset
-     * @param string  $generator
-     * @param string  $date
-     * @param integer $lowUpperBound
-     * @param integer $highLowerBound
-     */
-    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound)
-    {
-        parent::__construct($templatePath, $charset, $generator, $date);
-
-        $this->lowUpperBound  = $lowUpperBound;
-        $this->highLowerBound = $highLowerBound;
-    }
-
-    /**
      * @param PHP_CodeCoverage_Report_Node_Directory $node
      * @param string                                 $file
      * @param string                                 $title
@@ -99,13 +71,6 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         $template = new Text_Template($this->templatePath . 'directory.html');
 
         $this->setCommonTemplateVariables($template, $title);
-
-        $template->setVar(
-          array(
-            'low_upper_bound'  => $this->lowUpperBound,
-            'high_lower_bound' => $this->highLowerBound
-          )
-        );
 
         $template->renderTo($file);
     }

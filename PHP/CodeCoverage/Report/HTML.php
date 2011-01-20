@@ -132,14 +132,17 @@ class PHP_CodeCoverage_Report_HTML
         $report = $coverage->getReport();
         unset($coverage);
 
+        $date = date('D M j G:i:s T Y', $_SERVER['REQUEST_TIME']);
+
         $dashboard = new PHP_CodeCoverage_Report_HTML_Dashboard(
-          $this->templatePath, $this->charset, $this->generator
+          $this->templatePath, $this->charset, $this->generator, $date
         );
 
         $directory = new PHP_CodeCoverage_Report_HTML_Directory(
           $this->templatePath,
           $this->charset,
           $this->generator,
+          $date,
           $this->lowUpperBound,
           $this->highLowerBound
         );
@@ -148,6 +151,7 @@ class PHP_CodeCoverage_Report_HTML
           $this->templatePath,
           $this->charset,
           $this->generator,
+          $date,
           $this->lowUpperBound,
           $this->highLowerBound,
           $this->highlight,

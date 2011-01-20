@@ -73,6 +73,11 @@ class PHP_CodeCoverage_Report_HTML_File
     protected $generator;
 
     /**
+     * @var string
+     */
+    protected $date;
+
+    /**
      * @var integer
      */
     protected $lowUpperBound;
@@ -98,16 +103,18 @@ class PHP_CodeCoverage_Report_HTML_File
      * @param string  $templatePath
      * @param string  $charset
      * @param string  $generator
+     * @param string  $date
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      * @param boolean $highlight
      * @param boolean $yui
      */
-    public function __construct($templatePath, $charset, $generator, $lowUpperBound, $highLowerBound, $highlight, $yui)
+    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound, $highlight, $yui)
     {
         $this->templatePath   = $templatePath;
         $this->charset        = $charset;
         $this->generator      = $generator;
+        $this->date           = $date;
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
         $this->highlight      = $highlight;
@@ -137,10 +144,7 @@ class PHP_CodeCoverage_Report_HTML_File
           array(
             'title'       => $title,
             'charset'     => $this->charset,
-            'date'        => date(
-                               'D M j G:i:s T Y',
-                               $_SERVER['REQUEST_TIME']
-                             ),
+            'date'        => $this->date,
             'version'     => '@package_version@',
             'php_version' => PHP_VERSION,
             'generator'   => $this->generator

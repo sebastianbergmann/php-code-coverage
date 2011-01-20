@@ -73,17 +73,24 @@ class PHP_CodeCoverage_Report_HTML_Dashboard
     protected $generator;
 
     /**
+     * @var string
+     */
+    protected $date;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
      * @param string  $charset
      * @param string  $generator
+     * @param string  $date
      */
-    public function __construct($templatePath, $charset, $generator)
+    public function __construct($templatePath, $charset, $generator, $date)
     {
         $this->templatePath = $templatePath;
         $this->charset      = $charset;
         $this->generator    = $generator;
+        $this->date         = $date;
     }
 
     /**
@@ -106,10 +113,7 @@ class PHP_CodeCoverage_Report_HTML_Dashboard
           array(
             'title'                  => $title,
             'charset'                => $this->charset,
-            'date'                   => date(
-                                          'D M j G:i:s T Y',
-                                          $_SERVER['REQUEST_TIME']
-                                        ),
+            'date'                   => $this->date,
             'version'                => '@package_version@',
             'php_version'            => PHP_VERSION,
             'generator'              => $this->generator,

@@ -113,9 +113,10 @@ class PHP_CodeCoverage_Report_HTML
         $this->yui            = $yui;
 
         $this->templatePath = sprintf(
-          '%s%sHTML%sTemplate%s',
+          '%s%sHTML%sRenderer%sTemplate%s',
 
           dirname(__FILE__),
+          DIRECTORY_SEPARATOR,
           DIRECTORY_SEPARATOR,
           DIRECTORY_SEPARATOR,
           DIRECTORY_SEPARATOR
@@ -134,11 +135,11 @@ class PHP_CodeCoverage_Report_HTML
 
         $date = date('D M j G:i:s T Y', $_SERVER['REQUEST_TIME']);
 
-        $dashboard = new PHP_CodeCoverage_Report_HTML_Dashboard(
+        $dashboard = new PHP_CodeCoverage_Report_HTML_Renderer_Dashboard(
           $this->templatePath, $this->charset, $this->generator, $date
         );
 
-        $directory = new PHP_CodeCoverage_Report_HTML_Directory(
+        $directory = new PHP_CodeCoverage_Report_HTML_Renderer_Directory(
           $this->templatePath,
           $this->charset,
           $this->generator,
@@ -147,7 +148,7 @@ class PHP_CodeCoverage_Report_HTML
           $this->highLowerBound
         );
 
-        $file = new PHP_CodeCoverage_Report_HTML_File(
+        $file = new PHP_CodeCoverage_Report_HTML_Renderer_File(
           $this->templatePath,
           $this->charset,
           $this->generator,

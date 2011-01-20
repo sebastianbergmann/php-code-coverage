@@ -44,7 +44,7 @@
  */
 
 /**
- * Renders a PHP_CodeCoverage_Report_Node_Directory node.
+ * Renders a PHP_CodeCoverage_Report_Node_File node.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -55,28 +55,8 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.1.0
  */
-class PHP_CodeCoverage_Report_HTML_Directory
+class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report_HTML_Renderer
 {
-    /**
-     * @var string
-     */
-    protected $templatePath;
-
-    /**
-     * @var string
-     */
-    protected $charset;
-
-    /**
-     * @var string
-     */
-    protected $generator;
-
-    /**
-     * @var string
-     */
-    protected $date;
-
     /**
      * @var integer
      */
@@ -88,6 +68,16 @@ class PHP_CodeCoverage_Report_HTML_Directory
     protected $highLowerBound;
 
     /**
+     * @var boolean
+     */
+    protected $highlight;
+
+    /**
+     * @var boolean
+     */
+    protected $yui;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
@@ -96,42 +86,39 @@ class PHP_CodeCoverage_Report_HTML_Directory
      * @param string  $date
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param boolean $highlight
+     * @param boolean $yui
      */
-    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound)
+    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound, $highlight, $yui)
     {
-        $this->templatePath   = $templatePath;
-        $this->charset        = $charset;
-        $this->generator      = $generator;
-        $this->date           = $date;
+        parent::__construct($templatePath, $charset, $generator, $date);
+
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
+        $this->highlight      = $highlight;
+        $this->yui            = $yui;
     }
 
     /**
-     * @param PHP_CodeCoverage_Report_Node_Directory $node
-     * @param string                                 $file
-     * @param string                                 $title
+     * @param PHP_CodeCoverage_Report_Node_File $node
+     * @param string                            $file
+     * @param string                            $title
      */
-    public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file, $title = NULL)
+    public function render(PHP_CodeCoverage_Report_Node_File $node, $file, $title = NULL)
     {
         if ($title === NULL) {
             $title = $node->getName();
         }
 
-        $template = new Text_Template($this->templatePath . 'directory.html');
+        if ($this->yui) {
+            $template = new Text_Template($this->templatePath . 'file.html');
+        } else {
+            $template = new Text_Template(
+              $this->templatePath . 'file_no_yui.html'
+            );
+        }
 
-        $template->setVar(
-          array(
-            'title'            => $title,
-            'charset'          => $this->charset,
-            'low_upper_bound'  => $this->lowUpperBound,
-            'high_lower_bound' => $this->highLowerBound,
-            'date'             => $this->date,
-            'version'          => '@package_version@',
-            'php_version'      => PHP_VERSION,
-            'generator'        => $this->generator
-          )
-        );
+        $this->setCommonTemplateVariables($template, $title);
 
         $template->renderTo($file);
     }

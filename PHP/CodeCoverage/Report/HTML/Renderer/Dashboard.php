@@ -55,44 +55,8 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.1.0
  */
-class PHP_CodeCoverage_Report_HTML_Dashboard
+class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_Report_HTML_Renderer
 {
-    /**
-     * @var string
-     */
-    protected $templatePath;
-
-    /**
-     * @var string
-     */
-    protected $charset;
-
-    /**
-     * @var string
-     */
-    protected $generator;
-
-    /**
-     * @var string
-     */
-    protected $date;
-
-    /**
-     * Constructor.
-     *
-     * @param string  $templatePath
-     * @param string  $charset
-     * @param string  $generator
-     * @param string  $date
-     */
-    public function __construct($templatePath, $charset, $generator, $date)
-    {
-        $this->templatePath = $templatePath;
-        $this->charset      = $charset;
-        $this->generator    = $generator;
-        $this->date         = $date;
-    }
-
     /**
      * @param PHP_CodeCoverage_Report_Node_Directory $node
      * @param string                                 $file
@@ -109,19 +73,15 @@ class PHP_CodeCoverage_Report_HTML_Dashboard
           $this->templatePath . 'dashboard.html'
         );
 
+        $this->setCommonTemplateVariables($template, $title);
+
         $template->setVar(
           array(
-            'title'                  => $title,
-            'charset'                => $this->charset,
-            'date'                   => $this->date,
-            'version'                => '@package_version@',
-            'php_version'            => PHP_VERSION,
-            'generator'              => $this->generator,
-            'least_tested_methods'   => $this->leastTestedMethods($classes),
-            'top_project_risks'      => $this->topProjectRisks($classes),
-            'cc_values'              => $this->classComplexity($classes),
-            'ccd_values'             => $this->classCoverageDistribution($classes),
-            'backlink'               => basename(str_replace('.dashboard', '', $file))
+            'least_tested_methods' => $this->leastTestedMethods($classes),
+            'top_project_risks'    => $this->topProjectRisks($classes),
+            'cc_values'            => $this->classComplexity($classes),
+            'ccd_values'           => $this->classCoverageDistribution($classes),
+            'backlink'             => basename(str_replace('.dashboard', '', $file))
           )
         );
 

@@ -123,42 +123,60 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of classes that has been tested.
      *
+     * @param  boolean $asString
      * @return integer
      */
-    public function getTestedClassesPercent()
+    public function getTestedClassesPercent($asString = TRUE)
     {
         return PHP_CodeCoverage_Util::percent(
           $this->getNumTestedClasses(),
           $this->getNumClasses(),
-          TRUE
+          $asString
+        );
+    }
+
+    /**
+     * Returns the percentage of traits that has been tested.
+     *
+     * @param  boolean $asString
+     * @return integer
+     */
+    public function getTestedTraitsPercent($asString = TRUE)
+    {
+        return PHP_CodeCoverage_Util::percent(
+          $this->getNumTestedTraits(),
+          $this->getNumTraits(),
+          $asString
         );
     }
 
     /**
      * Returns the percentage of methods that has been tested.
      *
+     * @param  boolean $asString
      * @return integer
      */
-    public function getTestedMethodsPercent()
+    public function getTestedMethodsPercent($asString = TRUE)
     {
         return PHP_CodeCoverage_Util::percent(
           $this->getNumTestedMethods(),
           $this->getNumMethods(),
-          TRUE
+          $asString
         );
     }
 
     /**
      * Returns the percentage of executed lines.
      *
+     * @param  boolean $asString
      * @return integer
      */
-    public function getLineExecutedPercent()
+    public function getLineExecutedPercent($asString = TRUE)
     {
         return PHP_CodeCoverage_Util::percent(
           $this->getNumExecutedLines(),
           $this->getNumExecutableLines(),
-          TRUE
+          $asString
         );
     }
 

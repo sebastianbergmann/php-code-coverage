@@ -370,7 +370,7 @@ class PHP_CodeCoverage_Util
         }
 
         if ($asString) {
-            return sprintf('%01.2F', $percent);
+            return sprintf('%01.2F%%', $percent);
         } else {
             return $percent;
         }

@@ -17,7 +17,7 @@
           <table cellpadding="1" border="0" width="100%">
             <tr>
               <td class="headerItem" width="20%">Current directory:</td>
-              <td class="headerValue" width="80%">{link} ({dashboard_link})</td>
+              <td class="headerValue" width="80%">{link} (<a href="{id}.dashboard.html">dashboard</a>)</td>
             </tr>
             <tr>
               <td class="legendItem" width="20%">Legend:</td>
@@ -55,7 +55,7 @@
           <td class="tableHead" colspan="3">Functions / Methods</td>
           <td class="tableHead" colspan="3">Classes</td>
         </tr>
-{total_item}{items}
+{items}
       </table>
     </center>
 

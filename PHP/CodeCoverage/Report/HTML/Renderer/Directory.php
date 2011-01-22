@@ -72,6 +72,145 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
 
         $this->setCommonTemplateVariables($template, $title);
 
+        $items = $this->renderItem($node, TRUE);
+
+        foreach ($node->getDirectories() as $item) {
+            $items .= $this->renderItem($item);
+        }
+
+        foreach ($node->getFiles() as $item) {
+            $items .= $this->renderItem($item);
+        }
+
+        $template->setVar(
+          array(
+            'id'    => PHP_CodeCoverage_Util::nodeToId($node),
+            'items' => $items
+          )
+        );
+
         $template->renderTo($file);
+    }
+
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $item
+     * @param  boolean                      $total
+     * @return string
+     */
+    protected function renderItem(PHP_CodeCoverage_Report_Node $item, $total = FALSE)
+    {
+        $template = new Text_Template(
+          $this->templatePath . 'directory_item.html'
+        );
+
+        if ($total) {
+            $icon      = '';
+            $itemClass = 'coverDirectory';
+            $name      = 'Total';
+        } else {
+            $name = sprintf(
+              '<a href="%s.html">%s</a>',
+              PHP_CodeCoverage_Util::nodeToId($item),
+              $item->getName()
+            );
+
+            if ($item instanceof PHP_CodeCoverage_Report_Node_Directory) {
+                $icon      = '<img alt="directory" src="directory.png"/> ';
+                $itemClass = 'coverDirectory';
+            } else {
+                $icon      = '<img alt="file" src="file.png"/> ';
+                $itemClass = 'coverFile';
+            }
+        }
+
+        $numClasses           = $item->getNumClasses();
+        $testedClassesPercent = floor($item->getTestedClassesPercent(FALSE));
+
+        if ($numClasses > 0) {
+            list($classesColor, $classesLevel) = $this->getColorLevel(
+              $testedClassesPercent
+            );
+
+            $classesNumber = $item->getNumTestedClasses() . ' / ' . $numClasses;
+        } else {
+            $classesColor  = 'snow';
+            $classesLevel  = 'None';
+            $classesNumber = '&nbsp;';
+        }
+
+        $numMethods           = $item->getNumMethods();
+        $testedMethodsPercent = floor($item->getTestedMethodsPercent(FALSE));
+
+        if ($numMethods > 0) {
+            list($methodsColor, $methodsLevel) = $this->getColorLevel(
+              $testedMethodsPercent
+            );
+
+            $methodsNumber = $item->getNumTestedMethods() . ' / ' . $numMethods;
+        } else {
+            $methodsColor  = 'snow';
+            $methodsLevel  = 'None';
+            $methodsNumber = '&nbsp;';
+        }
+
+        $linesExecutedPercent = floor($item->getLineExecutedPercent(FALSE));
+
+        list($linesColor, $linesLevel) = $this->getColorLevel(
+          $linesExecutedPercent
+        );
+
+        $template->setVar(
+          array(
+            'itemClass' => $itemClass,
+            'icon' => $icon,
+            'name' => $name,
+            'lines_color' => $linesColor,
+            'lines_executed_width' => $linesExecutedPercent,
+            'lines_not_executed_width' => 100 - $linesExecutedPercent,
+            'lines_executed_percent' => $item->getLineExecutedPercent(),
+            'lines_level' => $linesLevel,
+            'num_executed_lines' => $item->getNumExecutedLines(),
+            'num_executable_lines' => $item->getNumExecutableLines(),
+            'methods_color' => $methodsColor,
+            'methods_tested_width' => $testedMethodsPercent,
+            'methods_not_tested_width' => 100 - $testedMethodsPercent,
+            'methods_tested_percent' => $item->getTestedMethodsPercent(),
+            'methods_level' => $methodsLevel,
+            'methods_number' => $methodsNumber,
+            'classes_color' => $classesColor,
+            'classes_tested_width' => $testedClassesPercent,
+            'classes_not_tested_width' => 100 - $testedClassesPercent,
+            'classes_tested_percent' => $item->getTestedClassesPercent(),
+            'classes_level' => $classesLevel,
+            'classes_number' => $classesNumber
+          )
+        );
+
+        return $template->render();
+    }
+
+    /**
+     * @param  integer $percent
+     * @return array
+     */
+    protected function getColorLevel($percent)
+    {
+        if ($percent < $this->lowUpperBound) {
+            $color = 'scarlet_red';
+            $level = 'Lo';
+        }
+
+        else if ($percent >= $this->lowUpperBound &&
+                 $percent <  $this->highLowerBound) {
+            $color = 'butter';
+            $level = 'Med';
+        }
+
+        else {
+            $color = 'chameleon';
+            $level = 'Hi';
+        }
+
+        return array($color, $level);
     }
 }

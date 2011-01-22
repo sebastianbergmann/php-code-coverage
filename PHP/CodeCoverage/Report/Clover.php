@@ -342,7 +342,7 @@ class PHP_CodeCoverage_Report_Clover
 
         if ($target !== NULL) {
             if (!is_dir(dirname($target))) {
-              mkdir(dirname($target), 0, TRUE);
+              mkdir(dirname($target), 0777, TRUE);
             }
 
             return $xmlDocument->save($target);

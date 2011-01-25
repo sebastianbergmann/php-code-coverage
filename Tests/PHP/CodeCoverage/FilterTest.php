@@ -109,15 +109,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Filter::getInstance
-     */
-    public function testFactory()
-    {
-        $filter = PHP_CodeCoverage_Filter::getInstance();
-        $this->assertSame($filter, PHP_CodeCoverage_Filter::getInstance());
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Filter::addFileToBlacklist
      * @covers PHP_CodeCoverage_Filter::getBlacklist
      */

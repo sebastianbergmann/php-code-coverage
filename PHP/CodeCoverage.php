@@ -122,13 +122,6 @@ class PHP_CodeCoverage
     protected $isTokenStreamTestSuite = FALSE;
 
     /**
-     * Default PHP_CodeCoverage object.
-     *
-     * @var PHP_CodeCoverage
-     */
-    protected static $instance;
-
-    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver $driver
@@ -142,7 +135,7 @@ class PHP_CodeCoverage
         }
 
         if ($filter === NULL) {
-            $filter = PHP_CodeCoverage_Filter::getInstance();
+            $filter = new PHP_CodeCoverage_Filter;
         }
 
         $this->driver = $driver;
@@ -165,21 +158,6 @@ class PHP_CodeCoverage
             $this->isTokenStreamTestSuite = TRUE;
         }
         // @codeCoverageIgnoreEnd
-    }
-
-    /**
-     * Returns the default instance.
-     *
-     * @return PHP_CodeCoverage
-     */
-    public static function getInstance()
-    {
-        if (self::$instance === NULL) {
-            // @codeCoverageIgnoreStart
-            self::$instance = new PHP_CodeCoverage;
-        }
-        // @codeCoverageIgnoreEnd
-        return self::$instance;
     }
 
     /**

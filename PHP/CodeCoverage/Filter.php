@@ -72,29 +72,6 @@ class PHP_CodeCoverage_Filter
     protected $whitelistedFiles = array();
 
     /**
-     * Default PHP_CodeCoverage object.
-     *
-     * @var PHP_CodeCoverage
-     */
-    protected static $instance;
-
-    /**
-     * Returns the default instance.
-     *
-     * @return PHP_CodeCoverage_Filter
-     */
-    public static function getInstance()
-    {
-        if (self::$instance === NULL) {
-            // @codeCoverageIgnoreStart
-            self::$instance = new PHP_CodeCoverage_Filter;
-        }
-        // @codeCoverageIgnoreEnd
-
-        return self::$instance;
-    }
-
-    /**
      * Adds a directory to the blacklist (recursively).
      *
      * @param string $directory

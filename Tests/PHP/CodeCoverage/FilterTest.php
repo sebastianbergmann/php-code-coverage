@@ -126,22 +126,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
 
         $this->assertEquals(
-          array('DEFAULT' => array($this->files[0])),
-          $this->filter->getBlacklist()
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Filter::addFileToBlacklist
-     * @covers PHP_CodeCoverage_Filter::getBlacklist
-     */
-    public function testAddingAFileToTheBlacklistWorks2()
-    {
-        $this->filter->addFileToBlacklist($this->files[0], 'group');
-
-        $this->assertEquals(
-          array('DEFAULT' => array(), 'group' => array($this->files[0])),
-          $this->filter->getBlacklist()
+          array($this->files[0]), $this->filter->getBlacklist()
         );
     }
 
@@ -154,9 +139,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
         $this->filter->removeFileFromBlacklist($this->files[0]);
 
-        $this->assertEquals(
-          array('DEFAULT' => array()), $this->filter->getBlacklist()
-        );
+        $this->assertEquals(array(), $this->filter->getBlacklist());
     }
 
     /**
@@ -169,12 +152,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
 
         $blacklist = $this->filter->getBlacklist();
+        sort($blacklist);
 
-        foreach (array_keys($blacklist) as $group) {
-            sort($blacklist[$group]);
-        }
-
-        $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
+        $this->assertEquals($this->files, $blacklist);
     }
 
     /**
@@ -190,12 +170,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         );
 
         $blacklist = $this->filter->getBlacklist();
+        sort($blacklist);
 
-        foreach (array_keys($blacklist) as $group) {
-            sort($blacklist[$group]);
-        }
-
-        $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
+        $this->assertEquals($this->files, $blacklist);
     }
 
     /**
@@ -208,9 +185,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
         $this->filter->removeDirectoryFromBlacklist(TEST_FILES_PATH);
 
-        $this->assertEquals(
-          array('DEFAULT' => array()), $this->filter->getBlacklist()
-        );
+        $this->assertEquals(array(), $this->filter->getBlacklist());
     }
 
     /**

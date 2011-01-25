@@ -62,9 +62,7 @@ class PHP_CodeCoverage_Filter
      *
      * @var array
      */
-    protected $blacklistedFiles = array(
-      'DEFAULT' => array()
-    );
+    protected $blacklistedFiles = array();
 
     /**
      * Source files that are whitelisted.
@@ -102,16 +100,15 @@ class PHP_CodeCoverage_Filter
      * @param string $directory
      * @param string $suffix
      * @param string $prefix
-     * @param string $group
      */
-    public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
+    public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         $files = File_Iterator_Factory::getFileIterator(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->addFileToBlacklist($file->getPathName(), $group, FALSE);
+            $this->addFileToBlacklist($file->getPathName());
         }
     }
 
@@ -119,23 +116,21 @@ class PHP_CodeCoverage_Filter
      * Adds a file to the blacklist.
      *
      * @param string $filename
-     * @param string $group
      */
-    public function addFileToBlacklist($filename, $group = 'DEFAULT')
+    public function addFileToBlacklist($filename)
     {
-        $this->blacklistedFiles[$group][realpath($filename)] = TRUE;
+        $this->blacklistedFiles[realpath($filename)] = TRUE;
     }
 
     /**
      * Adds files to the blacklist.
      *
-     * @param array  $files
-     * @param string $group
+     * @param array $files
      */
-    public function addFilesToBlacklist(array $files, $group = 'DEFAULT')
+    public function addFilesToBlacklist(array $files)
     {
         foreach ($files as $file) {
-            $this->addFileToBlacklist($file, $group);
+            $this->addFileToBlacklist($file);
         }
     }
 
@@ -145,16 +140,15 @@ class PHP_CodeCoverage_Filter
      * @param string $directory
      * @param string $suffix
      * @param string $prefix
-     * @param string $group
      */
-    public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '', $group = 'DEFAULT')
+    public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '')
     {
         $files = File_Iterator_Factory::getFileIterator(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->removeFileFromBlacklist($file->getPathName(), $group);
+            $this->removeFileFromBlacklist($file->getPathName());
         }
     }
 
@@ -162,14 +156,13 @@ class PHP_CodeCoverage_Filter
      * Removes a file from the blacklist.
      *
      * @param string $filename
-     * @param string $group
      */
-    public function removeFileFromBlacklist($filename, $group = 'DEFAULT')
+    public function removeFileFromBlacklist($filename)
     {
         $filename = realpath($filename);
 
-        if (isset($this->blacklistedFiles[$group][$filename])) {
-            unset($this->blacklistedFiles[$group][$filename]);
+        if (isset($this->blacklistedFiles[$filename])) {
+            unset($this->blacklistedFiles[$filename]);
         }
     }
 
@@ -273,12 +266,11 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is not empty, whitelisting is used.
      *
      * @param  string  $filename
-     * @param  array   $groups
      * @param  boolean $ignoreWhitelist
      * @return boolean
      * @throws InvalidArgumentException
      */
-    public function isFiltered($filename, array $groups = array('DEFAULT'), $ignoreWhitelist = FALSE)
+    public function isFiltered($filename, $ignoreWhitelist = FALSE)
     {
         if (!is_bool($ignoreWhitelist)) {
             throw new InvalidArgumentException;
@@ -292,16 +284,7 @@ class PHP_CodeCoverage_Filter
 
         $blacklistedFiles = array();
 
-        foreach ($groups as $group) {
-            if (isset($this->blacklistedFiles[$group])) {
-                $blacklistedFiles = array_merge(
-                  $blacklistedFiles,
-                  $this->blacklistedFiles[$group]
-                );
-            }
-        }
-
-        return isset($blacklistedFiles[$filename]);
+        return isset($this->blacklistedFiles[$filename]);
     }
 
     /**
@@ -311,13 +294,7 @@ class PHP_CodeCoverage_Filter
      */
     public function getBlacklist()
     {
-        $blacklistedFiles = array();
-
-        foreach ($this->blacklistedFiles as $group => $list) {
-            $blacklistedFiles[$group] = array_keys($list);
-        }
-
-        return $blacklistedFiles;
+        return array_keys($this->blacklistedFiles);
     }
 
     /**

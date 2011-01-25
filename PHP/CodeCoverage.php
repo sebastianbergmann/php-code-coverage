@@ -88,11 +88,6 @@ class PHP_CodeCoverage
     protected $currentId;
 
     /**
-     * @var array
-     */
-    protected $currentFilterGroups = array('DEFAULT');
-
-    /**
      * Code coverage data.
      *
      * @var array
@@ -192,10 +187,9 @@ class PHP_CodeCoverage
      */
     public function clear()
     {
-        $this->currentId           = NULL;
-        $this->currentFilterGroups = array('DEFAULT');
-        $this->data                = array();
-        $this->tests               = array();
+        $this->currentId = NULL;
+        $this->data      = array();
+        $this->tests     = array();
     }
 
     /**
@@ -238,11 +232,10 @@ class PHP_CodeCoverage
      * Start collection of code coverage information.
      *
      * @param  mixed   $id
-     * @param  array   $filterGroups
      * @param  boolean $clear
      * @throws InvalidArgumentException
      */
-    public function start($id, array $filterGroups = array('DEFAULT'), $clear = FALSE)
+    public function start($id, $clear = FALSE)
     {
         if (!is_bool($clear)) {
             throw new InvalidArgumentException;
@@ -252,8 +245,7 @@ class PHP_CodeCoverage
             $this->clear();
         }
 
-        $this->currentId           = $id;
-        $this->currentFilterGroups = $filterGroups;
+        $this->currentId = $id;
 
         $this->driver->start();
     }
@@ -287,9 +279,8 @@ class PHP_CodeCoverage
      *
      * @param array $data
      * @param mixed $id
-     * @param array $filterGroups
      */
-    public function append(array $data, $id = NULL, array $filterGroups = NULL)
+    public function append(array $data, $id = NULL)
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -299,12 +290,8 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
-        if ($filterGroups === NULL) {
-            $filterGroups = $this->currentFilterGroups;
-        }
-
         $this->applySelfFilter($data);
-        $this->applyListsFilter($data, $filterGroups);
+        $this->applyListsFilter($data);
         $this->initializeFilesThatAreSeenTheFirstTime($data);
         $this->applyCoversAnnotationFilter($data, $id);
 
@@ -343,7 +330,7 @@ class PHP_CodeCoverage
     {
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {
-                if (!$this->filter->isFiltered($file, $this->currentFilterGroups)) {
+                if (!$this->filter->isFiltered($file)) {
                     $this->data[$file] = $lines;
                 }
 
@@ -456,12 +443,11 @@ class PHP_CodeCoverage
      * Applies the blacklist/whitelist filtering.
      *
      * @param array $data
-     * @param array $filterGroups
      */
-    protected function applyListsFilter(&$data, $filterGroups)
+    protected function applyListsFilter(&$data)
     {
         foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename, $filterGroups)) {
+            if ($this->filter->isFiltered($filename)) {
                 unset($data[$filename]);
             }
         }

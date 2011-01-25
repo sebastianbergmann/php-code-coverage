@@ -126,7 +126,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
         $coverage->start(
-          new BankAccountTest('testBalanceIsInitiallyZero'), array('DEFAULT'), TRUE
+          new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
         );
         $coverage->stop();
 
@@ -163,7 +163,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
         $coverage->start(
-          new BankAccountTest('testBalanceIsInitiallyZero'), array('DEFAULT'), TRUE
+          new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
         );
         $coverage->stop();
 
@@ -189,7 +189,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
         $coverage->start(
-          new BankAccountTest('testBalanceCannotBecomeNegative2'), array('DEFAULT'), TRUE
+          new BankAccountTest('testBalanceCannotBecomeNegative2'), TRUE
         );
         $coverage->stop();
 
@@ -242,7 +242,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
           new PHP_CodeCoverage_Filter
         );
 
-        $coverage->start('FileWithIgnoredLines', array('DEFAULT'), TRUE);
+        $coverage->start('FileWithIgnoredLines', TRUE);
         $coverage->stop();
 
         return $coverage;

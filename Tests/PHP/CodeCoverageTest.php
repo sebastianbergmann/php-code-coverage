@@ -106,15 +106,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage::getInstance
-     */
-    public function testFactory()
-    {
-        $coverage = PHP_CodeCoverage::getInstance();
-        $this->assertSame($coverage, PHP_CodeCoverage::getInstance());
-    }
-
-    /**
      * @covers            PHP_CodeCoverage::start
      * @expectedException InvalidArgumentException
      */

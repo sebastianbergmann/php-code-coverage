@@ -10,3 +10,4 @@ PHP_CodeCoverage 1.1.0
 * Added support for traits.
 * Refactored the collection and processing of code coverage data improving code readability and performance.
 * Refactored the generation of Clover XML and HTML reports improving code readability and testability.
+* Removed the support for multiple blacklist groups.

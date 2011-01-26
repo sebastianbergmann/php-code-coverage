@@ -130,11 +130,6 @@
     <min>1.9.1</min>
    </pearinstaller>
    <package>
-    <name>ConsoleTools</name>
-    <channel>components.ez.no</channel>
-    <min>1.6</min>
-   </package>
-   <package>
     <name>File_Iterator</name>
     <channel>pear.phpunit.de</channel>
     <min>1.2.2</min>
@@ -151,6 +146,11 @@
    </package>
   </required>
   <optional>
+   <package>
+    <name>ConsoleTools</name>
+    <channel>components.ez.no</channel>
+    <min>1.6</min>
+   </package>
    <extension>
     <name>xdebug</name>
     <min>2.0.5</min>

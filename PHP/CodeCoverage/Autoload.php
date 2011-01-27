@@ -47,7 +47,7 @@ require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
 require_once 'Text/Template/Autoload.php';
 
-function php_codecoverage_autoload($class) {
+function php_codecoverage_autoload($class = NULL) {
     static $classes = NULL;
     static $path = NULL;
 
@@ -75,6 +75,16 @@ function php_codecoverage_autoload($class) {
         );
 
         $path = dirname(dirname(__FILE__));
+    }
+
+    if ($class === NULL) {
+        $result = array();
+
+        foreach ($classes as $file) {
+            $result[] = $path . $file;
+        }
+
+        return $result;
     }
 
     $cn = strtolower($class);

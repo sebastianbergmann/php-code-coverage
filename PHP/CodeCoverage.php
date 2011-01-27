@@ -102,26 +102,6 @@ class PHP_CodeCoverage
     protected $tests = array();
 
     /**
-     * @var boolean
-     */
-    protected $isCodeCoverageTestSuite = FALSE;
-
-    /**
-     * @var boolean
-     */
-    protected $isFileIteratorTestSuite = FALSE;
-
-    /**
-     * @var boolean
-     */
-    protected $isTimerTestSuite = FALSE;
-
-    /**
-     * @var boolean
-     */
-    protected $isTokenStreamTestSuite = FALSE;
-
-    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver $driver
@@ -141,23 +121,34 @@ class PHP_CodeCoverage
         $this->driver = $driver;
         $this->filter = $filter;
 
-        if (defined('PHP_CODECOVERAGE_TESTSUITE')) {
-            $this->isCodeCoverageTestSuite = TRUE;
-        }
-
         // @codeCoverageIgnoreStart
-        if (defined('FILE_ITERATOR_TESTSUITE')) {
-            $this->isFileIteratorTestSuite = TRUE;
+        if (!defined('PHP_CODECOVERAGE_TESTSUITE')) {
+            $this->filter->addFilesToBlacklist(php_codecoverage_autoload());
         }
 
-        if (defined('PHP_TIMER_TESTSUITE')) {
-            $this->isTimerTestSuite = TRUE;
+        if (!defined('PHPUNIT_TESTSUITE')) {
+            $this->filter->addFilesToBlacklist(phpunit_autoload());
+            $this->filter->addFilesToBlacklist(phpunit_dbunit_autoload());
+            $this->filter->addFilesToBlacklist(phpunit_mockobject_autoload());
+            $this->filter->addFilesToBlacklist(phpunit_selenium_autoload());
+            $this->filter->addFilesToBlacklist(phpunit_story_autoload());
         }
 
-        if (defined('PHP_TOKENSTREAM_TESTSUITE')) {
-            $this->isTokenStreamTestSuite = TRUE;
+        if (!defined('FILE_ITERATOR_TESTSUITE')) {
+            $this->filter->addFilesToBlacklist(file_iterator_autoload());
+        }
+
+        if (!defined('PHP_TIMER_TESTSUITE') &&
+            function_exists('php_timer_autoload')) {
+            $this->filter->addFilesToBlacklist(php_timer_autoload());
+        }
+
+        if (!defined('PHP_TOKENSTREAM_TESTSUITE')) {
+            $this->filter->addFilesToBlacklist(php_tokenstream_autoload());
         }
         // @codeCoverageIgnoreEnd
+
+        $this->filter->addFilesToBlacklist(text_template_autoload());
     }
 
     /**
@@ -280,7 +271,6 @@ class PHP_CodeCoverage
             throw new InvalidArgumentException;
         }
 
-        $this->applySelfFilter($data);
         $this->applyListsFilter($data);
         $this->initializeFilesThatAreSeenTheFirstTime($data);
         $this->applyCoversAnnotationFilter($data, $id);
@@ -438,54 +428,6 @@ class PHP_CodeCoverage
     {
         foreach (array_keys($data) as $filename) {
             if ($this->filter->isFiltered($filename)) {
-                unset($data[$filename]);
-            }
-        }
-    }
-
-    /**
-     * Filters sourcecode files from PHP_CodeCoverage, PHP_TokenStream,
-     * Text_Template, and File_Iterator.
-     *
-     * @param array $data
-     * @codeCoverageIgnore
-     */
-    protected function applySelfFilter(&$data)
-    {
-        foreach (array_keys($data) as $filename) {
-            if (!$this->filter->isFile($filename)) {
-                unset($data[$filename]);
-                continue;
-            }
-
-            if (!$this->isCodeCoverageTestSuite &&
-                strpos($filename, dirname(__FILE__)) === 0) {
-                unset($data[$filename]);
-                continue;
-            }
-
-            if (!$this->isFileIteratorTestSuite &&
-                (substr($filename, -17) == 'File/Iterator.php' ||
-                 substr($filename, -25) == 'File/Iterator/Factory.php')) {
-                unset($data[$filename]);
-                continue;
-            }
-
-            if (!$this->isTimerTestSuite &&
-                (substr($filename, -13) == 'PHP/Timer.php')) {
-                unset($data[$filename]);
-                continue;
-            }
-
-            if (!$this->isTokenStreamTestSuite &&
-                (substr($filename, -13) == 'PHP/Token.php' ||
-                 substr($filename, -20) == 'PHP/Token/Stream.php' ||
-                 substr($filename, -35) == 'PHP/Token/Stream/CachingFactory.php')) {
-                unset($data[$filename]);
-                continue;
-            }
-
-            if (substr($filename, -17) == 'Text/Template.php') {
                 unset($data[$filename]);
             }
         }

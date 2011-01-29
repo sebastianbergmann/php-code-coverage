@@ -343,20 +343,6 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * Returns a filesystem safe version of the passed filename.
-     * This function does not operate on full paths, just filenames.
-     *
-     * @param  string $filename
-     * @return string
-     * @author Michael Lively Jr. <m@digitalsandwich.com>
-     */
-    public static function getSafeFilename($filename)
-    {
-        /* characters allowed: A-Z, a-z, 0-9, _ and . */
-        return preg_replace('#[^\w.]#', '_', $filename);
-    }
-
-    /**
      * @param  float $a
      * @param  float $b
      * @return float ($a / $b) * 100

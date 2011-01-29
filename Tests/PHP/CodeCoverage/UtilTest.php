@@ -356,20 +356,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Util::getSafeFilename
-     */
-    public function testGetSafeFilename()
-    {
-        $this->assertEquals(
-          'foo', PHP_CodeCoverage_Util::getSafeFilename('foo')
-        );
-
-        $this->assertEquals(
-          'foo_bar', PHP_CodeCoverage_Util::getSafeFilename('foo/bar')
-        );
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Util::percent
      */
     public function testPercent()

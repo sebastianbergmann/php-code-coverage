@@ -171,7 +171,7 @@ class PHP_CodeCoverage_Report_HTML
         $directory->render($report, $target . 'index.html', $this->title);
 
         foreach ($report as $node) {
-            $id = PHP_CodeCoverage_Util::nodeToId($node);
+            $id = $node->getId();
 
             if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
                 $dashboard->render($node, $target . $id . '.dashboard.html');

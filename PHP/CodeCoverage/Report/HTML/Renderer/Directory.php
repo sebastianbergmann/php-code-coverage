@@ -84,7 +84,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
 
         $template->setVar(
           array(
-            'id'    => PHP_CodeCoverage_Util::nodeToId($node),
+            'id'    => $node->getId(),
             'items' => $items
           )
         );
@@ -110,7 +110,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         } else {
             $name = sprintf(
               '<a href="%s.html">%s</a>',
-              PHP_CodeCoverage_Util::nodeToId($item),
+              $item->getId(),
               $item->getName()
             );
 

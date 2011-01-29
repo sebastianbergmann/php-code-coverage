@@ -123,7 +123,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 $link .= sprintf(
                   '%s<a href="%s.html">%s</a>',
                   !empty($link) ? ' / ' : '',
-                  PHP_CodeCoverage_Util::nodeToId($step),
+                  $step->getId(),
                   $step->getName()
                 );
             }

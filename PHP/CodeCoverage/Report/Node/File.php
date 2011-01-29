@@ -485,7 +485,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $classes = $tokens->getClasses();
         unset($tokens);
 
-        $link = PHP_CodeCoverage_Util::nodeToId($this) . '.html#';
+        $link = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
             $this->classes[$className] = array(

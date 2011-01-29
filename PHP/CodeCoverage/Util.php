@@ -470,32 +470,6 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * @param  PHP_CodeCoverage_Report_Node $node
-     * @return string
-     */
-    public static function nodeToId(PHP_CodeCoverage_Report_Node $node)
-    {
-        if (!isset(self::$ids[$node->getPath()])) {
-            $parent = $node->getParent();
-
-            if ($parent === NULL) {
-                self::$ids[$node->getPath()] = 'index';
-            } else {
-                $parentId = self::nodeToId($parent);
-
-                if ($parentId == 'index') {
-                    self::$ids[$node->getPath()] = $node->getName();
-                } else {
-                    self::$ids[$node->getPath()] = $parentId . '_' .
-                                                   $node->getName();
-                }
-            }
-        }
-
-        return self::$ids[$node->getPath()];
-    }
-
-    /**
      * @param  string $coveredElement
      * @return array
      */

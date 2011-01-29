@@ -78,6 +78,11 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     protected $parent;
 
     /**
+     * @var string
+     */
+    protected $id;
+
+    /**
      * Constructor.
      *
      * @param string                       $name
@@ -99,6 +104,30 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        if ($this->id === NULL) {
+            $parent = $this->getParent();
+
+            if ($parent === NULL) {
+                $this->id = 'index';
+            } else {
+                $parentId = $parent->getId();
+
+                if ($parentId == 'index') {
+                    $this->id = $this->name;
+                } else {
+                    $this->id = $parentId . '_' . $this->name;
+                }
+            }
+        }
+
+        return $this->id;
     }
 
     /**

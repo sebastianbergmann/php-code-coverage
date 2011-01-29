@@ -70,7 +70,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
 
         $template = new Text_Template($this->templatePath . 'directory.html');
 
-        $this->setCommonTemplateVariables($template, $title);
+        $this->setCommonTemplateVariables($template, $title, $node);
 
         $items = $this->renderItem($node, TRUE);
 

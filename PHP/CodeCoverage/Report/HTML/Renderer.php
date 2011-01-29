@@ -108,13 +108,31 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     }
 
     /**
-     * @param Text_Template $template
+     * @param Text_Template                $template
+     * @param string                       $title
+     * @param PHP_CodeCoverage_Report_Node $node
      */
-    protected function setCommonTemplateVariables(Text_Template $template, $title)
+    protected function setCommonTemplateVariables(Text_Template $template, $title, PHP_CodeCoverage_Report_Node $node = NULL)
     {
+        $link = '';
+
+        if ($node !== NULL) {
+            $path = $node->getPathAsArray();
+
+            foreach ($path as $step) {
+                $link .= sprintf(
+                  '%s<a href="%s.html">%s</a>',
+                  !empty($link) ? ' / ' : '',
+                  PHP_CodeCoverage_Util::nodeToId($step),
+                  $step->getName()
+                );
+            }
+        }
+
         $template->setVar(
           array(
             'title'            => $title,
+            'link'             => $link,
             'charset'          => $this->charset,
             'date'             => $this->date,
             'version'          => '@package_version@',

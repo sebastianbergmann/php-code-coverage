@@ -68,6 +68,11 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     protected $path;
 
     /**
+     * @var array
+     */
+    protected $pathArray;
+
+    /**
      * @var PHP_CodeCoverage_Report_Node
      */
     protected $parent;
@@ -110,6 +115,24 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
         }
 
         return $this->path;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPathAsArray()
+    {
+        if ($this->pathArray === NULL) {
+            if ($this->parent === NULL) {
+                $this->pathArray = array();
+            } else {
+                $this->pathArray = $this->parent->getPathAsArray();
+            }
+
+            $this->pathArray[] = $this;
+        }
+
+        return $this->pathArray;
     }
 
     /**

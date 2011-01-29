@@ -113,7 +113,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             );
         }
 
-        $this->setCommonTemplateVariables($template, $title);
+        $this->setCommonTemplateVariables($template, $title, $node);
 
         $template->renderTo($file);
     }

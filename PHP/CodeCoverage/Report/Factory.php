@@ -71,7 +71,8 @@ class PHP_CodeCoverage_Report_Factory
         self::addItems(
           $root,
           PHP_CodeCoverage_Util::buildDirectoryStructure($files),
-          $coverage->getTests()
+          $coverage->getTests(),
+          $coverage->getCacheTokens()
         );
 
         return $root;
@@ -81,16 +82,17 @@ class PHP_CodeCoverage_Report_Factory
      * @param PHP_CodeCoverage_Report_Node_Directory $root
      * @param array                                  $items
      * @param array                                  $tests
+     * @param boolean                                $cacheTokens
      */
-    protected static function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests)
+    protected static function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
                 $key = substr($key, 0, -2);
-                $root->addFile($key, $value, $tests);
+                $root->addFile($key, $value, $tests, $cacheTokens);
             } else {
                 $child = $root->addDirectory($key);
-                self::addItems($child, $value, $tests);
+                self::addItems($child, $value, $tests, $cacheTokens);
             }
         }
     }

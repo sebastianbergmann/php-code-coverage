@@ -137,22 +137,33 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected $endLines = array();
 
     /**
+     * @var boolean
+     */
+    protected $cacheTokens;
+
+    /**
      * Constructor.
      *
      * @param  string                       $name
      * @param  PHP_CodeCoverage_Report_Node $parent
      * @param  array                        $coverageData
      * @param  array                        $testData
+     * @param  boolean                      $cacheTokens
      */
-    public function __construct($name, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData)
+    public function __construct($name, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData, $cacheTokens)
     {
+        if (!is_bool($cacheTokens)) {
+            throw new InvalidArgumentException;
+        }
+
         parent::__construct($name, $parent);
 
         $this->coverageData = $coverageData;
         $this->testData     = $testData;
         $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                $this->getPath()
+                                $this->getPath(), $cacheTokens
                               );
+        $this->cacheTokens  = $cacheTokens;
 
         $this->calculateStatistics();
     }
@@ -383,7 +394,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     protected function calculateStatistics()
     {
-        $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        } else {
+            $tokens = new PHP_Token_Stream($this->getPath());
+        }
 
         $this->processClasses($tokens);
         $this->processTraits($tokens);

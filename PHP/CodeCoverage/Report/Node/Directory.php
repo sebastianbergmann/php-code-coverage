@@ -197,16 +197,17 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * Adds a new file.
      *
-     * @param  string $name
-     * @param  array  $coverageData
-     * @param  array  $testData
+     * @param  string  $name
+     * @param  array   $coverageData
+     * @param  array   $testData
+     * @param  boolean $cacheTokens
      * @return PHP_CodeCoverage_Report_Node_File
      * @throws PHP_CodeCoverage_Exception
      */
-    public function addFile($name, array $coverageData, array $testData)
+    public function addFile($name, array $coverageData, array $testData, $cacheTokens)
     {
         $file = new PHP_CodeCoverage_Report_Node_File(
-          $name, $this, $coverageData, $testData
+          $name, $this, $coverageData, $testData, $cacheTokens
         );
 
         $this->children[] = $file;

@@ -84,6 +84,11 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     /**
      * @var boolean
      */
+    protected $cacheTokens = TRUE;
+
+    /**
+     * @var boolean
+     */
     protected $yui = TRUE;
 
     /**
@@ -148,11 +153,12 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      * @param  PHP_CodeCoverage_Report_HTML_Node $parent
      * @param  array                             $coverageData
      * @param  array                             $testData
+     * @param  boolean                           $cacheTokens
      * @param  boolean                           $yui
      * @param  boolean                           $highlight
      * @throws PHP_CodeCoverage_Exception
      */
-    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $coverageData, array $testData, $yui = TRUE, $highlight = FALSE)
+    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $coverageData, array $testData, $cacheTokens, $yui, $highlight)
     {
         parent::__construct($name, $parent);
 
@@ -166,11 +172,12 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
         $this->coverageData = $coverageData;
         $this->testData     = $testData;
+        $this->cacheTokens  = $cacheTokens;
         $this->highlight    = $highlight;
         $this->yui          = $yui;
         $this->codeLines    = $this->loadFile($path);
         $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                $path
+                                $path, $cacheTokens
                               );
 
         $this->calculateStatistics();
@@ -830,8 +837,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processClasses()
     {
-        $file    = $this->getId() . '.html#';
-        $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        $file = $this->getId() . '.html#';
+
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        } else {
+            $tokens = new PHP_Token_Stream($this->getPath());
+        }
+
         $classes = $tokens->getClasses();
         unset($tokens);
 
@@ -870,7 +883,12 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processFunctions()
     {
-        $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        } else {
+            $tokens = new PHP_Token_Stream($this->getPath());
+        }
+
         $functions = $tokens->getFunctions();
         unset($tokens);
 

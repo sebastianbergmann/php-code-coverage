@@ -82,6 +82,10 @@ class PHP_CodeCoverage_Report_HTML
             $options['charset'] = 'UTF-8';
         }
 
+        if (!isset($options['cacheTokens'])) {
+            $options['cacheTokens'] = TRUE;
+        }
+
         if (!isset($options['yui'])) {
             $options['yui'] = TRUE;
         }
@@ -206,6 +210,7 @@ class PHP_CodeCoverage_Report_HTML
                       substr($key, 0, -2),
                       $value,
                       $tests,
+                      $this->options['cacheTokens'],
                       $this->options['yui'],
                       $this->options['highlight']
                     );

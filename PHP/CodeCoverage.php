@@ -70,6 +70,11 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
+    protected $cacheTokens = TRUE;
+
+    /**
+     * @var boolean
+     */
     protected $forceCoversAnnotation = FALSE;
 
     /**
@@ -325,6 +330,19 @@ class PHP_CodeCoverage
      * @param  boolean $flag
      * @throws InvalidArgumentException
      */
+    public function setCacheTokens($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->cacheTokens = $flag;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
+     */
     public function setForceCoversAnnotation($flag)
     {
         if (!is_bool($flag)) {
@@ -449,7 +467,12 @@ class PHP_CodeCoverage
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            $tokens     = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+            if ($this->cacheTokens) {
+                $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+            } else {
+                $tokens = new PHP_Token_Stream($uncoveredFile);
+            }
+
             $classes    = $tokens->getClasses();
             $interfaces = $tokens->getInterfaces();
             $functions  = $tokens->getFunctions();

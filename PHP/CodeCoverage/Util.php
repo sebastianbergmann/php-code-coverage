@@ -265,20 +265,30 @@ class PHP_CodeCoverage_Util
     /**
      * Returns the lines of a source file that should be ignored.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $cacheTokens
      * @return array
+     * @throws InvalidArgumentException
      */
-    public static function getLinesToBeIgnored($filename)
+    public static function getLinesToBeIgnored($filename, $cacheTokens = TRUE)
     {
+        if (!is_bool($cacheTokens)) {
+            throw new InvalidArgumentException;
+        }
+
         if (!isset(self::$ignoredLines[$filename])) {
             self::$ignoredLines[$filename] = array();
+            $ignore                        = FALSE;
+            $stop                          = FALSE;
 
-            $ignore  = FALSE;
-            $stop    = FALSE;
-            $stream  = PHP_Token_Stream_CachingFactory::get($filename);
-            $tokens  = $stream->tokens();
-            $classes = $stream->getClasses();
-            unset($stream);
+            if ($cacheTokens) {
+                $tokens = PHP_Token_Stream_CachingFactory::get($filename);
+            } else {
+                $tokens = new PHP_Token_Stream($filename);
+            }
+
+            $classes = $tokens->getClasses();
+            $tokens  = $tokens->tokens();
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {

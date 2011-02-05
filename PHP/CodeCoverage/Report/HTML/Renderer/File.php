@@ -125,6 +125,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             );
         }
 
+        $items = '';
+
         $coverageData             = $node->getCoverageData();
         $ignoredLines             = $node->getIgnoredLines();
         $testData                 = $node->getTestData();
@@ -247,6 +249,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         $template->setVar(
           array(
+            'items' => $items,
             'lines' => $lines
           )
         );

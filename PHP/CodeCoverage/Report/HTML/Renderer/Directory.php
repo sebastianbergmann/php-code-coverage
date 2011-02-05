@@ -99,43 +99,93 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
      */
     protected function renderItem(PHP_CodeCoverage_Report_Node $item, $total = FALSE)
     {
-        $data = array(
-          'numClasses'                   => $item->getNumClasses(),
-          'numTestedClasses'             => $item->getNumTestedClasses(),
-          'numMethods'                   => $item->getNumMethods(),
-          'numTestedMethods'             => $item->getNumTestedMethods(),
-          'linesExecutedPercent'         => $item->getLineExecutedPercent(FALSE),
-          'linesExecutedPercentAsString' => $item->getLineExecutedPercent(),
-          'numExecutedLines'             => $item->getNumExecutedLines(),
-          'numExecutableLines'           => $item->getNumExecutableLines(),
-          'testedMethodsPercent'         => $item->getTestedMethodsPercent(FALSE),
-          'testedMethodsPercentAsString' => $item->getTestedMethodsPercent(),
-          'testedClassesPercent'         => $item->getTestedClassesPercent(FALSE),
-          'testedClassesPercentAsString' => $item->getTestedClassesPercent()
+        $template = new Text_Template(
+          $this->templatePath . 'directory_item.html'
         );
 
         if ($total) {
-            $data['itemClass'] = 'coverDirectory';
-            $data['name']      = 'Total';
+            $icon      = '';
+            $itemClass = 'coverDirectory';
+            $name      = 'Total';
         } else {
-            $data['name'] = sprintf(
+            $name = sprintf(
               '<a href="%s.html">%s</a>',
               $item->getId(),
               $item->getName()
             );
 
             if ($item instanceof PHP_CodeCoverage_Report_Node_Directory) {
-                $data['icon']      = '<img alt="directory" src="directory.png"/> ';
-                $data['itemClass'] = 'coverDirectory';
+                $icon      = '<img alt="directory" src="directory.png"/> ';
+                $itemClass = 'coverDirectory';
             } else {
-                $data['icon']      = '<img alt="file" src="file.png"/> ';
-                $data['itemClass'] = 'coverFile';
+                $icon      = '<img alt="file" src="file.png"/> ';
+                $itemClass = 'coverFile';
             }
         }
 
-        return $this->renderItemTemplate(
-          new Text_Template($this->templatePath . 'directory_item.html'),
-          $data
+        $numClasses           = $item->getNumClasses();
+        $testedClassesPercent = floor($item->getTestedClassesPercent(FALSE));
+
+        if ($numClasses > 0) {
+            list($classesColor, $classesLevel) = $this->getColorLevel(
+              $testedClassesPercent
+            );
+
+            $classesNumber = $item->getNumTestedClasses() . ' / ' . $numClasses;
+        } else {
+            $classesColor  = 'snow';
+            $classesLevel  = 'None';
+            $classesNumber = '&nbsp;';
+        }
+
+        $numMethods           = $item->getNumMethods();
+        $testedMethodsPercent = floor($item->getTestedMethodsPercent(FALSE));
+
+        if ($numMethods > 0) {
+            list($methodsColor, $methodsLevel) = $this->getColorLevel(
+              $testedMethodsPercent
+            );
+
+            $methodsNumber = $item->getNumTestedMethods() . ' / ' . $numMethods;
+        } else {
+            $methodsColor  = 'snow';
+            $methodsLevel  = 'None';
+            $methodsNumber = '&nbsp;';
+        }
+
+        $linesExecutedPercent = floor($item->getLineExecutedPercent(FALSE));
+
+        list($linesColor, $linesLevel) = $this->getColorLevel(
+          $linesExecutedPercent
         );
+
+        $template->setVar(
+          array(
+            'itemClass' => $itemClass,
+            'icon' => $icon,
+            'name' => $name,
+            'lines_color' => $linesColor,
+            'lines_executed_width' => $linesExecutedPercent,
+            'lines_not_executed_width' => 100 - $linesExecutedPercent,
+            'lines_executed_percent' => $item->getLineExecutedPercent(),
+            'lines_level' => $linesLevel,
+            'num_executed_lines' => $item->getNumExecutedLines(),
+            'num_executable_lines' => $item->getNumExecutableLines(),
+            'methods_color' => $methodsColor,
+            'methods_tested_width' => $testedMethodsPercent,
+            'methods_not_tested_width' => 100 - $testedMethodsPercent,
+            'methods_tested_percent' => $item->getTestedMethodsPercent(),
+            'methods_level' => $methodsLevel,
+            'methods_number' => $methodsNumber,
+            'classes_color' => $classesColor,
+            'classes_tested_width' => $testedClassesPercent,
+            'classes_not_tested_width' => 100 - $testedClassesPercent,
+            'classes_tested_percent' => $item->getTestedClassesPercent(),
+            'classes_level' => $classesLevel,
+            'classes_number' => $classesNumber
+          )
+        );
+
+        return $template->render();
     }
 }

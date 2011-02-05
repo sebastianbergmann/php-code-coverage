@@ -63,7 +63,7 @@
       <tr>
         <td>
 <pre class="source">
-{lines}
+{source}
 </pre>
         </td>
       </tr>

@@ -115,23 +115,56 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         if ($this->yui) {
             $template = new Text_Template($this->templatePath . 'file.html');
-
-            $yuiTemplate = new Text_Template(
-              $this->templatePath . 'yui_item.js'
-            );
         } else {
             $template = new Text_Template(
               $this->templatePath . 'file_no_yui.html'
             );
         }
 
+        list($source, $yuiTemplate) = $this->renderSource($node);
+
+        $template->setVar(
+          array(
+            'items'       => $this->renderItems($node),
+            'source'      => $source,
+            'yuiTemplate' => $yuiTemplate
+          )
+        );
+
+        $this->setCommonTemplateVariables($template, $title, $node);
+
+        $template->renderTo($file);
+    }
+
+    /**
+     * @param  PHP_CodeCoverage_Report_Node_File $node
+     * @return string
+     */
+    protected function renderItems(PHP_CodeCoverage_Report_Node_File $node)
+    {
         $items = '';
+
+        return $items;
+    }
+
+    /**
+     * @param  PHP_CodeCoverage_Report_Node_File $node
+     * @return string
+     */
+    protected function renderSource(PHP_CodeCoverage_Report_Node_File $node)
+    {
+        if ($this->yui) {
+            $yuiTemplate = new Text_Template(
+              $this->templatePath . 'yui_item.js'
+            );
+        }
 
         $coverageData             = $node->getCoverageData();
         $ignoredLines             = $node->getIgnoredLines();
         $testData                 = $node->getTestData();
         list($codeLines, $fillup) = $this->loadFile($node->getPath());
         $lines                    = '';
+        $yuiPanelJS               = '';
         $i                        = 1;
 
         foreach ($codeLines as $line) {
@@ -212,7 +245,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                           FALSE
                         );
 
-                        $this->yuiPanelJS .= $yuiTemplate->render();
+                        $yuiPanelJS .= $yuiTemplate->render();
                     }
                 }
 
@@ -247,16 +280,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $i++;
         }
 
-        $template->setVar(
-          array(
-            'items' => $items,
-            'lines' => $lines
-          )
-        );
-
-        $this->setCommonTemplateVariables($template, $title, $node);
-
-        $template->renderTo($file);
+        return array($lines, $yuiPanelJS);
     }
 
     /**

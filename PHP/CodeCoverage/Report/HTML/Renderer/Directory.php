@@ -188,29 +188,4 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
 
         return $template->render();
     }
-
-    /**
-     * @param  integer $percent
-     * @return array
-     */
-    protected function getColorLevel($percent)
-    {
-        if ($percent < $this->lowUpperBound) {
-            $color = 'scarlet_red';
-            $level = 'Lo';
-        }
-
-        else if ($percent >= $this->lowUpperBound &&
-                 $percent <  $this->highLowerBound) {
-            $color = 'butter';
-            $level = 'Med';
-        }
-
-        else {
-            $color = 'chameleon';
-            $level = 'Hi';
-        }
-
-        return array($color, $level);
-    }
 }

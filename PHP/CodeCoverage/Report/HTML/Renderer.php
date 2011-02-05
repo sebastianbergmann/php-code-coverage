@@ -108,6 +108,31 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     }
 
     /**
+     * @param  integer $percent
+     * @return array
+     */
+    protected function getColorLevel($percent)
+    {
+        if ($percent < $this->lowUpperBound) {
+            $color = 'scarlet_red';
+            $level = 'Lo';
+        }
+
+        else if ($percent >= $this->lowUpperBound &&
+                 $percent <  $this->highLowerBound) {
+            $color = 'butter';
+            $level = 'Med';
+        }
+
+        else {
+            $color = 'chameleon';
+            $level = 'Hi';
+        }
+
+        return array($color, $level);
+    }
+
+    /**
      * @param Text_Template                $template
      * @param string                       $title
      * @param PHP_CodeCoverage_Report_Node $node

@@ -43,6 +43,14 @@
  * @since      File available since Release 1.1.0
  */
 
+if (!defined('T_NAMESPACE')) {
+    define('T_NAMESPACE', 1000);
+}
+
+if (!defined('T_TRAIT')) {
+    define('T_TRAIT', 1001);
+}
+
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.
  *
@@ -107,14 +115,310 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         if ($this->yui) {
             $template = new Text_Template($this->templatePath . 'file.html');
+
+            $yuiTemplate = new Text_Template(
+              $this->templatePath . 'yui_item.js'
+            );
         } else {
             $template = new Text_Template(
               $this->templatePath . 'file_no_yui.html'
             );
         }
 
+        $coverageData             = $node->getCoverageData();
+        $ignoredLines             = $node->getIgnoredLines();
+        $testData                 = $node->getTestData();
+        list($codeLines, $fillup) = $this->loadFile($node->getPath());
+        $lines                    = '';
+        $i                        = 1;
+
+        foreach ($codeLines as $line) {
+            $css = '';
+
+            if (!isset($ignoredLines[$i]) && isset($coverageData[$i])) {
+                $count    = '';
+                $numTests = count($coverageData[$i]);
+
+                if ($coverageData[$i] === NULL) {
+                    $color = 'lineDeadCode';
+                    $count = '        ';
+                }
+
+                else if ($numTests == 0) {
+                    $color = 'lineNoCov';
+                    $count = sprintf('%8d', 0);
+                }
+
+                else {
+                    $color = 'lineCov';
+                    $count = sprintf('%8d', $numTests);
+
+                    if ($this->yui) {
+                        $buffer  = '';
+                        $testCSS = '';
+
+                        foreach ($coverageData[$i] as $test) {
+                            switch ($testData[$test]) {
+                                case 0: {
+                                    $testCSS = ' class=\"testPassed\"';
+                                }
+                                break;
+
+                                case 1:
+                                case 2: {
+                                    $testCSS = ' class=\"testIncomplete\"';
+                                }
+                                break;
+
+                                case 3: {
+                                    $testCSS = ' class=\"testFailure\"';
+                                }
+                                break;
+
+                                case 4: {
+                                    $testCSS = ' class=\"testError\"';
+                                }
+                                break;
+
+                                default: {
+                                    $testCSS = '';
+                                }
+                            }
+
+                            $buffer .= sprintf(
+                              '<li%s>%s</li>',
+
+                              $testCSS,
+                              addslashes(htmlspecialchars($test))
+                            );
+                        }
+
+                        if ($numTests > 1) {
+                            $header = $numTests . ' tests cover';
+                        } else {
+                            $header = '1 test covers';
+                        }
+
+                        $header .= ' line ' . $i;
+
+                        $yuiTemplate->setVar(
+                          array(
+                            'line'   => $i,
+                            'header' => $header,
+                            'tests'  => $buffer
+                          ),
+                          FALSE
+                        );
+
+                        $this->yuiPanelJS .= $yuiTemplate->render();
+                    }
+                }
+
+                $css = sprintf(
+                  '<span class="%s">       %s : ',
+
+                  $color,
+                  $count
+                );
+            }
+
+            $_fillup = array_shift($fillup);
+
+            if ($_fillup > 0) {
+                $line .= str_repeat(' ', $_fillup);
+            }
+
+            $lines .= sprintf(
+              '<span class="lineNum" id="container%d"><a name="%d"></a>'.
+              '<a href="#%d" id="line%d">%8d</a> </span>%s%s%s' . "\n",
+
+              $i,
+              $i,
+              $i,
+              $i,
+              $i,
+              !empty($css) ? $css : '                : ',
+              !$this->highlight ? htmlspecialchars($line) : $line,
+              !empty($css) ? '</span>' : ''
+            );
+
+            $i++;
+        }
+
+        $template->setVar(
+          array(
+            'lines' => $lines
+          )
+        );
+
         $this->setCommonTemplateVariables($template, $title, $node);
 
         $template->renderTo($file);
+    }
+
+    /**
+     * @param  string $file
+     * @return array
+     */
+    protected function loadFile($file)
+    {
+        $buffer = file_get_contents($file);
+        $lines  = explode("\n", str_replace("\t", '    ', $buffer));
+        $fillup = array();
+        $result = array();
+
+        if (count($lines) == 0) {
+            return $result;
+        }
+
+        $lines       = array_map('rtrim', $lines);
+        $linesLength = array_map('strlen', $lines);
+        $width       = max($linesLength);
+
+        foreach ($linesLength as $line => $length) {
+            $fillup[$line] = $width - $length;
+        }
+
+        if (!$this->highlight) {
+            unset($lines[count($lines)-1]);
+            return $lines;
+        }
+
+        $tokens     = token_get_all($buffer);
+        $stringFlag = FALSE;
+        $i          = 0;
+        $result[$i] = '';
+
+        foreach ($tokens as $j => $token) {
+            if (is_string($token)) {
+                if ($token === '"' && $tokens[$j - 1] !== '\\') {
+                    $result[$i] .= sprintf(
+                      '<span class="string">%s</span>',
+
+                      htmlspecialchars($token)
+                    );
+
+                    $stringFlag = !$stringFlag;
+                } else {
+                    $result[$i] .= sprintf(
+                      '<span class="keyword">%s</span>',
+
+                      htmlspecialchars($token)
+                    );
+                }
+
+                continue;
+            }
+
+            list ($token, $value) = $token;
+
+            $value = str_replace(
+              array("\t", ' '),
+              array('&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'),
+              htmlspecialchars($value)
+            );
+
+            if ($value === "\n") {
+                $result[++$i] = '';
+            } else {
+                $lines = explode("\n", $value);
+
+                foreach ($lines as $jj => $line) {
+                    $line = trim($line);
+
+                    if ($line !== '') {
+                        if ($stringFlag) {
+                            $colour = 'string';
+                        } else {
+                            switch ($token) {
+                                case T_INLINE_HTML: {
+                                    $colour = 'html';
+                                }
+                                break;
+
+                                case T_COMMENT:
+                                case T_DOC_COMMENT: {
+                                    $colour = 'comment';
+                                }
+                                break;
+
+                                case T_ABSTRACT:
+                                case T_ARRAY:
+                                case T_AS:
+                                case T_BREAK:
+                                case T_CASE:
+                                case T_CATCH:
+                                case T_CLASS:
+                                case T_CLONE:
+                                case T_CONTINUE:
+                                case T_DEFAULT:
+                                case T_ECHO:
+                                case T_ELSE:
+                                case T_ELSEIF:
+                                case T_EMPTY:
+                                case T_ENDDECLARE:
+                                case T_ENDFOR:
+                                case T_ENDFOREACH:
+                                case T_ENDIF:
+                                case T_ENDSWITCH:
+                                case T_ENDWHILE:
+                                case T_EXIT:
+                                case T_EXTENDS:
+                                case T_FINAL:
+                                case T_FOREACH:
+                                case T_FUNCTION:
+                                case T_GLOBAL:
+                                case T_IF:
+                                case T_INCLUDE:
+                                case T_INCLUDE_ONCE:
+                                case T_INSTANCEOF:
+                                case T_ISSET:
+                                case T_LOGICAL_AND:
+                                case T_LOGICAL_OR:
+                                case T_LOGICAL_XOR:
+                                case T_NAMESPACE:
+                                case T_NEW:
+                                case T_PRIVATE:
+                                case T_PROTECTED:
+                                case T_PUBLIC:
+                                case T_REQUIRE:
+                                case T_REQUIRE_ONCE:
+                                case T_RETURN:
+                                case T_STATIC:
+                                case T_THROW:
+                                case T_TRAIT:
+                                case T_TRY:
+                                case T_UNSET:
+                                case T_USE:
+                                case T_VAR:
+                                case T_WHILE: {
+                                    $colour = 'keyword';
+                                }
+                                break;
+
+                                default: {
+                                    $colour = 'default';
+                                }
+                            }
+                        }
+
+                        $result[$i] .= sprintf(
+                          '<span class="%s">%s</span>',
+
+                          $colour,
+                          $line
+                        );
+                    }
+
+                    if (isset($lines[$jj + 1])) {
+                        $result[++$i] = '';
+                    }
+                }
+            }
+        }
+
+        unset($result[count($result)-1]);
+
+        return array($result, $fillup);
     }
 }

@@ -148,6 +148,45 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
+     * @return string
+     */
+    protected function renderItem()
+    {
+        $template = new Text_Template(
+          $this->templatePath . 'file_item.html'
+        );
+
+        $template->setVar(
+          array(
+            'itemClass' => $itemClass,
+            'crap' => $crap,
+            'name' => $name,
+            'lines_color' => $linesColor,
+            'lines_executed_width' => $linesExecutedPercent,
+            'lines_not_executed_width' => 100 - $linesExecutedPercent,
+            'lines_executed_percent' => $linesExecutedPercentAsString,
+            'lines_level' => $linesLevel,
+            'num_executed_lines' => $numExecutedLines,
+            'num_executable_lines' => $numExecutableLines,
+            'methods_color' => $methodsColor,
+            'methods_tested_width' => $testedMethodsPercent,
+            'methods_not_tested_width' => 100 - $testedMethodsPercent,
+            'methods_tested_percent' => $testedMethodsPercentAsString,
+            'methods_level' => $methodsLevel,
+            'methods_number' => $methodsNumber,
+            'classes_color' => $classesColor,
+            'classes_tested_width' => $testedClassesPercent,
+            'classes_not_tested_width' => 100 - $testedClassesPercent,
+            'classes_tested_percent' => $testedClassesPercentAsString,
+            'classes_level' => $classesLevel,
+            'classes_number' => $classesNumber
+          )
+        );
+
+        return $template->render();
+    }
+
+    /**
      * @param  PHP_CodeCoverage_Report_Node_File $node
      * @return string
      */

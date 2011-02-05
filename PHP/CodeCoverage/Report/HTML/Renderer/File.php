@@ -142,7 +142,27 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     protected function renderItems(PHP_CodeCoverage_Report_Node_File $node)
     {
-        $items = '';
+        $template = new Text_Template($this->templatePath . 'file_item.html');
+
+        $items = $this->renderItemTemplate(
+          $template,
+          array(
+            'itemClass'                    => 'coverDirectory',
+            'name'                         => 'Total',
+            'numClasses'                   => $node->getNumClasses(),
+            'numTestedClasses'             => $node->getNumTestedClasses(),
+            'numMethods'                   => $node->getNumMethods(),
+            'numTestedMethods'             => $node->getNumTestedMethods(),
+            'linesExecutedPercent'         => $node->getLineExecutedPercent(FALSE),
+            'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
+            'numExecutedLines'             => $node->getNumExecutedLines(),
+            'numExecutableLines'           => $node->getNumExecutableLines(),
+            'testedMethodsPercent'         => $node->getTestedMethodsPercent(FALSE),
+            'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
+            'testedClassesPercent'         => $node->getTestedClassesPercent(FALSE),
+            'testedClassesPercentAsString' => $node->getTestedClassesPercent()
+          )
+        );
 
         return $items;
     }

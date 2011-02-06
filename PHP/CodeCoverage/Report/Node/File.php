@@ -555,6 +555,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $traits = $tokens->getTraits();
         unset($tokens);
 
+        $link = $this->getId() . '.html#';
+
         foreach ($traits as $traitName => $trait) {
             $this->traits[$traitName] = array(
               'methods'         => array(),
@@ -564,7 +566,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
               'ccn'             => 0,
               'coverage'        => 0,
               'crap'            => 0,
-              'package'         => $trait['package']
+              'package'         => $trait['package'],
+              'link'            => $link . $trait['startLine']
             );
 
             $this->startLines[$trait['startLine']] = &$this->traits[$traitName];
@@ -578,7 +581,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],
                   'coverage'        => 0,
-                  'crap'            => 0
+                  'crap'            => 0,
+                  'link'            => $link . $method['startLine']
                 );
 
                 $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
@@ -595,13 +599,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $functions = $tokens->getFunctions();
         unset($tokens);
 
+        $link = $this->getId() . '.html#';
+
         foreach ($functions as $functionName => $function) {
             $this->functions[$functionName] = array(
               'signature'       => $function['signature'],
               'startLine'       => $function['startLine'],
               'executableLines' => 0,
               'executedLines'   => 0,
-              'ccn'             => $function['ccn']
+              'ccn'             => $function['ccn'],
+              'link'            => $link . $function['startLine']
             );
 
             $this->startLines[$function['startLine']] = &$this->functions[$functionName];

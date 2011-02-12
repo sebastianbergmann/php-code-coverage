@@ -43,10 +43,6 @@
  * @since      File available since Release 1.1.0
  */
 
-if (!defined('T_NAMESPACE')) {
-    define('T_NAMESPACE', 377);
-}
-
 /**
  * Represents a file in the code coverage information tree.
  *

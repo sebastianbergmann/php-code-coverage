@@ -3,6 +3,12 @@ PHP_CodeCoverage 1.0
 
 This is the list of changes for the PHP_CodeCoverage 1.0 release series.
 
+PHP_CodeCoverage 1.0.4
+----------------------
+
+* Fixed an issue where `mkdir()` was called with a wrong argument.
+* Updated list of dependencies in `package.xml`.
+
 PHP_CodeCoverage 1.0.3
 ----------------------
 

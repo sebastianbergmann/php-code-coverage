@@ -80,12 +80,13 @@ class PHP_CodeCoverage_Filter
      */
     public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '')
     {
-        $files = File_Iterator_Factory::getFileIterator(
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->addFileToBlacklist($file->getPathName());
+            $this->addFileToBlacklist($file);
         }
     }
 
@@ -120,12 +121,13 @@ class PHP_CodeCoverage_Filter
      */
     public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '')
     {
-        $files = File_Iterator_Factory::getFileIterator(
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->removeFileFromBlacklist($file->getPathName());
+            $this->removeFileFromBlacklist($file);
         }
     }
 
@@ -152,12 +154,13 @@ class PHP_CodeCoverage_Filter
      */
     public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
     {
-        $files = File_Iterator_Factory::getFileIterator(
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->addFileToWhitelist($file->getPathName(), FALSE);
+            $this->addFileToWhitelist($file, FALSE);
         }
     }
 
@@ -195,12 +198,13 @@ class PHP_CodeCoverage_Filter
      */
     public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
     {
-        $files = File_Iterator_Factory::getFileIterator(
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
           $directory, $suffix, $prefix
         );
 
         foreach ($files as $file) {
-            $this->removeFileFromWhitelist($file->getPathName());
+            $this->removeFileFromWhitelist($file);
         }
     }
 

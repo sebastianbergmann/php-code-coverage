@@ -209,7 +209,8 @@ class PHP_CodeCoverage_TextUI_Command
 
                 $coverage->stop();
             } else {
-                $files = File_Iterator_Factory::getFilesAsArray(
+                $facade = new File_Iterator_Facade;
+                $result = $facade->getFilesAsArray(
                   $arguments[0], '.cov'
                 );
 

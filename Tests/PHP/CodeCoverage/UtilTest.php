@@ -107,24 +107,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Util::buildDirectoryStructure
-     */
-    public function testBuildDirectoryStructure()
-    {
-        $this->assertEquals(
-          array(
-            'src' => array(
-              'Money.php/f' => array(),
-              'MoneyBag.php/f' => array()
-            )
-          ),
-          PHP_CodeCoverage_Util::buildDirectoryStructure(
-            array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
-          )
-        );
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Util::crap
      */
     public function testCrap()
@@ -251,62 +233,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             TEST_FILES_PATH . 'source_without_ignore.php'
           )
         );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Util::reducePaths
-     */
-    public function testReducePaths()
-    {
-        $files = array(
-          '/home/sb/Money/Money.php'    => array(),
-          '/home/sb/Money/MoneyBag.php' => array()
-        );
-
-        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
-
-        $this->assertEquals(
-          array(
-            'Money.php'    => array(),
-            'MoneyBag.php' => array()
-          ),
-          $files
-        );
-
-        $this->assertEquals('/home/sb/Money', $commonPath);
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Util::reducePaths
-     */
-    public function testReducePaths2()
-    {
-        $files = array();
-
-        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
-
-        $this->assertEquals('.', $commonPath);
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Util::reducePaths
-     */
-    public function testReducePaths3()
-    {
-        $files = array(
-          '/home/sb/Money/Money.php' => array()
-        );
-
-        $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
-
-        $this->assertEquals(
-          array(
-            'Money.php' => array()
-          ),
-          $files
-        );
-
-        $this->assertEquals('/home/sb/Money/', $commonPath);
     }
 
     /**

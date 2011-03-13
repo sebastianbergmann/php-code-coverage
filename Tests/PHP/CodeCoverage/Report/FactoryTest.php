@@ -69,6 +69,13 @@ require_once TEST_FILES_PATH . '../TestCase.php';
  */
 class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
 {
+    protected $factory;
+
+    protected function setUp()
+    {
+        $this->factory = new PHP_CodeCoverage_Report_Factory;
+    }
+
     public function testSomething()
     {
         $root = $this->getCoverageForBankAccount()->getReport();
@@ -160,5 +167,79 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         );
 
         $this->assertEquals(array(), $root->getFunctions());
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Report_Factory::buildDirectoryStructure
+     */
+    public function testBuildDirectoryStructure()
+    {
+        $this->assertEquals(
+          array(
+            'src' => array(
+              'Money.php/f' => array(),
+              'MoneyBag.php/f' => array()
+            )
+          ),
+          $this->factory->buildDirectoryStructure(
+            array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
+     */
+    public function testReducePaths()
+    {
+        $files = array(
+          '/home/sb/Money/Money.php'    => array(),
+          '/home/sb/Money/MoneyBag.php' => array()
+        );
+
+        $commonPath = $this->factory->reducePaths($files);
+
+        $this->assertEquals(
+          array(
+            'Money.php'    => array(),
+            'MoneyBag.php' => array()
+          ),
+          $files
+        );
+
+        $this->assertEquals('/home/sb/Money', $commonPath);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
+     */
+    public function testReducePaths2()
+    {
+        $files = array();
+
+        $commonPath = $this->factory->reducePaths($files);
+
+        $this->assertEquals('.', $commonPath);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
+     */
+    public function testReducePaths3()
+    {
+        $files = array(
+          '/home/sb/Money/Money.php' => array()
+        );
+
+        $commonPath = $this->factory->reducePaths($files);
+
+        $this->assertEquals(
+          array(
+            'Money.php' => array()
+          ),
+          $files
+        );
+
+        $this->assertEquals('/home/sb/Money/', $commonPath);
     }
 }

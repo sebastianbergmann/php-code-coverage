@@ -60,7 +60,7 @@ class PHP_CodeCoverage_Report_Factory
     /**
      * @param PHP_CodeCoverage $coverage
      */
-    public static function create(PHP_CodeCoverage $coverage)
+    public function create(PHP_CodeCoverage $coverage)
     {
         $files      = $coverage->getData();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
@@ -68,7 +68,7 @@ class PHP_CodeCoverage_Report_Factory
                         $commonPath, NULL
                       );
 
-        self::addItems(
+        $this->addItems(
           $root,
           PHP_CodeCoverage_Util::buildDirectoryStructure($files),
           $coverage->getTests(),
@@ -84,7 +84,7 @@ class PHP_CodeCoverage_Report_Factory
      * @param array                                  $tests
      * @param boolean                                $cacheTokens
      */
-    protected static function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
+    protected function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
@@ -92,7 +92,7 @@ class PHP_CodeCoverage_Report_Factory
                 $root->addFile($key, $value, $tests, $cacheTokens);
             } else {
                 $child = $root->addDirectory($key);
-                self::addItems($child, $value, $tests, $cacheTokens);
+                $this->addItems($child, $value, $tests, $cacheTokens);
             }
         }
     }

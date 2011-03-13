@@ -172,7 +172,9 @@ class PHP_CodeCoverage
      */
     public function getReport()
     {
-        return PHP_CodeCoverage_Report_Factory::create($this);
+        $factory = new PHP_CodeCoverage_Report_Factory;
+
+        return $factory->create($this);
     }
 
     /**

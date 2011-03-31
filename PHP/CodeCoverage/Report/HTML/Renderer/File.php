@@ -164,19 +164,20 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
           )
         );
 
-        $items .= $this->renderTraitOrClassItems($node->getTraits(), 'Traits');
-        $items .= $this->renderTraitOrClassItems($node->getClasses(), 'Classes');
-        $items .= $this->renderFunctionItems($node->getFunctions());
+        $items .= $this->renderTraitOrClassItems($node->getTraits(), 'Traits', $template);
+        $items .= $this->renderTraitOrClassItems($node->getClasses(), 'Classes', $template);
+        $items .= $this->renderFunctionItems($node->getFunctions(), $template);
 
         return $items;
     }
 
     /**
-     * @param  array  $items
-     * @param  string $title
+     * @param  array         $items
+     * @param  string        $title
+     * @param  Text_Template $template
      * @return string
      */
-    protected function renderTraitOrClassItems(array $items, $title)
+    protected function renderTraitOrClassItems(array $items, $title, Text_Template $template)
     {
         if (empty($items)) {
             return '';
@@ -185,16 +186,70 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
         $buffer = '';
 
         foreach ($items as $name => $item) {
+            $methods          = '';
+            $numMethods       = count($item['methods']);
+            $numTestedMethods = 0;
+
+            foreach ($item['methods'] as $method) {
+                if ($method['executedLines'] == $method['executableLines']) {
+                    $numTestedMethods++;
+                }
+            }
+
+            $buffer = $this->renderItemTemplate(
+              $template,
+              array(
+                'itemClass'                    => 'coverDirectory',
+                'name'                         => $name,
+                'numClasses'                   => 1,
+                'numTestedClasses'             => $numTestedMethods == $numMethods ? 1 : 0,
+                'numMethods'                   => $numMethods,
+                'numTestedMethods'             => $numTestedMethods,
+                'linesExecutedPercent'         => PHP_CodeCoverage_Util::percent(
+                                                    $item['executedLines'],
+                                                    $item['executableLines'],
+                                                    FALSE
+                                                  ),
+                'linesExecutedPercentAsString' => PHP_CodeCoverage_Util::percent(
+                                                    $item['executedLines'],
+                                                    $item['executableLines'],
+                                                    TRUE
+                                                  ),
+                'numExecutedLines'             => $item['executedLines'],
+                'numExecutableLines'           => $item['executableLines'],
+                'testedMethodsPercent'         => PHP_CodeCoverage_Util::percent(
+                                                    $numTestedMethods,
+                                                    $numMethods,
+                                                    FALSE
+                                                  ),
+                'testedMethodsPercentAsString' => PHP_CodeCoverage_Util::percent(
+                                                    $numTestedMethods,
+                                                    $numMethods,
+                                                    TRUE
+                                                  ),
+                'testedClassesPercent'         => PHP_CodeCoverage_Util::percent(
+                                                    $numTestedMethods == $numMethods ? 1 : 0,
+                                                    1,
+                                                    FALSE
+                                                  ),
+                'testedClassesPercentAsString' => PHP_CodeCoverage_Util::percent(
+                                                    $numTestedMethods == $numMethods ? 1 : 0,
+                                                    1,
+                                                    TRUE
+                                                  )
+              )
+            );
         }
 
         return $buffer;
     }
 
     /**
-     * @param  array $items
+     * @param  array         $items
+     * @param  Text_Template $template
      * @return string
      */
-    protected function renderFunctionItems(array $items)
+    protected function renderFunctionItems(array $items, Text_Template $template)
     {
         if (empty($items)) {
             return '';

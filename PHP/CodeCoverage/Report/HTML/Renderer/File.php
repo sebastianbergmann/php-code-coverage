@@ -149,8 +149,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
           array(
             'itemClass'                    => 'coverDirectory',
             'name'                         => 'Total',
-            'numClasses'                   => $node->getNumClasses(),
-            'numTestedClasses'             => $node->getNumTestedClasses(),
+            'numClasses'                   => $node->getNumClasses() + $node->getNumTraits(),
+            'numTestedClasses'             => $node->getNumTestedClasses() + $node->getNumTestedTraits(),
             'numMethods'                   => $node->getNumMethods(),
             'numTestedMethods'             => $node->getNumTestedMethods(),
             'linesExecutedPercent'         => $node->getLineExecutedPercent(FALSE),
@@ -164,7 +164,48 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
           )
         );
 
+        $items .= $this->renderTraitOrClassItems($node->getTraits(), 'Traits');
+        $items .= $this->renderTraitOrClassItems($node->getClasses(), 'Classes');
+        $items .= $this->renderFunctionItems($node->getFunctions());
+
         return $items;
+    }
+
+    /**
+     * @param  array  $items
+     * @param  string $title
+     * @return string
+     */
+    protected function renderTraitOrClassItems(array $items, $title)
+    {
+        if (empty($items)) {
+            return '';
+        }
+
+        $buffer = '';
+
+        foreach ($items as $name => $item) {
+        }
+
+        return $buffer;
+    }
+
+    /**
+     * @param  array $items
+     * @return string
+     */
+    protected function renderFunctionItems(array $items)
+    {
+        if (empty($items)) {
+            return '';
+        }
+
+        $buffer = '';
+
+        foreach ($items as $name => $item) {
+        }
+
+        return $buffer;
     }
 
     /**

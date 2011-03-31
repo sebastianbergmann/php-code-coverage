@@ -105,6 +105,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * @var integer
      */
+    protected $numTestedTraits = 0;
+
+    /**
+     * @var integer
+     */
     protected $numTestedClasses = 0;
 
     /**
@@ -463,6 +468,38 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                     unset($currentMethod);
                 }
             }
+        }
+
+        foreach ($this->traits as $traitName => &$trait) {
+            foreach ($trait['methods'] as &$method) {
+                if ($method['executableLines'] > 0) {
+                    $method['coverage'] = ($method['executedLines'] /
+                                           $method['executableLines']) * 100;
+                } else {
+                    $method['coverage'] = 100;
+                }
+
+                $method['crap'] = PHP_CodeCoverage_Util::crap(
+                  $method['ccn'], $method['coverage']
+                );
+
+                $trait['ccn'] += $method['ccn'];
+            }
+
+            if ($trait['executableLines'] > 0) {
+                $trait['coverage'] = ($trait['executedLines'] /
+                                      $trait['executableLines']) * 100;
+            } else {
+                $trait['coverage'] = 100;
+            }
+
+            if ($trait['coverage'] == 100) {
+                $this->numTestedClasses++;
+            }
+
+            $trait['crap'] = PHP_CodeCoverage_Util::crap(
+              $trait['ccn'], $trait['coverage']
+            );
         }
 
         foreach ($this->classes as $className => &$class) {

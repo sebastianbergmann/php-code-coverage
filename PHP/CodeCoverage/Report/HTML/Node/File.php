@@ -888,6 +888,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     {
         $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
         $functions = $tokens->getFunctions();
+        PHP_Token_Stream_CachingFactory::unsetFromCache($this->getPath());
         unset($tokens);
 
         if (count($functions) > 0 && !isset($this->classes['*'])) {

@@ -68,6 +68,11 @@ class PHP_CodeCoverage_Report_HTML
     protected $options;
 
     /**
+     * @var boolean
+     */
+    protected $cacheTokens;
+
+    /**
      * Constructor.
      *
      * @param array $options
@@ -80,10 +85,6 @@ class PHP_CodeCoverage_Report_HTML
 
         if (!isset($options['charset'])) {
             $options['charset'] = 'UTF-8';
-        }
-
-        if (!isset($options['cacheTokens'])) {
-            $options['cacheTokens'] = TRUE;
         }
 
         if (!isset($options['yui'])) {
@@ -124,6 +125,8 @@ class PHP_CodeCoverage_Report_HTML
      */
     public function process(PHP_CodeCoverage $coverage, $target)
     {
+        $this->cacheTokens = $coverage->getCacheTokens();
+
         $target     = PHP_CodeCoverage_Util::getDirectory($target);
         $files      = $coverage->getData();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
@@ -210,7 +213,7 @@ class PHP_CodeCoverage_Report_HTML
                       substr($key, 0, -2),
                       $value,
                       $tests,
-                      $this->options['cacheTokens'],
+                      $this->cacheTokens,
                       $this->options['yui'],
                       $this->options['highlight']
                     );

@@ -354,6 +354,15 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @return boolean
+     * @since  Method available since Release 1.1.0
+     */
+    public function getCacheTokens()
+    {
+        return $this->cacheTokens;
+    }
+
+    /**
      * @param  boolean $flag
      * @throws InvalidArgumentException
      */

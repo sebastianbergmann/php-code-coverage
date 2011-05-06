@@ -58,24 +58,6 @@
 class PHP_CodeCoverage_Report_Clover
 {
     /**
-     * @var boolean
-     */
-    protected $cacheTokens;
-
-    /**
-     * @param  boolean $cacheTokens
-     * @throws InvalidArgumentException
-     */
-    public function __construct($cacheTokens = TRUE)
-    {
-        if (!is_bool($cacheTokens)) {
-            throw new InvalidArgumentException;
-        }
-
-        $this->cacheTokens = $cacheTokens;
-    }
-
-    /**
      * @param  PHP_CodeCoverage $coverage
      * @param  string           $target
      * @param  string           $name
@@ -83,6 +65,8 @@ class PHP_CodeCoverage_Report_Clover
      */
     public function process(PHP_CodeCoverage $coverage, $target = NULL, $name = NULL)
     {
+        $cacheTokens = $coverage->getCacheTokens();
+
         $document = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = TRUE;
 
@@ -132,7 +116,7 @@ class PHP_CodeCoverage_Report_Clover
                 $file = $document->createElement('file');
                 $file->setAttribute('name', $filename);
 
-                if ($this->cacheTokens) {
+                if ($cacheTokens) {
                     $tokens = PHP_Token_Stream_CachingFactory::get($filename);
                 } else {
                     $tokens = new PHP_Token_Stream($filename);
@@ -143,7 +127,7 @@ class PHP_CodeCoverage_Report_Clover
                 unset($tokens);
 
                 $ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                  $filename, $this->cacheTokens
+                  $filename, $cacheTokens
                 );
 
                 $lines = array();

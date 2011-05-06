@@ -343,6 +343,7 @@ class PHP_CodeCoverage
     /**
      * @param  boolean $flag
      * @throws InvalidArgumentException
+     * @since  Method available since Release 1.1.0
      */
     public function setCacheTokens($flag)
     {

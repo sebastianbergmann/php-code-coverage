@@ -445,7 +445,13 @@ class PHP_CodeCoverage
         }
 
         else if ($this->forceCoversAnnotation) {
-            $data = array();
+            if ($this->processUncoveredFilesFromWhitelist) {
+                foreach (array_keys($data) as $filename) {
+                    $data[$filename] = array();
+                }
+            } else {
+                $data = array();
+            }
         }
     }
 

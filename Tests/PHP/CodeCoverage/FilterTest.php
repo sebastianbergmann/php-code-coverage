@@ -53,6 +53,13 @@ if (!defined('TEST_FILES_PATH')) {
       '_files' . DIRECTORY_SEPARATOR
     );
 }
+if (!defined('RECURSIVE_TEST_FILES_PATH')) {
+    define(
+      'RECURSIVE_TEST_FILES_PATH',
+      dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
+      '_recursive_files' . DIRECTORY_SEPARATOR
+    );
+}
 
 /**
  * Tests for the PHP_CodeCoverage_Filter class.
@@ -107,6 +114,40 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
           TEST_FILES_PATH . 'source_with_namespace.php',
           TEST_FILES_PATH . 'source_without_ignore.php',
           TEST_FILES_PATH . 'source_without_namespace.php'
+        );
+        
+        $this->recursive_files = array(
+          RECURSIVE_TEST_FILES_PATH . 'BankAccount.php',
+          RECURSIVE_TEST_FILES_PATH . 'BankAccountTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageClassTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageFunctionTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageMethodTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageNoneTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageNotPrivateTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageNotProtectedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageNotPublicTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoveragePrivateTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoverageProtectedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoveragePublicTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoveredClass.php',
+          RECURSIVE_TEST_FILES_PATH . 'CoveredFunction.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageClassTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'NamespaceCoveredClass.php',
+          RECURSIVE_TEST_FILES_PATH . 'NotExistingCoveredElementTest.php',
+          RECURSIVE_TEST_FILES_PATH . 'source_with_ignore.php',
+          RECURSIVE_TEST_FILES_PATH . 'source_with_namespace.php',
+          RECURSIVE_TEST_FILES_PATH . 'source_without_ignore.php',
+          RECURSIVE_TEST_FILES_PATH . 'source_without_namespace.php',
+          RECURSIVE_TEST_FILES_PATH . 'level2dir/level2file.php',
         );
     }
 
@@ -271,6 +312,25 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
+    }
+	/**
+     * @covers PHP_CodeCoverage_Filter::addFilesToWhitelist
+     * @covers PHP_CodeCoverage_Filter::getBlacklist
+     */
+    public function testAddingFilesToTheWhitelistWithRecursionWorks()
+    {
+        $this->filter->addFilesToWhitelist(
+          File_Iterator_Factory::getFilesAsArray(
+            RECURSIVE_TEST_FILES_PATH, $suffixes = '.php'
+          )
+        );
+
+        $whitelist = $this->filter->getWhitelist();
+        sort($whitelist);
+        
+        sort($this->recursive_files);
+
+        $this->assertEquals($this->recursive_files, $whitelist);
     }
 
     /**

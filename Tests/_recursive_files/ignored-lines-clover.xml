@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="%i">
+  <project timestamp="%i">
+    <file name="%s/source_with_ignore.php">
+      <class name="Foo" namespace="global">
+        <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="1" coveredelements="0"/>
+      </class>
+      <class name="Bar" namespace="global">
+        <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="1" coveredelements="0"/>
+      </class>
+      <line num="2" type="stmt" count="1"/>
+      <line num="6" type="stmt" count="0"/>
+      <line num="7" type="stmt" count="1"/>
+      <metrics loc="26" ncloc="16" classes="2" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="2" elements="5" coveredelements="2"/>
+    </file>
+    <metrics files="1" loc="26" ncloc="16" classes="2" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="2" elements="5" coveredelements="2"/>
+  </project>
+</coverage>

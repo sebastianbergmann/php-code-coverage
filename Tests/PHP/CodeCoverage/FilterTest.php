@@ -57,7 +57,7 @@ if (!defined('RECURSIVE_TEST_FILES_PATH')) {
     define(
       'RECURSIVE_TEST_FILES_PATH',
       dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-      '_recursive_files' . DIRECTORY_SEPARATOR
+      '_recursiveFiles' . DIRECTORY_SEPARATOR
     );
 }
 
@@ -116,7 +116,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
           TEST_FILES_PATH . 'source_without_namespace.php'
         );
         
-        $this->recursive_files = array(
+        $this->recursiveFiles = array(
           RECURSIVE_TEST_FILES_PATH . 'BankAccount.php',
           RECURSIVE_TEST_FILES_PATH . 'BankAccountTest.php',
           RECURSIVE_TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
@@ -313,7 +313,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->files, $whitelist);
     }
-	/**
+    /**
      * @covers PHP_CodeCoverage_Filter::addFilesToWhitelist
      * @covers PHP_CodeCoverage_Filter::getBlacklist
      */
@@ -328,9 +328,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $whitelist = $this->filter->getWhitelist();
         sort($whitelist);
         
-        sort($this->recursive_files);
+        sort($this->recursiveFiles);
 
-        $this->assertEquals($this->recursive_files, $whitelist);
+        $this->assertEquals($this->recursiveFiles, $whitelist);
     }
 
     /**

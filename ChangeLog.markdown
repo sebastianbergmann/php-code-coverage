@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.0
 
 This is the list of changes for the PHP_CodeCoverage 1.0 release series.
 
+PHP_CodeCoverage 1.0.5
+----------------------
+
+* Fixed sorting of top project risks.
+
 PHP_CodeCoverage 1.0.4
 ----------------------
 

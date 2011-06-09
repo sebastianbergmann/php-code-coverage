@@ -403,11 +403,9 @@ class PHP_CodeCoverage_Report_HTML
             }
         }
 
-        asort($risks);
+        arsort($risks);
 
-        $risks = array_reverse(
-          array_slice($risks, 0, min($max, count($risks)))
-        );
+        $risks = array_slice($risks, 0, min($max, count($risks)));
 
         $buffer = '';
 

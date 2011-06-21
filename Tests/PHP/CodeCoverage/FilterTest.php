@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,13 +38,11 @@
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage/Filter.php';
 
 if (!defined('TEST_FILES_PATH')) {
     define(
@@ -61,7 +59,7 @@ if (!defined('TEST_FILES_PATH')) {
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -111,15 +109,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Filter::getInstance
-     */
-    public function testFactory()
-    {
-        $filter = PHP_CodeCoverage_Filter::getInstance();
-        $this->assertSame($filter, PHP_CodeCoverage_Filter::getInstance());
-    }
-
-    /**
      * @covers PHP_CodeCoverage_Filter::addFileToBlacklist
      * @covers PHP_CodeCoverage_Filter::getBlacklist
      */
@@ -128,22 +117,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
 
         $this->assertEquals(
-          array('DEFAULT' => array($this->files[0])),
-          $this->filter->getBlacklist()
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Filter::addFileToBlacklist
-     * @covers PHP_CodeCoverage_Filter::getBlacklist
-     */
-    public function testAddingAFileToTheBlacklistWorks2()
-    {
-        $this->filter->addFileToBlacklist($this->files[0], 'group');
-
-        $this->assertEquals(
-          array('DEFAULT' => array(), 'group' => array($this->files[0])),
-          $this->filter->getBlacklist()
+          array($this->files[0]), $this->filter->getBlacklist()
         );
     }
 
@@ -156,9 +130,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
         $this->filter->removeFileFromBlacklist($this->files[0]);
 
-        $this->assertEquals(
-          array('DEFAULT' => array()), $this->filter->getBlacklist()
-        );
+        $this->assertEquals(array(), $this->filter->getBlacklist());
     }
 
     /**
@@ -171,12 +143,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
 
         $blacklist = $this->filter->getBlacklist();
+        sort($blacklist);
 
-        foreach (array_keys($blacklist) as $group) {
-            sort($blacklist[$group]);
-        }
-
-        $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
+        $this->assertEquals($this->files, $blacklist);
     }
 
     /**
@@ -185,19 +154,17 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testAddingFilesToTheBlacklistWorks()
     {
-        $this->filter->addFilesToBlacklist(
-          File_Iterator_Factory::getFilesAsArray(
-            TEST_FILES_PATH, $suffixes = '.php'
-          )
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          TEST_FILES_PATH, $suffixes = '.php'
         );
 
+        $this->filter->addFilesToBlacklist($files);
+
         $blacklist = $this->filter->getBlacklist();
+        sort($blacklist);
 
-        foreach (array_keys($blacklist) as $group) {
-            sort($blacklist[$group]);
-        }
-
-        $this->assertEquals(array('DEFAULT' => $this->files), $blacklist);
+        $this->assertEquals($this->files, $blacklist);
     }
 
     /**
@@ -210,9 +177,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
         $this->filter->removeDirectoryFromBlacklist(TEST_FILES_PATH);
 
-        $this->assertEquals(
-          array('DEFAULT' => array()), $this->filter->getBlacklist()
-        );
+        $this->assertEquals(array(), $this->filter->getBlacklist());
     }
 
     /**
@@ -261,11 +226,12 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testAddingFilesToTheWhitelistWorks()
     {
-        $this->filter->addFilesToWhitelist(
-          File_Iterator_Factory::getFilesAsArray(
-            TEST_FILES_PATH, $suffixes = '.php'
-          )
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          TEST_FILES_PATH, $suffixes = '.php'
         );
+
+        $this->filter->addFilesToWhitelist($files);
 
         $whitelist = $this->filter->getWhitelist();
         sort($whitelist);

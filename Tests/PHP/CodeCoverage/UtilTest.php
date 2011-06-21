@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,13 +38,12 @@
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
 
-require_once 'PHP/CodeCoverage/Util.php';
 @include_once 'vfsStream/vfsStream.php';
 
 if (!defined('TEST_FILES_PATH')) {
@@ -91,7 +90,7 @@ if (version_compare(PHP_VERSION, '5.3', '>')) {
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -182,7 +181,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered2()
     {
@@ -197,7 +196,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered3()
     {
@@ -212,7 +211,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
      * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetLinesToBeCovered4()
     {
@@ -254,6 +253,11 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             14 => TRUE,
             15 => TRUE,
             16 => TRUE,
+            18 => TRUE,
+            19 => TRUE,
+            20 => TRUE,
+            21 => TRUE,
+            22 => TRUE,
             23 => TRUE,
             24 => TRUE,
             25 => TRUE
@@ -435,7 +439,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers            PHP_CodeCoverage_Util::getDirectory
-     * @expectedException RuntimeException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testGetDirectory3()
     {

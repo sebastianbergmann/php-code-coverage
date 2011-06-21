@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,13 +38,11 @@
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage.php';
 
 if (!defined('TEST_FILES_PATH')) {
     define(
@@ -66,7 +64,7 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -82,11 +80,11 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $coverage = new PHP_CodeCoverage;
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
         );
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Filter', 'filter', $coverage
         );
     }
@@ -100,20 +98,11 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $filter   = new PHP_CodeCoverage_Filter;
         $coverage = new PHP_CodeCoverage(NULL, $filter);
 
-        $this->assertAttributeType(
+        $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
         );
 
         $this->assertSame($filter, $coverage->filter());
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getInstance
-     */
-    public function testFactory()
-    {
-        $coverage = PHP_CodeCoverage::getInstance();
-        $this->assertSame($coverage, PHP_CodeCoverage::getInstance());
     }
 
     /**
@@ -123,7 +112,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function testStartThrowsExceptionForInvalidArgument()
     {
         $coverage = new PHP_CodeCoverage;
-        $coverage->start(NULL, NULL);
+        $coverage->start(NULL, array(), NULL);
     }
 
     /**
@@ -189,26 +178,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage::setPromoteGlobals
-     */
-    public function testSetPromoteGlobals()
-    {
-        $coverage = new PHP_CodeCoverage;
-        $coverage->setPromoteGlobals(TRUE);
-        $this->assertAttributeEquals(TRUE, 'promoteGlobals', $coverage);
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage::setPromoteGlobals
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetPromoteGlobalsThrowsExceptionForInvalidArgument()
-    {
-        $coverage = new PHP_CodeCoverage;
-        $coverage->setPromoteGlobals(NULL);
-    }
-
-    /**
      * @covers PHP_CodeCoverage::setMapTestClassNameToCoveredClassName
      */
     public function testSetMapTestClassNameToCoveredClassName()
@@ -238,186 +207,68 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $coverage = new PHP_CodeCoverage;
         $coverage->clear();
 
-        $this->assertAttributeEquals(array(), 'data', $coverage);
-        $this->assertAttributeEquals(array(), 'coveredFiles', $coverage);
-        $this->assertAttributeEquals(array(), 'summary', $coverage);
         $this->assertAttributeEquals(NULL, 'currentId', $coverage);
+        $this->assertAttributeEquals(array(), 'data', $coverage);
+        $this->assertAttributeEquals(array(), 'tests', $coverage);
     }
 
     /**
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append
-     * @covers PHP_CodeCoverage::applySelfFilter
      * @covers PHP_CodeCoverage::applyListsFilter
+     * @covers PHP_CodeCoverage::initializeFilesThatAreSeenTheFirstTime
      * @covers PHP_CodeCoverage::applyCoversAnnotationFilter
+     * @covers PHP_CodeCoverage::getTests
      */
     public function testCollect()
     {
-        $this->assertAttributeEquals(
+        $coverage = $this->getCoverageForBankAccount();
+
+        $this->assertEquals(
+          $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
+        );
+
+        $this->assertEquals(
           array(
-            'BankAccountTest::testBalanceIsInitiallyZero' => array(
-              'filtered' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  9 => -2
-                )
-              ),
-              'raw' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  9 => -2,
-                  13 => -1,
-                  14 => -1,
-                  15 => -1,
-                  16 => -1,
-                  18 => -1,
-                  22 => -1,
-                  24 => -1,
-                  25 => -2,
-                  29 => -1,
-                  31 => -1,
-                  32 => -2
-                )
-              )
-            ),
-            'BankAccountTest::testBalanceCannotBecomeNegative' => array(
-              'filtered' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  29 => 1
-                )
-              ),
-              'raw' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  13 => 1,
-                  16 => 1,
-                  29 => 1
-                )
-              )
-            ),
-            'BankAccountTest::testBalanceCannotBecomeNegative2' => array(
-              'filtered' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  22 => 1
-                )
-              ),
-              'raw' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  13 => 1,
-                  16 => 1,
-                  22 => 1
-                )
-              )
-            ),
-            'BankAccountTest::testDepositWithdrawMoney' => array(
-              'filtered' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  22 => 1,
-                  24 => 1,
-                  29 => 1,
-                  31 => 1
-                )
-              ),
-              'raw' => array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
-                  8 => 1,
-                  13 => 1,
-                  14 => 1,
-                  15 => 1,
-                  18 => 1,
-                  22 => 1,
-                  24 => 1,
-                  29 => 1,
-                  31 => 1
-                )
-              )
-            )
+            'BankAccountTest::testBalanceIsInitiallyZero' => NULL,
+            'BankAccountTest::testBalanceCannotBecomeNegative' => NULL,
+            'BankAccountTest::testBalanceCannotBecomeNegative2' => NULL,
+            'BankAccountTest::testDepositWithdrawMoney' => NULL
           ),
-          'data',
-          $this->getCoverageForBankAccount()
+          $coverage->getTests()
         );
     }
 
     /**
+     * @covers PHP_CodeCoverage::getData
      * @covers PHP_CodeCoverage::merge
      */
     public function testMerge()
     {
+        $coverage = $this->getCoverageForBankAccountForFirstTwoTests();
+        $coverage->merge($this->getCoverageForBankAccountForLastTwoTests());
+
+        $this->assertEquals(
+          $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getData
+     * @covers PHP_CodeCoverage::merge
+     */
+    public function testMerge2()
+    {
         $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStubForBankAccount(), new PHP_CodeCoverage_Filter
+          $this->getMock('PHP_CodeCoverage_Driver_Xdebug'),
+          new PHP_CodeCoverage_Filter
         );
 
         $coverage->merge($this->getCoverageForBankAccount());
 
         $this->assertEquals(
-          $this->getCoverageForBankAccount()->getSummary(), $coverage->getSummary()
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getSummary
-     */
-    public function testSummary()
-    {
-        $this->assertEquals(
-          array(
-            TEST_FILES_PATH . 'BankAccount.php' => array(
-              8 => array(
-                0 => array(
-                  'id'     => 'BankAccountTest::testBalanceIsInitiallyZero',
-                  'status' => NULL
-                ),
-                1 => array(
-                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
-                  'status' => NULL
-                )
-              ),
-              9 => -2,
-              13 => -1,
-              14 => -1,
-              15 => -1,
-              16 => -1,
-              18 => -1,
-              22 => array(
-                0 => array(
-                  'id'     => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                  'status' => NULL
-                ),
-                1 => array(
-                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
-                  'status' => NULL
-                )
-              ),
-              24 => array(
-                0 => array(
-                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
-                  'status' => NULL
-                )
-              ),
-              25 => -2,
-              29 => array(
-                0 => array(
-                  'id'     => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                  'status' => NULL
-                ),
-                1 => array(
-                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
-                  'status' => NULL
-                )
-              ),
-              31 => array(
-                0 => array(
-                  'id'     => 'BankAccountTest::testDepositWithdrawMoney',
-                  'status' => NULL
-                )
-              ),
-              32 => -2
-            )
-          ),
-          $this->getCoverageForBankAccount()->getSummary()
+          $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
         );
     }
 }

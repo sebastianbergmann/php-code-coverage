@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
@@ -51,7 +51,7 @@
  * @package    CodeCoverage
  * @subpackage Tests
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -59,11 +59,71 @@
  */
 abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
+    protected function getXdebugDataForBankAccount()
+    {
+        return array(
+          array(
+            TEST_FILES_PATH . 'BankAccount.php' => array(
+               8 =>  1,
+               9 => -2,
+              13 => -1,
+              14 => -1,
+              15 => -1,
+              16 => -1,
+              18 => -1,
+              22 => -1,
+              24 => -1,
+              25 => -2,
+              29 => -1,
+              31 => -1,
+              32 => -2
+            )
+          ),
+          array(
+            TEST_FILES_PATH . 'BankAccount.php' => array(
+               8 => 1,
+              13 => 1,
+              16 => 1,
+              29 => 1,
+            )
+          ),
+          array(
+            TEST_FILES_PATH . 'BankAccount.php' => array(
+               8 => 1,
+              13 => 1,
+              16 => 1,
+              22 => 1,
+            )
+          ),
+          array(
+            TEST_FILES_PATH . 'BankAccount.php' => array(
+               8 => 1,
+              13 => 1,
+              14 => 1,
+              15 => 1,
+              18 => 1,
+              22 => 1,
+              24 => 1,
+              29 => 1,
+              31 => 1,
+            )
+          )
+        );
+    }
+
     protected function getCoverageForBankAccount()
     {
-        $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStubForBankAccount(), new PHP_CodeCoverage_Filter
-        );
+        $data = $this->getXdebugDataForBankAccount();
+
+        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub->expects($this->any())
+             ->method('stop')
+             ->will($this->onConsecutiveCalls(
+               $data[0], $data[1], $data[2], $data[3]
+             ));
+
+
+        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
         $coverage->start(
           new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
@@ -88,61 +148,91 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStubForBankAccount()
+    protected function getCoverageForBankAccountForFirstTwoTests()
     {
+        $data = $this->getXdebugDataForBankAccount();
+
         $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
         $stub->expects($this->any())
              ->method('stop')
              ->will($this->onConsecutiveCalls(
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 =>  1,
-                    9 => -2,
-                   13 => -1,
-                   14 => -1,
-                   15 => -1,
-                   16 => -1,
-                   18 => -1,
-                   22 => -1,
-                   24 => -1,
-                   25 => -2,
-                   29 => -1,
-                   31 => -1,
-                   32 => -2
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   16 => 1,
-                   29 => 1,
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   16 => 1,
-                   22 => 1,
-                 )
-               ),
-               array(
-                 TEST_FILES_PATH . 'BankAccount.php' => array(
-                    8 => 1,
-                   13 => 1,
-                   14 => 1,
-                   15 => 1,
-                   18 => 1,
-                   22 => 1,
-                   24 => 1,
-                   29 => 1,
-                   31 => 1,
-                 )
-               )
+               $data[0], $data[1]
              ));
 
-        return $stub;
+
+        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+
+        $coverage->start(
+          new BankAccountTest('testBalanceIsInitiallyZero'), TRUE
+        );
+        $coverage->stop();
+
+        $coverage->start(
+          new BankAccountTest('testBalanceCannotBecomeNegative')
+        );
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function getCoverageForBankAccountForLastTwoTests()
+    {
+        $data = $this->getXdebugDataForBankAccount();
+
+        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub->expects($this->any())
+             ->method('stop')
+             ->will($this->onConsecutiveCalls(
+               $data[2], $data[3]
+             ));
+
+        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+
+        $coverage->start(
+          new BankAccountTest('testBalanceCannotBecomeNegative2'), TRUE
+        );
+        $coverage->stop();
+
+        $coverage->start(
+          new BankAccountTest('testDepositWithdrawMoney')
+        );
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function getExpectedDataArrayForBankAccount()
+    {
+        return array(
+          TEST_FILES_PATH . 'BankAccount.php' => array(
+            8 => array(
+              0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
+            ),
+            9 => NULL,
+            13 => array(),
+            14 => array(),
+            15 => array(),
+            16 => array(),
+            18 => array(),
+            22 => array(
+              0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
+            ),
+            24 => array(
+              0 => 'BankAccountTest::testDepositWithdrawMoney',
+            ),
+            25 => NULL,
+            29 => array(
+              0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+              1 => 'BankAccountTest::testDepositWithdrawMoney'
+            ),
+            31 => array(
+              0 => 'BankAccountTest::testDepositWithdrawMoney'
+            ),
+            32 => NULL
+          )
+        );
     }
 
     protected function getCoverageForFileWithIgnoredLines()

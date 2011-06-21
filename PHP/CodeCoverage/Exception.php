@@ -40,11 +40,11 @@
  * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 1.1.0
  */
 
 /**
- * Interface for code coverage drivers.
+ * Eyception class for PHP_CodeCoverage component.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -53,19 +53,8 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 1.1.0
  */
-interface PHP_CodeCoverage_Driver
+class PHP_CodeCoverage_Exception extends RuntimeException
 {
-    /**
-     * Start collection of code coverage information.
-     */
-    public function start();
-
-    /**
-     * Stop collection of code coverage information.
-     *
-     * @return array
-     */
-    public function stop();
 }

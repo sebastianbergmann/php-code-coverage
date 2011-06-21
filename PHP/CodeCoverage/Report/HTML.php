@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,15 +37,11 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage.php';
-require_once 'PHP/CodeCoverage/Report/HTML/Node.php';
-require_once 'Text/Template.php';
 
 /**
  * Generates an HTML report from an PHP_CodeCoverage object.
@@ -53,7 +49,7 @@ require_once 'Text/Template.php';
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -70,6 +66,11 @@ class PHP_CodeCoverage_Report_HTML
      * @var array
      */
     protected $options;
+
+    /**
+     * @var boolean
+     */
+    protected $cacheTokens;
 
     /**
      * Constructor.
@@ -124,15 +125,17 @@ class PHP_CodeCoverage_Report_HTML
      */
     public function process(PHP_CodeCoverage $coverage, $target)
     {
+        $this->cacheTokens = $coverage->getCacheTokens();
+
         $target     = PHP_CodeCoverage_Util::getDirectory($target);
-        $files      = $coverage->getSummary();
+        $files      = $coverage->getData();
         $commonPath = PHP_CodeCoverage_Util::reducePaths($files);
         $items      = PHP_CodeCoverage_Util::buildDirectoryStructure($files);
         $root       = new PHP_CodeCoverage_Report_HTML_Node_Directory(
                         $commonPath, NULL
                       );
 
-        $this->addItems($root, $items, $files);
+        $this->addItems($root, $items, $coverage->getTests());
 
         $this->renderDashboard(
           $root, $target . 'index.dashboard.html', $this->options['title']
@@ -199,9 +202,9 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @param PHP_CodeCoverage_Report_HTML_Node_Directory $root
      * @param array                                       $items
-     * @param array                                       $files
+     * @param array                                       $tests
      */
-    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $files)
+    protected function addItems(PHP_CodeCoverage_Report_HTML_Node_Directory $root, array $items, array $tests)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
@@ -209,6 +212,8 @@ class PHP_CodeCoverage_Report_HTML
                     $root->addFile(
                       substr($key, 0, -2),
                       $value,
+                      $tests,
+                      $this->cacheTokens,
                       $this->options['yui'],
                       $this->options['highlight']
                     );
@@ -219,7 +224,7 @@ class PHP_CodeCoverage_Report_HTML
                 }
             } else {
                 $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $files);
+                $this->addItems($child, $value, $tests);
             }
         }
     }
@@ -322,7 +327,8 @@ class PHP_CodeCoverage_Report_HTML
           'file.png',
           'glass.png',
           'RGraph.bar.js',
-          'RGraph.common.js',
+          'RGraph.common.core.js',
+          'RGraph.common.tooltips.js',
           'RGraph.scatter.js',
           'scarlet_red.png',
           'snow.png',
@@ -397,11 +403,9 @@ class PHP_CodeCoverage_Report_HTML
             }
         }
 
-        asort($risks);
+        arsort($risks);
 
-        $risks = array_reverse(
-          array_slice($risks, 0, min($max, count($risks)))
-        );
+        $risks = array_slice($risks, 0, min($max, count($risks)));
 
         $buffer = '';
 

@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
@@ -47,15 +47,13 @@ if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
-require_once 'PHP/Token/Stream/CachingFactory.php';
-
 /**
  * Represents a file in the code coverage information tree.
  *
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -76,7 +74,17 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     /**
      * @var array
      */
-    protected $executedLines;
+    protected $coverageData;
+
+    /**
+     * @var array
+     */
+    protected $testData;
+
+    /**
+     * @var boolean
+     */
+    protected $cacheTokens = TRUE;
 
     /**
      * @var boolean
@@ -106,22 +114,22 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
     /**
      * @var integer
      */
-    protected $numClasses = 0;
-
-    /**
-     * @var integer
-     */
     protected $numTestedClasses = 0;
 
     /**
      * @var integer
      */
-    protected $numMethods = 0;
+    protected $numClasses = NULL;
 
     /**
      * @var integer
      */
-    protected $numTestedMethods = 0;
+    protected $numMethods = NULL;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedMethods = NULL;
 
     /**
      * @var string
@@ -143,30 +151,34 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      *
      * @param  string                            $name
      * @param  PHP_CodeCoverage_Report_HTML_Node $parent
-     * @param  array                             $executedLines
+     * @param  array                             $coverageData
+     * @param  array                             $testData
+     * @param  boolean                           $cacheTokens
      * @param  boolean                           $yui
      * @param  boolean                           $highlight
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
-    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $executedLines, $yui = TRUE, $highlight = FALSE)
+    public function __construct($name, PHP_CodeCoverage_Report_HTML_Node $parent, array $coverageData, array $testData, $cacheTokens, $yui, $highlight)
     {
         parent::__construct($name, $parent);
 
         $path = $this->getPath();
 
         if (!file_exists($path)) {
-            throw new RuntimeException(
+            throw new PHP_CodeCoverage_Exception(
               sprintf('Path "%s" does not exist.', $path)
             );
         }
 
-        $this->executedLines = $executedLines;
-        $this->highlight     = $highlight;
-        $this->yui           = $yui;
-        $this->codeLines     = $this->loadFile($path);
-        $this->ignoredLines  = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                 $path
-                               );
+        $this->coverageData = $coverageData;
+        $this->testData     = $testData;
+        $this->cacheTokens  = $cacheTokens;
+        $this->highlight    = $highlight;
+        $this->yui          = $yui;
+        $this->codeLines    = $this->loadFile($path);
+        $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
+                                $path, $cacheTokens
+                              );
 
         $this->calculateStatistics();
     }
@@ -208,6 +220,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     public function getNumClasses()
     {
+        if ($this->numClasses === NULL) {
+            $this->numClasses = count($this->classes);
+
+            if (isset($this->classes['*'])) {
+                $this->numClasses--;
+            }
+        }
+
         return $this->numClasses;
     }
 
@@ -228,6 +248,18 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     public function getNumMethods()
     {
+        if ($this->numMethods === NULL) {
+            $this->numMethods = 0;
+
+            foreach ($this->classes as $class) {
+                foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0) {
+                        $this->numMethods++;
+                    }
+                }
+            }
+        }
+
         return $this->numMethods;
     }
 
@@ -238,6 +270,19 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
      */
     public function getNumTestedMethods()
     {
+        if ($this->numTestedMethods === NULL) {
+            $this->numTestedMethods = 0;
+
+            foreach ($this->classes as $class) {
+                foreach ($class['methods'] as $method) {
+                    if ($method['executableLines'] > 0 &&
+                        $method['coverage'] == 100) {
+                        $this->numTestedMethods++;
+                    }
+                }
+            }
+        }
+
         return $this->numTestedMethods;
     }
 
@@ -274,22 +319,30 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             $css = '';
 
             if (!isset($this->ignoredLines[$i]) &&
-                 isset($this->executedLines[$i])) {
-                $count = '';
+                 isset($this->coverageData[$i])) {
+                $count    = '';
+                $numTests = count($this->coverageData[$i]);
 
-                // Array: Line is executable and was executed.
-                // count(Array) = Number of tests that hit this line.
-                if (is_array($this->executedLines[$i])) {
-                    $color    = 'lineCov';
-                    $numTests = count($this->executedLines[$i]);
-                    $count    = sprintf('%8d', $numTests);
+                if ($this->coverageData[$i] === NULL) {
+                    $color = 'lineDeadCode';
+                    $count = '        ';
+                }
+
+                else if ($numTests == 0) {
+                    $color = 'lineNoCov';
+                    $count = sprintf('%8d', 0);
+                }
+
+                else {
+                    $color = 'lineCov';
+                    $count = sprintf('%8d', $numTests);
 
                     if ($this->yui) {
                         $buffer  = '';
                         $testCSS = '';
 
-                        foreach ($this->executedLines[$i] as $test) {
-                            switch ($test['status']) {
+                        foreach ($this->coverageData[$i] as $test) {
+                            switch ($this->testData[$test]) {
                                 case 0: {
                                     $testCSS = ' class=\"testPassed\"';
                                 }
@@ -320,7 +373,7 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                               '<li%s>%s</li>',
 
                               $testCSS,
-                              addslashes(htmlspecialchars($test['id']))
+                              addslashes(htmlspecialchars($test))
                             );
                         }
 
@@ -343,18 +396,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
                         $this->yuiPanelJS .= $yuiTemplate->render();
                     }
-                }
-
-                // -1: Line is executable and was not executed.
-                else if ($this->executedLines[$i] == -1) {
-                    $color = 'lineNoCov';
-                    $count = sprintf('%8d', 0);
-                }
-
-                // -2: Line is dead code.
-                else {
-                    $color = 'lineDeadCode';
-                    $count = '        ';
                 }
 
                 $css = sprintf(
@@ -399,12 +440,16 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 $testedClassesPercent = 0;
             }
 
+            $numMethods       = 0;
             $numTestedMethods = 0;
-            $numMethods       = count($classData['methods']);
 
             foreach ($classData['methods'] as $method) {
-                if ($method['executedLines'] == $method['executableLines']) {
-                    $numTestedMethods++;
+                if ($method['executableLines'] > 0) {
+                    $numMethods++;
+
+                    if ($method['executedLines'] == $method['executableLines']) {
+                        $numTestedMethods++;
+                    }
                 }
             }
 
@@ -439,50 +484,51 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
             );
 
             foreach ($classData['methods'] as $methodData) {
-                if ($methodData['executedLines'] ==
-                    $methodData['executableLines']) {
-                    $numTestedMethods     = 1;
-                    $testedMethodsPercent = 100;
-                } else {
-                    $numTestedMethods     = 0;
-                    $testedMethodsPercent = 0;
+                if ($methodData['executableLines'] > 0) {
+                    if ($methodData['executedLines'] == $methodData['executableLines']) {
+                        $numTestedMethods     = 1;
+                        $testedMethodsPercent = 100;
+                    } else {
+                        $numTestedMethods     = 0;
+                        $testedMethodsPercent = 0;
+                    }
+
+                    $items .= $this->doRenderItem(
+                      array(
+                        'name'                 => sprintf(
+                          '&nbsp;<a href="#%d">%s</a>',
+
+                          $methodData['startLine'],
+                          htmlspecialchars($methodData['signature'])
+                        ),
+                        'numClasses'           => '',
+                        'numTestedClasses'     => '',
+                        'testedClassesPercent' => '',
+                        'numMethods'           => 1,
+                        'numTestedMethods'     => $numTestedMethods,
+                        'testedMethodsPercent' => sprintf(
+                                                    '%01.2f', $testedMethodsPercent
+                                                  ),
+                        'numExecutableLines'   => $methodData['executableLines'],
+                        'numExecutedLines'     => $methodData['executedLines'],
+                        'executedLinesPercent' => PHP_CodeCoverage_Util::percent(
+                          $methodData['executedLines'],
+                          $methodData['executableLines'],
+                          TRUE
+                        ),
+                        'crap'                 => PHP_CodeCoverage_Util::crap(
+                                                    $methodData['ccn'],
+                                                    PHP_CodeCoverage_Util::percent(
+                                                      $methodData['executedLines'],
+                                                      $methodData['executableLines']
+                                                    )
+                                                  )
+                      ),
+                      $lowUpperBound,
+                      $highLowerBound,
+                      'method_item.html'
+                    );
                 }
-
-                $items .= $this->doRenderItem(
-                  array(
-                    'name'                 => sprintf(
-                      '&nbsp;<a href="#%d">%s</a>',
-
-                      $methodData['startLine'],
-                      htmlspecialchars($methodData['signature'])
-                    ),
-                    'numClasses'           => '',
-                    'numTestedClasses'     => '',
-                    'testedClassesPercent' => '',
-                    'numMethods'           => 1,
-                    'numTestedMethods'     => $numTestedMethods,
-                    'testedMethodsPercent' => sprintf(
-                                                '%01.2f', $testedMethodsPercent
-                                              ),
-                    'numExecutableLines'   => $methodData['executableLines'],
-                    'numExecutedLines'     => $methodData['executedLines'],
-                    'executedLinesPercent' => PHP_CodeCoverage_Util::percent(
-                      $methodData['executedLines'],
-                      $methodData['executableLines'],
-                      TRUE
-                    ),
-                    'crap'                 => PHP_CodeCoverage_Util::crap(
-                                                $methodData['ccn'],
-                                                PHP_CodeCoverage_Util::percent(
-                                                  $methodData['executedLines'],
-                                                  $methodData['executableLines']
-                                                )
-                                              )
-                  ),
-                  $lowUpperBound,
-                  $highLowerBound,
-                  'method_item.html'
-                );
             }
         }
 
@@ -502,8 +548,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
         $cleanId = PHP_CodeCoverage_Util::getSafeFilename($this->getId());
         $template->renderTo($target . $cleanId . '.html');
 
-        $this->yuiPanelJS    = '';
-        $this->executedLines = array();
+        $this->yuiPanelJS   = '';
+        $this->coverageData = array();
     }
 
     /**
@@ -530,46 +576,29 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                 }
             }
 
-            if (isset($this->executedLines[$lineNumber])) {
-                // Array: Line is executable and was executed.
-                if (is_array($this->executedLines[$lineNumber])) {
+            if (isset($this->coverageData[$lineNumber]) &&
+                $this->coverageData[$lineNumber] !== NULL) {
+                if (isset($currentClass)) {
+                    $currentClass['executableLines']++;
+                }
+
+                if (isset($currentMethod)) {
+                    $currentMethod['executableLines']++;
+                }
+
+                $this->numExecutableLines++;
+
+                if (count($this->coverageData[$lineNumber]) > 0 ||
+                    isset($this->ignoredLines[$lineNumber])) {
                     if (isset($currentClass)) {
-                        $currentClass['executableLines']++;
                         $currentClass['executedLines']++;
                     }
 
                     if (isset($currentMethod)) {
-                        $currentMethod['executableLines']++;
                         $currentMethod['executedLines']++;
                     }
 
-                    $this->numExecutableLines++;
                     $this->numExecutedLines++;
-                }
-
-                // -1: Line is executable and was not executed.
-                else if ($this->executedLines[$lineNumber] == -1) {
-                    if (isset($currentClass)) {
-                        $currentClass['executableLines']++;
-                    }
-
-                    if (isset($currentMethod)) {
-                        $currentMethod['executableLines']++;
-                    }
-
-                    $this->numExecutableLines++;
-
-                    if (isset($this->ignoredLines[$lineNumber])) {
-                        if (isset($currentClass)) {
-                            $currentClass['executedLines']++;
-                        }
-
-                        if (isset($currentMethod)) {
-                            $currentMethod['executedLines']++;
-                        }
-
-                        $this->numExecutedLines++;
-                    }
                 }
             }
 
@@ -593,10 +622,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                            $method['executableLines']) * 100;
                 } else {
                     $method['coverage'] = 100;
-                }
-
-                if ($method['coverage'] == 100) {
-                    $this->numTestedMethods++;
                 }
 
                 $method['crap'] = PHP_CodeCoverage_Util::crap(
@@ -812,8 +837,14 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
     protected function processClasses()
     {
-        $file    = $this->getId() . '.html#';
-        $tokens  = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        $file = $this->getId() . '.html#';
+
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        } else {
+            $tokens = new PHP_Token_Stream($this->getPath());
+        }
+
         $classes = $tokens->getClasses();
         unset($tokens);
 
@@ -846,17 +877,18 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->classes[$className]['methods'][$methodName];
-
-                $this->numMethods++;
             }
-
-            $this->numClasses++;
         }
     }
 
     protected function processFunctions()
     {
-        $tokens    = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
+        } else {
+            $tokens = new PHP_Token_Stream($this->getPath());
+        }
+
         $functions = $tokens->getFunctions();
         unset($tokens);
 
@@ -881,8 +913,6 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
 
             $this->startLines[$function['startLine']] = &$this->classes['*']['methods'][$functionName];
             $this->endLines[$function['endLine']]     = &$this->classes['*']['methods'][$functionName];
-
-            $this->numMethods++;
         }
     }
 }

@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,14 +37,11 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage.php';
-require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Generates a Clover XML logfile from an PHP_CodeCoverage object.
@@ -52,7 +49,7 @@ require_once 'PHP/Token/Stream/CachingFactory.php';
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -68,15 +65,17 @@ class PHP_CodeCoverage_Report_Clover
      */
     public function process(PHP_CodeCoverage $coverage, $target = NULL, $name = NULL)
     {
+        $cacheTokens = $coverage->getCacheTokens();
+
         $document = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = TRUE;
 
         $root = $document->createElement('coverage');
-        $root->setAttribute('generated', $_SERVER['REQUEST_TIME']);
+        $root->setAttribute('generated', (int)$_SERVER['REQUEST_TIME']);
         $document->appendChild($root);
 
         $project = $document->createElement('project');
-        $project->setAttribute('timestamp', $_SERVER['REQUEST_TIME']);
+        $project->setAttribute('timestamp', (int)$_SERVER['REQUEST_TIME']);
 
         if (is_string($name)) {
             $project->setAttribute('name', $name);
@@ -84,7 +83,7 @@ class PHP_CodeCoverage_Report_Clover
 
         $root->appendChild($project);
 
-        $files    = $coverage->getSummary();
+        $files    = $coverage->getData();
         $packages = array();
 
         $projectStatistics = array(
@@ -117,13 +116,18 @@ class PHP_CodeCoverage_Report_Clover
                 $file = $document->createElement('file');
                 $file->setAttribute('name', $filename);
 
-                $tokens        = PHP_Token_Stream_CachingFactory::get($filename);
+                if ($cacheTokens) {
+                    $tokens = PHP_Token_Stream_CachingFactory::get($filename);
+                } else {
+                    $tokens = new PHP_Token_Stream($filename);
+                }
+
                 $classesInFile = $tokens->getClasses();
                 $linesOfCode   = $tokens->getLinesOfCode();
                 unset($tokens);
 
                 $ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                  $filename
+                  $filename, $cacheTokens
                 );
 
                 $lines = array();
@@ -156,19 +160,18 @@ class PHP_CodeCoverage_Report_Clover
                             $count = 0;
 
                             if (isset($files[$filename][$i])) {
-                                if ($files[$filename][$i] != -2) {
+                                if ($files[$filename][$i] !== NULL) {
                                     $classStatistics['statements']++;
                                     $methodLines++;
+                                } else {
+                                    $add = FALSE;
                                 }
 
-                                if (is_array($files[$filename][$i])) {
+                                $count = count($files[$filename][$i]);
+
+                                if ($count > 0) {
                                     $classStatistics['coveredStatements']++;
                                     $methodLinesCovered++;
-                                    $count = count($files[$filename][$i]);
-                                }
-
-                                else if ($files[$filename][$i] == -2) {
-                                    $add = FALSE;
                                 }
                             } else {
                                 $add = FALSE;
@@ -178,8 +181,7 @@ class PHP_CodeCoverage_Report_Clover
 
                             if ($add) {
                                 $lines[$i] = array(
-                                  'count' => $count,
-                                  'type'  => 'stmt'
+                                  'count' => $count, 'type'  => 'stmt'
                                 );
                             }
                         }
@@ -298,19 +300,17 @@ class PHP_CodeCoverage_Report_Clover
                         continue;
                     }
 
-                    if ($_data != -2) {
+                    if ($_data !== NULL) {
                         $fileStatistics['statements']++;
 
-                        if (is_array($_data)) {
-                            $count = count($_data);
+                        $count = count($_data);
+
+                        if ($count > 0) {
                             $fileStatistics['coveredStatements']++;
-                        } else {
-                            $count = 0;
                         }
 
                         $lines[$_line] = array(
-                          'count' => $count,
-                          'type' => 'stmt'
+                          'count' => $count, 'type' => 'stmt'
                         );
                     }
                 }
@@ -455,6 +455,10 @@ class PHP_CodeCoverage_Report_Clover
         $project->appendChild($metrics);
 
         if ($target !== NULL) {
+            if (!is_dir(dirname($target))) {
+              mkdir(dirname($target), 0777, TRUE);
+            }
+
             return $document->save($target);
         } else {
             return $document->saveXML();

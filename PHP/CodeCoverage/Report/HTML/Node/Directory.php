@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,11 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
 
 /**
  * Represents a directory in the code coverage information tree.
@@ -51,7 +49,7 @@ require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -143,16 +141,18 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * Adds a new file.
      *
      * @param  string  $name
-     * @param  array   $lines
+     * @param  array   $coverageData
+     * @param  array   $testData
+     * @param  boolean $cacheTokens
      * @param  boolean $yui
      * @param  boolean $highlight
      * @return PHP_CodeCoverage_Report_HTML_Node_File
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
-    public function addFile($name, array $lines, $yui, $highlight)
+    public function addFile($name, array $coverageData, array $testData, $cacheTokens, $yui, $highlight)
     {
         $file = new PHP_CodeCoverage_Report_HTML_Node_File(
-          $name, $this, $lines, $yui, $highlight
+          $name, $this, $coverageData, $testData, $cacheTokens, $yui, $highlight
         );
 
         $this->children[] = $file;

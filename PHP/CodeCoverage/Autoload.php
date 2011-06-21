@@ -43,33 +43,53 @@
  * @since      File available since Release 1.1.0
  */
 
-/**
- * Uses serialize() to write a PHP_CodeCoverage object to a file.
- *
- * @category   PHP
- * @package    CodeCoverage
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: @package_version@
- * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.1.0
- */
-class PHP_CodeCoverage_Report_PHP
-{
-    /**
-     * @param  PHP_CodeCoverage $coverage
-     * @param  string           $target
-     * @return string
-     */
-    public function process(PHP_CodeCoverage $coverage, $target = NULL)
-    {
-        $coverage = serialize($coverage);
+require_once 'File/Iterator/Autoload.php';
+require_once 'PHP/Token/Stream/Autoload.php';
+require_once 'Text/Template/Autoload.php';
 
-        if ($target !== NULL) {
-            return file_put_contents($target, $coverage);
-        } else {
-            return $coverage;
+function php_codecoverage_autoload($class = NULL) {
+    static $classes = NULL;
+    static $path = NULL;
+
+    if ($classes === NULL) {
+        $classes = array(
+          'php_codecoverage' => '/CodeCoverage.php',
+          'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
+          'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
+          'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
+          'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
+          'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
+          'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
+          'php_codecoverage_report_html_node' => '/CodeCoverage/Report/HTML/Node.php',
+          'php_codecoverage_report_html_node_directory' => '/CodeCoverage/Report/HTML/Node/Directory.php',
+          'php_codecoverage_report_html_node_file' => '/CodeCoverage/Report/HTML/Node/File.php',
+          'php_codecoverage_report_html_node_iterator' => '/CodeCoverage/Report/HTML/Node/Iterator.php',
+          'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
+          'php_codecoverage_textui_command' => '/CodeCoverage/TextUI/Command.php',
+          'php_codecoverage_util' => '/CodeCoverage/Util.php'
+        );
+
+        $path = dirname(dirname(__FILE__));
+    }
+
+    if ($class === NULL) {
+        $result = array();
+
+        foreach ($classes as $file) {
+            $result[] = $path . $file;
         }
+
+        return $result;
+    }
+
+    $cn = strtolower($class);
+
+    if (isset($classes[$cn])) {
+        require $path . $classes[$cn];
     }
 }
+
+spl_autoload_register('php_codecoverage_autoload');
+
+require_once 'ezc/Base/base.php';
+spl_autoload_register(array('ezcBase', 'autoload'));

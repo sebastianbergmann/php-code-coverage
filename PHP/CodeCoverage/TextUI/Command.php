@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,16 +37,11 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage.php';
-
-require_once 'ezc/Base/base.php';
-spl_autoload_register(array('ezcBase', 'autoload'));
 
 /**
  * TextUI frontend for PHP_CodeCoverage.
@@ -54,7 +49,7 @@ spl_autoload_register(array('ezcBase', 'autoload'));
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -214,9 +209,8 @@ class PHP_CodeCoverage_TextUI_Command
 
                 $coverage->stop();
             } else {
-                require_once 'File/Iterator/Factory.php';
-
-                $files = File_Iterator_Factory::getFilesAsArray(
+                $facade = new File_Iterator_Facade;
+                $result = $facade->getFilesAsArray(
                   $arguments[0], '.cov'
                 );
 
@@ -226,15 +220,11 @@ class PHP_CodeCoverage_TextUI_Command
             }
 
             if ($clover) {
-                require 'PHP/CodeCoverage/Report/Clover.php';
-
                 $writer = new PHP_CodeCoverage_Report_Clover;
                 $writer->process($coverage, $clover);
             }
 
             if ($html) {
-                require 'PHP/CodeCoverage/Report/HTML.php';
-
                 $writer = new PHP_CodeCoverage_Report_HTML;
                 $writer->process($coverage, $html);
             }

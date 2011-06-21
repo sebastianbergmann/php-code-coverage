@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
@@ -48,7 +48,6 @@ if (!defined('T_NAMESPACE')) {
 }
 
 require_once 'PHP/Token/Stream/CachingFactory.php';
-require_once 'PHP/CodeCoverage/ReflectionFile.php';
 
 /**
  * Utility methods.
@@ -56,7 +55,7 @@ require_once 'PHP/CodeCoverage/ReflectionFile.php';
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -168,7 +167,7 @@ class PHP_CodeCoverage_Util
     /**
      * @param  string $directory
      * @return string
-     * @throws RuntimeException
+     * @throws PHP_CodeCoverage_Exception
      */
     public static function getDirectory($directory)
     {
@@ -184,7 +183,7 @@ class PHP_CodeCoverage_Util
             return $directory;
         }
 
-        throw new RuntimeException(
+        throw new PHP_CodeCoverage_Exception(
           sprintf(
             'Directory "%s" does not exist.',
             $directory
@@ -268,27 +267,52 @@ class PHP_CodeCoverage_Util
     /**
      * Returns the lines of a source file that should be ignored.
      *
-     * @param  string $filename
+     * @param  string  $filename
+     * @param  boolean $cacheTokens
      * @return array
+     * @throws InvalidArgumentException
      */
-    public static function getLinesToBeIgnored($filename)
+    public static function getLinesToBeIgnored($filename, $cacheTokens = TRUE)
     {
+        if (!is_bool($cacheTokens)) {
+            throw new InvalidArgumentException;
+        }
+
         if (!isset(self::$ignoredLines[$filename])) {
             self::$ignoredLines[$filename] = array();
+            $ignore                        = FALSE;
+            $stop                          = FALSE;
 
-            $ignore = FALSE;
-            $stop   = FALSE;
-            $tokens = PHP_Token_Stream_CachingFactory::get($filename)->tokens();
+            if ($cacheTokens) {
+                $tokens = PHP_Token_Stream_CachingFactory::get($filename);
+            } else {
+                $tokens = new PHP_Token_Stream($filename);
+            }
+
+            $classes = $tokens->getClasses();
+            $tokens  = $tokens->tokens();
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
                     case 'PHP_Token_CLASS':
                     case 'PHP_Token_FUNCTION': {
                         $docblock = $token->getDocblock();
-                        $endLine  = $token->getEndLine();
 
                         if (strpos($docblock, '@codeCoverageIgnore')) {
+                            $endLine = $token->getEndLine();
+
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {
+                                self::$ignoredLines[$filename][$i] = TRUE;
+                            }
+                        }
+
+                        else if ($token instanceof PHP_Token_CLASS &&
+                                 !empty($classes[$token->getName()]['methods'])) {
+                            $firstMethod = array_shift(
+                              $classes[$token->getName()]['methods']
+                            );
+
+                            for ($i = $token->getLine(); $i < $firstMethod['startLine']; $i++) {
                                 self::$ignoredLines[$filename][$i] = TRUE;
                             }
                         }
@@ -296,11 +320,15 @@ class PHP_CodeCoverage_Util
                     break;
 
                     case 'PHP_Token_COMMENT': {
-                        if (trim($token) == '// @codeCoverageIgnoreStart') {
+                        $_token = trim($token);
+
+                        if ($_token == '// @codeCoverageIgnoreStart' ||
+                            $_token == '//@codeCoverageIgnoreStart') {
                             $ignore = TRUE;
                         }
 
-                        else if (trim($token) == '// @codeCoverageIgnoreEnd') {
+                        else if ($_token == '// @codeCoverageIgnoreEnd' ||
+                                 $_token == '//@codeCoverageIgnoreEnd') {
                             $stop = TRUE;
                         }
                     }
@@ -545,7 +573,7 @@ class PHP_CodeCoverage_Util
                 foreach ($classes as $className) {
                     if (!class_exists($className) &&
                         !interface_exists($className)) {
-                        throw new RuntimeException(
+                        throw new PHP_CodeCoverage_Exception(
                           sprintf(
                             'Trying to @cover not existing class or ' .
                             'interface "%s".',
@@ -590,9 +618,10 @@ class PHP_CodeCoverage_Util
                         );
                     } else {
                         if (!((class_exists($className) ||
-                               interface_exists($className)) &&
+                               interface_exists($className) ||
+                               trait_exists($className)) &&
                               method_exists($className, $methodName))) {
-                            throw new RuntimeException(
+                            throw new PHP_CodeCoverage_Exception(
                               sprintf(
                                 'Trying to @cover not existing method "%s::%s".',
                                 $className,

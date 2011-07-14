@@ -66,7 +66,6 @@
         if (canvas.__object__.Get('chart.contextmenu')) {
             RGraph.HideContext();
         }
-
         // Redraw the canvas?
         if (canvas.__object__.Get('chart.tooltips.highlight')) {
             RGraph.Redraw(canvas.id);
@@ -77,12 +76,13 @@
         if (effect == 'snap' && RGraph.Registry.Get('chart.tooltip')) {
 
             if (   canvas.__object__.type == 'line'
-                || canvas.__object__.type == 'tradar'
+                || canvas.__object__.type == 'radar'
                 || canvas.__object__.type == 'scatter'
                 || canvas.__object__.type == 'rscatter'
                 ) {
 
                 var tooltipObj = RGraph.Registry.Get('chart.tooltip');
+
 
                 tooltipObj.style.width  = null;
                 tooltipObj.style.height = null;
@@ -94,7 +94,7 @@
                 * Now that the new content has been set, re-set the width & height
                 */
                 RGraph.Registry.Get('chart.tooltip').style.width  = RGraph.getTooltipWidth(text, canvas.__object__) + 'px';
-                RGraph.Registry.Get('chart.tooltip').style.height = RGraph.Registry.Get('chart.tooltip').offsetHeight - (RGraph.isIE9up() ? 7 : 0) + 'px';
+                RGraph.Registry.Get('chart.tooltip').style.height = RGraph.Registry.Get('chart.tooltip').offsetHeight + 'px';
 
 
                 var currentx = parseInt(RGraph.Registry.Get('chart.tooltip').style.left);
@@ -118,7 +118,7 @@
 
             } else {
 
-                alert('[TOOLTIPS] The "snap" effect is only supported on the Line, Rscatter, Scatter and Tradar charts');
+                alert('[TOOLTIPS] The "snap" effect is only supported on the Line, Rscatter, Scatter and Radar charts (tried to use it with type: ' + canvas.__object__.type);
             }
 
             /**
@@ -153,7 +153,7 @@
         tooltipObj.style.fontFamily      = RGraph.tooltips.font_face;
         tooltipObj.style.fontSize        = RGraph.tooltips.font_size;
         tooltipObj.style.zIndex          = 3;
-        tooltipObj.style.borderRadius    = '5px';
+        tooltipObj.style.borderRadius       = '5px';
         tooltipObj.style.MozBorderRadius    = '5px';
         tooltipObj.style.WebkitBorderRadius = '5px';
         tooltipObj.style.WebkitBoxShadow    = 'rgba(96,96,96,0.5) 3px 3px 3px';
@@ -174,7 +174,7 @@
         document.body.appendChild(tooltipObj);
 
         var width  = tooltipObj.offsetWidth;
-        var height = tooltipObj.offsetHeight - (RGraph.isIE9up() ? 7 : 0);
+        var height = tooltipObj.offsetHeight;
 
         if ((y - height - 2) > 0) {
             y = y - height - 2;
@@ -193,15 +193,15 @@
         * move it left
         */
         if ( (x + width) > document.body.offsetWidth ) {
-            x             = x - width - 7;
+            x = x - width - 7;
             var placementLeft = true;
 
             if (canvas.__object__.Get('chart.tooltips.effect') == 'none') {
                 x = x - 3;
             }
 
-            tooltipObj.style.left    = x + 'px';
-            tooltipObj.style.top     = y + 'px';
+            tooltipObj.style.left = x + 'px';
+            tooltipObj.style.top  = y + 'px';
 
         } else {
             x += 5;
@@ -361,7 +361,18 @@
             */
             RGraph.Registry.Get('chart.tooltip.timers').push(setTimeout("if (RGraph.Registry.Get('chart.tooltip')) { RGraph.Registry.Get('chart.tooltip').style.cursor = 'default'; }", 275));
 
+        } else if (effect == 'snap') {
 
+            /*******************************************************
+            * Move the tooltip
+            *******************************************************/
+            for (var i=1; i<=10; ++i) {
+                RGraph.Registry.Get('chart.tooltip.timers').push(setTimeout("if (RGraph.Registry.Get('chart.tooltip')) { RGraph.Registry.Get('chart.tooltip').style.left = '" + (x * 0.1 * i) + "px'; }", 15 * i));
+                RGraph.Registry.Get('chart.tooltip.timers').push(setTimeout("if (RGraph.Registry.Get('chart.tooltip')) { RGraph.Registry.Get('chart.tooltip').style.top = '" + (y * 0.1 * i) + "px'; }", 15 * i));
+            }
+
+            tooltipObj.style.left = 0 - tooltipObj.offsetWidth + 'px';
+            tooltipObj.style.top  = 0 - tooltipObj.offsetHeight + 'px';
 
         } else if (effect != 'fade' && effect != 'expand' && effect != 'none' && effect != 'snap' && effect != 'contract') {
             alert('[COMMON] Unknown tooltip effect: ' + effect);
@@ -455,7 +466,7 @@
     {
         var result = /^id:(.*)/.exec(text);
 
-        if (result) {
+        if (result && result[1] && document.getElementById(result[1])) {
             text = document.getElementById(result[1]).innerHTML;
         }
 

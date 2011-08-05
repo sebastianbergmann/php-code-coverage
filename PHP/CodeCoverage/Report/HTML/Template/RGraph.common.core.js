@@ -111,9 +111,9 @@
 
 
     /**
-    * Returns the maximum value which is in an array
+    * Returns the maximum numeric value which is in an array
     *
-    * @param  array arr The array
+    * @param  array arr The array (can also be a number, in which case it's returned as-is)
     * @param  int       Whether to ignore signs (ie negative/positive)
     * @return int       The maximum value in the array
     */
@@ -121,9 +121,20 @@
     {
         var max = null;
 
+        if (typeof(arr) == 'number') {
+            return arr;
+        }
+
         for (var i=0; i<arr.length; ++i) {
             if (typeof(arr[i]) == 'number') {
-                max = (max ? Math.max(max, arguments[1] ? Math.abs(arr[i]) : arr[i]) : arr[i]);
+
+                var val = arguments[1] ? Math.abs(arr[i]) : arr[i];
+
+                if (typeof(max) == 'number') {
+                    max = Math.max(max, val);
+                } else {
+                    max = val;
+                }
             }
         }
 
@@ -239,14 +250,16 @@
         /**
         * This calls the text function recursively to accommodate multi-line text
         */
-        if (typeof(text) == 'string' && text.match(/\r?\n/)) {
+        if (typeof(text) == 'string' && text.match(/\r\n/)) {
 
-            var nextline = text.replace(/^.*\r?\n/, '');
+            var arr = text.split('\r\n');
+
+            text = arr[0];
+            arr = RGraph.array_shift(arr);
+
+            var nextline = arr.join('\r\n')
 
             RGraph.Text(context, font, size, arguments[9] == -90 ? (x + (size * 1.5)) : x, y + (size * 1.5), nextline, arguments[6] ? arguments[6] : null, 'center', arguments[8], arguments[9], arguments[10], arguments[11], arguments[12]);
-
-            text = text.replace(/\r?\n.*$/, '');
-
         }
 
 
@@ -383,17 +396,50 @@
     RGraph.Clear = function (canvas)
     {
         var context = canvas.getContext('2d');
+        var color   = arguments[1];
 
-        context.fillStyle = arguments[1] ? String(arguments[1]) : 'white';
+        if (RGraph.isIE8() && !color) {
+            color = 'white';
+        }
 
-        context = canvas.getContext('2d');
-        context.beginPath();
-        context.fillRect(-5,-5,canvas.width + 5,canvas.height + 5);
-        context.fill();
+        /**
+        * Can now clear the canvas back to fully transparent
+        */
+        if (!color || (color && color == 'transparent')) {
+
+            context.fillStyle = 'rgba(0,0,0,0)';
+            context.globalCompositeOperation = 'source-in';
+            context = canvas.getContext('2d');
+            context.beginPath();
+            context.fillRect(-1000,-1000,canvas.width + 2000,canvas.height + 2000);
+            context.fill();
+
+            // Reset the globalCompositeOperation
+            context.globalCompositeOperation = 'source-over';
+
+        } else {
+
+            context.fillStyle = color;
+            context = canvas.getContext('2d');
+            context.beginPath();
+
+            if (RGraph.isIE8()) {
+                context.fillRect(0,0,canvas.width,canvas.height);
+            } else {
+                context.fillRect(-1000,-1000,canvas.width + 2000,canvas.height + 2000);
+            }
+
+            context.fill();
+        }
+
+        // Don't do this as it also clears any translation that may have occurred
+        //canvas.width = canvas.width;
 
         if (RGraph.ClearAnnotations) {
             RGraph.ClearAnnotations(canvas.id);
         }
+
+        RGraph.FireCustomEvent(canvas.__object__, 'onclear');
     }
 
 
@@ -406,16 +452,19 @@
     * @param integer        The center X point (optional - if not given it will be generated from the canvas width)
     * @param integer        Size of the text. If not given it will be 14
     */
-    RGraph.DrawTitle = function (canvas, text, gutter)
+    RGraph.DrawTitle = function (canvas, text, gutterTop)
     {
-        var obj     = canvas.__object__;
-        var context = canvas.getContext('2d');
-        var size    = arguments[4] ? arguments[4] : 12;
-        var centerx = (arguments[3] ? arguments[3] : canvas.width / 2);
-        var keypos  = obj.Get('chart.key.position');
-        var vpos    = gutter / 2;
-        var hpos    = obj.Get('chart.title.hpos');
-        var bgcolor = obj.Get('chart.title.background');
+        var obj          = canvas.__object__;
+        var context      = canvas.getContext('2d');
+        var gutterLeft   = obj.Get('chart.gutter.left');
+        var gutterRight  = obj.Get('chart.gutter.right');
+        var gutterBottom = obj.Get('chart.gutter.bottom');
+        var size         = arguments[4] ? arguments[4] : 12;
+        var centerx      = (arguments[3] ? arguments[3] : ((RGraph.GetWidth(obj) - gutterLeft - gutterRight) / 2) + gutterLeft);
+        var keypos       = obj.Get('chart.key.position');
+        var vpos         = obj.Get('chart.title.vpos');
+        var hpos         = obj.Get('chart.title.hpos');
+        var bgcolor      = obj.Get('chart.title.background');
 
         // Account for 3D effect by faking the key position
         if (obj.type == 'bar' && obj.Get('chart.variant') == '3d') {
@@ -440,7 +489,17 @@
 
         // if chart.title.vpos does not equal 0.5, use that
         if (typeof(obj.Get('chart.title.vpos')) == 'number') {
-            vpos = obj.Get('chart.title.vpos') * gutter;
+            vpos = obj.Get('chart.title.vpos') * gutterTop;
+
+            if (obj.Get('chart.xaxispos') == 'top') {
+                vpos = obj.Get('chart.title.vpos') * gutterBottom + gutterTop + (obj.canvas.height - gutterTop - gutterBottom);
+            }
+        } else {
+            vpos = gutterTop - size - 5;
+
+            if (obj.Get('chart.xaxispos') == 'top') {
+                vpos = obj.canvas.height  - gutterBottom + size + 5;
+            }
         }
 
         // if chart.title.hpos is a number, use that. It's multiplied with the (entire) canvas width
@@ -668,11 +727,14 @@
     */
     RGraph.background.Draw = function (obj)
     {
-        var canvas  = obj.canvas;
-        var context = obj.context;
-        var height  = 0;
-        var gutter  = obj.Get('chart.gutter');
-        var variant = obj.Get('chart.variant');
+        var canvas       = obj.canvas;
+        var context      = obj.context;
+        var height       = 0;
+        var gutterLeft   = obj.Get('chart.gutter.left');
+        var gutterRight  = obj.Get('chart.gutter.right');
+        var gutterTop    = obj.Get('chart.gutter.top');
+        var gutterBottom = obj.Get('chart.gutter.bottom');
+        var variant      = obj.Get('chart.variant');
 
         context.fillStyle = obj.Get('chart.text.color');
 
@@ -689,18 +751,39 @@
             var font = obj.Get('chart.text.font');
 
             context.beginPath();
-            RGraph.Text(context, font, size + 2, obj.canvas.width / 2, canvas.height - (gutter * obj.Get('chart.title.xaxis.pos')), obj.Get('chart.title.xaxis'), 'center', 'center', false, false, false, true);
+            RGraph.Text(context, font, size + 2, RGraph.GetWidth(obj) / 2, RGraph.GetHeight(obj) - (gutterBottom * obj.Get('chart.title.xaxis.pos')), obj.Get('chart.title.xaxis'), 'center', 'center', false, false, false, true);
             context.fill();
         }
 
         // Y axis title
         if (typeof(obj.Get('chart.title.yaxis')) == 'string' && obj.Get('chart.title.yaxis').length) {
 
-            var size = obj.Get('chart.text.size');
-            var font = obj.Get('chart.text.font');
+            var size            = obj.Get('chart.text.size');
+            var font            = obj.Get('chart.text.font');
+            var angle           = 270;
+            var yaxis_title_pos = obj.Get('chart.title.yaxis.pos');
+
+            if (obj.Get('chart.title.yaxis.position') == 'right') {
+                angle = 90;
+                yaxis_title_pos = yaxis_title_pos * obj.Get('chart.gutter.right') + (obj.canvas.width - obj.Get('chart.gutter.right'));
+            } else {
+                yaxis_title_pos *= obj.Get('chart.gutter.left');
+            }
+
 
             context.beginPath();
-            RGraph.Text(context, font, size + 2, gutter * obj.Get('chart.title.yaxis.pos'), canvas.height / 2, obj.Get('chart.title.yaxis'), 'center', 'center', false, 270, false, true);
+            RGraph.Text(context,
+                        font,
+                        size + 2,
+                        yaxis_title_pos,
+                        RGraph.GetHeight(obj) / 2,
+                        obj.Get('chart.title.yaxis'),
+                        'center',
+                        'center',
+                        false,
+                        angle,
+                        false,
+                        true);
             context.fill();
         }
 
@@ -708,20 +791,20 @@
 
         // Draw the horizontal bars
         context.fillStyle = obj.Get('chart.background.barcolor1');
-        height = (obj.canvas.height - obj.Get('chart.gutter'));
+        height = (RGraph.GetHeight(obj) - gutterBottom);
 
-        for (var i=gutter; i < height ; i+=80) {
-            obj.context.fillRect(gutter, i, obj.canvas.width - (gutter * 2), Math.min(40, obj.canvas.height - gutter - i) );
+        for (var i=gutterTop; i < height ; i+=80) {
+            obj.context.fillRect(gutterLeft, i, RGraph.GetWidth(obj) - gutterLeft - gutterRight, Math.min(40, RGraph.GetHeight(obj) - gutterBottom - i) );
         }
 
-        context.fillStyle = obj.Get('chart.background.barcolor2');
-        height = (obj.canvas.height - gutter);
+            context.fillStyle = obj.Get('chart.background.barcolor2');
+            height = (RGraph.GetHeight(obj) - gutterBottom);
 
-        for (var i= (40 + gutter); i < height; i+=80) {
-            obj.context.fillRect(gutter, i, obj.canvas.width - (gutter * 2), i + 40 > (obj.canvas.height - gutter) ? obj.canvas.height - (gutter + i) : 40);
-        }
+            for (var i= (40 + gutterTop); i < height; i+=80) {
+                obj.context.fillRect(gutterLeft, i, RGraph.GetWidth(obj) - gutterLeft - gutterRight, i + 40 > (RGraph.GetHeight(obj) - gutterBottom) ? RGraph.GetHeight(obj) - (gutterBottom + i) : 40);
+            }
 
-        context.stroke();
+            context.stroke();
 
 
         // Draw the background grid
@@ -730,39 +813,62 @@
             // If autofit is specified, use the .numhlines and .numvlines along with the width to work
             // out the hsize and vsize
             if (obj.Get('chart.background.grid.autofit')) {
-                var vsize = (canvas.width - (2 * obj.Get('chart.gutter')) - (obj.type == 'gantt' ? 2 * obj.Get('chart.gutter') : 0)) / obj.Get('chart.background.grid.autofit.numvlines');
-                var hsize = (canvas.height - (2 * obj.Get('chart.gutter'))) / obj.Get('chart.background.grid.autofit.numhlines');
+
+                /**
+                * Align the grid to the tickmarks
+                */
+                if (obj.Get('chart.background.grid.autofit.align')) {
+
+                    // Align the horizontal lines
+                    obj.Set('chart.background.grid.autofit.numhlines', obj.Get('chart.ylabels.count'));
+
+                    // Align the vertical lines for the line
+                    if (obj.type == 'line') {
+                        if (obj.Get('chart.labels') && obj.Get('chart.labels').length) {
+                            obj.Set('chart.background.grid.autofit.numvlines', obj.Get('chart.labels').length - 1);
+                        } else {
+                            obj.Set('chart.background.grid.autofit.numvlines', obj.data[0].length - 1);
+                        }
+
+                    // Align the vertical lines for the bar
+                    } else if (obj.type == 'bar' && obj.Get('chart.labels') && obj.Get('chart.labels').length) {
+                        obj.Set('chart.background.grid.autofit.numvlines', obj.Get('chart.labels').length);
+                    }
+                }
+
+                var vsize = ((RGraph.GetWidth(obj) - gutterLeft - gutterRight)) / obj.Get('chart.background.grid.autofit.numvlines');
+                var hsize = (RGraph.GetHeight(obj) - gutterTop - gutterBottom) / obj.Get('chart.background.grid.autofit.numhlines');
 
                 obj.Set('chart.background.grid.vsize', vsize);
                 obj.Set('chart.background.grid.hsize', hsize);
             }
 
             context.beginPath();
-            context.lineWidth = obj.Get('chart.background.grid.width') ? obj.Get('chart.background.grid.width') : 1;
+            context.lineWidth   = obj.Get('chart.background.grid.width') ? obj.Get('chart.background.grid.width') : 1;
             context.strokeStyle = obj.Get('chart.background.grid.color');
 
             // Draw the horizontal lines
             if (obj.Get('chart.background.grid.hlines')) {
-                height = (canvas.height - gutter)
-                for (y=gutter; y < height; y+=obj.Get('chart.background.grid.hsize')) {
-                    context.moveTo(gutter, y);
-                    context.lineTo(canvas.width - gutter, y);
+                height = (RGraph.GetHeight(obj) - gutterBottom)
+                for (y=gutterTop; y<height; y+=obj.Get('chart.background.grid.hsize')) {
+                    context.moveTo(gutterLeft, y);
+                    context.lineTo(RGraph.GetWidth(obj) - gutterRight, y);
                 }
             }
 
             if (obj.Get('chart.background.grid.vlines')) {
                 // Draw the vertical lines
-                var width = (canvas.width - gutter)
-                for (x=gutter + (obj.type == 'gantt' ? (2 * gutter) : 0); x<=width; x+=obj.Get('chart.background.grid.vsize')) {
-                    context.moveTo(x, gutter);
-                    context.lineTo(x, obj.canvas.height - gutter);
+                var width = (RGraph.GetWidth(obj) - gutterRight)
+                for (x=gutterLeft; x<=width; x+=obj.Get('chart.background.grid.vsize')) {
+                    context.moveTo(x, gutterTop);
+                    context.lineTo(x, RGraph.GetHeight(obj) - gutterBottom);
                 }
             }
 
             if (obj.Get('chart.background.grid.border')) {
                 // Make sure a rectangle, the same colour as the grid goes around the graph
                 context.strokeStyle = obj.Get('chart.background.grid.color');
-                context.strokeRect(gutter, gutter, canvas.width - (2 * gutter), canvas.height - (2 * gutter));
+                context.strokeRect(gutterLeft, gutterTop, RGraph.GetWidth(obj) - gutterLeft - gutterRight, RGraph.GetHeight(obj) - gutterTop - gutterBottom);
             }
         }
 
@@ -777,10 +883,14 @@
         if ( typeof(obj.Get('chart.title')) == 'string') {
 
             if (obj.type == 'gantt') {
-                gutter /= 2;
+                gutterTop -= 10;
             }
 
-            RGraph.DrawTitle(canvas, obj.Get('chart.title'), gutter, null, obj.Get('chart.text.size') + 2);
+            RGraph.DrawTitle(canvas,
+                             obj.Get('chart.title'),
+                             gutterTop,
+                             null,
+                             obj.Get('chart.text.size') + 2);
         }
 
         context.stroke();
@@ -855,14 +965,30 @@
         */
         var keypos   = obj.Get('chart.key.position');
         var textsize = obj.Get('chart.text.size');
-        var gutter   = obj.Get('chart.gutter');
 
         /**
         * Change the older chart.key.vpos to chart.key.position.y
         */
         if (typeof(obj.Get('chart.key.vpos')) == 'number') {
-            obj.Set('chart.key.position.y', obj.Get('chart.key.vpos') * gutter);
+            obj.Set('chart.key.position.y', obj.Get('chart.key.vpos') * this.Get('chart.gutter.top') );
         }
+
+        /**
+        * Account for null values in the key
+        */
+        var key_non_null    = [];
+        var colors_non_null = [];
+        for (var i=0; i<key.length; ++i) {
+            if (key[i] != null) {
+                colors_non_null.push(colors[i]);
+                key_non_null.push(key[i]);
+            }
+        }
+
+        key    = key_non_null;
+        colors = colors_non_null;
+
+
 
         if (keypos && keypos == 'gutter') {
 
@@ -898,17 +1024,25 @@
         var context     = obj.context;
         var text_size   = typeof(obj.Get('chart.key.text.size')) == 'number' ? obj.Get('chart.key.text.size') : obj.Get('chart.text.size');
         var text_font   = obj.Get('chart.text.font');
-        var gutter      = obj.Get('chart.gutter');
-        var hpos        = obj.Get('chart.yaxispos') == 'right' ? gutter + 10 : canvas.width - gutter - 10;
-        var vpos        = gutter + 10;
+
+        var gutterLeft   = obj.Get('chart.gutter.left');
+        var gutterRight  = obj.Get('chart.gutter.right');
+        var gutterTop    = obj.Get('chart.gutter.top');
+        var gutterBottom = obj.Get('chart.gutter.bottom');
+
+        var hpos        = obj.Get('chart.yaxispos') == 'right' ? gutterLeft + 10 : RGraph.GetWidth(obj) - gutterRight - 10;
+        var vpos        = gutterTop + 10;
         var title       = obj.Get('chart.title');
         var blob_size   = text_size; // The blob of color
         var hmargin      = 8; // This is the size of the gaps between the blob of color and the text
         var vmargin      = 4; // This is the vertical margin of the key
-        var fillstyle   = obj.Get('chart.key.background');
-        var strokestyle = 'black';
-        var height      = 0;
-        var width       = 0;
+        var fillstyle    = obj.Get('chart.key.background');
+        var strokestyle  = '#333';
+        var height       = 0;
+        var width        = 0;
+
+
+        obj.coordsKey = [];
 
 
         // Need to set this so that measuring the text works out OK
@@ -931,13 +1065,27 @@
         if (   obj.Get('chart.yaxispos') == 'left'
             || (obj.type == 'pie' && !obj.Get('chart.yaxispos'))
             || (obj.type == 'hbar' && !obj.Get('chart.yaxispos'))
+            || (obj.type == 'hbar' && obj.Get('chart.yaxispos') == 'center')
             || (obj.type == 'rscatter' && !obj.Get('chart.yaxispos'))
-            || (obj.type == 'tradar' && !obj.Get('chart.yaxispos'))
+            || (obj.type == 'radar' && !obj.Get('chart.yaxispos'))
             || (obj.type == 'rose' && !obj.Get('chart.yaxispos'))
             || (obj.type == 'funnel' && !obj.Get('chart.yaxispos'))
+            || (obj.type == 'vprogress' && !obj.Get('chart.yaxispos'))
+            || (obj.type == 'hprogress' && !obj.Get('chart.yaxispos'))
            ) {
 
             hpos -= width;
+        }
+
+        /**
+        * Horizontal alignment
+        */
+        if (typeof(obj.Get('chart.key.halign')) == 'string') {
+            if (obj.Get('chart.key.halign') == 'left') {
+                hpos = gutterLeft + 10;
+            } else if (obj.Get('chart.key.halign') == 'right') {
+                hpos = RGraph.GetWidth(obj) - gutterRight  - width;
+            }
         }
 
         /**
@@ -970,37 +1118,14 @@
 
 
         if (arguments[3] != false) {
-            /*
-            // Manually draw the MSIE shadow
-            if (RGraph.isIE8() && obj.Get('chart.key.shadow')) {
-                context.beginPath();
-                context.fillStyle   = '#666';
 
-                if (obj.Get('chart.key.rounded')) {
-                    RGraph.NoShadow(obj);
-                    context.beginPath();
-                        RGraph.filledCurvyRect(context,
-                                               xpos + obj.Get('chart.key.shadow.offsetx'),
-                                               gutter + 5 + obj.Get('chart.key.shadow.offsety'),
-                                               width - 5,
-                                               5 + ( (textsize + 5) * key.length),
-                                               5);
-                    context.closePath();
-                    context.fill();
-
-                } else {
-                    context.fillRect(xpos + 2, gutter + 5 + 2, width - 5, 5 + ( (textsize + 5) * key.length));
-                }
-                context.fill();
-                context.fillStyle   = obj.Get('chart.key.background');
-            }
-            */
+            context.lineWidth = obj.Get('chart.key.linewidth') ? obj.Get('chart.key.linewidth') : 1;
 
             // The older square rectangled key
             if (obj.Get('chart.key.rounded') == true) {
                 context.beginPath();
                     context.strokeStyle = strokestyle;
-                    RGraph.strokedCurvyRect(context, hpos, vpos, width - 5, 5 + ( (text_size + 5) * key.length),4);
+                    RGraph.strokedCurvyRect(context, hpos, vpos, width - 5, 5 + ( (text_size + 5) * RGraph.getKeyLength(key)),4);
 
                 context.stroke();
                 context.fill();
@@ -1008,16 +1133,18 @@
                 RGraph.NoShadow(obj);
 
             } else {
-                context.strokeRect(hpos, vpos, width - 5, 5 + ( (text_size + 5) * key.length));
-                context.fillRect(hpos, vpos, width - 5, 5 + ( (text_size + 5) * key.length));
+                context.strokeRect(hpos, vpos, width - 5, 5 + ( (text_size + 5) * RGraph.getKeyLength(key)));
+                context.fillRect(hpos, vpos, width - 5, 5 + ( (text_size + 5) * RGraph.getKeyLength(key)));
             }
         }
 
         RGraph.NoShadow(obj);
 
         context.beginPath();
+
             // Draw the labels given
             for (var i=key.length - 1; i>=0; i--) {
+
                 var j = Number(i) + 1;
 
                 // Draw the blob of color
@@ -1050,8 +1177,157 @@
                             hpos + blob_size + 5 + 5,
                             vpos + (5 * j) + (text_size * j),
                             key[i]);
+
+                if (obj.Get('chart.key.interactive')) {
+
+                    var px = hpos + 5;
+                    var py = vpos + (5 * j) + (text_size * j) - text_size;
+                    var pw = width - 5 - 5 - 5;
+                    var ph = text_size;
+
+
+                    obj.coordsKey.push([px, py, pw, ph]);
+                }
+
             }
         context.fill();
+
+        /**
+        * Install the interactivity event handler
+        */
+        if (obj.Get('chart.key.interactive')) {
+
+            RGraph.Register(obj);
+
+            var key_mousemove = function (e)
+            {
+                var obj         = e.target.__object__;
+                var canvas      = obj.canvas;
+                var context     = obj.context;
+                var mouseCoords = RGraph.getMouseXY(e);
+                var mouseX      = mouseCoords[0];
+                var mouseY      = mouseCoords[1];
+
+                for (var i=0; i<obj.coordsKey.length; ++i) {
+
+                    var px = obj.coordsKey[i][0];
+                    var py = obj.coordsKey[i][1];
+                    var pw = obj.coordsKey[i][2];
+                    var ph = obj.coordsKey[i][3];
+
+                    if (   mouseX > px && mouseX < (px + pw) && mouseY > py && mouseY < (py + ph) ) {
+
+                        // Necessary?
+                        //var index = obj.coordsKey.length - i - 1;
+
+                        canvas.style.cursor = 'pointer';
+
+                        return;
+                    }
+
+                    canvas.style.cursor = 'default';
+                }
+            }
+            canvas.addEventListener('mousemove', key_mousemove, false);
+            RGraph.AddEventListener(canvas.id, 'mousemove', key_mousemove);
+
+
+            var key_click = function (e)
+            {
+                RGraph.Redraw();
+
+                var obj         = e.target.__object__;
+                var canvas      = obj.canvas;
+                var context     = obj.context;
+                var mouseCoords = RGraph.getMouseXY(e);
+                var mouseX      = mouseCoords[0];
+                var mouseY      = mouseCoords[1];
+
+                RGraph.DrawKey(obj, obj.Get('chart.key'), obj.Get('chart.colors'));
+
+                for (var i=0; i<obj.coordsKey.length; ++i) {
+
+                    var px = obj.coordsKey[i][0];
+                    var py = obj.coordsKey[i][1];
+                    var pw = obj.coordsKey[i][2];
+                    var ph = obj.coordsKey[i][3];
+
+                    if (   mouseX > px && mouseX < (px + pw) && mouseY > py && mouseY < (py + ph) ) {
+
+                        var index = obj.coordsKey.length - i - 1;
+
+                        // HIGHLIGHT THE LINE HERE
+                        context.beginPath();
+                        context.strokeStyle = 'rgba(0,0,0,0.5)';
+                        context.lineWidth  = obj.Get('chart.linewidth') + 2;
+                        for (var j=0; j<obj.coords2[index].length; ++j) {
+
+                            var x = obj.coords2[index][j][0];
+                            var y = obj.coords2[index][j][1];
+
+                            if (j == 0) {
+                                context.moveTo(x, y);
+                            } else {
+                                context.lineTo(x, y);
+                            }
+                        }
+                        context.stroke();
+
+
+                        context.lineWidth  = 1;
+                        context.beginPath();
+                            context.strokeStyle = 'black';
+                            context.fillStyle   = 'white';
+
+                            RGraph.SetShadow(obj, 'rgba(0,0,0,0.5)', 0,0,10);
+
+                            context.strokeRect(px - 2, py - 2, pw + 4, ph + 4);
+                            context.fillRect(px - 2, py - 2, pw + 4, ph + 4);
+
+                        context.stroke();
+                        context.fill();
+
+
+                        RGraph.NoShadow(obj);
+
+
+                        context.beginPath();
+                            context.fillStyle = obj.Get('chart.colors')[obj.Get('chart.colors').length - i - 1];
+                            context.fillRect(px, py, blob_size, blob_size);
+                        context.fill();
+
+                        context.beginPath();
+                            context.fillStyle = obj.Get('chart.text.color');
+
+                            RGraph.Text(context,
+                                        obj.Get('chart.text.font'),
+                                        obj.Get('chart.text.size'),
+                                        px + 5 + blob_size,
+                                        py + ph,
+                                        obj.Get('chart.key')[obj.Get('chart.key').length - i - 1]
+                                       );
+                        context.fill();
+
+
+                        canvas.style.cursor = 'pointer';
+
+                        return;
+                    }
+
+                    canvas.style.cursor = 'default';
+                }
+            }
+            canvas.addEventListener('click', key_click, false);
+            RGraph.AddEventListener(canvas.id, 'click', key_click);
+
+
+            //var key_window_click = function (e)
+            //{
+            //    RGraph.Redraw();
+            //}
+            //window.addEventListener('click', key_window_click, false);
+            //RGraph.AddEventListener(canvas.id, 'window_click', key_window_click);
+        }
     }
 
 
@@ -1072,9 +1348,14 @@
         var context     = obj.context;
         var text_size   = typeof(obj.Get('chart.key.text.size')) == 'number' ? obj.Get('chart.key.text.size') : obj.Get('chart.text.size');
         var text_font   = obj.Get('chart.text.font');
-        var gutter      = obj.Get('chart.gutter');
-        var hpos        = canvas.width / 2;
-        var vpos        = (gutter / 2) - 5;
+
+        var gutterLeft   = obj.Get('chart.gutter.left');
+        var gutterRight  = obj.Get('chart.gutter.right');
+        var gutterTop    = obj.Get('chart.gutter.top');
+        var gutterBottom = obj.Get('chart.gutter.bottom');
+
+        var hpos        = RGraph.GetWidth(obj) / 2;
+        var vpos        = (gutterTop / 2) - 5;
         var title       = obj.Get('chart.title');
         var blob_size   = text_size; // The blob of color
         var hmargin      = 8; // This is the size of the gaps between the blob of color and the text
@@ -1103,10 +1384,10 @@
         */
         if (obj.type == 'pie') {
             if (obj.Get('chart.align') == 'left') {
-                var hpos = obj.radius + obj.Get('chart.gutter');
+                var hpos = obj.radius + gutterLeft;
 
             } else if (obj.Get('chart.align') == 'right') {
-                var hpos = obj.canvas.width - obj.radius - obj.Get('chart.gutter');
+                var hpos = obj.canvas.width - obj.radius - gutterRight;
 
             } else {
                 hpos = canvas.width / 2;
@@ -1214,6 +1495,25 @@
     }
 
 
+    /**
+    * Returns the key length, but accounts for null values
+    *
+    * @param array key The key elements
+    */
+    RGraph.getKeyLength = function (key)
+    {
+        var len = 0;
+
+        for (var i=0; i<key.length; ++i) {
+            if (key[i] != null) {
+                ++len;
+            }
+        }
+
+        return len;
+    }
+
+
 
 
 
@@ -1298,6 +1598,10 @@
         RegExp.$1   = '';
         var i,j;
 
+if (typeof(obj.Get('chart.scale.formatter')) == 'function') {
+    return obj.Get('chart.scale.formatter')(obj, num);
+}
+
         // Ignore the preformatted version of "1e-2"
         if (String(num).indexOf('e') > 0) {
             return String(prepend + String(num) + append);
@@ -1354,7 +1658,7 @@
 
         // Minor bugette
         if (output.charAt(0) == '-') {
-            output *= -1;
+            output = output.replace(/-/, '');
             prepend = '-' + prepend;
         }
 
@@ -1416,17 +1720,25 @@
                 height /= 2;
             }
 
-            ystart += obj.Get('chart.gutter')
+            ystart += obj.Get('chart.gutter.top')
 
-            var x = obj.Get('chart.gutter');
+            var x = obj.Get('chart.gutter.left');
             var y = ystart - height;
-            var w = obj.canvas.width - (2 * obj.Get('chart.gutter'));
+            var w = obj.canvas.width - obj.Get('chart.gutter.left') - obj.Get('chart.gutter.right');
             var h = height;
 
             // Accommodate Opera :-/
             if (navigator.userAgent.indexOf('Opera') != -1 && obj.Get('chart.xaxispos') == 'center' && h < 0) {
                 h *= -1;
                 y = y - h;
+            }
+
+            /**
+            * Account for X axis at the top
+            */
+            if (obj.Get('chart.xaxispos') == 'top') {
+                y  = obj.canvas.height - y;
+                h *= -1;
             }
 
             obj.context.fillStyle = hbars[i][2];
@@ -1490,12 +1802,20 @@
                         var y      = (obj.type == 'bar' ? coords[1] + (coords[3] / 2) : coords[1]);
                         var length = typeof(labels_processed[i][4]) == 'number' ? labels_processed[i][4] : 25;
 
+
                         context.beginPath();
                         context.fillStyle   = 'black';
                         context.strokeStyle = 'black';
 
 
                         if (obj.type == 'bar') {
+
+                            /**
+                            * X axis at the top
+                            */
+                            if (obj.Get('chart.xaxispos') == 'top') {
+                                length *= -1;
+                            }
 
                             if (obj.Get('chart.variant') == 'dot') {
                                 context.moveTo(x, obj.coords[i][1] - 5);
@@ -1568,7 +1888,6 @@
 
                             context.fill();
                         }
-
 
                         // Taken out on the 10th Nov 2010 - unnecessary
                         //var width = context.measureText(labels[i]).width;
@@ -1657,10 +1976,14 @@
                 var e       = RGraph.FixEventObject(e);
                 var canvas  = obj.canvas;
                 var context = obj.context;
-                var gutter  = obj.Get('chart.gutter');
                 var width   = canvas.width;
                 var height  = canvas.height;
                 var adjustments = obj.Get('chart.tooltips.coords.adjust');
+
+                var gutterLeft   = obj.Get('chart.gutter.left');
+                var gutterRight  = obj.Get('chart.gutter.right');
+                var gutterTop    = obj.Get('chart.gutter.top');
+                var gutterBottom = obj.Get('chart.gutter.bottom');
 
                 var mouseCoords = RGraph.getMouseXY(e);
                 var x = mouseCoords[0];
@@ -1674,10 +1997,10 @@
                 RGraph.Clear(canvas);
                 obj.Draw();
 
-                if (   x >= gutter
-                    && y >= gutter
-                    && x <= (width - gutter)
-                    && y <= (height - gutter)
+                if (   x >= gutterLeft
+                    && y >= gutterTop
+                    && x <= (width - gutterRight)
+                    && y <= (height - gutterBottom)
                    ) {
 
                     var linewidth = obj.Get('chart.crosshairs.linewidth');
@@ -1687,12 +2010,12 @@
                     context.strokeStyle = obj.Get('chart.crosshairs.color');
 
                     // Draw a top vertical line
-                    context.moveTo(x, gutter);
-                    context.lineTo(x, height - gutter);
+                    context.moveTo(x, gutterTop);
+                    context.lineTo(x, height - gutterBottom);
 
                     // Draw a horizontal line
-                    context.moveTo(gutter, y);
-                    context.lineTo(width - gutter, y);
+                    context.moveTo(gutterLeft, y);
+                    context.lineTo(width - gutterRight, y);
 
                     context.stroke();
 
@@ -1702,9 +2025,9 @@
                     if (obj.Get('chart.crosshairs.coords')) {
                         if (obj.type == 'scatter') {
 
-                            var xCoord = (((x - obj.Get('chart.gutter')) / (obj.canvas.width - (2 * obj.Get('chart.gutter')))) * (obj.Get('chart.xmax') - obj.Get('chart.xmin'))) + obj.Get('chart.xmin');
+                            var xCoord = (((x - obj.Get('chart.gutter.left')) / (obj.canvas.width - gutterLeft - gutterRight)) * (obj.Get('chart.xmax') - obj.Get('chart.xmin'))) + obj.Get('chart.xmin');
                                 xCoord = xCoord.toFixed(obj.Get('chart.scale.decimals'));
-                            var yCoord = obj.max - (((y - obj.Get('chart.gutter')) / (obj.canvas.height - (2 * obj.Get('chart.gutter')))) * obj.max);
+                            var yCoord = obj.max - (((y - obj.Get('chart.gutter.top')) / (obj.canvas.height - gutterTop - gutterBottom)) * obj.max);
 
                                 if (obj.type == 'scatter' && obj.Get('chart.xaxispos') == 'center') {
                                     yCoord = (yCoord - (obj.max / 2)) * 2;
@@ -1743,8 +2066,8 @@
                                 div.style.left = Math.max(2, (e.pageX - div.offsetWidth - 3)) + 'px';
                                 div.style.top = Math.max(2, (e.pageY - div.offsetHeight - 3))  + 'px';
                             } else {
-                                div.style.left = canvasXY[0] + obj.Get('chart.gutter') + 3 + 'px';
-                                div.style.top  = canvasXY[1] + obj.Get('chart.gutter') + 3 + 'px';
+                                div.style.left = canvasXY[0] + gutterLeft + 3 + 'px';
+                                div.style.top  = canvasXY[1] + gutterTop + 3 + 'px';
                             }
 
                             div.innerHTML = '<span style="color: #666">' + obj.Get('chart.crosshairs.coords.labels.x') + ':</span> ' + xCoord + '<br><span style="color: #666">' + obj.Get('chart.crosshairs.coords.labels.y') + ':</span> ' + yCoord;
@@ -1805,7 +2128,11 @@
     */
     RGraph.Draw3DAxes = function (obj)
     {
-        var gutter  = obj.Get('chart.gutter');
+        var gutterLeft    = obj.Get('chart.gutter.left');
+        var gutterRight   = obj.Get('chart.gutter.right');
+        var gutterTop     = obj.Get('chart.gutter.top');
+        var gutterBottom  = obj.Get('chart.gutter.bottom');
+
         var context = obj.context;
         var canvas  = obj.canvas;
 
@@ -1814,10 +2141,10 @@
 
         // Draw the vertical left side
         context.beginPath();
-            context.moveTo(gutter, gutter);
-            context.lineTo(gutter + 10, gutter - 5);
-            context.lineTo(gutter + 10, canvas.height - gutter - 5);
-            context.lineTo(gutter, canvas.height - gutter);
+            context.moveTo(gutterLeft, gutterTop);
+            context.lineTo(gutterLeft + 10, gutterTop - 5);
+            context.lineTo(gutterLeft + 10, canvas.height - gutterBottom - 5);
+            context.lineTo(gutterLeft, canvas.height - gutterBottom);
         context.closePath();
 
         context.stroke();
@@ -1825,10 +2152,10 @@
 
         // Draw the bottom floor
         context.beginPath();
-            context.moveTo(gutter, canvas.height - gutter);
-            context.lineTo(gutter + 10, canvas.height - gutter - 5);
-            context.lineTo(canvas.width - gutter + 10,  canvas.height - gutter - 5);
-            context.lineTo(canvas.width - gutter, canvas.height - gutter);
+            context.moveTo(gutterLeft, canvas.height - gutterBottom);
+            context.lineTo(gutterLeft + 10, canvas.height - gutterBottom - 5);
+            context.lineTo(canvas.width - gutterRight + 10,  canvas.height - gutterBottom - 5);
+            context.lineTo(canvas.width - gutterRight, canvas.height - gutterBottom);
         context.closePath();
 
         context.stroke();
@@ -1918,116 +2245,6 @@
         }
     }
 
-
-    /**
-    * This function is for use with circular graph types, eg the Pie or Radar. Pass it your event object
-    * and it will pass you back the corresponding segment details as an array:
-    *
-    * [x, y, r, startAngle, endAngle]
-    *
-    * Angles are measured in degrees, and are measured from the "east" axis (just like the canvas).
-    *
-    * @param object e   Your event object
-    */
-    RGraph.getSegment = function (e)
-    {
-        RGraph.FixEventObject(e);
-
-        // The optional arg provides a way of allowing some accuracy (pixels)
-        var accuracy = arguments[1] ? arguments[1] : 0;
-
-        var obj         = e.target.__object__;
-        var canvas      = obj.canvas;
-        var context     = obj.context;
-        var mouseCoords = RGraph.getMouseXY(e);
-        var x           = mouseCoords[0] - obj.centerx;
-        var y           = mouseCoords[1] - obj.centery;
-        var r           = obj.radius;
-        var theta       = Math.atan(y / x); // RADIANS
-        var hyp         = y / Math.sin(theta);
-        var angles      = obj.angles;
-        var ret         = [];
-        var hyp         = (hyp < 0) ? hyp + accuracy : hyp - accuracy;
-
-
-        // Put theta in DEGREES
-        theta *= 57.3
-
-        // hyp should not be greater than radius if it's a Rose chart
-        if (obj.type == 'rose') {
-            if (   (isNaN(hyp) && Math.abs(mouseCoords[0]) < (obj.centerx - r) )
-                || (isNaN(hyp) && Math.abs(mouseCoords[0]) > (obj.centerx + r))
-                || (!isNaN(hyp) && Math.abs(hyp) > r)) {
-                return;
-            }
-        }
-
-        /**
-        * Account for the correct quadrant
-        */
-        if (x < 0 && y >= 0) {
-            theta += 180;
-        } else if (x < 0 && y < 0) {
-            theta += 180;
-        } else if (x > 0 && y < 0) {
-            theta += 360;
-        }
-
-        /**
-        * Account for the rose chart
-        */
-        if (obj.type == 'rose') {
-            theta += 90;
-        }
-
-        if (theta > 360) {
-            theta -= 360;
-        }
-
-        for (var i=0; i<angles.length; ++i) {
-            if (theta >= angles[i][0] && theta < angles[i][1]) {
-
-                hyp = Math.abs(hyp);
-
-                if (obj.type == 'rose' && hyp > angles[i][2]) {
-                    return null;
-                }
-
-                if (!hyp || (obj.type == 'pie' && obj.radius && hyp > obj.radius) ) {
-                    return null;
-                }
-
-                if (obj.type == 'pie' && obj.Get('chart.variant') == 'donut' && (hyp > obj.radius || hyp < (obj.radius / 2) ) ) {
-                    return null;
-                }
-
-                ret[0] = obj.centerx;
-                ret[1] = obj.centery;
-                ret[2] = (obj.type == 'rose') ? angles[i][2] : obj.radius;
-                ret[3] = angles[i][0];
-                ret[4] = angles[i][1];
-                ret[5] = i;
-
-                if (obj.type == 'rose') {
-
-                    ret[3] -= 90;
-                    ret[4] -= 90;
-
-                    if (x > 0 && y < 0) {
-                        ret[3] += 360;
-                        ret[4] += 360;
-                    }
-                }
-
-                if (ret[3] < 0) ret[3] += 360;
-                if (ret[4] > 360) ret[4] -= 360;
-
-                return ret;
-            }
-        }
-
-        return null;
-    }
 
 
     /**
@@ -2275,6 +2492,8 @@
         }
 
         RGraph.events[obj.id].push([obj, name, func]);
+
+        return RGraph.events[obj.id].length - 1;
     }
 
 
@@ -2286,11 +2505,17 @@
     */
     RGraph.FireCustomEvent = function (obj, name)
     {
-        for (i in RGraph.events) {
-            if (typeof(i) == 'string' && i == obj.id && RGraph.events[i].length > 0) {
-                for(var j=0; j<RGraph.events[i].length; ++j) {
-                    if (RGraph.events[i][j][1] == name) {
-                        RGraph.events[i][j][2](obj);
+        if (obj && obj.isRGraph) {
+            var id = obj.id;
+
+            if (   typeof(id) == 'string'
+                && typeof(RGraph.events) == 'object'
+                && typeof(RGraph.events[id]) == 'object'
+                && RGraph.events[id].length > 0) {
+
+                for(var j=0; j<RGraph.events[id].length; ++j) {
+                    if (RGraph.events[id][j] && RGraph.events[id][j][1] == name) {
+                        RGraph.events[id][j][2](obj);
                     }
                 }
             }
@@ -2328,7 +2553,7 @@
 
 
     /**
-    * This clears a canvases event handlers.
+    * This clears a canvases event handlers. Used at the start of each graphs .Draw() method.
     *
     * @param string id The ID of the canvas whose event handlers will be cleared
     */
@@ -2414,11 +2639,11 @@
     * @param object obj    The graph object
     * @param object config The graph configuration information
     */
-    RGraph.SetConfig = function (obj, config)
+    RGraph.SetConfig = function (obj, c)
     {
-        for (i in config) {
+        for (i in c) {
             if (typeof(i) == 'string') {
-                obj.Set(i, config[i]);
+                obj.Set(i, c[i]);
             }
         }
 
@@ -2434,9 +2659,7 @@
     */
     RGraph.GetHeight = function (obj)
     {
-        var height = obj.Get('chart.height');
-
-        return height ? height : obj.canvas.height;
+        return obj.canvas.height;
     }
 
 
@@ -2448,7 +2671,95 @@
     */
     RGraph.GetWidth = function (obj)
     {
-        var width = obj.Get('chart.width');
+        return obj.canvas.width;
+    }
 
-        return width ? width : obj.canvas.width;
+
+    /**
+    * Clears all the custom event listeners that have been registered
+    *
+    * @param    string Limits the clearing to this object ID
+    */
+    RGraph.RemoveAllCustomEventListeners = function ()
+    {
+        var id = arguments[0];
+
+        if (id && RGraph.events[id]) {
+            RGraph.events[id] = [];
+        } else {
+            RGraph.events = [];
+        }
+    }
+
+
+    /**
+    * Clears a particular custom event listener
+    *
+    * @param object obj The graph object
+    * @param number i   This is the index that is return by .AddCustomEventListener()
+    */
+    RGraph.RemoveCustomEventListener = function (obj, i)
+    {
+        if (   typeof(RGraph.events) == 'object'
+            && typeof(RGraph.events[obj.id]) == 'object'
+            && typeof(RGraph.events[obj.id][i]) == 'object') {
+
+            RGraph.events[obj.id][i] = null;
+        }
+    }
+
+
+    /**
+    * This draws the background
+    *
+    * @param object obj The graph object
+    */
+    RGraph.DrawBackgroundImage = function (obj)
+    {
+        var img = new Image();
+        img.__object__  = obj;
+        img.__canvas__  = obj.canvas;
+        img.__context__ = obj.context;
+        img.src         = obj.Get('chart.background.image');
+
+        obj.__background_image__ = img;
+
+        img.onload = function ()
+        {
+            var obj = this.__object__;
+
+            var gutterLeft   = obj.Get('chart.gutter.left');
+            var gutterRight  = obj.Get('chart.gutter.right');
+            var gutterTop    = obj.Get('chart.gutter.top');
+            var gutterBottom = obj.Get('chart.gutter.bottom');
+
+            RGraph.Clear(obj.canvas);
+
+            obj.context.drawImage(this,gutterLeft,gutterTop, RGraph.GetWidth(obj) - gutterLeft - gutterRight, RGraph.GetHeight(obj) - gutterTop - gutterBottom);
+
+            // Draw the graph
+            obj.Draw();
+        }
+
+        img.onerror = function ()
+        {
+            var obj = this.__canvas__.__object__;
+
+            // Show an error alert
+            alert('[ERROR] There was an error with the background image that you specified: ' + img.src);
+
+            // Draw the graph, because the onload doesn't fire, and thus that won't draw the chart
+            obj.Draw();
+        }
+    }
+
+
+    /**
+    * This resets the canvas. Keep in mind that any translate() that has been performed will also be reset.
+    *
+    * @param object canvas The canvas
+    */
+    RGraph.Reset = function (canvas)
+    {
+        canvas.width = canvas.width;
     }

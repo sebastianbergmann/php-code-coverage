@@ -553,7 +553,8 @@ class PHP_CodeCoverage
                 );
             }
         }
-        else if ($this->forceCoversAnnotation && $id != 'UNCOVERED_FILES_FROM_WHITELIST') {
+
+        else if ($this->forceCoversAnnotation) {
             $data = array();
         }
     }

@@ -264,7 +264,10 @@ class PHP_CodeCoverage
         $this->applySelfFilter($data);
         $this->applyListsFilter($data, $filterGroups);
         $raw = $data;
-        $this->applyCoversAnnotationFilter($data, $id);
+
+        if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
+            $this->applyCoversAnnotationFilter($data, $id);
+        }
 
         if (!empty($data)) {
             if ($id instanceof PHPUnit_Framework_TestCase) {

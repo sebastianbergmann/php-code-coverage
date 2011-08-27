@@ -492,7 +492,6 @@ class PHP_CodeCoverage
     protected function processUncoveredFilesFromWhitelist()
     {
         $data           = array();
-        $includedFiles  = array_flip(get_included_files());
         $uncoveredFiles = array_diff(
           $this->filter->getWhitelist(), array_keys($this->data)
         );
@@ -546,8 +545,7 @@ class PHP_CodeCoverage
                         }
                     }
 
-                    $data[$file]          = $fileCoverage;
-                    $includedFiles[$file] = TRUE;
+                    $data[$file] = $fileCoverage;
                 }
             }
         }

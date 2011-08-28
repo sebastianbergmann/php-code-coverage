@@ -319,16 +319,9 @@ class PHP_CodeCoverage
      * Merges the data from another instance of PHP_CodeCoverage.
      *
      * @param PHP_CodeCoverage $that
-     * @param boolean          $matchPaths
      */
-    public function merge(PHP_CodeCoverage $that, $matchPaths = FALSE)
+    public function merge(PHP_CodeCoverage $that)
     {
-        if ($matchPaths) {
-            $thatData = $this->matchPaths($that->checksums, $that->data);
-        } else {
-            $thatData = $that->data;
-        }
-
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {
                 if (!$this->filter->isFiltered($file)) {
@@ -560,38 +553,5 @@ class PHP_CodeCoverage
         }
 
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
-    }
-
-    /**
-     * @param  array $checksums
-     * @param  array $data
-     * @return array
-     * @since  Method available since Release 1.1.0
-     */
-    protected function matchPaths(array $checksums, array $data)
-    {
-        $coverageWithLocalPaths = array();
-
-        foreach ($data as $originalRemotePath => $coverage) {
-            $remotePath = $originalRemotePath;
-
-            if (strpos($path, '/') !== FALSE) {
-                $separator = '/';
-            } else {
-                $separator = '\\';
-            }
-
-            while (!($localPath = PHPUnit_Util_Filesystem::fileExistsInIncludePath($remotePath)) &&
-                   strpos($remotePath, $separator) !== FALSE) {
-                $remotePath = substr($remotePath, strpos($remotePath, $separator) + 1);
-            }
-
-            if ($localPath &&
-                sha1_file($localPath) == $checksums[$originalRemotePath]) {
-                $coverageWithLocalPaths[$localPath] = $coverage;
-            }
-        }
-
-        return $coverageWithLocalPaths;
     }
 }

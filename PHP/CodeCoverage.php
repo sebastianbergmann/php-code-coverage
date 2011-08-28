@@ -155,6 +155,24 @@ class PHP_CodeCoverage
         if (!defined('PHP_TOKENSTREAM_TESTSUITE')) {
             $this->filter->addFilesToBlacklist(php_tokenstream_autoload());
         }
+
+        if (!defined('SYMFONY_TESTSUITE')) {
+            $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+              'SymfonyComponents/YAML/sfYaml.php'
+            );
+
+            if ($file) {
+                $this->filter->addFileToBlacklist($file);
+            }
+
+            $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+              'SymfonyComponents/YAML/sfYamlDumper.php'
+            );
+
+            if ($file) {
+                $this->filter->addFileToBlacklist($file);
+            }
+        }
         // @codeCoverageIgnoreEnd
 
         $this->filter->addFilesToBlacklist(text_template_autoload());

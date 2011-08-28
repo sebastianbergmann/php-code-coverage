@@ -477,7 +477,7 @@ class PHP_CodeCoverage
     protected function initializeFilesThatAreSeenTheFirstTime($data)
     {
         foreach ($data as $file => $lines) {
-            if (!isset($this->data[$file])) {
+            if (is_file($file) && !isset($this->data[$file])) {
                 $this->checksums[$file] = sha1_file($file);
                 $this->data[$file]      = array();
 

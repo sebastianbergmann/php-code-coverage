@@ -126,56 +126,7 @@ class PHP_CodeCoverage
         $this->driver = $driver;
         $this->filter = $filter;
 
-        // @codeCoverageIgnoreStart
-        if (!defined('PHP_CODECOVERAGE_TESTSUITE')) {
-            $this->filter->addFilesToBlacklist(php_codecoverage_autoload());
-        }
-
-        if (!defined('PHPUNIT_TESTSUITE')) {
-            $this->filter->addFilesToBlacklist(phpunit_autoload());
-            $this->filter->addFilesToBlacklist(phpunit_dbunit_autoload());
-            $this->filter->addFilesToBlacklist(phpunit_mockobject_autoload());
-            $this->filter->addFilesToBlacklist(phpunit_selenium_autoload());
-            $this->filter->addFilesToBlacklist(phpunit_story_autoload());
-        }
-
-        if (!defined('FILE_ITERATOR_TESTSUITE')) {
-            $this->filter->addFilesToBlacklist(file_iterator_autoload());
-        }
-
-        if (!defined('PHP_INVOKER_TESTSUITE')) {
-            $this->filter->addFilesToBlacklist(php_invoker_autoload());
-        }
-
-        if (!defined('PHP_TIMER_TESTSUITE') &&
-            function_exists('php_timer_autoload')) {
-            $this->filter->addFilesToBlacklist(php_timer_autoload());
-        }
-
-        if (!defined('PHP_TOKENSTREAM_TESTSUITE')) {
-            $this->filter->addFilesToBlacklist(php_tokenstream_autoload());
-        }
-
-        if (!defined('SYMFONY_TESTSUITE')) {
-            $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
-              'SymfonyComponents/YAML/sfYaml.php'
-            );
-
-            if ($file) {
-                $this->filter->addFileToBlacklist($file);
-            }
-
-            $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
-              'SymfonyComponents/YAML/sfYamlDumper.php'
-            );
-
-            if ($file) {
-                $this->filter->addFileToBlacklist($file);
-            }
-        }
-        // @codeCoverageIgnoreEnd
-
-        $this->filter->addFilesToBlacklist(text_template_autoload());
+        $this->prefillBlacklist();
     }
 
     /**
@@ -567,5 +518,48 @@ class PHP_CodeCoverage
         }
 
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
+    }
+
+    /**
+     * Prefills the blacklist with source files used by PHPUnit
+     * and PHP_CodeCoverage.
+     */
+    protected function prefillBlacklist()
+    {
+        $functions = array(
+          'file_iterator_autoload',
+          'php_codecoverage_autoload',
+          'php_invoker_autoload',
+          'php_timer_autoload',
+          'php_tokenstream_autoload',
+          'phpunit_autoload',
+          'phpunit_dbunit_autoload',
+          'phpunit_mockobject_autoload',
+          'phpunit_selenium_autoload',
+          'phpunit_story_autoload',
+          'text_template_autoload'
+        );
+
+        foreach ($functions as $function) {
+            if (function_exists($function)) {
+                $this->filter->addFilesToBlacklist($function());
+            }
+        }
+
+        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+          'SymfonyComponents/YAML/sfYaml.php'
+        );
+
+        if ($file) {
+            $this->filter->addFileToBlacklist($file);
+        }
+
+        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+          'SymfonyComponents/YAML/sfYamlDumper.php'
+        );
+
+        if ($file) {
+            $this->filter->addFileToBlacklist($file);
+        }
     }
 }

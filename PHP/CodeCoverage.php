@@ -143,6 +143,10 @@ class PHP_CodeCoverage
             $this->filter->addFilesToBlacklist(file_iterator_autoload());
         }
 
+        if (!defined('PHP_INVOKER_TESTSUITE')) {
+            $this->filter->addFilesToBlacklist(php_invoker_autoload());
+        }
+
         if (!defined('PHP_TIMER_TESTSUITE') &&
             function_exists('php_timer_autoload')) {
             $this->filter->addFilesToBlacklist(php_timer_autoload());

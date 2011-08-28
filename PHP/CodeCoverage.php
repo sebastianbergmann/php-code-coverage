@@ -253,7 +253,10 @@ class PHP_CodeCoverage
 
         $this->applyListsFilter($data);
         $this->initializeFilesThatAreSeenTheFirstTime($data);
-        $this->applyCoversAnnotationFilter($data, $id);
+
+        if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
+            $this->applyCoversAnnotationFilter($data, $id);
+        }
 
         if (empty($data)) {
             return;

@@ -143,8 +143,6 @@ class PHP_CodeCoverage_Report_Clover
                     );
 
                     foreach ($_class['methods'] as $methodName => $method) {
-                        $classStatistics['methods']++;
-
                         $methodCount        = 0;
                         $methodLines        = 0;
                         $methodLinesCovered = 0;
@@ -186,22 +184,26 @@ class PHP_CodeCoverage_Report_Clover
                             }
                         }
 
-                        if ($methodCount > 0) {
-                            $classStatistics['coveredMethods']++;
-                        }
+                        if ($methodLines > 0) {
+                            $classStatistics['methods']++;
 
-                        $lines[$method['startLine']] = array(
-                          'count' => $methodCount,
-                          'crap'  => PHP_CodeCoverage_Util::crap(
-                                       $method['ccn'],
-                                       PHP_CodeCoverage_Util::percent(
-                                         $methodLinesCovered,
-                                         $methodLines
-                                       )
-                                     ),
-                          'type'  => 'method',
-                          'name'  => $methodName
-                        );
+                            if ($methodCount > 0) {
+                                $classStatistics['coveredMethods']++;
+                            }
+
+                            $lines[$method['startLine']] = array(
+                              'count' => $methodCount,
+                              'crap'  => PHP_CodeCoverage_Util::crap(
+                                               $method['ccn'],
+                                           PHP_CodeCoverage_Util::percent(
+                                             $methodLinesCovered,
+                                             $methodLines
+                                           )
+                                         ),
+                              'type'  => 'method',
+                              'name'  => $methodName
+                            );
+                        }
                     }
 
                     $package = PHP_CodeCoverage_Util::getPackageInformation(

@@ -411,14 +411,13 @@ class PHP_CodeCoverage
     protected function applyCoversAnnotationFilter(&$data, $id)
     {
         if ($id instanceof PHPUnit_Framework_TestCase) {
-            $testClassName    = get_class($id);
             $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
-              $testClassName, $id->getName()
+              $id->getCoveredElements()
             );
 
             if ($this->mapTestClassNameToCoveredClassName &&
                 empty($linesToBeCovered)) {
-                $testedClass = substr($testClassName, 0, -4);
+                $testedClass = substr(get_class($id), 0, -4);
 
                 if (class_exists($testedClass)) {
                     $class = new ReflectionClass($testedClass);

@@ -66,6 +66,7 @@ require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
+require_once TEST_FILES_PATH . 'CoveredFile.php';
 require_once TEST_FILES_PATH . 'CoveredFunction.php';
 require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
 
@@ -135,6 +136,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers       PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers       PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredProvider
@@ -168,12 +170,15 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
           $expected,
           PHP_CodeCoverage_Util::getLinesToBeCovered(
-            $test, 'testSomething'
+            PHP_CodeCoverage_Util::getCoversAnnotations(
+              $test, 'testSomething'
+            )
           )
         );
     }
 
     /**
+     * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @expectedException PHP_CodeCoverage_Exception
@@ -181,11 +186,14 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeCovered2()
     {
         PHP_CodeCoverage_Util::getLinesToBeCovered(
-          'NotExistingCoveredElementTest', 'testOne'
+          PHP_CodeCoverage_Util::getCoversAnnotations(
+            'NotExistingCoveredElementTest', 'testOne'
+          )
         );
     }
 
     /**
+     * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @expectedException PHP_CodeCoverage_Exception
@@ -193,11 +201,14 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeCovered3()
     {
         PHP_CodeCoverage_Util::getLinesToBeCovered(
-          'NotExistingCoveredElementTest', 'testTwo'
+          PHP_CodeCoverage_Util::getCoversAnnotations(
+            'NotExistingCoveredElementTest', 'testTwo'
+          )
         );
     }
 
     /**
+     * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
      * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @expectedException PHP_CodeCoverage_Exception
@@ -205,7 +216,24 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeCovered4()
     {
         PHP_CodeCoverage_Util::getLinesToBeCovered(
-          'NotExistingCoveredElementTest', 'testThree'
+          PHP_CodeCoverage_Util::getCoversAnnotations(
+            'NotExistingCoveredElementTest', 'testThree'
+          )
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getCoversAnnotations
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException RuntimeException
+     */
+    public function testGetLinesToBeCovered5()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          PHP_CodeCoverage_Util::getCoversAnnotations(
+            'NotExistingCoveredElementTest', 'testFour'
+          )
         );
     }
 

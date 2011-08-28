@@ -43,18 +43,11 @@
  * @since      File available since Release 1.0.0
  */
 
-// @codeCoverageIgnoreStart
 if (!defined('T_NAMESPACE')) {
     define('T_NAMESPACE', 377);
 }
 
-if (!function_exists('trait_exists')) {
-    function trait_exists($name)
-    {
-        return FALSE;
-    }
-}
-// @codeCoverageIgnoreEnd
+require_once 'PHP/Token/Stream/CachingFactory.php';
 
 /**
  * Utility methods.
@@ -79,13 +72,6 @@ class PHP_CodeCoverage_Util
      * @var array
      */
     protected static $ignoredLines = array();
-
-    /**
-     * @var array
-     */
-    protected static $templateMethods = array(
-      'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
-    );
 
     /**
      * Builds an array representation of the directory structure.
@@ -206,57 +192,73 @@ class PHP_CodeCoverage_Util
     }
 
     /**
-     * Returns the files and lines a test method wants to cover.
+     * Returns the @covers annotations for the given method(s).
      *
-     * @param  string $className
-     * @param  string $methodName
+     * @param  string        $className
+     * @param  string|array  $methodNames
      * @return array
      */
-    public static function getLinesToBeCovered($className, $methodName)
+    public static function getCoversAnnotations($className, $methodNames)
+    {
+        $class      = new ReflectionClass($className);
+        $docComment = $class->getDocComment();
+
+        if (is_string($methodNames)) {
+            $methodNames = array($methodNames);
+        }
+        foreach ($methodNames as $methodName) {
+            // @codeCoverageIgnoreStart
+            if (($pos = strpos($methodName, ' ')) !== FALSE) {
+                $methodName = substr($methodName, 0, $pos);
+            }
+            // @codeCoverageIgnoreEnd
+            if ($class->hasMethod($methodName)) {
+                $method      = $class->getMethod($methodName);
+                $docComment .= $method->getDocComment();
+                unset($method);
+            }
+        }
+
+        preg_match_all(self::REGEX, $docComment, $matches);
+        return array_unique($matches['coveredElement']);
+    }
+
+    /**
+     * Returns the files and lines for a list of covered elements.
+     *
+     * @param  string|array $coveredElements
+     * @return array
+     */
+    public static function getLinesToBeCovered($coveredElements)
     {
         $codeToCoverList = array();
         $result          = array();
-        // @codeCoverageIgnoreStart
-        if (($pos = strpos($methodName, ' ')) !== FALSE) {
-            $methodName = substr($methodName, 0, $pos);
-        }
-        // @codeCoverageIgnoreEnd
-        $class      = new ReflectionClass($className);
-        $method     = new ReflectionMethod($className, $methodName);
-        $docComment = $class->getDocComment() . $method->getDocComment();
 
-        foreach (self::$templateMethods as $templateMethod) {
-            if ($class->hasMethod($templateMethod)) {
-                $reflector   = $class->getMethod($templateMethod);
-                $docComment .= $reflector->getDocComment();
-                unset($reflector);
-            }
+        if (is_string($coveredElements)) {
+            $coveredElements = array($coveredElements);
+        }
+        foreach ($coveredElements as $coveredElement) {
+            $codeToCoverList = array_merge(
+              $codeToCoverList,
+              self::resolveCoversToReflectionObjects($coveredElement)
+            );
         }
 
-        if (preg_match_all(self::REGEX, $docComment, $matches)) {
-            foreach ($matches['coveredElement'] as $coveredElement) {
-                $codeToCoverList = array_merge(
-                  $codeToCoverList,
-                  self::resolveCoversToReflectionObjects($coveredElement)
-                );
+        foreach ($codeToCoverList as $codeToCover) {
+            $fileName = $codeToCover->getFileName();
+
+            if (!isset($result[$fileName])) {
+                $result[$fileName] = array();
             }
 
-            foreach ($codeToCoverList as $codeToCover) {
-                $fileName = $codeToCover->getFileName();
-
-                if (!isset($result[$fileName])) {
-                    $result[$fileName] = array();
-                }
-
-                $result[$fileName] = array_unique(
-                  array_merge(
-                    $result[$fileName],
-                    range(
-                      $codeToCover->getStartLine(), $codeToCover->getEndLine()
-                    )
-                  )
-                );
-            }
+            $result[$fileName] = array_unique(
+              array_merge(
+                $result[$fileName],
+                range(
+                  $codeToCover->getStartLine(), $codeToCover->getEndLine()
+                )
+              )
+            );
         }
 
         return $result;
@@ -634,8 +636,36 @@ class PHP_CodeCoverage_Util
                     }
                 }
             }
+        } elseif (strpos($coveredElement, '.') !== FALSE) {
+            if (is_file($coveredElement)) {
+                $file = $coveredElement;
+            } else {
+                $found = FALSE;
+
+                foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+                    $file = $path . DIRECTORY_SEPARATOR . $coveredElement;
+                    if (is_file($file)) {
+                        $found = TRUE;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    throw new RuntimeException(
+                      sprintf(
+                        'Trying to @cover not existing file "%s".',
+                        $coveredElement
+                      )
+                    );
+                }
+            }
+
+            $codeToCoverList[] = new PHP_CodeCoverage_ReflectionFile(
+              realpath($file)
+            );
         } else {
             $extended = FALSE;
+            $found    = FALSE;
 
             if (strpos($coveredElement, '<extended>') !== FALSE) {
                 $coveredElement = str_replace(
@@ -645,30 +675,48 @@ class PHP_CodeCoverage_Util
                 $extended = TRUE;
             }
 
-            $classes = array($coveredElement);
+            if (class_exists($coveredElement) ||
+                interface_exists($coveredElement)) {
+                $found   = TRUE;
+                $classes = array($coveredElement);
 
-            if ($extended) {
-                $classes = array_merge(
-                  $classes,
-                  class_implements($coveredElement),
-                  class_parents($coveredElement)
-                );
-            }
-
-            foreach ($classes as $className) {
-                if (!class_exists($className) &&
-                    !interface_exists($className) &&
-                    !trait_exists($className)) {
-                    throw new PHP_CodeCoverage_Exception(
-                      sprintf(
-                        'Trying to @cover not existing class or ' .
-                        'interface "%s".',
-                        $className
-                      )
+                if ($extended) {
+                    $classes = array_merge(
+                      $classes,
+                      class_implements($coveredElement),
+                      class_parents($coveredElement)
                     );
                 }
 
-                $codeToCoverList[] = new ReflectionClass($className);
+                foreach ($classes as $className) {
+                    if (!class_exists($className) &&
+                        !interface_exists($className)) {
+                        throw new RuntimeException(
+                          sprintf(
+                            'Trying to @cover not existing class or ' .
+                            'interface "%s".',
+                            $className
+                          )
+                        );
+                    }
+
+                    $codeToCoverList[] = new ReflectionClass($className);
+                }
+            }
+
+            if (function_exists($coveredElement)) {
+                $found   = TRUE;
+                $codeToCoverList[] = new ReflectionFunction($coveredElement);
+            }
+
+            if (!$found) {
+                throw new RuntimeException(
+                  sprintf(
+                    'Trying to @cover not existing class, interface, or ' .
+                    'function "%s".',
+                    $coveredElement
+                  )
+                );
             }
         }
 

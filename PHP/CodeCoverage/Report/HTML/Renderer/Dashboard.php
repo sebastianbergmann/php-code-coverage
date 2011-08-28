@@ -99,7 +99,16 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         $data = array();
 
         foreach ($classes as $name => $class) {
-            $data[] = array($class['coverage'], $class['ccn'], 'blue', $name);
+            $data[] = array(
+              $class['coverage'],
+              $class['ccn'],
+              'blue',
+              sprintf(
+                '<a href="%s">%s</a>',
+                $class['link'],
+                $name
+              )
+            );
         }
 
         return json_encode($data);

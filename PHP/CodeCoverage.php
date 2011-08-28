@@ -93,13 +93,6 @@ class PHP_CodeCoverage
     protected $currentId;
 
     /**
-     * SHA1 checksum of covered files.
-     *
-     * @var array
-     */
-    protected $checksums = array();
-
-    /**
      * Code coverage data.
      *
      * @var array
@@ -478,8 +471,7 @@ class PHP_CodeCoverage
     {
         foreach ($data as $file => $lines) {
             if (is_file($file) && !isset($this->data[$file])) {
-                $this->checksums[$file] = sha1_file($file);
-                $this->data[$file]      = array();
+                $this->data[$file] = array();
 
                 foreach ($lines as $k => $v) {
                     $this->data[$file][$k] = $v == -2 ? NULL : array();

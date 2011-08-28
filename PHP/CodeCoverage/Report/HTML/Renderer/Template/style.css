@@ -127,12 +127,48 @@ td.coverBar
   padding-left: 10px;
   padding-right: 10px;
   background-color: #d3d7cf;
+  text-align:center;
+  width: 100px;
 }
 
 /* Directory view/File view (all): bar-graph outline color */
-td.coverBarOutline
+div.coverBarOutline
 {
-  background-color: #2e3436;
+  background-color: #fff;
+  border: 1px solid #2e3436;
+  height: 10px;
+  overflow:hidden;
+  width: 100px;
+}
+
+/* Directory view/File view (all): common style for bar-graph  */
+div.coverBarOutline div.size
+{
+    height: 10px; float:left;
+}
+
+/* Directory view/File view (all): bar-graph color no coverage rate */
+div.coverBarOutline div.snow
+{
+    background-color:#fff;
+}
+
+/* Directory view/File view (all): bar-graph color for low coverage rate */
+div.coverBarOutline div.scarlet_red
+{
+    background-color:#ef2929;
+}
+
+/* Directory view/File view (all): bar-graph color for middle coverage rate */
+div.coverBarOutline div.butter
+{
+    background-color:#fce94f;
+}
+
+/* Directory view/File view (all):  bar-graph color for high coverage rate */
+div.coverBarOutline div.chameleon
+{
+    background-color:#8ae234;
 }
 
 /* Directory view/File view (all): percentage entry for files with

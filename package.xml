@@ -39,47 +39,43 @@
      </dir>
      <dir name="Report">
       <dir name="HTML">
-       <dir name="Node">
+       <dir name="Renderer">
+        <dir name="Template">
+         <file baseinstalldir="/" name="close12_1.gif" role="php" />
+         <file baseinstalldir="/" name="container.css" role="php" />
+         <file baseinstalldir="/" name="container-min.js" role="php" />
+         <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
+         <file baseinstalldir="/" name="directory.png" role="php" />
+         <file baseinstalldir="/" name="directory.html.dist" role="php" />
+         <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
+         <file baseinstalldir="/" name="excanvas.compressed.js" role="php" />
+         <file baseinstalldir="/" name="file.png" role="php" />
+         <file baseinstalldir="/" name="file.html.dist" role="php" />
+         <file baseinstalldir="/" name="file_item.html.dist" role="php" />
+         <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
+         <file baseinstalldir="/" name="glass.png" role="php" />
+         <file baseinstalldir="/" name="method_item.html.dist" role="php" />
+         <file baseinstalldir="/" name="RGraph.bar.js" role="php" />
+         <file baseinstalldir="/" name="RGraph.common.core.js" role="php" />
+         <file baseinstalldir="/" name="RGraph.common.tooltips.js" role="php" />
+         <file baseinstalldir="/" name="RGraph.scatter.js" role="php" />
+         <file baseinstalldir="/" name="style.css" role="php" />
+         <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
+         <file baseinstalldir="/" name="yui_item.js" role="php" />
+        </dir>
+        <file baseinstalldir="/" name="Dashboard.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
         <file baseinstalldir="/" name="Directory.php" role="php">
          <tasks:replace from="@package_version@" to="version" type="package-info" />
         </file>
         <file baseinstalldir="/" name="File.php" role="php">
          <tasks:replace from="@package_version@" to="version" type="package-info" />
         </file>
-        <file baseinstalldir="/" name="Iterator.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
        </dir>
-       <file baseinstalldir="/" name="Node.php" role="php">
+       <file baseinstalldir="/" name="Renderer.php" role="php">
         <tasks:replace from="@package_version@" to="version" type="package-info" />
        </file>
-       <dir name="Template">
-        <file baseinstalldir="/" name="butter.png" role="php" />
-        <file baseinstalldir="/" name="chameleon.png" role="php" />
-        <file baseinstalldir="/" name="close12_1.gif" role="php" />
-        <file baseinstalldir="/" name="container.css" role="php" />
-        <file baseinstalldir="/" name="container-min.js" role="php" />
-        <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
-        <file baseinstalldir="/" name="directory.png" role="php" />
-        <file baseinstalldir="/" name="directory.html.dist" role="php" />
-        <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
-        <file baseinstalldir="/" name="excanvas.compressed.js" role="php" />
-        <file baseinstalldir="/" name="file.png" role="php" />
-        <file baseinstalldir="/" name="file.html.dist" role="php" />
-        <file baseinstalldir="/" name="file_item.html.dist" role="php" />
-        <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
-        <file baseinstalldir="/" name="glass.png" role="php" />
-        <file baseinstalldir="/" name="method_item.html.dist" role="php" />
-        <file baseinstalldir="/" name="RGraph.bar.js" role="php" />
-        <file baseinstalldir="/" name="RGraph.common.core.js" role="php" />
-        <file baseinstalldir="/" name="RGraph.common.tooltips.js" role="php" />
-        <file baseinstalldir="/" name="RGraph.scatter.js" role="php" />
-        <file baseinstalldir="/" name="scarlet_red.png" role="php" />
-        <file baseinstalldir="/" name="snow.png" role="php" />
-        <file baseinstalldir="/" name="style.css" role="php" />
-        <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
-        <file baseinstalldir="/" name="yui_item.js" role="php" />
-       </dir>
       </dir>
       <file baseinstalldir="/" name="Clover.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />

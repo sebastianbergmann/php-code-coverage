@@ -53,7 +53,7 @@
           <td class="tableHead" colspan="4">Functions / Methods</td>
           <td class="tableHead" colspan="3">Lines</td>
         </tr>
-{total_item}{items}
+{items}
       </table>
     </center>
 
@@ -66,7 +66,7 @@
       <tr>
         <td>
 <pre class="source">
-{lines}
+{source}
 </pre>
         </td>
       </tr>

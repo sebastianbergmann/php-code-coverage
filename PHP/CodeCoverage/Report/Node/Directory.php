@@ -40,7 +40,7 @@
  * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 1.1.0
  */
 
 /**
@@ -53,22 +53,22 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 1.1.0
  */
-class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Report_HTML_Node implements IteratorAggregate
+class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Node implements IteratorAggregate
 {
     /**
-     * @var PHP_CodeCoverage_Report_HTML_Node[]
+     * @var PHP_CodeCoverage_Report_Node[]
      */
     protected $children = array();
 
     /**
-     * @var PHP_CodeCoverage_Report_HTML_Node_Directory[]
+     * @var PHP_CodeCoverage_Report_Node_Directory[]
      */
     protected $directories = array();
 
     /**
-     * @var PHP_CodeCoverage_Report_HTML_Node_File[]
+     * @var PHP_CodeCoverage_Report_Node_File[]
      */
     protected $files = array();
 
@@ -76,6 +76,26 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @var array
      */
     protected $classes;
+
+    /**
+     * @var array
+     */
+    protected $traits;
+
+    /**
+     * @var array
+     */
+    protected $functions;
+
+    /**
+     * @var array
+     */
+    protected $linesOfCode = NULL;
+
+    /**
+     * @var integer
+     */
+    protected $numFiles = -1;
 
     /**
      * @var integer
@@ -100,12 +120,50 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     /**
      * @var integer
      */
+    protected $numTraits = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedTraits = -1;
+
+    /**
+     * @var integer
+     */
     protected $numMethods = -1;
 
     /**
      * @var integer
      */
     protected $numTestedMethods = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numFunctions = -1;
+
+    /**
+     * @var integer
+     */
+    protected $numTestedFunctions = -1;
+
+    /**
+     * Returns the number of files in/under this node.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        if ($this->numFiles == -1) {
+            $this->numFiles = 0;
+
+            foreach ($this->children as $child) {
+                $this->numFiles += count($child);
+            }
+        }
+
+        return $this->numFiles;
+    }
 
     /**
      * Returns an iterator for this node.
@@ -115,7 +173,7 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     public function getIterator()
     {
         return new RecursiveIteratorIterator(
-          new PHP_CodeCoverage_Report_HTML_Node_Iterator($this),
+          new PHP_CodeCoverage_Report_Node_Iterator($this),
           RecursiveIteratorIterator::SELF_FIRST
         );
     }
@@ -123,13 +181,12 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     /**
      * Adds a new directory.
      *
-     * @return PHP_CodeCoverage_Report_HTML_Node_Directory
+     * @param  string $name
+     * @return PHP_CodeCoverage_Report_Node_Directory
      */
     public function addDirectory($name)
     {
-        $directory = new PHP_CodeCoverage_Report_HTML_Node_Directory(
-          $name, $this
-        );
+        $directory = new PHP_CodeCoverage_Report_Node_Directory($name, $this);
 
         $this->children[]    = $directory;
         $this->directories[] = &$this->children[count($this->children) - 1];
@@ -144,15 +201,13 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
      * @param  array   $coverageData
      * @param  array   $testData
      * @param  boolean $cacheTokens
-     * @param  boolean $yui
-     * @param  boolean $highlight
-     * @return PHP_CodeCoverage_Report_HTML_Node_File
+     * @return PHP_CodeCoverage_Report_Node_File
      * @throws PHP_CodeCoverage_Exception
      */
-    public function addFile($name, array $coverageData, array $testData, $cacheTokens, $yui, $highlight)
+    public function addFile($name, array $coverageData, array $testData, $cacheTokens)
     {
-        $file = new PHP_CodeCoverage_Report_HTML_Node_File(
-          $name, $this, $coverageData, $testData, $cacheTokens, $yui, $highlight
+        $file = new PHP_CodeCoverage_Report_Node_File(
+          $name, $this, $coverageData, $testData, $cacheTokens
         );
 
         $this->children[] = $file;
@@ -212,6 +267,68 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
         }
 
         return $this->classes;
+    }
+
+    /**
+     * Returns the traits of this node.
+     *
+     * @return array
+     */
+    public function getTraits()
+    {
+        if ($this->traits === NULL) {
+            $this->traits = array();
+
+            foreach ($this->children as $child) {
+                $this->traits = array_merge(
+                  $this->traits, $child->getTraits()
+                );
+            }
+        }
+
+        return $this->traits;
+    }
+
+    /**
+     * Returns the functions of this node.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+        if ($this->functions === NULL) {
+            $this->functions = array();
+
+            foreach ($this->children as $child) {
+                $this->functions = array_merge(
+                  $this->functions, $child->getFunctions()
+                );
+            }
+        }
+
+        return $this->functions;
+    }
+
+    /**
+     * Returns the LOC/CLOC/NCLOC of this node.
+     *
+     * @return array
+     */
+    public function getLinesOfCode()
+    {
+        if ($this->linesOfCode === NULL) {
+            $this->linesOfCode = array('loc' => 0, 'cloc' => 0, 'ncloc' => 0);
+
+            foreach ($this->children as $child) {
+                $linesOfCode = $child->getLinesOfCode();
+
+                $this->linesOfCode['loc']   += $linesOfCode['loc'];
+                $this->linesOfCode['cloc']  += $linesOfCode['cloc'];
+                $this->linesOfCode['ncloc'] += $linesOfCode['ncloc'];
+            }
+        }
+
+        return $this->linesOfCode;
     }
 
     /**
@@ -287,6 +404,42 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     }
 
     /**
+     * Returns the number of traits.
+     *
+     * @return integer
+     */
+    public function getNumTraits()
+    {
+        if ($this->numTraits == -1) {
+            $this->numTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTraits += $child->getNumTraits();
+            }
+        }
+
+        return $this->numTraits;
+    }
+
+    /**
+     * Returns the number of tested traits.
+     *
+     * @return integer
+     */
+    public function getNumTestedTraits()
+    {
+        if ($this->numTestedTraits == -1) {
+            $this->numTestedTraits = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedTraits += $child->getNumTestedTraits();
+            }
+        }
+
+        return $this->numTestedTraits;
+    }
+
+    /**
      * Returns the number of methods.
      *
      * @return integer
@@ -323,108 +476,38 @@ class PHP_CodeCoverage_Report_HTML_Node_Directory extends PHP_CodeCoverage_Repor
     }
 
     /**
-     * Renders this node.
+     * Returns the number of functions.
      *
-     * @param string  $target
-     * @param string  $title
-     * @param string  $charset
-     * @param integer $lowUpperBound
-     * @param integer $highLowerBound
-     * @param string  $generator
+     * @return integer
      */
-    public function render($target, $title, $charset = 'UTF-8', $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
+    public function getNumFunctions()
     {
-        $this->doRender(
-          $target, $title, $charset, $lowUpperBound, $highLowerBound, $generator
-        );
+        if ($this->numFunctions == -1) {
+            $this->numFunctions = 0;
 
-        foreach ($this->children as $child) {
-            $child->render(
-              $target,
-              $title,
-              $charset,
-              $lowUpperBound,
-              $highLowerBound,
-              $generator
-            );
+            foreach ($this->children as $child) {
+                $this->numFunctions += $child->getNumFunctions();
+            }
         }
 
-        $this->children = array();
+        return $this->numFunctions;
     }
 
     /**
-     * @param string  $target
-     * @param string  $title
-     * @param string  $charset
-     * @param integer $lowUpperBound
-     * @param integer $highLowerBound
-     * @param string  $generator
+     * Returns the number of tested functions.
+     *
+     * @return integer
      */
-    protected function doRender($target, $title, $charset, $lowUpperBound, $highLowerBound, $generator)
+    public function getNumTestedFunctions()
     {
-        $cleanId = PHP_CodeCoverage_Util::getSafeFilename($this->getId());
-        $file    = $target . $cleanId . '.html';
+        if ($this->numTestedFunctions == -1) {
+            $this->numTestedFunctions = 0;
 
-        $template = new Text_Template(
-          PHP_CodeCoverage_Report_HTML::$templatePath . 'directory.html'
-        );
-
-        $this->setTemplateVars($template, $title, $charset, $generator);
-
-        $template->setVar(
-          array(
-            'total_item'       => $this->renderTotalItem(
-                                    $lowUpperBound, $highLowerBound
-                                  ),
-            'items'            => $this->renderItems(
-                                    $lowUpperBound, $highLowerBound
-                                  ),
-            'low_upper_bound'  => $lowUpperBound,
-            'high_lower_bound' => $highLowerBound
-          )
-        );
-
-        $template->renderTo($file);
-
-        $this->directories = array();
-        $this->files       = array();
-    }
-
-    /**
-     * @param  float  $lowUpperBound
-     * @param  float  $highLowerBound
-     * @return string
-     */
-    protected function renderItems($lowUpperBound, $highLowerBound)
-    {
-        $items = $this->doRenderItems(
-          $this->directories, $lowUpperBound, $highLowerBound, 'coverDirectory'
-        );
-
-        $items .= $this->doRenderItems(
-          $this->files, $lowUpperBound, $highLowerBound, 'coverFile'
-        );
-
-        return $items;
-    }
-
-    /**
-     * @param  array  $items
-     * @param  float  $lowUpperBound
-     * @param  float  $highLowerBound
-     * @param  string $itemClass
-     * @return string
-     */
-    protected function doRenderItems(array $items, $lowUpperBound, $highLowerBound, $itemClass)
-    {
-        $result = '';
-
-        foreach ($items as $item) {
-            $result .= $this->doRenderItemObject(
-              $item, $lowUpperBound, $highLowerBound, NULL, $itemClass
-            );
+            foreach ($this->children as $child) {
+                $this->numTestedFunctions += $child->getNumTestedFunctions();
+            }
         }
 
-        return $result;
+        return $this->numTestedFunctions;
     }
 }

@@ -164,6 +164,20 @@ class PHP_CodeCoverage
     }
 
     /**
+     * Returns the PHP_CodeCoverage_Report_Node_* object graph
+     * for this PHP_CodeCoverage object.
+     *
+     * @return PHP_CodeCoverage_Report_Node_Directory
+     * @since  Method available since Release 1.1.0
+     */
+    public function getReport()
+    {
+        $factory = new PHP_CodeCoverage_Report_Factory;
+
+        return $factory->create($this);
+    }
+
+    /**
      * Clears collected code coverage data.
      */
     public function clear()
@@ -355,7 +369,8 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @return boolean
+     * @param  boolean $flag
+     * @throws InvalidArgumentException
      * @since  Method available since Release 1.1.0
      */
     public function getCacheTokens()
@@ -445,13 +460,7 @@ class PHP_CodeCoverage
         }
 
         else if ($this->forceCoversAnnotation) {
-            if ($this->processUncoveredFilesFromWhitelist) {
-                foreach (array_keys($data) as $filename) {
-                    $data[$filename] = array();
-                }
-            } else {
-                $data = array();
-            }
+            $data = array();
         }
     }
 

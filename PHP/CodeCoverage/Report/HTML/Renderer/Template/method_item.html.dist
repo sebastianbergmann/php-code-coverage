@@ -1,0 +1,19 @@
+        <tr>
+          <td class="coverFile" colspan="4">{name}</td>
+          <td class="coverBar">
+            <div class="coverBarOutline" title="{methods_tested_percent}">
+                <div class="size {methods_color}"  style="width:{methods_tested_width}%" title="{methods_tested_percent}"></div>
+            </div>
+          </td>
+          <td class="coverPer{methods_level}">{methods_tested_percent}</td>
+          <td class="coverNum{methods_level}">{methods_number}</td>
+          <td class="crap">{crap}</td>
+          <td class="coverBar">
+              <div class="coverBarOutline" title="{lines_executed_percent}">
+                  <div class="size {lines_color}"  style="width:{lines_executed_width}%" title="{lines_executed_percent}"></div>
+              </div>
+          </td>
+          <td class="coverPer{lines_level}">{lines_executed_percent}</td>
+          <td class="coverNum{lines_level}">{num_executed_lines} / {num_executable_lines}</td>
+        </tr>
+

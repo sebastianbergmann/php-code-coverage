@@ -40,11 +40,11 @@
  * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 1.1.0
  */
 
 /**
- * Recursive iterator for PHP_CodeCoverage_Report_HTML_Node object graphs.
+ * Recursive iterator for PHP_CodeCoverage_Report_Node object graphs.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -53,9 +53,9 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 1.1.0
  */
-class PHP_CodeCoverage_Report_HTML_Node_Iterator implements RecursiveIterator
+class PHP_CodeCoverage_Report_Node_Iterator implements RecursiveIterator
 {
     /**
      * @var integer
@@ -63,16 +63,16 @@ class PHP_CodeCoverage_Report_HTML_Node_Iterator implements RecursiveIterator
     protected $position;
 
     /**
-     * @var PHP_CodeCoverage_Report_HTML_Node[]
+     * @var PHP_CodeCoverage_Report_Node[]
      */
     protected $nodes;
 
     /**
      * Constructor.
      *
-     * @param PHP_CodeCoverage_Report_HTML_Node_Directory $node
+     * @param PHP_CodeCoverage_Report_Node_Directory $node
      */
-    public function __construct(PHP_CodeCoverage_Report_HTML_Node_Directory $node)
+    public function __construct(PHP_CodeCoverage_Report_Node_Directory $node)
     {
         $this->nodes = $node->getChildNodes();
     }
@@ -128,11 +128,11 @@ class PHP_CodeCoverage_Report_HTML_Node_Iterator implements RecursiveIterator
     /**
      * Returns the sub iterator for the current element.
      *
-     * @return PHP_CodeCoverage_Report_HTML_Node_Iterator
+     * @return PHP_CodeCoverage_Report_Node_Iterator
      */
     public function getChildren()
     {
-        return new PHP_CodeCoverage_Report_HTML_Node_Iterator(
+        return new PHP_CodeCoverage_Report_Node_Iterator(
           $this->nodes[$this->position]
         );
     }
@@ -144,6 +144,6 @@ class PHP_CodeCoverage_Report_HTML_Node_Iterator implements RecursiveIterator
      */
     public function hasChildren()
     {
-        return $this->nodes[$this->position] instanceof PHP_CodeCoverage_Report_HTML_Node_Directory;
+        return $this->nodes[$this->position] instanceof PHP_CodeCoverage_Report_Node_Directory;
     }
 }

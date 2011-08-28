@@ -48,4 +48,7 @@ if (strpos('@php_bin@', '@php_bin') === 0) {
 
 require 'PHP/CodeCoverage/Autoload.php';
 
+require 'ezc/Base/base.php';
+spl_autoload_register(array('ezcBase', 'autoload'));
+
 PHP_CodeCoverage_TextUI_Command::main();

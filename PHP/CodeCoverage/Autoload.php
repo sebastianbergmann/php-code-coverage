@@ -95,6 +95,3 @@ function php_codecoverage_autoload($class = NULL) {
 }
 
 spl_autoload_register('php_codecoverage_autoload');
-
-require_once 'ezc/Base/base.php';
-spl_autoload_register(array('ezcBase', 'autoload'));

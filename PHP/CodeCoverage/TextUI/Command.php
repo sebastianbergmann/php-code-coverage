@@ -43,6 +43,9 @@
  * @since      File available since Release 1.0.0
  */
 
+require_once 'ezc/Base/base.php';
+spl_autoload_register(array('ezcBase', 'autoload'));
+
 /**
  * TextUI frontend for PHP_CodeCoverage.
  *

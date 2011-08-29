@@ -10,10 +10,6 @@
     </testsuite>
   </testsuites>
 
-  <php>
-    <const name="PHP_CODECOVERAGE_TESTSUITE" value="true"/>
-  </php>
-
   <logging>
     <log type="coverage-html" target="build/coverage" title="PHP_CodeCoverage"
          charset="UTF-8" yui="true" highlight="true"

@@ -446,7 +446,8 @@ class PHP_CodeCoverage
     protected function initializeFilesThatAreSeenTheFirstTime($data)
     {
         foreach ($data as $file => $lines) {
-            if (is_file($file) && !isset($this->data[$file])) {
+            if (PHP_CodeCoverage_Filter::isFile($file) &&
+                !isset($this->data[$file])) {
                 $this->data[$file] = array();
 
                 foreach ($lines as $k => $v) {

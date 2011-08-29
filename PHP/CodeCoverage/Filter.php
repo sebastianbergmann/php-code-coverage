@@ -263,8 +263,6 @@ class PHP_CodeCoverage_Filter
             return !isset($this->whitelistedFiles[$filename]);
         }
 
-        $blacklistedFiles = array();
-
         return isset($this->blacklistedFiles[$filename]);
     }
 

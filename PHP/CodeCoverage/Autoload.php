@@ -59,6 +59,7 @@ function php_codecoverage_autoload($class = NULL) {
           'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
           'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
           'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
+          'php_codecoverage_report_cli' => '/CodeCoverage/Report/Cli.php',
           'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
           'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
           'php_codecoverage_report_html_renderer' => '/CodeCoverage/Report/HTML/Renderer.php',

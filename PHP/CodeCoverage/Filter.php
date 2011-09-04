@@ -285,4 +285,15 @@ class PHP_CodeCoverage_Filter
     {
         return array_keys($this->whitelistedFiles);
     }
+
+    /**
+     * Returns whether this filter has a whitelist.
+     *
+     * @return boolean
+     * @since  Method available since Release 1.1.0
+     */
+    public function hasWhitelist()
+    {
+        return !empty($this->whitelistedFiles);
+    }
 }

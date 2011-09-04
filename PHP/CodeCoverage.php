@@ -175,6 +175,12 @@ class PHP_CodeCoverage
             $this->processUncoveredFilesFromWhitelist();
         }
 
+        // We need to apply the blacklist filter a second time
+        // when no whitelist is used.
+        if (!$this->filter->hasWhitelist()) {
+            $this->applyListsFilter($this->data);
+        }
+
         return $this->data;
     }
 

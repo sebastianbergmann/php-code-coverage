@@ -77,7 +77,7 @@ class PHP_CodeCoverage_Report_Text
      * @param  string           $name
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $target = 'short')
+    public function process(PHP_CodeCoverage $coverage, $colors = false)
     {
         $output = "";
 
@@ -91,19 +91,18 @@ class PHP_CodeCoverage_Report_Text
         $report   = $coverage->getReport();
         unset($coverage);
 
-        $output .= PHP_EOL;
-        $output .= 'Executed Lines of Code: ' . $report->getNumExecutedLines() . '/' . $report->getNumExecutableLines() . PHP_EOL;
-        $output .= 'Classes: ' . $report->getNumClasses() . PHP_EOL;
-        $output .= 'Covered Methods: ' . $report->getNumTestedMethods() . '/' . $report->getNumMethods() . PHP_EOL;
-
-        $output .= PHP_EOL . PHP_EOL;
-
+        $output .= PHP_EOL . 'Summary: ' . PHP_EOL
+          . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClasses(), $report->getNumClasses(), TRUE)
+          . ' ( ' . $report->getNumTestedClasses() . '/' . $report->getNumClasses() . ' )' . PHP_EOL
+          . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE) 
+          . ' ( ' . $report->getNumTestedMethods() . '/' . $report->getNumMethods() . ' )' . PHP_EOL
+          . '  Lines:   ' . PHP_CodeCoverage_Util::percent($report->getNumExecutedLines(), $report->getNumExecutableLines(), TRUE)
+          . ' ( ' . $report->getNumExecutedLines() . '/' . $report->getNumExecutableLines() . ' )' . PHP_EOL;
 
         foreach ($report as $item) {
             if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
                 continue;
             }
-            #$output .= PHP_EOL . $item->getPath() . PHP_EOL;
 
             $classes      = array_merge($item->getClasses(), $item->getTraits());
             $coverage     = $item->getCoverageData();
@@ -169,9 +168,9 @@ class PHP_CodeCoverage_Report_Text
                     $namespace = '';
                 }
 
-                $output .= PHP_EOL . PHP_EOL . $namespace . $className;
-                $output .= PHP_EOL . '  Methods: ' . $coveredMethods . '/' . count($class['methods']);
-                $output .= PHP_EOL . '  Lines: ' . $classStatements . '/' . $coveredClassStatements;
+                $output .= PHP_EOL . $namespace . '::' . $className
+                  . PHP_EOL . '  Methods: ' . $coveredMethods . '/' . count($class['methods'])
+                  . '  Lines: ' . $classStatements . '/' . $coveredClassStatements;
 
             }
         }

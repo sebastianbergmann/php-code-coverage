@@ -44,7 +44,9 @@
  */
 
 /**
- * Generates human readable output for a CLI from an PHP_CodeCoverage object.
+ * Generates human readable output from an PHP_CodeCoverage object.
+ *
+ * The output gets put into a text file our written to the cli
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -55,7 +57,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
  */
-class PHP_CodeCoverage_Report_Cli
+class PHP_CodeCoverage_Report_Text
 {
     protected $outputStream;
     protected $title;

@@ -17,9 +17,9 @@
   <email>sb@sebastian-bergmann.de</email>
   <active>yes</active>
  </lead>
- <date>2011-09-05</date>
+ <date>2011-09-07</date>
  <version>
-  <release>1.1.0RC1</release>
+  <release>1.1.0RC2</release>
   <api>1.1.0</api>
  </version>
  <stability>
@@ -45,12 +45,12 @@
          <file baseinstalldir="/" name="container.css" role="php" />
          <file baseinstalldir="/" name="container-min.js" role="php" />
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
-         <file baseinstalldir="/" name="directory.png" role="php" />
          <file baseinstalldir="/" name="directory.html.dist" role="php" />
+         <file baseinstalldir="/" name="directory.png" role="php" />
          <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
          <file baseinstalldir="/" name="excanvas.compressed.js" role="php" />
-         <file baseinstalldir="/" name="file.png" role="php" />
          <file baseinstalldir="/" name="file.html.dist" role="php" />
+         <file baseinstalldir="/" name="file.png" role="php" />
          <file baseinstalldir="/" name="file_item.html.dist" role="php" />
          <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
          <file baseinstalldir="/" name="glass.png" role="php" />
@@ -80,13 +80,22 @@
       <file baseinstalldir="/" name="Clover.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
+      <file baseinstalldir="/" name="Factory.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
       <file baseinstalldir="/" name="HTML.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="Node.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
       <file baseinstalldir="/" name="PHP.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
      </dir>
+     <file baseinstalldir="/" name="Autoload.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
      <file baseinstalldir="/" name="Driver.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
@@ -97,9 +106,6 @@
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
      <file baseinstalldir="/" name="Util.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Autoload.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
     </dir>

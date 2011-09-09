@@ -31,7 +31,7 @@
                 data: {ccd_values}
             }],
           });
-          
+
         var classComplexity = new Highcharts.Chart({
             chart: {
               renderTo: 'classComplexity',
@@ -59,7 +59,7 @@
               }
             }],
         });
-    });       
+    });
     </script>
   </head>
 

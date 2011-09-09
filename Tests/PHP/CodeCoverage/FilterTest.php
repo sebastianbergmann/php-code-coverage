@@ -72,7 +72,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->filter = new PHP_CodeCoverage_Filter;
+        $this->filter = unserialize('O:23:"PHP_CodeCoverage_Filter":0:{}');
 
         $this->files = array(
           TEST_FILES_PATH . 'BankAccount.php',

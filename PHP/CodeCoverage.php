@@ -125,8 +125,6 @@ class PHP_CodeCoverage
 
         $this->driver = $driver;
         $this->filter = $filter;
-
-        $this->prefillBlacklist();
     }
 
     /**
@@ -528,48 +526,5 @@ class PHP_CodeCoverage
         }
 
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
-    }
-
-    /**
-     * Prefills the blacklist with source files used by PHPUnit
-     * and PHP_CodeCoverage.
-     */
-    protected function prefillBlacklist()
-    {
-        $functions = array(
-          'file_iterator_autoload',
-          'php_codecoverage_autoload',
-          'php_invoker_autoload',
-          'php_timer_autoload',
-          'php_tokenstream_autoload',
-          'phpunit_autoload',
-          'phpunit_dbunit_autoload',
-          'phpunit_mockobject_autoload',
-          'phpunit_selenium_autoload',
-          'phpunit_story_autoload',
-          'text_template_autoload'
-        );
-
-        foreach ($functions as $function) {
-            if (function_exists($function)) {
-                $this->filter->addFilesToBlacklist($function());
-            }
-        }
-
-        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
-          'SymfonyComponents/YAML/sfYaml.php'
-        );
-
-        if ($file) {
-            $this->filter->addFileToBlacklist($file);
-        }
-
-        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
-          'SymfonyComponents/YAML/sfYamlDumper.php'
-        );
-
-        if ($file) {
-            $this->filter->addFileToBlacklist($file);
-        }
     }
 }

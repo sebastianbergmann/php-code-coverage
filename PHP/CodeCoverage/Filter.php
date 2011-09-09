@@ -72,6 +72,49 @@ class PHP_CodeCoverage_Filter
     protected $whitelistedFiles = array();
 
     /**
+     * Prefills the blacklist with source files used by PHPUnit
+     * and PHP_CodeCoverage.
+     */
+    public function __construct()
+    {
+        $functions = array(
+          'file_iterator_autoload',
+          'php_codecoverage_autoload',
+          'php_invoker_autoload',
+          'php_timer_autoload',
+          'php_tokenstream_autoload',
+          'phpunit_autoload',
+          'phpunit_dbunit_autoload',
+          'phpunit_mockobject_autoload',
+          'phpunit_selenium_autoload',
+          'phpunit_story_autoload',
+          'text_template_autoload'
+        );
+
+        foreach ($functions as $function) {
+            if (function_exists($function)) {
+                $this->addFilesToBlacklist($function());
+            }
+        }
+
+        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+          'SymfonyComponents/YAML/sfYaml.php'
+        );
+
+        if ($file) {
+            $this->addFileToBlacklist($file);
+        }
+
+        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+          'SymfonyComponents/YAML/sfYamlDumper.php'
+        );
+
+        if ($file) {
+            $this->addFileToBlacklist($file);
+        }
+    }
+
+    /**
      * Adds a directory to the blacklist (recursively).
      *
      * @param string $directory

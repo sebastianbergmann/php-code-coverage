@@ -493,3 +493,8 @@ pre span.keyword {
 pre span.string {
   color: #2e3436;
 }
+
+#classCoverageDistribution, #classComplexity {
+	height: 200px;
+	width: 475px;
+}

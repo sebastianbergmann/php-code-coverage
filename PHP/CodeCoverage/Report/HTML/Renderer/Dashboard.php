@@ -102,7 +102,6 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             $data[] = array(
               $class['coverage'],
               $class['ccn'],
-              'blue',
               sprintf(
                 '<a href="%s">%s</a>',
                 $class['link'],

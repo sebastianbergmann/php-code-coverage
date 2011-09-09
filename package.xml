@@ -46,19 +46,16 @@
          <file baseinstalldir="/" name="container-min.js" role="php" />
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
          <file baseinstalldir="/" name="directory.html.dist" role="php" />
-         <file baseinstalldir="/" name="directory.png" role="php" />
          <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
-         <file baseinstalldir="/" name="excanvas.compressed.js" role="php" />
+         <file baseinstalldir="/" name="directory.png" role="php" />
          <file baseinstalldir="/" name="file.html.dist" role="php" />
-         <file baseinstalldir="/" name="file.png" role="php" />
          <file baseinstalldir="/" name="file_item.html.dist" role="php" />
          <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
+         <file baseinstalldir="/" name="file.png" role="php" />
          <file baseinstalldir="/" name="glass.png" role="php" />
+         <file baseinstalldir="/" name="highcharts.js" role="php" />
+         <file baseinstalldir="/" name="jquery.min.js" role="php" />
          <file baseinstalldir="/" name="method_item.html.dist" role="php" />
-         <file baseinstalldir="/" name="RGraph.bar.js" role="php" />
-         <file baseinstalldir="/" name="RGraph.common.core.js" role="php" />
-         <file baseinstalldir="/" name="RGraph.common.tooltips.js" role="php" />
-         <file baseinstalldir="/" name="RGraph.scatter.js" role="php" />
          <file baseinstalldir="/" name="style.css" role="php" />
          <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
          <file baseinstalldir="/" name="yui_item.js" role="php" />

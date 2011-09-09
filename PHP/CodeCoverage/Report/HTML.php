@@ -194,13 +194,10 @@ class PHP_CodeCoverage_Report_HTML
           'container.css',
           'container-min.js',
           'directory.png',
-          'excanvas.compressed.js',
           'file.png',
           'glass.png',
-          'RGraph.bar.js',
-          'RGraph.common.core.js',
-          'RGraph.common.tooltips.js',
-          'RGraph.scatter.js',
+          'highcharts.js',
+          'jquery.min.js',
           'style.css',
           'yahoo-dom-event.js'
         );

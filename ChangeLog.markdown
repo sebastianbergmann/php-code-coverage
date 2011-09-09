@@ -13,3 +13,4 @@ PHP_CodeCoverage 1.1.0
 * Refactored the generation of Clover XML and HTML reports improving code readability and testability.
 * Removed the support for multiple blacklist groups.
 * Removed the `PHP_CodeCoverage::getInstance()` and `PHP_CodeCoverage_Filter::getInstance()` methods.
+* Replaced [RGraph](http://www.rgraph.net/) with [Highcharts JS](http://www.highcharts.com/) as the JavaScript chart library used for the HTML report's code coverage dashboard.

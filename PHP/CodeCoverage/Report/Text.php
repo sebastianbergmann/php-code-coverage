@@ -40,7 +40,7 @@
  * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 1.1.0
  */
 
 /**
@@ -55,7 +55,7 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    Release: @package_version@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 1.1.0
  */
 class PHP_CodeCoverage_Report_Text
 {

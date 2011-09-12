@@ -228,13 +228,11 @@ class PHP_CodeCoverage_Report_Text
     }
 
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements) {
-        if($totalNumberOfElements > 0) {
-            $coverage = $numberOfCoveredElements / $totalNumberOfElements * 100;
-            if($coverage > $this->highLowerBound) {
-                return $this->colors['green'];
-            } else if($coverage > $this->lowUpperBound) {
-                return $this->colors['yellow'];
-            }
+        $coverage = PHP_CodeCoverage_Util::percent($numberOfCoveredElements, $totalNumberOfElements);
+        if($coverage > $this->highLowerBound) {
+            return $this->colors['green'];
+        } else if($coverage > $this->lowUpperBound) {
+            return $this->colors['yellow'];
         }
         return $this->colors['red'];
     }

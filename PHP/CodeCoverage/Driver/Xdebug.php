@@ -63,6 +63,10 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function __construct()
     {
+        if (!extension_loaded('xdebug')) {
+            throw new PHP_CodeCoverage_Exception('Xdebug is not loaded.');
+        }
+
         if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
             !ini_get('xdebug.coverage_enable')) {
             throw new PHP_CodeCoverage_Exception(

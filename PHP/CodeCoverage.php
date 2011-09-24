@@ -229,10 +229,7 @@ class PHP_CodeCoverage
         }
 
         $data = $this->driver->stop();
-
-        if ($append) {
-            $this->append($data);
-        }
+        $this->append($data, NULL, $append);
 
         $this->currentId = NULL;
 
@@ -242,10 +239,11 @@ class PHP_CodeCoverage
     /**
      * Appends code coverage data.
      *
-     * @param array $data
-     * @param mixed $id
+     * @param array   $data
+     * @param mixed   $id
+     * @param boolean $append
      */
-    public function append(array $data, $id = NULL)
+    public function append(array $data, $id = NULL, $append = TRUE)
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -257,6 +255,10 @@ class PHP_CodeCoverage
 
         $this->applyListsFilter($data);
         $this->initializeFilesThatAreSeenTheFirstTime($data);
+
+        if (!$append) {
+            return;
+        }
 
         if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
             $this->applyCoversAnnotationFilter($data, $id);

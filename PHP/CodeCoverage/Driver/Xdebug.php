@@ -43,11 +43,6 @@
  * @since      File available since Release 1.0.0
  */
 
-if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
-    !ini_get('xdebug.coverage_enable')) {
-    die("You need to set xdebug.coverage_enable=On in your php.ini.\n");
-}
-
 /**
  * Driver for Xdebug's code coverage functionality.
  *
@@ -63,6 +58,19 @@ if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
  */
 class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
 {
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
+            !ini_get('xdebug.coverage_enable')) {
+            throw new PHP_CodeCoverage_Exception(
+              'You need to set xdebug.coverage_enable=On in your php.ini.'
+            );
+        }
+    }
+
     /**
      * Start collection of code coverage information.
      */

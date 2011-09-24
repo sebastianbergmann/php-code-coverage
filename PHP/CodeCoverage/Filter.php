@@ -270,7 +270,7 @@ class PHP_CodeCoverage_Filter
      *
      * @param string $filename
      */
-    public static function isFile($filename)
+    public function isFile($filename)
     {
         if ($filename == '-' ||
             strpos($filename, 'eval()\'d code') !== FALSE ||

@@ -280,6 +280,10 @@ class PHP_CodeCoverage
         $this->tests[$id] = $status;
 
         foreach ($data as $file => $lines) {
+            if (!$this->filter->isFile($file)) {
+                continue;
+            }
+
             foreach ($lines as $k => $v) {
                 if ($v == 1) {
                     $this->data[$file][$k][] = $id;

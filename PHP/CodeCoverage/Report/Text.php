@@ -46,7 +46,7 @@
 /**
  * Generates human readable output from an PHP_CodeCoverage object.
  *
- * The output gets put into a text file our written to the cli
+ * The output gets put into a text file our written to the CLI.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -66,19 +66,20 @@ class PHP_CodeCoverage_Report_Text
     protected $showUncoveredFiles;
 
     protected $colors = array(
-        'green' => "\x1b[30;42m",
-        'yellow' => "\x1b[30;43m",
-        'red'  => "\x1b[37;41m",
-        'header' => "\x1b[47;40m",
-        'reset' => "\x1b[0m",
-        'eol' => "\x1b[2K",
+      'green'  => "\x1b[30;42m",
+      'yellow' => "\x1b[30;43m",
+      'red'    => "\x1b[37;41m",
+      'header' => "\x1b[47;40m",
+      'reset'  => "\x1b[0m",
+      'eol'    => "\x1b[2K",
     );
 
-    public function __construct(PHPUnit_Util_Printer $outputStream, $title, $lowUpperBound, $highLowerBound, $showUncoveredFiles) {
-        $this->outputStream = $outputStream;
-        $this->title = $title;
-        $this->lowUpperBound = $lowUpperBound;
-        $this->highLowerBound = $highLowerBound;
+    public function __construct(PHPUnit_Util_Printer $outputStream, $title, $lowUpperBound, $highLowerBound, $showUncoveredFiles)
+    {
+        $this->outputStream       = $outputStream;
+        $this->title              = $title;
+        $this->lowUpperBound      = $lowUpperBound;
+        $this->highLowerBound     = $highLowerBound;
         $this->showUncoveredFiles = $showUncoveredFiles;
     }
 
@@ -88,34 +89,55 @@ class PHP_CodeCoverage_Report_Text
      * @param  string           $name
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $showColors = false)
+    public function process(PHP_CodeCoverage $coverage, $showColors = FALSE)
     {
-        $output = "";
-
+        $output   = '';
         $packages = array();
         $report   = $coverage->getReport();
         unset($coverage);
 
-        $colors = array('header' => '', 'classes' => '', 'methods' => '', 'lines' => '', 'reset' => '', 'eol' => '');
-        if($showColors) {
-            $colors['classes'] = $this->getCoverageColor($report->getNumTestedClasses(), $report->getNumClasses());
-            $colors['methods'] = $this->getCoverageColor($report->getNumTestedMethods(), $report->getNumMethods());
-            $colors['lines'] = $this->getCoverageColor($report->getNumExecutedLines(), $report->getNumExecutableLines());
-            $colors['reset'] = $this->colors['reset'];
-            $colors['header'] = $this->colors['header'];
-            $colors['eol']  = $this->colors['eol'];
-        } 
+        $colors = array(
+          'header'  => '',
+          'classes' => '',
+          'methods' => '',
+          'lines'   => '',
+          'reset'   => '',
+          'eol'     => ''
+        );
 
-        $output .= PHP_EOL . PHP_EOL . $colors['header'] . "Code Coverage Report "; 
-        if($this->title) {
+        if ($showColors) {
+            $colors['classes'] = $this->getCoverageColor(
+                                   $report->getNumTestedClasses(),
+                                   $report->getNumClasses()
+                                 );
+            $colors['methods'] = $this->getCoverageColor(
+                                   $report->getNumTestedMethods(),
+                                   $report->getNumMethods()
+                                 );
+            $colors['lines']   = $this->getCoverageColor(
+                                   $report->getNumExecutedLines(),
+                                   $report->getNumExecutableLines()
+                                 );
+            $colors['reset']   = $this->colors['reset'];
+            $colors['header']  = $this->colors['header'];
+            $colors['eol']     = $this->colors['eol'];
+        }
+
+        $output .= PHP_EOL . PHP_EOL .
+                   $colors['header'] . 'Code Coverage Report ';
+
+        if ($this->title) {
             $output .= 'for "' . $this->title . '"';
         }
-        $output .= PHP_EOL . date("  Y-m-d H:i:s", $_SERVER['REQUEST_TIME']) . PHP_EOL;
+
+        $output .= PHP_EOL .
+                   date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) .
+                   PHP_EOL;
 
         $output .= PHP_EOL . ' Summary: ' . PHP_EOL . $colors['reset']
           . $colors['classes'] . $colors['eol'] . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClasses(), $report->getNumClasses(), TRUE)
           . ' (' . $report->getNumTestedClasses() . '/' . $report->getNumClasses() . ')' . PHP_EOL . $colors ['eol']
-          . $colors['methods'] . $colors['eol'] . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE) 
+          . $colors['methods'] . $colors['eol'] . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE)
           . ' (' . $report->getNumTestedMethods() . '/' . $report->getNumMethods() . ')' . PHP_EOL . $colors ['eol']
           . $colors['lines'] . $colors['eol'] . '  Lines:   ' . PHP_CodeCoverage_Util::percent($report->getNumExecutedLines(), $report->getNumExecutableLines(), TRUE)
           . ' (' . $report->getNumExecutedLines() . '/' . $report->getNumExecutableLines() . ')' . PHP_EOL . $colors['reset'] . $colors ['eol'];
@@ -187,34 +209,43 @@ class PHP_CodeCoverage_Report_Text
 
                 if (!empty($class['package']['namespace'])) {
                     $namespace = '\\' . $class['package']['namespace'] . '::';
-                } else if (!empty($class['package']['fullPackage'])) {
+                }
+
+                else if (!empty($class['package']['fullPackage'])) {
                     $namespace = '@' . $class['package']['fullPackage'] . '::';
-                } else {
+                }
+
+                else {
                     $namespace = '';
                 }
 
                 $classCoverage[$namespace . $className] = array(
-                    'namespace' => $namespace,
-                    'className ' => $className,
-                    'methodsCovered' => $coveredMethods,
-                    'methodCount' => count($class['methods']),
+                    'namespace'         => $namespace,
+                    'className '        => $className,
+                    'methodsCovered'    => $coveredMethods,
+                    'methodCount'       => count($class['methods']),
                     'statementsCovered' => $coveredClassStatements,
-                    'statementCount' => $classStatements,
-                );   
+                    'statementCount'    => $classStatements,
+                );
             }
         }
+
         ksort($classCoverage);
 
         $methodColor = '';
-        $linesColor = '';
-        $resetColor = '';
-        foreach($classCoverage as $fullQualifiedPath => $classInfo) {
-            if($classInfo['statementsCovered'] != 0 || $this->showUncoveredFiles) {
-                if($showColors) {
+        $linesColor  = '';
+        $resetColor  = '';
+
+        foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
+            if ($classInfo['statementsCovered'] != 0 ||
+                $this->showUncoveredFiles) {
+
+                if ($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
-                    $linesColor = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
-                    $resetColor = $colors['reset']; 
+                    $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
+                    $resetColor  = $colors['reset'];
                 }
+
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
                   . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
                   . '  ' . $linesColor  . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
@@ -223,25 +254,31 @@ class PHP_CodeCoverage_Report_Text
         }
 
         $this->outputStream->write($output);
-        return;
-
     }
 
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements) {
-        $coverage = PHP_CodeCoverage_Util::percent($numberOfCoveredElements, $totalNumberOfElements);
-        if($coverage > $this->highLowerBound) {
+        $coverage = PHP_CodeCoverage_Util::percent(
+          $numberOfCoveredElements, $totalNumberOfElements
+        );
+
+        if ($coverage > $this->highLowerBound) {
             return $this->colors['green'];
-        } else if($coverage > $this->lowUpperBound) {
+        }
+
+        else if ($coverage > $this->lowUpperBound) {
             return $this->colors['yellow'];
         }
+
         return $this->colors['red'];
     }
 
     protected function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $presicion) {
         $format = '%' . $presicion . 's';
-        return PHP_CodeCoverage_Util::percent($numberOfCoveredElements, $totalNumberOfElements, TRUE, TRUE)
-          . ' (' . sprintf($format, $numberOfCoveredElements) . '/' . sprintf($format, $totalNumberOfElements) . ')';
+
+        return PHP_CodeCoverage_Util::percent(
+          $numberOfCoveredElements, $totalNumberOfElements, TRUE, TRUE
+        ) .
+        ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
+        sprintf($format, $totalNumberOfElements) . ')';
     }
-
 }
-

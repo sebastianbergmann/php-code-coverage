@@ -330,9 +330,10 @@ class PHP_CodeCoverage_Util
         }
 
         if ($asString) {
-            if($fixedWidth) {
+            if ($fixedWidth) {
                 return sprintf('%6.2F%%', $percent);
             }
+
             return sprintf('%01.2F%%', $percent);
         } else {
             return $percent;

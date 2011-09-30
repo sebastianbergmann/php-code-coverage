@@ -212,7 +212,7 @@ class PHP_CodeCoverage_Report_Text
             if($classInfo['statementsCovered'] != 0 || $this->showUncoveredFiles || true) {
                 if($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
-                    $linesColor = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementsCovered' ]);
+                    $linesColor = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
                     $resetColor = $colors['reset']; 
                 }
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL

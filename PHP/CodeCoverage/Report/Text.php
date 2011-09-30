@@ -209,7 +209,7 @@ class PHP_CodeCoverage_Report_Text
         $linesColor = '';
         $resetColor = '';
         foreach($classCoverage as $fullQualifiedPath => $classInfo) {
-            if($classInfo['statementsCovered'] != 0 || $this->showUncoveredFiles || true) {
+            if($classInfo['statementsCovered'] != 0 || $this->showUncoveredFiles) {
                 if($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
                     $linesColor = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);

@@ -136,6 +136,26 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::setCacheTokens
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetCacheTokensThrowsExceptionForInvalidArgument()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->setCacheTokens(NULL);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::setCacheTokens
+     */
+    public function testSetCacheTokens()
+    {
+        $coverage = new PHP_CodeCoverage;
+        $coverage->setCacheTokens(TRUE);
+        $this->assertAttributeEquals(TRUE, 'cacheTokens', $coverage);
+    }
+
+    /**
      * @covers            PHP_CodeCoverage::setForceCoversAnnotation
      * @expectedException InvalidArgumentException
      */

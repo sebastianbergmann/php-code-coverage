@@ -341,13 +341,13 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             );
         }
 
-        $coverageData              = $node->getCoverageData();
-        $ignoredLines              = $node->getIgnoredLines();
-        $testData                  = $node->getTestData();
+        $coverageData             = $node->getCoverageData();
+        $ignoredLines             = $node->getIgnoredLines();
+        $testData                 = $node->getTestData();
         list($codeLines, $fillup) = $this->loadFile($node->getPath());
-        $lines                     = '';
-        $yuiPanelJS                = '';
-        $i                         = 1;
+        $lines                    = '';
+        $yuiPanelJS               = '';
+        $i                        = 1;
 
         foreach ($codeLines as $line) {
             $css = '';

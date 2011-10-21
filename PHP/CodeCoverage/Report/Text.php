@@ -256,7 +256,8 @@ class PHP_CodeCoverage_Report_Text
         $this->outputStream->write($output);
     }
 
-    protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements) {
+    protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
+    {
         $coverage = PHP_CodeCoverage_Util::percent(
           $numberOfCoveredElements, $totalNumberOfElements
         );
@@ -272,7 +273,8 @@ class PHP_CodeCoverage_Report_Text
         return $this->colors['red'];
     }
 
-    protected function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $presicion) {
+    protected function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $presicion)
+    {
         $format = '%' . $presicion . 's';
 
         return PHP_CodeCoverage_Util::percent(

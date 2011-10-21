@@ -173,11 +173,11 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
         );
 
         $items .= $this->renderTraitOrClassItems(
-          $node->getTraits(), 'Traits', $template, $methodItemTemplate
+          $node->getTraits(), $template, $methodItemTemplate
         );
 
         $items .= $this->renderTraitOrClassItems(
-          $node->getClasses(), 'Classes', $template, $methodItemTemplate
+          $node->getClasses(), $template, $methodItemTemplate
         );
 
         return $items;
@@ -185,11 +185,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
     /**
      * @param  array         $items
-     * @param  string        $title
      * @param  Text_Template $template
      * @return string
      */
-    protected function renderTraitOrClassItems(array $items, $title, Text_Template $template, Text_Template $methodItemTemplate)
+    protected function renderTraitOrClassItems(array $items, Text_Template $template, Text_Template $methodItemTemplate)
     {
         if (empty($items)) {
             return '';
@@ -198,7 +197,6 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
         $buffer = '';
 
         foreach ($items as $name => $item) {
-            $methods          = '';
             $numMethods       = count($item['methods']);
             $numTestedMethods = 0;
 

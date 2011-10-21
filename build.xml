@@ -1,9 +1,35 @@
-<project name="php-code-coverage" default="build" basedir=".">
- <target name="clean">
-  <!-- Clean up -->
-  <delete dir="build"/>
+<?xml version="1.0" encoding="UTF-8"?>
 
-  <!-- Create build directories -->
+<project name="PHP_CodeCoverage" default="build">
+ <target name="build"
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb"/>
+
+ <target name="build-parallel"
+   depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
+
+ <target name="tools-parallel"
+         description="Run tools in parallel">
+  <parallel threadCount="2">
+   <sequential>
+    <antcall target="pdepend"/>
+    <antcall target="phpmd-ci"/>
+   </sequential>
+   <antcall target="phpcpd"/>
+   <antcall target="phpcs-ci"/>
+   <antcall target="phploc"/>
+  </parallel>
+ </target>
+
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/code-browser"/>
+  <delete dir="${basedir}/build/coverage"/>
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/pdepend"/>
+ </target>
+
+ <target name="prepare" depends="clean,phpab"
+         description="Prepare for build">
   <mkdir dir="${basedir}/build/api"/>
   <mkdir dir="${basedir}/build/code-browser"/>
   <mkdir dir="${basedir}/build/coverage"/>
@@ -11,77 +37,114 @@
   <mkdir dir="${basedir}/build/pdepend"/>
  </target>
 
- <target name="phpab">
+ <target name="phpab" description="Generate autoloader scripts">
   <exec executable="phpab">
-   <arg line='-o PHP/CodeCoverage/Autoload.php -c -t PHP/CodeCoverage/Autoload.php.in --indent "          " PHP' />
+   <arg value="--output" />
+   <arg path="PHP/CodeCoverage/Autoload.php" />
+   <arg value="--compat" />
+   <arg value="--template" />
+   <arg path="PHP/CodeCoverage/Autoload.php.in" />
+   <arg value="--indent" />
+   <arg value="          " />
+   <arg path="PHP" />
   </exec>
  </target>
 
- <!-- Run unit tests and generate junit.xml and clover.xml -->
- <target name="phpunit">
+ <target name="lint">
+  <apply executable="php" failonerror="true">
+   <arg value="-l" />
+
+   <fileset dir="${basedir}/PHP">
+    <include name="**/*.php" />
+   </fileset>
+
+   <fileset dir="${basedir}/Tests">
+    <include name="**/*.php" />
+   </fileset>
+  </apply>
+ </target>
+
+ <target name="phploc" description="Measure project size using PHPLOC">
+  <exec executable="phploc">
+   <arg value="--log-csv" />
+   <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg path="${basedir}/PHP" />
+  </exec>
+ </target>
+
+ <target name="pdepend"
+         description="Calculate software metrics using PHP_Depend">
+  <exec executable="pdepend">
+   <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+   <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+   <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+   <arg path="${basedir}/PHP" />
+  </exec>
+ </target>
+
+ <target name="phpmd"
+         description="Perform project mess detection using PHPMD">
+  <exec executable="phpmd">
+   <arg path="${basedir}/PHP" />
+   <arg value="text" />
+   <arg value="${basedir}/build/phpmd.xml" />
+  </exec>
+ </target>
+
+ <target name="phpmd-ci"
+         description="Perform project mess detection using PHPMD">
+  <exec executable="phpmd">
+   <arg path="${basedir}/PHP" />
+   <arg value="xml" />
+   <arg value="${basedir}/build/phpmd.xml" />
+   <arg value="--reportfile" />
+   <arg value="${basedir}/build/logs/pmd.xml" />
+  </exec>
+ </target>
+
+ <target name="phpcs"
+         description="Find coding standard violations using PHP_CodeSniffer">
+  <exec executable="phpcs">
+   <arg value="--standard=${basedir}/build/phpcs.xml" />
+   <arg value="--extensions=php" />
+   <arg value="--ignore=Autoload.php" />
+   <arg path="${basedir}/PHP" />
+  </exec>
+ </target>
+
+ <target name="phpcs-ci"
+         description="Find coding standard violations using PHP_CodeSniffer">
+  <exec executable="phpcs" output="/dev/null">
+   <arg value="--report=checkstyle" />
+   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+   <arg value="--standard=${basedir}/build/phpcs.xml" />
+   <arg value="--extensions=php" />
+   <arg value="--ignore=Autoload.php" />
+   <arg path="${basedir}/PHP" />
+  </exec>
+ </target>
+
+ <target name="phpcpd" description="Find duplicate code using PHPCPD">
+  <exec executable="phpcpd">
+   <arg value="--log-pmd" />
+   <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+   <arg path="${basedir}/PHP" />
+  </exec>
+ </target>
+
+ <target name="phpunit" description="Run unit tests with PHPUnit">
   <exec executable="phpunit" failonerror="true"/>
  </target>
 
- <!-- Run pdepend, phpmd, phpcpd, and phpcs in parallel -->
- <target name="parallelTasks">
-  <parallel>
-   <antcall target="pdepend"/>
-   <antcall target="phpmd"/>
-   <antcall target="phpcpd"/>
-   <antcall target="phpcs"/>
-   <antcall target="phpdoc"/>
-  </parallel>
- </target>
-
- <!-- Generate jdepend.xml and software metrics charts -->
- <target name="pdepend">
-  <exec executable="pdepend">
-   <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml
-              --jdepend-chart=${basedir}/build/pdepend/dependencies.svg
-              --overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg
-              PHP" />
-  </exec>
- </target>
-
- <!-- Generate pmd.xml -->
- <target name="phpmd">
-  <exec executable="phpmd">
-   <arg line="PHP xml codesize,design,naming,unusedcode --reportfile ${basedir}/build/logs/pmd.xml" />
-  </exec>
- </target>
-
- <!-- Generate pmd-cpd.xml -->
- <target name="phpcpd">
-  <exec executable="phpcpd">
-   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml PHP" />
-  </exec>
- </target>
-
- <!-- Generate checkstyle.xml -->
- <target name="phpcs">
-  <exec executable="phpcs" output="/dev/null">
-   <arg line="--report=checkstyle
-              --report-file=${basedir}/build/logs/checkstyle.xml
-              --standard=Sebastian
-              --extensions=php
-              PHP" />
-  </exec>
- </target>
-
- <!-- Generate API documentation -->
- <target name="phpdoc">
-  <exec executable="phpdoc">
-   <arg line="-d PHP -t build/api" />
-  </exec>
- </target>
-
- <target name="phpcb">
+ <target name="phpcb"
+         description="Aggregate tool output with PHP_CodeBrowser">
   <exec executable="phpcb">
-   <arg line="--log    ${basedir}/build/logs
-              --source ${basedir}/PHP
-              --output ${basedir}/build/code-browser" />
+   <arg value="--log" />
+   <arg path="${basedir}/build/logs" />
+   <arg value="--source" />
+   <arg path="${basedir}/PHP" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/code-browser" />
   </exec>
  </target>
-
- <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
 </project>

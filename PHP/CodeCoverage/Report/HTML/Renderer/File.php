@@ -490,7 +490,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         if (!$this->highlight) {
             unset($lines[count($lines)-1]);
-            return $lines;
+            return array($lines, $fillup);
         }
 
         $tokens     = token_get_all($buffer);

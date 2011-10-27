@@ -139,9 +139,8 @@ class PHP_CodeCoverage_Report_Factory
      *
      * @param  array $files
      * @return array
-     * @todo   Need to be made protected.
      */
-    public function buildDirectoryStructure($files)
+    protected function buildDirectoryStructure($files)
     {
         $result = array();
 
@@ -205,9 +204,8 @@ class PHP_CodeCoverage_Report_Factory
      *
      * @param  array $files
      * @return string
-     * @todo   Need to be made protected.
      */
-    public function reducePaths(&$files)
+    protected function reducePaths(&$files)
     {
         if (empty($files)) {
             return '.';

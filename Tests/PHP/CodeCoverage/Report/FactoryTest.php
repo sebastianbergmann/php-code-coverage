@@ -174,6 +174,12 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
      */
     public function testBuildDirectoryStructure()
     {
+        $method = new ReflectionMethod(
+          'PHP_CodeCoverage_Report_Factory', 'buildDirectoryStructure'
+        );
+
+        $method->setAccessible(TRUE);
+
         $this->assertEquals(
           array(
             'src' => array(
@@ -181,7 +187,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
               'MoneyBag.php/f' => array()
             )
           ),
-          $this->factory->buildDirectoryStructure(
+          $method->invoke(
+            $this->factory,
             array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
           )
         );
@@ -192,12 +199,18 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
      */
     public function testReducePaths()
     {
+        $method = new ReflectionMethod(
+          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
+        );
+
+        $method->setAccessible(TRUE);
+
         $files = array(
           '/home/sb/Money/Money.php'    => array(),
           '/home/sb/Money/MoneyBag.php' => array()
         );
 
-        $commonPath = $this->factory->reducePaths($files);
+        $commonPath = $method->invokeArgs($this->factory, array(&$files));
 
         $this->assertEquals(
           array(
@@ -215,9 +228,15 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
      */
     public function testReducePaths2()
     {
+        $method = new ReflectionMethod(
+          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
+        );
+
+        $method->setAccessible(TRUE);
+
         $files = array();
 
-        $commonPath = $this->factory->reducePaths($files);
+        $commonPath = $method->invokeArgs($this->factory, array(&$files));
 
         $this->assertEquals('.', $commonPath);
     }
@@ -227,11 +246,17 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
      */
     public function testReducePaths3()
     {
+        $method = new ReflectionMethod(
+          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
+        );
+
+        $method->setAccessible(TRUE);
+
         $files = array(
           '/home/sb/Money/Money.php' => array()
         );
 
-        $commonPath = $this->factory->reducePaths($files);
+        $commonPath = $method->invokeArgs($this->factory, array(&$files));
 
         $this->assertEquals(
           array(

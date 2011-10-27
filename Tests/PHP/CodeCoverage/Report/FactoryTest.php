@@ -195,9 +195,10 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
+     * @covers       PHP_CodeCoverage_Report_Factory::reducePaths
+     * @dataProvider reducePathsProvider
      */
-    public function testReducePaths()
+    public function testReducePaths($reducedPaths, $commonPath, $paths)
     {
         $method = new ReflectionMethod(
           'PHP_CodeCoverage_Report_Factory', 'reducePaths'
@@ -205,66 +206,40 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
 
         $method->setAccessible(TRUE);
 
-        $files = array(
-          '/home/sb/Money/Money.php'    => array(),
-          '/home/sb/Money/MoneyBag.php' => array()
-        );
+        $_commonPath = $method->invokeArgs($this->factory, array(&$paths));
 
-        $commonPath = $method->invokeArgs($this->factory, array(&$files));
-
-        $this->assertEquals(
-          array(
-            'Money.php'    => array(),
-            'MoneyBag.php' => array()
-          ),
-          $files
-        );
-
-        $this->assertEquals('/home/sb/Money', $commonPath);
+        $this->assertEquals($reducedPaths, $paths);
+        $this->assertEquals($commonPath, $_commonPath);
     }
 
-    /**
-     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
-     */
-    public function testReducePaths2()
+    public function reducePathsProvider()
     {
-        $method = new ReflectionMethod(
-          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
-        );
-
-        $method->setAccessible(TRUE);
-
-        $files = array();
-
-        $commonPath = $method->invokeArgs($this->factory, array(&$files));
-
-        $this->assertEquals('.', $commonPath);
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Report_Factory::reducePaths
-     */
-    public function testReducePaths3()
-    {
-        $method = new ReflectionMethod(
-          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
-        );
-
-        $method->setAccessible(TRUE);
-
-        $files = array(
-          '/home/sb/Money/Money.php' => array()
-        );
-
-        $commonPath = $method->invokeArgs($this->factory, array(&$files));
-
-        $this->assertEquals(
+        return array(
           array(
-            'Money.php' => array()
+            array(
+              'Money.php' => array(),
+              'MoneyBag.php' => array()
+            ),
+            '/home/sb/Money',
+            array(
+              '/home/sb/Money/Money.php' => array(),
+              '/home/sb/Money/MoneyBag.php' => array()
+            )
           ),
-          $files
+          array(
+            array(
+              'Money.php' => array()
+            ),
+            '/home/sb/Money/',
+            array(
+              '/home/sb/Money/Money.php' => array()
+            )
+          ),
+          array(
+            array(),
+            '.',
+            array()
+          )
         );
-
-        $this->assertEquals('/home/sb/Money/', $commonPath);
     }
 }

@@ -420,13 +420,23 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         for ($lineNumber = 1; $lineNumber <= $this->linesOfCode['loc']; $lineNumber++) {
             if (isset($this->startLines[$lineNumber])) {
                 // Start line of a class.
-                if (isset($this->startLines[$lineNumber]['methods'])) {
+                if (isset($this->startLines[$lineNumber]['className'])) {
                     $currentClass = &$this->startLines[$lineNumber];
                 }
 
+                // Start line of a trait.
+                else if (isset($this->startLines[$lineNumber]['traitName'])) {
+                    $currentTrait = &$this->startLines[$lineNumber];
+                }
+
                 // Start line of a method.
-                else {
+                else if (isset($this->startLines[$lineNumber]['methodName'])) {
                     $currentMethod = &$this->startLines[$lineNumber];
+                }
+
+                // Start line of a function.
+                else if (isset($this->startLines[$lineNumber]['functionName'])) {
+                    $currentFunction = &$this->startLines[$lineNumber];
                 }
             }
 
@@ -437,8 +447,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                     $currentClass['executableLines']++;
                 }
 
+                if (isset($currentTrait)) {
+                    $currentTrait['executableLines']++;
+                }
+
                 if (isset($currentMethod)) {
                     $currentMethod['executableLines']++;
+                }
+
+                if (isset($currentFunction)) {
+                    $currentFunction['executableLines']++;
                 }
 
                 $this->numExecutableLines++;
@@ -449,8 +467,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                         $currentClass['executedLines']++;
                     }
 
+                    if (isset($currentTrait)) {
+                        $currentTrait['executedLines']++;
+                    }
+
                     if (isset($currentMethod)) {
                         $currentMethod['executedLines']++;
+                    }
+
+                    if (isset($currentFunction)) {
+                        $currentFunction['executedLines']++;
                     }
 
                     $this->numExecutedLines++;
@@ -459,13 +485,23 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             if (isset($this->endLines[$lineNumber])) {
                 // End line of a class.
-                if (isset($this->endLines[$lineNumber]['methods'])) {
+                if (isset($this->endLines[$lineNumber]['className'])) {
                     unset($currentClass);
                 }
 
+                // End line of a trait.
+                else if (isset($this->endLines[$lineNumber]['traitName'])) {
+                    unset($currentTrait);
+                }
+
                 // End line of a method.
-                else {
+                else if (isset($this->endLines[$lineNumber]['methodName'])) {
                     unset($currentMethod);
+                }
+
+                // End line of a function.
+                else if (isset($this->endLines[$lineNumber]['functionName'])) {
+                    unset($currentFunction);
                 }
             }
         }
@@ -547,6 +583,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
         foreach ($classes as $className => $class) {
             $this->classes[$className] = array(
+              'className'       => $className,
               'methods'         => array(),
               'startLine'       => $class['startLine'],
               'executableLines' => 0,
@@ -563,6 +600,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($class['methods'] as $methodName => $method) {
                 $this->classes[$className]['methods'][$methodName] = array(
+                  'methodName'      => $methodName,
                   'signature'       => $method['signature'],
                   'startLine'       => $method['startLine'],
                   'endLine'         => $method['endLine'],
@@ -592,6 +630,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
         foreach ($traits as $traitName => $trait) {
             $this->traits[$traitName] = array(
+              'traitName'       => $traitName,
               'methods'         => array(),
               'startLine'       => $trait['startLine'],
               'executableLines' => 0,
@@ -608,6 +647,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($trait['methods'] as $methodName => $method) {
                 $this->traits[$traitName]['methods'][$methodName] = array(
+                  'methodName'      => $methodName,
                   'signature'       => $method['signature'],
                   'startLine'       => $method['startLine'],
                   'executableLines' => 0,
@@ -636,11 +676,14 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
         foreach ($functions as $functionName => $function) {
             $this->functions[$functionName] = array(
+              'functionName'    => $functionName,
               'signature'       => $function['signature'],
               'startLine'       => $function['startLine'],
               'executableLines' => 0,
               'executedLines'   => 0,
               'ccn'             => $function['ccn'],
+              'coverage'        => 0,
+              'crap'            => 0,
               'link'            => $link . $function['startLine']
             );
 

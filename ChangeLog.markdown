@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.1
 
 This is the list of changes for the PHP_CodeCoverage 1.1 release series.
 
+PHP_CodeCoverage 1.1.1
+----------------------
+
+* Fixed #75: CRAP index missing from HTML code coverage report.
+
 PHP_CodeCoverage 1.1.0
 ----------------------
 

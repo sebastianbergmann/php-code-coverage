@@ -246,7 +246,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                                     $numTestedMethods == $numMethods ? 1 : 0,
                                                     1,
                                                     TRUE
-                                                  )
+                                                  ),
+                'crap'                          => $item['crap'],
               )
             );
 
@@ -322,7 +323,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                                 $numTestedItems,
                                                 1,
                                                 TRUE
-                                              )
+                                              ),
+            'crap'                          => $item['crap'],
           )
         );
     }

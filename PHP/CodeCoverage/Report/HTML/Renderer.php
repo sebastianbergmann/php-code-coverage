@@ -215,7 +215,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             foreach ($path as $step) {
                 $link .= sprintf(
                   '%s<a href="%s.html">%s</a>',
-                  !empty($link) ? ' / ' : '',
+                  !empty($link) ? '/' : '',
                   $step->getId(),
                   $step->getName()
                 );

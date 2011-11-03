@@ -6,6 +6,7 @@ This is the list of changes for the PHP_CodeCoverage 1.1 release series.
 PHP_CodeCoverage 1.1.1
 ----------------------
 
+* Fixed #74: Removed extraneous spaces in displayed paths in the HTML code coverage report.
 * Fixed #75: CRAP index missing from HTML code coverage report.
 
 PHP_CodeCoverage 1.1.0

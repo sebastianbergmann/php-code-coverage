@@ -67,20 +67,17 @@ require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
 require_once TEST_FILES_PATH . 'CoveredFunction.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageClassTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveredClass.php';
 require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
-
-if (version_compare(PHP_VERSION, '5.3', '>')) {
-    require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageClassTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php';
-    require_once TEST_FILES_PATH . 'NamespaceCoveredClass.php';
-}
 
 /**
  * Tests for the PHP_CodeCoverage_Util class.
@@ -124,10 +121,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     public function testGetLinesToBeCovered($test, $lines)
     {
         if (strpos($test, 'Namespace') === 0) {
-            if (!version_compare(PHP_VERSION, '5.3', '>')) {
-                $this->markTestSkipped('PHP 5.3 (or later) is required.');
-            }
-
             $expected = array(
               TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
             );

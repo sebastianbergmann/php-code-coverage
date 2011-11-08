@@ -97,7 +97,7 @@ class PHP_CodeCoverage_Filter
             }
         }
 
-        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+        $file = stream_resolve_include_path(
           'SymfonyComponents/YAML/sfYaml.php'
         );
 
@@ -105,7 +105,7 @@ class PHP_CodeCoverage_Filter
             $this->addFileToBlacklist($file);
         }
 
-        $file = PHP_CodeCoverage_Util::fileExistsInIncludePath(
+        $file = stream_resolve_include_path(
           'SymfonyComponents/YAML/sfYamlDumper.php'
         );
 

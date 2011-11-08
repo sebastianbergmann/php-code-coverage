@@ -1,21 +1,9 @@
-PHP_CodeCoverage 1.1
+PHP_CodeCoverage 1.2
 ====================
 
-This is the list of changes for the PHP_CodeCoverage 1.1 release series.
+This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
-PHP_CodeCoverage 1.1.1
+PHP_CodeCoverage 1.2.0
 ----------------------
 
-* Fixed #74: Removed extraneous spaces in displayed paths in the HTML code coverage report.
-* Fixed #75: CRAP index missing from HTML code coverage report.
-
-PHP_CodeCoverage 1.1.0
-----------------------
-
-* Added support for traits.
-* Added an option to disable the caching of `PHP_Token_Stream` objects to reduce the memory usage.
-* Refactored the collection and processing of code coverage data improving code readability and performance.
-* Refactored the generation of Clover XML and HTML reports improving code readability and testability.
-* Removed the support for multiple blacklist groups.
-* Removed the `PHP_CodeCoverage::getInstance()` and `PHP_CodeCoverage_Filter::getInstance()` methods.
-* Replaced [RGraph](http://www.rgraph.net/) with [Highcharts JS](http://www.highcharts.com/) as the JavaScript chart library used for the HTML report's code coverage dashboard.
+* PHP_CodeCoverage 1.2 is only supported on PHP 5.3.9 (or later) and PHP 5.4.0 (or later) is highly recommended.

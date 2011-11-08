@@ -17,14 +17,14 @@
   <email>sb@sebastian-bergmann.de</email>
   <active>yes</active>
  </lead>
- <date>2011-11-04</date>
+ <date>2012-MM-DD</date>
  <version>
-  <release>1.1.1</release>
-  <api>1.1.0</api>
+  <release>1.2.0</release>
+  <api>1.2.0</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>devel</release>
+  <api>devel</api>
  </stability>
  <license>BSD License</license>
  <notes>http://github.com/sebastianbergmann/php-code-coverage/</notes>
@@ -131,7 +131,7 @@
  <dependencies>
   <required>
    <php>
-    <min>5.2.7</min>
+    <min>5.3.9</min>
    </php>
    <pearinstaller>
     <min>1.9.4</min>

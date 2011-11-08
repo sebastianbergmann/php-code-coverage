@@ -351,7 +351,7 @@ class PHP_CodeCoverage_Util
         if (strpos($coveredElement, '::') !== FALSE) {
             list($className, $methodName) = explode('::', $coveredElement);
 
-            if ($methodName[0] == '<') {
+            if (isset($methodName[0]) && $methodName[0] == '<') {
                 $classes = array($className);
 
                 foreach ($classes as $className) {

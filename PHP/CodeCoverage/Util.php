@@ -253,8 +253,14 @@ class PHP_CodeCoverage_Util
                     case 'PHP_Token_COMMENT': {
                         $_token = trim($token);
 
-                        if ($_token == '// @codeCoverageIgnoreStart' ||
-                            $_token == '//@codeCoverageIgnoreStart') {
+                        if ($_token == '// @codeCoverageIgnore' ||
+                            $_token == '//@codeCoverageIgnore') {
+                            $ignore = TRUE;
+                            $stop   = TRUE;
+                        }
+
+                        else if ($_token == '// @codeCoverageIgnoreStart' ||
+                                 $_token == '//@codeCoverageIgnoreStart') {
                             $ignore = TRUE;
                         }
 

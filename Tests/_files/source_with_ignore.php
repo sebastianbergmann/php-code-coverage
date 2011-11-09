@@ -24,3 +24,8 @@ class Bar
     {
     }
 }
+
+function baz()
+{
+    print '*'; // @codeCoverageIgnore
+}

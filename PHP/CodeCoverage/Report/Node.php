@@ -120,7 +120,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
                 $parentId = $parent->getId();
 
                 if ($parentId == 'index') {
-                    $this->id = $this->name;
+                    $this->id = str_replace(':', '_', $this->name);
                 } else {
                     $this->id = $parentId . '_' . $this->name;
                 }

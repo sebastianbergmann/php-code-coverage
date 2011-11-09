@@ -89,7 +89,10 @@ class PHP_CodeCoverage_Report_Factory
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
                 $key = substr($key, 0, -2);
-                $root->addFile($key, $value, $tests, $cacheTokens);
+
+                if (file_exists($root->getPath() . DIRECTORY_SEPARATOR . $key)) {
+                    $root->addFile($key, $value, $tests, $cacheTokens);
+                }
             } else {
                 $child = $root->addDirectory($key);
                 $this->addItems($child, $value, $tests, $cacheTokens);

@@ -56,6 +56,7 @@ if (!defined('TEST_FILES_PATH')) {
 
 require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
 require_once TEST_FILES_PATH . 'CoverageClassTest.php';
+require_once TEST_FILES_PATH . 'CoverageFileTest.php';
 require_once TEST_FILES_PATH . 'CoverageFunctionTest.php';
 require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
 require_once TEST_FILES_PATH . 'CoverageNoneTest.php';
@@ -136,6 +137,12 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             );
         }
 
+        else if ($test === 'CoverageFileTest') {
+            $expected = array(
+              TEST_FILES_PATH . 'CoveredFile.php' => $lines
+            );
+        }
+
         else {
             $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
         }
@@ -181,6 +188,18 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     {
         PHP_CodeCoverage_Util::getLinesToBeCovered(
           'NotExistingCoveredElementTest', 'testThree'
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testGetLinesToBeCovered5()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          'NotExistingCoveredElementTest', 'testFour'
         );
     }
 
@@ -333,6 +352,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           array(
             'CoverageFunctionTest',
             range(2, 4)
+          ),
+          array(
+            'CoverageFileTest',
+            range(1, 3)
           ),
           array(
             'NamespaceCoverageClassExtendedTest',

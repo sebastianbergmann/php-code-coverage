@@ -477,6 +477,10 @@ class PHP_CodeCoverage
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
+            if (!file_exists($uncoveredFile)) {
+                continue;
+            }
+
             if ($this->cacheTokens) {
                 $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
             } else {

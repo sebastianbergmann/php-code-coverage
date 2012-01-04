@@ -166,8 +166,29 @@ class PHP_CodeCoverage_Util
             }
         }
 
+        $classShortcut = preg_match_all(
+          '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m',
+          $class->getDocComment(),
+          $matches
+        );
+        if($classShortcut) {
+            if($classShortcut > 1) {
+                throw new PHP_CodeCoverage_Exception(
+                  sprintf(
+                    'More than one @coversClass annotation in class or interface "%s".',
+                    $className
+                  )
+                );
+            }
+            $classShortcut = $matches['coveredClass'][0];
+        } 
+
         if (preg_match_all(self::REGEX, $docComment, $matches)) {
             foreach ($matches['coveredElement'] as $coveredElement) {
+                if($classShortcut && strncmp($coveredElement, '::', 2) === 0) {
+                    $coveredElement = $classShortcut . $coveredElement;
+                }
+
                 $codeToCoverList = array_merge(
                   $codeToCoverList,
                   self::resolveCoversToReflectionObjects($coveredElement)

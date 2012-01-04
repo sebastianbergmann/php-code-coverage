@@ -65,10 +65,13 @@ require_once TEST_FILES_PATH . 'CoverageNotPublicTest.php';
 require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
+require_once TEST_FILES_PATH . 'CoverageTwoDefaultClassAnnotations.php';
 require_once TEST_FILES_PATH . 'CoveredClass.php';
 require_once TEST_FILES_PATH . 'CoveredFunction.php';
 require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoverageClassTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageCoversClassTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageCoversClassPublicTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php';
@@ -287,6 +290,18 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testTwoCoversDefaultClassAnnoationsAreNotAllowed()
+    {
+        PHP_CodeCoverage_Util::getLinesToBeCovered(
+          'CoverageTwoDefaultClassAnnotations',
+          'testSomething'
+        );
+    }
+
     public function getLinesToBeCoveredProvider()
     {
         return array(
@@ -368,6 +383,14 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           ),
           array(
             'NamespaceCoveragePublicTest',
+            range(33, 37)
+          ),
+          array(
+            'NamespaceCoverageCoversClassTest',
+            array_merge(range(23, 25), range(27, 31), range(33, 37), range(6, 8), range(10, 13), range(15, 18))
+          ),
+          array(
+            'NamespaceCoverageCoversClassPublicTest',
             range(33, 37)
           )
         );

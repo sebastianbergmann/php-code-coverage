@@ -69,7 +69,12 @@ class PHP_CodeCoverage_Util
     /**
      * @var string
      */
-    const REGEX = '(@covers\s+(?P<coveredElement>.*?)\s*$)m';
+    const COVERS_REGEX = '(@covers\s+(?P<coveredElement>.*?)\s*$)m';
+
+    /**
+     * @var string
+     */
+    const COVERS_DEFAULT_CLASS_REGEX = '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m';
 
     /**
      * @var array
@@ -167,12 +172,11 @@ class PHP_CodeCoverage_Util
         }
 
         $classShortcut = preg_match_all(
-          '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m',
-          $class->getDocComment(),
-          $matches
+          self::COVERS_DEFAULT_CLASS_REGEX, $class->getDocComment(), $matches
         );
-        if($classShortcut) {
-            if($classShortcut > 1) {
+
+        if ($classShortcut) {
+            if ($classShortcut > 1) {
                 throw new PHP_CodeCoverage_Exception(
                   sprintf(
                     'More than one @coversClass annotation in class or interface "%s".',
@@ -180,12 +184,13 @@ class PHP_CodeCoverage_Util
                   )
                 );
             }
-            $classShortcut = $matches['coveredClass'][0];
-        } 
 
-        if (preg_match_all(self::REGEX, $docComment, $matches)) {
+            $classShortcut = $matches['coveredClass'][0];
+        }
+
+        if (preg_match_all(self::COVERS_REGEX, $docComment, $matches)) {
             foreach ($matches['coveredElement'] as $coveredElement) {
-                if($classShortcut && strncmp($coveredElement, '::', 2) === 0) {
+                if ($classShortcut && strncmp($coveredElement, '::', 2) === 0) {
                     $coveredElement = $classShortcut . $coveredElement;
                 }
 

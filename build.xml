@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="PHP_CodeCoverage" default="build">
+ <property name="php" value="php"/>
+ <property name="phpunit" value="phpunit"/>
+
  <target name="build"
    depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb"/>
 
@@ -51,15 +54,17 @@
  </target>
 
  <target name="lint">
-  <apply executable="php" failonerror="true">
+  <apply executable="${php}" failonerror="true">
    <arg value="-l" />
 
    <fileset dir="${basedir}/PHP">
     <include name="**/*.php" />
+    <modified />
    </fileset>
 
    <fileset dir="${basedir}/Tests">
     <include name="**/*.php" />
+    <modified />
    </fileset>
   </apply>
  </target>
@@ -133,7 +138,13 @@
  </target>
 
  <target name="phpunit" description="Run unit tests with PHPUnit">
-  <exec executable="phpunit" failonerror="true"/>
+  <condition property="phpunit_cmd" value="${php} ${phpunit}" else="${phpunit}">
+   <not>
+    <equals arg1="${phpunit}" arg2="phpunit" />
+   </not>
+  </condition>
+
+  <exec executable="${phpunit_cmd}" failonerror="true"/>
  </target>
 
  <target name="phpcb"

@@ -2,7 +2,7 @@
 /**
  * Represents foo.
  */
-class foo
+class Foo
 {
 }
 

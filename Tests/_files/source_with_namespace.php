@@ -4,7 +4,7 @@ namespace bar\baz;
 /**
  * Represents foo.
  */
-class foo
+class Foo
 {
 }
 

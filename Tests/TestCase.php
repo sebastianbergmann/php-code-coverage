@@ -122,7 +122,6 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                $data[0], $data[1], $data[2], $data[3]
              ));
 
-
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
         $coverage->start(
@@ -158,7 +157,6 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
              ->will($this->onConsecutiveCalls(
                $data[0], $data[1]
              ));
-
 
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 

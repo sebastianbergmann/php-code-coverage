@@ -44,7 +44,9 @@
  * @since      File available since Release 1.0.0
  */
 
-@include_once 'vfsStream/vfsStream.php';
+if (stream_resolve_include_path('vfsStream/vfsStream.php')) {
+    require_once 'vfsStream/vfsStream.php';
+}
 
 if (!defined('TEST_FILES_PATH')) {
     define(

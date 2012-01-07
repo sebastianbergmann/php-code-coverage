@@ -1,5 +1,5 @@
 <?php
-if (FALSE) {
+if ($neverHappens) {
     // @codeCoverageIgnoreStart
     print '*';
     // @codeCoverageIgnoreEnd

@@ -447,7 +447,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             }
 
             $lines .= sprintf(
-              '<span class="lineNum" id="container%d"><a name="%d"></a>'.
+              '<span class="lineNum" id="container%d"><a name="%d"></a>' .
               '<a href="#%d" id="line%d">%8d</a> </span>%s%s%s' . "\n",
 
               $i,

@@ -240,6 +240,12 @@ class PHP_CodeCoverage_Util
             $ignore                        = FALSE;
             $stop                          = FALSE;
 
+            foreach (file($filename) as $index => $line) {
+                if (!trim($line)) {
+                    self::$ignoredLines[$filename][$index+1] = TRUE;
+                }
+            }
+
             if ($cacheTokens) {
                 $tokens = PHP_Token_Stream_CachingFactory::get($filename);
             } else {

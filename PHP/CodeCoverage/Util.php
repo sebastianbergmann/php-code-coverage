@@ -275,6 +275,13 @@ class PHP_CodeCoverage_Util
                         }
                     }
                     break;
+                    case 'PHP_Token_OPEN_TAG':
+                    case 'PHP_Token_CLOSE_TAG':
+                    case 'PHP_Token_NAMESPACE':
+                    case 'PHP_Token_USE':
+                        self::$ignoredLines[$filename][$token->getLine()] = TRUE;
+                        break;
+
 
                     case 'PHP_Token_COMMENT': {
                         $_token = trim($token);

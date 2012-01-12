@@ -481,56 +481,12 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            if ($this->cacheTokens) {
-                $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
-            } else {
-                $tokens = new PHP_Token_Stream($uncoveredFile);
-            }
+            $data[$uncoveredFile] = array();
 
-            $classes    = $tokens->getClasses();
-            $interfaces = $tokens->getInterfaces();
-            $functions  = $tokens->getFunctions();
-            unset($tokens);
+            $lines = count(file($uncoveredFile));
 
-            foreach (array_keys($classes) as $class) {
-                if (class_exists($class, FALSE)) {
-                    continue 2;
-                }
-            }
-
-            unset($classes);
-
-            foreach (array_keys($interfaces) as $interface) {
-                if (interface_exists($interface, FALSE)) {
-                    continue 2;
-                }
-            }
-
-            unset($interfaces);
-
-            foreach (array_keys($functions) as $function) {
-                if (function_exists($function)) {
-                    continue 2;
-                }
-            }
-
-            unset($functions);
-
-            $this->driver->start();
-            include_once $uncoveredFile;
-            $coverage = $this->driver->stop();
-
-            foreach ($coverage as $file => $fileCoverage) {
-                if (!isset($data[$file]) &&
-                    in_array($file, $uncoveredFiles)) {
-                    foreach (array_keys($fileCoverage) as $key) {
-                        if ($fileCoverage[$key] == 1) {
-                            $fileCoverage[$key] = -1;
-                        }
-                    }
-
-                    $data[$file] = $fileCoverage;
-                }
+            for ($i = 1; $i <= $lines; $i++) {
+                $data[$uncoveredFile][$i] = -1;
             }
         }
 

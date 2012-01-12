@@ -169,9 +169,7 @@ class PHP_CodeCoverage
      */
     public function getData()
     {
-        if ($this->processUncoveredFilesFromWhitelist) {
-            $this->processUncoveredFilesFromWhitelist();
-        }
+        $this->processUncoveredFilesFromWhitelist();
 
         // We need to apply the blacklist filter a second time
         // when no whitelist is used.
@@ -481,59 +479,80 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            if ($this->cacheTokens) {
-                $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+            if ($this->processUncoveredFilesFromWhitelist) {
+                $this->processUncoveredFileFromWhitelist(
+                  $uncoveredFile, $data, $uncoveredFiles
+                );
             } else {
-                $tokens = new PHP_Token_Stream($uncoveredFile);
-            }
+                $data[$uncoveredFile] = array();
 
-            $classes    = $tokens->getClasses();
-            $interfaces = $tokens->getInterfaces();
-            $functions  = $tokens->getFunctions();
-            unset($tokens);
+                $lines = count(file($uncoveredFile));
 
-            foreach (array_keys($classes) as $class) {
-                if (class_exists($class, FALSE)) {
-                    continue 2;
-                }
-            }
-
-            unset($classes);
-
-            foreach (array_keys($interfaces) as $interface) {
-                if (interface_exists($interface, FALSE)) {
-                    continue 2;
-                }
-            }
-
-            unset($interfaces);
-
-            foreach (array_keys($functions) as $function) {
-                if (function_exists($function)) {
-                    continue 2;
-                }
-            }
-
-            unset($functions);
-
-            $this->driver->start();
-            include_once $uncoveredFile;
-            $coverage = $this->driver->stop();
-
-            foreach ($coverage as $file => $fileCoverage) {
-                if (!isset($data[$file]) &&
-                    in_array($file, $uncoveredFiles)) {
-                    foreach (array_keys($fileCoverage) as $key) {
-                        if ($fileCoverage[$key] == 1) {
-                            $fileCoverage[$key] = -1;
-                        }
-                    }
-
-                    $data[$file] = $fileCoverage;
+                for ($i = 1; $i <= $lines; $i++) {
+                    $data[$uncoveredFile][$i] = -1;
                 }
             }
         }
 
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
+    }
+
+    /**
+     * @param string $uncoveredFile
+     * @param array  $data
+     */
+    protected function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
+    {
+        if ($this->cacheTokens) {
+            $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+        } else {
+            $tokens = new PHP_Token_Stream($uncoveredFile);
+        }
+
+        $classes    = $tokens->getClasses();
+        $interfaces = $tokens->getInterfaces();
+        $functions  = $tokens->getFunctions();
+        unset($tokens);
+
+        foreach (array_keys($classes) as $class) {
+            if (class_exists($class, FALSE)) {
+                continue;
+            }
+        }
+
+        unset($classes);
+
+        foreach (array_keys($interfaces) as $interface) {
+            if (interface_exists($interface, FALSE)) {
+                continue;
+            }
+        }
+
+        unset($interfaces);
+
+        foreach (array_keys($functions) as $function) {
+            if (function_exists($function)) {
+                continue;
+            }
+        }
+
+        unset($functions);
+
+        $this->driver->start();
+        include_once $uncoveredFile;
+        $coverage = $this->driver->stop();
+
+        foreach ($coverage as $file => $fileCoverage) {
+            if (!isset($data[$file]) &&
+                in_array($file, $uncoveredFiles)) {
+                foreach (array_keys($fileCoverage) as $key) {
+                    if ($fileCoverage[$key] == 1) {
+                        $fileCoverage[$key] = -1;
+                    }
+                }
+
+                $data[$file] = $fileCoverage;
+            }
+        }
     }
 }

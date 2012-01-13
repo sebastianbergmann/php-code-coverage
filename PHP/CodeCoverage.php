@@ -85,7 +85,7 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
-    protected $processUncoveredFilesFromWhitelist = TRUE;
+    protected $processUncoveredFilesFromWhitelist = FALSE;
 
     /**
      * @var mixed

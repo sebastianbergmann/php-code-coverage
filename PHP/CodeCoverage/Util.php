@@ -274,29 +274,37 @@ class PHP_CodeCoverage_Util
                             $firstMethod = array_shift(
                               $classes[$token->getName()]['methods']
                             );
+
                             $lastMethod = array_pop(
                               $classes[$token->getName()]['methods']
                             );
+
                             if ($lastMethod === NULL) {
                                 $lastMethod = $firstMethod;
                             }
 
-                            for ($i = $token->getLine(); $i < $firstMethod['startLine']; $i++) {
+                            for ($i = $token->getLine();
+                                 $i < $firstMethod['startLine'];
+                                 $i++) {
                                 self::$ignoredLines[$filename][$i] = TRUE;
                             }
-                            for ($i = $token->getEndLine(); $i > $lastMethod['endLine']; $i--) {
+
+                            for ($i = $token->getEndLine();
+                                 $i > $lastMethod['endLine'];
+                                 $i--) {
                                 self::$ignoredLines[$filename][$i] = TRUE;
                             }
                         }
                     }
                     break;
+
                     case 'PHP_Token_OPEN_TAG':
                     case 'PHP_Token_CLOSE_TAG':
                     case 'PHP_Token_NAMESPACE':
-                    case 'PHP_Token_USE':
+                    case 'PHP_Token_USE': {
                         self::$ignoredLines[$filename][$token->getLine()] = TRUE;
-                        break;
-
+                    }
+                    break;
 
                     case 'PHP_Token_COMMENT': {
                         $_token = trim($token);

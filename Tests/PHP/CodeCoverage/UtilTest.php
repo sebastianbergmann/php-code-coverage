@@ -218,7 +218,14 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             25 => TRUE,
             26 => TRUE,
             27 => TRUE,
-            30 => TRUE
+            30 => TRUE,
+            32 => TRUE,
+            33 => TRUE,
+            34 => TRUE,
+            35 => TRUE,
+            36 => TRUE,
+            37 => TRUE,
+            38 => TRUE,
           ),
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
             TEST_FILES_PATH . 'source_with_ignore.php'

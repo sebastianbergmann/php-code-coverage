@@ -29,3 +29,10 @@ function baz()
 {
     print '*'; // @codeCoverageIgnore
 }
+
+interface bor {
+
+    public function foo();
+
+}
+

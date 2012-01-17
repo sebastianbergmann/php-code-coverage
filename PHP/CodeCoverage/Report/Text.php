@@ -91,9 +91,8 @@ class PHP_CodeCoverage_Report_Text
      */
     public function process(PHP_CodeCoverage $coverage, $showColors = FALSE)
     {
-        $output   = '';
-        $packages = array();
-        $report   = $coverage->getReport();
+        $output = '';
+        $report = $coverage->getReport();
         unset($coverage);
 
         $colors = array(
@@ -159,7 +158,7 @@ class PHP_CodeCoverage_Report_Text
                 $coveredClassStatements = 0;
                 $coveredMethods         = 0;
 
-                foreach ($class['methods'] as $methodName => $method) {
+                foreach ($class['methods'] as $method) {
                     $methodCount        = 0;
                     $methodLines        = 0;
                     $methodLinesCovered = 0;

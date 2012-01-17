@@ -509,7 +509,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             }
         }
 
-        foreach ($this->traits as $traitName => &$trait) {
+        foreach ($this->traits as &$trait) {
             foreach ($trait['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
                     $method['coverage'] = ($method['executedLines'] /
@@ -541,7 +541,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             );
         }
 
-        foreach ($this->classes as $className => &$class) {
+        foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
                     $method['coverage'] = ($method['executedLines'] /

@@ -109,9 +109,8 @@ class PHP_CodeCoverage
     /**
      * Constructor.
      *
-     * @param  PHP_CodeCoverage_Driver $driver
-     * @param  PHP_CodeCoverage_Filter $filter
-     * @throws InvalidArgumentException
+     * @param PHP_CodeCoverage_Driver $driver
+     * @param PHP_CodeCoverage_Filter $filter
      */
     public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL)
     {
@@ -196,12 +195,14 @@ class PHP_CodeCoverage
      *
      * @param  mixed   $id
      * @param  boolean $clear
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function start($id, $clear = FALSE)
     {
         if (!is_bool($clear)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         if ($clear) {
@@ -218,12 +219,14 @@ class PHP_CodeCoverage
      *
      * @param  boolean $append
      * @return array
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function stop($append = TRUE)
     {
         if (!is_bool($append)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         $data = $this->driver->stop();
@@ -248,7 +251,7 @@ class PHP_CodeCoverage
         }
 
         if ($id === NULL) {
-            throw new InvalidArgumentException;
+            throw new PHP_CodeCoverage_Exception;
         }
 
         $this->applyListsFilter($data);
@@ -326,22 +329,23 @@ class PHP_CodeCoverage
 
     /**
      * @param  boolean $flag
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      * @since  Method available since Release 1.1.0
      */
     public function setCacheTokens($flag)
     {
         if (!is_bool($flag)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         $this->cacheTokens = $flag;
     }
 
     /**
-     * @param  boolean $flag
-     * @throws InvalidArgumentException
-     * @since  Method available since Release 1.1.0
+     * @param boolean $flag
+     * @since Method available since Release 1.1.0
      */
     public function getCacheTokens()
     {
@@ -350,12 +354,14 @@ class PHP_CodeCoverage
 
     /**
      * @param  boolean $flag
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function setForceCoversAnnotation($flag)
     {
         if (!is_bool($flag)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         $this->forceCoversAnnotation = $flag;
@@ -363,12 +369,14 @@ class PHP_CodeCoverage
 
     /**
      * @param  boolean $flag
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function setMapTestClassNameToCoveredClassName($flag)
     {
         if (!is_bool($flag)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         $this->mapTestClassNameToCoveredClassName = $flag;
@@ -376,12 +384,14 @@ class PHP_CodeCoverage
 
     /**
      * @param  boolean $flag
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public function setProcessUncoveredFilesFromWhitelist($flag)
     {
         if (!is_bool($flag)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         $this->processUncoveredFilesFromWhitelist = $flag;

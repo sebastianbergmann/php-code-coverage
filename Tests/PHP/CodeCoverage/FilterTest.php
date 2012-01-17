@@ -296,7 +296,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers            PHP_CodeCoverage_Filter::isFiltered
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testIsFilteredThrowsExceptionForInvalidArgument()
     {

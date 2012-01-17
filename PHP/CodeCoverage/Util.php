@@ -227,12 +227,14 @@ class PHP_CodeCoverage_Util
      * @param  string  $filename
      * @param  boolean $cacheTokens
      * @return array
-     * @throws InvalidArgumentException
+     * @throws PHP_CodeCoverage_Exception
      */
     public static function getLinesToBeIgnored($filename, $cacheTokens = TRUE)
     {
         if (!is_bool($cacheTokens)) {
-            throw new InvalidArgumentException;
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
         }
 
         if (!isset(self::$ignoredLines[$filename])) {

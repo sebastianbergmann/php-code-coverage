@@ -107,7 +107,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::start
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testStartThrowsExceptionForInvalidArgument()
     {
@@ -117,7 +117,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::stop
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testStopThrowsExceptionForInvalidArgument()
     {
@@ -127,7 +127,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::append
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testAppendThrowsExceptionForInvalidArgument()
     {
@@ -137,7 +137,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::setCacheTokens
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testSetCacheTokensThrowsExceptionForInvalidArgument()
     {
@@ -157,7 +157,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::setForceCoversAnnotation
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testSetForceCoversAnnotationThrowsExceptionForInvalidArgument()
     {
@@ -177,7 +177,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::setProcessUncoveredFilesFromWhitelist
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testSetProcessUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
     {
@@ -211,7 +211,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
     /**
      * @covers            PHP_CodeCoverage::setMapTestClassNameToCoveredClassName
-     * @expectedException InvalidArgumentException
+     * @expectedException PHP_CodeCoverage_Exception
      */
     public function testSetMapTestClassNameToCoveredClassNameThrowsExceptionForInvalidArgument()
     {

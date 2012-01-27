@@ -203,7 +203,7 @@ class PHP_CodeCoverage_Filter
         );
 
         foreach ($files as $file) {
-            $this->addFileToWhitelist($file, FALSE);
+            $this->addFileToWhitelist($file);
         }
     }
 

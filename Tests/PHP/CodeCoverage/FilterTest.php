@@ -157,12 +157,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testAddingFilesToTheBlacklistWorks()
     {
-        $facade = new File_Iterator_Facade;
-        $files  = $facade->getFilesAsArray(
-          TEST_FILES_PATH, $suffixes = '.php'
+        $this->filter->addFilesToBlacklist(
+          $this->findFiles(TEST_FILES_PATH, '', '.php')
         );
-
-        $this->filter->addFilesToBlacklist($files);
 
         $blacklist = $this->filter->getBlacklist();
         sort($blacklist);
@@ -229,12 +226,9 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testAddingFilesToTheWhitelistWorks()
     {
-        $facade = new File_Iterator_Facade;
-        $files  = $facade->getFilesAsArray(
-          TEST_FILES_PATH, $suffixes = '.php'
+        $this->filter->addFilesToWhitelist(
+          $this->findFiles(TEST_FILES_PATH, '', '.php')
         );
-
-        $this->filter->addFilesToWhitelist($files);
 
         $whitelist = $this->filter->getWhitelist();
         sort($whitelist);
@@ -301,5 +295,27 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testIsFilteredThrowsExceptionForInvalidArgument()
     {
         $this->filter->isFiltered('foo', array(), NULL);
+    }
+
+    protected function findFiles($directory, $prefix, $suffix)
+    {
+        $finder = new Symfony\Component\Finder\Finder;
+        $finder->in($directory);
+
+        if (!empty($prefix)) {
+            $finder->name($prefix . '*');
+        }
+
+        if (!empty($suffix)) {
+            $finder->name('*' . $suffix);
+        }
+
+        $files = array();
+
+        foreach ($finder as $file) {
+            $files[] = $file->getRealpath();
+        }
+
+        return $files;
     }
 }

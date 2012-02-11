@@ -44,12 +44,17 @@
  */
 
 // @codeCoverageIgnoreStart
+// @codingStandardsIgnoreStart
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 if (!function_exists('trait_exists')) {
     function trait_exists($name)
     {
         return FALSE;
     }
 }
+// @codingStandardsIgnoreEnd
 // @codeCoverageIgnoreEnd
 
 /**

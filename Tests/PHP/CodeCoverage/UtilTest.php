@@ -83,7 +83,7 @@ require_once TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php';
 require_once TEST_FILES_PATH . 'NamespaceCoveredClass.php';
 require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
-
+require_once TEST_FILES_PATH . 'CoverageNothingTest.php';
 /**
  * Tests for the PHP_CodeCoverage_Util class.
  *
@@ -131,7 +131,7 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             );
         }
 
-        else if ($test === 'CoverageNoneTest') {
+        else if ($test === 'CoverageNoneTest' || $test === 'CoverageNothingTest') {
             $expected = array();
         }
 
@@ -406,6 +406,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           array(
             'NamespaceCoverageCoversClassPublicTest',
             range(33, 37)
+          ),
+          array(
+            'CoverageNothingTest',
+            array()
           )
         );
     }

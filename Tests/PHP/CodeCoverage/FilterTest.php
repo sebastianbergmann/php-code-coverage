@@ -85,6 +85,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
           TEST_FILES_PATH . 'CoverageNotPrivateTest.php',
           TEST_FILES_PATH . 'CoverageNotProtectedTest.php',
           TEST_FILES_PATH . 'CoverageNotPublicTest.php',
+          TEST_FILES_PATH . 'CoverageNothingTest.php',
           TEST_FILES_PATH . 'CoveragePrivateTest.php',
           TEST_FILES_PATH . 'CoverageProtectedTest.php',
           TEST_FILES_PATH . 'CoveragePublicTest.php',

@@ -171,6 +171,10 @@ class PHP_CodeCoverage_Util
             }
         }
 
+        if (strpos($docComment, '@coversNothing') !== FALSE) {
+            return $result;
+        }
+
         $classShortcut = preg_match_all(
           self::COVERS_DEFAULT_CLASS_REGEX, $class->getDocComment(), $matches
         );

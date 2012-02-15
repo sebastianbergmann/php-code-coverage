@@ -653,6 +653,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                   'methodName'      => $methodName,
                   'signature'       => $method['signature'],
                   'startLine'       => $method['startLine'],
+                  'endLine'         => $method['endLine'],
                   'executableLines' => 0,
                   'executedLines'   => 0,
                   'ccn'             => $method['ccn'],

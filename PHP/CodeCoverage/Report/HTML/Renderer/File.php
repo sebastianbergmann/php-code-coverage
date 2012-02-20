@@ -49,6 +49,10 @@ if (!defined('T_TRAIT')) {
 }
 // @codeCoverageIgnoreEnd
 
+if (!defined('T_INSTEADOF')) {
+    define('T_INSTEADOF', 1002);
+}
+
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.
  *
@@ -577,9 +581,11 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                 case T_FUNCTION:
                                 case T_GLOBAL:
                                 case T_IF:
+                                case T_IMPLEMENTS:
                                 case T_INCLUDE:
                                 case T_INCLUDE_ONCE:
                                 case T_INSTANCEOF:
+                                case T_INSTEADOF:
                                 case T_ISSET:
                                 case T_LOGICAL_AND:
                                 case T_LOGICAL_OR:

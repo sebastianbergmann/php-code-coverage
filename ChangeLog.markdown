@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.1
 
 This is the list of changes for the PHP_CodeCoverage 1.1 release series.
 
+PHP_CodeCoverage 1.1.2
+----------------------
+
+* The `callbable`, `implements`, and `insteadof` keywords are now properly highlighted in the HTML report.
+
 PHP_CodeCoverage 1.1.1
 ----------------------
 

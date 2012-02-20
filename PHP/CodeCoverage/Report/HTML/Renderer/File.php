@@ -51,11 +51,11 @@ if (!defined('T_TRAIT')) {
 if (!defined('T_INSTEADOF')) {
     define('T_INSTEADOF', 1002);
 }
-// @codeCoverageIgnoreEnd
 
 if (!defined('T_CALLABLE')) {
     define('T_CALLABLE', 1003);
 }
+// @codeCoverageIgnoreEnd
 
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.

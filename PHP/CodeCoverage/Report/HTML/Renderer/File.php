@@ -53,6 +53,10 @@ if (!defined('T_INSTEADOF')) {
 }
 // @codeCoverageIgnoreEnd
 
+if (!defined('T_CALLABLE')) {
+    define('T_CALLABLE', 1003);
+}
+
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.
  *
@@ -558,6 +562,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                 case T_ARRAY:
                                 case T_AS:
                                 case T_BREAK:
+                                case T_CALLABLE:
                                 case T_CASE:
                                 case T_CATCH:
                                 case T_CLASS:

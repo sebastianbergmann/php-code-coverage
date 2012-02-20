@@ -47,11 +47,11 @@
 if (!defined('T_TRAIT')) {
     define('T_TRAIT', 1001);
 }
-// @codeCoverageIgnoreEnd
 
 if (!defined('T_INSTEADOF')) {
     define('T_INSTEADOF', 1002);
 }
+// @codeCoverageIgnoreEnd
 
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.

@@ -240,9 +240,15 @@ class PHP_CodeCoverage_Util
      */
     public static function getLinesToBeIgnored($filename, $cacheTokens = TRUE)
     {
+        if (!is_string($filename)) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'string'
+            );
+        }
+
         if (!is_bool($cacheTokens)) {
             throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
-              1, 'boolean'
+              2, 'boolean'
             );
         }
 

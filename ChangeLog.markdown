@@ -6,6 +6,9 @@ This is the list of changes for the PHP_CodeCoverage 1.1 release series.
 PHP_CodeCoverage 1.1.2
 ----------------------
 
+* Fixed #80: Whitelisted files that do not exist lead to errors.
+* Fixed #91: Traits are not handled properly.
+* Fixed notice in `PHP_CodeCoverage_Util::resolveCoversToReflectionObjects()`.
 * The `callbable`, `implements`, and `insteadof` keywords are now properly highlighted in the HTML report.
 
 PHP_CodeCoverage 1.1.1

@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.1
 
 This is the list of changes for the PHP_CodeCoverage 1.1 release series.
 
+PHP_CodeCoverage 1.1.3
+----------------------
+
+* Fixed #94: Functions created using the runkit extension caused warnings.
+
 PHP_CodeCoverage 1.1.2
 ----------------------
 

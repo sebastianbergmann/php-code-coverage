@@ -275,6 +275,7 @@ class PHP_CodeCoverage_Filter
         if ($filename == '-' ||
             strpos($filename, 'eval()\'d code') !== FALSE ||
             strpos($filename, 'runtime-created function') !== FALSE ||
+            strpos($filename, 'runkit created function') !== FALSE ||
             strpos($filename, 'assert code') !== FALSE ||
             strpos($filename, 'regexp code') !== FALSE) {
             return FALSE;

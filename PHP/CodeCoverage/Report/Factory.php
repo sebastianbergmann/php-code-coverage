@@ -229,6 +229,10 @@ class PHP_CodeCoverage_Report_Factory
         $max = count($paths);
 
         for ($i = 0; $i < $max; $i++) {
+            // strip phar:// prefixes
+            if (strpos($paths[$i], 'phar://') === 0) {
+                $paths[$i] = substr($paths[$i], 7);
+            }
             $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
 
             if (empty($paths[$i][0])) {

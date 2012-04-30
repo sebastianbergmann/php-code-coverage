@@ -474,6 +474,18 @@ class PHP_CodeCoverage_Util
                     }
                 }
             }
+        } elseif (strpos($coveredElement, '.') !== FALSE) {
+            $file = stream_resolve_include_path($coveredElement);
+            if (!$file) {
+                throw new PHP_CodeCoverage_Exception(
+                  sprintf(
+                    'Trying to @cover not existing file "%s".',
+                    $coveredElement
+                  )
+                );
+            }
+
+            $codeToCoverList[] = new PHP_CodeCoverage_ReflectionFile($file);
         } else {
             $extended = FALSE;
 

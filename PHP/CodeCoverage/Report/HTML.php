@@ -133,6 +133,10 @@ class PHP_CodeCoverage_Report_HTML
         $report = $coverage->getReport();
         unset($coverage);
 
+        if (!isset($_SERVER['REQUEST_TIME'])) {
+            $_SERVER['REQUEST_TIME'] = time();
+        }
+
         $date = date('D M j G:i:s T Y', $_SERVER['REQUEST_TIME']);
 
         $dashboard = new PHP_CodeCoverage_Report_HTML_Renderer_Dashboard(

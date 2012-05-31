@@ -250,14 +250,14 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
             array(
               'Money.php' => array(),
               'MoneyBag.php' => array(),
-              'Cash.phar/Cash.php' => array(), 
+              'Cash.phar/Cash.php' => array(),
             ),
             '/home/sb/Money',
             array(
               '/home/sb/Money/Money.php' => array(),
               '/home/sb/Money/MoneyBag.php' => array(),
               'phar:///home/sb/Money/Cash.phar/Cash.php' => array(),
-            ), 
+            ),
           ),
         );
     }

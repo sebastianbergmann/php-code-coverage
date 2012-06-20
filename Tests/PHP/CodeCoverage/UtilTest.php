@@ -194,6 +194,18 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeCovered
+     */
+    public function testGetLinesToBeCoveredSkipsNonExistantMethods()
+    {
+        $this->assertSame(
+          array(),
+          PHP_CodeCoverage_Util::getLinesToBeCovered(
+            'NotExistingCoveredElementTest', 'methodDoesNotExist'
+          )
+        );
+    }
+    /**
      * @covers PHP_CodeCoverage_Util::getLinesToBeIgnored
      */
     public function testGetLinesToBeIgnored()

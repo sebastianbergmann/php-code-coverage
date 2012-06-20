@@ -164,8 +164,12 @@ class PHP_CodeCoverage_Util
             $methodName = substr($methodName, 0, $pos);
         }
         // @codeCoverageIgnoreEnd
-        $class      = new ReflectionClass($className);
-        $method     = new ReflectionMethod($className, $methodName);
+        $class = new ReflectionClass($className);
+        try {
+            $method = new ReflectionMethod($className, $methodName);
+        } catch (ReflectionException $e) {
+            return array();
+        }
         $docComment = $class->getDocComment() . $method->getDocComment();
 
         foreach (self::$templateMethods as $templateMethod) {

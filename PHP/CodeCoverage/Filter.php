@@ -103,6 +103,7 @@ class PHP_CodeCoverage_Filter
           'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php',
           'Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php',
           'Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php',
+          'Symfony/Component/Finder/Iterator/MultiplePcreFilterIterator.php',
           'Symfony/Component/Finder/SplFileInfo.php',
           'SymfonyComponents/YAML/sfYaml.php',
           'SymfonyComponents/YAML/sfYamlDumper.php'

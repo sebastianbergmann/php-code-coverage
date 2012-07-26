@@ -136,7 +136,9 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     public function getPath()
     {
         if ($this->path === NULL) {
-            if ($this->parent === NULL) {
+            if ($this->parent === NULL ||
+                $this->parent->getPath() == NULL
+                    ) {
                 $this->path = $this->name;
             } else {
                 $this->path = $this->parent->getPath() . '/' . $this->name;

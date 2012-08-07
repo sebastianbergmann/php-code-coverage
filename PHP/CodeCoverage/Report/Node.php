@@ -203,6 +203,22 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     }
 
     /**
+     * Returns the percentage of traits that has been tested.
+     *
+     * @param  boolean $asString
+     * @return integer
+     * @since  Method available since Release 1.2.0
+     */
+    public function getTestedClassesAndTraitsPercent($asString = TRUE)
+    {
+        return PHP_CodeCoverage_Util::percent(
+          $this->getNumTestedClassesAndTraits(),
+          $this->getNumClassesAndTraits(),
+          $asString
+        );
+    }
+
+    /**
      * Returns the percentage of methods that has been tested.
      *
      * @param  boolean $asString
@@ -230,6 +246,28 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
           $this->getNumExecutableLines(),
           $asString
         );
+    }
+
+    /**
+     * Returns the number of classes and traits.
+     *
+     * @return integer
+     * @since  Method available since Release 1.2.0
+     */
+    public function getNumClassesAndTraits()
+    {
+        return $this->getNumClasses() + $this->getNumTraits();
+    }
+
+    /**
+     * Returns the number of tested classes and traits.
+     *
+     * @return integer
+     * @since  Method available since Release 1.2.0
+     */
+    public function getNumTestedClassesAndTraits()
+    {
+        return $this->getNumTestedClasses() + $this->getNumTestedTraits();
     }
 
     /**

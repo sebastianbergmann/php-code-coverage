@@ -100,8 +100,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
     protected function renderItem(PHP_CodeCoverage_Report_Node $item, $total = FALSE)
     {
         $data = array(
-          'numClasses'                   => $item->getNumClasses(),
-          'numTestedClasses'             => $item->getNumTestedClasses(),
+          'numClasses'                   => $item->getNumClassesAndTraits(),
+          'numTestedClasses'             => $item->getNumTestedClassesAndTraits(),
           'numMethods'                   => $item->getNumMethods(),
           'numTestedMethods'             => $item->getNumTestedMethods(),
           'linesExecutedPercent'         => $item->getLineExecutedPercent(FALSE),
@@ -110,8 +110,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
           'numExecutableLines'           => $item->getNumExecutableLines(),
           'testedMethodsPercent'         => $item->getTestedMethodsPercent(FALSE),
           'testedMethodsPercentAsString' => $item->getTestedMethodsPercent(),
-          'testedClassesPercent'         => $item->getTestedClassesPercent(FALSE),
-          'testedClassesPercentAsString' => $item->getTestedClassesPercent()
+          'testedClassesPercent'         => $item->getTestedClassesAndTraitsPercent(FALSE),
+          'testedClassesPercentAsString' => $item->getTestedClassesAndTraitsPercent()
         );
 
         if ($total) {

@@ -159,8 +159,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
           array(
             'itemClass'                    => 'coverDirectory',
             'name'                         => 'Total',
-            'numClasses'                   => $node->getNumClasses() + $node->getNumTraits(),
-            'numTestedClasses'             => $node->getNumTestedClasses() + $node->getNumTestedTraits(),
+            'numClasses'                   => $node->getNumClassesAndTraits(),
+            'numTestedClasses'             => $node->getNumTestedClassesAndTraits(),
             'numMethods'                   => $node->getNumMethods(),
             'numTestedMethods'             => $node->getNumTestedMethods(),
             'linesExecutedPercent'         => $node->getLineExecutedPercent(FALSE),

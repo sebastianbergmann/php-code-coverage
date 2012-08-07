@@ -46,7 +46,7 @@
         </tr>
         <tr>
           <td class="tableHead">&nbsp;</td>
-          <td class="tableHead" colspan="3">Classes</td>
+          <td class="tableHead" colspan="3">Classes / Traits</td>
           <td class="tableHead" colspan="3">Functions / Methods</td>
           <td class="tableHead" colspan="3">Lines</td>
         </tr>

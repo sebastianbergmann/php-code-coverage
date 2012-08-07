@@ -273,11 +273,12 @@ class PHP_CodeCoverage_Util
                 $tokens = new PHP_Token_Stream($filename);
             }
 
-            $classes = $tokens->getClasses();
+            $classes = array_merge($tokens->getClasses(), $tokens->getTraits());
             $tokens  = $tokens->tokens();
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
+                    case 'PHP_Token_TRAIT':
                     case 'PHP_Token_CLASS':
                     case 'PHP_Token_FUNCTION': {
                         $docblock = $token->getDocblock();
@@ -290,7 +291,8 @@ class PHP_CodeCoverage_Util
                             }
                         }
 
-                        else if ($token instanceof PHP_Token_CLASS &&
+                        else if (($token instanceof PHP_Token_TRAIT ||
+                                  $token instanceof PHP_Token_CLASS) &&
                                  !empty($classes[$token->getName()]['methods'])) {
                             $firstMethod = array_shift(
                               $classes[$token->getName()]['methods']

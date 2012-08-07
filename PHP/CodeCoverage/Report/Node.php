@@ -271,6 +271,17 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     }
 
     /**
+     * Returns the classes and traits of this node.
+     *
+     * @return array
+     * @since  Method available since Release 1.2.0
+     */
+    public function getClassesAndTraits()
+    {
+        return array_merge($this->getClasses(), $this->getTraits());
+    }
+
+    /**
      * Returns the classes of this node.
      *
      * @return array

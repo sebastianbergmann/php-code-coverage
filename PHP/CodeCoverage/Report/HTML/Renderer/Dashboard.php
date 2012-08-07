@@ -68,7 +68,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             $title = $node->getName();
         }
 
-        $classes  = array_merge($node->getClasses(), $node->getTraits());
+        $classes  = $node->getClassesAndTraits();
         $template = new Text_Template(
           $this->templatePath . 'dashboard.html'
         );

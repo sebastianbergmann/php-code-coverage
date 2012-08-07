@@ -148,7 +148,7 @@ class PHP_CodeCoverage_Report_Text
                 continue;
             }
 
-            $classes      = array_merge($item->getClasses(), $item->getTraits());
+            $classes      = $item->getClassesAndTraits();
             $coverage     = $item->getCoverageData();
             $lines        = array();
             $ignoredLines = $item->getIgnoredLines();

@@ -262,7 +262,7 @@ class PHP_CodeCoverage_Report_Clover
             $xmlMetrics = $xmlDocument->createElement('metrics');
             $xmlMetrics->setAttribute('loc', $linesOfCode['loc']);
             $xmlMetrics->setAttribute('ncloc', $linesOfCode['ncloc']);
-            $xmlMetrics->setAttribute('classes', $item->getNumClasses());
+            $xmlMetrics->setAttribute('classes', $item->getNumClassesAndTraits());
             $xmlMetrics->setAttribute('methods', $item->getNumMethods());
             $xmlMetrics->setAttribute(
               'coveredmethods', $item->getNumTestedMethods()
@@ -312,7 +312,7 @@ class PHP_CodeCoverage_Report_Clover
         $xmlMetrics->setAttribute('loc', $linesOfCode['loc']);
         $xmlMetrics->setAttribute('ncloc', $linesOfCode['ncloc']);
         $xmlMetrics->setAttribute(
-          'classes', $report->getNumClasses()
+          'classes', $report->getNumClassesAndTraits()
         );
         $xmlMetrics->setAttribute('methods', $report->getNumMethods());
         $xmlMetrics->setAttribute(

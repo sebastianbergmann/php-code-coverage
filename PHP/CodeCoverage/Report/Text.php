@@ -106,8 +106,8 @@ class PHP_CodeCoverage_Report_Text
 
         if ($showColors) {
             $colors['classes'] = $this->getCoverageColor(
-                                   $report->getNumTestedClasses(),
-                                   $report->getNumClasses()
+                                   $report->getNumTestedClassesAndTraits(),
+                                   $report->getNumClassesAndTraits()
                                  );
             $colors['methods'] = $this->getCoverageColor(
                                    $report->getNumTestedMethods(),
@@ -134,8 +134,8 @@ class PHP_CodeCoverage_Report_Text
                    PHP_EOL;
 
         $output .= PHP_EOL . ' Summary: ' . PHP_EOL . $colors['reset']
-          . $colors['classes'] . $colors['eol'] . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClasses(), $report->getNumClasses(), TRUE)
-          . ' (' . $report->getNumTestedClasses() . '/' . $report->getNumClasses() . ')' . PHP_EOL . $colors ['eol']
+          . $colors['classes'] . $colors['eol'] . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClassesAndTraits(), $report->getNumClassesAndTraits(), TRUE)
+          . ' (' . $report->getNumTestedClassesAndTraits() . '/' . $report->getNumClassesAndTraits() . ')' . PHP_EOL . $colors ['eol']
           . $colors['methods'] . $colors['eol'] . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE)
           . ' (' . $report->getNumTestedMethods() . '/' . $report->getNumMethods() . ')' . PHP_EOL . $colors ['eol']
           . $colors['lines'] . $colors['eol'] . '  Lines:   ' . PHP_CodeCoverage_Util::percent($report->getNumExecutedLines(), $report->getNumExecutableLines(), TRUE)

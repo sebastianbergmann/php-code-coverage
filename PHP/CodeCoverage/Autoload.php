@@ -45,6 +45,7 @@
 
 require_once 'Symfony/Component/Finder/Finder.php';
 require_once 'Symfony/Component/Finder/Glob.php';
+require_once 'Symfony/Component/Finder/Iterator/MultiplePcreFilterIterator.php';
 require_once 'Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
 require_once 'Symfony/Component/Finder/Iterator/MultiplePcreFilterIterator.php';
 require_once 'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';

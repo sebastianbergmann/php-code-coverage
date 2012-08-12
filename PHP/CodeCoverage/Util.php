@@ -99,33 +99,6 @@ class PHP_CodeCoverage_Util
     protected static $ids = array();
 
     /**
-     * @param  string $directory
-     * @return string
-     * @throws PHP_CodeCoverage_Exception
-     */
-    public static function getDirectory($directory)
-    {
-        if (substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
-            $directory .= DIRECTORY_SEPARATOR;
-        }
-
-        if (is_dir($directory)) {
-            return $directory;
-        }
-
-        if (mkdir($directory, 0777, TRUE)) {
-            return $directory;
-        }
-
-        throw new PHP_CodeCoverage_Exception(
-          sprintf(
-            'Directory "%s" does not exist.',
-            $directory
-          )
-        );
-    }
-
-    /**
      * Returns the files and lines a test method wants to cover.
      *
      * @param  string $className

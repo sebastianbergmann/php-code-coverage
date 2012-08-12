@@ -129,7 +129,7 @@ class PHP_CodeCoverage_Report_HTML
      */
     public function process(PHP_CodeCoverage $coverage, $target)
     {
-        $target = PHP_CodeCoverage_Util::getDirectory($target);
+        $target = $this->getDirectory($target);
         $report = $coverage->getReport();
         unset($coverage);
 
@@ -209,5 +209,33 @@ class PHP_CodeCoverage_Report_HTML
         foreach ($files as $file) {
             copy($this->templatePath . $file, $target . $file);
         }
+    }
+
+    /**
+     * @param  string $directory
+     * @return string
+     * @throws PHP_CodeCoverage_Exception
+     * @since  Method available since Release 1.2.0
+     */
+    protected function getDirectory($directory)
+    {
+        if (substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
+            $directory .= DIRECTORY_SEPARATOR;
+        }
+
+        if (is_dir($directory)) {
+            return $directory;
+        }
+
+        if (mkdir($directory, 0777, TRUE)) {
+            return $directory;
+        }
+
+        throw new PHP_CodeCoverage_Exception(
+          sprintf(
+            'Directory "%s" does not exist.',
+            $directory
+          )
+        );
     }
 }

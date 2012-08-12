@@ -44,10 +44,6 @@
  * @since      File available since Release 1.0.0
  */
 
-if (stream_resolve_include_path('vfsStream/vfsStream.php')) {
-    require_once 'vfsStream/vfsStream.php';
-}
-
 if (!defined('TEST_FILES_PATH')) {
     define(
       'TEST_FILES_PATH',
@@ -99,15 +95,6 @@ require_once TEST_FILES_PATH . 'CoverageNothingTest.php';
  */
 class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-        if (!class_exists('vfsStream')) {
-            $this->markTestSkipped('vfsStream is not available.');
-        }
-
-        vfsStream::setup('UtilTest');
-    }
-
     /**
      * @covers       PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers       PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
@@ -245,52 +232,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
             TEST_FILES_PATH . 'source_without_ignore.php'
           )
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Util::getDirectory
-     */
-    public function testGetDirectory()
-    {
-        if (!class_exists('vfsStream')) {
-            $this->markTestSkipped('vfsStream is not installed');
-        }
-
-        $this->assertEquals(
-          vfsStream::url('UtilTest') . '/',
-          PHP_CodeCoverage_Util::getDirectory(vfsStream::url('UtilTest'))
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage_Util::getDirectory
-     */
-    public function testGetDirectory2()
-    {
-        if (!class_exists('vfsStream')) {
-            $this->markTestSkipped('vfsStream is not installed');
-        }
-
-        PHP_CodeCoverage_Util::getDirectory(
-          vfsStream::url('UtilTest') . '/report'
-        );
-
-        $this->assertTrue(vfsStreamWrapper::getRoot()->hasChild('report'));
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage_Util::getDirectory
-     * @expectedException PHP_CodeCoverage_Exception
-     */
-    public function testGetDirectory3()
-    {
-        if (!class_exists('vfsStream')) {
-            $this->markTestSkipped('vfsStream is not installed');
-        }
-
-        PHP_CodeCoverage_Util::getDirectory(
-          vfsStream::url('/not/existing/path')
         );
     }
 

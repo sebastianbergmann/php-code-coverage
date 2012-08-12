@@ -99,29 +99,6 @@ class PHP_CodeCoverage_Util
     protected static $ids = array();
 
     /**
-     * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
-     * based on its cyclomatic complexity and percentage of code coverage.
-     *
-     * @param  integer $ccn
-     * @param  float   $coverage
-     * @return string
-     */
-    public static function crap($ccn, $coverage)
-    {
-        if ($coverage == 0) {
-            return (string)pow($ccn, 2) + $ccn;
-        }
-
-        if ($coverage >= 95) {
-            return (string)$ccn;
-        }
-
-        return sprintf(
-          '%01.2F', pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn
-        );
-    }
-
-    /**
      * @param  string $directory
      * @return string
      * @throws PHP_CodeCoverage_Exception

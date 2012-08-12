@@ -109,16 +109,6 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage_Util::crap
-     */
-    public function testCrap()
-    {
-        $this->assertEquals(6, PHP_CodeCoverage_Util::crap(2, 0));
-        $this->assertEquals(2, PHP_CodeCoverage_Util::crap(2, 95));
-        $this->assertEquals(2.5, PHP_CodeCoverage_Util::crap(2, 50));
-    }
-
-    /**
      * @covers       PHP_CodeCoverage_Util::getLinesToBeCovered
      * @covers       PHP_CodeCoverage_Util::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredProvider

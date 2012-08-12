@@ -153,13 +153,7 @@ class PHP_CodeCoverage_Report_Clover
 
                     $lines[$method['startLine']] = array(
                       'count' => $methodCount,
-                      'crap'  => PHP_CodeCoverage_Util::crap(
-                                   $method['ccn'],
-                                   PHP_CodeCoverage_Util::percent(
-                                     $methodLinesCovered,
-                                     $methodLines
-                                   )
-                                 ),
+                      'crap'  => $method['crap'],
                       'type'  => 'method',
                       'name'  => $methodName
                     );

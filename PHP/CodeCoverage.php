@@ -407,7 +407,7 @@ class PHP_CodeCoverage
     {
         if ($id instanceof PHPUnit_Framework_TestCase) {
             $testClassName    = get_class($id);
-            $linesToBeCovered = PHP_CodeCoverage_Util::getLinesToBeCovered(
+            $linesToBeCovered = $this->getLinesToBeCovered(
               $testClassName, $id->getName()
             );
 
@@ -564,5 +564,232 @@ class PHP_CodeCoverage
                 $data[$file] = $fileCoverage;
             }
         }
+    }
+
+    /**
+     * Returns the files and lines a test method wants to cover.
+     *
+     * @param  string $className
+     * @param  string $methodName
+     * @return array
+     * @since  Method available since Release 1.2.0
+     */
+    protected function getLinesToBeCovered($className, $methodName)
+    {
+        $codeToCoverList = array();
+        $result          = array();
+
+        // @codeCoverageIgnoreStart
+        if (($pos = strpos($methodName, ' ')) !== FALSE) {
+            $methodName = substr($methodName, 0, $pos);
+        }
+        // @codeCoverageIgnoreEnd
+
+        $class = new ReflectionClass($className);
+
+        try {
+            $method = new ReflectionMethod($className, $methodName);
+        }
+
+        catch (ReflectionException $e) {
+            return array();
+        }
+
+        $docComment = $class->getDocComment() . $method->getDocComment();
+
+        $templateMethods = array(
+          'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
+        );
+
+        foreach ($templateMethods as $templateMethod) {
+            if ($class->hasMethod($templateMethod)) {
+                $reflector   = $class->getMethod($templateMethod);
+                $docComment .= $reflector->getDocComment();
+                unset($reflector);
+            }
+        }
+
+        if (strpos($docComment, '@coversNothing') !== FALSE) {
+            return $result;
+        }
+
+        $classShortcut = preg_match_all(
+          '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m',
+          $class->getDocComment(),
+          $matches
+        );
+
+        if ($classShortcut) {
+            if ($classShortcut > 1) {
+                throw new PHP_CodeCoverage_Exception(
+                  sprintf(
+                    'More than one @coversClass annotation in class or interface "%s".',
+                    $className
+                  )
+                );
+            }
+
+            $classShortcut = $matches['coveredClass'][0];
+        }
+
+        $match = preg_match_all(
+          '(@covers\s+(?P<coveredElement>.*?)\s*$)m',
+          $docComment,
+          $matches
+        );
+
+        if ($match) {
+            foreach ($matches['coveredElement'] as $coveredElement) {
+                if ($classShortcut && strncmp($coveredElement, '::', 2) === 0) {
+                    $coveredElement = $classShortcut . $coveredElement;
+                }
+
+                $codeToCoverList = array_merge(
+                  $codeToCoverList,
+                  $this->resolveCoversToReflectionObjects($coveredElement)
+                );
+            }
+
+            foreach ($codeToCoverList as $codeToCover) {
+                $fileName = $codeToCover->getFileName();
+
+                if (!isset($result[$fileName])) {
+                    $result[$fileName] = array();
+                }
+
+                $result[$fileName] = array_unique(
+                  array_merge(
+                    $result[$fileName],
+                    range(
+                      $codeToCover->getStartLine(), $codeToCover->getEndLine()
+                    )
+                  )
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param  string $coveredElement
+     * @return array
+     * @since  Method available since Release 1.2.0
+     */
+    protected function resolveCoversToReflectionObjects($coveredElement)
+    {
+        $codeToCoverList = array();
+
+        if (strpos($coveredElement, '::') !== FALSE) {
+            list($className, $methodName) = explode('::', $coveredElement);
+
+            if (isset($methodName[0]) && $methodName[0] == '<') {
+                $classes = array($className);
+
+                foreach ($classes as $className) {
+                    if (!class_exists($className) &&
+                        !interface_exists($className)) {
+                        throw new PHP_CodeCoverage_Exception(
+                          sprintf(
+                            'Trying to @cover not existing class or ' .
+                            'interface "%s".',
+                            $className
+                          )
+                        );
+                    }
+
+                    $class   = new ReflectionClass($className);
+                    $methods = $class->getMethods();
+                    $inverse = isset($methodName[1]) && $methodName[1] == '!';
+
+                    if (strpos($methodName, 'protected')) {
+                        $visibility = 'isProtected';
+                    }
+
+                    else if (strpos($methodName, 'private')) {
+                        $visibility = 'isPrivate';
+                    }
+
+                    else if (strpos($methodName, 'public')) {
+                        $visibility = 'isPublic';
+                    }
+
+                    foreach ($methods as $method) {
+                        if ($inverse && !$method->$visibility()) {
+                            $codeToCoverList[] = $method;
+                        }
+
+                        else if (!$inverse && $method->$visibility()) {
+                            $codeToCoverList[] = $method;
+                        }
+                    }
+                }
+            } else {
+                $classes = array($className);
+
+                foreach ($classes as $className) {
+                    if ($className == '' && function_exists($methodName)) {
+                        $codeToCoverList[] = new ReflectionFunction(
+                          $methodName
+                        );
+                    } else {
+                        if (!((class_exists($className) ||
+                               interface_exists($className) ||
+                               trait_exists($className)) &&
+                              method_exists($className, $methodName))) {
+                            throw new PHP_CodeCoverage_Exception(
+                              sprintf(
+                                'Trying to @cover not existing method "%s::%s".',
+                                $className,
+                                $methodName
+                              )
+                            );
+                        }
+
+                        $codeToCoverList[] = new ReflectionMethod(
+                          $className, $methodName
+                        );
+                    }
+                }
+            }
+        } else {
+            $extended = FALSE;
+
+            if (strpos($coveredElement, '<extended>') !== FALSE) {
+                $coveredElement = str_replace(
+                  '<extended>', '', $coveredElement
+                );
+
+                $extended = TRUE;
+            }
+
+            $classes = array($coveredElement);
+
+            if ($extended) {
+                $classes = array_merge(
+                  $classes,
+                  class_implements($coveredElement),
+                  class_parents($coveredElement)
+                );
+            }
+
+            foreach ($classes as $className) {
+                if (!class_exists($className) &&
+                    !interface_exists($className) &&
+                    !trait_exists($className)) {
+                    throw new PHP_CodeCoverage_Exception(
+                      sprintf(
+                        'Trying to @cover not existing class or ' .
+                        'interface "%s".',
+                        $className
+                      )
+                    );
+                }
+
+                $codeToCoverList[] = new ReflectionClass($className);
+            }
+        }
+
+        return $codeToCoverList;
     }
 }

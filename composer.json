@@ -32,7 +32,10 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "classmap": ["PHP/"]
+        "psr-0": {
+            "PHP_CodeCoverage": ""
+        },
+        "files": ["PHP/CodeCoverage/Autoload.php"]
     },
     "minimum-stability": "dev",
     "extra": {

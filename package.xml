@@ -44,6 +44,7 @@
          <file baseinstalldir="/" name="close12_1.gif" role="php" />
          <file baseinstalldir="/" name="container.css" role="php" />
          <file baseinstalldir="/" name="container-min.js" role="php" />
+         <file baseinstalldir="/" name="coverage_bar.html.dist" role="php" />
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
          <file baseinstalldir="/" name="directory.html.dist" role="php" />
          <file baseinstalldir="/" name="directory_item.html.dist" role="php" />

@@ -14,6 +14,6 @@
               </div>
           </td>
           <td class="coverPer{lines_level}">{lines_executed_percent}</td>
-          <td class="coverNum{lines_level}">{num_executed_lines} / {num_executable_lines}</td>
+          <td class="coverNum{lines_level}">{lines_number}</td>
         </tr>
 

@@ -231,6 +231,10 @@ class PHP_CodeCoverage_Util
      */
     public static function percent($a, $b, $asString = FALSE, $fixedWidth = FALSE)
     {
+        if ($asString && $b == 0) {
+            return '';
+        }
+
         if ($b > 0) {
             $percent = ($a / $b) * 100;
         } else {

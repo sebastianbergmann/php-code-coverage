@@ -140,30 +140,37 @@ class PHP_CodeCoverage_Util
                         }
 
                         else if (($token instanceof PHP_Token_TRAIT ||
-                                  $token instanceof PHP_Token_CLASS) &&
-                                 !empty($classes[$token->getName()]['methods'])) {
-                            $firstMethod = array_shift(
-                              $classes[$token->getName()]['methods']
-                            );
+                                  $token instanceof PHP_Token_CLASS)) {
+                            if (empty($classes[$token->getName()]['methods'])) {
+                                for ($i = $token->getLine();
+                                     $i <= $token->getEndLine();
+                                     $i++) {
+                                    self::$ignoredLines[$filename][$i] = TRUE;
+                                }
+                            } else {
+                                $firstMethod = array_shift(
+                                  $classes[$token->getName()]['methods']
+                                );
 
-                            $lastMethod = array_pop(
-                              $classes[$token->getName()]['methods']
-                            );
+                                $lastMethod = array_pop(
+                                  $classes[$token->getName()]['methods']
+                                );
 
-                            if ($lastMethod === NULL) {
-                                $lastMethod = $firstMethod;
-                            }
+                                if ($lastMethod === NULL) {
+                                    $lastMethod = $firstMethod;
+                                }
 
-                            for ($i = $token->getLine();
-                                 $i < $firstMethod['startLine'];
-                                 $i++) {
-                                self::$ignoredLines[$filename][$i] = TRUE;
-                            }
+                                for ($i = $token->getLine();
+                                     $i < $firstMethod['startLine'];
+                                     $i++) {
+                                    self::$ignoredLines[$filename][$i] = TRUE;
+                                }
 
-                            for ($i = $token->getEndLine();
-                                 $i > $lastMethod['endLine'];
-                                 $i--) {
-                                self::$ignoredLines[$filename][$i] = TRUE;
+                                for ($i = $token->getEndLine();
+                                     $i > $lastMethod['endLine'];
+                                     $i--) {
+                                    self::$ignoredLines[$filename][$i] = TRUE;
+                                }
                             }
                         }
                     }

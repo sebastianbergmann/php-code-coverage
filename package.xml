@@ -145,7 +145,7 @@
    <package>
     <name>Finder</name>
     <channel>pear.symfony.com</channel>
-    <min>2.1.0BETA4</min>
+    <min>2.0.9</min>
    </package>
    <package>
     <name>PHP_TokenStream</name>

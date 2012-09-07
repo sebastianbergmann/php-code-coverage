@@ -99,7 +99,6 @@ class PHP_CodeCoverage_Filter
         $files = array(
           'Symfony/Component/Finder/Finder.php',
           'Symfony/Component/Finder/Glob.php',
-          'Symfony/Component/Finder/Iterator/FilterIterator.php',
           'Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php',
           'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php',
           'Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php',

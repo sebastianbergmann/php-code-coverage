@@ -78,6 +78,7 @@ class PHP_CodeCoverage_Filter
     public function __construct()
     {
         $functions = array(
+          'file_iterator_autoload',
           'php_codecoverage_autoload',
           'php_invoker_autoload',
           'php_timer_autoload',
@@ -96,24 +97,20 @@ class PHP_CodeCoverage_Filter
             }
         }
 
-        $files = array(
-          'Symfony/Component/Finder/Finder.php',
-          'Symfony/Component/Finder/Glob.php',
-          'Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php',
-          'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php',
-          'Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php',
-          'Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php',
-          'Symfony/Component/Finder/SplFileInfo.php',
-          'SymfonyComponents/YAML/sfYaml.php',
+        $file = stream_resolve_include_path(
+          'SymfonyComponents/YAML/sfYaml.php'
+        );
+
+        if ($file) {
+            $this->addFileToBlacklist($file);
+        }
+
+        $file = stream_resolve_include_path(
           'SymfonyComponents/YAML/sfYamlDumper.php'
         );
 
-        foreach ($files as $file) {
-            $file = stream_resolve_include_path($file);
-
-            if ($file) {
-                $this->addFileToBlacklist($file);
-            }
+        if ($file) {
+            $this->addFileToBlacklist($file);
         }
     }
 

@@ -19,7 +19,7 @@
  </lead>
  <date>2012-09-17</date>
  <version>
-  <release>1.2.0RC4</release>
+  <release>1.2.0RC5</release>
   <api>1.2.0</api>
  </version>
  <stability>
@@ -55,6 +55,7 @@
           <file baseinstalldir="/" name="highcharts.js" role="php" />
           <file baseinstalldir="/" name="jquery.min.js" role="php" />
          </dir>
+         <file baseinstalldir="/" name="coverage_bar.html.dist" role="php" />
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
          <file baseinstalldir="/" name="directory.html.dist" role="php" />
          <file baseinstalldir="/" name="directory_item.html.dist" role="php" />

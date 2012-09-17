@@ -115,8 +115,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         );
 
         if ($total) {
-            $data['itemClass'] = 'coverDirectory';
-            $data['name']      = 'Total';
+            $data['name'] = 'Total';
         } else {
             $data['name'] = sprintf(
               '<a href="%s.html">%s</a>',
@@ -125,11 +124,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
             );
 
             if ($item instanceof PHP_CodeCoverage_Report_Node_Directory) {
-                $data['icon']      = '<img alt="directory" src="directory.png"/> ';
-                $data['itemClass'] = 'coverDirectory';
+                $data['icon'] = '<i class="icon-folder-open"></i> ';
             } else {
-                $data['icon']      = '<img alt="file" src="file.png"/> ';
-                $data['itemClass'] = 'coverFile';
+                $data['icon'] = '<i class="icon-file"></i> ';
             }
         }
 

@@ -41,25 +41,26 @@
       <dir name="HTML">
        <dir name="Renderer">
         <dir name="Template">
-         <file baseinstalldir="/" name="close12_1.gif" role="php" />
-         <file baseinstalldir="/" name="container.css" role="php" />
-         <file baseinstalldir="/" name="container-min.js" role="php" />
-         <file baseinstalldir="/" name="coverage_bar.html.dist" role="php" />
+         <dir name="css">
+          <file baseinstalldir="/" name="bootstrap-responsive.min.css" role="php" />
+          <file baseinstalldir="/" name="bootstrap.min.css" role="php" />
+          <file baseinstalldir="/" name="style.css" role="php" />
+         </dir>
+         <dir name="img">
+          <file baseinstalldir="/" name="glyphicons-halflings-white.png" role="php" />
+          <file baseinstalldir="/" name="glyphicons-halflings.png" role="php" />
+         </dir>
+         <dir name="js">
+          <file baseinstalldir="/" name="bootstrap.min.js" role="php" />
+          <file baseinstalldir="/" name="highcharts.js" role="php" />
+          <file baseinstalldir="/" name="jquery.min.js" role="php" />
+         </dir>
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />
          <file baseinstalldir="/" name="directory.html.dist" role="php" />
          <file baseinstalldir="/" name="directory_item.html.dist" role="php" />
-         <file baseinstalldir="/" name="directory.png" role="php" />
          <file baseinstalldir="/" name="file.html.dist" role="php" />
          <file baseinstalldir="/" name="file_item.html.dist" role="php" />
-         <file baseinstalldir="/" name="file_no_yui.html.dist" role="php" />
-         <file baseinstalldir="/" name="file.png" role="php" />
-         <file baseinstalldir="/" name="glass.png" role="php" />
-         <file baseinstalldir="/" name="highcharts.js" role="php" />
-         <file baseinstalldir="/" name="jquery.min.js" role="php" />
          <file baseinstalldir="/" name="method_item.html.dist" role="php" />
-         <file baseinstalldir="/" name="style.css" role="php" />
-         <file baseinstalldir="/" name="yahoo-dom-event.js" role="php" />
-         <file baseinstalldir="/" name="yui_item.js" role="php" />
         </dir>
         <file baseinstalldir="/" name="Dashboard.php" role="php">
          <tasks:replace from="@package_version@" to="version" type="package-info" />

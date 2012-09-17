@@ -109,27 +109,22 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
     /**
      * @param  integer $percent
-     * @return array
+     * @return string
      */
     protected function getColorLevel($percent)
     {
         if ($percent < $this->lowUpperBound) {
-            $color = 'scarlet_red';
-            $level = 'Lo';
+            return 'error';
         }
 
         else if ($percent >= $this->lowUpperBound &&
                  $percent <  $this->highLowerBound) {
-            $color = 'butter';
-            $level = 'Med';
+            return 'warning';
         }
 
         else {
-            $color = 'chameleon';
-            $level = 'Hi';
+            return 'success';
         }
-
-        return array($color, $level);
     }
 
     /**
@@ -139,78 +134,65 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function renderItemTemplate(Text_Template $template, array $data)
     {
-        $classesBar     = '&nbsp;';
-        $classesColor  = 'snow';
+        $classesBar    = '&nbsp;';
         $classesLevel  = 'None';
         $classesNumber = '&nbsp;';
 
         if (isset($data['numClasses']) && $data['numClasses'] > 0) {
-            list($classesColor, $classesLevel) = $this->getColorLevel(
-              $data['testedClassesPercent']
-            );
+            $classesLevel = $this->getColorLevel($data['testedClassesPercent']);
 
             $classesNumber = $data['numTestedClasses'] . ' / ' .
                              $data['numClasses'];
 
             $classesBar = $this->getCoverageBar(
-              $classesColor, $data['testedClassesPercent']
+              $data['testedClassesPercent']
             );
         }
 
         $methodsBar    = '&nbsp;';
-        $methodsColor  = 'snow';
         $methodsLevel  = 'None';
         $methodsNumber = '&nbsp;';
 
         if ($data['numMethods'] > 0) {
-            list($methodsColor, $methodsLevel) = $this->getColorLevel(
-              $data['testedMethodsPercent']
-            );
+            $methodsLevel = $this->getColorLevel($data['testedMethodsPercent']);
 
             $methodsNumber = $data['numTestedMethods'] . ' / ' .
                              $data['numMethods'];
 
             $methodsBar = $this->getCoverageBar(
-              $methodsColor, $data['testedMethodsPercent']
+              $data['testedMethodsPercent']
             );
         }
 
         $linesBar    = '&nbsp;';
-        $linesColor  = 'snow';
         $linesLevel  = 'None';
         $linesNumber = '&nbsp;';
 
         if ($data['numExecutableLines'] > 0) {
-            list($linesColor, $linesLevel) = $this->getColorLevel(
-              $data['linesExecutedPercent']
-            );
+            $linesLevel = $this->getColorLevel($data['linesExecutedPercent']);
 
             $linesNumber = $data['numExecutedLines'] . ' / ' .
                            $data['numExecutableLines'];
 
             $linesBar = $this->getCoverageBar(
-              $linesColor, $data['linesExecutedPercent']
+              $data['linesExecutedPercent']
             );
         }
 
         $template->setVar(
           array(
-            'itemClass' => isset($data['itemClass']) ? $data['itemClass'] : '',
             'icon' => isset($data['icon']) ? $data['icon'] : '',
             'crap' => isset($data['crap']) ? $data['crap'] : '',
             'name' => $data['name'],
             'lines_bar' => $linesBar,
-            'lines_color' => $linesColor,
             'lines_executed_percent' => $data['linesExecutedPercentAsString'],
             'lines_level' => $linesLevel,
             'lines_number' => $linesNumber,
             'methods_bar' => $methodsBar,
-            'methods_color' => $methodsColor,
             'methods_tested_percent' => $data['testedMethodsPercentAsString'],
             'methods_level' => $methodsLevel,
             'methods_number' => $methodsNumber,
             'classes_bar' => $classesBar,
-            'classes_color' => $classesColor,
             'classes_tested_percent' => isset($data['testedClassesPercentAsString']) ? $data['testedClassesPercentAsString'] : '',
             'classes_level' => $classesLevel,
             'classes_number' => $classesNumber
@@ -225,17 +207,17 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      * @param string                       $title
      * @param PHP_CodeCoverage_Report_Node $node
      */
-    protected function setCommonTemplateVariables(Text_Template $template, $title, PHP_CodeCoverage_Report_Node $node = NULL)
+    protected function setCommonTemplateVariables(Text_Template $template, $title, PHP_CodeCoverage_Report_Node $node)
     {
-        $link = '';
+        $navigation = '';
 
         if ($node !== NULL) {
             $path = $node->getPathAsArray();
 
             foreach ($path as $step) {
-                $link .= sprintf(
-                  '%s<a href="%s.html">%s</a>',
-                  !empty($link) ? '/' : '',
+                $navigation .= sprintf(
+                  '       <li%s><a href="%s.html">%s</a></li>' . "\n",
+                  $step === $node ? ' class="active"' : '',
                   $step->getId(),
                   $step->getName()
                 );
@@ -245,7 +227,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         $template->setVar(
           array(
             'title'            => $title,
-            'link'             => $link,
+            'id'               => $node->getId(),
+            'full_path'        => $node->getPath(),
+            'navigation'       => $navigation,
             'charset'          => $this->charset,
             'date'             => $this->date,
             'version'          => '@package_version@',
@@ -257,11 +241,26 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         );
     }
 
-    protected function getCoverageBar($color, $percent)
+    protected function getCoverageBar($percent)
     {
-        $template = new Text_Template($this->templatePath . 'coverage_bar.html');
+        if ($percent < $this->lowUpperBound) {
+            $level = 'danger';
+        }
 
-        $template->setVar(array('color' => $color, 'percent' => $percent));
+        else if ($percent >= $this->lowUpperBound &&
+                 $percent <  $this->highLowerBound) {
+            $level = 'warning';
+        }
+
+        else {
+            $level = 'success';
+        }
+
+        $template = new Text_Template(
+          $this->templatePath . 'coverage_bar.html'
+        );
+
+        $template->setVar(array('level' => $level, 'percent' => $percent));
 
         return $template->render();
     }

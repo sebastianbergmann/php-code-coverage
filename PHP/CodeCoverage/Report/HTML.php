@@ -93,16 +93,11 @@ class PHP_CodeCoverage_Report_HTML
     protected $title;
 
     /**
-     * @var boolean
-     */
-    protected $yui;
-
-    /**
      * Constructor.
      *
      * @param array $options
      */
-    public function __construct($title = '', $charset = 'UTF-8', $yui = TRUE, $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
+    public function __construct($title = '', $charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
     {
         $this->charset        = $charset;
         $this->generator      = $generator;
@@ -110,7 +105,6 @@ class PHP_CodeCoverage_Report_HTML
         $this->highlight      = $highlight;
         $this->lowUpperBound  = $lowUpperBound;
         $this->title          = $title;
-        $this->yui            = $yui;
 
         $this->templatePath = sprintf(
           '%s%sHTML%sRenderer%sTemplate%s',
@@ -164,8 +158,7 @@ class PHP_CodeCoverage_Report_HTML
           $date,
           $this->lowUpperBound,
           $this->highLowerBound,
-          $this->highlight,
-          $this->yui
+          $this->highlight
         );
 
         $dashboard->render(
@@ -193,22 +186,19 @@ class PHP_CodeCoverage_Report_HTML
      */
     protected function copyFiles($target)
     {
-        $files = array(
-          'close12_1.gif',
-          'container.css',
-          'container-min.js',
-          'directory.png',
-          'file.png',
-          'glass.png',
-          'highcharts.js',
-          'jquery.min.js',
-          'style.css',
-          'yahoo-dom-event.js'
-        );
+        $dir = $this->getDirectory($target . 'css');
+        copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
+        copy($this->templatePath . 'css/bootstrap-responsive.min.css', $dir . 'bootstrap-responsive.min.css');
+        copy($this->templatePath . 'css/style.css', $dir . 'style.css');
 
-        foreach ($files as $file) {
-            copy($this->templatePath . $file, $target . $file);
-        }
+        $dir = $this->getDirectory($target . 'js');
+        copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
+        copy($this->templatePath . 'js/highcharts.js', $dir . 'highcharts.js');
+        copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
+
+        $dir = $this->getDirectory($target . 'img');
+        copy($this->templatePath . 'img/glyphicons-halflings.png', $dir . 'glyphicons-halflings.png');
+        copy($this->templatePath . 'img/glyphicons-halflings-white.png', $dir . 'glyphicons-halflings-white.png');
     }
 
     /**

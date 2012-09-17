@@ -12,18 +12,20 @@
   <![endif]-->
  </head>
  <body>
-  <div class="navbar navbar-inverse navbar-fixed-top">
-   <div class="navbar-inner">
-    <div class="container">
-     <div class="nav-collapse collapse">
-      <ul class="nav">
+  <header>
+   <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+     <div class="container">
+      <div class="nav-collapse collapse">
+       <ul class="nav">
 {navigation}
-       <li class="active"><a href="{id}.dashboard.html">Dashboard</a></li>
-      </ul>
+        <li class="active"><a href="{id}.dashboard.html">Dashboard</a></li>
+       </ul>
+      </div>
      </div>
     </div>
    </div>
-  </div>
+  </header>
   <div class="container">
    <div class="row">
     <div class="span6">

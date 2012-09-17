@@ -216,7 +216,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
             foreach ($path as $step) {
                 $navigation .= sprintf(
-                  '       <li%s><a href="%s.html">%s</a></li>' . "\n",
+                  '        <li%s><a href="%s.html">%s</a></li>' . "\n",
                   $step === $node ? ' class="active"' : '',
                   $step->getId(),
                   $step->getName()

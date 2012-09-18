@@ -104,14 +104,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     /**
      * @param PHP_CodeCoverage_Report_Node_File $node
      * @param string                            $file
-     * @param string                            $title
      */
-    public function render(PHP_CodeCoverage_Report_Node_File $node, $file, $title = NULL)
+    public function render(PHP_CodeCoverage_Report_Node_File $node, $file)
     {
-        if ($title === NULL) {
-            $title = $node->getName();
-        }
-
         $template = new Text_Template($this->templatePath . 'file.html');
 
         $template->setVar(
@@ -121,7 +116,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
           )
         );
 
-        $this->setCommonTemplateVariables($template, $title, $node);
+        $this->setCommonTemplateVariables($template, $node);
 
         $template->renderTo($file);
     }

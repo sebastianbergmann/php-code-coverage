@@ -204,10 +204,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
     /**
      * @param Text_Template                $template
-     * @param string                       $title
      * @param PHP_CodeCoverage_Report_Node $node
      */
-    protected function setCommonTemplateVariables(Text_Template $template, $title, PHP_CodeCoverage_Report_Node $node)
+    protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
         $breadcrumbs = '';
 
@@ -232,7 +231,6 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
         $template->setVar(
           array(
-            'title'            => $title,
             'id'               => $node->getId(),
             'full_path'        => $node->getPath(),
             'breadcrumbs'      => $breadcrumbs,

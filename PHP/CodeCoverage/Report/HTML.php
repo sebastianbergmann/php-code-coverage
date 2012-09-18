@@ -88,23 +88,17 @@ class PHP_CodeCoverage_Report_HTML
     protected $highlight;
 
     /**
-     * @var string
-     */
-    protected $title;
-
-    /**
      * Constructor.
      *
      * @param array $options
      */
-    public function __construct($title = '', $charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
+    public function __construct($charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
     {
         $this->charset        = $charset;
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->highlight      = $highlight;
         $this->lowUpperBound  = $lowUpperBound;
-        $this->title          = $title;
 
         $this->templatePath = sprintf(
           '%s%sHTML%sRenderer%sTemplate%s',
@@ -161,11 +155,8 @@ class PHP_CodeCoverage_Report_HTML
           $this->highlight
         );
 
-        $dashboard->render(
-          $report, $target . 'index.dashboard.html', $this->title
-        );
-
-        $directory->render($report, $target . 'index.html', $this->title);
+        $dashboard->render($report, $target . 'index.dashboard.html');
+        $directory->render($report, $target . 'index.html');
 
         foreach ($report as $node) {
             $id = $node->getId();

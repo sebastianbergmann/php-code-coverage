@@ -60,20 +60,15 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * @param PHP_CodeCoverage_Report_Node_Directory $node
      * @param string                                 $file
-     * @param string                                 $title
      */
-    public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file, $title = NULL)
+    public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file)
     {
-        if ($title === NULL) {
-            $title = $node->getName();
-        }
-
         $classes  = $node->getClassesAndTraits();
         $template = new Text_Template(
           $this->templatePath . 'dashboard.html'
         );
 
-        $this->setCommonTemplateVariables($template, $title, $node);
+        $this->setCommonTemplateVariables($template, $node);
 
         $template->setVar(
           array(

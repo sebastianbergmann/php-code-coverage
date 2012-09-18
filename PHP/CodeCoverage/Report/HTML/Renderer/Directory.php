@@ -60,17 +60,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
     /**
      * @param PHP_CodeCoverage_Report_Node_Directory $node
      * @param string                                 $file
-     * @param string                                 $title
      */
-    public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file, $title = NULL)
+    public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file)
     {
-        if ($title === NULL) {
-            $title = $node->getName();
-        }
-
         $template = new Text_Template($this->templatePath . 'directory.html');
 
-        $this->setCommonTemplateVariables($template, $title, $node);
+        $this->setCommonTemplateVariables($template, $node);
 
         $items = $this->renderItem($node, TRUE);
 

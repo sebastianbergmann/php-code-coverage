@@ -60,7 +60,6 @@
 class PHP_CodeCoverage_Report_Text
 {
     protected $outputStream;
-    protected $title;
     protected $lowUpperBound;
     protected $highLowerBound;
     protected $showUncoveredFiles;
@@ -74,10 +73,9 @@ class PHP_CodeCoverage_Report_Text
       'eol'    => "\x1b[2K",
     );
 
-    public function __construct(PHPUnit_Util_Printer $outputStream, $title, $lowUpperBound, $highLowerBound, $showUncoveredFiles)
+    public function __construct(PHPUnit_Util_Printer $outputStream, $lowUpperBound, $highLowerBound, $showUncoveredFiles)
     {
         $this->outputStream       = $outputStream;
-        $this->title              = $title;
         $this->lowUpperBound      = $lowUpperBound;
         $this->highLowerBound     = $highLowerBound;
         $this->showUncoveredFiles = $showUncoveredFiles;
@@ -124,10 +122,6 @@ class PHP_CodeCoverage_Report_Text
 
         $output .= PHP_EOL . PHP_EOL .
                    $colors['header'] . 'Code Coverage Report ';
-
-        if ($this->title) {
-            $output .= 'for "' . $this->title . '"';
-        }
 
         $output .= PHP_EOL .
                    date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) .

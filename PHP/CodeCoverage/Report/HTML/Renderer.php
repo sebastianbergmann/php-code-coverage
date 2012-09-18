@@ -188,32 +188,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
-        $breadcrumbs = '';
-
-        if ($node !== NULL) {
-            $path = $node->getPathAsArray();
-
-            foreach ($path as $step) {
-                if ($step !== $node) {
-                    $breadcrumbs .= sprintf(
-                      '        <li><a href="%s.html">%s</a> <span class="divider">/</span></li>' . "\n",
-                      $step->getId(),
-                      $step->getName()
-                    );
-                } else {
-                    $breadcrumbs .= sprintf(
-                      '        <li class="active">%s</li>' . "\n",
-                      $step->getName()
-                    );
-                }
-            }
-        }
-
         $template->setVar(
           array(
             'id'               => $node->getId(),
             'full_path'        => $node->getPath(),
-            'breadcrumbs'      => $breadcrumbs,
+            'breadcrumbs'      => $this->getBreadcrumbs($node),
             'charset'          => $this->charset,
             'date'             => $this->date,
             'version'          => '@package_version@',
@@ -223,6 +202,37 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             'high_lower_bound' => $this->highLowerBound
           )
         );
+    }
+
+    protected function getBreadcrumbs(PHP_CodeCoverage_Report_Node $node)
+    {
+        $breadcrumbs = '';
+
+        $path = $node->getPathAsArray();
+
+        foreach ($path as $step) {
+            if ($step !== $node) {
+                $breadcrumbs .= sprintf(
+                  '        <li><a href="%s.html">%s</a> <span class="divider">/</span></li>' . "\n",
+                  $step->getId(),
+                  $step->getName()
+                );
+            } else {
+                $breadcrumbs .= sprintf(
+                  '        <li class="active">%s</li>' . "\n",
+                  $step->getName()
+                );
+
+                if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
+                    $breadcrumbs .= sprintf(
+                      '        <li>(<a href="%s.dashboard.html">Dashboard</a>)</li>' . "\n",
+                      $step->getId()
+                    );
+                }
+            }
+        }
+
+        return $breadcrumbs;
     }
 
     protected function getCoverageBar($percent)

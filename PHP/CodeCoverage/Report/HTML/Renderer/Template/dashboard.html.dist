@@ -12,6 +12,17 @@
   <![endif]-->
  </head>
  <body>
+  <header>
+   <div class="container">
+    <div class="row">
+     <div class="span12">
+      <ul class="breadcrumb">
+{breadcrumbs}
+      </ul>
+     </div>
+    </div>
+   </div>
+  </header>
   <div class="container">
    <div class="row">
     <div class="span6">

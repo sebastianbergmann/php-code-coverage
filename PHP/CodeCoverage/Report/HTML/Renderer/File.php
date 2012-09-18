@@ -340,7 +340,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 }
 
                 else if ($numTests == 0) {
-                    $trClass = ' class="error"';
+                    $trClass = ' class="danger"';
                 }
 
                 else {
@@ -367,12 +367,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                             break;
 
                             case 3: {
-                                $testCSS = ' class="error"';
+                                $testCSS = ' class="danger"';
                             }
                             break;
 
                             case 4: {
-                                $testCSS = ' class="error"';
+                                $testCSS = ' class="danger"';
                             }
                             break;
 

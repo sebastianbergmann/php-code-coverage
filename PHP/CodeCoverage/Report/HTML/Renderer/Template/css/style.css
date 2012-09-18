@@ -18,7 +18,7 @@ body {
  background-color: #dff0d8;
 }
 
-.table tbody td.error, li.error, span.error {
+.table tbody tr.danger, .table tbody td.danger, li.danger, span.danger {
  background-color: #f2dede;
 }
 
@@ -63,7 +63,7 @@ pre span.string {
  color: #2e3436;
 }
 
-span.success, span.warning, span.error {
+span.success, span.warning, span.danger {
  margin-right: 2px;
  padding-left: 10px;
  padding-right: 10px;

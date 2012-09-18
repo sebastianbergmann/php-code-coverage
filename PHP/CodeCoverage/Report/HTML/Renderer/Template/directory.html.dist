@@ -44,7 +44,7 @@
    <footer>
     <h4>Legend</h4>
     <p>
-     <span class="error"><strong>Low</strong>: 0% to {low_upper_bound}%</span>
+     <span class="danger"><strong>Low</strong>: 0% to {low_upper_bound}%</span>
      <span class="warning"><strong>Medium</strong>: {low_upper_bound}% to {high_lower_bound}%</span>
      <span class="success"><strong>High</strong>: {high_lower_bound}% to 100%</span>
     </p>

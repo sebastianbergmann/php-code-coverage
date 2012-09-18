@@ -108,26 +108,6 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     }
 
     /**
-     * @param  integer $percent
-     * @return string
-     */
-    protected function getColorLevel($percent)
-    {
-        if ($percent < $this->lowUpperBound) {
-            return 'error';
-        }
-
-        else if ($percent >= $this->lowUpperBound &&
-                 $percent <  $this->highLowerBound) {
-            return 'warning';
-        }
-
-        else {
-            return 'success';
-        }
-    }
-
-    /**
      * @param  Text_Template $template
      * @param  array         $data
      * @return string
@@ -247,18 +227,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
     protected function getCoverageBar($percent)
     {
-        if ($percent < $this->lowUpperBound) {
-            $level = 'danger';
-        }
-
-        else if ($percent >= $this->lowUpperBound &&
-                 $percent <  $this->highLowerBound) {
-            $level = 'warning';
-        }
-
-        else {
-            $level = 'success';
-        }
+        $level = $this->getColorLevel($percent);
 
         $template = new Text_Template(
           $this->templatePath . 'coverage_bar.html'
@@ -267,5 +236,25 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         $template->setVar(array('level' => $level, 'percent' => $percent));
 
         return $template->render();
+    }
+
+    /**
+     * @param  integer $percent
+     * @return string
+     */
+    protected function getColorLevel($percent)
+    {
+        if ($percent < $this->lowUpperBound) {
+            return 'danger';
+        }
+
+        else if ($percent >= $this->lowUpperBound &&
+                 $percent <  $this->highLowerBound) {
+            return 'warning';
+        }
+
+        else {
+            return 'success';
+        }
     }
 }

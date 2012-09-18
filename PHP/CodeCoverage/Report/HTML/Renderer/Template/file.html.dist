@@ -13,14 +13,12 @@
  </head>
  <body>
   <header>
-   <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-     <div class="container">
-      <div class="nav-collapse collapse">
-       <ul class="nav">
-{navigation}
-       </ul>
-      </div>
+   <div class="container">
+    <div class="row">
+     <div class="span12">
+      <ul class="breadcrumb">
+{breadcrumbs}
+      </ul>
      </div>
     </div>
    </div>

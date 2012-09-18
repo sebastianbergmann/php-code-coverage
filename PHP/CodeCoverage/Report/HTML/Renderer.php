@@ -209,18 +209,24 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, $title, PHP_CodeCoverage_Report_Node $node)
     {
-        $navigation = '';
+        $breadcrumbs = '';
 
         if ($node !== NULL) {
             $path = $node->getPathAsArray();
 
             foreach ($path as $step) {
-                $navigation .= sprintf(
-                  '        <li%s><a href="%s.html">%s</a></li>' . "\n",
-                  $step === $node ? ' class="active"' : '',
-                  $step->getId(),
-                  $step->getName()
-                );
+                if ($step !== $node) {
+                    $breadcrumbs .= sprintf(
+                      '        <li><a href="%s.html">%s</a> <span class="divider">/</span></li>' . "\n",
+                      $step->getId(),
+                      $step->getName()
+                    );
+                } else {
+                    $breadcrumbs .= sprintf(
+                      '        <li class="active">%s</li>' . "\n",
+                      $step->getName()
+                    );
+                }
             }
         }
 
@@ -229,7 +235,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             'title'            => $title,
             'id'               => $node->getId(),
             'full_path'        => $node->getPath(),
-            'navigation'       => $navigation,
+            'breadcrumbs'      => $breadcrumbs,
             'charset'          => $this->charset,
             'date'             => $this->date,
             'version'          => '@package_version@',

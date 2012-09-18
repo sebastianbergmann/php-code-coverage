@@ -73,7 +73,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
           $this->templatePath . 'dashboard.html'
         );
 
-        $this->setCommonTemplateVariables($template, $title);
+        $this->setCommonTemplateVariables($template, $title, $node);
 
         $template->setVar(
           array(

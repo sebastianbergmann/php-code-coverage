@@ -6,8 +6,8 @@ PHP_CodeCoverage
 Requirements
 ------------
 
-* PHP_CodeCoverage 1.2 requires PHP 5.3.3 (or later) but PHP 5.4.0 (or later) is highly recommended.
-* [Xdebug](http://xdebug.org/) 2.0.5 (or later) is required but Xdebug 2.1.2 (or later) is highly recommended.
+* PHP_CodeCoverage 1.2 requires PHP 5.3.3 (or later) but PHP 5.4.6 (or later) is highly recommended.
+* [Xdebug](http://xdebug.org/) 2.0.5 (or later) is required but Xdebug 2.2.1 (or later) is highly recommended.
 
 Installation
 ------------

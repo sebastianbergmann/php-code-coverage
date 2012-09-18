@@ -1,0 +1,3 @@
+       <div class="progress progress-{level}" style="width: 100px;">
+        <div class="bar" style="width: {percent}%;"></div>
+       </div>

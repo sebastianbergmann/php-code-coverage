@@ -78,6 +78,7 @@ class PHP_CodeCoverage_Filter
     public function __construct()
     {
         $functions = array(
+          'file_iterator_autoload',
           'php_codecoverage_autoload',
           'php_invoker_autoload',
           'php_timer_autoload',
@@ -96,26 +97,20 @@ class PHP_CodeCoverage_Filter
             }
         }
 
-        $files = array(
-          'Symfony/Component/Finder/Finder.php',
-          'Symfony/Component/Finder/Glob.php',
-          'Symfony/Component/Finder/Iterator/FilterIterator.php',
-          'Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php',
-          'Symfony/Component/Finder/Iterator/FilenameFilterIterator.php',
-          'Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php',
-          'Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php',
-          'Symfony/Component/Finder/Iterator/MultiplePcreFilterIterator.php',
-          'Symfony/Component/Finder/SplFileInfo.php',
-          'SymfonyComponents/YAML/sfYaml.php',
+        $file = stream_resolve_include_path(
+          'SymfonyComponents/YAML/sfYaml.php'
+        );
+
+        if ($file) {
+            $this->addFileToBlacklist($file);
+        }
+
+        $file = stream_resolve_include_path(
           'SymfonyComponents/YAML/sfYamlDumper.php'
         );
 
-        foreach ($files as $file) {
-            $file = stream_resolve_include_path($file);
-
-            if ($file) {
-                $this->addFileToBlacklist($file);
-            }
+        if ($file) {
+            $this->addFileToBlacklist($file);
         }
     }
 
@@ -128,7 +123,12 @@ class PHP_CodeCoverage_Filter
      */
     public function addDirectoryToBlacklist($directory, $suffix = '.php', $prefix = '')
     {
-        foreach ($this->findFiles($directory, $prefix, $suffix) as $file) {
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          $directory, $suffix, $prefix
+        );
+
+        foreach ($files as $file) {
             $this->addFileToBlacklist($file);
         }
     }
@@ -164,7 +164,12 @@ class PHP_CodeCoverage_Filter
      */
     public function removeDirectoryFromBlacklist($directory, $suffix = '.php', $prefix = '')
     {
-        foreach ($this->findFiles($directory, $prefix, $suffix) as $file) {
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          $directory, $suffix, $prefix
+        );
+
+        foreach ($files as $file) {
             $this->removeFileFromBlacklist($file);
         }
     }
@@ -192,7 +197,12 @@ class PHP_CodeCoverage_Filter
      */
     public function addDirectoryToWhitelist($directory, $suffix = '.php', $prefix = '')
     {
-        foreach ($this->findFiles($directory, $prefix, $suffix) as $file) {
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          $directory, $suffix, $prefix
+        );
+
+        foreach ($files as $file) {
             $this->addFileToWhitelist($file);
         }
     }
@@ -231,7 +241,12 @@ class PHP_CodeCoverage_Filter
      */
     public function removeDirectoryFromWhitelist($directory, $suffix = '.php', $prefix = '')
     {
-        foreach ($this->findFiles($directory, $prefix, $suffix) as $file) {
+        $facade = new File_Iterator_Facade;
+        $files  = $facade->getFilesAsArray(
+          $directory, $suffix, $prefix
+        );
+
+        foreach ($files as $file) {
             $this->removeFileFromWhitelist($file);
         }
     }
@@ -326,34 +341,5 @@ class PHP_CodeCoverage_Filter
     public function hasWhitelist()
     {
         return !empty($this->whitelistedFiles);
-    }
-
-    /**
-     * @param  string $directory
-     * @param  string $prefix
-     * @param  string $suffix
-     * @return array
-     * @since  Method available since Release 1.2.0
-     */
-    protected function findFiles($directory, $prefix, $suffix)
-    {
-        $finder = new Symfony\Component\Finder\Finder;
-        $finder->in($directory);
-
-        if (!empty($prefix)) {
-            $finder->name($prefix . '*');
-        }
-
-        if (!empty($suffix)) {
-            $finder->name('*' . $suffix);
-        }
-
-        $files = array();
-
-        foreach ($finder as $file) {
-            $files[] = $file->getRealpath();
-        }
-
-        return $files;
     }
 }

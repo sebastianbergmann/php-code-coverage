@@ -8,40 +8,38 @@
         "xunit"
     ],
     "homepage": "http://www.phpunit.de/",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Sebastian Bergmann",
-            "email": "sebastian@phpunit.de",
-            "homepage": "http://www.phpunit.de/"
+            "email": "sb@sebastian-bergmann.de",
+            "role": "lead"
         }
     ],
-    "license": "BSD-3-Clause",
+    "version": "1.2.0RC5",
+    "time": "2012-09-17",
+    "support": {
+        "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
+        "irc": "irc://irc.freenode.net/phpunit"
+    },
     "require": {
-        "php": ">=5.2.7",
-        "symfony/finder": ">=2.1.0-RC1",
+        "php": ">=5.3.3",
+        "phpunit/php-file-iterator": ">=1.3.0",
         "phpunit/php-token-stream": ">=1.1.3",
         "phpunit/php-text-template": ">=1.1.1"
     },
     "suggest": {
-        "ext-xdebug": "ext/Xdebug",
-        "ext-dom": "ext/dom",
-        "ext-reflection": "ext/Reflection",
-        "ext-spl": "ext/SPL"
-    },
-    "config": {
-        "bin-dir": "bin"
+        "ext-dom": "*",
+        "ext-reflection": "*",
+        "ext-spl": "*",
+        "ext-xdebug": ">=2.0.5"
     },
     "autoload": {
-        "psr-0": {
-            "PHP_CodeCoverage": ""
-        },
-        "files": ["PHP/CodeCoverage/Autoload.php"]
+        "files": [
+            "PHP/CodeCoverage/Autoload.php"
+        ]
     },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.2.x-dev"
-        }
-    }
-
+    "include-path": [
+        ""
+    ]
 }

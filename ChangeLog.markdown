@@ -7,3 +7,4 @@ PHP_CodeCoverage 1.3.0
 ----------------------
 
 * PHP_CodeCoverage 1.3 is only supported on PHP 5.4.7 (or later).
+

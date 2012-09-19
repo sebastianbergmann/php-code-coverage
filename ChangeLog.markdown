@@ -6,6 +6,7 @@ This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 PHP_CodeCoverage 1.2.1
 ----------------------
 
+* Fixed invalid markup in the HTML report.
 * The version number is now displayed when using PHP_CodeCoverage from a Composer install or Git checkout.
 
 PHP_CodeCoverage 1.2.0

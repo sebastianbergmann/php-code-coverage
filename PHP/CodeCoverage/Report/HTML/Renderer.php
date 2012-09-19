@@ -195,7 +195,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             'breadcrumbs'      => $this->getBreadcrumbs($node),
             'charset'          => $this->charset,
             'date'             => $this->date,
-            'version'          => '@package_version@',
+            'version'          => PHP_CodeCoverage_Version::id(),
             'php_version'      => PHP_VERSION,
             'generator'        => $this->generator,
             'low_upper_bound'  => $this->lowUpperBound,

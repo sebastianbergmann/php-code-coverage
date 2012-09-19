@@ -72,7 +72,8 @@ function php_codecoverage_autoload($class = NULL) {
           'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
           'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
           'php_codecoverage_util' => '/CodeCoverage/Util.php',
-          'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php'
+          'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php',
+          'php_codecoverage_version' => '/CodeCoverage/Version.php'
         );
 
         $path = dirname(dirname(__FILE__));

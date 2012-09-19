@@ -404,7 +404,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             }
 
             $lines .= sprintf(
-              '     <tr%s%s><td><div align="right"><a name="%d"></a><a href="#%d">%d</a></a></td><td>%s</td></tr>' . "\n",
+              '     <tr%s%s><td><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td>%s</td></tr>' . "\n",
               $trClass,
               $popover,
               $i,

@@ -92,11 +92,12 @@
           legend: {enabled: false},
           credits: {enabled: false},
           xAxis: {
-             labels: {enabled: false},
+             title: {text: 'Code Coverage (in percent)'},
+             labels: {enabled: true},
           },
           yAxis: {
-            title: '',
-            labels: {enabled: false},
+            title: 'Cyclomatic Complexity',
+            labels: {enabled: true},
           },
           tooltip: {
               formatter: function() {

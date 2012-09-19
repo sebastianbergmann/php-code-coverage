@@ -37,7 +37,7 @@ td.big {
 td.small {
 }
 
-td span.comment, td span.default, td span.html, td span.keyword, td span.string {
+td.codeLine {
  font-family: monospace;
  white-space: pre;
 }

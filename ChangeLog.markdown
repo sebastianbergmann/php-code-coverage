@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.2
+----------------------
+
+* Fixed #115: Backwards compatibility wrapper for `trait_exists()` does not work.
+
 PHP_CodeCoverage 1.2.1
 ----------------------
 

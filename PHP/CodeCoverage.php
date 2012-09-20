@@ -43,6 +43,20 @@
  * @since      File available since Release 1.0.0
  */
 
+// @codeCoverageIgnoreStart
+// @codingStandardsIgnoreStart
+/**
+ * @SuppressWarnings(PHPMD)
+ */
+if (!function_exists('trait_exists')) {
+    function trait_exists($name)
+    {
+        return FALSE;
+    }
+}
+// @codingStandardsIgnoreEnd
+// @codeCoverageIgnoreEnd
+
 /**
  * Provides collection functionality for PHP code coverage information.
  *

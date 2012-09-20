@@ -16,8 +16,8 @@
             "role": "lead"
         }
     ],
-    "version": "1.2.0",
-    "time": "2012-09-19",
+    "version": "1.2.1",
+    "time": "2012-09-20",
     "support": {
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
         "irc": "irc://irc.freenode.net/phpunit"

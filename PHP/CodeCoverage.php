@@ -646,7 +646,7 @@ class PHP_CodeCoverage
         }
 
         $match = preg_match_all(
-          '(@covers\s+(?P<coveredElement>.*?)\s*$)m',
+          '(@covers\s+(?P<coveredElement>.*?)\s*(\(\s*\))?\s*$)m',
           $docComment,
           $matches
         );

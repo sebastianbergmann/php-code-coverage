@@ -81,7 +81,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $this->getLinesToBeCovered = new ReflectionMethod(
           'PHP_CodeCoverage', 'getLinesToBeCovered'
         );
- 
+
         $this->getLinesToBeCovered->setAccessible(TRUE);
     }
 
@@ -234,10 +234,13 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage::start
-     * @covers PHP_CodeCoverage::stop
-     * @covers PHP_CodeCoverage::append
-     * @covers PHP_CodeCoverage::applyListsFilter
+     * Add parenthesis to the covers annotation below in a couple of different ways to make sure it
+     * works as expected
+     *
+     * @covers PHP_CodeCoverage::start()
+     * @covers PHP_CodeCoverage::stop( )
+     * @covers PHP_CodeCoverage::append ()
+     * @covers PHP_CodeCoverage::applyListsFilter ( )
      * @covers PHP_CodeCoverage::initializeFilesThatAreSeenTheFirstTime
      * @covers PHP_CodeCoverage::applyCoversAnnotationFilter
      * @covers PHP_CodeCoverage::getTests

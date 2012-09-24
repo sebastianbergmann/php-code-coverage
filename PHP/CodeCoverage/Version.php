@@ -57,7 +57,7 @@
  */
 class PHP_CodeCoverage_Version
 {
-    const VERSION = '@package_version@';
+    const VERSION = '1.2.2';
     protected static $version;
 
     /**
@@ -68,7 +68,9 @@ class PHP_CodeCoverage_Version
     public static function id()
     {
         if (self::$version === NULL) {
-            if (strpos(self::VERSION, '@package_version') === 0) {
+            self::$version = self::VERSION;
+
+            if (is_dir(dirname(dirname(__DIR__)) . '/.git')) {
                 $dir = getcwd();
                 chdir(__DIR__);
                 $version = exec('git describe --tags');
@@ -77,8 +79,6 @@ class PHP_CodeCoverage_Version
                 if ($version) {
                     self::$version = $version;
                 }
-            } else {
-                self::$version = self::VERSION;
             }
         }
 

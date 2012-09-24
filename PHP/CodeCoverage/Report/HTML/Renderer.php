@@ -242,7 +242,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
           $this->templatePath . 'coverage_bar.html'
         );
 
-        $template->setVar(array('level' => $level, 'percent' => $percent));
+        $template->setVar(array('level' => $level, 'percent' => sprintf("%.2F", $percent)));
 
         return $template->render();
     }

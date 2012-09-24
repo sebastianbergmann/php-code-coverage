@@ -33,9 +33,7 @@
    <dir name="PHP">
     <dir name="CodeCoverage">
      <dir name="Driver">
-      <file baseinstalldir="/" name="Xdebug.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
+      <file baseinstalldir="/" name="Xdebug.php" role="php" />
      </dir>
      <dir name="Report">
       <dir name="HTML">
@@ -63,80 +61,38 @@
          <file baseinstalldir="/" name="file_item.html.dist" role="php" />
          <file baseinstalldir="/" name="method_item.html.dist" role="php" />
         </dir>
-        <file baseinstalldir="/" name="Dashboard.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
-        <file baseinstalldir="/" name="Directory.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
-        <file baseinstalldir="/" name="File.php" role="php">
-         <tasks:replace from="@package_version@" to="version" type="package-info" />
-        </file>
+        <file baseinstalldir="/" name="Dashboard.php" role="php" />
+        <file baseinstalldir="/" name="Directory.php" role="php" />
+        <file baseinstalldir="/" name="File.php" role="php" />
        </dir>
-       <file baseinstalldir="/" name="Renderer.php" role="php">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
+       <file baseinstalldir="/" name="Renderer.php" role="php" />
       </dir>
       <dir name="Node">
-       <file baseinstalldir="/" name="Directory.php" role="php">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
-       <file baseinstalldir="/" name="File.php" role="php">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
-       <file baseinstalldir="/" name="Iterator.php" role="php">
-        <tasks:replace from="@package_version@" to="version" type="package-info" />
-       </file>
+       <file baseinstalldir="/" name="Directory.php" role="php" />
+       <file baseinstalldir="/" name="File.php" role="php" />
+       <file baseinstalldir="/" name="Iterator.php" role="php" />
       </dir>
-      <file baseinstalldir="/" name="Clover.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="Factory.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="HTML.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="Node.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="PHP.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
-      <file baseinstalldir="/" name="Text.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
+      <file baseinstalldir="/" name="Clover.php" role="php" />
+      <file baseinstalldir="/" name="Factory.php" role="php" />
+      <file baseinstalldir="/" name="HTML.php" role="php" />
+      <file baseinstalldir="/" name="Node.php" role="php" />
+      <file baseinstalldir="/" name="PHP.php" role="php" />
+      <file baseinstalldir="/" name="Text.php" role="php" />
      </dir>
      <dir name="Util">
-      <file baseinstalldir="/" name="InvalidArgumentHelper.php" role="php">
-       <tasks:replace from="@package_version@" to="version" type="package-info" />
-      </file>
+      <file baseinstalldir="/" name="InvalidArgumentHelper.php" role="php" />
      </dir>
-     <file baseinstalldir="/" name="Autoload.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Driver.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Exception.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Filter.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Util.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Version.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
+     <file baseinstalldir="/" name="Autoload.php" role="php" />
+     <file baseinstalldir="/" name="Driver.php" role="php" />
+     <file baseinstalldir="/" name="Exception.php" role="php" />
+     <file baseinstalldir="/" name="Filter.php" role="php" />
+     <file baseinstalldir="/" name="Util.php" role="php" />
+     <file baseinstalldir="/" name="Version.php" role="php" />
     </dir>
-    <file baseinstalldir="/" name="CodeCoverage.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
+    <file baseinstalldir="/" name="CodeCoverage.php" role="php" />
    </dir>
-   <file baseinstalldir="/" name="ChangeLog.markdown" role="doc"/>
-   <file baseinstalldir="/" name="LICENSE" role="doc"/>
+   <file baseinstalldir="/" name="ChangeLog.markdown" role="doc" />
+   <file baseinstalldir="/" name="LICENSE" role="doc" />
   </dir>
  </contents>
  <dependencies>
@@ -179,5 +135,5 @@
    </extension>
   </optional>
  </dependencies>
- <phprelease/>
+ <phprelease />
 </package>

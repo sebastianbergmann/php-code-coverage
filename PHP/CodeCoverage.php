@@ -608,7 +608,7 @@ class PHP_CodeCoverage
             return array();
         }
 
-        $docComment = $class->getDocComment() . $method->getDocComment();
+        $docComment = substr($class->getDocComment(), 3, -2) . PHP_EOL . substr($method->getDocComment(), 3, -2);
 
         $templateMethods = array(
           'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
@@ -617,7 +617,7 @@ class PHP_CodeCoverage
         foreach ($templateMethods as $templateMethod) {
             if ($class->hasMethod($templateMethod)) {
                 $reflector   = $class->getMethod($templateMethod);
-                $docComment .= $reflector->getDocComment();
+                $docComment .= PHP_EOL . substr($reflector->getDocComment(), 3, -2);
                 unset($reflector);
             }
         }

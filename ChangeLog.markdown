@@ -7,6 +7,8 @@ PHP_CodeCoverage 1.2.3
 ----------------------
 
 * Added support for parentheses after method names in the `@covers` annotation.
+* When `addUncoveredFilesFromWhitelist=FALSE` is set then files that are whitelisted but not covered by a single test are now excluded from the code coverage.
+
 
 PHP_CodeCoverage 1.2.2
 ----------------------
@@ -25,5 +27,5 @@ PHP_CodeCoverage 1.2.0
 * The HTML report has been redesigned.
 * The new `@coversDefaultClass` annotation enables short `@covers` annotations when working with long class names or namespaces.
 * The new `@coversNothing` annotation can be used so tests do not record any code coverage. Useful for integration testing. 
-* When `processUncoveredFilesFromWhitelist=FALSE` is set then files that are whitelisted and uncovered are now included in the code coverage but with all lines, including those that are not executable, counted as not executed.
+* When `processUncoveredFilesFromWhitelist=FALSE` is set then files that are whitelisted but not covered by a single test are now included in the code coverage but with all lines, including those that are not executable, counted as not executed.
 * PHP_CodeCoverage 1.2 is only supported on PHP 5.3.3 (or later) and PHP 5.4.7 (or later) is highly recommended.

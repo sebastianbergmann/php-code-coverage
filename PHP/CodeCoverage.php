@@ -84,6 +84,11 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
+    protected $addUncoveredFilesFromWhitelist = TRUE;
+
+    /**
+     * @var boolean
+     */
     protected $processUncoveredFilesFromWhitelist = FALSE;
 
     /**
@@ -167,7 +172,9 @@ class PHP_CodeCoverage
      */
     public function getData()
     {
-        $this->processUncoveredFilesFromWhitelist();
+        if ($this->addUncoveredFilesFromWhitelist) {
+            $this->addUncoveredFilesFromWhitelist();
+        }
 
         // We need to apply the blacklist filter a second time
         // when no whitelist is used.
@@ -385,6 +392,21 @@ class PHP_CodeCoverage
      * @param  boolean $flag
      * @throws PHP_CodeCoverage_Exception
      */
+    public function setAddUncoveredFilesFromWhitelist($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
+        }
+
+        $this->addUncoveredFilesFromWhitelist = $flag;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws PHP_CodeCoverage_Exception
+     */
     public function setProcessUncoveredFilesFromWhitelist($flag)
     {
         if (!is_bool($flag)) {
@@ -476,7 +498,7 @@ class PHP_CodeCoverage
     /**
      * Processes whitelisted files that are not covered.
      */
-    protected function processUncoveredFilesFromWhitelist()
+    protected function addUncoveredFilesFromWhitelist()
     {
         $data           = array();
         $uncoveredFiles = array_diff(

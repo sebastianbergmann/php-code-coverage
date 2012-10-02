@@ -245,7 +245,7 @@ class PHP_CodeCoverage_Report_Text
             }
         }
 
-        $this->outputStream->write($output);
+        $this->outputStream->write($output . PHP_EOL);
     }
 
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)

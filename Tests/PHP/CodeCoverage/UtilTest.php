@@ -56,6 +56,7 @@ require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
 require_once TEST_FILES_PATH . 'CoverageClassTest.php';
 require_once TEST_FILES_PATH . 'CoverageFunctionTest.php';
 require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'CoverageMethodOneLineAnnotationTest.php';
 require_once TEST_FILES_PATH . 'CoverageNoneTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotPrivateTest.php';
 require_once TEST_FILES_PATH . 'CoverageNotProtectedTest.php';

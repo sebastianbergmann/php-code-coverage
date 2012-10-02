@@ -415,6 +415,10 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             range(31, 35)
           ),
           array(
+            'CoverageMethodOneLineAnnotationTest',
+            range(31, 35)
+          ),
+          array(
             'CoverageNotPrivateTest',
             array_merge(range(25, 29), range(31, 35))
           ),

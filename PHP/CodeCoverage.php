@@ -69,7 +69,7 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
-    protected $cacheTokens = TRUE;
+    protected $cacheTokens = FALSE;
 
     /**
      * @var boolean

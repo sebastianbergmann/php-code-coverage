@@ -253,17 +253,11 @@ class PHP_CodeCoverage_Filter
      * @return boolean
      * @throws PHP_CodeCoverage_Exception
      */
-    public function isFiltered($filename, $ignoreWhitelist = FALSE)
+    public function isFiltered($filename)
     {
-        if (!is_bool($ignoreWhitelist)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
-              1, 'boolean'
-            );
-        }
-
         $filename = realpath($filename);
 
-        if (!$ignoreWhitelist && !empty($this->whitelistedFiles)) {
+        if (!empty($this->whitelistedFiles)) {
             return !isset($this->whitelistedFiles[$filename]);
         }
 

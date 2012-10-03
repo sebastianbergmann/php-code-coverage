@@ -6,6 +6,7 @@ This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 PHP_CodeCoverage 1.2.3
 ----------------------
 
+* Implemented #116: Do not rely on autoloader class map to populate blacklist.
 * Added support for parentheses after method names in the `@covers` annotation.
 * When `addUncoveredFilesFromWhitelist=FALSE` is set then files that are whitelisted but not covered by a single test are now excluded from the code coverage.
 * Fixed #81: Non-english locales broke the coverage bars in the HTML report.

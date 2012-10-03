@@ -71,20 +71,9 @@ class PHP_CodeCoverage_Filter
     protected $whitelistedFiles = array();
 
     /**
-     * Prefills the blacklist with source files used by PHPUnit
-     * and PHP_CodeCoverage.
+     * @var boolean
      */
-    public function __construct()
-    {
-        $this->addDirectoryContainingClassToBlacklist('File_Iterator');
-        $this->addDirectoryContainingClassToBlacklist('PHP_CodeCoverage');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Invoker');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Timer');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Token');
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_TestCase', 2);
-        $this->addDirectoryContainingClassToBlacklist('Text_Template');
-        $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
-    }
+    protected $blacklistPrefilled = FALSE;
 
     /**
      * Adds a directory to the blacklist (recursively).
@@ -278,6 +267,10 @@ class PHP_CodeCoverage_Filter
             return !isset($this->whitelistedFiles[$filename]);
         }
 
+        if (!$this->blacklistPrefilled) {
+            $this->prefillBlacklist();
+        }
+
         return isset($this->blacklistedFiles[$filename]);
     }
 
@@ -310,6 +303,23 @@ class PHP_CodeCoverage_Filter
     public function hasWhitelist()
     {
         return !empty($this->whitelistedFiles);
+    }
+
+    /**
+     * @since Method available since Release 1.2.3
+     */
+    protected function prefillBlacklist()
+    {
+        $this->addDirectoryContainingClassToBlacklist('File_Iterator');
+        $this->addDirectoryContainingClassToBlacklist('PHP_CodeCoverage');
+        $this->addDirectoryContainingClassToBlacklist('PHP_Invoker');
+        $this->addDirectoryContainingClassToBlacklist('PHP_Timer');
+        $this->addDirectoryContainingClassToBlacklist('PHP_Token');
+        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_TestCase', 2);
+        $this->addDirectoryContainingClassToBlacklist('Text_Template');
+        $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
+
+        $this->blacklistPrefilled = TRUE;
     }
 
     /**

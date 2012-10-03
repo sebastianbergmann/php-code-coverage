@@ -44,11 +44,10 @@
   <exec executable="phpab">
    <arg value="--output" />
    <arg path="PHP/CodeCoverage/Autoload.php" />
-   <arg value="--compat" />
    <arg value="--template" />
    <arg path="PHP/CodeCoverage/Autoload.php.in" />
    <arg value="--indent" />
-   <arg value="          " />
+   <arg value="            " />
    <arg path="PHP" />
   </exec>
  </target>

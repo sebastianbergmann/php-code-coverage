@@ -47,53 +47,44 @@ require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
 require_once 'Text/Template/Autoload.php';
 
-function php_codecoverage_autoload($class = NULL) {
-    static $classes = NULL;
-    static $path = NULL;
+spl_autoload_register(
+  function ($class)
+  {
+      static $classes = NULL;
+      static $path = NULL;
 
-    if ($classes === NULL) {
-        $classes = array(
-          'php_codecoverage' => '/CodeCoverage.php',
-          'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
-          'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
-          'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
-          'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
-          'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
-          'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
-          'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
-          'php_codecoverage_report_html_renderer' => '/CodeCoverage/Report/HTML/Renderer.php',
-          'php_codecoverage_report_html_renderer_dashboard' => '/CodeCoverage/Report/HTML/Renderer/Dashboard.php',
-          'php_codecoverage_report_html_renderer_directory' => '/CodeCoverage/Report/HTML/Renderer/Directory.php',
-          'php_codecoverage_report_html_renderer_file' => '/CodeCoverage/Report/HTML/Renderer/File.php',
-          'php_codecoverage_report_node' => '/CodeCoverage/Report/Node.php',
-          'php_codecoverage_report_node_directory' => '/CodeCoverage/Report/Node/Directory.php',
-          'php_codecoverage_report_node_file' => '/CodeCoverage/Report/Node/File.php',
-          'php_codecoverage_report_node_iterator' => '/CodeCoverage/Report/Node/Iterator.php',
-          'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
-          'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
-          'php_codecoverage_util' => '/CodeCoverage/Util.php',
-          'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php',
-          'php_codecoverage_version' => '/CodeCoverage/Version.php'
-        );
+      if ($classes === NULL) {
+          $classes = array(
+            'php_codecoverage' => '/CodeCoverage.php',
+            'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
+            'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
+            'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
+            'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
+            'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
+            'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
+            'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
+            'php_codecoverage_report_html_renderer' => '/CodeCoverage/Report/HTML/Renderer.php',
+            'php_codecoverage_report_html_renderer_dashboard' => '/CodeCoverage/Report/HTML/Renderer/Dashboard.php',
+            'php_codecoverage_report_html_renderer_directory' => '/CodeCoverage/Report/HTML/Renderer/Directory.php',
+            'php_codecoverage_report_html_renderer_file' => '/CodeCoverage/Report/HTML/Renderer/File.php',
+            'php_codecoverage_report_node' => '/CodeCoverage/Report/Node.php',
+            'php_codecoverage_report_node_directory' => '/CodeCoverage/Report/Node/Directory.php',
+            'php_codecoverage_report_node_file' => '/CodeCoverage/Report/Node/File.php',
+            'php_codecoverage_report_node_iterator' => '/CodeCoverage/Report/Node/Iterator.php',
+            'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
+            'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
+            'php_codecoverage_util' => '/CodeCoverage/Util.php',
+            'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php',
+            'php_codecoverage_version' => '/CodeCoverage/Version.php'
+          );
 
-        $path = dirname(dirname(__FILE__));
-    }
+          $path = dirname(dirname(__FILE__));
+      }
 
-    if ($class === NULL) {
-        $result = array(__FILE__);
+      $cn = strtolower($class);
 
-        foreach ($classes as $file) {
-            $result[] = $path . $file;
-        }
-
-        return $result;
-    }
-
-    $cn = strtolower($class);
-
-    if (isset($classes[$cn])) {
-        require $path . $classes[$cn];
-    }
-}
-
-spl_autoload_register('php_codecoverage_autoload');
+      if (isset($classes[$cn])) {
+          require $path . $classes[$cn];
+      }
+  }
+);

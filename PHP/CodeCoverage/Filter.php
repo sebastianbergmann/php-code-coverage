@@ -310,6 +310,10 @@ class PHP_CodeCoverage_Filter
         $this->addDirectoryContainingClassToBlacklist('PHP_Timer');
         $this->addDirectoryContainingClassToBlacklist('PHP_Token');
         $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_TestCase', 2);
+        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_Database_TestCase', 2);
+        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_MockObject_Generator', 2);
+        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_SeleniumTestCase', 2);
+        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_Story_TestCase', 2);
         $this->addDirectoryContainingClassToBlacklist('Text_Template');
         $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
 

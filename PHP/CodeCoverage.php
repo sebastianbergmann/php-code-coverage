@@ -545,6 +545,7 @@ class PHP_CodeCoverage
     /**
      * @param string $uncoveredFile
      * @param array  $data
+     * @param array  $uncoveredFiles
      */
     protected function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
     {

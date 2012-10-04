@@ -549,41 +549,6 @@ class PHP_CodeCoverage
      */
     protected function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
     {
-        if ($this->cacheTokens) {
-            $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
-        } else {
-            $tokens = new PHP_Token_Stream($uncoveredFile);
-        }
-
-        $classes    = $tokens->getClasses();
-        $interfaces = $tokens->getInterfaces();
-        $functions  = $tokens->getFunctions();
-        unset($tokens);
-
-        foreach (array_keys($classes) as $class) {
-            if (class_exists($class, FALSE)) {
-                continue;
-            }
-        }
-
-        unset($classes);
-
-        foreach (array_keys($interfaces) as $interface) {
-            if (interface_exists($interface, FALSE)) {
-                continue;
-            }
-        }
-
-        unset($interfaces);
-
-        foreach (array_keys($functions) as $function) {
-            if (function_exists($function)) {
-                continue;
-            }
-        }
-
-        unset($functions);
-
         $this->driver->start();
         include_once $uncoveredFile;
         $coverage = $this->driver->stop();

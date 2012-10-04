@@ -10,6 +10,7 @@ PHP_CodeCoverage 1.2.3
 * Added support for parentheses after method names in the `@covers` annotation.
 * When `addUncoveredFilesFromWhitelist=FALSE` is set then files that are whitelisted but not covered by a single test are now excluded from the code coverage.
 * Fixed #81: Non-english locales broke the coverage bars in the HTML report.
+* Fixed #118: Percentage for tested classes and traits displayed incorrectly.
 * Fixed #121: One line `@covers` annotations did not work.
 
 PHP_CodeCoverage 1.2.2

@@ -146,8 +146,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             'numExecutableLines'           => $node->getNumExecutableLines(),
             'testedMethodsPercent'         => $node->getTestedMethodsPercent(FALSE),
             'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
-            'testedClassesPercent'         => $node->getTestedClassesPercent(FALSE),
-            'testedClassesPercentAsString' => $node->getTestedClassesPercent(),
+            'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(FALSE),
+            'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
             'crap'                         => '<acronym title="Change Risk Anti-Patterns (CRAP) Index">CRAP</acronym>'
           )
         );

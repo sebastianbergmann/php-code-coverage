@@ -179,6 +179,20 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers PHP_CodeCoverage_Util::getLinesToBeIgnored
+     */
+    public function testGetLinesToBeIgnoredOneLineAnnotations2()
+    {
+        $this->assertEquals(
+          array(
+            1 => TRUE,
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeIgnored(
+            TEST_FILES_PATH . 'source_with_oneline_annotations_on_first_line.php'
+          )
+        );
+    }
 
     /**
      * @covers PHP_CodeCoverage_Util::percent

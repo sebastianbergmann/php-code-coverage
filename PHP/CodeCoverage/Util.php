@@ -122,7 +122,7 @@ class PHP_CodeCoverage_Util
 
                         // Workaround for the fact the DOC_COMMENT token does
                         // not include the final \n character in its text.
-                        if (trim($lines[$i-1]) == '*/') {
+                        if (substr(trim($lines[$i-1]), -2) == '*/') {
                             self::$ignoredLines[$filename][$i] = TRUE;
                         }
                     }

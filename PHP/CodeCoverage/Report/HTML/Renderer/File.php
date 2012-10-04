@@ -516,6 +516,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                 case T_INCLUDE_ONCE:
                                 case T_INSTANCEOF:
                                 case T_INSTEADOF:
+                                case T_INTERFACE:
                                 case T_ISSET:
                                 case T_LOGICAL_AND:
                                 case T_LOGICAL_OR:

@@ -93,8 +93,9 @@ class PHP_CodeCoverage_Util
             self::$ignoredLines[$filename] = array();
             $ignore                        = FALSE;
             $stop                          = FALSE;
+            $lines                         = file($filename);
 
-            foreach (file($filename) as $index => $line) {
+            foreach ($lines as $index => $line) {
                 if (!trim($line)) {
                     self::$ignoredLines[$filename][$index+1] = TRUE;
                 }
@@ -111,6 +112,23 @@ class PHP_CodeCoverage_Util
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
+                    case 'PHP_Token_DOC_COMMENT': {
+                        $count = substr_count($token, "\n");
+                        $line  = $token->getLine();
+
+                        for ($i = $line; $i < $line + $count; $i++) {
+                            self::$ignoredLines[$filename][$i] = TRUE;
+                        }
+
+                        // Workaround for the fact the DOC_COMMENT token does
+                        // not include the final \n character in its text.
+                        if (trim($lines[$i-1]) == '*/') {
+                            self::$ignoredLines[$filename][$i] = TRUE;
+                        }
+                    }
+                    break;
+
+                    case 'PHP_Token_INTERFACE':
                     case 'PHP_Token_TRAIT':
                     case 'PHP_Token_CLASS':
                     case 'PHP_Token_FUNCTION': {
@@ -124,8 +142,9 @@ class PHP_CodeCoverage_Util
                             }
                         }
 
-                        else if (($token instanceof PHP_Token_TRAIT ||
-                                  $token instanceof PHP_Token_CLASS)) {
+                        else if ($token instanceof PHP_Token_INTERFACE ||
+                                 $token instanceof PHP_Token_TRAIT ||
+                                 $token instanceof PHP_Token_CLASS) {
                             if (empty($classes[$token->getName()]['methods'])) {
                                 for ($i = $token->getLine();
                                      $i <= $token->getEndLine();

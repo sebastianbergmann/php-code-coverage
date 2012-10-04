@@ -108,7 +108,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
           TEST_FILES_PATH . 'source_with_ignore.php',
           TEST_FILES_PATH . 'source_with_namespace.php',
           TEST_FILES_PATH . 'source_with_oneline_annotations.php',
-          TEST_FILES_PATH . 'source_with_oneline_annotations_on_first_line.php',
           TEST_FILES_PATH . 'source_without_ignore.php',
           TEST_FILES_PATH . 'source_without_namespace.php'
         );

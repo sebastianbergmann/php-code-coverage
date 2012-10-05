@@ -35,8 +35,8 @@
         "ext-xdebug": ">=2.0.5"
     },
     "autoload": {
-        "files": [
-            "PHP/CodeCoverage/Autoload.php"
+        "classmap": [
+            "PHP/"
         ]
     },
     "include-path": [

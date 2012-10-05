@@ -13,7 +13,7 @@
         "irc": "irc://irc.freenode.net/phpunit"
     },
     "autoload": {
-        "files": ["PHP/CodeCoverage/Autoload.php"]
+        "classmap": ["PHP/"]
     },
     "include_path": [
         ""

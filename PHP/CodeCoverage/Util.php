@@ -112,6 +112,7 @@ class PHP_CodeCoverage_Util
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
+                    case 'PHP_Token_COMMENT':
                     case 'PHP_Token_DOC_COMMENT': {
                         $count = substr_count($token, "\n");
                         $line  = $token->getLine();

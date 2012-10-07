@@ -3,6 +3,10 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.4
+----------------------
+* Fixed #123: Incorrect code coverage for interfaces.
+
 PHP_CodeCoverage 1.2.3
 ----------------------
 
@@ -12,7 +16,6 @@ PHP_CodeCoverage 1.2.3
 * Fixed #81: Non-english locales broke the coverage bars in the HTML report.
 * Fixed #118: Percentage for tested classes and traits displayed incorrectly.
 * Fixed #121: One line `@covers` annotations did not work.
-* Fixed #123: Incorrect code coverage for interfaces.
 
 PHP_CodeCoverage 1.2.2
 ----------------------

@@ -126,6 +126,28 @@ class PHP_CodeCoverage_Util
                         if (substr(trim($lines[$i-1]), -2) == '*/') {
                             self::$ignoredLines[$filename][$i] = TRUE;
                         }
+
+                        if (!$token instanceof PHP_Token_COMMENT) {
+                            break;
+                        }
+
+                        $_token = trim($token);
+
+                        if ($_token == '// @codeCoverageIgnore' ||
+                            $_token == '//@codeCoverageIgnore') {
+                            $ignore = TRUE;
+                            $stop   = TRUE;
+                        }
+
+                        else if ($_token == '// @codeCoverageIgnoreStart' ||
+                                 $_token == '//@codeCoverageIgnoreStart') {
+                            $ignore = TRUE;
+                        }
+
+                        else if ($_token == '// @codeCoverageIgnoreEnd' ||
+                                 $_token == '//@codeCoverageIgnoreEnd') {
+                            $stop = TRUE;
+                        }
                     }
                     break;
 
@@ -197,27 +219,6 @@ class PHP_CodeCoverage_Util
                     case 'PHP_Token_CLOSE_TAG':
                     case 'PHP_Token_USE': {
                         self::$ignoredLines[$filename][$token->getLine()] = TRUE;
-                    }
-                    break;
-
-                    case 'PHP_Token_COMMENT': {
-                        $_token = trim($token);
-
-                        if ($_token == '// @codeCoverageIgnore' ||
-                            $_token == '//@codeCoverageIgnore') {
-                            $ignore = TRUE;
-                            $stop   = TRUE;
-                        }
-
-                        else if ($_token == '// @codeCoverageIgnoreStart' ||
-                                 $_token == '//@codeCoverageIgnoreStart') {
-                            $ignore = TRUE;
-                        }
-
-                        else if ($_token == '// @codeCoverageIgnoreEnd' ||
-                                 $_token == '//@codeCoverageIgnoreEnd') {
-                            $stop = TRUE;
-                        }
                     }
                     break;
                 }

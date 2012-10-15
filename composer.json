@@ -7,7 +7,7 @@
         "testing",
         "xunit"
     ],
-    "homepage": "http://www.phpunit.de/",
+    "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -28,8 +28,6 @@
     },
     "suggest": {
         "ext-dom": "*",
-        "ext-reflection": "*",
-        "ext-spl": "*",
         "ext-xdebug": ">=2.2.1"
     },
     "autoload": {

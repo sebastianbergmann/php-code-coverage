@@ -3,6 +3,10 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.6
+----------------------
+* Fixed #126: `E_NOTICE` thrown when generating coverage report.
+
 PHP_CodeCoverage 1.2.5
 ----------------------
 * Fixed regression introduced in PHP_CodeCoverage 1.2.4.

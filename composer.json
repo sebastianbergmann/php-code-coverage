@@ -7,7 +7,7 @@
         "testing",
         "xunit"
     ],
-    "homepage": "http://www.phpunit.de/",
+    "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -16,8 +16,6 @@
             "role": "lead"
         }
     ],
-    "version": "1.2.3",
-    "time": "2012-10-05",
     "support": {
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
         "irc": "irc://irc.freenode.net/phpunit"
@@ -30,8 +28,6 @@
     },
     "suggest": {
         "ext-dom": "*",
-        "ext-reflection": "*",
-        "ext-spl": "*",
         "ext-xdebug": ">=2.0.5"
     },
     "autoload": {

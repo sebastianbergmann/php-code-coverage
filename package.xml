@@ -124,12 +124,6 @@
     <name>dom</name>
    </extension>
    <extension>
-    <name>reflection</name>
-   </extension>
-   <extension>
-    <name>spl</name>
-   </extension>
-   <extension>
     <name>xdebug</name>
     <min>2.0.5</min>
    </extension>

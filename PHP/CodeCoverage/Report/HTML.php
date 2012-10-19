@@ -185,6 +185,7 @@ class PHP_CodeCoverage_Report_HTML
         copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
         copy($this->templatePath . 'js/highcharts.js', $dir . 'highcharts.js');
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
+        copy($this->templatePath . 'js/html5shiv.js', $dir . 'html5shiv.js');
 
         $dir = $this->getDirectory($target . 'img');
         copy($this->templatePath . 'img/glyphicons-halflings.png', $dir . 'glyphicons-halflings.png');

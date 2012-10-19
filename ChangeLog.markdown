@@ -3,16 +3,24 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.7
+----------------------
+
+* The `html5shiv.js` is now bundled.
+
 PHP_CodeCoverage 1.2.6
 ----------------------
+
 * Fixed #126: `E_NOTICE` thrown when generating coverage report.
 
 PHP_CodeCoverage 1.2.5
 ----------------------
+
 * Fixed regression introduced in PHP_CodeCoverage 1.2.4.
 
 PHP_CodeCoverage 1.2.4
 ----------------------
+
 * Fixed #123: Incorrect code coverage for interfaces.
 
 PHP_CodeCoverage 1.2.3

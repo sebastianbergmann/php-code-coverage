@@ -51,6 +51,7 @@
          <dir name="js">
           <file baseinstalldir="/" name="bootstrap.min.js" role="php" />
           <file baseinstalldir="/" name="highcharts.js" role="php" />
+          <file baseinstalldir="/" name="html5shiv.js" role="php" />
           <file baseinstalldir="/" name="jquery.min.js" role="php" />
          </dir>
          <file baseinstalldir="/" name="coverage_bar.html.dist" role="php" />

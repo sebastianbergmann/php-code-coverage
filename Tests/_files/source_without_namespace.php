@@ -1,15 +1,15 @@
 <?php
 /**
- * Represents foo.
+ * Represents foo_without_namespace.
  */
-class Foo
+class foo_without_namespace
 {
 }
 
 /**
  * @param mixed $bar
  */
-function &foo($bar)
+function &foo_without_namespace($bar)
 {
     $baz = function() {};
     $a   = TRUE ? TRUE : FALSE;

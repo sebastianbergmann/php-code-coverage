@@ -1,7 +1,7 @@
 <?php
 namespace Foo;
 
-class CoveredParentClass
+class CoveredNamespaceParentClass
 {
     private function privateMethod()
     {
@@ -18,7 +18,7 @@ class CoveredParentClass
     }
 }
 
-class CoveredClass extends CoveredParentClass
+class CoveredNamespaceClass extends CoveredNamespaceParentClass
 {
     private function privateMethod()
     {

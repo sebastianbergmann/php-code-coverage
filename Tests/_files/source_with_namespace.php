@@ -2,16 +2,16 @@
 namespace bar\baz;
 
 /**
- * Represents foo.
+ * Represents foo_with_namespace.
  */
-class Foo
+class foo_with_namespace
 {
 }
 
 /**
  * @param mixed $bar
  */
-function &foo($bar)
+function &foo_with_namespace($bar)
 {
     $baz = function() {};
     $a   = TRUE ? TRUE : FALSE;

@@ -7,6 +7,7 @@ PHP_CodeCoverage 1.2.7
 ----------------------
 
 * The `html5shiv.js` is now bundled.
+* Fixed sebastianbergmann/phpunit#702: `@coversNothing` didn't work as documented.
 
 PHP_CodeCoverage 1.2.6
 ----------------------

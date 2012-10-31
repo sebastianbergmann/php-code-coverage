@@ -208,7 +208,7 @@ class PHP_CodeCoverage_Report_HTML
             return $directory;
         }
 
-        if (mkdir($directory, 0777, TRUE)) {
+        if (@mkdir($directory, 0777, TRUE)) {
             return $directory;
         }
 

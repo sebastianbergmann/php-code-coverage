@@ -309,8 +309,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             );
         }
 
-        else if ($test === 'CoverageNoneTest' || $test === 'CoverageNothingTest') {
+        else if ($test === 'CoverageNoneTest') {
             $expected = array();
+        }
+
+        else if ($test === 'CoverageNothingTest') {
+            $expected = false;
         }
 
         else if ($test === 'CoverageFunctionTest') {
@@ -492,7 +496,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           ),
           array(
             'CoverageNothingTest',
-            array()
+            false
           )
         );
     }

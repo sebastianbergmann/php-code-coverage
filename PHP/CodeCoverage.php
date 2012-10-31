@@ -432,6 +432,11 @@ class PHP_CodeCoverage
               $testClassName, $id->getName()
             );
 
+            if ($linesToBeCovered === FALSE) {
+                $data = array();
+                return;
+            }
+
             if ($this->mapTestClassNameToCoveredClassName &&
                 empty($linesToBeCovered)) {
                 $testedClass = substr($testClassName, 0, -4);
@@ -597,7 +602,7 @@ class PHP_CodeCoverage
         }
 
         if (strpos($docComment, '@coversNothing') !== FALSE) {
-            return $result;
+            return FALSE;
         }
 
         $classShortcut = preg_match_all(

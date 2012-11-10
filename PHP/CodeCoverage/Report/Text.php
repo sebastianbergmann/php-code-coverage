@@ -123,11 +123,16 @@ class PHP_CodeCoverage_Report_Text
         $output .= PHP_EOL . PHP_EOL .
                    $colors['header'] . 'Code Coverage Report ';
 
-        $output .= PHP_EOL .
-                   date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) .
-                   PHP_EOL;
+        if ($this->showOnlySummary) {
+            $output .= 'Summary: ' . PHP_EOL;
+        } else {
+            $output .= PHP_EOL .
+                       date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) .
+                       PHP_EOL . PHP_EOL .
+                       ' Summary: ';
+        }
 
-        $output .= PHP_EOL . ' Summary: ' . PHP_EOL . $colors['reset']
+        $output .= PHP_EOL . $colors['reset']
           . $colors['classes'] . $colors['eol'] . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClassesAndTraits(), $report->getNumClassesAndTraits(), TRUE)
           . ' (' . $report->getNumTestedClassesAndTraits() . '/' . $report->getNumClassesAndTraits() . ')' . PHP_EOL . $colors ['eol']
           . $colors['methods'] . $colors['eol'] . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE)

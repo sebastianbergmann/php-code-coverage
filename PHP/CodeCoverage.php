@@ -523,8 +523,13 @@ class PHP_CodeCoverage
             if (!file_exists($uncoveredFile)) {
                 continue;
             }
-
-            if ($this->processUncoveredFilesFromWhitelist) {
+            $error = false;
+            $classes = array();
+            $canIncludeFile = PHP_CodeCoverage_Util::canIncludeFile($uncoveredFile, array(
+                'define',
+                'includeOnce',
+            ), $classes, $error);
+            if ($canIncludeFile && $this->processUncoveredFilesFromWhitelist) {
                 $this->processUncoveredFileFromWhitelist(
                   $uncoveredFile, $data, $uncoveredFiles
                 );

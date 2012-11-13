@@ -245,6 +245,7 @@ class PHP_CodeCoverage_Util
      * @param $filename       string      Filename to be checked
      * @param $toplevel_funcs array       List of function calls at top level that are allowed (e.g. array('define'))
      * @param $classes        array       Classes that are present in file with respect of namespaces
+     * @param $errmsg         string      Error message will be written to this variable if false is returned
      *
      * @return bool
      */
@@ -260,131 +261,152 @@ class PHP_CodeCoverage_Util
         $state = "default";
         $depth = 0; // depth of "(" or "{"
         $line = 1;
-        $namespace = "";
+        $namespace = "\\";
+        $classname = "";
 
         foreach ($tokens as $row) {
-//            printf("%-12s ", $state);
             if (is_array($row)) {
                 list($token, $text, $line) = $row;
                 $text = str_replace("\n", '\\n', $text);
-//                echo token_name($token) . " '$text' on line $line\n";
-                if ($token === T_WHITESPACE || $token === T_COMMENT || $token === T_DOC_COMMENT) continue;
+            } else {
+                $token = $text = $row;
+            }
 
-                switch ($state) {
-                    case "default":
-                        if ($token !== T_OPEN_TAG) {
-                            $errmsg = "Have something before <?php tag on line $line";
+            if ($token === T_WHITESPACE || $token === T_COMMENT || $token === T_DOC_COMMENT) continue;
+
+//            printf("%-12s ", $state);
+
+            switch ($state) {
+                case "funccall":
+                    if ($token === "(") $depth++;
+                    else if ($token === ")") $depth--;
+                    if ($depth == 0) $state = "funccall_end";
+                    break;
+
+                case "default":
+                    if ($token !== T_OPEN_TAG) {
+                        $errmsg = "Have something before <?php tag on line $line";
+                        return false;
+                    }
+                    $state = "root";
+                    break;
+
+                case "root":
+                    if ($token === T_STRING) { // function call
+                        if (!isset($toplevel_funcs[$text])) {
+                            $errmsg = "Forbidden top level function call: $text(...) on line $line";
                             return false;
                         }
+                        $state = "funccall";
+                        $depth = 0;
+                    } else if ($token === T_ABSTRACT || $token === T_FINAL) {
+                        continue;
+                    } else if ($token === T_CLASS) {
+                        $state = "classdef";
+                        $classname = "";
+                    } else if ($token === T_CLOSE_TAG) {
+                        $state = "default";
+                    } else if ($token === T_NAMESPACE) {
+                        $state = "namespace";
+                        $namespace = "";
+                    } else if ($token === T_USE) {
+                        $state = "use";
+                    } else if ($token === T_FUNCTION) {
+                        $state = "funcdef";
+                    } else {
+                        $errmsg = "Disallowed top level token '$text' on line $line";
+                        return false;
+                    }
+                    break;
+
+                case "use":
+                    if ($row === ";") $state = "root";
+                    break;
+
+                case "namespace":
+                    if ($token === ";") {
                         $state = "root";
-                        break;
-                    case "root":
-                        if ($token === T_STRING) { // function call
-                            if (!isset($toplevel_funcs[$text])) {
-                                $errmsg = "Forbidden top level function call: $text(...) on line $line";
-                                return false;
-                            }
-                            $state = "funccall";
-                            $depth = 0;
-                        } else if ($token === T_ABSTRACT || $token === T_FINAL) {
-                            continue;
-                        } else if ($token === T_CLASS) {
-                            $state = "classdef";
-                        } else if ($token === T_CLOSE_TAG) {
-                            $state = "default";
-                        } else if ($token === T_NAMESPACE) {
-                            $state = "namespace";
-                            $namespace = "";
-                        } else if ($token === T_USE) {
-                            $state = "use";
-                        } else if ($token === T_FUNCTION) {
-                            $state = "funcdef";
-                        } else {
-                            $errmsg = "Disallowed top level token " . token_name($token) . " ($text) on line $line";
+                    } else if ($token === T_NS_SEPARATOR || $token === T_STRING) {
+                        $namespace .= $text;
+                    } else {
+                        $errmsg = "Unexpected token '$row' on line $line (expected ';')";
+                        return false;
+                    }
+                    break;
+
+                case "classdef":
+                case "extends":
+                case "implements":
+                    if ($token === T_EXTENDS || $token === T_IMPLEMENTS || $token === "{") {
+                        if (!$classname) {
+                            $errmsg = "Empty classname on line $line";
                             return false;
                         }
-                        break;
-                    case "namespace":
-                        $namespace .= $text;
-                        break;
-                    case "classdef":
-                        if ($token === T_EXTENDS) {
-                            $state = "extends";
-                        } else if ($token === T_IMPLEMENTS) {
-                            $state = "implements";
-                        } else if ($token === T_STRING) {
-                            $classname = $namespace . "\\" . $text;
+
+                        if ($classname[0] != '\\') {
+                            $classname = rtrim($namespace, "\\") . "\\" . $classname;
+                        }
+
+                        if ($state == "classdef") {
                             if (class_exists($classname)) {
                                 $errmsg = "Class '$classname' already exists on line $line";
                                 return false;
-                            } else {
-                                $classes[] = $classname;
                             }
-                        } else {
-                            $errmsg = "Unexpected token " . token_name($token) . " ($text) on line $line";
-                            return false;
+                            $classes[] = $classname;
                         }
-                        break;
-                    case "funccall_end":
-                        $errmsg = "Unexpected terminator for function call: " . token_name($token) . " ($text) on line $line";
-                        return false;
-                }
 
-            } else {
-//                echo "$row\n";
-                switch ($state) {
-                    case "funccall":
-                        if ($row === "(") $depth++;
-                        else if ($row === ")") $depth--;
-                        if ($depth == 0) $state = "funccall_end";
-                        break;
-                    case "funccall_end":
-                        if ($row !== ";") {
-                            $errmsg = "Unexpected terminator for function call: '$row' on line $line";
-                            return false;
+                        if ($state != "classdef") {
+                            $func = ($state == "extends" ? "class_exists" : "interface_exists");
+                            if (!$func($classname, true)) {
+                                $errmsg = "Class '$classname' does not exist on line $line";
+                                return false;
+                            }
                         }
-                        $state = "root";
-                        break;
-                    case "namespace":
-                        if ($row === ";") {
-                            $state = "root";
-                        } else {
-                            $errmsg = "Unexpected token '$row' on line $line (expected ';')";
-                            return false;
-                        }
-                        break;
-                    case "use":
-                        if ($row === ";") $state = "root";
-                        break;
-                    case "classdef":
-                    case "extends":
-                    case "implements":
-                        if ($row === "{") {
+
+                        if ($token === "{") {
                             $state = "class";
                             $depth = 1;
                         } else {
-                            $errmsg = "Unexpected token '$row' on line $line (expected '{')";
-                            return false;
+                            $state = ($token == T_EXTENDS ? "extends" : "implements");
+                            $classname = "";
                         }
-                        break;
-                    case "funcdef":
-                        if ($row === "{") {
-                            $state = "function";
-                            $depth = 1;
-                        }
-                        break;
-                    case "function":
-                        if ($row === "{") $depth++;
-                        else if ($row === "}") $depth--;
-                        if ($depth == 0) $state = "root";
-                        break;
-                    case "class":
-                        if ($row === "{") $depth++;
-                        else if ($row === "}") $depth--;
-                        if ($depth == 0) $state = "root";
-                        break;
-                }
+                    } else if ($token === T_STRING || $token == T_NS_SEPARATOR) {
+                        $classname .= $text;
+                    } else {
+                        $errmsg = "Unexpected token '$text' on line $line (expected '{')";
+                        return false;
+                    }
+                    break;
+
+                case "funccall_end":
+                    if ($token !== ";") {
+                        $errmsg = "Unexpected terminator for function call: '$text' on line $line";
+                        return false;
+                    }
+                    $state = "root";
+                    break;
+
+                case "funcdef":
+                    if ($row === "{") {
+                        $state = "function";
+                        $depth = 1;
+                    }
+                    break;
+
+                case "function":
+                    if ($token === "{") $depth++;
+                    else if ($token === "}") $depth--;
+                    if ($depth == 0) $state = "root";
+                    break;
+
+                case "class":
+                    if ($token === "{") $depth++;
+                    else if ($token === "}") $depth--;
+                    if ($depth == 0) $state = "root";
+                    break;
             }
+
+//            printf(" => %-15s %-30s %-50s line %d\n", $state, is_int($token) ? token_name($token) : $text, $text, $line);
         }
 
         return true;

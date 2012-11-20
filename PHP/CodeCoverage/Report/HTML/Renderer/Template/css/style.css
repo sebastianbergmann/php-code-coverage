@@ -15,19 +15,23 @@ body {
 }
 
 .table tbody td.success, li.success, span.success {
- background-color: #dff0d8;
+ background-color: #7bff53;
 }
 
 .table tbody tr.danger, .table tbody td.danger, li.danger, span.danger {
- background-color: #f2dede;
+ background-color: #f2701b;
 }
 
 .table tbody td.warning, li.warning, span.warning {
- background-color: #fcf8e3;
+ background-color: #fbff4b;
 }
 
 .table tbody td.info {
  background-color: #d9edf7;
+}
+
+a {
+    color: #002a80;
 }
 
 td.big {

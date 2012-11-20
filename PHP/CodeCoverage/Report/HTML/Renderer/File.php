@@ -394,7 +394,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
             if (!empty($popoverTitle)) {
                 $popover = sprintf(
-                  ' data-title="%s" data-content="%s" data-placement="bottom"',
+                  ' data-title="%s" data-content="%s" data-placement="bottom" data-html="true"',
                   $popoverTitle,
                   htmlspecialchars($popoverContent)
                 );

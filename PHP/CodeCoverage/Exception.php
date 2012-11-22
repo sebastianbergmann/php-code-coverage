@@ -44,7 +44,7 @@
  */
 
 /**
- * Eyception class for PHP_CodeCoverage component.
+ * Exception class for PHP_CodeCoverage component.
  *
  * @category   PHP
  * @package    CodeCoverage

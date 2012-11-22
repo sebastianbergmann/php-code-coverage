@@ -74,6 +74,11 @@ class PHP_CodeCoverage
     /**
      * @var boolean
      */
+    protected $checkForUnintentionallyCoveredCode = FALSE;
+
+    /**
+     * @var boolean
+     */
     protected $forceCoversAnnotation = FALSE;
 
     /**
@@ -361,6 +366,22 @@ class PHP_CodeCoverage
     /**
      * @param  boolean $flag
      * @throws PHP_CodeCoverage_Exception
+     * @since  Method available since Release 1.3.0
+     */
+    public function setCheckForUnintentionallyCoveredCode($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              1, 'boolean'
+            );
+        }
+
+        $this->checkForUnintentionallyCoveredCode = $flag;
+    }
+
+    /**
+     * @param  boolean $flag
+     * @throws PHP_CodeCoverage_Exception
      */
     public function setForceCoversAnnotation($flag)
     {
@@ -421,11 +442,14 @@ class PHP_CodeCoverage
     /**
      * Applies the @covers annotation filtering.
      *
-     * @param array $data
-     * @param mixed $id
+     * @param  array $data
+     * @param  mixed $id
+     * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
     protected function applyCoversAnnotationFilter(&$data, $id)
     {
+        $unintentionallyCoveredCode = FALSE;
+
         if ($id instanceof PHPUnit_Framework_TestCase) {
             $testClassName    = get_class($id);
             $linesToBeCovered = $this->getLinesToBeCovered(
@@ -456,17 +480,34 @@ class PHP_CodeCoverage
         }
 
         if (!empty($linesToBeCovered)) {
-            $data = array_intersect_key($data, $linesToBeCovered);
+            $count = count($data);
+            $data  = array_intersect_key($data, $linesToBeCovered);
+
+            if ($this->checkForUnintentionallyCoveredCode &&
+                $count != count($data)) {
+                $unintentionallyCoveredCode = TRUE;
+            }
 
             foreach (array_keys($data) as $filename) {
+                $count = count($data[$filename]);
+
                 $data[$filename] = array_intersect_key(
                   $data[$filename], array_flip($linesToBeCovered[$filename])
                 );
+
+                if ($this->checkForUnintentionallyCoveredCode &&
+                    $count != count($data[$filename])) {
+                    $unintentionallyCoveredCode = TRUE;
+                }
             }
         }
 
         else if ($this->forceCoversAnnotation) {
             $data = array();
+        }
+
+        if ($unintentionallyCoveredCode) {
+            throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
         }
     }
 

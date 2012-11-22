@@ -35,6 +35,9 @@
      <dir name="Driver">
       <file baseinstalldir="/" name="Xdebug.php" role="php" />
      </dir>
+     <dir name="Exception">
+      <file baseinstalldir="/" name="UnintentionallyCoveredCode.php" role="php" />
+     </dir>
      <dir name="Report">
       <dir name="HTML">
        <dir name="Renderer">

@@ -94,10 +94,9 @@ class PHP_CodeCoverage_Report_Clover
             $xmlFile = $xmlDocument->createElement('file');
             $xmlFile->setAttribute('name', $item->getPath());
 
-            $classes      = $item->getClassesAndTraits();
-            $coverage     = $item->getCoverageData();
-            $lines        = array();
-            $ignoredLines = $item->getIgnoredLines();
+            $classes  = $item->getClassesAndTraits();
+            $coverage = $item->getCoverageData();
+            $lines    = array();
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
@@ -112,10 +111,6 @@ class PHP_CodeCoverage_Report_Clover
                     for ($i  = $method['startLine'];
                          $i <= $method['endLine'];
                          $i++) {
-                        if (isset($ignoredLines[$i])) {
-                            continue;
-                        }
-
                         $add   = TRUE;
                         $count = 0;
 
@@ -216,9 +211,7 @@ class PHP_CodeCoverage_Report_Clover
             }
 
             foreach ($coverage as $line => $data) {
-                if ($data === NULL ||
-                    isset($lines[$line]) ||
-                    isset($ignoredLines[$line])) {
+                if ($data === NULL || isset($lines[$line])) {
                     continue;
                 }
 
@@ -230,10 +223,6 @@ class PHP_CodeCoverage_Report_Clover
             ksort($lines);
 
             foreach ($lines as $line => $data) {
-                if (isset($ignoredLines[$line])) {
-                    continue;
-                }
-
                 $xmlLine = $xmlDocument->createElement('line');
                 $xmlLine->setAttribute('num', $line);
                 $xmlLine->setAttribute('type', $data['type']);

@@ -67,11 +67,6 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected $testData;
 
     /**
-     * @var array
-     */
-    protected $ignoredLines;
-
-    /**
      * @var integer
      */
     protected $numExecutableLines = 0;
@@ -163,9 +158,6 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
         $this->coverageData = $coverageData;
         $this->testData     = $testData;
-        $this->ignoredLines = PHP_CodeCoverage_Util::getLinesToBeIgnored(
-                                $this->getPath(), $cacheTokens
-                              );
         $this->cacheTokens  = $cacheTokens;
 
         $this->calculateStatistics();
@@ -199,14 +191,6 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     public function getTestData()
     {
         return $this->testData;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIgnoredLines()
-    {
-        return $this->ignoredLines;
     }
 
     /**
@@ -442,8 +426,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
             }
 
-            if (!isset($this->ignoredLines[$lineNumber]) &&
-                isset($this->coverageData[$lineNumber]) &&
+            if (isset($this->coverageData[$lineNumber]) &&
                 $this->coverageData[$lineNumber] !== NULL) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
@@ -463,8 +446,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
                 $this->numExecutableLines++;
 
-                if (count($this->coverageData[$lineNumber]) > 0 ||
-                    isset($this->ignoredLines[$lineNumber])) {
+                if (count($this->coverageData[$lineNumber]) > 0) {
                     if (isset($currentClass)) {
                         $currentClass['executedLines']++;
                     }

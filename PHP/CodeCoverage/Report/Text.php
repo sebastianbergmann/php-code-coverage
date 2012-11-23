@@ -151,10 +151,9 @@ class PHP_CodeCoverage_Report_Text
                 continue;
             }
 
-            $classes      = $item->getClassesAndTraits();
-            $coverage     = $item->getCoverageData();
-            $lines        = array();
-            $ignoredLines = $item->getIgnoredLines();
+            $classes  = $item->getClassesAndTraits();
+            $coverage = $item->getCoverageData();
+            $lines    = array();
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
@@ -169,10 +168,6 @@ class PHP_CodeCoverage_Report_Text
                     for ($i  = $method['startLine'];
                          $i <= $method['endLine'];
                          $i++) {
-                        if (isset($ignoredLines[$i])) {
-                            continue;
-                        }
-
                         $add   = TRUE;
                         $count = 0;
 

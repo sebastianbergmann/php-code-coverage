@@ -305,7 +305,6 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     protected function renderSource(PHP_CodeCoverage_Report_Node_File $node)
     {
         $coverageData = $node->getCoverageData();
-        $ignoredLines = $node->getIgnoredLines();
         $testData     = $node->getTestData();
         $codeLines    = $this->loadFile($node->getPath());
         $lines        = '';
@@ -317,7 +316,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $popoverContent = '';
             $popoverTitle   = '';
 
-            if (!isset($ignoredLines[$i]) && isset($coverageData[$i])) {
+            if (isset($coverageData[$i])) {
                 $numTests = count($coverageData[$i]);
 
                 if ($coverageData[$i] === NULL) {

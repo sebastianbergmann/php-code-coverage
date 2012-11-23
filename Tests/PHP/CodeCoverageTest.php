@@ -53,9 +53,37 @@ if (!defined('TEST_FILES_PATH')) {
 }
 
 require_once TEST_FILES_PATH . '../TestCase.php';
-
 require_once TEST_FILES_PATH . 'BankAccount.php';
 require_once TEST_FILES_PATH . 'BankAccountTest.php';
+require_once TEST_FILES_PATH . 'CoverageClassExtendedTest.php';
+require_once TEST_FILES_PATH . 'CoverageClassTest.php';
+require_once TEST_FILES_PATH . 'CoverageFunctionTest.php';
+require_once TEST_FILES_PATH . 'CoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'CoverageMethodOneLineAnnotationTest.php';
+require_once TEST_FILES_PATH . 'CoverageNoneTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotPrivateTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotProtectedTest.php';
+require_once TEST_FILES_PATH . 'CoverageNotPublicTest.php';
+require_once TEST_FILES_PATH . 'CoveragePrivateTest.php';
+require_once TEST_FILES_PATH . 'CoverageProtectedTest.php';
+require_once TEST_FILES_PATH . 'CoveragePublicTest.php';
+require_once TEST_FILES_PATH . 'CoverageTwoDefaultClassAnnotations.php';
+require_once TEST_FILES_PATH . 'CoveredClass.php';
+require_once TEST_FILES_PATH . 'CoveredFunction.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageClassTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageCoversClassTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageCoversClassPublicTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php';
+require_once TEST_FILES_PATH . 'NamespaceCoveredClass.php';
+require_once TEST_FILES_PATH . 'NotExistingCoveredElementTest.php';
+require_once TEST_FILES_PATH . 'CoverageNothingTest.php';
 
 /**
  * Tests for the PHP_CodeCoverage class.
@@ -73,6 +101,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
     protected $coverage;
     protected $getLinesToBeCovered;
+    protected $getLinesToBeIgnored;
 
     protected function setUp()
     {
@@ -82,7 +111,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           'PHP_CodeCoverage', 'getLinesToBeCovered'
         );
 
+        $this->getLinesToBeIgnored = new ReflectionMethod(
+          'PHP_CodeCoverage', 'getLinesToBeIgnored'
+        );
+
         $this->getLinesToBeCovered->setAccessible(TRUE);
+        $this->getLinesToBeIgnored->setAccessible(TRUE);
     }
 
     /**
@@ -497,6 +531,93 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           array(
             'CoverageNothingTest',
             false
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeIgnored
+     */
+    public function testGetLinesToBeIgnored()
+    {
+        $this->assertEquals(
+          array(
+             1,
+             3,
+             4,
+             5,
+             7,
+             8,
+             9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            30,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38
+          ),
+          $this->getLinesToBeIgnored->invoke(
+            $this->coverage,
+            TEST_FILES_PATH . 'source_with_ignore.php'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeIgnored
+     */
+    public function testGetLinesToBeIgnored2()
+    {
+        $this->assertEquals(
+          array(1),
+          $this->getLinesToBeIgnored->invoke(
+            $this->coverage,
+            TEST_FILES_PATH . 'source_without_ignore.php'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeIgnored
+     */
+    public function testGetLinesToBeIgnoredOneLineAnnotations()
+    {
+        $this->assertEquals(
+          array(
+            1,
+            2,
+            7,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            13
+          ),
+          $this->getLinesToBeIgnored->invoke(
+            $this->coverage,
+            TEST_FILES_PATH . 'source_with_oneline_annotations.php'
           )
         );
     }

@@ -44,7 +44,7 @@
  */
 
 /**
- * Exception class for PHP_CodeCoverage component.
+ * Exception that is raised when code is unintentionally covered.
  *
  * @category   PHP
  * @package    CodeCoverage

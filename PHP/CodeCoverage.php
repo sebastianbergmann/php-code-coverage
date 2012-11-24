@@ -871,6 +871,7 @@ class PHP_CodeCoverage
             $ignore                        = FALSE;
             $stop                          = FALSE;
             $lines                         = file($filename);
+            $numLines                      = count($lines);
 
             foreach ($lines as $index => $line) {
                 if (!trim($line)) {
@@ -1010,6 +1011,8 @@ class PHP_CodeCoverage
                     }
                 }
             }
+
+            $this->ignoredLines[$filename][] = $numLines + 1;
 
             $this->ignoredLines[$filename] = array_unique(
               $this->ignoredLines[$filename]

@@ -606,11 +606,11 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           array(
             1,
             2,
-            7,
             3,
             4,
             5,
             6,
+            7,
             8,
             9,
             13

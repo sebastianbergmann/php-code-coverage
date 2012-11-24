@@ -745,7 +745,7 @@ class PHP_CodeCoverage
                 foreach ($classes as $className) {
                     if (!class_exists($className) &&
                         !interface_exists($className)) {
-                        throw new PHP_CodeCoverage_Exception(
+                        throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
                           sprintf(
                             'Trying to @cover not existing class or ' .
                             'interface "%s".',
@@ -793,7 +793,7 @@ class PHP_CodeCoverage
                                interface_exists($className) ||
                                trait_exists($className)) &&
                               method_exists($className, $methodName))) {
-                            throw new PHP_CodeCoverage_Exception(
+                            throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
                               sprintf(
                                 'Trying to @cover not existing method "%s::%s".',
                                 $className,
@@ -833,7 +833,7 @@ class PHP_CodeCoverage
                 if (!class_exists($className) &&
                     !interface_exists($className) &&
                     !trait_exists($className)) {
-                    throw new PHP_CodeCoverage_Exception(
+                    throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
                       sprintf(
                         'Trying to @cover not existing class or ' .
                         'interface "%s".',

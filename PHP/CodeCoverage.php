@@ -495,17 +495,19 @@ class PHP_CodeCoverage
             }
 
             foreach (array_keys($data) as $filename) {
-                $count = count($data[$filename]);
+                $_linesToBeCovered = array_flip($linesToBeCovered[$filename]);
 
+                if ($this->checkForUnintentionallyCoveredCode) {
+                    foreach ($data[$filename] as $k => $v) {
+                        if ($v == 1 && !isset($_linesToBeCovered[$k])) {
+                            throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
+                        }
+                    }
+                }
 
                 $data[$filename] = array_intersect_key(
-                  $data[$filename], array_flip($linesToBeCovered[$filename])
+                  $data[$filename], $_linesToBeCovered
                 );
-
-                if ($this->checkForUnintentionallyCoveredCode &&
-                    $count != count($data[$filename])) {
-                    throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
-                }
             }
         }
 

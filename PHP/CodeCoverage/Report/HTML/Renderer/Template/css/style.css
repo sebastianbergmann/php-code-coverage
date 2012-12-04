@@ -7,13 +7,13 @@ body {
 }
 
 .table td {
-    padding-top: 3px;
-    padding-bottom: 3px;
+ padding-top: 3px;
+ padding-bottom: 3px;
 }
 
 .table-condensed td {
-    padding-top: 0;
-    padding-bottom: 0;
+ padding-top: 0;
+ padding-bottom: 0;
 }
 
 .table .progress {

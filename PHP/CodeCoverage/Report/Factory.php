@@ -231,6 +231,7 @@ class PHP_CodeCoverage_Report_Factory
             // strip phar:// prefixes
             if (strpos($paths[$i], 'phar://') === 0) {
                 $paths[$i] = substr($paths[$i], 7);
+                $paths[$i] = strtr($paths[$i], '/', DIRECTORY_SEPARATOR);
             }
             $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
 

@@ -37,34 +37,56 @@
  * @category   PHP
  * @package    CodeCoverage
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2012 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.1.0
+ * @since      File available since Release 1.2.1
  */
 
-require_once 'File/Iterator/Autoload.php';
-require_once 'PHP/Token/Stream/Autoload.php';
-require_once 'Text/Template/Autoload.php';
+/**
+ * 
+ *
+ * @category   PHP
+ * @package    CodeCoverage
+ * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2012 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://github.com/sebastianbergmann/php-code-coverage
+ * @since      Class available since Release 1.2.1
+ */
+class PHP_CodeCoverage_Version
+{
+    const VERSION = '1.3';
+    protected static $version;
 
-spl_autoload_register(
-  function ($class)
-  {
-      static $classes = NULL;
-      static $path = NULL;
+    /**
+     * Returns the version of PHP_CodeCoverage.
+     *
+     * @return string
+     */
+    public static function id()
+    {
+        if (self::$version === NULL) {
+            self::$version = self::VERSION;
 
-      if ($classes === NULL) {
-          $classes = array(
-            ___CLASSLIST___
-          );
+            if (is_dir(dirname(dirname(__DIR__)) . '/.git')) {
+                $dir = getcwd();
+                chdir(__DIR__);
+                $version = exec('git describe --tags');
+                chdir($dir);
 
-          $path = dirname(dirname(__FILE__));
-      }
+                if ($version) {
+                    if (count(explode('.', self::VERSION)) == 3) {
+                        self::$version = $version;
+                    } else {
+                        $version = explode('-', $version);
 
-      $cn = strtolower($class);
+                        self::$version = self::VERSION . '-' . $version[2];
+                    }
+                }
+            }
+        }
 
-      if (isset($classes[$cn])) {
-          require $path . $classes[$cn];
-      }
-  }
-);
+        return self::$version;
+    }
+}

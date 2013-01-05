@@ -92,6 +92,7 @@
      <file baseinstalldir="/" name="Exception.php" role="php" />
      <file baseinstalldir="/" name="Filter.php" role="php" />
      <file baseinstalldir="/" name="Util.php" role="php" />
+     <file baseinstalldir="/" name="Version.php" role="php" />
     </dir>
     <file baseinstalldir="/" name="CodeCoverage.php" role="php" />
    </dir>
@@ -121,11 +122,6 @@
     <name>Text_Template</name>
     <channel>pear.phpunit.de</channel>
     <min>1.1.1</min>
-   </package>
-   <package>
-    <name>Version</name>
-    <channel>pear.phpunit.de</channel>
-    <min>1.0.0</min>
    </package>
   </required>
   <optional>

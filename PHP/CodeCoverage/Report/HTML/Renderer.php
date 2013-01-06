@@ -87,6 +87,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected $highLowerBound;
 
     /**
+     * @var string
+     */
+    protected $version;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
@@ -98,12 +103,15 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound)
     {
+        $version = new SebastianBergmann\Version('1.3', __DIR__);
+
         $this->templatePath   = $templatePath;
         $this->charset        = $charset;
         $this->generator      = $generator;
         $this->date           = $date;
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
+        $this->version        = $version->getVersion();
     }
 
     /**
@@ -194,7 +202,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             'breadcrumbs'      => $this->getBreadcrumbs($node),
             'charset'          => $this->charset,
             'date'             => $this->date,
-            'version'          => PHP_CodeCoverage_Version::id(),
+            'version'          => $this->version,
             'php_version'      => PHP_VERSION,
             'generator'        => $this->generator,
             'low_upper_bound'  => $this->lowUpperBound,

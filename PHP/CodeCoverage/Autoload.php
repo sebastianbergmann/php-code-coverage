@@ -46,6 +46,7 @@
 require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
 require_once 'Text/Template/Autoload.php';
+require_once 'SebastianBergmann/Version/autoload.php';
 
 spl_autoload_register(
   function ($class)
@@ -76,8 +77,7 @@ spl_autoload_register(
             'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
             'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
             'php_codecoverage_util' => '/CodeCoverage/Util.php',
-            'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php',
-            'php_codecoverage_version' => '/CodeCoverage/Version.php'
+            'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php'
           );
 
           $path = dirname(dirname(__FILE__));

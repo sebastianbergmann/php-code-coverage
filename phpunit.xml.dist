@@ -2,10 +2,9 @@
 
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         syntaxCheck="false"
          bootstrap="PHP/CodeCoverage/Autoload.php">
   <testsuites>
-    <testsuite name="php-code-coverage">
+    <testsuite name="PHP_CodeCoverage">
       <directory suffix="Test.php">Tests/PHP</directory>
     </testsuite>
   </testsuites>

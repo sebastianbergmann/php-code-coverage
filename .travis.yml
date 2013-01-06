@@ -1,13 +1,12 @@
 language: php
 
 php:
-    - 5.3
     - 5.4
 
 before_script:
     - mkdir -p vendor/SebastianBergmann
-    - git clone --branch=3.7 --depth=100 --quiet git://github.com/sebastianbergmann/phpunit.git vendor/phpunit
-    - git clone --branch=1.2 --depth=100 --quiet git://github.com/sebastianbergmann/phpunit-mock-objects.git vendor/phpunit-mock-objects
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/phpunit.git vendor/phpunit
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/phpunit-mock-objects.git vendor/phpunit-mock-objects
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-text-template.git vendor/php-text-template
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-token-stream.git vendor/php-token-stream
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-file-iterator.git vendor/php-file-iterator

@@ -18,26 +18,26 @@ Depending on your OS distribution and/or your PHP environment, you may need to i
 
 The following two commands (which you may have to run as `root`) are all that is required to install PHP_CodeCoverage using the PEAR Installer:
 
-    pear config-set auto_discover 1
-    pear install pear.phpunit.de/PHP_CodeCoverage
+		pear config-set auto_discover 1
+		pear install pear.phpunit.de/PHP_CodeCoverage
 
 After the installation you can find the PHP_CodeCoverage source files inside your local PEAR directory; the path is usually `/usr/lib/php/PHP/CodeCoverage`.
 
 Using the PHP_CodeCoverage API
 ------------------------------
 
-    <?php
-    require 'PHP/CodeCoverage/Autoload.php';
+		<?php
+		require 'PHP/CodeCoverage/Autoload.php';
 
-    $coverage = new PHP_CodeCoverage;
-    $coverage->start('<name of test>');
+		$coverage = new PHP_CodeCoverage;
+		$coverage->start('<name of test>');
 
-    // ...
+		// ...
 
-    $coverage->stop();
+		$coverage->stop();
 
-    $writer = new PHP_CodeCoverage_Report_Clover;
-    $writer->process($coverage, '/tmp/clover.xml');
+		$writer = new PHP_CodeCoverage_Report_Clover;
+		$writer->process($coverage, '/tmp/clover.xml');
 
-    $writer = new PHP_CodeCoverage_Report_HTML;
-    $writer->process($coverage, '/tmp/code-coverage-report');
+		$writer = new PHP_CodeCoverage_Report_HTML;
+		$writer->process($coverage, '/tmp/code-coverage-report');

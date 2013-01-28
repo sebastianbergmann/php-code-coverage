@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="PHP/CodeCoverage/Autoload.php">
-  <testsuites>
-    <testsuite name="PHP_CodeCoverage">
-      <directory suffix="Test.php">Tests/PHP</directory>
-    </testsuite>
-  </testsuites>
+				 backupStaticAttributes="false"
+				 bootstrap="PHP/CodeCoverage/Autoload.php">
+	<testsuites>
+		<testsuite name="PHP_CodeCoverage">
+			<directory suffix="Test.php">Tests/PHP</directory>
+		</testsuite>
+	</testsuites>
 
-  <logging>
-    <log type="coverage-html" target="build/coverage" title="PHP_CodeCoverage"
-         charset="UTF-8" yui="true" highlight="true"
-         lowUpperBound="35" highLowerBound="70"/>
-    <log type="coverage-clover" target="build/logs/clover.xml"/>
-    <log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false"/>
-  </logging>
+	<logging>
+		<log type="coverage-html" target="build/coverage" title="PHP_CodeCoverage"
+				 charset="UTF-8" yui="true" highlight="true"
+				 lowUpperBound="35" highLowerBound="70"/>
+		<log type="coverage-clover" target="build/logs/clover.xml"/>
+		<log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false"/>
+	</logging>
 
-  <filter>
-    <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">PHP</directory>
-      <exclude>
-        <file>PHP/CodeCoverage/Autoload.php</file>
-      </exclude>
-    </whitelist>
-  </filter>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">PHP</directory>
+			<exclude>
+				<file>PHP/CodeCoverage/Autoload.php</file>
+			</exclude>
+		</whitelist>
+	</filter>
 </phpunit>

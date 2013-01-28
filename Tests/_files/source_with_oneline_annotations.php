@@ -2,12 +2,12 @@
 
 /** Docblock */
 interface {
-    public function bar();
+		public function bar();
 }
 
 class Foo
 {
-    public function bar()
-    {
-    }
+		public function bar()
+		{
+		}
 }

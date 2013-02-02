@@ -1,7 +1,7 @@
 <?php
 
 /** Docblock */
-interface {
+interface Foo {
     public function bar();
 }
 

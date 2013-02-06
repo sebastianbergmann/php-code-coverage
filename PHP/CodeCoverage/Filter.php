@@ -316,6 +316,7 @@ class PHP_CodeCoverage_Filter
         $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_Story_TestCase', 2);
         $this->addDirectoryContainingClassToBlacklist('Text_Template');
         $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
+        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Version');
 
         $this->blacklistPrefilled = TRUE;
     }

@@ -228,29 +228,13 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         return $buffer;
     }
 
-    protected function getBreadcrumbs(PHP_CodeCoverage_Report_Node $node)
+    protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node, $isDirectory)
     {
-        $breadcrumbs = '';
-
-        $path = $node->getPathAsArray();
-
-        foreach ($path as $step) {
-            if ($step !== $node) {
-                $breadcrumbs .= sprintf(
-                  '        <li><a href="%s.html">%s</a> <span class="divider">/</span></li>' . "\n",
-                  $step->getId(),
-                  $step->getName()
-                );
-            } else {
-                $breadcrumbs .= sprintf(
-                  '        <li><a href="%s.html">%s</a></li>' . "\n" .
-                  '        <li class="active">(Dashboard)</li>' . "\n",
-                  $step->getId(),
-                  $step->getName()
-                );
-            }
-        }
-
-        return $breadcrumbs;
+        return sprintf(
+          '        <li><a href="%s.html">%s</a></li>' . "\n" .
+          '        <li class="active">(Dashboard)</li>' . "\n",
+          $node->getId(),
+          $node->getName()
+        );
     }
 }

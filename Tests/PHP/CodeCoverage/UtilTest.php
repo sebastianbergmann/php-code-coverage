@@ -171,7 +171,10 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
             6 => TRUE,
             8 => TRUE,
             9 => TRUE,
-            13 => TRUE,
+            10 => TRUE,
+            11 => TRUE,
+            12 => TRUE,
+            13 => TRUE
           ),
           PHP_CodeCoverage_Util::getLinesToBeIgnored(
             TEST_FILES_PATH . 'source_with_oneline_annotations.php'

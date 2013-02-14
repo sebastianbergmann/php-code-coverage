@@ -3,6 +3,12 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.8
+----------------------
+
+* Reduced vertical whitespace in sourcecode view.
+* Upgraded to Bootstrap 2.2.2.
+
 PHP_CodeCoverage 1.2.7
 ----------------------
 

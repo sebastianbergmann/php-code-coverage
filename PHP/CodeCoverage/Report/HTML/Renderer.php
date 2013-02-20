@@ -121,6 +121,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function renderItemTemplate(Text_Template $template, array $data)
     {
+        $numSeperator = '&nbsp;/&nbsp;';
         $classesBar    = '&nbsp;';
         $classesLevel  = 'None';
         $classesNumber = '&nbsp;';
@@ -128,7 +129,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         if (isset($data['numClasses']) && $data['numClasses'] > 0) {
             $classesLevel = $this->getColorLevel($data['testedClassesPercent']);
 
-            $classesNumber = $data['numTestedClasses'] . ' / ' .
+            $classesNumber = $data['numTestedClasses'] . $numSeperator .
                              $data['numClasses'];
 
             $classesBar = $this->getCoverageBar(
@@ -143,7 +144,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         if ($data['numMethods'] > 0) {
             $methodsLevel = $this->getColorLevel($data['testedMethodsPercent']);
 
-            $methodsNumber = $data['numTestedMethods'] . ' / ' .
+            $methodsNumber = $data['numTestedMethods'] . $numSeperator .
                              $data['numMethods'];
 
             $methodsBar = $this->getCoverageBar(
@@ -158,7 +159,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         if ($data['numExecutableLines'] > 0) {
             $linesLevel = $this->getColorLevel($data['linesExecutedPercent']);
 
-            $linesNumber = $data['numExecutedLines'] . ' / ' .
+            $linesNumber = $data['numExecutedLines'] . $numSeperator .
                            $data['numExecutableLines'];
 
             $linesBar = $this->getCoverageBar(

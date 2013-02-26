@@ -96,7 +96,7 @@
              labels: {enabled: true},
           },
           yAxis: {
-            title: 'Cyclomatic Complexity',
+            title: {text: 'Cyclomatic Complexity'},
             labels: {enabled: true},
           },
           tooltip: {

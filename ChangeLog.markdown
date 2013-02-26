@@ -3,6 +3,14 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.9
+----------------------
+
+* Improved rendering of "lines covered" numbers for functions and methods with long names or argument lists.
+* Fixed the title of the Y axis of the Code Coverage ./. Cyclomatic Complexity dashboard chart.
+* Upgraded to Highcharts 2.3.5.
+* Upgraded to jQuery 1.9.1.
+
 PHP_CodeCoverage 1.2.8
 ----------------------
 

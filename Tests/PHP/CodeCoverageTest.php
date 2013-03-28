@@ -299,21 +299,32 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     /**
      * @covers       PHP_CodeCoverage::getLinesToBeCovered
      * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @dataProvider getLinesToBeCoveredProvider
+     * @dataProvider getLinesToBeCoveredOfClassProvider
      */
-    public function testGetLinesToBeCovered($test, $lines)
+    public function testGetLinesToBeCoveredOfClass($test, $lines)
     {
-        if (strpos($test, 'Namespace') === 0) {
-            $expected = array(
-              TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
-            );
-        }
-
-        else {
-            $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
-        }
+        $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
 
         $this->assertEquals(
+          $expected,
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, $test, 'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers       PHP_CodeCoverage::getLinesToBeCovered
+     * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
+     * @dataProvider getLinesToBeCoveredOfClassWithNamespaceProvider
+     */
+    public function testGetLinesToBeCoveredOfClassWithNamespace($test, $lines)
+    {
+        $expected = array(
+          TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
+        );
+
+        $this->assertSame(
           $expected,
           $this->getLinesToBeCovered->invoke(
             $this->coverage, $test, 'testSomething'
@@ -428,7 +439,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         );
     }
 
-    public function getLinesToBeCoveredProvider()
+    public function getLinesToBeCoveredOfClassProvider()
     {
         return array(
           array(
@@ -471,6 +482,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             'CoveragePublicTest',
             range(31, 35)
           ),
+        );
+    }
+
+    public function getLinesToBeCoveredOfClassWithNamespaceProvider()
+    {
+        return array(
           array(
             'NamespaceCoverageClassExtendedTest',
             array_merge(range(21, 38), range(4, 19))

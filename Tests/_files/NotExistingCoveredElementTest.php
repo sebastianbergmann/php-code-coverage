@@ -9,7 +9,7 @@ class NotExistingCoveredElementTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers NotExistingClass::notExistingMethod
+     * @covers NotExistingClass::anyMethod
      */
     public function testTwo()
     {
@@ -19,6 +19,20 @@ class NotExistingCoveredElementTest extends PHPUnit_Framework_TestCase
      * @covers NotExistingClass::<public>
      */
     public function testThree()
+    {
+    }
+
+    /**
+     * @covers ::notExistingFunction
+     */
+    public function testFour()
+    {
+    }
+
+    /**
+     * @covers CoveredClass::notExistingMethod
+     */
+    public function testFive()
     {
     }
 }

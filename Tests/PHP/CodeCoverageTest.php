@@ -378,22 +378,24 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     /**
      * @covers            PHP_CodeCoverage::getLinesToBeCovered
      * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @dataProvider      getLinesToBeCoveredNotExistingClassProvider
+     * @dataProvider      getLinesToBeCoveredNotExistingElementProvider
      * @expectedException PHP_CodeCoverage_Exception
      */
-    public function testGetLinesToBeCoveredNotExistingClass($test)
+    public function testGetLinesToBeCoveredNotExistingElement($test)
     {
         $this->getLinesToBeCovered->invoke(
           $this->coverage, 'NotExistingCoveredElementTest', $test
         );
     }
 
-    public function getLinesToBeCoveredNotExistingClassProvider()
+    public function getLinesToBeCoveredNotExistingElementProvider()
     {
         return array(
           array('testOne'),
           array('testTwo'),
           array('testThree'),
+          array('testFour'),
+          array('testFive'),
         );
     }
 

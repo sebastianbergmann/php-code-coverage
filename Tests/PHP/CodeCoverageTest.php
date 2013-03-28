@@ -309,14 +309,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             );
         }
 
-        else if ($test === 'CoverageNoneTest') {
-            $expected = array();
-        }
-
-        else if ($test === 'CoverageNothingTest') {
-            $expected = false;
-        }
-
         else if ($test === 'CoverageFunctionTest') {
             $expected = array(
               TEST_FILES_PATH . 'CoveredFunction.php' => $lines
@@ -331,6 +323,31 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           $expected,
           $this->getLinesToBeCovered->invoke(
             $this->coverage, $test, 'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testGetLinesToBeCoveredNone()
+    {
+        $this->assertSame(
+          array(),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, 'CoverageNoneTest', 'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testGetLinesToBeCoveredNothing()
+    {
+        $this->assertFalse(
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, 'CoverageNothingTest', 'testSomething'
           )
         );
     }
@@ -402,10 +419,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function getLinesToBeCoveredProvider()
     {
         return array(
-          array(
-            'CoverageNoneTest',
-            array()
-          ),
           array(
             'CoverageClassExtendedTest',
             array_merge(range(19, 36), range(2, 17))
@@ -494,10 +507,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             'NamespaceCoverageCoversClassPublicTest',
             range(33, 37)
           ),
-          array(
-            'CoverageNothingTest',
-            false
-          )
         );
     }
 }

@@ -378,43 +378,29 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     /**
      * @covers            PHP_CodeCoverage::getLinesToBeCovered
      * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
+     * @dataProvider      getLinesToBeCoveredNotExistingClassProvider
      * @expectedException PHP_CodeCoverage_Exception
      */
-    public function testGetLinesToBeCovered2()
+    public function testGetLinesToBeCoveredNotExistingClass($test)
     {
         $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testOne'
+          $this->coverage, 'NotExistingCoveredElementTest', $test
         );
     }
 
-    /**
-     * @covers            PHP_CodeCoverage::getLinesToBeCovered
-     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @expectedException PHP_CodeCoverage_Exception
-     */
-    public function testGetLinesToBeCovered3()
+    public function getLinesToBeCoveredNotExistingClassProvider()
     {
-        $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testTwo'
-        );
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage::getLinesToBeCovered
-     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @expectedException PHP_CodeCoverage_Exception
-     */
-    public function testGetLinesToBeCovered4()
-    {
-        $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testThree'
+        return array(
+          array('testOne'),
+          array('testTwo'),
+          array('testThree'),
         );
     }
 
     /**
      * @covers PHP_CodeCoverage::getLinesToBeCovered
      */
-    public function testGetLinesToBeCoveredSkipsNonExistantMethods()
+    public function testGetLinesToBeCoveredSkipsNonExistentMethods()
     {
         $this->assertSame(
           array(),

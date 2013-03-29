@@ -538,6 +538,10 @@ class PHP_CodeCoverage
     protected function applyIgnoredLinesFilter(&$data)
     {
         foreach (array_keys($data) as $filename) {
+            if (!is_file($filename)) {
+                continue;
+            }
+
             foreach ($this->getLinesToBeIgnored($filename) as $line) {
                 unset($data[$filename][$line]);
             }

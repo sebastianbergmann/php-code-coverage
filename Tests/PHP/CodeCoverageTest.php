@@ -297,6 +297,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers       PHP_CodeCoverage::assertClassInterfaceOrTraitExists
      * @covers       PHP_CodeCoverage::getLinesToBeCovered
      * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredOfClassProvider
@@ -314,6 +315,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers       PHP_CodeCoverage::assertClassInterfaceOrTraitExists
      * @covers       PHP_CodeCoverage::getLinesToBeCovered
      * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
      * @dataProvider getLinesToBeCoveredOfClassWithNamespaceProvider
@@ -376,6 +378,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::assertClassInterfaceOrTraitExists
      * @covers            PHP_CodeCoverage::getLinesToBeCovered
      * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
      * @dataProvider      getLinesToBeCoveredNotExistingElementProvider

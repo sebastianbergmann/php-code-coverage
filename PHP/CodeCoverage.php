@@ -538,7 +538,7 @@ class PHP_CodeCoverage
     protected function applyIgnoredLinesFilter(&$data)
     {
         foreach (array_keys($data) as $filename) {
-            if (!is_file($filename)) {
+            if (!$this->filter->isFile($filename)) {
                 continue;
             }
 

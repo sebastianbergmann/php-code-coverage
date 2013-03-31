@@ -297,35 +297,14 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers       PHP_CodeCoverage::assertClassInterfaceOrTraitExists
      * @covers       PHP_CodeCoverage::getLinesToBeCovered
      * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @dataProvider getLinesToBeCoveredProvider
+     * @dataProvider getLinesToBeCoveredOfClassProvider
      */
-    public function testGetLinesToBeCovered($test, $lines)
+    public function testGetLinesToBeCoveredOfClass($test, $lines)
     {
-        if (strpos($test, 'Namespace') === 0) {
-            $expected = array(
-              TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
-            );
-        }
-
-        else if ($test === 'CoverageNoneTest') {
-            $expected = array();
-        }
-
-        else if ($test === 'CoverageNothingTest') {
-            $expected = false;
-        }
-
-        else if ($test === 'CoverageFunctionTest') {
-            $expected = array(
-              TEST_FILES_PATH . 'CoveredFunction.php' => $lines
-            );
-        }
-
-        else {
-            $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
-        }
+        $expected = array(TEST_FILES_PATH . 'CoveredClass.php' => $lines);
 
         $this->assertEquals(
           $expected,
@@ -336,45 +315,97 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers            PHP_CodeCoverage::getLinesToBeCovered
-     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @expectedException PHP_CodeCoverage_Exception
+     * @covers       PHP_CodeCoverage::assertClassInterfaceOrTraitExists
+     * @covers       PHP_CodeCoverage::getLinesToBeCovered
+     * @covers       PHP_CodeCoverage::resolveCoversToReflectionObjects
+     * @dataProvider getLinesToBeCoveredOfClassWithNamespaceProvider
      */
-    public function testGetLinesToBeCovered2()
+    public function testGetLinesToBeCoveredOfClassWithNamespace($test, $lines)
     {
-        $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testOne'
+        $expected = array(
+          TEST_FILES_PATH . 'NamespaceCoveredClass.php' => $lines
+        );
+
+        $this->assertSame(
+          $expected,
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, $test, 'testSomething'
+          )
         );
     }
 
     /**
-     * @covers            PHP_CodeCoverage::getLinesToBeCovered
-     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @expectedException PHP_CodeCoverage_Exception
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     * @covers PHP_CodeCoverage::resolveCoversToReflectionObjects
      */
-    public function testGetLinesToBeCovered3()
+    public function testGetLinesToBeCoveredOfFunction()
     {
-        $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testTwo'
+        $expected = array(
+          TEST_FILES_PATH . 'CoveredFunction.php' => range(2, 4)
         );
-    }
 
-    /**
-     * @covers            PHP_CodeCoverage::getLinesToBeCovered
-     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
-     * @expectedException PHP_CodeCoverage_Exception
-     */
-    public function testGetLinesToBeCovered4()
-    {
-        $this->getLinesToBeCovered->invoke(
-          $this->coverage, 'NotExistingCoveredElementTest', 'testThree'
+        $this->assertSame(
+          $expected,
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, 'CoverageFunctionTest', 'testSomething'
+          )
         );
     }
 
     /**
      * @covers PHP_CodeCoverage::getLinesToBeCovered
      */
-    public function testGetLinesToBeCoveredSkipsNonExistantMethods()
+    public function testGetLinesToBeCoveredNone()
+    {
+        $this->assertSame(
+          array(),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, 'CoverageNoneTest', 'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testGetLinesToBeCoveredNothing()
+    {
+        $this->assertFalse(
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage, 'CoverageNothingTest', 'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::assertClassInterfaceOrTraitExists
+     * @covers            PHP_CodeCoverage::getLinesToBeCovered
+     * @covers            PHP_CodeCoverage::resolveCoversToReflectionObjects
+     * @dataProvider      getLinesToBeCoveredNotExistingElementProvider
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testGetLinesToBeCoveredNotExistingElement($test)
+    {
+        $this->getLinesToBeCovered->invoke(
+          $this->coverage, 'NotExistingCoveredElementTest', $test
+        );
+    }
+
+    public function getLinesToBeCoveredNotExistingElementProvider()
+    {
+        return array(
+          array('testOne'),
+          array('testTwo'),
+          array('testThree'),
+          array('testFour'),
+          array('testFive'),
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testGetLinesToBeCoveredSkipsNonExistentMethods()
     {
         $this->assertSame(
           array(),
@@ -399,13 +430,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         );
     }
 
-    public function getLinesToBeCoveredProvider()
+    public function getLinesToBeCoveredOfClassProvider()
     {
         return array(
-          array(
-            'CoverageNoneTest',
-            array()
-          ),
           array(
             'CoverageClassExtendedTest',
             array_merge(range(19, 36), range(2, 17))
@@ -446,10 +473,12 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             'CoveragePublicTest',
             range(31, 35)
           ),
-          array(
-            'CoverageFunctionTest',
-            range(2, 4)
-          ),
+        );
+    }
+
+    public function getLinesToBeCoveredOfClassWithNamespaceProvider()
+    {
+        return array(
           array(
             'NamespaceCoverageClassExtendedTest',
             array_merge(range(21, 38), range(4, 19))
@@ -494,10 +523,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             'NamespaceCoverageCoversClassPublicTest',
             range(33, 37)
           ),
-          array(
-            'CoverageNothingTest',
-            false
-          )
         );
     }
 }

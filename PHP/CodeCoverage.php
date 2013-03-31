@@ -684,118 +684,96 @@ class PHP_CodeCoverage
      */
     protected function resolveCoversToReflectionObjects($coveredElement)
     {
-        $codeToCoverList = array();
+        list($className, $methodName) = explode('::', $coveredElement . '::');
 
-        if (strpos($coveredElement, '::') !== FALSE) {
-            list($className, $methodName) = explode('::', $coveredElement);
-
-            if (isset($methodName[0]) && $methodName[0] == '<') {
-                $classes = array($className);
-
-                foreach ($classes as $className) {
-                    if (!class_exists($className) &&
-                        !interface_exists($className)) {
-                        throw new PHP_CodeCoverage_Exception(
-                          sprintf(
-                            'Trying to @cover not existing class or ' .
-                            'interface "%s".',
-                            $className
-                          )
-                        );
-                    }
-
-                    $class   = new ReflectionClass($className);
-                    $methods = $class->getMethods();
-                    $inverse = isset($methodName[1]) && $methodName[1] == '!';
-
-                    if (strpos($methodName, 'protected')) {
-                        $visibility = 'isProtected';
-                    }
-
-                    else if (strpos($methodName, 'private')) {
-                        $visibility = 'isPrivate';
-                    }
-
-                    else if (strpos($methodName, 'public')) {
-                        $visibility = 'isPublic';
-                    }
-
-                    foreach ($methods as $method) {
-                        if ($inverse && !$method->$visibility()) {
-                            $codeToCoverList[] = $method;
-                        }
-
-                        else if (!$inverse && $method->$visibility()) {
-                            $codeToCoverList[] = $method;
-                        }
-                    }
-                }
-            } else {
-                $classes = array($className);
-
-                foreach ($classes as $className) {
-                    if ($className == '' && function_exists($methodName)) {
-                        $codeToCoverList[] = new ReflectionFunction(
-                          $methodName
-                        );
-                    } else {
-                        if (!((class_exists($className) ||
-                               interface_exists($className) ||
-                               trait_exists($className)) &&
-                              method_exists($className, $methodName))) {
-                            throw new PHP_CodeCoverage_Exception(
-                              sprintf(
-                                'Trying to @cover not existing method "%s::%s".',
-                                $className,
-                                $methodName
-                              )
-                            );
-                        }
-
-                        $codeToCoverList[] = new ReflectionMethod(
-                          $className, $methodName
-                        );
-                    }
-                }
-            }
-        } else {
-            $extended = FALSE;
-
-            if (strpos($coveredElement, '<extended>') !== FALSE) {
-                $coveredElement = str_replace(
-                  '<extended>', '', $coveredElement
-                );
-
-                $extended = TRUE;
-            }
-
-            $classes = array($coveredElement);
-
-            if ($extended) {
-                $classes = array_merge(
-                  $classes,
-                  class_implements($coveredElement),
-                  class_parents($coveredElement)
+        if ($className == '') {
+            if (!function_exists($methodName)) {
+                throw new PHP_CodeCoverage_Exception(
+                  sprintf(
+                    'Trying to @cover not existing method "%s::%s".',
+                    $className,
+                    $methodName
+                  )
                 );
             }
 
-            foreach ($classes as $className) {
-                if (!class_exists($className) &&
-                    !interface_exists($className) &&
-                    !trait_exists($className)) {
-                    throw new PHP_CodeCoverage_Exception(
-                      sprintf(
-                        'Trying to @cover not existing class or ' .
-                        'interface "%s".',
-                        $className
-                      )
-                    );
-                }
-
-                $codeToCoverList[] = new ReflectionClass($className);
-            }
+            return array(new ReflectionFunction($methodName));
         }
 
-        return $codeToCoverList;
+        if (strpos($className, '<extended>') !== FALSE) {
+            $className = str_replace('<extended>', '', $className);
+
+            $this->assertClassInterfaceOrTraitExists($className);
+            $result = array(new ReflectionClass($className));
+
+            $ancestors = array_merge(
+              class_implements($className),
+              class_parents($className)
+            );
+
+            foreach ($ancestors as $className) {
+                $this->assertClassInterfaceOrTraitExists($className);
+                $result[] = new ReflectionClass($className);
+            }
+
+            return $result;
+        }
+
+        if ($methodName == '') {
+            $this->assertClassInterfaceOrTraitExists($className);
+            return array(new ReflectionClass($className));
+        }
+
+        if ($methodName[0] == '<') {
+            $this->assertClassInterfaceOrTraitExists($className);
+            $class = new ReflectionClass($className);
+            $inverse = isset($methodName[1]) && $methodName[1] == '!';
+
+            if (strpos($methodName, 'protected')) {
+                $visibility = 'isProtected';
+            }
+
+            else if (strpos($methodName, 'private')) {
+                $visibility = 'isPrivate';
+            }
+
+            else if (strpos($methodName, 'public')) {
+                $visibility = 'isPublic';
+            }
+
+            return array_filter(
+              $class->getMethods(),
+              function ($method) use ($inverse, $visibility)
+              {
+                  return $method->$visibility() != $inverse;
+              }
+            );
+        }
+
+        if (!method_exists($className, $methodName)) {
+            throw new PHP_CodeCoverage_Exception(
+              sprintf(
+                'Trying to @cover not existing method "%s::%s".',
+                $className,
+                $methodName
+              )
+            );
+        }
+
+        return array(new ReflectionMethod($className, $methodName));
+    }
+
+    protected function assertClassInterfaceOrTraitExists($className)
+    {
+        if (!(class_exists($className) ||
+            interface_exists($className) ||
+            trait_exists($className))) {
+            throw new PHP_CodeCoverage_Exception(
+              sprintf(
+                'Trying to @cover not existing class or interface "%s".',
+                $className
+              )
+            );
+        }
     }
 }

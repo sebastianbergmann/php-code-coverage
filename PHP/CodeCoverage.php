@@ -620,7 +620,7 @@ class PHP_CodeCoverage
         }
 
         $classShortcut = preg_match_all(
-          '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m',
+          '(@coversDefaultClass\s+(?P<coveredClass>[^\s]++)\s*$)m',
           $class->getDocComment(),
           $matches
         );
@@ -639,7 +639,7 @@ class PHP_CodeCoverage
         }
 
         $match = preg_match_all(
-          '(@covers\s+(?P<coveredElement>.*?)\s*(\(\s*\))?\s*$)m',
+          '(@covers\s+(?P<coveredElement>[^\s()]++)[\s()]*$)m',
           $docComment,
           $matches
         );

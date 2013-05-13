@@ -3,6 +3,12 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.10
+-----------------------
+
+* Fixed #158: Executable code on a line that has a comment is processed incorrectly.
+* Eliminated the coupling to `PHPUnit_Util_Printer` in `PHP_CodeCoverage_Report_Text`.
+
 PHP_CodeCoverage 1.2.9
 ----------------------
 

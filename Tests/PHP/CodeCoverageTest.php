@@ -268,13 +268,10 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * Add parenthesis to the covers annotation below in a couple of different ways to make sure it
-     * works as expected
-     *
-     * @covers PHP_CodeCoverage::start()
-     * @covers PHP_CodeCoverage::stop( )
-     * @covers PHP_CodeCoverage::append ()
-     * @covers PHP_CodeCoverage::applyListsFilter ( )
+     * @covers PHP_CodeCoverage::start
+     * @covers PHP_CodeCoverage::stop
+     * @covers PHP_CodeCoverage::append
+     * @covers PHP_CodeCoverage::applyListsFilter
      * @covers PHP_CodeCoverage::initializeFilesThatAreSeenTheFirstTime
      * @covers PHP_CodeCoverage::applyCoversAnnotationFilter
      * @covers PHP_CodeCoverage::getTests
@@ -430,6 +427,66 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
           $this->coverage,
           'CoverageTwoDefaultClassAnnotations',
           'testSomething'
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testFunctionParenthesesAreAllowed()
+    {
+        $this->assertSame(
+          array(TEST_FILES_PATH . 'CoveredFunction.php' => range(2, 4)),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage,
+            'CoverageFunctionParenthesesTest',
+            'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testFunctionParenthesesAreAllowedWithWhitespace()
+    {
+        $this->assertSame(
+          array(TEST_FILES_PATH . 'CoveredFunction.php' => range(2, 4)),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage,
+            'CoverageFunctionParenthesesWhitespaceTest',
+            'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testMethodParenthesesAreAllowed()
+    {
+        $this->assertSame(
+          array(TEST_FILES_PATH . 'CoveredClass.php' => range(31, 35)),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage,
+            'CoverageMethodParenthesesTest',
+            'testSomething'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeCovered
+     */
+    public function testMethodParenthesesAreAllowedWithWhitespace()
+    {
+        $this->assertSame(
+          array(TEST_FILES_PATH . 'CoveredClass.php' => range(31, 35)),
+          $this->getLinesToBeCovered->invoke(
+            $this->coverage,
+            'CoverageMethodParenthesesWhitespaceTest',
+            'testSomething'
+          )
         );
     }
 
@@ -605,17 +662,32 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $this->assertEquals(
           array(
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            13,
-            14
+            0 => 1,
+            1 => 2,
+            2 => 3,
+            3 => 4,
+            4 => 5,
+            5 => 6,
+            6 => 7,
+            7 => 8,
+            8 => 9,
+            9 => 10,
+            10 => 11,
+            11 => 12,
+            12 => 13,
+            13 => 14,
+            14 => 17,
+            15 => 19,
+            16 => 22,
+            17 => 23,
+            18 => 27,
+            19 => 28,
+            20 => 29,
+            21 => 30,
+            22 => 31,
+            23 => 32,
+            24 => 33,
+            25 => 36
           ),
           $this->getLinesToBeIgnored->invoke(
             $this->coverage,

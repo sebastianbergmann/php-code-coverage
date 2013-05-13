@@ -674,7 +674,7 @@ class PHP_CodeCoverage
         }
 
         $classShortcut = preg_match_all(
-          '(@coversDefaultClass\s+(?P<coveredClass>.*?)\s*$)m',
+          '(@coversDefaultClass\s+(?P<coveredClass>[^\s]++)\s*$)m',
           $class->getDocComment(),
           $matches
         );
@@ -693,7 +693,7 @@ class PHP_CodeCoverage
         }
 
         $match = preg_match_all(
-          '(@covers\s+(?P<coveredElement>.*?)\s*(\(\s*\))?\s*$)m',
+          '(@covers\s+(?P<coveredElement>[^\s()]++)[\s()]*$)m',
           $docComment,
           $matches
         );
@@ -895,25 +895,9 @@ class PHP_CodeCoverage
                 switch (get_class($token)) {
                     case 'PHP_Token_COMMENT':
                     case 'PHP_Token_DOC_COMMENT': {
-                        $count = substr_count($token, "\n");
-                        $line  = $token->getLine();
-
-                        for ($i = $line; $i < $line + $count; $i++) {
-                            $this->ignoredLines[$filename][] = $i;
-                        }
-
-                        if ($token instanceof PHP_Token_DOC_COMMENT) {
-                            // Workaround for the fact the DOC_COMMENT token
-                            // does not include the final \n character in its
-                            // text.
-                            if (substr(trim($lines[$i-1]), -2) == '*/') {
-                                $this->ignoredLines[$filename][] = $i;
-                            }
-
-                            break;
-                        }
 
                         $_token = trim($token);
+                        $_line  = trim($lines[$token->getLine() - 1]);
 
                         if ($_token == '// @codeCoverageIgnore' ||
                             $_token == '//@codeCoverageIgnore') {
@@ -929,6 +913,26 @@ class PHP_CodeCoverage
                         else if ($_token == '// @codeCoverageIgnoreEnd' ||
                                  $_token == '//@codeCoverageIgnoreEnd') {
                             $stop = TRUE;
+                        }
+
+                        // be sure the comment doesn't have some token BEFORE it on the same line...
+                        // it would not be safe to ignore the whole line in those cases.
+                        if (0 === strpos($_token, $_line)) {
+                            $count = substr_count($token, "\n");
+                            $line  = $token->getLine();
+
+                            for ($i = $line; $i < $line + $count; $i++) {
+                                $this->ignoredLines[$filename][] = $i;
+                            }
+
+                            if ($token instanceof PHP_Token_DOC_COMMENT) {
+                                // Workaround for the fact the DOC_COMMENT token
+                                // does not include the final \n character in its
+                                // text.
+                                if (substr(trim($lines[$i-1]), -2) == '*/') {
+                                    $this->ignoredLines[$filename][] = $i;
+                                }
+                            }
                         }
                     }
                     break;

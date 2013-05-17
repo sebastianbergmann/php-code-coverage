@@ -5,3 +5,5 @@ build/logs
 build/pdepend
 cache.properties
 phpunit.xml
+/vendor
+/composer.lock

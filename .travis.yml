@@ -12,7 +12,11 @@ before_script:
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-file-iterator.git vendor/php-file-iterator
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-timer.git vendor/php-timer
     - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/version.git vendor/version
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/diff.git vendor/diff
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/exporter.git vendor/exporter
     - ln -s ~/build/sebastianbergmann/php-code-coverage/vendor/version/src ~/build/sebastianbergmann/php-code-coverage/vendor/SebastianBergmann/Version
+    - ln -s ~/build/sebastianbergmann/php-code-coverage/vendor/diff/src ~/build/sebastianbergmann/php-code-coverage/vendor/SebastianBergmann/Diff
+    - ln -s ~/build/sebastianbergmann/php-code-coverage/vendor/exporter/src ~/build/sebastianbergmann/php-code-coverage/vendor/SebastianBergmann/Exporter
     - git clone --branch=master --depth=100 --quiet git://github.com/pear/pear-core.git vendor/pear-core
     - git clone --branch=trunk --depth=100 --quiet git://github.com/pear/Console_Getopt.git vendor/console-getopt
 

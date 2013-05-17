@@ -20,6 +20,7 @@
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
         "irc": "irc://irc.freenode.net/phpunit"
     },
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.7",
         "phpunit/php-file-iterator": ">=1.3.0",
@@ -28,7 +29,7 @@
         "sebastian/version": ">=1.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "dev-master"
     },
     "suggest": {
         "ext-dom": "*",

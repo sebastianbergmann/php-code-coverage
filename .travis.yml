@@ -5,13 +5,18 @@ php:
     - 5.4
 
 before_script:
-    - composer install --dev --prefer-source
+    - mkdir -p vendor/SebastianBergmann
+    - git clone --branch=3.7 --depth=100 --quiet git://github.com/sebastianbergmann/phpunit.git vendor/phpunit
+    - git clone --branch=1.2 --depth=100 --quiet git://github.com/sebastianbergmann/phpunit-mock-objects.git vendor/phpunit-mock-objects
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-text-template.git vendor/php-text-template
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-token-stream.git vendor/php-token-stream
+    - git clone --branch=master --depth=100 --quiet git://github.com/sebastianbergmann/php-file-iterator.git vendor/php-file-iterator
+    - git clone --branch=1.0 --depth=100 --quiet git://github.com/sebastianbergmann/php-timer.git vendor/php-timer
+    - git clone --branch=master --depth=100 --quiet git://github.com/pear/pear-core.git vendor/pear-core
+    - git clone --branch=trunk --depth=100 --quiet git://github.com/pear/Console_Getopt.git vendor/console-getopt
 
-script: vendor/bin/phpunit --configuration ./build/travis-ci.xml
+script: php -d include_path=vendor/php-text-template:vendor/php-token-stream:vendor/php-file-iterator:vendor/phpunit:vendor/phpunit-mock-objects:vendor/php-timer:vendor/php-invoker:vendor/pear-core:vendor/console-getopt:vendor:. ./vendor/phpunit/phpunit.php --configuration ./build/travis-ci.xml
 
 notifications:
   email: false
-  irc:
-    channels:
-      - "irc.freenode.org#phpunit"
-    use_notice: true
+  irc: "irc.freenode.org#phpunit"

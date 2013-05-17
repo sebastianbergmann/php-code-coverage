@@ -43,6 +43,10 @@
  * @since      File available since Release 1.1.0
  */
 
+if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+    return;
+}
+
 require_once 'File/Iterator/Autoload.php';
 require_once 'PHP/Token/Stream/Autoload.php';
 require_once 'Text/Template/Autoload.php';

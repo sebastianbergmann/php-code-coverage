@@ -84,3 +84,10 @@ span.success, span.warning, span.danger {
  height: 200px;
  width: 475px;
 }
+
+#toplink {
+ position: fixed;
+ left: 5px;
+ bottom: 5px;
+ outline: 0;
+}

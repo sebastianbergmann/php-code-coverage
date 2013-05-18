@@ -304,6 +304,10 @@ class PHP_CodeCoverage_Filter
      */
     protected function prefillBlacklist()
     {
+        if (defined('__PHPUNIT_PHAR__')) {
+            $this->addFileToBlacklist(__PHPUNIT_PHAR__);
+        }
+
         $this->addDirectoryContainingClassToBlacklist('File_Iterator');
         $this->addDirectoryContainingClassToBlacklist('PHP_CodeCoverage');
         $this->addDirectoryContainingClassToBlacklist('PHP_Invoker');

@@ -78,6 +78,7 @@
        <file baseinstalldir="/" name="Iterator.php" role="php" />
       </dir>
       <file baseinstalldir="/" name="Clover.php" role="php" />
+      <file baseinstalldir="/" name="Crap4j.php" role="php" />
       <file baseinstalldir="/" name="Factory.php" role="php" />
       <file baseinstalldir="/" name="HTML.php" role="php" />
       <file baseinstalldir="/" name="Node.php" role="php" />

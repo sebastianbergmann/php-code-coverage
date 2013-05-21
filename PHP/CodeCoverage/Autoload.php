@@ -68,6 +68,7 @@ spl_autoload_register(
             'php_codecoverage_exception_unintentionallycoveredcode' => '/CodeCoverage/Exception/UnintentionallyCoveredCode.php',
             'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
             'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
+            'php_codecoverage_report_crap4j' => '/CodeCoverage/Report/Crap4j.php',
             'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
             'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',
             'php_codecoverage_report_html_renderer' => '/CodeCoverage/Report/HTML/Renderer.php',

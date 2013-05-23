@@ -58,6 +58,7 @@
  */
 class PHP_CodeCoverage_Report_Text
 {
+    protected $outputStream;
     protected $lowUpperBound;
     protected $highLowerBound;
     protected $showUncoveredFiles;
@@ -71,8 +72,9 @@ class PHP_CodeCoverage_Report_Text
       'eol'    => "\x1b[2K",
     );
 
-    public function __construct($lowUpperBound, $highLowerBound, $showUncoveredFiles)
+    public function __construct(PHPUnit_Util_Printer $outputStream, $lowUpperBound, $highLowerBound, $showUncoveredFiles)
     {
+        $this->outputStream       = $outputStream;
         $this->lowUpperBound      = $lowUpperBound;
         $this->highLowerBound     = $highLowerBound;
         $this->showUncoveredFiles = $showUncoveredFiles;
@@ -243,7 +245,7 @@ class PHP_CodeCoverage_Report_Text
             }
         }
 
-        return $output . PHP_EOL;
+        $this->outputStream->write($output . PHP_EOL);
     }
 
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)

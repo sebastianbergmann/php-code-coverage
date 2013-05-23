@@ -7,6 +7,7 @@ PHP_CodeCoverage 1.2.11
 -----------------------
 
 * Fixed #151: Blacklisted PHPUnit Phar.
+* Fixed sebastianbergmann/phpunit#924.
 
 PHP_CodeCoverage 1.2.10
 -----------------------

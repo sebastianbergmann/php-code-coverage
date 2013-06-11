@@ -263,4 +263,41 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         return $stub;
     }
+
+    protected function getCoverageForClassWithAnonymousFunction()
+    {
+        $coverage = new PHP_CodeCoverage(
+          $this->setUpXdebugStubForClassWithAnonymousFunction(),
+          new PHP_CodeCoverage_Filter
+        );
+
+        $coverage->start('ClassWithAnonymousFunction', TRUE);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function setUpXdebugStubForClassWithAnonymousFunction()
+    {
+        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub->expects($this->any())
+             ->method('stop')
+             ->will($this->returnValue(
+               array(
+                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => array(
+                    7  => 1,
+                    9  => 1,
+                    10 => -1,
+                    11 => 1,
+                    12 => 1,
+                    13 => 1,
+                    14 => 1,
+                    17 => 1,
+                    18 => 1
+                 )
+               )
+            ));
+
+        return $stub;
+    }
 }

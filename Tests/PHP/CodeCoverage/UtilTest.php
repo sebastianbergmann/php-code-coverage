@@ -159,6 +159,25 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetLinesToBeIgnored3()
+    {
+        $this->assertEquals(
+          array(
+            1 => TRUE,
+            2 => TRUE,
+            8 => TRUE,
+            15 => TRUE,
+            3 => TRUE,
+            4 => TRUE,
+            19 => TRUE,
+            16 => TRUE
+          ),
+          PHP_CodeCoverage_Util::getLinesToBeIgnored(
+            TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
+          )
+        );
+    }
+
     /**
      * @covers PHP_CodeCoverage_Util::getLinesToBeIgnored
      */

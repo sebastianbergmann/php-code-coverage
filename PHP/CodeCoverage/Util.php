@@ -184,9 +184,11 @@ class PHP_CodeCoverage_Util
                                   $classes[$token->getName()]['methods']
                                 );
 
-                                $lastMethod = array_pop(
-                                  $classes[$token->getName()]['methods']
-                                );
+                                do {
+                                    $lastMethod = array_pop(
+                                      $classes[$token->getName()]['methods']
+                                    );
+                                } while ($lastMethod !== NULL && substr($lastMethod['signature'], 0, 18) == 'anonymous function');
 
                                 if ($lastMethod === NULL) {
                                     $lastMethod = $firstMethod;

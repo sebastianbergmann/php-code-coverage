@@ -662,6 +662,30 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     /**
      * @covers PHP_CodeCoverage::getLinesToBeIgnored
      */
+    public function testGetLinesToBeIgnored3()
+    {
+        $this->assertEquals(
+          array(
+            0 => 1,
+            1 => 2,
+            2 => 3,
+            3 => 4,
+            4 => 8,
+            5 => 15,
+            6 => 16,
+            7 => 19,
+            8 => 20
+          ),
+          $this->getLinesToBeIgnored->invoke(
+            $this->coverage,
+            TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
+          )
+        );
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeIgnored
+     */
     public function testGetLinesToBeIgnoredOneLineAnnotations()
     {
         $this->assertEquals(

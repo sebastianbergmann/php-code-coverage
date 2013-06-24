@@ -993,15 +993,6 @@ class PHP_CodeCoverage
                     }
                     break;
 
-                    case 'PHP_Token_INTERFACE': {
-                        $endLine = $token->getEndLine();
-
-                        for ($i = $token->getLine(); $i <= $endLine; $i++) {
-                            $this->ignoredLines[$filename][] = $i;
-                        }
-                    }
-                    break;
-
                     case 'PHP_Token_NAMESPACE': {
                         $this->ignoredLines[$filename][] = $token->getEndLine();
                     } // Intentional fallthrough

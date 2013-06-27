@@ -3,6 +3,11 @@ PHP_CodeCoverage 1.2
 
 This is the list of changes for the PHP_CodeCoverage 1.2 release series.
 
+PHP_CodeCoverage 1.2.12
+-----------------------
+
+* Fixed #173: JavaScript error in the HTML report.
+
 PHP_CodeCoverage 1.2.11
 -----------------------
 

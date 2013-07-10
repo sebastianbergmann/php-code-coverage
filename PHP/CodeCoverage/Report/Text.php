@@ -67,7 +67,7 @@ class PHP_CodeCoverage_Report_Text
       'green'  => "\x1b[30;42m",
       'yellow' => "\x1b[30;43m",
       'red'    => "\x1b[37;41m",
-      'header' => "\x1b[47;40m",
+      'header' => "\x1b[1;37;40m",
       'reset'  => "\x1b[0m",
       'eol'    => "\x1b[2K",
     );
@@ -87,7 +87,7 @@ class PHP_CodeCoverage_Report_Text
      */
     public function process(PHP_CodeCoverage $coverage, $showColors = FALSE)
     {
-        $output = '';
+        $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();
         unset($coverage);
 
@@ -118,25 +118,59 @@ class PHP_CodeCoverage_Report_Text
             $colors['eol']     = $this->colors['eol'];
         }
 
-        $output .= PHP_EOL . PHP_EOL .
-                   $colors['header'] . 'Code Coverage Report ';
+        $classes = sprintf(
+          '  Classes: %6s (%d/%d)',
+          PHP_CodeCoverage_Util::percent(
+            $report->getNumTestedClassesAndTraits(),
+            $report->getNumClassesAndTraits(),
+            TRUE
+          ),
+          $report->getNumTestedClassesAndTraits(),
+          $report->getNumClassesAndTraits()
+        );
+
+        $methods = sprintf(
+          '  Methods: %6s (%d/%d)',
+          PHP_CodeCoverage_Util::percent(
+            $report->getNumTestedMethods(),
+            $report->getNumMethods(),
+            TRUE
+          ),
+          $report->getNumTestedMethods(),
+          $report->getNumMethods()
+        );
+
+        $lines = sprintf(
+          '  Lines:   %6s (%d/%d)',
+          PHP_CodeCoverage_Util::percent(
+            $report->getNumExecutedLines(),
+            $report->getNumExecutableLines(),
+            TRUE
+          ),
+          $report->getNumExecutedLines(),
+          $report->getNumExecutableLines()
+        );
+
+        $padding = max(array_map('strlen', array($classes, $methods, $lines)));
 
         if ($this->showOnlySummary) {
-            $output .= 'Summary: ' . PHP_EOL;
+            $title = 'Code Coverage Report Summary:';
+            $padding = max($padding, strlen($title));
+
+            $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $output .= PHP_EOL .
-                       date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) .
-                       PHP_EOL . PHP_EOL .
-                       ' Summary: ';
+            $date = date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $title = 'Code Coverage Report:';
+
+            $output .= $this->format($colors['header'], $padding, $title);
+            $output .= $this->format($colors['header'], $padding, $date);
+            $output .= $this->format($colors['header'], $padding, '');
+            $output .= $this->format($colors['header'], $padding, ' Summary:');
         }
 
-        $output .= PHP_EOL . $colors['reset']
-          . $colors['classes'] . $colors['eol'] . '  Classes: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedClassesAndTraits(), $report->getNumClassesAndTraits(), TRUE)
-          . ' (' . $report->getNumTestedClassesAndTraits() . '/' . $report->getNumClassesAndTraits() . ')' . PHP_EOL . $colors ['eol']
-          . $colors['methods'] . $colors['eol'] . '  Methods: ' . PHP_CodeCoverage_Util::percent($report->getNumTestedMethods(), $report->getNumMethods(), TRUE)
-          . ' (' . $report->getNumTestedMethods() . '/' . $report->getNumMethods() . ')' . PHP_EOL . $colors ['eol']
-          . $colors['lines'] . $colors['eol'] . '  Lines:   ' . PHP_CodeCoverage_Util::percent($report->getNumExecutedLines(), $report->getNumExecutableLines(), TRUE)
-          . ' (' . $report->getNumExecutedLines() . '/' . $report->getNumExecutableLines() . ')' . PHP_EOL . $colors['reset'] . $colors ['eol'];
+        $output .= $this->format($colors['classes'], $padding, $classes);
+        $output .= $this->format($colors['methods'], $padding, $methods);
+        $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
             return $this->outputStream->write($output . PHP_EOL);
@@ -277,5 +311,12 @@ class PHP_CodeCoverage_Report_Text
         ) .
         ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
         sprintf($format, $totalNumberOfElements) . ')';
+    }
+
+    private function format($color, $padding, $string)
+    {
+        $reset = $color ? $this->colors['reset'] : '';
+
+        return $color . str_pad($string, $padding) . $reset . PHP_EOL;
     }
 }

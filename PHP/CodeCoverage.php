@@ -234,10 +234,11 @@ class PHP_CodeCoverage
      * Stop collection of code coverage information.
      *
      * @param  boolean $append
+     * @param  mixed   $linesToBeCovered
      * @return array
      * @throws PHP_CodeCoverage_Exception
      */
-    public function stop($append = TRUE)
+    public function stop($append = TRUE, $linesToBeCovered = array())
     {
         if (!is_bool($append)) {
             throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
@@ -245,8 +246,14 @@ class PHP_CodeCoverage
             );
         }
 
+        if (!is_array($linesToBeCovered) && $linesToBeCovered !== FALSE) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+              2, 'array or false'
+            );
+        }
+
         $data = $this->driver->stop();
-        $this->append($data, NULL, $append);
+        $this->append($data, NULL, $append, $linesToBeCovered);
 
         $this->currentId = NULL;
 
@@ -259,8 +266,9 @@ class PHP_CodeCoverage
      * @param array   $data
      * @param mixed   $id
      * @param boolean $append
+     * @param mixed   $linesToBeCovered
      */
-    public function append(array $data, $id = NULL, $append = TRUE)
+    public function append(array $data, $id = NULL, $append = TRUE, $linesToBeCovered = array())
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -279,7 +287,7 @@ class PHP_CodeCoverage
         }
 
         if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
-            $this->applyCoversAnnotationFilter($data, $id);
+            $this->applyCoversAnnotationFilter($data, $id, $linesToBeCovered);
         }
 
         if (empty($data)) {
@@ -450,39 +458,16 @@ class PHP_CodeCoverage
      *
      * @param  array $data
      * @param  mixed $id
+     * @param  mixed $linesToBeCovered
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
-    protected function applyCoversAnnotationFilter(&$data, $id)
+    protected function applyCoversAnnotationFilter(&$data, $id, $linesToBeCovered = array())
     {
         $unintentionallyCoveredCode = FALSE;
 
-        if ($id instanceof PHPUnit_Framework_TestCase) {
-            $testClassName    = get_class($id);
-            $linesToBeCovered = $this->getLinesToBeCovered(
-              $testClassName, $id->getName()
-            );
-
-            if ($linesToBeCovered === FALSE) {
-                $data = array();
-                return;
-            }
-
-            if ($this->mapTestClassNameToCoveredClassName &&
-                empty($linesToBeCovered)) {
-                $testedClass = substr($testClassName, 0, -4);
-
-                if (class_exists($testedClass)) {
-                    $class = new ReflectionClass($testedClass);
-
-                    $linesToBeCovered = array(
-                      $class->getFileName() => range(
-                        $class->getStartLine(), $class->getEndLine()
-                      )
-                    );
-                }
-            }
-        } else {
-            $linesToBeCovered = array();
+        if ($linesToBeCovered === FALSE) {
+            $data = array();
+            return;
         }
 
         if (!empty($linesToBeCovered)) {
@@ -624,233 +609,6 @@ class PHP_CodeCoverage
                 $data[$file] = $fileCoverage;
             }
         }
-    }
-
-    /**
-     * Returns the files and lines a test method wants to cover.
-     *
-     * @param  string $className
-     * @param  string $methodName
-     * @return array
-     * @since  Method available since Release 1.2.0
-     */
-    protected function getLinesToBeCovered($className, $methodName)
-    {
-        $codeToCoverList = array();
-        $result          = array();
-
-        // @codeCoverageIgnoreStart
-        if (($pos = strpos($methodName, ' ')) !== FALSE) {
-            $methodName = substr($methodName, 0, $pos);
-        }
-        // @codeCoverageIgnoreEnd
-
-        $class = new ReflectionClass($className);
-
-        try {
-            $method = new ReflectionMethod($className, $methodName);
-        }
-
-        catch (ReflectionException $e) {
-            return array();
-        }
-
-        $docComment = substr($class->getDocComment(), 3, -2) . PHP_EOL . substr($method->getDocComment(), 3, -2);
-
-        $templateMethods = array(
-          'setUp', 'assertPreConditions', 'assertPostConditions', 'tearDown'
-        );
-
-        foreach ($templateMethods as $templateMethod) {
-            if ($class->hasMethod($templateMethod)) {
-                $reflector   = $class->getMethod($templateMethod);
-                $docComment .= PHP_EOL . substr($reflector->getDocComment(), 3, -2);
-                unset($reflector);
-            }
-        }
-
-        if (strpos($docComment, '@coversNothing') !== FALSE) {
-            return FALSE;
-        }
-
-        $classShortcut = preg_match_all(
-          '(@coversDefaultClass\s+(?P<coveredClass>[^\s]++)\s*$)m',
-          $class->getDocComment(),
-          $matches
-        );
-
-        if ($classShortcut) {
-            if ($classShortcut > 1) {
-                throw new PHP_CodeCoverage_Exception(
-                  sprintf(
-                    'More than one @coversClass annotation in class or interface "%s".',
-                    $className
-                  )
-                );
-            }
-
-            $classShortcut = $matches['coveredClass'][0];
-        }
-
-        $match = preg_match_all(
-          '(@covers\s+(?P<coveredElement>[^\s()]++)[\s()]*$)m',
-          $docComment,
-          $matches
-        );
-
-        if ($match) {
-            foreach ($matches['coveredElement'] as $coveredElement) {
-                if ($classShortcut && strncmp($coveredElement, '::', 2) === 0) {
-                    $coveredElement = $classShortcut . $coveredElement;
-                }
-
-                $codeToCoverList = array_merge(
-                  $codeToCoverList,
-                  $this->resolveCoversToReflectionObjects($coveredElement)
-                );
-            }
-
-            foreach ($codeToCoverList as $codeToCover) {
-                $fileName = $codeToCover->getFileName();
-
-                if (!isset($result[$fileName])) {
-                    $result[$fileName] = array();
-                }
-
-                $result[$fileName] = array_unique(
-                  array_merge(
-                    $result[$fileName],
-                    range(
-                      $codeToCover->getStartLine(), $codeToCover->getEndLine()
-                    )
-                  )
-                );
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param  string $coveredElement
-     * @return array
-     * @since  Method available since Release 1.2.0
-     */
-    protected function resolveCoversToReflectionObjects($coveredElement)
-    {
-        $codeToCoverList = array();
-
-        if (strpos($coveredElement, '::') !== FALSE) {
-            list($className, $methodName) = explode('::', $coveredElement);
-
-            if (isset($methodName[0]) && $methodName[0] == '<') {
-                $classes = array($className);
-
-                foreach ($classes as $className) {
-                    if (!class_exists($className) &&
-                        !interface_exists($className)) {
-                        throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
-                          sprintf(
-                            'Trying to @cover not existing class or ' .
-                            'interface "%s".',
-                            $className
-                          )
-                        );
-                    }
-
-                    $class   = new ReflectionClass($className);
-                    $methods = $class->getMethods();
-                    $inverse = isset($methodName[1]) && $methodName[1] == '!';
-
-                    if (strpos($methodName, 'protected')) {
-                        $visibility = 'isProtected';
-                    }
-
-                    else if (strpos($methodName, 'private')) {
-                        $visibility = 'isPrivate';
-                    }
-
-                    else if (strpos($methodName, 'public')) {
-                        $visibility = 'isPublic';
-                    }
-
-                    foreach ($methods as $method) {
-                        if ($inverse && !$method->$visibility()) {
-                            $codeToCoverList[] = $method;
-                        }
-
-                        else if (!$inverse && $method->$visibility()) {
-                            $codeToCoverList[] = $method;
-                        }
-                    }
-                }
-            } else {
-                $classes = array($className);
-
-                foreach ($classes as $className) {
-                    if ($className == '' && function_exists($methodName)) {
-                        $codeToCoverList[] = new ReflectionFunction(
-                          $methodName
-                        );
-                    } else {
-                        if (!((class_exists($className) ||
-                               interface_exists($className) ||
-                               trait_exists($className)) &&
-                              method_exists($className, $methodName))) {
-                            throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
-                              sprintf(
-                                'Trying to @cover not existing method "%s::%s".',
-                                $className,
-                                $methodName
-                              )
-                            );
-                        }
-
-                        $codeToCoverList[] = new ReflectionMethod(
-                          $className, $methodName
-                        );
-                    }
-                }
-            }
-        } else {
-            $extended = FALSE;
-
-            if (strpos($coveredElement, '<extended>') !== FALSE) {
-                $coveredElement = str_replace(
-                  '<extended>', '', $coveredElement
-                );
-
-                $extended = TRUE;
-            }
-
-            $classes = array($coveredElement);
-
-            if ($extended) {
-                $classes = array_merge(
-                  $classes,
-                  class_implements($coveredElement),
-                  class_parents($coveredElement)
-                );
-            }
-
-            foreach ($classes as $className) {
-                if (!class_exists($className) &&
-                    !interface_exists($className) &&
-                    !trait_exists($className)) {
-                    throw new PHP_CodeCoverage_Exception_InvalidCoversTarget(
-                      sprintf(
-                        'Trying to @cover not existing class or ' .
-                        'interface "%s".',
-                        $className
-                      )
-                    );
-                }
-
-                $codeToCoverList[] = new ReflectionClass($className);
-            }
-        }
-
-        return $codeToCoverList;
     }
 
     /**

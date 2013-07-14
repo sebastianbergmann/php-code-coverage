@@ -200,6 +200,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
           array(
             'id'               => $node->getId(),
             'full_path'        => $node->getPath(),
+            'path_to_root'     => $this->getPathToRoot($node),
             'breadcrumbs'      => $this->getBreadcrumbs($node),
             'charset'          => $this->charset,
             'date'             => $this->date,
@@ -215,47 +216,65 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected function getBreadcrumbs(PHP_CodeCoverage_Report_Node $node)
     {
         $breadcrumbs = '';
+        $path        = $node->getPathAsArray();
+        $pathToRoot  = array();
+        $max         = count($path);
 
-        $path = $node->getPathAsArray();
+        if ($node instanceof PHP_CodeCoverage_Report_Node_File) {
+            $max--;
+        }
+
+        for ($i = 0; $i < $max; $i++) {
+            $pathToRoot[] = str_repeat('../', $i);
+        }
 
         foreach ($path as $step) {
             if ($step !== $node) {
-                $breadcrumbs .= $this->getInactiveBreadcrumb($step);
-            } else {
-                $breadcrumbs .= $this->getActiveBreadcrumb(
-                  $step,
-                  $node instanceof PHP_CodeCoverage_Report_Node_Directory
+                $breadcrumbs .= $this->getInactiveBreadcrumb(
+                  $step, array_pop($pathToRoot)
                 );
+            } else {
+                $breadcrumbs .= $this->getActiveBreadcrumb($step);
             }
         }
 
         return $breadcrumbs;
     }
 
-    protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node, $isDirectory)
+    protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
     {
         $buffer = sprintf(
           '        <li class="active">%s</li>' . "\n",
           $node->getName()
         );
 
-        if ($isDirectory) {
-            $buffer .= sprintf(
-              '        <li>(<a href="%s.dashboard.html">Dashboard</a>)</li>' . "\n",
-              $node->getId()
-            );
+        if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
+            $buffer .= '        <li>(<a href="dashboard.html">Dashboard</a>)</li>' . "\n";
         }
 
         return $buffer;
     }
 
-    protected function getInactiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
+    protected function getInactiveBreadcrumb(PHP_CodeCoverage_Report_Node $node, $pathToRoot)
     {
         return sprintf(
-          '        <li><a href="%s.html">%s</a> <span class="divider">/</span></li>' . "\n",
-          $node->getId(),
+          '        <li><a href="%sindex.html">%s</a> <span class="divider">/</span></li>' . "\n",
+          $pathToRoot,
           $node->getName()
         );
+    }
+
+    protected function getPathToRoot(PHP_CodeCoverage_Report_Node $node)
+    {
+        $id    = $node->getId();
+        $depth = substr_count($id, '/');
+
+        if ($id != 'index' &&
+            $node instanceof PHP_CodeCoverage_Report_Node_Directory) {
+            $depth++;
+        }
+
+        return str_repeat('../', $depth);
     }
 
     protected function getCoverageBar($percent)

@@ -154,16 +154,26 @@ class PHP_CodeCoverage_Report_HTML
           $this->highlight
         );
 
-        $dashboard->render($report, $target . 'index.dashboard.html');
         $directory->render($report, $target . 'index.html');
+        $dashboard->render($report, $target . 'dashboard.html');
 
         foreach ($report as $node) {
             $id = $node->getId();
 
             if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
-                $dashboard->render($node, $target . $id . '.dashboard.html');
-                $directory->render($node, $target . $id . '.html');
+                if (!file_exists($target . $id)) {
+                    mkdir($target . $id, 0777, TRUE);
+                }
+
+                $directory->render($node, $target . $id . '/index.html');
+                $dashboard->render($node, $target . $id . '/dashboard.html');
             } else {
+                $dir = dirname($target . $id);
+
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0777, TRUE);
+                }
+
                 $file->render($node, $target . $id . '.html');
             }
         }

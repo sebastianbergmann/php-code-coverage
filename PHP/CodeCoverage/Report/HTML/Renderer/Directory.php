@@ -111,15 +111,21 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         if ($total) {
             $data['name'] = 'Total';
         } else {
-            $data['name'] = sprintf(
-              '<a href="%s.html">%s</a>',
-              $item->getId(),
-              $item->getName()
-            );
-
             if ($item instanceof PHP_CodeCoverage_Report_Node_Directory) {
+                $data['name'] = sprintf(
+                  '<a href="%s/index.html">%s</a>',
+                  $item->getName(),
+                  $item->getName()
+                );
+
                 $data['icon'] = '<i class="icon-folder-open"></i> ';
             } else {
+                $data['name'] = sprintf(
+                  '<a href="%s.html">%s</a>',
+                  $item->getName(),
+                  $item->getName()
+                );
+
                 $data['icon'] = '<i class="icon-file"></i> ';
             }
         }

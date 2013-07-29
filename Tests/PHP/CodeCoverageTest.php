@@ -134,6 +134,15 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::stop
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testStopThrowsExceptionForInvalidArgument2()
+    {
+        $this->coverage->stop(TRUE, NULL);
+    }
+
+    /**
      * @covers            PHP_CodeCoverage::append
      * @expectedException PHP_CodeCoverage_Exception
      */
@@ -161,6 +170,26 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers            PHP_CodeCoverage::setCheckForUnintentionallyCoveredCode
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testSetCheckForUnintentionallyCoveredCodeThrowsExceptionForInvalidArgument()
+    {
+        $this->coverage->setCheckForUnintentionallyCoveredCode(NULL);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::setCheckForUnintentionallyCoveredCode
+     */
+    public function testSetCheckForUnintentionallyCoveredCode()
+    {
+        $this->coverage->setCheckForUnintentionallyCoveredCode(TRUE);
+        $this->assertAttributeEquals(
+          TRUE, 'checkForUnintentionallyCoveredCode', $this->coverage
+        );
+    }
+
+    /**
      * @covers            PHP_CodeCoverage::setForceCoversAnnotation
      * @expectedException PHP_CodeCoverage_Exception
      */
@@ -177,6 +206,26 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $this->coverage->setForceCoversAnnotation(TRUE);
         $this->assertAttributeEquals(
           TRUE, 'forceCoversAnnotation', $this->coverage
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::setAddUncoveredFilesFromWhitelist
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testSetAddUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
+    {
+        $this->coverage->setAddUncoveredFilesFromWhitelist(NULL);
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::setAddUncoveredFilesFromWhitelist
+     */
+    public function testSetAddUncoveredFilesFromWhitelist()
+    {
+        $this->coverage->setAddUncoveredFilesFromWhitelist(TRUE);
+        $this->assertAttributeEquals(
+          TRUE, 'addUncoveredFilesFromWhitelist', $this->coverage
         );
     }
 

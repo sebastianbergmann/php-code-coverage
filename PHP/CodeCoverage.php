@@ -235,10 +235,11 @@ class PHP_CodeCoverage
      *
      * @param  boolean $append
      * @param  mixed   $linesToBeCovered
+     * @param  array   $linesToBeUsed
      * @return array
      * @throws PHP_CodeCoverage_Exception
      */
-    public function stop($append = TRUE, $linesToBeCovered = array())
+    public function stop($append = TRUE, $linesToBeCovered = array(), array $linesToBeUsed = array())
     {
         if (!is_bool($append)) {
             throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
@@ -253,7 +254,7 @@ class PHP_CodeCoverage
         }
 
         $data = $this->driver->stop();
-        $this->append($data, NULL, $append, $linesToBeCovered);
+        $this->append($data, NULL, $append, $linesToBeCovered, $linesToBeUsed);
 
         $this->currentId = NULL;
 
@@ -267,8 +268,9 @@ class PHP_CodeCoverage
      * @param mixed   $id
      * @param boolean $append
      * @param mixed   $linesToBeCovered
+     * @param array   $linesToBeUsed
      */
-    public function append(array $data, $id = NULL, $append = TRUE, $linesToBeCovered = array())
+    public function append(array $data, $id = NULL, $append = TRUE, $linesToBeCovered = array(), array $linesToBeUsed = array())
     {
         if ($id === NULL) {
             $id = $this->currentId;
@@ -287,7 +289,9 @@ class PHP_CodeCoverage
         }
 
         if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
-            $this->applyCoversAnnotationFilter($data, $id, $linesToBeCovered);
+            $this->applyCoversAnnotationFilter(
+              $data, $id, $linesToBeCovered, $linesToBeUsed
+            );
         }
 
         if (empty($data)) {
@@ -459,9 +463,10 @@ class PHP_CodeCoverage
      * @param  array $data
      * @param  mixed $id
      * @param  mixed $linesToBeCovered
+     * @param  array $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
-    protected function applyCoversAnnotationFilter(&$data, $id, $linesToBeCovered = array())
+    protected function applyCoversAnnotationFilter(&$data, $id, $linesToBeCovered, array $linesToBeUsed)
     {
         $unintentionallyCoveredCode = FALSE;
 
@@ -475,16 +480,25 @@ class PHP_CodeCoverage
             $data  = array_intersect_key($data, $linesToBeCovered);
 
             if ($this->checkForUnintentionallyCoveredCode &&
-                $count != count($data)) {
+                $count != count($data) &&
+                empty($linesToBeUsed)) {
                 throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
             }
 
             foreach (array_keys($data) as $filename) {
                 $_linesToBeCovered = array_flip($linesToBeCovered[$filename]);
 
+                if (isset($linesToBeUsed[$filename])) {
+                    $_linesToBeUsed = array_flip($linesToBeUsed[$filename]);
+                } else {
+                    $_linesToBeUsed = FALSE;
+                }
+
                 if ($this->checkForUnintentionallyCoveredCode) {
                     foreach ($data[$filename] as $k => $v) {
-                        if ($v == 1 && !isset($_linesToBeCovered[$k])) {
+                        if ($v == 1 &&
+                            !(isset($_linesToBeCovered[$k]) ||
+                             ($_linesToBeUsed !== FALSE && isset($_linesToBeUsed[$k])))) {
                             throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
                         }
                     }

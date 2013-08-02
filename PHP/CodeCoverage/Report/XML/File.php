@@ -11,12 +11,14 @@ class PHP_CodeCoverage_Report_XML_File {
      */
     protected $contextNode;
 
-    public function __construct(\DOMElement $context) {
+    public function __construct(\DOMElement $context)
+    {
         $this->contextNode = $context;
         $this->dom = $context->ownerDocument;
     }
 
-    public function getTotals() {
+    public function getTotals()
+    {
         $totalsContainer = $this->contextNode->firstChild;
         if (!$totalsContainer) {
             $totalsContainer = $this->contextNode->appendChild(
@@ -26,7 +28,8 @@ class PHP_CodeCoverage_Report_XML_File {
         return new PHP_CodeCoverage_Report_XML_Totals($totalsContainer);
     }
 
-    public function getLineCoverage($line) {
+    public function getLineCoverage($line)
+    {
         $coverage = $this->contextNode->getElementsByTagNameNS('http://xml.phpunit.de/coverage/1.0', 'coverage')->item(0);
         if (!$coverage) {
             $coverage = $this->contextNode->appendChild(

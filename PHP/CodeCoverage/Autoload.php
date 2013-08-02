@@ -80,6 +80,17 @@ spl_autoload_register(
             'php_codecoverage_report_node_iterator' => '/CodeCoverage/Report/Node/Iterator.php',
             'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
             'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
+            'php_codecoverage_report_xml' => '/CodeCoverage/Report/XML.php',
+            'php_codecoverage_report_xml_directory' => '/CodeCoverage/Report/XML/Directory.php',
+            'php_codecoverage_report_xml_file' => '/CodeCoverage/Report/XML/File.php',
+            'php_codecoverage_report_xml_file_coverage' => '/CodeCoverage/Report/XML/File/Coverage.php',
+            'php_codecoverage_report_xml_file_method' => '/CodeCoverage/Report/XML/File/Method.php',
+            'php_codecoverage_report_xml_file_report' => '/CodeCoverage/Report/XML/File/Report.php',
+            'php_codecoverage_report_xml_file_unit' => '/CodeCoverage/Report/XML/File/Unit.php',
+            'php_codecoverage_report_xml_node' => '/CodeCoverage/Report/XML/Node.php',
+            'php_codecoverage_report_xml_project' => '/CodeCoverage/Report/XML/Project.php',
+            'php_codecoverage_report_xml_tests' => '/CodeCoverage/Report/XML/Tests.php',
+            'php_codecoverage_report_xml_totals' => '/CodeCoverage/Report/XML/Totals.php',
             'php_codecoverage_util' => '/CodeCoverage/Util.php',
             'php_codecoverage_util_invalidargumenthelper' => '/CodeCoverage/Util/InvalidArgumentHelper.php'
           );

@@ -76,6 +76,20 @@
        <file baseinstalldir="/" name="File.php" role="php" />
        <file baseinstalldir="/" name="Iterator.php" role="php" />
       </dir>
+      <dir name="XML">
+       <dir name="File">
+        <file baseinstalldir="/" name="Coverage.php" role="php" />
+        <file baseinstalldir="/" name="Method.php" role="php" />
+        <file baseinstalldir="/" name="Report.php" role="php" />
+        <file baseinstalldir="/" name="Unit.php" role="php" />
+       </dir>
+       <file baseinstalldir="/" name="Directory.php" role="php" />
+       <file baseinstalldir="/" name="File.php" role="php" />
+       <file baseinstalldir="/" name="Node.php" role="php" />
+       <file baseinstalldir="/" name="Project.php" role="php" />
+       <file baseinstalldir="/" name="Tests.php" role="php" />
+       <file baseinstalldir="/" name="Totals.php" role="php" />
+      </dir>
       <file baseinstalldir="/" name="Clover.php" role="php" />
       <file baseinstalldir="/" name="Crap4j.php" role="php" />
       <file baseinstalldir="/" name="Factory.php" role="php" />
@@ -83,6 +97,7 @@
       <file baseinstalldir="/" name="Node.php" role="php" />
       <file baseinstalldir="/" name="PHP.php" role="php" />
       <file baseinstalldir="/" name="Text.php" role="php" />
+      <file baseinstalldir="/" name="XML.php" role="php" />
      </dir>
      <dir name="Util">
       <file baseinstalldir="/" name="InvalidArgumentHelper.php" role="php" />

@@ -290,7 +290,7 @@ class PHP_CodeCoverage
 
         if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
             $this->applyCoversAnnotationFilter(
-              $data, $id, $linesToBeCovered, $linesToBeUsed
+              $data, $linesToBeCovered, $linesToBeUsed
             );
         }
 
@@ -461,15 +461,12 @@ class PHP_CodeCoverage
      * Applies the @covers annotation filtering.
      *
      * @param  array $data
-     * @param  mixed $id
      * @param  mixed $linesToBeCovered
      * @param  array $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
-    protected function applyCoversAnnotationFilter(&$data, $id, $linesToBeCovered, array $linesToBeUsed)
+    protected function applyCoversAnnotationFilter(&$data, $linesToBeCovered, array $linesToBeUsed)
     {
-        $unintentionallyCoveredCode = FALSE;
-
         if ($linesToBeCovered === FALSE) {
             $data = array();
             return;

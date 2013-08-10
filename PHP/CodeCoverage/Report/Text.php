@@ -184,56 +184,23 @@ class PHP_CodeCoverage_Report_Text
             }
 
             $classes  = $item->getClassesAndTraits();
-            $coverage = $item->getCoverageData();
-            $lines    = array();
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
                 $coveredClassStatements = 0;
                 $coveredMethods         = 0;
+                $classMethods           = 0;
 
                 foreach ($class['methods'] as $method) {
-                    $methodCount        = 0;
-                    $methodLines        = 0;
-                    $methodLinesCovered = 0;
+                    if ($method['executableLines'] == 0)
+                        continue;
 
-                    for ($i  = $method['startLine'];
-                         $i <= $method['endLine'];
-                         $i++) {
-                        $add   = TRUE;
-                        $count = 0;
-
-                        if (isset($coverage[$i])) {
-                            if ($coverage[$i] !== NULL) {
-                                $classStatements++;
-                                $methodLines++;
-                            } else {
-                                $add = FALSE;
-                            }
-
-                            $count = count($coverage[$i]);
-
-                            if ($count > 0) {
-                                $coveredClassStatements++;
-                                $methodLinesCovered++;
-                            }
-                        } else {
-                            $add = FALSE;
-                        }
-
-                        $methodCount = max($methodCount, $count);
-
-                        if ($add) {
-                            $lines[$i] = array(
-                              'count' => $count, 'type'  => 'stmt'
-                            );
-                        }
-                    }
-
-                    if ($methodCount > 0) {
+                    $classMethods++;
+                    $classStatements        += $method['executableLines'];
+                    $coveredClassStatements += $method['executedLines'];
+                    if ($method['coverage'] == 100){
                         $coveredMethods++;
                     }
-
                 }
 
                 if (!empty($class['package']['namespace'])) {
@@ -252,7 +219,7 @@ class PHP_CodeCoverage_Report_Text
                     'namespace'         => $namespace,
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
-                    'methodCount'       => count($class['methods']),
+                    'methodCount'       => $classMethods,
                     'statementsCovered' => $coveredClassStatements,
                     'statementCount'    => $classStatements,
                 );

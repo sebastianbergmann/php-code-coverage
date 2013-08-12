@@ -102,47 +102,26 @@ class PHP_CodeCoverage_Report_Clover
                 $classStatements        = 0;
                 $coveredClassStatements = 0;
                 $coveredMethods         = 0;
+                $classMethods           = 0;
 
                 foreach ($class['methods'] as $methodName => $method) {
-                    $methodCount        = 0;
-                    $methodLines        = 0;
-                    $methodLinesCovered = 0;
+                    if ($method['executableLines']  == 0)
+                        continue;
 
+                    $classMethods++;
+                    $classStatements        += $method['executableLines'];
+                    $coveredClassStatements += $method['executedLines'];
+                    if ($method['coverage'] == 100){
+                        $coveredMethods++;
+                    }
+
+                    $methodCount = 0;
                     for ($i  = $method['startLine'];
                          $i <= $method['endLine'];
                          $i++) {
-                        $add   = TRUE;
-                        $count = 0;
-
-                        if (isset($coverage[$i])) {
-                            if ($coverage[$i] !== NULL) {
-                                $classStatements++;
-                                $methodLines++;
-                            } else {
-                                $add = FALSE;
-                            }
-
-                            $count = count($coverage[$i]);
-
-                            if ($count > 0) {
-                                $coveredClassStatements++;
-                                $methodLinesCovered++;
-                            }
-                        } else {
-                            $add = FALSE;
+                        if (isset($coverage[$i]) && ($coverage[$i] !== NULL)) {
+                            $methodCount = max($methodCount, count($coverage[$i]));
                         }
-
-                        $methodCount = max($methodCount, $count);
-
-                        if ($add) {
-                            $lines[$i] = array(
-                              'count' => $count, 'type'  => 'stmt'
-                            );
-                        }
-                    }
-
-                    if ($methodCount > 0) {
-                        $coveredMethods++;
                     }
 
                     $lines[$method['startLine']] = array(
@@ -188,7 +167,7 @@ class PHP_CodeCoverage_Report_Clover
                 $xmlFile->appendChild($xmlClass);
 
                 $xmlMetrics = $xmlDocument->createElement('metrics');
-                $xmlMetrics->setAttribute('methods', count($class['methods']));
+                $xmlMetrics->setAttribute('methods', $classMethods);
                 $xmlMetrics->setAttribute('coveredmethods', $coveredMethods);
                 $xmlMetrics->setAttribute('conditionals', 0);
                 $xmlMetrics->setAttribute('coveredconditionals', 0);
@@ -198,7 +177,7 @@ class PHP_CodeCoverage_Report_Clover
                 );
                 $xmlMetrics->setAttribute(
                   'elements',
-                  count($class['methods']) +
+                  $classMethods +
                   $classStatements
                   /* + conditionals */);
                 $xmlMetrics->setAttribute(

@@ -3,7 +3,7 @@
   <project timestamp="%i">
     <file name="%s/source_with_class_and_anonymous_function.php">
       <class name="CoveredClassWithAnonymousFunctionInStaticMethod" namespace="global">
-        <metrics methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="11" elements="14" coveredelements="13"/>
+        <metrics methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="5" elements="8" coveredelements="6"/>
       </class>
       <line num="5" type="method" name="runAnonymous" crap="1.04" count="1"/>
       <line num="7" type="stmt" count="1"/>

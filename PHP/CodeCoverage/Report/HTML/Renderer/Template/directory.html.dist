@@ -42,6 +42,7 @@
     </tbody>
    </table>
    <footer>
+    <hr/>
     <h4>Legend</h4>
     <p>
      <span class="danger"><strong>Low</strong>: 0% to {low_upper_bound}%</span>

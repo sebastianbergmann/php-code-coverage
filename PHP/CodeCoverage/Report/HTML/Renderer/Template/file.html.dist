@@ -47,6 +47,7 @@
     </tbody>
    </table>
    <footer>
+    <hr/>
     <h4>Legend</h4>
     <p>
      <span class="success"><strong>Executed</strong></span>

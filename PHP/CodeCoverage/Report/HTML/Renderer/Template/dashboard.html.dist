@@ -37,15 +37,33 @@
    <div class="row">
     <div class="span6">
      <h2>Top Project Risks</h2>
-     <ul>
+     <table class="table-condensed">
+      <thead>
+       <tr>
+        <th></th>
+        <th><div align="left">Method</div></th>
+        <th><div align="left">CRAP</div></th>
+       </tr>
+      </thead>
+      <tbody>
 {top_project_risks}
-     </ul>
+      </tbody>
+     </table>
     </div>
     <div class="span6">
      <h2>Least Tested Methods</h2>
-     <ul>
+     <table class="table-condensed">
+      <thead>
+       <tr>
+        <th></th>
+        <th><div align="left">Method</div></th>
+        <th><div align="left">Coverage</div></th>
+       </tr>
+      </thead>
+      <tbody>
 {least_tested_methods}
-     </ul>
+      </tbody>
+     </table>
     </div>
    </div>
    <footer>

@@ -178,12 +178,14 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         $methods = array_slice($methods, 0, min($max, count($methods)));
         $buffer  = '';
+        $i       = 1;
 
         foreach ($methods as $name => $coverage) {
             list($class, $method) = explode('::', $name);
 
             $buffer .= sprintf(
-              '              <li><a href="%s">%s</a> (%d%%)</li>' . "\n",
+              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+              $i++,
               $classes[$class]['methods'][$method]['link'],
               $name,
               $coverage
@@ -215,10 +217,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         $buffer = '';
         $risks  = array_slice($risks, 0, min($max, count($risks)));
+        $i      = 1;
 
         foreach ($risks as $name => $crap) {
             $buffer .= sprintf(
-              '              <li><a href="%s">%s</a> (%d)</li>' . "\n",
+              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+              $i++,
               $classes[$name]['link'],
               $name,
               $crap

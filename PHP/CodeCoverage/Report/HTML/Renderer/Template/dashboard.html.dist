@@ -42,7 +42,7 @@
        <tr>
         <th></th>
         <th><div align="left">Method</div></th>
-        <th><div align="left">CRAP</div></th>
+        <th><div align="left"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
        </tr>
       </thead>
       <tbody>

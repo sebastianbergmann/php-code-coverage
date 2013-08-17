@@ -69,13 +69,22 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         $this->setCommonTemplateVariables($template, $node);
 
+        $complexity           = $this->complexity($classes);
+        $coverageDistribution = $this->coverageDistribution($classes);
+        $leastTested          = $this->leastTested($classes);
+        $topProjectRisks      = $this->topProjectRisks($classes);
+
         $template->setVar(
           array(
-            'least_tested_methods' => $this->leastTestedMethods($classes),
-            'top_project_risks'    => $this->topProjectRisks($classes),
-            'cc_values'            => $this->classComplexity($classes),
-            'ccd_values'           => $this->classCoverageDistribution($classes),
-            'backlink'             => basename(str_replace('.dashboard', '', $file))
+            'least_tested_classes'         => $leastTested['class'],
+            'least_tested_methods'         => $leastTested['method'],
+            'top_project_risks_classes'    => $topProjectRisks['class'],
+            'top_project_risks_methods'    => $topProjectRisks['method'],
+            'complexity_class'             => $complexity['class'],
+            'complexity_method'            => $complexity['method'],
+            'class_coverage_distribution'  => $coverageDistribution['class'],
+            'method_coverage_distribution' => $coverageDistribution['method'],
+            'backlink'                     => basename(str_replace('.dashboard', '', $file))
           )
         );
 
@@ -83,82 +92,138 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     }
 
     /**
-     * Returns the data for the Class Complexity chart.
+     * Returns the data for the Class/Method Complexity charts.
      *
      * @param  array $classes
-     * @return string
+     * @return array
      */
-    protected function classComplexity(array $classes)
+    protected function complexity(array $classes)
     {
-        $data = array();
+        $result = array('class' => array(), 'method' => array());
 
-        foreach ($classes as $name => $class) {
-            $data[] = array(
+        foreach ($classes as $className => $class) {
+            foreach ($class['methods'] as $methodName => $method) {
+                if ($className != '*') {
+                    $methodName = $className . '::' . $methodName;
+                }
+
+                $result['method'][] = array(
+                  $method['coverage'],
+                  $method['ccn'],
+                  sprintf(
+                    '<a href="%s">%s</a>',
+                    $method['link'],
+                    $methodName
+                  )
+                );
+            }
+
+            $result['class'][] = array(
               $class['coverage'],
               $class['ccn'],
               sprintf(
                 '<a href="%s">%s</a>',
                 $class['link'],
-                $name
+                $className
               )
             );
         }
 
-        return json_encode($data);
+        return array(
+          'class' => json_encode($result['class']),
+          'method' => json_encode($result['method'])
+        );
     }
 
     /**
-     * Returns the data for the Class Coverage Distribution chart.
+     * Returns the data for the Class / Method Coverage Distribution chart.
      *
      * @param  array $classes
-     * @return string
+     * @return array
      */
-    protected function classCoverageDistribution(array $classes)
+    protected function coverageDistribution(array $classes)
     {
-        $data = array(
-          '0%'      => 0,
-          '0-10%'   => 0,
-          '10-20%'  => 0,
-          '20-30%'  => 0,
-          '30-40%'  => 0,
-          '40-50%'  => 0,
-          '50-60%'  => 0,
-          '60-70%'  => 0,
-          '70-80%'  => 0,
-          '80-90%'  => 0,
-          '90-100%' => 0,
-          '100%'    => 0
+        $result = array(
+          'class' => array(
+            '0%'      => 0,
+            '0-10%'   => 0,
+            '10-20%'  => 0,
+            '20-30%'  => 0,
+            '30-40%'  => 0,
+            '40-50%'  => 0,
+            '50-60%'  => 0,
+            '60-70%'  => 0,
+            '70-80%'  => 0,
+            '80-90%'  => 0,
+            '90-100%' => 0,
+            '100%'    => 0
+          ),
+          'method' => array(
+            '0%'      => 0,
+            '0-10%'   => 0,
+            '10-20%'  => 0,
+            '20-30%'  => 0,
+            '30-40%'  => 0,
+            '40-50%'  => 0,
+            '50-60%'  => 0,
+            '60-70%'  => 0,
+            '70-80%'  => 0,
+            '80-90%'  => 0,
+            '90-100%' => 0,
+            '100%'    => 0
+          )
         );
 
         foreach ($classes as $class) {
+            foreach ($class['methods'] as $methodName => $method) {
+                if ($method['coverage'] == 0) {
+                    $result['method']['0%']++;
+                }
+
+                else if ($method['coverage'] == 100) {
+                    $result['method']['100%']++;
+                }
+
+                else {
+                    $key = floor($method['coverage'] / 10) * 10;
+                    $key = $key . '-' . ($key + 10) . '%';
+                    $result['method'][$key]++;
+                }
+            }
+
             if ($class['coverage'] == 0) {
-                $data['0%']++;
+                $result['class']['0%']++;
             }
 
             else if ($class['coverage'] == 100) {
-                $data['100%']++;
+                $result['class']['100%']++;
             }
 
             else {
-                $key = floor($class['coverage']/10)*10;
+                $key = floor($class['coverage'] / 10) * 10;
                 $key = $key . '-' . ($key + 10) . '%';
-                $data[$key]++;
+                $result['class'][$key]++;
             }
         }
 
-        return json_encode(array_values($data));
+        return array(
+          'class' => json_encode(array_values($result['class'])),
+          'method' => json_encode(array_values($result['method']))
+        );
     }
 
     /**
-     * Returns the least tested methods.
+     * Returns the least tested classes / methods.
      *
      * @param  array   $classes
      * @param  integer $max
-     * @return string
+     * @return array
      */
-    protected function leastTestedMethods(array $classes, $max = 10)
+    protected function leastTested(array $classes, $max = 10)
     {
-        $methods = array();
+        $leastTestedClasses = array();
+        $leastTestedMethods = array();
+        $result             = array('class' => '', 'method' => '');
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
@@ -169,30 +234,48 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                         $key = $methodName;
                     }
 
-                    $methods[$key] = $method['coverage'];
+                    $leastTestedMethods[$key] = $method['coverage'];
                 }
+            }
+
+            if ($class['coverage'] < 100) {
+                $leastTestedClasses[$className] = $class['coverage'];
             }
         }
 
-        asort($methods);
+        asort($leastTestedClasses);
+        asort($leastTestedMethods);
 
-        $methods = array_slice($methods, 0, min($max, count($methods)));
-        $buffer  = '';
-        $i       = 1;
+        $leastTestedClasses = array_slice($leastTestedClasses, 0, min($max, count($leastTestedClasses)));
+        $leastTestedMethods = array_slice($leastTestedMethods, 0, min($max, count($leastTestedMethods)));
 
-        foreach ($methods as $name => $coverage) {
-            list($class, $method) = explode('::', $name);
+        $i = 1;
 
-            $buffer .= sprintf(
+        foreach ($leastTestedClasses as $className => $coverage) {
+            $result['class'] .= sprintf(
               '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
               $i++,
-              $classes[$class]['methods'][$method]['link'],
-              $name,
+              $classes[$className]['link'],
+              $className,
               $coverage
             );
         }
 
-        return $buffer;
+        $i = 1;
+
+        foreach ($leastTestedMethods as $methodName => $coverage) {
+            list($class, $method) = explode('::', $methodName);
+
+            $result['method'] .= sprintf(
+              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+              $i++,
+              $classes[$class]['methods'][$method]['link'],
+              $methodName,
+              $coverage
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -200,36 +283,67 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
      *
      * @param  array   $classes
      * @param  integer $max
-     * @return string
+     * @return array
      */
     protected function topProjectRisks(array $classes, $max = 10)
     {
-        $risks = array();
+        $classRisks  = array();
+        $methodRisks = array();
+        $result      = array('class' => '', 'method' => '');
+
 
         foreach ($classes as $className => $class) {
+            foreach ($class['methods'] as $methodName => $method) {
+                if ($method['coverage'] < 100 && $method['ccn'] > 1) {
+                    if ($className != '*') {
+                        $key = $className . '::' . $methodName;
+                    } else {
+                        $key = $methodName;
+                    }
+
+                    $methodRisks[$key] = $method['crap'];
+                }
+            }
+
             if ($class['coverage'] < 100 &&
                 $class['ccn'] > count($class['methods'])) {
-                $risks[$className] = $class['crap'];
+                $classRisks[$className] = $class['crap'];
             }
         }
 
-        arsort($risks);
+        arsort($classRisks);
+        arsort($methodRisks);
 
-        $buffer = '';
-        $risks  = array_slice($risks, 0, min($max, count($risks)));
-        $i      = 1;
+        $classRisks  = array_slice($classRisks, 0, min($max, count($classRisks)));
+        $methodRisks = array_slice($methodRisks, 0, min($max, count($methodRisks)));
 
-        foreach ($risks as $name => $crap) {
-            $buffer .= sprintf(
+        $i = 1;
+
+        foreach ($classRisks as $className => $crap) {
+            $result['class'] .= sprintf(
               '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
               $i++,
-              $classes[$name]['link'],
-              $name,
+              $classes[$className]['link'],
+              $className,
               $crap
             );
         }
 
-        return $buffer;
+        $i = 1;
+
+        foreach ($methodRisks as $methodName => $crap) {
+            list($class, $method) = explode('::', $methodName);
+
+            $result['method'] .= sprintf(
+              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+              $i++,
+              $classes[$class]['methods'][$method]['link'],
+              $methodName,
+              $crap
+            );
+        }
+
+        return $result;
     }
 
     protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)

@@ -37,12 +37,12 @@
    <div class="row">
     <div class="span6">
      <h2>Least Tested Classes</h2>
-     <table class="table-condensed">
+     <table class="table">
       <thead>
        <tr>
         <th></th>
         <th><div align="left">Class</div></th>
-        <th><div align="left">Coverage</div></th>
+        <th><div align="right">Coverage</div></th>
        </tr>
       </thead>
       <tbody>
@@ -52,12 +52,12 @@
     </div>
     <div class="span6">
      <h2>Least Tested Methods</h2>
-     <table class="table-condensed">
+     <table class="table">
       <thead>
        <tr>
         <th></th>
         <th><div align="left">Method</div></th>
-        <th><div align="left">Coverage</div></th>
+        <th><div align="right">Coverage</div></th>
        </tr>
       </thead>
       <tbody>
@@ -79,12 +79,12 @@
    <div class="row">
     <div class="span6">
      <h2>Top Project Risks (Classes)</h2>
-     <table class="table-condensed">
+     <table class="table">
       <thead>
        <tr>
         <th></th>
         <th><div align="left">Class</div></th>
-        <th><div align="left"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
        </tr>
       </thead>
       <tbody>
@@ -94,12 +94,12 @@
     </div>
     <div class="span6">
      <h2>Top Project Risks (Methods)</h2>
-     <table class="table-condensed">
+     <table class="table">
       <thead>
        <tr>
         <th></th>
         <th><div align="left">Method</div></th>
-        <th><div align="left"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
        </tr>
       </thead>
       <tbody>

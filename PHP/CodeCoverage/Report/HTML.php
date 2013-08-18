@@ -91,7 +91,7 @@ class PHP_CodeCoverage_Report_HTML
      *
      * @param array $options
      */
-    public function __construct($charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 35, $highLowerBound = 70, $generator = '')
+    public function __construct($charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {
         $this->charset        = $charset;
         $this->generator      = $generator;

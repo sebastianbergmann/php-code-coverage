@@ -25,85 +25,91 @@
   </header>
   <div class="container">
    <div class="row">
-    <div class="span6">
-     <h2>Class Coverage Distribution</h2>
-     <div id="classCoverageDistribution" style="height: 300px"></div>
-    </div>
-    <div class="span6">
-     <h2>Method Coverage Distribution</h2>
-     <div id="methodCoverageDistribution" style="height: 300px"></div>
+    <div class="span12">
+     <h2>Classes</h2>
     </div>
    </div>
    <div class="row">
     <div class="span6">
-     <h2>Least Tested Classes</h2>
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px"></div>
+    </div>
+    <div class="span6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px"></div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="span6" style="height: 300px; overflow: auto;">
+     <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
        <tr>
-        <th></th>
         <th><div align="left">Class</div></th>
         <th><div align="right">Coverage</div></th>
        </tr>
       </thead>
       <tbody>
-{least_tested_classes}
+{insufficient_coverage_classes}
       </tbody>
      </table>
     </div>
-    <div class="span6">
-     <h2>Least Tested Methods</h2>
+    <div class="span6" style="height: 300px; overflow: auto;">
+     <h3>Project Risks</h3>
      <table class="table">
       <thead>
        <tr>
-        <th></th>
-        <th><div align="left">Method</div></th>
-        <th><div align="right">Coverage</div></th>
+        <th><div align="left">Class</div></th>
+        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
        </tr>
       </thead>
       <tbody>
-{least_tested_methods}
+{project_risks_classes}
       </tbody>
      </table>
     </div>
    </div>
    <div class="row">
+    <div class="span12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
     <div class="span6">
-     <h2>Class Complexity</h2>
-     <div id="classComplexity" style="height: 300px"></div>
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px"></div>
     </div>
     <div class="span6">
-     <h2>Method Complexity</h2>
+     <h3>Complexity</h3>
      <div id="methodComplexity" style="height: 300px"></div>
     </div>
    </div>
    <div class="row">
-    <div class="span6">
-     <h2>Top Project Risks (Classes)</h2>
+    <div class="span6" style="height: 300px; overflow: auto;">
+     <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
        <tr>
-        <th></th>
-        <th><div align="left">Class</div></th>
-        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+        <th><div align="left">Method</div></th>
+        <th><div align="right">Coverage</div></th>
        </tr>
       </thead>
       <tbody>
-{top_project_risks_classes}
+{insufficient_coverage_methods}
       </tbody>
      </table>
     </div>
-    <div class="span6">
-     <h2>Top Project Risks (Methods)</h2>
+    <div class="span6" style="height: 300px; overflow: auto;">
+     <h3>Project Risks</h3>
      <table class="table">
       <thead>
        <tr>
-        <th></th>
         <th><div align="left">Method</div></th>
         <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
        </tr>
       </thead>
       <tbody>
-{top_project_risks_methods}
+{project_risks_methods}
       </tbody>
      </table>
     </div>

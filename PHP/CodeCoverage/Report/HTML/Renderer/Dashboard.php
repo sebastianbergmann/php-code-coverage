@@ -71,20 +71,20 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         $complexity           = $this->complexity($classes);
         $coverageDistribution = $this->coverageDistribution($classes);
-        $leastTested          = $this->leastTested($classes);
-        $topProjectRisks      = $this->topProjectRisks($classes);
+        $insufficientCoverage = $this->insufficientCoverage($classes);
+        $projectRisks         = $this->projectRisks($classes);
 
         $template->setVar(
           array(
-            'least_tested_classes'         => $leastTested['class'],
-            'least_tested_methods'         => $leastTested['method'],
-            'top_project_risks_classes'    => $topProjectRisks['class'],
-            'top_project_risks_methods'    => $topProjectRisks['method'],
-            'complexity_class'             => $complexity['class'],
-            'complexity_method'            => $complexity['method'],
-            'class_coverage_distribution'  => $coverageDistribution['class'],
-            'method_coverage_distribution' => $coverageDistribution['method'],
-            'backlink'                     => basename(str_replace('.dashboard', '', $file))
+            'insufficient_coverage_classes' => $insufficientCoverage['class'],
+            'insufficient_coverage_methods' => $insufficientCoverage['method'],
+            'project_risks_classes'         => $projectRisks['class'],
+            'project_risks_methods'         => $projectRisks['method'],
+            'complexity_class'              => $complexity['class'],
+            'complexity_method'             => $complexity['method'],
+            'class_coverage_distribution'   => $coverageDistribution['class'],
+            'method_coverage_distribution'  => $coverageDistribution['method'],
+            'backlink'                      => basename(str_replace('.dashboard', '', $file))
           )
         );
 
@@ -213,13 +213,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     }
 
     /**
-     * Returns the least tested classes / methods.
+     * Returns the classes / methods with insufficient coverage.
      *
-     * @param  array   $classes
-     * @param  integer $max
+     * @param  array $classes
      * @return array
      */
-    protected function leastTested(array $classes, $max = 10)
+    protected function insufficientCoverage(array $classes)
     {
         $leastTestedClasses = array();
         $leastTestedMethods = array();
@@ -227,7 +226,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < 100) {
+                if ($method['coverage'] < $this->highLowerBound) {
                     if ($className != '*') {
                         $key = $className . '::' . $methodName;
                     } else {
@@ -238,7 +237,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                 }
             }
 
-            if ($class['coverage'] < 100) {
+            if ($class['coverage'] < $this->highLowerBound) {
                 $leastTestedClasses[$className] = $class['coverage'];
             }
         }
@@ -246,29 +245,20 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         asort($leastTestedClasses);
         asort($leastTestedMethods);
 
-        $leastTestedClasses = array_slice($leastTestedClasses, 0, min($max, count($leastTestedClasses)));
-        $leastTestedMethods = array_slice($leastTestedMethods, 0, min($max, count($leastTestedMethods)));
-
-        $i = 1;
-
         foreach ($leastTestedClasses as $className => $coverage) {
             $result['class'] .= sprintf(
-              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
-              $i++,
+              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
               $classes[$className]['link'],
               $className,
               $coverage
             );
         }
 
-        $i = 1;
-
         foreach ($leastTestedMethods as $methodName => $coverage) {
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
-              $i++,
+              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
               $classes[$class]['methods'][$method]['link'],
               $methodName,
               $coverage
@@ -279,13 +269,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     }
 
     /**
-     * Returns the top project risks according to the CRAP index.
+     * Returns the project risks according to the CRAP index.
      *
-     * @param  array   $classes
-     * @param  integer $max
+     * @param  array $classes
      * @return array
      */
-    protected function topProjectRisks(array $classes, $max = 10)
+    protected function projectRisks(array $classes)
     {
         $classRisks  = array();
         $methodRisks = array();
@@ -294,7 +283,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < 100 && $method['ccn'] > 1) {
+                if ($method['coverage'] < $this->highLowerBound &&
+                    $method['ccn'] > 1) {
                     if ($className != '*') {
                         $key = $className . '::' . $methodName;
                     } else {
@@ -305,7 +295,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                 }
             }
 
-            if ($class['coverage'] < 100 &&
+            if ($class['coverage'] < $this->highLowerBound &&
                 $class['ccn'] > count($class['methods'])) {
                 $classRisks[$className] = $class['crap'];
             }
@@ -314,29 +304,20 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         arsort($classRisks);
         arsort($methodRisks);
 
-        $classRisks  = array_slice($classRisks, 0, min($max, count($classRisks)));
-        $methodRisks = array_slice($methodRisks, 0, min($max, count($methodRisks)));
-
-        $i = 1;
-
         foreach ($classRisks as $className => $crap) {
             $result['class'] .= sprintf(
-              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
-              $i++,
+              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
               $classes[$className]['link'],
               $className,
               $crap
             );
         }
 
-        $i = 1;
-
         foreach ($methodRisks as $methodName => $crap) {
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-              '       <tr><td><div align="right">%d.</div></td><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
-              $i++,
+              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
               $classes[$class]['methods'][$method]['link'],
               $methodName,
               $crap

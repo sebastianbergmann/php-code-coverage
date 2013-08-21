@@ -188,18 +188,21 @@ class PHP_CodeCoverage_Report_HTML
     {
         $dir = $this->getDirectory($target . 'css');
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
-        copy($this->templatePath . 'css/bootstrap-responsive.min.css', $dir . 'bootstrap-responsive.min.css');
         copy($this->templatePath . 'css/style.css', $dir . 'style.css');
+
+        $dir = $this->getDirectory($target . 'fonts');
+        copy($this->templatePath . 'fonts/glyphicons-halflings-regular.eot', $dir . 'glyphicons-halflings-regular.eot');
+        copy($this->templatePath . 'fonts/glyphicons-halflings-regular.svg', $dir . 'glyphicons-halflings-regular.svg');
+        copy($this->templatePath . 'fonts/glyphicons-halflings-regular.ttf', $dir . 'glyphicons-halflings-regular.ttf');
+        copy($this->templatePath . 'fonts/glyphicons-halflings-regular.woff', $dir . 'glyphicons-halflings-regular.woff');
 
         $dir = $this->getDirectory($target . 'js');
         copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
         copy($this->templatePath . 'js/highcharts.js', $dir . 'highcharts.js');
-        copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
+        copy($this->templatePath . 'js/holder.js', $dir . 'holder.js');
         copy($this->templatePath . 'js/html5shiv.js', $dir . 'html5shiv.js');
-
-        $dir = $this->getDirectory($target . 'img');
-        copy($this->templatePath . 'img/glyphicons-halflings.png', $dir . 'glyphicons-halflings.png');
-        copy($this->templatePath . 'img/glyphicons-halflings-white.png', $dir . 'glyphicons-halflings-white.png');
+        copy($this->templatePath . 'js/jquery.js', $dir . 'jquery.js');
+        copy($this->templatePath . 'js/respond.min.js', $dir . 'respond.min.js');
     }
 
     /**

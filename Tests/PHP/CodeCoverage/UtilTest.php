@@ -69,4 +69,60 @@ class PHP_CodeCoverage_UtilTest extends PHPUnit_Framework_TestCase
           '100.00%', PHP_CodeCoverage_Util::percent(100, 100, TRUE)
         );
     }
+
+    /**
+     * @covers       PHP_CodeCoverage_Util::reducePaths
+     * @dataProvider reducePathsProvider
+     */
+    public function testReducePaths($reducedPaths, $commonPath, $paths)
+    {
+        $_commonPath = PHP_CodeCoverage_Util::reducePaths($paths);
+
+        $this->assertEquals($reducedPaths, $paths);
+        $this->assertEquals($commonPath, $_commonPath);
+    }
+
+    public function reducePathsProvider()
+    {
+        return array(
+          array(
+            array(
+              'Money.php' => array(),
+              'MoneyBag.php' => array()
+            ),
+            '/home/sb/Money',
+            array(
+              '/home/sb/Money/Money.php' => array(),
+              '/home/sb/Money/MoneyBag.php' => array()
+            )
+          ),
+          array(
+            array(
+              'Money.php' => array()
+            ),
+            '/home/sb/Money/',
+            array(
+              '/home/sb/Money/Money.php' => array()
+            )
+          ),
+          array(
+            array(),
+            '.',
+            array()
+          ),
+          array(
+            array(
+              'Money.php' => array(),
+              'MoneyBag.php' => array(),
+              'Cash.phar/Cash.php' => array(),
+            ),
+            '/home/sb/Money',
+            array(
+              '/home/sb/Money/Money.php' => array(),
+              '/home/sb/Money/MoneyBag.php' => array(),
+              'phar:///home/sb/Money/Cash.phar/Cash.php' => array(),
+            ),
+          ),
+        );
+    }
 }

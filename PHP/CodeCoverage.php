@@ -794,4 +794,14 @@ class PHP_CodeCoverage
 
         return $this->ignoredLines[$filename];
     }
+
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
+
+    public function setTests(array $tests)
+    {
+        $this->tests = $tests;
+    }
 }

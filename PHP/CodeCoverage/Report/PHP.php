@@ -44,11 +44,11 @@
  */
 
 /**
- * Uses serialize() to write a PHP_CodeCoverage object to a file.
+ * Uses var_export() to write a PHP_CodeCoverage object to a file.
  *
  * @category   PHP
  * @package    CodeCoverage
- * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @author     uyga <iamuyga@gmail.com>
  * @copyright  2009-2013 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
@@ -63,12 +63,17 @@ class PHP_CodeCoverage_Report_PHP
      */
     public function process(PHP_CodeCoverage $coverage, $target = NULL)
     {
-        $coverage = serialize($coverage);
+        $output = '<?php $filter = new PHP_CodeCoverage_Filter();'
+            . '$filter->setBlacklistedFiles(' . var_export($coverage->filter()->getBlacklistedFiles(), 1) . ');'
+            . '$filter->setWhitelistedFiles(' . var_export($coverage->filter()->getWhitelistedFiles(), 1) . ');'
+            . '$object = new PHP_CodeCoverage(new PHP_CodeCoverage_Driver_Xdebug(), $filter); $object->setData('
+            . var_export($coverage->getData(), 1) . '); $object->setTests('
+            . var_export($coverage->getTests(), 1) . '); return $object;';
 
         if ($target !== NULL) {
-            return file_put_contents($target, $coverage);
+            return file_put_contents($target, $output);
         } else {
-            return $coverage;
+            return $output;
         }
     }
 }

@@ -347,4 +347,24 @@ class PHP_CodeCoverage_Filter
 
         $this->addDirectoryToBlacklist($directory);
     }
+
+    public function getBlacklistedFiles()
+    {
+        return $this->blacklistedFiles;
+    }
+
+    public function setBlacklistedFiles($blacklistedFiles)
+    {
+        $this->blacklistedFiles = $blacklistedFiles;
+    }
+
+    public function getWhitelistedFiles()
+    {
+        return $this->whitelistedFiles;
+    }
+
+    public function setWhitelistedFiles($whitelistedFiles)
+    {
+        $this->whitelistedFiles = $whitelistedFiles;
+    }
 }

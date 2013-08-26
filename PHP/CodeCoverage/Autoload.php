@@ -79,6 +79,7 @@ spl_autoload_register(
             'php_codecoverage_report_node_file' => '/CodeCoverage/Report/Node/File.php',
             'php_codecoverage_report_node_iterator' => '/CodeCoverage/Report/Node/Iterator.php',
             'php_codecoverage_report_php' => '/CodeCoverage/Report/PHP.php',
+            'php_codecoverage_report_phpsmart' => '/CodeCoverage/Report/PHPSmart.php',
             'php_codecoverage_report_text' => '/CodeCoverage/Report/Text.php',
             'php_codecoverage_report_xml' => '/CodeCoverage/Report/XML.php',
             'php_codecoverage_report_xml_directory' => '/CodeCoverage/Report/XML/Directory.php',

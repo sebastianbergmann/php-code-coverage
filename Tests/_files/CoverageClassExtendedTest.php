@@ -1,5 +1,4 @@
 <?php
-include_once('CoveredClass.php');
 class CoverageClassExtendedTest extends PHPUnit_Framework_TestCase
 {
     /**

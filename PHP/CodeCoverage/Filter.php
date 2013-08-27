@@ -348,21 +348,45 @@ class PHP_CodeCoverage_Filter
         $this->addDirectoryToBlacklist($directory);
     }
 
+    /**
+     * Returns the blacklisted files.
+     *
+     * @return array
+     * @since Method available since Release 1.3.0
+     */
     public function getBlacklistedFiles()
     {
         return $this->blacklistedFiles;
     }
 
+    /**
+     * Sets the blacklisted files.
+     *
+     * @param array $blacklistedFiles
+     * @since Method available since Release 1.3.0
+     */
     public function setBlacklistedFiles($blacklistedFiles)
     {
         $this->blacklistedFiles = $blacklistedFiles;
     }
 
+    /**
+     * Returns the whitelisted files.
+     *
+     * @return array
+     * @since Method available since Release 1.3.0
+     */
     public function getWhitelistedFiles()
     {
         return $this->whitelistedFiles;
     }
 
+    /**
+     * Sets the whitelisted files.
+     *
+     * @param array $whitelistedFiles
+     * @since Method available since Release 1.3.0
+     */
     public function setWhitelistedFiles($whitelistedFiles)
     {
         $this->whitelistedFiles = $whitelistedFiles;

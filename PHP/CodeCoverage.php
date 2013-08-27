@@ -196,6 +196,17 @@ class PHP_CodeCoverage
     }
 
     /**
+     * Sets the coverage data.
+     *
+     * @param array $data
+     * @since Method available since Release 1.3.0
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Returns the test data.
      *
      * @return array
@@ -204,6 +215,17 @@ class PHP_CodeCoverage
     public function getTests()
     {
         return $this->tests;
+    }
+
+    /**
+     * Sets the test data.
+     *
+     * @param array $tests
+     * @since Method available since Release 1.3.0
+     */
+    public function setTests(array $tests)
+    {
+        $this->tests = $tests;
     }
 
     /**
@@ -793,15 +815,5 @@ class PHP_CodeCoverage
         }
 
         return $this->ignoredLines[$filename];
-    }
-
-    public function setData(array $data)
-    {
-        $this->data = $data;
-    }
-
-    public function setTests(array $tests)
-    {
-        $this->tests = $tests;
     }
 }

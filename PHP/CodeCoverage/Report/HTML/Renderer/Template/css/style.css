@@ -3,7 +3,7 @@ body {
 }
 
 .popover {
- width: 600px;
+ max-width: none;
 }
 
 .table td {

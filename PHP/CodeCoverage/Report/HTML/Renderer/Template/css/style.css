@@ -6,6 +6,10 @@ body {
  max-width: none;
 }
 
+.glyphicon {
+ margin-right:.25em;
+}
+
 .table-bordered>thead>tr>td {
  border-bottom-width: 1px;
 }

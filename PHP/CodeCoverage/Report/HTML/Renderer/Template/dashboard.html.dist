@@ -15,7 +15,7 @@
   <header>
    <div class="container">
     <div class="row">
-     <div class="span12">
+     <div class="col-md-12">
       <ul class="breadcrumb">
 {breadcrumbs}
       </ul>
@@ -25,22 +25,22 @@
   </header>
   <div class="container">
    <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
      <h2>Classes</h2>
     </div>
    </div>
    <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Coverage Distribution</h3>
      <div id="classCoverageDistribution" style="height: 300px"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Complexity</h3>
      <div id="classComplexity" style="height: 300px"></div>
     </div>
    </div>
    <div class="row">
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
@@ -54,7 +54,7 @@
       </tbody>
      </table>
     </div>
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
      <table class="table">
       <thead>
@@ -70,22 +70,22 @@
     </div>
    </div>
    <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
      <h2>Methods</h2>
     </div>
    </div>
    <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Coverage Distribution</h3>
      <div id="methodCoverageDistribution" style="height: 300px"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Complexity</h3>
      <div id="methodComplexity" style="height: 300px"></div>
     </div>
    </div>
    <div class="row">
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
@@ -99,7 +99,7 @@
       </tbody>
      </table>
     </div>
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
      <table class="table">
       <thead>

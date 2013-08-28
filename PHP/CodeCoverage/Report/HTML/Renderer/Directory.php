@@ -118,7 +118,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
                   $item->getName()
                 );
 
-                $data['icon'] = '<i class="icon-folder-open"></i> ';
+                $data['icon'] = '<span class="glyphicon glyphicon-folder-open"></span> ';
             } else {
                 $data['name'] = sprintf(
                   '<a href="%s.html">%s</a>',
@@ -126,7 +126,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
                   $item->getName()
                 );
 
-                $data['icon'] = '<i class="icon-file"></i> ';
+                $data['icon'] = '<span class="glyphicon glyphicon-file"></span> ';
             }
         }
 

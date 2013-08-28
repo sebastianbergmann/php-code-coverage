@@ -3,15 +3,23 @@ body {
 }
 
 .popover {
- width: 600px;
+ max-width: none;
 }
 
-.table td {
+.glyphicon {
+ margin-right:.25em;
+}
+
+.table-bordered>thead>tr>td {
+ border-bottom-width: 1px;
+}
+
+.table tbody>tr>td, .table thead>tr>td {
  padding-top: 3px;
  padding-bottom: 3px;
 }
 
-.table-condensed td {
+.table-condensed tbody>tr>td {
  padding-top: 0;
  padding-bottom: 0;
 }
@@ -41,7 +49,7 @@ body {
 }
 
 td.big {
- width: 100px;
+ width: 117px;
 }
 
 td.small {

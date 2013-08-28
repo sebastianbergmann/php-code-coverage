@@ -5,42 +5,42 @@
   <title>Dashboard for {full_path}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="{path_to_root}css/bootstrap.min.css" rel="stylesheet">
-  <link href="{path_to_root}css/bootstrap-responsive.min.css" rel="stylesheet">
   <link href="{path_to_root}css/style.css" rel="stylesheet">
   <!--[if lt IE 9]>
   <script src="{path_to_root}js/html5shiv.js"></script>
+  <script src="{path_to_root}js/respond.min.js"></script>
   <![endif]-->
  </head>
  <body>
   <header>
    <div class="container">
     <div class="row">
-     <div class="span12">
-      <ul class="breadcrumb">
+     <div class="col-md-12">
+      <ol class="breadcrumb">
 {breadcrumbs}
-      </ul>
+      </ol>
      </div>
     </div>
    </div>
   </header>
   <div class="container">
    <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
      <h2>Classes</h2>
     </div>
    </div>
    <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Coverage Distribution</h3>
      <div id="classCoverageDistribution" style="height: 300px"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Complexity</h3>
      <div id="classComplexity" style="height: 300px"></div>
     </div>
    </div>
    <div class="row">
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
@@ -54,7 +54,7 @@
       </tbody>
      </table>
     </div>
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
      <table class="table">
       <thead>
@@ -70,22 +70,22 @@
     </div>
    </div>
    <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
      <h2>Methods</h2>
     </div>
    </div>
    <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Coverage Distribution</h3>
      <div id="methodCoverageDistribution" style="height: 300px"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
      <h3>Complexity</h3>
      <div id="methodComplexity" style="height: 300px"></div>
     </div>
    </div>
    <div class="row">
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
      <table class="table">
       <thead>
@@ -99,7 +99,7 @@
       </tbody>
      </table>
     </div>
-    <div class="span6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
      <table class="table">
       <thead>
@@ -121,8 +121,9 @@
     </p>
    </footer>
   </div>
-  <script src="{path_to_root}js/jquery.min.js" type="text/javascript"></script>
+  <script src="{path_to_root}js/jquery.js" type="text/javascript"></script>
   <script src="{path_to_root}js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="{path_to_root}js/holder.js" type="text/javascript"></script>
   <script src="{path_to_root}js/highcharts.js" type="text/javascript"></script>
   <script type="text/javascript">
 $(document).ready(function() {

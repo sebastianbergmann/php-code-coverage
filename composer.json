@@ -29,7 +29,8 @@
         "sebastian/version": ">=1.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "dev-master"
+        "phpunit/phpunit": "dev-master",
+        "ext-xdebug": ">=2.2.1"
     },
     "suggest": {
         "ext-dom": "*",

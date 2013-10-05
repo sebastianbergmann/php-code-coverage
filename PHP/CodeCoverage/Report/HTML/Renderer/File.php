@@ -44,13 +44,13 @@
  */
 
 if (!defined('T_CALLABLE')) {
-	define('T_CALLABLE', 'undefined');
+    define('T_CALLABLE', 'undefined');
 }
 if (!defined('T_INSTEADOF')) {
-	define('T_INSTEADOF', 'undefined');
+    define('T_INSTEADOF', 'undefined');
 }
 if (!defined('T_TRAIT')) {
-	define('T_TRAIT', 'undefined');
+    define('T_TRAIT', 'undefined');
 }
 
 /**

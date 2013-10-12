@@ -62,6 +62,7 @@ spl_autoload_register(
           $classes = array(
             'php_codecoverage' => '/CodeCoverage.php',
             'php_codecoverage_driver' => '/CodeCoverage/Driver.php',
+            'php_codecoverage_driver_hhvm' => '/CodeCoverage/Driver/HHVM.php',
             'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
             'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
             'php_codecoverage_exception_unintentionallycoveredcode' => '/CodeCoverage/Exception/UnintentionallyCoveredCode.php',

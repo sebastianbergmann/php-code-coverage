@@ -33,6 +33,7 @@
    <dir name="PHP">
     <dir name="CodeCoverage">
      <dir name="Driver">
+      <file baseinstalldir="/" name="HHVM.php" role="php" />
       <file baseinstalldir="/" name="Xdebug.php" role="php" />
      </dir>
      <dir name="Exception">

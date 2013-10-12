@@ -63,7 +63,7 @@ class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
     public function __construct()
     {
         if (!function_exists('fb_enable_code_coverage')) {
-            throw new PHP_CodeCoverage_Exception('You need HHVM for this driver');
+            throw new PHP_CodeCoverage_Exception('This driver requires HHVM');
         }
     }
 

@@ -99,3 +99,10 @@ span.success, span.warning, span.danger {
  bottom: 5px;
  outline: 0;
 }
+
+svg text {
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: #666;
+  fill: #666;
+}

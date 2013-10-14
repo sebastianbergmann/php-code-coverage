@@ -209,6 +209,9 @@ $(document).ready(function() {
       .showLegend(false)
       .forceX([0, 100]);
     chart.scatter.onlyCircles(false);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
 
     chart.xAxis.axisLabel('Code Coverage (in percent)');
     chart.yAxis.axisLabel('Cyclomatic Complexity');
@@ -231,6 +234,9 @@ $(document).ready(function() {
       .showLegend(false)
       .forceX([0, 100]);
     chart.scatter.onlyCircles(false);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
 
     chart.xAxis.axisLabel('Code Coverage (in percent)');
     chart.yAxis.axisLabel('Method Complexity');
@@ -253,6 +259,7 @@ $(document).ready(function() {
       values.push({
         x: value,
         y: data[key][1],
+        class: data[key][2],
         size: 0.05,
         shape: 'diamond'
       });

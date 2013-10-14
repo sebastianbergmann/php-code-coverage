@@ -199,7 +199,6 @@ class PHP_CodeCoverage_Report_HTML
 
         $dir = $this->getDirectory($target . 'js');
         copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
-        copy($this->templatePath . 'js/highcharts.js', $dir . 'highcharts.js');
         copy($this->templatePath . 'js/d3.min.js', $dir . 'd3.min.js');
         copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/holder.js', $dir . 'holder.js');

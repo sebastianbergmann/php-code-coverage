@@ -129,7 +129,13 @@ class PHP_CodeCoverage
     public function __construct(PHP_CodeCoverage_Driver $driver = NULL, PHP_CodeCoverage_Filter $filter = NULL)
     {
         if ($driver === NULL) {
-            $driver = new PHP_CodeCoverage_Driver_Xdebug;
+            if (function_exists('fb_enable_code_coverage')) {
+                $driver = new PHP_CodeCoverage_Driver_HHVM;
+            }
+
+            else if (extension_loaded('xdebug')) {
+                $driver = new PHP_CodeCoverage_Driver_Xdebug;
+            }
         }
 
         if ($filter === NULL) {

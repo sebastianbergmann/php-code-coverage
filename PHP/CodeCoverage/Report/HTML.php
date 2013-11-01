@@ -179,11 +179,13 @@ class PHP_CodeCoverage_Report_HTML
         $dir = $this->getDirectory($target . 'css');
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
         copy($this->templatePath . 'css/bootstrap-responsive.min.css', $dir . 'bootstrap-responsive.min.css');
+        copy($this->templatePath . 'css/nv.d3.css', $dir . 'nv.d3.css');
         copy($this->templatePath . 'css/style.css', $dir . 'style.css');
 
         $dir = $this->getDirectory($target . 'js');
         copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
-        copy($this->templatePath . 'js/highcharts.js', $dir . 'highcharts.js');
+        copy($this->templatePath . 'js/d3.min.js', $dir . 'd3.min.js');
+        copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
         copy($this->templatePath . 'js/html5shiv.js', $dir . 'html5shiv.js');
 

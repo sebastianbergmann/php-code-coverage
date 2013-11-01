@@ -61,7 +61,6 @@
   </div>
   <script src="js/jquery.min.js" type="text/javascript"></script>
   <script src="js/bootstrap.min.js" type="text/javascript"></script>
-  <script src="js/highcharts.js" type="text/javascript"></script>
   <script src="js/d3.min.js" type="text/javascript"></script>
   <script src="js/nv.d3.min.js" type="text/javascript"></script>
   <script type="text/javascript">

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="css/nv.d3.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
   <!--[if lt IE 9]>
   <script src="js/html5shiv.js"></script>
@@ -57,6 +58,8 @@
   <script src="js/jquery.min.js" type="text/javascript"></script>
   <script src="js/bootstrap.min.js" type="text/javascript"></script>
   <script src="js/highcharts.js" type="text/javascript"></script>
+  <script src="js/d3.min.js" type="text/javascript"></script>
+  <script src="js/nv.d3.min.js" type="text/javascript"></script>
   <script type="text/javascript">
 $(document).ready(function() {
  var classCoverageDistribution = new Highcharts.Chart({

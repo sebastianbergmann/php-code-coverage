@@ -34,7 +34,9 @@
     </div>
     <div class="span6">
      <h2>Class Complexity</h2>
-     <div id="classComplexity"></div>
+     <div id="classComplexity">
+       <svg></svg>
+     </div>
     </div>
    </div>
    <div class="row">
@@ -111,36 +113,52 @@ $(document).ready(function() {
     ];
   }
 
- var classComplexity = new Highcharts.Chart({
-  chart: {
-   renderTo: 'classComplexity',
-   type: 'scatter'
-  },
-  title: {text: ''},
-  legend: {enabled: false},
-  credits: {enabled: false},
-  xAxis: {
-   title: {text: 'Code Coverage (in percent)'},
-   labels: {enabled: true},
-   min: 0
-  },
-  yAxis: {
-   title: {text: 'Cyclomatic Complexity'},
-   labels: {enabled: true},
-   min: 0
-  },
-  tooltip: {
-   formatter: function() {
-    return this.point.config[2];
-   }
-  },
-  series: [{
-   data: {cc_values},
-   marker: {
-    symbol: 'diamond'
-   }
-  }],
- });
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.scatter.onlyCircles(false);
+    chart.tooltipContent(function(key, y, e, graph) {
+        return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData({cc_values}, 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
 });
   </script>
  </body>

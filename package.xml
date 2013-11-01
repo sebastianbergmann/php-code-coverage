@@ -42,6 +42,7 @@
          <dir name="css">
           <file baseinstalldir="/" name="bootstrap-responsive.min.css" role="php" />
           <file baseinstalldir="/" name="bootstrap.min.css" role="php" />
+          <file baseinstalldir="/" name="nv.d3.css" role="php" />
           <file baseinstalldir="/" name="style.css" role="php" />
          </dir>
          <dir name="img">

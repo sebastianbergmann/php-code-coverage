@@ -45,6 +45,7 @@
          <dir name="css">
           <file baseinstalldir="/" name="bootstrap-responsive.min.css" role="php" />
           <file baseinstalldir="/" name="bootstrap.min.css" role="php" />
+          <file baseinstalldir="/" name="nv.d3.css" role="php" />
           <file baseinstalldir="/" name="style.css" role="php" />
          </dir>
          <dir name="img">
@@ -53,9 +54,10 @@
          </dir>
          <dir name="js">
           <file baseinstalldir="/" name="bootstrap.min.js" role="php" />
-          <file baseinstalldir="/" name="highcharts.js" role="php" />
+          <file baseinstalldir="/" name="d3.min.js" role="php" />
           <file baseinstalldir="/" name="html5shiv.js" role="php" />
           <file baseinstalldir="/" name="jquery.min.js" role="php" />
+          <file baseinstalldir="/" name="nv.d3.min.js" role="php" />
          </dir>
          <file baseinstalldir="/" name="coverage_bar.html.dist" role="php" />
          <file baseinstalldir="/" name="dashboard.html.dist" role="php" />

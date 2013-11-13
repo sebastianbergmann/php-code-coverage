@@ -88,9 +88,25 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
-        $codeCoverage = xdebug_get_code_coverage();
+        $data = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
 
-        return $codeCoverage;
+        return $this->cleanup($data);
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     * @since Method available since Release 1.3.0
+     */
+    private function cleanup(array $data)
+    {
+        foreach (array_keys($data) as $file) {
+            if (isset($data[$file][0])) {
+                unset($data[$file][0]);
+            }
+        }
+
+        return $data;
     }
 }

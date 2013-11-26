@@ -33,19 +33,19 @@
    <div class="row">
     <div class="col-md-6">
      <h3>Coverage Distribution</h3>
-     <div id="classCoverageDistribution" style="height: 300px">
+     <div id="classCoverageDistribution" style="height: 300px;">
        <svg></svg>
      </div>
     </div>
     <div class="col-md-6">
      <h3>Complexity</h3>
-     <div id="classComplexity" style="height: 300px">
+     <div id="classComplexity" style="height: 300px;">
        <svg></svg>
      </div>
     </div>
    </div>
    <div class="row">
-    <div class="col-md-6" style="height: 300px;">
+    <div class="col-md-6">
      <h3>Insufficient Coverage</h3>
      <div class="scrollbox">
       <table class="table">
@@ -61,7 +61,7 @@
       </table>
      </div>
     </div>
-    <div class="col-md-6" style="height: 300px;">
+    <div class="col-md-6">
      <h3>Project Risks</h3>
      <div class="scrollbox">
       <table class="table">
@@ -86,19 +86,19 @@
    <div class="row">
     <div class="col-md-6">
      <h3>Coverage Distribution</h3>
-     <div id="methodCoverageDistribution" style="height: 300px">
+     <div id="methodCoverageDistribution" style="height: 300px;">
        <svg></svg>
      </div>
     </div>
     <div class="col-md-6">
      <h3>Complexity</h3>
-     <div id="methodComplexity" style="height: 300px">
+     <div id="methodComplexity" style="height: 300px;">
        <svg></svg>
      </div>
     </div>
    </div>
    <div class="row">
-    <div class="col-md-6" style="height: 300px;">
+    <div class="col-md-6">
      <h3>Insufficient Coverage</h3>
      <div class="scrollbox">
       <table class="table">
@@ -114,7 +114,7 @@
       </table>
      </div>
     </div>
-    <div class="col-md-6" style="height: 300px;">
+    <div class="col-md-6">
      <h3>Project Risks</h3>
      <div class="scrollbox">
       <table class="table">

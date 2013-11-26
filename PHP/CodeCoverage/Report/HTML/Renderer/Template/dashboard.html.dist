@@ -45,7 +45,7 @@
     </div>
    </div>
    <div class="row">
-    <div class="col-md-6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px;">
      <h3>Insufficient Coverage</h3>
      <div class="scrollbox">
       <table class="table">
@@ -61,7 +61,7 @@
       </table>
      </div>
     </div>
-    <div class="col-md-6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px;">
      <h3>Project Risks</h3>
      <div class="scrollbox">
       <table class="table">
@@ -98,7 +98,7 @@
     </div>
    </div>
    <div class="row">
-    <div class="col-md-6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px;">
      <h3>Insufficient Coverage</h3>
      <div class="scrollbox">
       <table class="table">
@@ -114,7 +114,7 @@
       </table>
      </div>
     </div>
-    <div class="col-md-6" style="height: 300px; overflow: auto;">
+    <div class="col-md-6" style="height: 300px;">
      <h3>Project Risks</h3>
      <div class="scrollbox">
       <table class="table">

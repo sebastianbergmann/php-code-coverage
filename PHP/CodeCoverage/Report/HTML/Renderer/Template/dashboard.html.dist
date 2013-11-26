@@ -47,31 +47,35 @@
    <div class="row">
     <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
-     <table class="table">
-      <thead>
-       <tr>
-        <th><div align="left">Class</div></th>
-        <th><div align="right">Coverage</div></th>
-       </tr>
-      </thead>
-      <tbody>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th><div align="left">Class</div></th>
+         <th><div align="right">Coverage</div></th>
+        </tr>
+       </thead>
+       <tbody>
 {insufficient_coverage_classes}
-      </tbody>
-     </table>
+       </tbody>
+      </table>
+     </div>
     </div>
     <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
-     <table class="table">
-      <thead>
-       <tr>
-        <th><div align="left">Class</div></th>
-        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
-       </tr>
-      </thead>
-      <tbody>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th><div align="left">Class</div></th>
+         <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+        </tr>
+       </thead>
+       <tbody>
 {project_risks_classes}
-      </tbody>
-     </table>
+       </tbody>
+      </table>
+     </div>
     </div>
    </div>
    <div class="row">
@@ -96,31 +100,35 @@
    <div class="row">
     <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Insufficient Coverage</h3>
-     <table class="table">
-      <thead>
-       <tr>
-        <th><div align="left">Method</div></th>
-        <th><div align="right">Coverage</div></th>
-       </tr>
-      </thead>
-      <tbody>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th><div align="left">Method</div></th>
+         <th><div align="right">Coverage</div></th>
+        </tr>
+       </thead>
+       <tbody>
 {insufficient_coverage_methods}
-      </tbody>
-     </table>
+       </tbody>
+      </table>
+     </div>
     </div>
     <div class="col-md-6" style="height: 300px; overflow: auto;">
      <h3>Project Risks</h3>
-     <table class="table">
-      <thead>
-       <tr>
-        <th><div align="left">Method</div></th>
-        <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
-       </tr>
-      </thead>
-      <tbody>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th><div align="left">Method</div></th>
+         <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+        </tr>
+       </thead>
+       <tbody>
 {project_risks_methods}
-      </tbody>
-     </table>
+       </tbody>
+      </table>
+     </div>
     </div>
    </div>
    <footer>

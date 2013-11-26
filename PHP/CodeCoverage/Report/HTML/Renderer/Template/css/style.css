@@ -106,3 +106,9 @@ svg text {
  color: #666;
  fill: #666;
 }
+
+.scrollbox {
+ height:245px;
+ overflow-x:hidden;
+ overflow-y:scroll;
+}

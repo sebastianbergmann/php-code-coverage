@@ -487,50 +487,32 @@ class PHP_CodeCoverage
      * @param  array $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
-    protected function applyCoversAnnotationFilter(&$data, $linesToBeCovered, array $linesToBeUsed)
+    protected function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
     {
-        if ($linesToBeCovered === FALSE) {
+        if ($linesToBeCovered === FALSE ||
+            ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
             $data = array();
             return;
         }
 
-        if (!empty($linesToBeCovered)) {
-            $count = count($data);
-            $data  = array_intersect_key($data, $linesToBeCovered);
-
-            if ($this->checkForUnintentionallyCoveredCode &&
-                $count != count($data) &&
-                empty($linesToBeUsed)) {
-                throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
-            }
-
-            foreach (array_keys($data) as $filename) {
-                $_linesToBeCovered = array_flip($linesToBeCovered[$filename]);
-
-                if (isset($linesToBeUsed[$filename])) {
-                    $_linesToBeUsed = array_flip($linesToBeUsed[$filename]);
-                } else {
-                    $_linesToBeUsed = FALSE;
-                }
-
-                if ($this->checkForUnintentionallyCoveredCode) {
-                    foreach ($data[$filename] as $k => $v) {
-                        if ($v == 1 &&
-                            !(isset($_linesToBeCovered[$k]) ||
-                             ($_linesToBeUsed !== FALSE && isset($_linesToBeUsed[$k])))) {
-                            throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode;
-                        }
-                    }
-                }
-
-                $data[$filename] = array_intersect_key(
-                  $data[$filename], $_linesToBeCovered
-                );
-            }
+        if (empty($linesToBeCovered)) {
+            return;
         }
 
-        else if ($this->forceCoversAnnotation) {
-            $data = array();
+        if ($this->checkForUnintentionallyCoveredCode) {
+            $this->performUnintentionallyCoveredCodeCheck(
+              $data, $linesToBeCovered, $linesToBeUsed
+            );
+        }
+
+        $data = array_intersect_key($data, $linesToBeCovered);
+
+        foreach (array_keys($data) as $filename) {
+            $_linesToBeCovered = array_flip($linesToBeCovered[$filename]);
+
+            $data[$filename] = array_intersect_key(
+              $data[$filename], $_linesToBeCovered
+            );
         }
     }
 
@@ -539,7 +521,7 @@ class PHP_CodeCoverage
      *
      * @param array $data
      */
-    protected function applyListsFilter(&$data)
+    protected function applyListsFilter(array &$data)
     {
         foreach (array_keys($data) as $filename) {
             if ($this->filter->isFiltered($filename)) {
@@ -553,7 +535,7 @@ class PHP_CodeCoverage
      *
      * @param array $data
      */
-    protected function applyIgnoredLinesFilter(&$data)
+    protected function applyIgnoredLinesFilter(array &$data)
     {
         foreach (array_keys($data) as $filename) {
             if (!$this->filter->isFile($filename)) {
@@ -571,9 +553,10 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param array $data
      * @since Method available since Release 1.1.0
      */
-    protected function initializeFilesThatAreSeenTheFirstTime($data)
+    protected function initializeFilesThatAreSeenTheFirstTime(array $data)
     {
         foreach ($data as $file => $lines) {
             if ($this->filter->isFile($file) && !isset($this->data[$file])) {
@@ -815,5 +798,80 @@ class PHP_CodeCoverage
         }
 
         return $this->ignoredLines[$filename];
+    }
+
+    /**
+     * @param  array $data
+     * @param  array $linesToBeCovered
+     * @param  array $linesToBeUsed
+     * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
+     * @since Method available since Release 1.3.0
+     */
+    protected function performUnintentionallyCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
+    {
+        $allowedLines = $this->getAllowedLines(
+          $linesToBeCovered, $linesToBeUsed
+        );
+
+        $message = '';
+
+        foreach ($data as $file => $_data) {
+            foreach ($_data as $line => $flag) {
+                if ($flag == 1 &&
+                    (!isset($allowedLines[$file]) ||
+                     !isset($allowedLines[$file][$line]))) {
+                    $message .= sprintf(
+                      '- %s:%d' . PHP_EOL,
+                      $file,
+                      $line
+                    );
+                }
+            }
+        }
+
+        if (!empty($message)) {
+            throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode(
+              $message
+            );
+        }
+    }
+
+    /**
+     * @param  array $linesToBeCovered
+     * @param  array $linesToBeUsed
+     * @return array
+     * @since Method available since Release 1.3.0
+     */
+    protected function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed)
+    {
+        $allowedLines = array();
+
+        foreach (array_keys($linesToBeCovered) as $file) {
+            if (!isset($allowedLines[$file])) {
+                $allowedLines[$file] = array();
+            }
+
+            $allowedLines[$file] = array_merge(
+              $allowedLines[$file], $linesToBeCovered[$file]
+            );
+        }
+
+        foreach (array_keys($linesToBeUsed) as $file) {
+            if (!isset($allowedLines[$file])) {
+                $allowedLines[$file] = array();
+            }
+
+            $allowedLines[$file] = array_merge(
+              $allowedLines[$file], $linesToBeUsed[$file]
+            );
+        }
+
+        foreach (array_keys($allowedLines) as $file) {
+            $allowedLines[$file] = array_flip(
+              array_unique($allowedLines[$file])
+            );
+        }
+
+        return $allowedLines;
     }
 }

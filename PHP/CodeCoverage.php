@@ -688,8 +688,8 @@ class PHP_CodeCoverage
                             $stop = TRUE;
                         }
 
-                        // be sure the comment doesn't have some token BEFORE it on the same line...
-                        // it would not be safe to ignore the whole line in those cases.
+                        // Do not ignore the whole line when there is a token
+                        // before the comment on the same line
                         if (0 === strpos($_token, $_line)) {
                             $count = substr_count($token, "\n");
                             $line  = $token->getLine();
@@ -699,9 +699,8 @@ class PHP_CodeCoverage
                             }
 
                             if ($token instanceof PHP_Token_DOC_COMMENT) {
-                                // Workaround for the fact the DOC_COMMENT token
-                                // does not include the final \n character in its
-                                // text.
+                                // The DOC_COMMENT token does not contain the
+                                // final \n character in its text
                                 if (substr(trim($lines[$i-1]), -2) == '*/') {
                                     $this->ignoredLines[$filename][] = $i;
                                 }
@@ -768,7 +767,9 @@ class PHP_CodeCoverage
 
                     case 'PHP_Token_NAMESPACE': {
                         $this->ignoredLines[$filename][] = $token->getEndLine();
-                    } // Intentional fallthrough
+                    }
+
+                    // Intentional fallthrough
                     case 'PHP_Token_OPEN_TAG':
                     case 'PHP_Token_CLOSE_TAG':
                     case 'PHP_Token_USE': {

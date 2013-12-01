@@ -669,7 +669,6 @@ class PHP_CodeCoverage
                 switch (get_class($token)) {
                     case 'PHP_Token_COMMENT':
                     case 'PHP_Token_DOC_COMMENT': {
-
                         $_token = trim($token);
                         $_line  = trim($lines[$token->getLine() - 1]);
 

@@ -61,19 +61,19 @@ class PHP_CodeCoverage_Filter
      *
      * @var array
      */
-    protected $blacklistedFiles = array();
+    private $blacklistedFiles = array();
 
     /**
      * Source files that are whitelisted.
      *
      * @var array
      */
-    protected $whitelistedFiles = array();
+    private $whitelistedFiles = array();
 
     /**
      * @var boolean
      */
-    protected $blacklistPrefilled = FALSE;
+    private $blacklistPrefilled = FALSE;
 
     /**
      * Adds a directory to the blacklist (recursively).
@@ -302,7 +302,7 @@ class PHP_CodeCoverage_Filter
     /**
      * @since Method available since Release 1.2.3
      */
-    protected function prefillBlacklist()
+    private function prefillBlacklist()
     {
         if (defined('__PHPUNIT_PHAR__')) {
             $this->addFileToBlacklist(__PHPUNIT_PHAR__);
@@ -332,7 +332,7 @@ class PHP_CodeCoverage_Filter
      * @param integer $parent
      * @since Method available since Release 1.2.3
      */
-    protected function addDirectoryContainingClassToBlacklist($className, $parent = 1)
+    private function addDirectoryContainingClassToBlacklist($className, $parent = 1)
     {
         if (!class_exists($className)) {
             return;

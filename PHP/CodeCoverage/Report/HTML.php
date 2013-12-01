@@ -59,32 +59,32 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @var string
      */
-    protected $templatePath;
+    private $templatePath;
 
     /**
      * @var string
      */
-    protected $charset;
+    private $charset;
 
     /**
      * @var string
      */
-    protected $generator;
+    private $generator;
 
     /**
      * @var integer
      */
-    protected $lowUpperBound;
+    private $lowUpperBound;
 
     /**
      * @var integer
      */
-    protected $highLowerBound;
+    private $highLowerBound;
 
     /**
      * @var boolean
      */
-    protected $highlight;
+    private $highlight;
 
     /**
      * Constructor.
@@ -184,7 +184,7 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @param string $target
      */
-    protected function copyFiles($target)
+    private function copyFiles($target)
     {
         $dir = $this->getDirectory($target . 'css');
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
@@ -213,7 +213,7 @@ class PHP_CodeCoverage_Report_HTML
      * @throws PHP_CodeCoverage_Exception
      * @since  Method available since Release 1.2.0
      */
-    protected function getDirectory($directory)
+    private function getDirectory($directory)
     {
         if (substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
             $directory .= DIRECTORY_SEPARATOR;

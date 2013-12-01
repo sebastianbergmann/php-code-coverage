@@ -59,66 +59,66 @@ class PHP_CodeCoverage
     /**
      * @var PHP_CodeCoverage_Driver
      */
-    protected $driver;
+    private $driver;
 
     /**
      * @var PHP_CodeCoverage_Filter
      */
-    protected $filter;
+    private $filter;
 
     /**
      * @var boolean
      */
-    protected $cacheTokens = FALSE;
+    private $cacheTokens = FALSE;
 
     /**
      * @var boolean
      */
-    protected $checkForUnintentionallyCoveredCode = FALSE;
+    private $checkForUnintentionallyCoveredCode = FALSE;
 
     /**
      * @var boolean
      */
-    protected $forceCoversAnnotation = FALSE;
+    private $forceCoversAnnotation = FALSE;
 
     /**
      * @var boolean
      */
-    protected $mapTestClassNameToCoveredClassName = FALSE;
+    private $mapTestClassNameToCoveredClassName = FALSE;
 
     /**
      * @var boolean
      */
-    protected $addUncoveredFilesFromWhitelist = TRUE;
+    private $addUncoveredFilesFromWhitelist = TRUE;
 
     /**
      * @var boolean
      */
-    protected $processUncoveredFilesFromWhitelist = FALSE;
+    private $processUncoveredFilesFromWhitelist = FALSE;
 
     /**
      * @var mixed
      */
-    protected $currentId;
+    private $currentId;
 
     /**
      * Code coverage data.
      *
      * @var array
      */
-    protected $data = array();
+    private $data = array();
 
     /**
      * @var array
      */
-    protected $ignoredLines = array();
+    private $ignoredLines = array();
 
     /**
      * Test data.
      *
      * @var array
      */
-    protected $tests = array();
+    private $tests = array();
 
     /**
      * Constructor.
@@ -487,7 +487,7 @@ class PHP_CodeCoverage
      * @param  array $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      */
-    protected function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
+    private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
     {
         if ($linesToBeCovered === FALSE ||
             ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
@@ -521,7 +521,7 @@ class PHP_CodeCoverage
      *
      * @param array $data
      */
-    protected function applyListsFilter(array &$data)
+    private function applyListsFilter(array &$data)
     {
         foreach (array_keys($data) as $filename) {
             if ($this->filter->isFiltered($filename)) {
@@ -535,7 +535,7 @@ class PHP_CodeCoverage
      *
      * @param array $data
      */
-    protected function applyIgnoredLinesFilter(array &$data)
+    private function applyIgnoredLinesFilter(array &$data)
     {
         foreach (array_keys($data) as $filename) {
             if (!$this->filter->isFile($filename)) {
@@ -556,7 +556,7 @@ class PHP_CodeCoverage
      * @param array $data
      * @since Method available since Release 1.1.0
      */
-    protected function initializeFilesThatAreSeenTheFirstTime(array $data)
+    private function initializeFilesThatAreSeenTheFirstTime(array $data)
     {
         foreach ($data as $file => $lines) {
             if ($this->filter->isFile($file) && !isset($this->data[$file])) {
@@ -572,7 +572,7 @@ class PHP_CodeCoverage
     /**
      * Processes whitelisted files that are not covered.
      */
-    protected function addUncoveredFilesFromWhitelist()
+    private function addUncoveredFilesFromWhitelist()
     {
         $data           = array();
         $uncoveredFiles = array_diff(
@@ -607,7 +607,7 @@ class PHP_CodeCoverage
      * @param array  $data
      * @param array  $uncoveredFiles
      */
-    protected function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
+    private function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
     {
         $this->driver->start();
         include_once $uncoveredFile;
@@ -635,7 +635,7 @@ class PHP_CodeCoverage
      * @throws PHP_CodeCoverage_Exception
      * @since  Method available since Release 1.3.0
      */
-    protected function getLinesToBeIgnored($filename)
+    private function getLinesToBeIgnored($filename)
     {
         if (!is_string($filename)) {
             throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
@@ -807,7 +807,7 @@ class PHP_CodeCoverage
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
      * @since Method available since Release 1.3.0
      */
-    protected function performUnintentionallyCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
+    private function performUnintentionallyCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
     {
         $allowedLines = $this->getAllowedLines(
           $linesToBeCovered, $linesToBeUsed
@@ -842,7 +842,7 @@ class PHP_CodeCoverage
      * @return array
      * @since Method available since Release 1.3.0
      */
-    protected function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed)
+    private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed)
     {
         $allowedLines = array();
 

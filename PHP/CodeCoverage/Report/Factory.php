@@ -83,7 +83,7 @@ class PHP_CodeCoverage_Report_Factory
      * @param array                                  $tests
      * @param boolean                                $cacheTokens
      */
-    protected function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
+    private function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
     {
         foreach ($items as $key => $value) {
             if (substr($key, -2) == '/f') {
@@ -142,7 +142,7 @@ class PHP_CodeCoverage_Report_Factory
      * @param  array $files
      * @return array
      */
-    protected function buildDirectoryStructure($files)
+    private function buildDirectoryStructure($files)
     {
         $result = array();
 
@@ -207,7 +207,7 @@ class PHP_CodeCoverage_Report_Factory
      * @param  array $files
      * @return string
      */
-    protected function reducePaths(&$files)
+    private function reducePaths(&$files)
     {
         if (empty($files)) {
             return '.';

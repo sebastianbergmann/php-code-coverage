@@ -70,7 +70,7 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
  */
 class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
-    protected $coverage;
+    private $coverage;
 
     protected function setUp()
     {

@@ -715,6 +715,8 @@ class PHP_CodeCoverage
                     case 'PHP_Token_FUNCTION': {
                         $docblock = $token->getDocblock();
 
+                        $this->ignoredLines[$filename][] = $token->getLine();
+
                         if (strpos($docblock, '@codeCoverageIgnore')) {
                             $endLine = $token->getEndLine();
 

@@ -71,17 +71,10 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
 class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
     protected $coverage;
-    protected $getLinesToBeIgnored;
 
     protected function setUp()
     {
         $this->coverage = new PHP_CodeCoverage;
-
-        $this->getLinesToBeIgnored = new ReflectionMethod(
-          'PHP_CodeCoverage', 'getLinesToBeIgnored'
-        );
-
-        $this->getLinesToBeIgnored->setAccessible(TRUE);
     }
 
     /**
@@ -383,7 +376,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             38,
             39
           ),
-          $this->getLinesToBeIgnored->invoke(
+          $this->getLinesToBeIgnored()->invoke(
             $this->coverage,
             TEST_FILES_PATH . 'source_with_ignore.php'
           )
@@ -397,7 +390,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $this->assertEquals(
           array(1, 5),
-          $this->getLinesToBeIgnored->invoke(
+          $this->getLinesToBeIgnored()->invoke(
             $this->coverage,
             TEST_FILES_PATH . 'source_without_ignore.php'
           )
@@ -421,7 +414,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             7 => 19,
             8 => 20
           ),
-          $this->getLinesToBeIgnored->invoke(
+          $this->getLinesToBeIgnored()->invoke(
             $this->coverage,
             TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
           )
@@ -462,10 +455,24 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             24 => 33,
             25 => 36
           ),
-          $this->getLinesToBeIgnored->invoke(
+          $this->getLinesToBeIgnored()->invoke(
             $this->coverage,
             TEST_FILES_PATH . 'source_with_oneline_annotations.php'
           )
         );
+    }
+
+    /**
+     * @return ReflectionMethod
+     */
+    private function getLinesToBeIgnored()
+    {
+        $getLinesToBeIgnored = new ReflectionMethod(
+            'PHP_CodeCoverage', 'getLinesToBeIgnored'
+        );
+
+        $getLinesToBeIgnored->setAccessible(TRUE);
+
+        return $getLinesToBeIgnored;
     }
 }

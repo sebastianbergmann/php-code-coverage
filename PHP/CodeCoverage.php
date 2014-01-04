@@ -286,11 +286,12 @@ class PHP_CodeCoverage
     /**
      * Appends code coverage data.
      *
-     * @param array   $data
-     * @param mixed   $id
-     * @param boolean $append
-     * @param mixed   $linesToBeCovered
-     * @param array   $linesToBeUsed
+     * @param  array   $data
+     * @param  mixed   $id
+     * @param  boolean $append
+     * @param  mixed   $linesToBeCovered
+     * @param  array   $linesToBeUsed
+     * @throws PHP_CodeCoverage_Exception
      */
     public function append(array $data, $id = NULL, $append = TRUE, $linesToBeCovered = array(), array $linesToBeUsed = array())
     {
@@ -395,7 +396,6 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param boolean $flag
      * @since Method available since Release 1.1.0
      */
     public function getCacheTokens()

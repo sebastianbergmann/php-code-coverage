@@ -166,6 +166,7 @@ class PHP_CodeCoverage_Report_XML
             foreach ($tests as $test) {
                 $coverage->addTest($test);
             }
+            $coverage->finalize();
         }
 
         $this->initTargetDirectory(

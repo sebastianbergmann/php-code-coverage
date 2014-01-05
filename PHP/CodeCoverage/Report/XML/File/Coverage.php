@@ -54,7 +54,6 @@
  */
 class PHP_CodeCoverage_Report_XML_File_Coverage
 {
-
     /**
      * @var XMLWriter
      */
@@ -69,7 +68,6 @@ class PHP_CodeCoverage_Report_XML_File_Coverage
      * @var bool
      */
     private $finalized = false;
-
 
     public function __construct(DOMElement $context, $line)
     {
@@ -100,10 +98,11 @@ class PHP_CodeCoverage_Report_XML_File_Coverage
         $fragment->appendXML($this->writer->outputMemory());
 
         $this->contextNode->parentNode->replaceChild(
-            $fragment,
-            $this->contextNode
+          $fragment,
+          $this->contextNode
         );
 
         $this->finalized = true;
     }
 }
+

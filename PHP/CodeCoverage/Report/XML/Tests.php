@@ -56,6 +56,15 @@ class PHP_CodeCoverage_Report_XML_Tests
 {
     private $contextNode;
 
+    private $codeMap = array(
+        0 => 'PASSED',     // PHPUnit_Runner_BaseTestRunner::STATUS_PASSED
+        1 => 'SKIPPED',    // PHPUnit_Runner_BaseTestRunner::STATUS_SKIPPED
+        2 => 'INCOMPLETE', // PHPUnit_Runner_BaseTestRunner::STATUS_INCOMPLETE
+        3 => 'FAILURE',    // PHPUnit_Runner_BaseTestRunner::STATUS_FAILURE
+        4 => 'ERROR',      // PHPUnit_Runner_BaseTestRunner::STATUS_ERROR
+        5 => 'RISKY'       // PHPUnit_Runner_BaseTestRunner::STATUS_RISKY
+    );
+
     public function __construct(DOMElement $context)
     {
         $this->contextNode = $context;
@@ -68,8 +77,9 @@ class PHP_CodeCoverage_Report_XML_Tests
               'http://schema.phpunit.de/coverage/1.0', 'test'
             )
         );
-
         $node->setAttribute('name', $test);
-        $node->setAttribute('result', $result);
+        $node->setAttribute('result', (int)$result);
+        $node->setAttribute('status', $this->codeMap[(int)$result]);
+
     }
 }

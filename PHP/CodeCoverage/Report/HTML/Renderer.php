@@ -103,7 +103,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound)
     {
-        $version = new SebastianBergmann\Version('1.3', __DIR__);
+        $version = new SebastianBergmann\Version('1.4', __DIR__);
 
         $this->templatePath   = $templatePath;
         $this->charset        = $charset;

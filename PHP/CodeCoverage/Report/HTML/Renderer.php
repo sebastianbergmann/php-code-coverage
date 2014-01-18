@@ -196,6 +196,16 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
+        if (defined('HPHP_VERSION')) {
+            $runtimeName    = 'HHVM';
+            $runtimeVersion = HPHP_VERSION;
+            $runtimeLink    = 'http://hhvm.com/';
+        } else {
+            $runtimeName    = 'PHP';
+            $runtimeVersion = PHP_VERSION;
+            $runtimeLink    = 'http://php.net/';
+        }
+
         $template->setVar(
           array(
             'id'               => $node->getId(),
@@ -205,7 +215,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             'charset'          => $this->charset,
             'date'             => $this->date,
             'version'          => $this->version,
-            'php_version'      => PHP_VERSION,
+            'runtime_name'     => $runtimeName,
+            'runtime_version'  => $runtimeVersion,
+            'runtime_link'     => $runtimeLink,
             'generator'        => $this->generator,
             'low_upper_bound'  => $this->lowUpperBound,
             'high_lower_bound' => $this->highLowerBound

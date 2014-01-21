@@ -173,7 +173,7 @@ class PHP_CodeCoverage_Report_Text
         $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
-            return $this->outputStream->write($output . PHP_EOL);
+            return $output . PHP_EOL;
         }
 
         $classCoverage = array();

@@ -62,12 +62,12 @@ class PHP_CodeCoverage_Report_PHP
      * @param  string           $target
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $target = NULL)
+    public function process(PHP_CodeCoverage $coverage, $target = null)
     {
         $filter = $coverage->filter();
 
         $output = sprintf(
-          '<?php
+            '<?php
 $coverage = new PHP_CodeCoverage;
 $coverage->setData(%s);
 $coverage->setTests(%s);
@@ -77,14 +77,13 @@ $filter->setBlacklistedFiles(%s);
 $filter->setWhitelistedFiles(%s);
 
 return $coverage;',
-
-          var_export($coverage->getData(), 1),
-          var_export($coverage->getTests(), 1),
-          var_export($filter->getBlacklistedFiles(), 1),
-          var_export($filter->getWhitelistedFiles(), 1)
+            var_export($coverage->getData(), 1),
+            var_export($coverage->getTests(), 1),
+            var_export($filter->getBlacklistedFiles(), 1),
+            var_export($filter->getWhitelistedFiles(), 1)
         );
 
-        if ($target !== NULL) {
+        if ($target !== null) {
             return file_put_contents($target, $output);
         } else {
             return $output;

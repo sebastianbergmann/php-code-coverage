@@ -64,7 +64,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     {
         $classes  = $node->getClassesAndTraits();
         $template = new Text_Template(
-          $this->templatePath . 'dashboard.html'
+            $this->templatePath . 'dashboard.html'
         );
 
         $this->setCommonTemplateVariables($template, $node);
@@ -75,17 +75,17 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         $projectRisks         = $this->projectRisks($classes);
 
         $template->setVar(
-          array(
-            'insufficient_coverage_classes' => $insufficientCoverage['class'],
-            'insufficient_coverage_methods' => $insufficientCoverage['method'],
-            'project_risks_classes'         => $projectRisks['class'],
-            'project_risks_methods'         => $projectRisks['method'],
-            'complexity_class'              => $complexity['class'],
-            'complexity_method'             => $complexity['method'],
-            'class_coverage_distribution'   => $coverageDistribution['class'],
-            'method_coverage_distribution'  => $coverageDistribution['method'],
-            'backlink'                      => basename(str_replace('.dashboard', '', $file))
-          )
+            array(
+                'insufficient_coverage_classes' => $insufficientCoverage['class'],
+                'insufficient_coverage_methods' => $insufficientCoverage['method'],
+                'project_risks_classes'         => $projectRisks['class'],
+                'project_risks_methods'         => $projectRisks['method'],
+                'complexity_class'              => $complexity['class'],
+                'complexity_method'             => $complexity['method'],
+                'class_coverage_distribution'   => $coverageDistribution['class'],
+                'method_coverage_distribution'  => $coverageDistribution['method'],
+                'backlink'                      => basename(str_replace('.dashboard', '', $file))
+            )
         );
 
         $template->renderTo($file);
@@ -108,30 +108,30 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                 }
 
                 $result['method'][] = array(
-                  $method['coverage'],
-                  $method['ccn'],
-                  sprintf(
-                    '<a href="%s">%s</a>',
-                    $method['link'],
-                    $methodName
-                  )
+                    $method['coverage'],
+                    $method['ccn'],
+                    sprintf(
+                        '<a href="%s">%s</a>',
+                        $method['link'],
+                        $methodName
+                    )
                 );
             }
 
             $result['class'][] = array(
-              $class['coverage'],
-              $class['ccn'],
-              sprintf(
-                '<a href="%s">%s</a>',
-                $class['link'],
-                $className
-              )
+                $class['coverage'],
+                $class['ccn'],
+                sprintf(
+                    '<a href="%s">%s</a>',
+                    $class['link'],
+                    $className
+                )
             );
         }
 
         return array(
-          'class' => json_encode($result['class']),
-          'method' => json_encode($result['method'])
+            'class' => json_encode($result['class']),
+            'method' => json_encode($result['method'])
         );
     }
 
@@ -144,34 +144,34 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     protected function coverageDistribution(array $classes)
     {
         $result = array(
-          'class' => array(
-            '0%'      => 0,
-            '0-10%'   => 0,
-            '10-20%'  => 0,
-            '20-30%'  => 0,
-            '30-40%'  => 0,
-            '40-50%'  => 0,
-            '50-60%'  => 0,
-            '60-70%'  => 0,
-            '70-80%'  => 0,
-            '80-90%'  => 0,
-            '90-100%' => 0,
-            '100%'    => 0
-          ),
-          'method' => array(
-            '0%'      => 0,
-            '0-10%'   => 0,
-            '10-20%'  => 0,
-            '20-30%'  => 0,
-            '30-40%'  => 0,
-            '40-50%'  => 0,
-            '50-60%'  => 0,
-            '60-70%'  => 0,
-            '70-80%'  => 0,
-            '80-90%'  => 0,
-            '90-100%' => 0,
-            '100%'    => 0
-          )
+            'class' => array(
+                '0%'      => 0,
+                '0-10%'   => 0,
+                '10-20%'  => 0,
+                '20-30%'  => 0,
+                '30-40%'  => 0,
+                '40-50%'  => 0,
+                '50-60%'  => 0,
+                '60-70%'  => 0,
+                '70-80%'  => 0,
+                '80-90%'  => 0,
+                '90-100%' => 0,
+                '100%'    => 0
+            ),
+            'method' => array(
+                '0%'      => 0,
+                '0-10%'   => 0,
+                '10-20%'  => 0,
+                '20-30%'  => 0,
+                '30-40%'  => 0,
+                '40-50%'  => 0,
+                '50-60%'  => 0,
+                '60-70%'  => 0,
+                '70-80%'  => 0,
+                '80-90%'  => 0,
+                '90-100%' => 0,
+                '100%'    => 0
+            )
         );
 
         foreach ($classes as $class) {
@@ -199,8 +199,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         }
 
         return array(
-          'class' => json_encode(array_values($result['class'])),
-          'method' => json_encode(array_values($result['method']))
+            'class' => json_encode(array_values($result['class'])),
+            'method' => json_encode(array_values($result['method']))
         );
     }
 
@@ -239,10 +239,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($leastTestedClasses as $className => $coverage) {
             $result['class'] .= sprintf(
-              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
-              $classes[$className]['link'],
-              $className,
-              $coverage
+                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+                $classes[$className]['link'],
+                $className,
+                $coverage
             );
         }
 
@@ -250,10 +250,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
-              $classes[$class]['methods'][$method]['link'],
-              $methodName,
-              $coverage
+                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+                $classes[$class]['methods'][$method]['link'],
+                $methodName,
+                $coverage
             );
         }
 
@@ -297,10 +297,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($classRisks as $className => $crap) {
             $result['class'] .= sprintf(
-              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
-              $classes[$className]['link'],
-              $className,
-              $crap
+                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+                $classes[$className]['link'],
+                $className,
+                $crap
             );
         }
 
@@ -308,10 +308,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-              '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
-              $classes[$class]['methods'][$method]['link'],
-              $methodName,
-              $crap
+                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+                $classes[$class]['methods'][$method]['link'],
+                $methodName,
+                $crap
             );
         }
 
@@ -321,10 +321,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
     {
         return sprintf(
-          '        <li><a href="%s.html">%s</a></li>' . "\n" .
-          '        <li class="active">(Dashboard)</li>' . "\n",
-          $node->getId(),
-          $node->getName()
+            '        <li><a href="%s.html">%s</a></li>' . "\n" .
+            '        <li class="active">(Dashboard)</li>' . "\n",
+            $node->getId(),
+            $node->getName()
         );
     }
 }

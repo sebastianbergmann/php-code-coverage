@@ -64,12 +64,12 @@ class PHP_CodeCoverage_Report_Text
     protected $showOnlySummary;
 
     protected $colors = array(
-      'green'  => "\x1b[30;42m",
-      'yellow' => "\x1b[30;43m",
-      'red'    => "\x1b[37;41m",
-      'header' => "\x1b[1;37;40m",
-      'reset'  => "\x1b[0m",
-      'eol'    => "\x1b[2K",
+        'green'  => "\x1b[30;42m",
+        'yellow' => "\x1b[30;43m",
+        'red'    => "\x1b[37;41m",
+        'header' => "\x1b[1;37;40m",
+        'reset'  => "\x1b[0m",
+        'eol'    => "\x1b[2K",
     );
 
     public function __construct($lowUpperBound, $highLowerBound, $showUncoveredFiles, $showOnlySummary)
@@ -85,70 +85,70 @@ class PHP_CodeCoverage_Report_Text
      * @param  bool             $showColors
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $showColors = FALSE)
+    public function process(PHP_CodeCoverage $coverage, $showColors = false)
     {
         $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();
         unset($coverage);
 
         $colors = array(
-          'header'  => '',
-          'classes' => '',
-          'methods' => '',
-          'lines'   => '',
-          'reset'   => '',
-          'eol'     => ''
+            'header'  => '',
+            'classes' => '',
+            'methods' => '',
+            'lines'   => '',
+            'reset'   => '',
+            'eol'     => ''
         );
 
         if ($showColors) {
             $colors['classes'] = $this->getCoverageColor(
-                                   $report->getNumTestedClassesAndTraits(),
-                                   $report->getNumClassesAndTraits()
-                                 );
+                $report->getNumTestedClassesAndTraits(),
+                $report->getNumClassesAndTraits()
+            );
             $colors['methods'] = $this->getCoverageColor(
-                                   $report->getNumTestedMethods(),
-                                   $report->getNumMethods()
-                                 );
+                $report->getNumTestedMethods(),
+                $report->getNumMethods()
+            );
             $colors['lines']   = $this->getCoverageColor(
-                                   $report->getNumExecutedLines(),
-                                   $report->getNumExecutableLines()
-                                 );
+                $report->getNumExecutedLines(),
+                $report->getNumExecutableLines()
+            );
             $colors['reset']   = $this->colors['reset'];
             $colors['header']  = $this->colors['header'];
             $colors['eol']     = $this->colors['eol'];
         }
 
         $classes = sprintf(
-          '  Classes: %6s (%d/%d)',
-          PHP_CodeCoverage_Util::percent(
+            '  Classes: %6s (%d/%d)',
+            PHP_CodeCoverage_Util::percent(
+                $report->getNumTestedClassesAndTraits(),
+                $report->getNumClassesAndTraits(),
+                true
+            ),
             $report->getNumTestedClassesAndTraits(),
-            $report->getNumClassesAndTraits(),
-            TRUE
-          ),
-          $report->getNumTestedClassesAndTraits(),
-          $report->getNumClassesAndTraits()
+            $report->getNumClassesAndTraits()
         );
 
         $methods = sprintf(
-          '  Methods: %6s (%d/%d)',
-          PHP_CodeCoverage_Util::percent(
+            '  Methods: %6s (%d/%d)',
+            PHP_CodeCoverage_Util::percent(
+                $report->getNumTestedMethods(),
+                $report->getNumMethods(),
+                true
+            ),
             $report->getNumTestedMethods(),
-            $report->getNumMethods(),
-            TRUE
-          ),
-          $report->getNumTestedMethods(),
-          $report->getNumMethods()
+            $report->getNumMethods()
         );
 
         $lines = sprintf(
-          '  Lines:   %6s (%d/%d)',
-          PHP_CodeCoverage_Util::percent(
+            '  Lines:   %6s (%d/%d)',
+            PHP_CodeCoverage_Util::percent(
+                $report->getNumExecutedLines(),
+                $report->getNumExecutableLines(),
+                true
+            ),
             $report->getNumExecutedLines(),
-            $report->getNumExecutableLines(),
-            TRUE
-          ),
-          $report->getNumExecutedLines(),
-          $report->getNumExecutableLines()
+            $report->getNumExecutableLines()
         );
 
         $padding = max(array_map('strlen', array($classes, $methods, $lines)));
@@ -239,8 +239,8 @@ class PHP_CodeCoverage_Report_Text
                 }
 
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
-                  . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
-                  . '  ' . $linesColor  . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
+                    . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
+                    . '  ' . $linesColor  . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
                 ;
             }
         }
@@ -251,7 +251,7 @@ class PHP_CodeCoverage_Report_Text
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
     {
         $coverage = PHP_CodeCoverage_Util::percent(
-          $numberOfCoveredElements, $totalNumberOfElements
+            $numberOfCoveredElements, $totalNumberOfElements
         );
 
         if ($coverage > $this->highLowerBound) {
@@ -268,7 +268,7 @@ class PHP_CodeCoverage_Report_Text
         $format = '%' . $presicion . 's';
 
         return PHP_CodeCoverage_Util::percent(
-          $numberOfCoveredElements, $totalNumberOfElements, TRUE, TRUE
+            $numberOfCoveredElements, $totalNumberOfElements, true, true
         ) .
         ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
         sprintf($format, $totalNumberOfElements) . ')';

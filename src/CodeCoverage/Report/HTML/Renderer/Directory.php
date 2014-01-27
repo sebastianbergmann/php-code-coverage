@@ -66,7 +66,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
 
         $this->setCommonTemplateVariables($template, $node);
 
-        $items = $this->renderItem($node, TRUE);
+        $items = $this->renderItem($node, true);
 
         foreach ($node->getDirectories() as $item) {
             $items .= $this->renderItem($item);
@@ -77,10 +77,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         }
 
         $template->setVar(
-          array(
-            'id'    => $node->getId(),
-            'items' => $items
-          )
+            array(
+                'id'    => $node->getId(),
+                'items' => $items
+            )
         );
 
         $template->renderTo($file);
@@ -91,21 +91,21 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
      * @param  boolean                      $total
      * @return string
      */
-    protected function renderItem(PHP_CodeCoverage_Report_Node $item, $total = FALSE)
+    protected function renderItem(PHP_CodeCoverage_Report_Node $item, $total = false)
     {
         $data = array(
-          'numClasses'                   => $item->getNumClassesAndTraits(),
-          'numTestedClasses'             => $item->getNumTestedClassesAndTraits(),
-          'numMethods'                   => $item->getNumMethods(),
-          'numTestedMethods'             => $item->getNumTestedMethods(),
-          'linesExecutedPercent'         => $item->getLineExecutedPercent(FALSE),
-          'linesExecutedPercentAsString' => $item->getLineExecutedPercent(),
-          'numExecutedLines'             => $item->getNumExecutedLines(),
-          'numExecutableLines'           => $item->getNumExecutableLines(),
-          'testedMethodsPercent'         => $item->getTestedMethodsPercent(FALSE),
-          'testedMethodsPercentAsString' => $item->getTestedMethodsPercent(),
-          'testedClassesPercent'         => $item->getTestedClassesAndTraitsPercent(FALSE),
-          'testedClassesPercentAsString' => $item->getTestedClassesAndTraitsPercent()
+            'numClasses'                   => $item->getNumClassesAndTraits(),
+            'numTestedClasses'             => $item->getNumTestedClassesAndTraits(),
+            'numMethods'                   => $item->getNumMethods(),
+            'numTestedMethods'             => $item->getNumTestedMethods(),
+            'linesExecutedPercent'         => $item->getLineExecutedPercent(false),
+            'linesExecutedPercentAsString' => $item->getLineExecutedPercent(),
+            'numExecutedLines'             => $item->getNumExecutedLines(),
+            'numExecutableLines'           => $item->getNumExecutableLines(),
+            'testedMethodsPercent'         => $item->getTestedMethodsPercent(false),
+            'testedMethodsPercentAsString' => $item->getTestedMethodsPercent(),
+            'testedClassesPercent'         => $item->getTestedClassesAndTraitsPercent(false),
+            'testedClassesPercentAsString' => $item->getTestedClassesAndTraitsPercent()
         );
 
         if ($total) {
@@ -113,17 +113,17 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         } else {
             if ($item instanceof PHP_CodeCoverage_Report_Node_Directory) {
                 $data['name'] = sprintf(
-                  '<a href="%s/index.html">%s</a>',
-                  $item->getName(),
-                  $item->getName()
+                    '<a href="%s/index.html">%s</a>',
+                    $item->getName(),
+                    $item->getName()
                 );
 
                 $data['icon'] = '<span class="glyphicon glyphicon-folder-open"></span> ';
             } else {
                 $data['name'] = sprintf(
-                  '<a href="%s.html">%s</a>',
-                  $item->getName(),
-                  $item->getName()
+                    '<a href="%s.html">%s</a>',
+                    $item->getName(),
+                    $item->getName()
                 );
 
                 $data['icon'] = '<span class="glyphicon glyphicon-file"></span> ';
@@ -131,8 +131,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         }
 
         return $this->renderItemTemplate(
-          new Text_Template($this->templatePath . 'directory_item.html'),
-          $data
+            new Text_Template($this->templatePath . 'directory_item.html'),
+            $data
         );
     }
 }

@@ -91,7 +91,7 @@ class PHP_CodeCoverage_Report_HTML
      *
      * @param array $options
      */
-    public function __construct($charset = 'UTF-8', $highlight = FALSE, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct($charset = 'UTF-8', $highlight = false, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {
         $this->charset        = $charset;
         $this->generator      = $generator;
@@ -100,13 +100,13 @@ class PHP_CodeCoverage_Report_HTML
         $this->lowUpperBound  = $lowUpperBound;
 
         $this->templatePath = sprintf(
-          '%s%sHTML%sRenderer%sTemplate%s',
+            '%s%sHTML%sRenderer%sTemplate%s',
 
-          dirname(__FILE__),
-          DIRECTORY_SEPARATOR,
-          DIRECTORY_SEPARATOR,
-          DIRECTORY_SEPARATOR,
-          DIRECTORY_SEPARATOR
+            dirname(__FILE__),
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR
         );
     }
 
@@ -127,31 +127,31 @@ class PHP_CodeCoverage_Report_HTML
         $date = date('D M j G:i:s T Y', $_SERVER['REQUEST_TIME']);
 
         $dashboard = new PHP_CodeCoverage_Report_HTML_Renderer_Dashboard(
-          $this->templatePath,
-          $this->charset,
-          $this->generator,
-          $date,
-          $this->lowUpperBound,
-          $this->highLowerBound
+            $this->templatePath,
+            $this->charset,
+            $this->generator,
+            $date,
+            $this->lowUpperBound,
+            $this->highLowerBound
         );
 
         $directory = new PHP_CodeCoverage_Report_HTML_Renderer_Directory(
-          $this->templatePath,
-          $this->charset,
-          $this->generator,
-          $date,
-          $this->lowUpperBound,
-          $this->highLowerBound
+            $this->templatePath,
+            $this->charset,
+            $this->generator,
+            $date,
+            $this->lowUpperBound,
+            $this->highLowerBound
         );
 
         $file = new PHP_CodeCoverage_Report_HTML_Renderer_File(
-          $this->templatePath,
-          $this->charset,
-          $this->generator,
-          $date,
-          $this->lowUpperBound,
-          $this->highLowerBound,
-          $this->highlight
+            $this->templatePath,
+            $this->charset,
+            $this->generator,
+            $date,
+            $this->lowUpperBound,
+            $this->highLowerBound,
+            $this->highlight
         );
 
         $directory->render($report, $target . 'index.html');
@@ -162,7 +162,7 @@ class PHP_CodeCoverage_Report_HTML
 
             if ($node instanceof PHP_CodeCoverage_Report_Node_Directory) {
                 if (!file_exists($target . $id)) {
-                    mkdir($target . $id, 0777, TRUE);
+                    mkdir($target . $id, 0777, true);
                 }
 
                 $directory->render($node, $target . $id . '/index.html');
@@ -171,7 +171,7 @@ class PHP_CodeCoverage_Report_HTML
                 $dir = dirname($target . $id);
 
                 if (!file_exists($dir)) {
-                    mkdir($dir, 0777, TRUE);
+                    mkdir($dir, 0777, true);
                 }
 
                 $file->render($node, $target . $id . '.html');
@@ -223,15 +223,15 @@ class PHP_CodeCoverage_Report_HTML
             return $directory;
         }
 
-        if (@mkdir($directory, 0777, TRUE)) {
+        if (@mkdir($directory, 0777, true)) {
             return $directory;
         }
 
         throw new PHP_CodeCoverage_Exception(
-          sprintf(
-            'Directory "%s" does not exist.',
-            $directory
-          )
+            sprintf(
+                'Directory "%s" does not exist.',
+                $directory
+            )
         );
     }
 }

@@ -76,11 +76,11 @@ class PHP_CodeCoverage_Report_XML_File_Method
         $this->contextNode->setAttribute('signature', $signature);
     }
 
-    public function setLines($start, $end = NULL)
+    public function setLines($start, $end = null)
     {
         $this->contextNode->setAttribute('start', $start);
 
-        if ($end !== NULL) {
+        if ($end !== null) {
             $this->contextNode->setAttribute('end', $end);
         }
     }

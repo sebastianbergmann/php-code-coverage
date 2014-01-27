@@ -86,14 +86,14 @@ class PHP_CodeCoverage_Report_XML_File_Unit
     public function setPackage($full, $package, $sub, $category)
     {
         $node = $this->contextNode->getElementsByTagNameNS(
-          'http://schema.phpunit.de/coverage/1.0', 'package'
+            'http://schema.phpunit.de/coverage/1.0', 'package'
         )->item(0);
 
         if (!$node) {
             $node = $this->contextNode->appendChild(
-              $this->contextNode->ownerDocument->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0', 'package'
-              )
+                $this->contextNode->ownerDocument->createElementNS(
+                    'http://schema.phpunit.de/coverage/1.0', 'package'
+                )
             );
         }
 
@@ -106,14 +106,14 @@ class PHP_CodeCoverage_Report_XML_File_Unit
     public function setNamespace($namespace)
     {
         $node = $this->contextNode->getElementsByTagNameNS(
-          'http://schema.phpunit.de/coverage/1.0', 'namespace'
+            'http://schema.phpunit.de/coverage/1.0', 'namespace'
         )->item(0);
 
         if (!$node) {
             $node = $this->contextNode->appendChild(
-              $this->contextNode->ownerDocument->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0', 'namespace'
-              )
+                $this->contextNode->ownerDocument->createElementNS(
+                    'http://schema.phpunit.de/coverage/1.0', 'namespace'
+                )
             );
         }
 
@@ -123,9 +123,9 @@ class PHP_CodeCoverage_Report_XML_File_Unit
     public function addMethod($name)
     {
         $node = $this->contextNode->appendChild(
-          $this->contextNode->ownerDocument->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0', 'method'
-          )
+            $this->contextNode->ownerDocument->createElementNS(
+                'http://schema.phpunit.de/coverage/1.0', 'method'
+            )
         );
 
         return new PHP_CodeCoverage_Report_XML_File_Method($node, $name);

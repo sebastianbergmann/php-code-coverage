@@ -76,15 +76,15 @@ class PHP_CodeCoverage_Report_XML
         $report = $coverage->getReport();
 
         $this->project = new PHP_CodeCoverage_Report_XML_Project(
-          $coverage->getReport()->getName()
+            $coverage->getReport()->getName()
         );
 
         $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
 
         $index = $this->project->asDom();
-        $index->formatOutput = TRUE;
-        $index->preserveWhiteSpace = FALSE;
+        $index->formatOutput = true;
+        $index->preserveWhiteSpace = false;
         $index->save($target . '/index.xml');
     }
 
@@ -93,18 +93,18 @@ class PHP_CodeCoverage_Report_XML
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new PHP_CodeCoverage_Exception(
-                  "'$dir' exists but is not a directory."
+                    "'$dir' exists but is not a directory."
                 );
             }
 
             if (!is_writable($dir)) {
                 throw new PHP_CodeCoverage_Exception(
-                  "'$dir' exists but is not writable."
+                    "'$dir' exists but is not writable."
                 );
             }
-        } elseif (!@mkdir($dir, 0777, TRUE)) {
+        } elseif (!@mkdir($dir, 0777, true)) {
             throw new PHP_CodeCoverage_Exception(
-              "'$dir' could not be created."
+                "'$dir' could not be created."
             );
         }
     }
@@ -127,7 +127,7 @@ class PHP_CodeCoverage_Report_XML
             }
 
             throw new PHP_CodeCoverage_Exception(
-              'Unknown node type for XML report'
+                'Unknown node type for XML report'
             );
         }
     }
@@ -135,13 +135,14 @@ class PHP_CodeCoverage_Report_XML
     private function processFile(PHP_CodeCoverage_Report_Node_File $file, PHP_CodeCoverage_Report_XML_Directory $context)
     {
         $fileObject = $context->addFile(
-          $file->getName(), $file->getId() . '.xml'
+            $file->getName(),
+            $file->getId() . '.xml'
         );
 
         $this->setTotals($file, $fileObject->getTotals());
 
         $fileReport = new PHP_CodeCoverage_Report_XML_File_Report(
-          $file->getName()
+            $file->getName()
         );
 
         $this->setTotals($file, $fileReport->getTotals());
@@ -169,12 +170,12 @@ class PHP_CodeCoverage_Report_XML
         }
 
         $this->initTargetDirectory(
-          $this->target . dirname($file->getId()) . '/'
+            $this->target . dirname($file->getId()) . '/'
         );
 
         $fileDom = $fileReport->asDom();
-        $fileDom->formatOutput = TRUE;
-        $fileDom->preserveWhiteSpace = FALSE;
+        $fileDom->formatOutput = true;
+        $fileDom->preserveWhiteSpace = false;
         $fileDom->save($this->target . $file->getId() . '.xml');
     }
 
@@ -187,18 +188,18 @@ class PHP_CodeCoverage_Report_XML
         }
 
         $unitObject->setLines(
-          $unit['startLine'],
-          $unit['executableLines'],
-          $unit['executedLines']
+            $unit['startLine'],
+            $unit['executableLines'],
+            $unit['executedLines']
         );
 
         $unitObject->setCrap($unit['crap']);
 
         $unitObject->setPackage(
-          $unit['package']['fullPackage'],
-          $unit['package']['package'],
-          $unit['package']['subpackage'],
-          $unit['package']['category']
+            $unit['package']['fullPackage'],
+            $unit['package']['package'],
+            $unit['package']['subpackage'],
+            $unit['package']['category']
         );
 
         $unitObject->setNamespace($unit['package']['namespace']);
@@ -209,9 +210,9 @@ class PHP_CodeCoverage_Report_XML
             $methodObject->setLines($method['startLine'], $method['endLine']);
             $methodObject->setCrap($method['crap']);
             $methodObject->setTotals(
-              $method['executableLines'],
-              $method['executedLines'],
-              $method['coverage']
+                $method['executableLines'],
+                $method['executedLines'],
+                $method['coverage']
             );
         }
     }
@@ -244,21 +245,21 @@ class PHP_CodeCoverage_Report_XML
         $loc = $node->getLinesOfCode();
 
         $totals->setNumLines(
-          $loc['loc'],
-          $loc['cloc'],
-          $loc['ncloc'],
-          $node->getNumExecutableLines(),
-          $node->getNumExecutedLines()
+            $loc['loc'],
+            $loc['cloc'],
+            $loc['ncloc'],
+            $node->getNumExecutableLines(),
+            $node->getNumExecutedLines()
         );
 
         $totals->setNumClasses(
-          $node->getNumClasses(),
-          $node->getNumTestedClasses()
+            $node->getNumClasses(),
+            $node->getNumTestedClasses()
         );
 
         $totals->setNumTraits(
-          $node->getNumTraits(),
-          $node->getNumTestedTraits()
+            $node->getNumTraits(),
+            $node->getNumTestedTraits()
         );
 
         $totals->setNumMethods(
@@ -267,8 +268,8 @@ class PHP_CodeCoverage_Report_XML
         );
 
         $totals->setNumFunctions(
-          $node->getNumFunctions(),
-          $node->getNumTestedFunctions()
+            $node->getNumFunctions(),
+            $node->getNumTestedFunctions()
         );
     }
 }

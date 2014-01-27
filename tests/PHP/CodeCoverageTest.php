@@ -99,7 +99,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function testConstructor2()
     {
         $filter   = new PHP_CodeCoverage_Filter;
-        $coverage = new PHP_CodeCoverage(NULL, $filter);
+        $coverage = new PHP_CodeCoverage(null, $filter);
 
         $this->assertAttributeInstanceOf(
           'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
@@ -114,7 +114,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testStartThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->start(NULL, array(), NULL);
+        $this->coverage->start(null, array(), null);
     }
 
     /**
@@ -123,7 +123,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testStopThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->stop(NULL);
+        $this->coverage->stop(null);
     }
 
     /**
@@ -132,7 +132,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testStopThrowsExceptionForInvalidArgument2()
     {
-        $this->coverage->stop(TRUE, NULL);
+        $this->coverage->stop(true, null);
     }
 
     /**
@@ -141,7 +141,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testAppendThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->append(array(), NULL);
+        $this->coverage->append(array(), null);
     }
 
     /**
@@ -150,7 +150,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetCacheTokensThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCacheTokens(NULL);
+        $this->coverage->setCacheTokens(null);
     }
 
     /**
@@ -158,8 +158,8 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetCacheTokens()
     {
-        $this->coverage->setCacheTokens(TRUE);
-        $this->assertAttributeEquals(TRUE, 'cacheTokens', $this->coverage);
+        $this->coverage->setCacheTokens(true);
+        $this->assertAttributeEquals(true, 'cacheTokens', $this->coverage);
     }
 
     /**
@@ -168,7 +168,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetCheckForUnintentionallyCoveredCodeThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCheckForUnintentionallyCoveredCode(NULL);
+        $this->coverage->setCheckForUnintentionallyCoveredCode(null);
     }
 
     /**
@@ -176,9 +176,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetCheckForUnintentionallyCoveredCode()
     {
-        $this->coverage->setCheckForUnintentionallyCoveredCode(TRUE);
+        $this->coverage->setCheckForUnintentionallyCoveredCode(true);
         $this->assertAttributeEquals(
-          TRUE, 'checkForUnintentionallyCoveredCode', $this->coverage
+          true, 'checkForUnintentionallyCoveredCode', $this->coverage
         );
     }
 
@@ -188,7 +188,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetForceCoversAnnotationThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setForceCoversAnnotation(NULL);
+        $this->coverage->setForceCoversAnnotation(null);
     }
 
     /**
@@ -196,9 +196,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetForceCoversAnnotation()
     {
-        $this->coverage->setForceCoversAnnotation(TRUE);
+        $this->coverage->setForceCoversAnnotation(true);
         $this->assertAttributeEquals(
-          TRUE, 'forceCoversAnnotation', $this->coverage
+          true, 'forceCoversAnnotation', $this->coverage
         );
     }
 
@@ -208,7 +208,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetAddUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setAddUncoveredFilesFromWhitelist(NULL);
+        $this->coverage->setAddUncoveredFilesFromWhitelist(null);
     }
 
     /**
@@ -216,9 +216,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetAddUncoveredFilesFromWhitelist()
     {
-        $this->coverage->setAddUncoveredFilesFromWhitelist(TRUE);
+        $this->coverage->setAddUncoveredFilesFromWhitelist(true);
         $this->assertAttributeEquals(
-          TRUE, 'addUncoveredFilesFromWhitelist', $this->coverage
+          true, 'addUncoveredFilesFromWhitelist', $this->coverage
         );
     }
 
@@ -228,7 +228,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetProcessUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setProcessUncoveredFilesFromWhitelist(NULL);
+        $this->coverage->setProcessUncoveredFilesFromWhitelist(null);
     }
 
     /**
@@ -236,9 +236,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetProcessUncoveredFilesFromWhitelist()
     {
-        $this->coverage->setProcessUncoveredFilesFromWhitelist(TRUE);
+        $this->coverage->setProcessUncoveredFilesFromWhitelist(true);
         $this->assertAttributeEquals(
-          TRUE, 'processUncoveredFilesFromWhitelist', $this->coverage
+          true, 'processUncoveredFilesFromWhitelist', $this->coverage
         );
     }
 
@@ -247,9 +247,9 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetMapTestClassNameToCoveredClassName()
     {
-        $this->coverage->setMapTestClassNameToCoveredClassName(TRUE);
+        $this->coverage->setMapTestClassNameToCoveredClassName(true);
         $this->assertAttributeEquals(
-          TRUE, 'mapTestClassNameToCoveredClassName', $this->coverage
+          true, 'mapTestClassNameToCoveredClassName', $this->coverage
         );
     }
 
@@ -259,7 +259,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testSetMapTestClassNameToCoveredClassNameThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setMapTestClassNameToCoveredClassName(NULL);
+        $this->coverage->setMapTestClassNameToCoveredClassName(null);
     }
 
     /**
@@ -269,7 +269,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     {
         $this->coverage->clear();
 
-        $this->assertAttributeEquals(NULL, 'currentId', $this->coverage);
+        $this->assertAttributeEquals(null, 'currentId', $this->coverage);
         $this->assertAttributeEquals(array(), 'data', $this->coverage);
         $this->assertAttributeEquals(array(), 'tests', $this->coverage);
     }
@@ -293,10 +293,10 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
         $this->assertEquals(
           array(
-            'BankAccountTest::testBalanceIsInitiallyZero' => NULL,
-            'BankAccountTest::testBalanceCannotBecomeNegative' => NULL,
-            'BankAccountTest::testBalanceCannotBecomeNegative2' => NULL,
-            'BankAccountTest::testDepositWithdrawMoney' => NULL
+            'BankAccountTest::testBalanceIsInitiallyZero' => null,
+            'BankAccountTest::testBalanceCannotBecomeNegative' => null,
+            'BankAccountTest::testBalanceCannotBecomeNegative2' => null,
+            'BankAccountTest::testDepositWithdrawMoney' => null
           ),
           $coverage->getTests()
         );
@@ -475,7 +475,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
             'PHP_CodeCoverage', 'getLinesToBeIgnored'
         );
 
-        $getLinesToBeIgnored->setAccessible(TRUE);
+        $getLinesToBeIgnored->setAccessible(true);
 
         return $getLinesToBeIgnored;
     }

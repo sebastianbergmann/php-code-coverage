@@ -12,7 +12,7 @@ class Foo
 function &foo($bar)
 {
     $baz = function () {};
-    $a   = TRUE ? TRUE : FALSE;
+    $a   = true ? true : false;
     $b = "{$a}";
     $c = "${b}";
 }

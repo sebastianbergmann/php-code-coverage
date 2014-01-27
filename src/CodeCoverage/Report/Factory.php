@@ -64,14 +64,14 @@ class PHP_CodeCoverage_Report_Factory
         $files      = $coverage->getData();
         $commonPath = $this->reducePaths($files);
         $root       = new PHP_CodeCoverage_Report_Node_Directory(
-                        $commonPath, NULL
-                      );
+            $commonPath, null
+        );
 
         $this->addItems(
-          $root,
-          $this->buildDirectoryStructure($files),
-          $coverage->getTests(),
-          $coverage->getCacheTokens()
+            $root,
+            $this->buildDirectoryStructure($files),
+            $coverage->getTests(),
+            $coverage->getCacheTokens()
         );
 
         return $root;
@@ -240,7 +240,7 @@ class PHP_CodeCoverage_Report_Factory
             }
         }
 
-        $done = FALSE;
+        $done = false;
         $max  = count($paths);
 
         while (!$done) {
@@ -248,7 +248,7 @@ class PHP_CodeCoverage_Report_Factory
                 if (!isset($paths[$i][0]) ||
                     !isset($paths[$i+1][0]) ||
                     $paths[$i][0] != $paths[$i+1][0]) {
-                    $done = TRUE;
+                    $done = true;
                     break;
                 }
             }

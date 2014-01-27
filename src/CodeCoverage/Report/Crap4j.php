@@ -62,10 +62,10 @@ class PHP_CodeCoverage_Report_Crap4j
      * @param  string           $name
      * @return string
      */
-    public function process(PHP_CodeCoverage $coverage, $target = NULL, $name = NULL)
+    public function process(PHP_CodeCoverage $coverage, $target = null, $name = null)
     {
         $document = new DOMDocument('1.0', 'UTF-8');
-        $document->formatOutput = TRUE;
+        $document->formatOutput = true;
 
         $root = $document->createElement('crap_result');
         $document->appendChild($root);
@@ -134,9 +134,9 @@ class PHP_CodeCoverage_Report_Crap4j
         $root->appendChild($stats);
         $root->appendChild($methodsNode);
 
-        if ($target !== NULL) {
+        if ($target !== null) {
             if (!is_dir(dirname($target))) {
-              mkdir(dirname($target), 0777, TRUE);
+                mkdir(dirname($target), 0777, true);
             }
 
             return $document->save($target);

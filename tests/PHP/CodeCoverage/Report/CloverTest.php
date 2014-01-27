@@ -77,7 +77,7 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
 
         $this->assertStringMatchesFormatFile(
           TEST_FILES_PATH . 'BankAccount-clover.xml',
-          $clover->process($this->getCoverageForBankAccount(), NULL, 'BankAccount')
+          $clover->process($this->getCoverageForBankAccount(), null, 'BankAccount')
         );
     }
 

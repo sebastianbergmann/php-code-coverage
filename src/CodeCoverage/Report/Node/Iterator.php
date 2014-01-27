@@ -112,7 +112,7 @@ class PHP_CodeCoverage_Report_Node_Iterator implements RecursiveIterator
      */
     public function current()
     {
-        return $this->valid() ? $this->nodes[$this->position] : NULL;
+        return $this->valid() ? $this->nodes[$this->position] : null;
     }
 
     /**
@@ -132,7 +132,7 @@ class PHP_CodeCoverage_Report_Node_Iterator implements RecursiveIterator
     public function getChildren()
     {
         return new PHP_CodeCoverage_Report_Node_Iterator(
-          $this->nodes[$this->position]
+            $this->nodes[$this->position]
         );
     }
 

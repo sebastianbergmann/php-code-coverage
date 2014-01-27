@@ -87,7 +87,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @param string                       $name
      * @param PHP_CodeCoverage_Report_Node $parent
      */
-    public function __construct($name, PHP_CodeCoverage_Report_Node $parent = NULL)
+    public function __construct($name, PHP_CodeCoverage_Report_Node $parent = null)
     {
         if (substr($name, -1) == '/') {
             $name = substr($name, 0, -1);
@@ -110,10 +110,10 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function getId()
     {
-        if ($this->id === NULL) {
+        if ($this->id === null) {
             $parent = $this->getParent();
 
-            if ($parent === NULL) {
+            if ($parent === null) {
                 $this->id = 'index';
             } else {
                 $parentId = $parent->getId();
@@ -134,8 +134,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function getPath()
     {
-        if ($this->path === NULL) {
-            if ($this->parent === NULL) {
+        if ($this->path === null) {
+            if ($this->parent === null) {
                 $this->path = $this->name;
             } else {
                 $this->path = $this->parent->getPath() . '/' . $this->name;
@@ -150,8 +150,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function getPathAsArray()
     {
-        if ($this->pathArray === NULL) {
-            if ($this->parent === NULL) {
+        if ($this->pathArray === null) {
+            if ($this->parent === null) {
                 $this->pathArray = array();
             } else {
                 $this->pathArray = $this->parent->getPathAsArray();
@@ -177,12 +177,12 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @param  boolean $asString
      * @return integer
      */
-    public function getTestedClassesPercent($asString = TRUE)
+    public function getTestedClassesPercent($asString = true)
     {
         return PHP_CodeCoverage_Util::percent(
-          $this->getNumTestedClasses(),
-          $this->getNumClasses(),
-          $asString
+            $this->getNumTestedClasses(),
+            $this->getNumClasses(),
+            $asString
         );
     }
 
@@ -192,12 +192,12 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @param  boolean $asString
      * @return integer
      */
-    public function getTestedTraitsPercent($asString = TRUE)
+    public function getTestedTraitsPercent($asString = true)
     {
         return PHP_CodeCoverage_Util::percent(
-          $this->getNumTestedTraits(),
-          $this->getNumTraits(),
-          $asString
+            $this->getNumTestedTraits(),
+            $this->getNumTraits(),
+            $asString
         );
     }
 
@@ -208,12 +208,12 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @return integer
      * @since  Method available since Release 1.2.0
      */
-    public function getTestedClassesAndTraitsPercent($asString = TRUE)
+    public function getTestedClassesAndTraitsPercent($asString = true)
     {
         return PHP_CodeCoverage_Util::percent(
-          $this->getNumTestedClassesAndTraits(),
-          $this->getNumClassesAndTraits(),
-          $asString
+            $this->getNumTestedClassesAndTraits(),
+            $this->getNumClassesAndTraits(),
+            $asString
         );
     }
 
@@ -223,12 +223,12 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @param  boolean $asString
      * @return integer
      */
-    public function getTestedMethodsPercent($asString = TRUE)
+    public function getTestedMethodsPercent($asString = true)
     {
         return PHP_CodeCoverage_Util::percent(
-          $this->getNumTestedMethods(),
-          $this->getNumMethods(),
-          $asString
+            $this->getNumTestedMethods(),
+            $this->getNumMethods(),
+            $asString
         );
     }
 
@@ -238,12 +238,12 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @param  boolean $asString
      * @return integer
      */
-    public function getLineExecutedPercent($asString = TRUE)
+    public function getLineExecutedPercent($asString = true)
     {
         return PHP_CodeCoverage_Util::percent(
-          $this->getNumExecutedLines(),
-          $this->getNumExecutableLines(),
-          $asString
+            $this->getNumExecutedLines(),
+            $this->getNumExecutableLines(),
+            $asString
         );
     }
 

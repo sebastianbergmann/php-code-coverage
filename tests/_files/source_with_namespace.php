@@ -14,7 +14,7 @@ class source_with_namespace
 function &foo($bar)
 {
     $baz = function () {};
-    $a   = TRUE ? TRUE : FALSE;
+    $a   = true ? true : false;
     $b = "{$a}";
     $c = "${b}";
 }

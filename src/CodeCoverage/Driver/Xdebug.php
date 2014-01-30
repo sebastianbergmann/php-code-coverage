@@ -66,7 +66,8 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
             throw new PHP_CodeCoverage_Exception('This driver requires Xdebug');
         }
 
-        if (!ini_get('xdebug.coverage_enable')) {
+        if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
+            !ini_get('xdebug.coverage_enable')) {
             throw new PHP_CodeCoverage_Exception(
                 'xdebug.coverage_enable=On has to be set in php.ini'
             );

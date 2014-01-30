@@ -1,21 +1,22 @@
+[![Latest Stable Version](https://poser.pugx.org/phpunit/php-code-coverage/v/stable.png)](https://packagist.org/packages/phpunit/php-code-coverage)
+[![Build Status](https://travis-ci.org/sebastianbergmann/php-code-coverage.png?branch=1.3)](https://travis-ci.org/sebastianbergmann/php-code-coverage)
+
 # PHP_CodeCoverage
 
 **PHP_CodeCoverage** is a library that provides collection, processing, and rendering functionality for PHP code coverage information.
 
 ## Requirements
 
-* PHP_CodeCoverage 1.3 requires PHP 5.4.7 (or later).
-* [Xdebug](http://xdebug.org/) 2.2.1 (or later) is required.
+* PHP 5.3.3 is required but using the latest version of PHP is highly recommended
+* [Xdebug](http://xdebug.org/) 2.1.3 is required but using the latest version of Xdebug is highly recommended
 
 ## Installation
 
-Simply add a dependency on `phpunit/php-code-coverage` to your project's `composer.json` file if you use [Composer](http://getcomposer.org/) to manage the dependencies of your project.
-
-Here is a minimal example of a `composer.json` file that just defines a dependency on PHP_CodeCoverage:
+To add PHP_CodeCoverage as a local, per-project dependency to your project, simply add a dependency on `phpunit/php-code-coverage` to your project's `composer.json` file. Here is a minimal example of a `composer.json` file that just defines a dependency on PHP_CodeCoverage 1.3:
 
     {
         "require": {
-            "phpunit/php-code-coverage": "*"
+            "phpunit/php-code-coverage": "1.3.*"
         }
     }
 

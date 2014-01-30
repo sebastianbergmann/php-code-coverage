@@ -92,7 +92,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     public function render(PHP_CodeCoverage_Report_Node_File $node, $file)
     {
-        $template = new Text_Template($this->templatePath . 'file.html');
+        $template = new Text_Template($this->templatePath . 'file.html', '{{', '}}');
 
         $template->setVar(
             array(
@@ -112,10 +112,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     protected function renderItems(PHP_CodeCoverage_Report_Node_File $node)
     {
-        $template = new Text_Template($this->templatePath . 'file_item.html');
+        $template = new Text_Template($this->templatePath . 'file_item.html', '{{', '}}');
 
         $methodItemTemplate = new Text_Template(
-            $this->templatePath . 'method_item.html'
+            $this->templatePath . 'method_item.html', '{{', '}}'
         );
 
         $items = $this->renderItemTemplate(

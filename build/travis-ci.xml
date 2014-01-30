@@ -5,7 +5,7 @@
          colors="true">
   <testsuites>
     <testsuite name="PHP_CodeCoverage">
-      <directory suffix="Test.php">../Tests/PHP</directory>
+      <directory suffix="Test.php">../tests/PHP</directory>
     </testsuite>
   </testsuites>
 
@@ -15,10 +15,7 @@
 
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">../PHP</directory>
-      <exclude>
-        <file>../PHP/CodeCoverage/Autoload.php</file>
-      </exclude>
+      <directory suffix=".php">../src</directory>
     </whitelist>
   </filter>
 </phpunit>

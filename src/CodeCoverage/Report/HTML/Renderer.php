@@ -282,7 +282,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         $level = $this->getColorLevel($percent);
 
         $template = new Text_Template(
-            $this->templatePath . 'coverage_bar.html'
+            $this->templatePath . 'coverage_bar.html', '{{', '}}'
         );
 
         $template->setVar(array('level' => $level, 'percent' => sprintf("%.2F", $percent)));

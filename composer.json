@@ -24,7 +24,7 @@
         "php": ">=5.3.3",
         "phpunit/php-file-iterator": ">=1.3.0@stable",
         "phpunit/php-token-stream": ">=1.1.3@stable",
-        "phpunit/php-text-template": ">=1.1.1@stable"
+        "phpunit/php-text-template": ">=1.2.0@stable"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*@dev"

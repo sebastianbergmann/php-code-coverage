@@ -62,7 +62,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
      */
     public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file)
     {
-        $template = new Text_Template($this->templatePath . 'directory.html');
+        $template = new Text_Template($this->templatePath . 'directory.html', '{{', '}}');
 
         $this->setCommonTemplateVariables($template, $node);
 
@@ -125,7 +125,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Directory extends PHP_CodeCoverage_R
         }
 
         return $this->renderItemTemplate(
-          new Text_Template($this->templatePath . 'directory_item.html'),
+          new Text_Template($this->templatePath . 'directory_item.html', '{{', '}}'),
           $data
         );
     }

@@ -83,7 +83,7 @@
     }}
    }}).scroll();
 
-   $('.popin').popover({{trigger: 'hover'}});
+   $('.popin').popover({trigger: 'hover'});
   }});
   </script>
  </body>

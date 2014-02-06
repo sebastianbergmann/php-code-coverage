@@ -72,7 +72,7 @@ class PHP_CodeCoverage_Version
             if (is_dir(dirname(dirname(__DIR__)) . '/.git')) {
                 $dir = getcwd();
                 chdir(__DIR__);
-                $version = exec('git describe --tags');
+                $version = @exec('git describe --tags');
                 chdir($dir);
 
                 if ($version) {

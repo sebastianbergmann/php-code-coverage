@@ -43,6 +43,8 @@
  * @since      File available since Release 1.1.0
  */
 
+use SebastianBergmann\Environment\Environment;
+
 /**
  * Base class for PHP_CodeCoverage_Report_Node renderers.
  *
@@ -196,15 +198,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
-        if (defined('HHVM_VERSION')) {
-            $runtimeName    = 'HHVM';
-            $runtimeVersion = HHVM_VERSION;
-            $runtimeLink    = 'http://hhvm.com/';
-        } else {
-            $runtimeName    = 'PHP';
-            $runtimeVersion = PHP_VERSION;
-            $runtimeLink    = 'http://php.net/';
-        }
+        $env = new Environment;
 
         $template->setVar(
             array(
@@ -215,9 +209,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'charset'          => $this->charset,
                 'date'             => $this->date,
                 'version'          => $this->version,
-                'runtime_name'     => $runtimeName,
-                'runtime_version'  => $runtimeVersion,
-                'runtime_link'     => $runtimeLink,
+                'runtime_name'     => $env->getRuntimeName(),
+                'runtime_version'  => $env->getRuntimeVersion(),
+                'runtime_link'     => $env->getRuntimeVendorUrl(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound

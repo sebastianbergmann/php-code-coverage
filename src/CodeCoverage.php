@@ -129,7 +129,7 @@ class PHP_CodeCoverage
     public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null)
     {
         if ($driver === null) {
-            if (defined('HPHP_VERSION')) {
+            if (defined('HHVM_VERSION')) {
                 $driver = new PHP_CodeCoverage_Driver_HHVM;
             }
 

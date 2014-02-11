@@ -196,9 +196,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
-        if (defined('HPHP_VERSION')) {
+        if (defined('HHVM_VERSION')) {
             $runtimeName    = 'HHVM';
-            $runtimeVersion = HPHP_VERSION;
+            $runtimeVersion = HHVM_VERSION;
             $runtimeLink    = 'http://hhvm.com/';
         } else {
             $runtimeName    = 'PHP';

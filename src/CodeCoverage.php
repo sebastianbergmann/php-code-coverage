@@ -43,7 +43,7 @@
  * @since      File available since Release 1.0.0
  */
 
-use SebastianBergmann\Environment\Environment;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * Provides collection functionality for PHP code coverage information.
@@ -132,11 +132,11 @@ class PHP_CodeCoverage
     public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null)
     {
         if ($driver === null) {
-            $env = new Environment;
+            $runtime = new Runtime;
 
-            if ($env->isHHVM()) {
+            if ($runtime->isHHVM()) {
                 $driver = new PHP_CodeCoverage_Driver_HHVM;
-            } elseif ($env->hasXdebug()) {
+            } elseif ($runtime->hasXdebug()) {
                 $driver = new PHP_CodeCoverage_Driver_Xdebug;
             } else {
                 throw new PHP_CodeCoverage_Exception('No code coverage driver available');

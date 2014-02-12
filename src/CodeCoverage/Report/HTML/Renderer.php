@@ -43,7 +43,7 @@
  * @since      File available since Release 1.1.0
  */
 
-use SebastianBergmann\Environment\Environment;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * Base class for PHP_CodeCoverage_Report_Node renderers.
@@ -198,7 +198,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function setCommonTemplateVariables(Text_Template $template, PHP_CodeCoverage_Report_Node $node)
     {
-        $env = new Environment;
+        $runtime = new Runtime;
 
         $template->setVar(
             array(
@@ -209,9 +209,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'charset'          => $this->charset,
                 'date'             => $this->date,
                 'version'          => $this->version,
-                'runtime_name'     => $env->getRuntimeName(),
-                'runtime_version'  => $env->getRuntimeVersion(),
-                'runtime_link'     => $env->getRuntimeVendorUrl(),
+                'runtime_name'     => $runtime->getRuntimeName(),
+                'runtime_version'  => $runtime->getRuntimeVersion(),
+                'runtime_link'     => $runtime->getRuntimeVendorUrl(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound

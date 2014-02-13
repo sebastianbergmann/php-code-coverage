@@ -89,7 +89,7 @@ class PHP_CodeCoverage_Report_HTML
      * @param integer $highLowerBound
      * @param string  $generator
      */
-    public function __construct($highlight = false, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct($highlight = true, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;

@@ -201,9 +201,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'breadcrumbs'      => $this->getBreadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,
-                'runtime_name'     => $runtime->getRuntimeName(),
-                'runtime_version'  => $runtime->getRuntimeVersion(),
-                'runtime_link'     => $runtime->getRuntimeVendorUrl(),
+                'runtime_name'     => $runtime->getName(),
+                'runtime_version'  => $runtime->getVersion(),
+                'runtime_link'     => $runtime->getVendorUrl(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound

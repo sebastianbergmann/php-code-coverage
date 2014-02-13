@@ -77,23 +77,16 @@ class PHP_CodeCoverage_Report_HTML
     private $highLowerBound;
 
     /**
-     * @var boolean
-     */
-    private $highlight;
-
-    /**
      * Constructor.
      *
-     * @param boolean $highlight
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      * @param string  $generator
      */
-    public function __construct($highlight = true, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
-        $this->highlight      = $highlight;
         $this->lowUpperBound  = $lowUpperBound;
 
         $this->templatePath = sprintf(
@@ -144,8 +137,7 @@ class PHP_CodeCoverage_Report_HTML
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound,
-            $this->highlight
+            $this->highLowerBound
         );
 
         $directory->render($report, $target . 'index.html');

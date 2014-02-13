@@ -65,18 +65,16 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      * Constructor.
      *
      * @param string  $templatePath
-     * @param string  $charset
      * @param string  $generator
      * @param string  $date
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      * @param boolean $highlight
      */
-    public function __construct($templatePath, $charset, $generator, $date, $lowUpperBound, $highLowerBound, $highlight)
+    public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound, $highlight)
     {
         parent::__construct(
             $templatePath,
-            $charset,
             $generator,
             $date,
             $lowUpperBound,

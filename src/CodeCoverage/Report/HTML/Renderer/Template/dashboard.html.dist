@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-  <meta charset="{{charset}}">
+  <meta charset="UTF-8">
   <title>Dashboard for {{full_path}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="{{path_to_root}}css/bootstrap.min.css" rel="stylesheet">

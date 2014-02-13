@@ -64,11 +64,6 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * @var string
      */
-    private $charset;
-
-    /**
-     * @var string
-     */
     private $generator;
 
     /**
@@ -89,15 +84,13 @@ class PHP_CodeCoverage_Report_HTML
     /**
      * Constructor.
      *
-     * @param string  $charset
      * @param boolean $highlight
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      * @param string  $generator
      */
-    public function __construct($charset = 'UTF-8', $highlight = false, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct($highlight = false, $lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {
-        $this->charset        = $charset;
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->highlight      = $highlight;
@@ -132,7 +125,6 @@ class PHP_CodeCoverage_Report_HTML
 
         $dashboard = new PHP_CodeCoverage_Report_HTML_Renderer_Dashboard(
             $this->templatePath,
-            $this->charset,
             $this->generator,
             $date,
             $this->lowUpperBound,
@@ -141,7 +133,6 @@ class PHP_CodeCoverage_Report_HTML
 
         $directory = new PHP_CodeCoverage_Report_HTML_Renderer_Directory(
             $this->templatePath,
-            $this->charset,
             $this->generator,
             $date,
             $this->lowUpperBound,
@@ -150,7 +141,6 @@ class PHP_CodeCoverage_Report_HTML
 
         $file = new PHP_CodeCoverage_Report_HTML_Renderer_File(
             $this->templatePath,
-            $this->charset,
             $this->generator,
             $date,
             $this->lowUpperBound,

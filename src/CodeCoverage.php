@@ -210,7 +210,7 @@ class PHP_CodeCoverage
      * Sets the coverage data.
      *
      * @param array $data
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function setData(array $data)
     {
@@ -232,7 +232,7 @@ class PHP_CodeCoverage
      * Sets the test data.
      *
      * @param array $tests
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function setTests(array $tests)
     {
@@ -421,7 +421,7 @@ class PHP_CodeCoverage
     /**
      * @param  boolean                    $flag
      * @throws PHP_CodeCoverage_Exception
-     * @since  Method available since Release 1.3.0
+     * @since  Method available since Release 2.0.0
      */
     public function setCheckForUnintentionallyCoveredCode($flag)
     {
@@ -660,7 +660,7 @@ class PHP_CodeCoverage
      * @param  string                     $filename
      * @return array
      * @throws PHP_CodeCoverage_Exception
-     * @since  Method available since Release 1.3.0
+     * @since  Method available since Release 2.0.0
      */
     private function getLinesToBeIgnored($filename)
     {
@@ -824,7 +824,7 @@ class PHP_CodeCoverage
      * @param  array                                                 $linesToBeCovered
      * @param  array                                                 $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     private function performUnintentionallyCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
     {
@@ -860,7 +860,7 @@ class PHP_CodeCoverage
      * @param  array $linesToBeCovered
      * @param  array $linesToBeUsed
      * @return array
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed)
     {

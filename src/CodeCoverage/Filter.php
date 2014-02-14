@@ -344,7 +344,7 @@ class PHP_CodeCoverage_Filter
      * Returns the blacklisted files.
      *
      * @return array
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function getBlacklistedFiles()
     {
@@ -355,7 +355,7 @@ class PHP_CodeCoverage_Filter
      * Sets the blacklisted files.
      *
      * @param array $blacklistedFiles
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function setBlacklistedFiles($blacklistedFiles)
     {
@@ -366,7 +366,7 @@ class PHP_CodeCoverage_Filter
      * Returns the whitelisted files.
      *
      * @return array
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function getWhitelistedFiles()
     {
@@ -377,7 +377,7 @@ class PHP_CodeCoverage_Filter
      * Sets the whitelisted files.
      *
      * @param array $whitelistedFiles
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     public function setWhitelistedFiles($whitelistedFiles)
     {

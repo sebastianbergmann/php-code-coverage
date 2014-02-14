@@ -98,7 +98,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     /**
      * @param  array $data
      * @return array
-     * @since Method available since Release 1.3.0
+     * @since Method available since Release 2.0.0
      */
     private function cleanup(array $data)
     {

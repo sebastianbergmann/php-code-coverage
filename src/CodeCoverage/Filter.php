@@ -315,6 +315,7 @@ class PHP_CodeCoverage_Filter
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Diff');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Exporter\Exporter');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Version');
+        $this->addDirectoryContainingClassToBlacklist('Composer\Autoload\ClassLoader');
 
         $this->blacklistPrefilled = true;
     }

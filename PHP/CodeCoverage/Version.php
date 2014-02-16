@@ -44,7 +44,7 @@
  */
 
 /**
- * 
+ *
  *
  * @category   PHP
  * @package    CodeCoverage

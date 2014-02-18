@@ -1,5 +1,5 @@
 [![Latest Stable Version](https://poser.pugx.org/phpunit/php-code-coverage/v/stable.png)](https://packagist.org/packages/phpunit/php-code-coverage)
-[![Build Status](https://travis-ci.org/sebastianbergmann/php-code-coverage.png?branch=master)](https://travis-ci.org/sebastianbergmann/php-code-coverage)
+[![Build Status](https://travis-ci.org/sebastianbergmann/php-code-coverage.png?branch=2.0)](https://travis-ci.org/sebastianbergmann/php-code-coverage)
 
 # PHP_CodeCoverage
 
@@ -12,11 +12,11 @@
 
 ## Installation
 
-To add PHP_CodeCoverage as a local, per-project dependency to your project, simply add a dependency on `phpunit/php-code-coverage` to your project's `composer.json` file. Here is a minimal example of a `composer.json` file that just defines a dependency on PHP_CodeCoverage 2.1:
+To add PHP_CodeCoverage as a local, per-project dependency to your project, simply add a dependency on `phpunit/php-code-coverage` to your project's `composer.json` file. Here is a minimal example of a `composer.json` file that just defines a dependency on PHP_CodeCoverage 2.0:
 
     {
         "require": {
-            "phpunit/php-code-coverage": "2.1.*"
+            "phpunit/php-code-coverage": "2.0.*"
         }
     }
 

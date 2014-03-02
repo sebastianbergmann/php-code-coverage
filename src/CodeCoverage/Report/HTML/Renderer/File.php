@@ -55,6 +55,14 @@ if (!defined('T_INSTEADOF')) {
 if (!defined('T_CALLABLE')) {
     define('T_CALLABLE', 1003);
 }
+
+if (!defined('T_FINALLY')) {
+    define('T_FINALLY', 1004);
+}
+
+if (!defined('T_YIELD')) {
+    define('T_YIELD', 1005);
+}
 // @codeCoverageIgnoreEnd
 
 /**
@@ -497,6 +505,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                 case T_EXIT:
                                 case T_EXTENDS:
                                 case T_FINAL:
+                                case T_FINALLY:
                                 case T_FOREACH:
                                 case T_FUNCTION:
                                 case T_GLOBAL:
@@ -526,7 +535,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                 case T_UNSET:
                                 case T_USE:
                                 case T_VAR:
-                                case T_WHILE: {
+                                case T_WHILE:
+                                case T_YIELD: {
                                     $colour = 'keyword';
                                 }
                                     break;

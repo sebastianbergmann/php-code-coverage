@@ -89,7 +89,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      */
     public function __construct($name, PHP_CodeCoverage_Report_Node $parent = null)
     {
-        if (substr($name, -1) == '/') {
+        if ($this->hasTailingSlashAndIsNotRoot($name)) {
             $name = substr($name, 0, -1);
         }
 
@@ -377,4 +377,13 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @return integer
      */
     abstract public function getNumTestedFunctions();
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    private function hasTailingSlashAndIsNotRoot($name)
+    {
+        return substr($name, -1) == '/' && strlen($name) > 1;
+    }
 }

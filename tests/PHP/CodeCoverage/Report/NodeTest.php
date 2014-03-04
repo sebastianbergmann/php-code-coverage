@@ -58,156 +58,41 @@ class PHP_CodeCoverage_Report_NodeTest extends PHPUnit_Framework_TestCase
 {
     public function testTrimsTailingSlashes()
     {
-        $node = new DefaultNode('/SomeName.php/');
+        $node = $this->getInstance('/SomeName.php/');
         $this->assertEquals('/SomeName.php', $node->getPath());
     }
 
     public function testNodeAcceptsRootScope()
     {
-        $node = new DefaultNode('/');
+        $node = $this->getInstance('/');
         $this->assertEquals('/', $node->getPath());
     }
-}
-
-class DefaultNode extends PHP_CodeCoverage_Report_Node
-{
 
     /**
-     * Returns the classes of this node.
-     *
-     * @return array
+     * @param $path
+     * @return PHP_CodeCoverage_Report_Node
      */
-    public function getClasses()
+    private function getInstance($path)
     {
+        $builder = $this->getMockBuilder('PHP_CodeCoverage_Report_Node')
+            ->setConstructorArgs(array($path));
+
+        $this->mockMethods($builder);
+        return $builder->getMock();
     }
 
     /**
-     * Returns the traits of this node.
-     *
-     * @return array
+     * @param $builder
      */
-    public function getTraits()
+    private function mockMethods($builder)
     {
-    }
-
-    /**
-     * Returns the functions of this node.
-     *
-     * @return array
-     */
-    public function getFunctions()
-    {
-    }
-
-    /**
-     * Returns the LOC/CLOC/NCLOC of this node.
-     *
-     * @return array
-     */
-    public function getLinesOfCode()
-    {
-    }
-
-    /**
-     * Returns the number of executable lines.
-     *
-     * @return integer
-     */
-    public function getNumExecutableLines()
-    {
-    }
-
-    /**
-     * Returns the number of executed lines.
-     *
-     * @return integer
-     */
-    public function getNumExecutedLines()
-    {
-    }
-
-    /**
-     * Returns the number of classes.
-     *
-     * @return integer
-     */
-    public function getNumClasses()
-    {
-    }
-
-    /**
-     * Returns the number of tested classes.
-     *
-     * @return integer
-     */
-    public function getNumTestedClasses()
-    {
-    }
-
-    /**
-     * Returns the number of traits.
-     *
-     * @return integer
-     */
-    public function getNumTraits()
-    {
-    }
-
-    /**
-     * Returns the number of tested traits.
-     *
-     * @return integer
-     */
-    public function getNumTestedTraits()
-    {
-    }
-
-    /**
-     * Returns the number of methods.
-     *
-     * @return integer
-     */
-    public function getNumMethods()
-    {
-    }
-
-    /**
-     * Returns the number of tested methods.
-     *
-     * @return integer
-     */
-    public function getNumTestedMethods()
-    {
-    }
-
-    /**
-     * Returns the number of functions.
-     *
-     * @return integer
-     */
-    public function getNumFunctions()
-    {
-    }
-
-    /**
-     * Returns the number of tested functions.
-     *
-     * @return integer
-     */
-    public function getNumTestedFunctions()
-    {
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
-     */
-    public function count()
-    {
+        $reflectionClass = new \ReflectionClass('PHP_CodeCoverage_Report_Node');
+        $methods = array();
+        foreach ($reflectionClass->getMethods() as $method) {
+            if ($method->isAbstract()) {
+                $methods[] = $method->getName();
+            }
+        }
+        $builder->setMethods($methods);
     }
 }

@@ -79,7 +79,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getClasses()
     {
-        // TODO: Implement getClasses() method.
     }
 
     /**
@@ -89,7 +88,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getTraits()
     {
-        // TODO: Implement getTraits() method.
     }
 
     /**
@@ -99,7 +97,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getFunctions()
     {
-        // TODO: Implement getFunctions() method.
     }
 
     /**
@@ -109,7 +106,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getLinesOfCode()
     {
-        // TODO: Implement getLinesOfCode() method.
     }
 
     /**
@@ -119,7 +115,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumExecutableLines()
     {
-        // TODO: Implement getNumExecutableLines() method.
     }
 
     /**
@@ -129,7 +124,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumExecutedLines()
     {
-        // TODO: Implement getNumExecutedLines() method.
     }
 
     /**
@@ -139,7 +133,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumClasses()
     {
-        // TODO: Implement getNumClasses() method.
     }
 
     /**
@@ -149,7 +142,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedClasses()
     {
-        // TODO: Implement getNumTestedClasses() method.
     }
 
     /**
@@ -159,7 +151,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTraits()
     {
-        // TODO: Implement getNumTraits() method.
     }
 
     /**
@@ -169,7 +160,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedTraits()
     {
-        // TODO: Implement getNumTestedTraits() method.
     }
 
     /**
@@ -179,7 +169,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumMethods()
     {
-        // TODO: Implement getNumMethods() method.
     }
 
     /**
@@ -189,7 +178,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedMethods()
     {
-        // TODO: Implement getNumTestedMethods() method.
     }
 
     /**
@@ -199,7 +187,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumFunctions()
     {
-        // TODO: Implement getNumFunctions() method.
     }
 
     /**
@@ -209,7 +196,6 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedFunctions()
     {
-        // TODO: Implement getNumTestedFunctions() method.
     }
 
     /**
@@ -223,6 +209,5 @@ class DefaultNode extends PHP_CodeCoverage_Report_Node
      */
     public function count()
     {
-        // TODO: Implement count() method.
     }
 }

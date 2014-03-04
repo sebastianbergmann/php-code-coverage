@@ -423,10 +423,14 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     protected function loadFile($file)
     {
-        $tokens     = token_get_all(file_get_contents($file));
-        $result     = array('');
-        $i          = 0;
-        $stringFlag = false;
+        $buffer              = file_get_contents($file);
+        $tokens              = token_get_all($buffer);
+        $result              = array('');
+        $i                   = 0;
+        $stringFlag          = false;
+        $fileEndsWithNewLine = substr($buffer, -1) == "\n";
+
+        unset($buffer);
 
         foreach ($tokens as $j => $token) {
             if (is_string($token)) {
@@ -562,7 +566,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             }
         }
 
-        unset($result[count($result)-1]);
+        if ($fileEndsWithNewLine) {
+            unset($result[count($result)-1]);
+        }
 
         return $result;
     }

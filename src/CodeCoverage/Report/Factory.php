@@ -277,6 +277,18 @@ class PHP_CodeCoverage_Report_Factory
 
         ksort($files);
 
-        return substr($commonPath, 0, -1);
+        if ($this->isNotRoot($commonPath)) {
+            $commonPath = substr($commonPath, 0, -1);
+        }
+        return $commonPath;
+    }
+
+    /**
+     * @param $commonPath
+     * @return bool
+     */
+    private function isNotRoot($commonPath)
+    {
+        return strlen($commonPath) > 1;
     }
 }

@@ -20,17 +20,16 @@
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
         "irc": "irc://irc.freenode.net/phpunit"
     },
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
-        "phpunit/php-file-iterator": ">=1.3.0",
-        "phpunit/php-token-stream": ">=1.1.3",
-        "phpunit/php-text-template": ">=1.2.0",
-        "sebastian/environment": ">=1.0.0",
-        "sebastian/version": ">=1.0.0"
+        "phpunit/php-file-iterator": "~1.3.1",
+        "phpunit/php-token-stream": "~1.1.3",
+        "phpunit/php-text-template": "~1.2",
+        "sebastian/environment": "~1.0",
+        "sebastian/version": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.0.*@dev",
+        "phpunit/phpunit": ">=4.0.0,<4.1.0",
         "ext-xdebug": ">=2.1.4"
     },
     "suggest": {
@@ -51,3 +50,4 @@
         ""
     ]
 }
+

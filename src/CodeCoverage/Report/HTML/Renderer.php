@@ -211,6 +211,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         );
     }
 
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @return string
+     */
     protected function getBreadcrumbs(PHP_CodeCoverage_Report_Node $node)
     {
         $breadcrumbs = '';
@@ -239,6 +243,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         return $breadcrumbs;
     }
 
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @return string
+     */
     protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
     {
         $buffer = sprintf(
@@ -253,6 +261,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         return $buffer;
     }
 
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @param  $pathToRoot
+     * @return string
+     */
     protected function getInactiveBreadcrumb(PHP_CodeCoverage_Report_Node $node, $pathToRoot)
     {
         return sprintf(
@@ -262,6 +275,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         );
     }
 
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @return string
+     */
     protected function getPathToRoot(PHP_CodeCoverage_Report_Node $node)
     {
         $id    = $node->getId();
@@ -275,6 +292,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         return str_repeat('../', $depth);
     }
 
+    /**
+     * @param  float $percent
+     * @return string
+     */
     protected function getCoverageBar($percent)
     {
         $level = $this->getColorLevel($percent);

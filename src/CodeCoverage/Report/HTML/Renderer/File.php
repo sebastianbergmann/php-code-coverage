@@ -272,6 +272,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
     /**
      * @param  Text_Template $template
+     * @param  array         $item
+     * @param  string        $indent
      * @return string
      */
     protected function renderFunctionOrMethodItem(Text_Template $template, array $item, $indent = '')

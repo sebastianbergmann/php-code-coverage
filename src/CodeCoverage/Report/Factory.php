@@ -57,7 +57,8 @@
 class PHP_CodeCoverage_Report_Factory
 {
     /**
-     * @param PHP_CodeCoverage $coverage
+     * @param  PHP_CodeCoverage $coverage
+     * @return PHP_CodeCoverage_Report_Node_Directory
      */
     public function create(PHP_CodeCoverage $coverage)
     {

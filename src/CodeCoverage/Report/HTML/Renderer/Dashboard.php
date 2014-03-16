@@ -175,7 +175,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         );
 
         foreach ($classes as $class) {
-            foreach ($class['methods'] as $methodName => $method) {
+            foreach ($class['methods'] as $method) {
                 if ($method['coverage'] == 0) {
                     $result['method']['0%']++;
                 } elseif ($method['coverage'] == 100) {
@@ -318,6 +318,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         return $result;
     }
 
+    /**
+     * @param  PHP_CodeCoverage_Report_Node $node
+     * @return string
+     */
     protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
     {
         return sprintf(

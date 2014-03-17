@@ -314,6 +314,7 @@ class PHP_CodeCoverage_Filter
         $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Diff');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Environment\Runtime');
+        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Comparator\Comparator');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Exporter\Exporter');
         $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Version');
         $this->addDirectoryContainingClassToBlacklist('Composer\Autoload\ClassLoader');

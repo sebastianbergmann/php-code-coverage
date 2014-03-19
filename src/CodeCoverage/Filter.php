@@ -76,6 +76,32 @@ class PHP_CodeCoverage_Filter
     private $blacklistPrefilled = false;
 
     /**
+     * A list of classes which are always blacklisted
+     *
+     * @var array
+     */
+    public static $blacklistClassNames = array(
+        'File_Iterator' => 1,
+        'PHP_CodeCoverage' => 1,
+        'PHP_Invoker' => 1,
+        'PHP_Timer' => 1,
+        'PHP_Token' => 1,
+        'PHPUnit_Framework_TestCase' => 2,
+        'PHPUnit_Extensions_Database_TestCase' => 2,
+        'PHPUnit_Framework_MockObject_Generator' => 2,
+        'PHPUnit_Extensions_SeleniumTestCase' => 2,
+        'PHPUnit_Extensions_Story_TestCase' => 2,
+        'Text_Template' => 1,
+        'Symfony\Component\Yaml\Yaml' => 1,
+        'SebastianBergmann\Diff\Diff' => 1,
+        'SebastianBergmann\Environment\Runtime' => 1,
+        'SebastianBergmann\Comparator\Comparator' => 1,
+        'SebastianBergmann\Exporter\Exporter' => 1,
+        'SebastianBergmann\Version' => 1,
+        'Composer\Autoload\ClassLoader' => 1
+    );
+
+    /**
      * Adds a directory to the blacklist (recursively).
      *
      * @param string $directory
@@ -300,24 +326,9 @@ class PHP_CodeCoverage_Filter
             $this->addFileToBlacklist(__PHPUNIT_PHAR__);
         }
 
-        $this->addDirectoryContainingClassToBlacklist('File_Iterator');
-        $this->addDirectoryContainingClassToBlacklist('PHP_CodeCoverage');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Invoker');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Timer');
-        $this->addDirectoryContainingClassToBlacklist('PHP_Token');
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_TestCase', 2);
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_Database_TestCase', 2);
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Framework_MockObject_Generator', 2);
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_SeleniumTestCase', 2);
-        $this->addDirectoryContainingClassToBlacklist('PHPUnit_Extensions_Story_TestCase', 2);
-        $this->addDirectoryContainingClassToBlacklist('Text_Template');
-        $this->addDirectoryContainingClassToBlacklist('Symfony\Component\Yaml\Yaml');
-        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Diff\Diff');
-        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Environment\Runtime');
-        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Comparator\Comparator');
-        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Exporter\Exporter');
-        $this->addDirectoryContainingClassToBlacklist('SebastianBergmann\Version');
-        $this->addDirectoryContainingClassToBlacklist('Composer\Autoload\ClassLoader');
+        foreach (self::$blacklistClassNames as $className => $parent) {
+            $this->addDirectoryContainingClassToBlacklist($className, $parent);
+        }
 
         $this->blacklistPrefilled = true;
     }

@@ -92,7 +92,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
         $data = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
 
-        return $this->cleanup($data);
+        return $data;
     }
 
     /**
@@ -100,7 +100,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      * @return array
      * @since Method available since Release 2.0.0
      */
-    private function cleanup(array $data)
+    public function cleanup(array $data)
     {
         foreach (array_keys($data) as $file) {
             if (isset($data[$file][0])) {

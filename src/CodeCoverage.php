@@ -325,6 +325,10 @@ class PHP_CodeCoverage
             return;
         }
 
+        if (is_callable(array($this->driver, 'cleanup'))) {
+            $data = $this->driver->cleanup($data);
+        }
+
         if ($id != 'UNCOVERED_FILES_FROM_WHITELIST') {
             $this->applyCoversAnnotationFilter(
                 $data,

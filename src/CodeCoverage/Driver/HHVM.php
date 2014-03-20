@@ -55,12 +55,12 @@
  * @since      Class available since Release 1.3.0
  * @codeCoverageIgnore
  */
-class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
+class PHP_CodeCoverage_Driver_HHVM extends PHP_CodeCoverage_Driver
 {
     /**
-     * Constructor.
+     * @throws PHP_CodeCoverage_Exception
      */
-    public function __construct()
+    protected function ensureDriverCanWork()
     {
         if (!defined('HHVM_VERSION')) {
             throw new PHP_CodeCoverage_Exception('This driver requires HHVM');
@@ -70,7 +70,7 @@ class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
     /**
      * Start collection of code coverage information.
      */
-    public function start()
+    protected function doStart()
     {
         fb_enable_code_coverage();
     }
@@ -80,12 +80,12 @@ class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
      *
      * @return array
      */
-    public function stop()
+    protected function doStop()
     {
-        $codeCoverage = fb_get_code_coverage(TRUE);
+        $data = fb_get_code_coverage(TRUE);
 
         fb_disable_code_coverage();
 
-        return $codeCoverage;
+        return $data;
     }
 }

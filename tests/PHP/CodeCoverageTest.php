@@ -70,6 +70,9 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
  */
 class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
+    /**
+     * @var PHP_CodeCoverage
+     */
     private $coverage;
 
     protected function setUp()
@@ -278,7 +281,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      * @covers PHP_CodeCoverage::start
      * @covers PHP_CodeCoverage::stop
      * @covers PHP_CodeCoverage::append
-     * @covers PHP_CodeCoverage::applyListsFilter
      * @covers PHP_CodeCoverage::initializeFilesThatAreSeenTheFirstTime
      * @covers PHP_CodeCoverage::applyCoversAnnotationFilter
      * @covers PHP_CodeCoverage::getTests
@@ -322,161 +324,16 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
      */
     public function testMerge2()
     {
-        $coverage = new PHP_CodeCoverage(
-          $this->getMock('PHP_CodeCoverage_Driver_Xdebug'),
-          new PHP_CodeCoverage_Filter
-        );
+        $driver = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                       ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                       ->getMockForAbstractClass();
+
+        $coverage = new PHP_CodeCoverage($driver, new PHP_CodeCoverage_Filter);
 
         $coverage->merge($this->getCoverageForBankAccount());
 
         $this->assertEquals(
           $this->getExpectedDataArrayForBankAccount(), $coverage->getData()
         );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getLinesToBeIgnored
-     */
-    public function testGetLinesToBeIgnored()
-    {
-        $this->assertEquals(
-          array(
-             1,
-             3,
-             4,
-             5,
-             7,
-             8,
-             9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28,
-            30,
-            32,
-            33,
-            34,
-            35,
-            36,
-            37,
-            38
-          ),
-          $this->getLinesToBeIgnored()->invoke(
-            $this->coverage,
-            TEST_FILES_PATH . 'source_with_ignore.php'
-          )
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getLinesToBeIgnored
-     */
-    public function testGetLinesToBeIgnored2()
-    {
-        $this->assertEquals(
-          array(1, 5),
-          $this->getLinesToBeIgnored()->invoke(
-            $this->coverage,
-            TEST_FILES_PATH . 'source_without_ignore.php'
-          )
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getLinesToBeIgnored
-     */
-    public function testGetLinesToBeIgnored3()
-    {
-        $this->assertEquals(
-          array(
-            1,
-            2,
-            3,
-            4,
-            5,
-            8,
-            11,
-            15,
-            16,
-            19,
-            20
-          ),
-          $this->getLinesToBeIgnored()->invoke(
-            $this->coverage,
-            TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
-          )
-        );
-    }
-
-    /**
-     * @covers PHP_CodeCoverage::getLinesToBeIgnored
-     */
-    public function testGetLinesToBeIgnoredOneLineAnnotations()
-    {
-        $this->assertEquals(
-          array(
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            18,
-            20,
-            23,
-            24,
-            28,
-            29,
-            30,
-            31,
-            32,
-            33,
-            34,
-            37
-          ),
-          $this->getLinesToBeIgnored()->invoke(
-            $this->coverage,
-            TEST_FILES_PATH . 'source_with_oneline_annotations.php'
-          )
-        );
-    }
-
-    /**
-     * @return ReflectionMethod
-     */
-    private function getLinesToBeIgnored()
-    {
-        $getLinesToBeIgnored = new ReflectionMethod(
-            'PHP_CodeCoverage', 'getLinesToBeIgnored'
-        );
-
-        $getLinesToBeIgnored->setAccessible(true);
-
-        return $getLinesToBeIgnored;
     }
 }

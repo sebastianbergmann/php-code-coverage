@@ -58,7 +58,7 @@
  */
 abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
-    protected function getXdebugDataForBankAccount()
+    protected function getDataForBankAccount()
     {
         return array(
           array(
@@ -112,14 +112,19 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getCoverageForBankAccount()
     {
-        $data = $this->getXdebugDataForBankAccount();
+        $data = $this->getDataForBankAccount();
 
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                     ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                     ->getMockForAbstractClass();
+
         $stub->expects($this->any())
-             ->method('stop')
-             ->will($this->onConsecutiveCalls(
-               $data[0], $data[1], $data[2], $data[3]
-             ));
+             ->method('doStop')
+             ->will(
+                 $this->onConsecutiveCalls(
+                     $data[0], $data[1], $data[2], $data[3]
+                 )
+            );
 
         $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
 
@@ -168,11 +173,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getCoverageForBankAccountForFirstTwoTests()
     {
-        $data = $this->getXdebugDataForBankAccount();
+        $data = $this->getDataForBankAccount();
 
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                     ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                     ->getMockForAbstractClass();
+
         $stub->expects($this->any())
-             ->method('stop')
+             ->method('doStop')
              ->will($this->onConsecutiveCalls(
                $data[0], $data[1]
              ));
@@ -202,11 +210,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getCoverageForBankAccountForLastTwoTests()
     {
-        $data = $this->getXdebugDataForBankAccount();
+        $data = $this->getDataForBankAccount();
 
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                     ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                     ->getMockForAbstractClass();
+
         $stub->expects($this->any())
-             ->method('stop')
+             ->method('doStop')
              ->will($this->onConsecutiveCalls(
                $data[2], $data[3]
              ));
@@ -275,7 +286,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
     protected function getCoverageForFileWithIgnoredLines()
     {
         $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStubForFileWithIgnoredLines(),
+          $this->setUpStubForFileWithIgnoredLines(),
           new PHP_CodeCoverage_Filter
         );
 
@@ -285,11 +296,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStubForFileWithIgnoredLines()
+    protected function setUpStubForFileWithIgnoredLines()
     {
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                     ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                     ->getMockForAbstractClass();
+
         $stub->expects($this->any())
-             ->method('stop')
+             ->method('doStop')
              ->will($this->returnValue(
                array(
                  TEST_FILES_PATH . 'source_with_ignore.php' => array(
@@ -307,7 +321,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
     protected function getCoverageForClassWithAnonymousFunction()
     {
         $coverage = new PHP_CodeCoverage(
-          $this->setUpXdebugStubForClassWithAnonymousFunction(),
+          $this->setUpStubForClassWithAnonymousFunction(),
           new PHP_CodeCoverage_Filter
         );
 
@@ -317,11 +331,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStubForClassWithAnonymousFunction()
+    protected function setUpStubForClassWithAnonymousFunction()
     {
-        $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
+        $stub = $this->getMockBuilder('PHP_CodeCoverage_Driver')
+                     ->setConstructorArgs(array(new PHP_CodeCoverage_Filter, new PHP_CodeCoverage_Parser))
+                     ->getMockForAbstractClass();
+
         $stub->expects($this->any())
-             ->method('stop')
+             ->method('doStop')
              ->will($this->returnValue(
                array(
                  TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => array(

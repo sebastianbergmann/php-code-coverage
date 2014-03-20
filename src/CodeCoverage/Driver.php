@@ -40,11 +40,11 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 2.1.0
  */
 
 /**
- * Interface for code coverage drivers.
+ * Base class for code coverage drivers.
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -52,19 +52,104 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.1.0
  */
-interface PHP_CodeCoverage_Driver
+abstract class PHP_CodeCoverage_Driver
 {
+    /**
+     * @var PHP_CodeCoverage_Filter
+     */
+    private $filter;
+
+    /**
+     * @var PHP_CodeCoverage_Parser
+     */
+    private $parser;
+
+    /**
+     * @var array
+     */
+    private $ignoredLines = array();
+
+    /**
+     * @param PHP_CodeCoverage_Filter $filter
+     * @param PHP_CodeCoverage_Parser $parser
+     */
+    public function __construct(PHP_CodeCoverage_Filter $filter, PHP_CodeCoverage_Parser $parser)
+    {
+        $this->filter = $filter;
+        $this->parser = $parser;
+    }
+
     /**
      * Start collection of code coverage information.
      */
-    public function start();
+    public function start()
+    {
+        $this->doStart();
+    }
 
     /**
      * Stop collection of code coverage information.
      *
      * @return array
      */
-    public function stop();
+    public function stop()
+    {
+        $data = $this->doStop();
+
+        $this->filter($data);
+        $this->cleanup($data);
+
+        return $data;
+    }
+
+    /**
+     * @throws PHP_CodeCoverage_Exception
+     */
+    abstract protected function ensureDriverCanWork();
+
+    /**
+     * Start collection of code coverage information.
+     */
+    abstract protected function doStart();
+
+    /**
+     * Stop collection of code coverage information.
+     *
+     * @return array
+     */
+    abstract protected function doStop();
+
+    /**
+     * Template method to perform driver-specific data cleanup.
+     *
+     * @param array $data
+     */
+    protected function cleanup(array &$data)
+    {
+    }
+
+    /**
+     * Performs blacklist and whitelist as well as @codeCoverageIgnore* filtering.
+     *
+     * @param array $data
+     */
+    private function filter(array &$data)
+    {
+        foreach (array_keys($data) as $filename) {
+            if ($this->filter->isFiltered($filename)) {
+                unset($data[$filename]);
+                continue;
+            }
+
+            foreach ($this->parser->getLinesToBeIgnored($filename) as $line) {
+                unset($data[$filename][$line]);
+            }
+
+            if (empty($data[$filename])) {
+                unset($data[$filename]);
+            }
+        }
+    }
 }

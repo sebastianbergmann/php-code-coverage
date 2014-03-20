@@ -55,12 +55,12 @@
  * @since      Class available since Release 1.0.0
  * @codeCoverageIgnore
  */
-class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
+class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
 {
     /**
-     * Constructor.
+     * @throws PHP_CodeCoverage_Exception
      */
-    public function __construct()
+    protected function ensureDriverCanWork()
     {
         if (!extension_loaded('xdebug')) {
             throw new PHP_CodeCoverage_Exception('This driver requires Xdebug');
@@ -77,7 +77,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     /**
      * Start collection of code coverage information.
      */
-    public function start()
+    protected function doStart()
     {
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
     }
@@ -87,20 +87,19 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      *
      * @return array
      */
-    public function stop()
+    protected function doStop()
     {
         $data = xdebug_get_code_coverage();
+
         xdebug_stop_code_coverage();
 
-        return $this->cleanup($data);
+        return $data;
     }
 
     /**
-     * @param  array $data
-     * @return array
-     * @since Method available since Release 2.0.0
+     * @param array $data
      */
-    private function cleanup(array $data)
+    protected function cleanup(array &$data)
     {
         foreach (array_keys($data) as $file) {
             if (isset($data[$file][0])) {
@@ -117,16 +116,13 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
                 }
             }
         }
-
-        return $data;
     }
 
     /**
      * @param  string $file
      * @return integer
-     * @since Method available since Release 2.0.0
      */
-    private function getNumberOfLinesInFile($file)
+    protected function getNumberOfLinesInFile($file)
     {
         $buffer = file_get_contents($file);
         $lines  = substr_count($buffer, "\n");

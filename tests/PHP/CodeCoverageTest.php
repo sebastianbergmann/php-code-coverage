@@ -87,7 +87,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     public function testConstructor()
     {
         $this->assertAttributeInstanceOf(
-          'PHP_CodeCoverage_Driver_Xdebug', 'driver', $this->coverage
+          'PHP_CodeCoverage_Driver', 'driver', $this->coverage
         );
 
         $this->assertAttributeInstanceOf(
@@ -105,7 +105,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $coverage = new PHP_CodeCoverage(null, $filter);
 
         $this->assertAttributeInstanceOf(
-          'PHP_CodeCoverage_Driver_Xdebug', 'driver', $coverage
+          'PHP_CodeCoverage_Driver', 'driver', $coverage
         );
 
         $this->assertSame($filter, $coverage->filter());

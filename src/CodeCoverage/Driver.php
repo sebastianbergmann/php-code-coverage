@@ -77,6 +77,8 @@ abstract class PHP_CodeCoverage_Driver
      */
     public function __construct(PHP_CodeCoverage_Filter $filter, PHP_CodeCoverage_Parser $parser)
     {
+        $this->ensureDriverCanWork();
+
         $this->filter = $filter;
         $this->parser = $parser;
     }

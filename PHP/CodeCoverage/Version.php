@@ -56,7 +56,7 @@
  */
 class PHP_CodeCoverage_Version
 {
-    const VERSION = '1.2.16';
+    const VERSION = '1.2.17';
     protected static $version;
 
     /**

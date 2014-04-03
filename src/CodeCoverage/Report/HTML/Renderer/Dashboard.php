@@ -328,7 +328,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             '        <li><a href="%s.html">%s</a></li>' . "\n" .
             '        <li class="active">(Dashboard)</li>' . "\n",
             $node->getId(),
-            $node->getName()
+            //Do not always print the full absolute path of $node here:
+            //optionally replace prefix
+            $this->stripProjectPrefixFromNodeName($node)
         );
     }
 }

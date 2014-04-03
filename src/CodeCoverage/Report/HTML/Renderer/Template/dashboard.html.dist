@@ -51,8 +51,8 @@
       <table class="table">
        <thead>
         <tr>
-         <th><div align="left">Class</div></th>
-         <th><div align="right">Coverage</div></th>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
         </tr>
        </thead>
        <tbody>
@@ -67,8 +67,8 @@
       <table class="table">
        <thead>
         <tr>
-         <th><div align="left">Class</div></th>
-         <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
        <tbody>
@@ -104,8 +104,8 @@
       <table class="table">
        <thead>
         <tr>
-         <th><div align="left">Method</div></th>
-         <th><div align="right">Coverage</div></th>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
         </tr>
        </thead>
        <tbody>
@@ -120,8 +120,8 @@
       <table class="table">
        <thead>
         <tr>
-         <th><div align="left">Method</div></th>
-         <th><div align="right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></div></th>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
        <tbody>

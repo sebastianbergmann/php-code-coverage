@@ -239,7 +239,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($leastTestedClasses as $className => $coverage) {
             $result['class'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d%%</td></tr>' . "\n",
                 $classes[$className]['link'],
                 $className,
                 $coverage
@@ -250,7 +250,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d%%</div></td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d%%</td></tr>' . "\n",
                 $classes[$class]['methods'][$method]['link'],
                 $methodName,
                 $coverage
@@ -297,7 +297,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
         foreach ($classRisks as $className => $crap) {
             $result['class'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td></tr>' . "\n",
                 $classes[$className]['link'],
                 $className,
                 $crap
@@ -308,7 +308,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td><div align="right">%d</div></td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td></tr>' . "\n",
                 $classes[$class]['methods'][$method]['link'],
                 $methodName,
                 $crap

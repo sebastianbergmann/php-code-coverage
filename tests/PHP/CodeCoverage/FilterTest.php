@@ -300,4 +300,16 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToWhitelist($this->files[0]);
         $this->asserttrue($this->filter->isFiltered($this->files[1]));
     }
+
+    /**
+     * @covers PHP_CodeCoverage_Filter::isFiltered
+     */
+    public function testNonFilesAreFiltered()
+    {
+        $this->asserttrue($this->filter->isFiltered('eval()\'d code'));
+        $this->asserttrue($this->filter->isFiltered('runtime-created function'));
+        $this->asserttrue($this->filter->isFiltered('assert code'));
+        $this->asserttrue($this->filter->isFiltered('regexp code'));
+        $this->assertfalse($this->filter->isFiltered('filename'));
+    }
 }

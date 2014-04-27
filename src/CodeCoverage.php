@@ -190,13 +190,15 @@ class PHP_CodeCoverage
 
     /**
      * Returns the collected code coverage data.
+     * Set $raw = true to bypass all filters.
      *
+     * @param bool $raw
      * @return array
      * @since  Method available since Release 1.1.0
      */
-    public function getData()
+    public function getData($raw = false)
     {
-        if ($this->addUncoveredFilesFromWhitelist) {
+        if (!$raw && $this->addUncoveredFilesFromWhitelist) {
             $this->addUncoveredFilesFromWhitelist();
         }
 

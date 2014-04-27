@@ -233,6 +233,17 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
           ),
           array(
             array(
+              'driveA/Money.php' => array(),
+              'driveB/MoneyBag.php' => array()
+            ),
+            '/',
+            array(
+              '/driveA/Money.php' => array(),
+              '/driveB/MoneyBag.php' => array()
+            )
+          ),
+          array(
+            array(
               'Money.php' => array()
             ),
             '/home/sb/Money/',

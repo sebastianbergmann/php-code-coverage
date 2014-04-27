@@ -303,13 +303,14 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PHP_CodeCoverage_Filter::isFiltered
+     * @covers PHP_CodeCoverage_Filter::isFile
      */
     public function testNonFilesAreFiltered()
     {
-        $this->asserttrue($this->filter->isFiltered('eval()\'d code'));
-        $this->asserttrue($this->filter->isFiltered('runtime-created function'));
-        $this->asserttrue($this->filter->isFiltered('assert code'));
-        $this->asserttrue($this->filter->isFiltered('regexp code'));
-        $this->assertfalse($this->filter->isFiltered('filename'));
+        $this->assertTrue($this->filter->isFiltered('eval()\'d code'));
+        $this->assertTrue($this->filter->isFiltered('runtime-created function'));
+        $this->assertTrue($this->filter->isFiltered('assert code'));
+        $this->assertTrue($this->filter->isFiltered('regexp code'));
+        $this->assertFalse($this->filter->isFiltered('filename'));
     }
 }

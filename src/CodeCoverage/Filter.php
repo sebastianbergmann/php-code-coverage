@@ -272,10 +272,10 @@ class PHP_CodeCoverage_Filter
      */
     public function isFiltered($filename)
     {
-        if(!$this->isFile($filename))
-        {
+        if (!$this->isFile($filename)) {
             return true;
         }
+
         $filename = realpath($filename);
 
         if (!empty($this->whitelistedFiles)) {

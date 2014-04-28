@@ -271,7 +271,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         if ($this->absoluteRoot) {
             return preg_replace(
                 '#^' . $this->absoluteRoot . '#', 
-                '', 
+                '[ROOT]', 
                 $node->getName());
         }
         else 

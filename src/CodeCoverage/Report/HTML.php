@@ -77,17 +77,24 @@ class PHP_CodeCoverage_Report_HTML
     private $highLowerBound;
 
     /**
+     * @var string
+     */
+    private $absoluteRoot;
+    
+    /**
      * Constructor.
      *
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
      * @param string  $generator
+     * @param string  $absoluteRoot Optional: root path of the sources under analysis
      */
-    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $generator = '', $absoluteRoot = null)
     {
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->lowUpperBound  = $lowUpperBound;
+        $this->absoluteRoot   = $absoluteRoot;
 
         $this->templatePath = sprintf(
             '%s%sHTML%sRenderer%sTemplate%s',
@@ -121,7 +128,8 @@ class PHP_CodeCoverage_Report_HTML
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->absoluteRoot
         );
 
         $directory = new PHP_CodeCoverage_Report_HTML_Renderer_Directory(
@@ -129,7 +137,8 @@ class PHP_CodeCoverage_Report_HTML
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->absoluteRoot
         );
 
         $file = new PHP_CodeCoverage_Report_HTML_Renderer_File(
@@ -137,7 +146,8 @@ class PHP_CodeCoverage_Report_HTML
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->absoluteRoot
         );
 
         $directory->render($report, $target . 'index.html');

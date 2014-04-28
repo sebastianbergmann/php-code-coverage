@@ -86,15 +86,17 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      * @param string  $date
      * @param integer $lowUpperBound
      * @param integer $highLowerBound
+     * @param string  $absoluteRoot Optional: see parent
      */
-    public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound)
+    public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound, $absoluteRoot = null)
     {
         parent::__construct(
             $templatePath,
             $generator,
             $date,
             $lowUpperBound,
-            $highLowerBound
+            $highLowerBound,
+            $absoluteRoot
         );
     }
 

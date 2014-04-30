@@ -83,8 +83,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                 'complexity_class'              => $complexity['class'],
                 'complexity_method'             => $complexity['method'],
                 'class_coverage_distribution'   => $coverageDistribution['class'],
-                'method_coverage_distribution'  => $coverageDistribution['method'],
-                'backlink'                      => basename(str_replace('.dashboard', '', $file))
+                'method_coverage_distribution'  => $coverageDistribution['method']
             )
         );
 
@@ -325,9 +324,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     protected function getActiveBreadcrumb(PHP_CodeCoverage_Report_Node $node)
     {
         return sprintf(
-            '        <li><a href="%s.html">%s</a></li>' . "\n" .
+            '        <li><a href="index.html">%s</a></li>' . "\n" .
             '        <li class="active">(Dashboard)</li>' . "\n",
-            $node->getId(),
             $node->getName()
         );
     }

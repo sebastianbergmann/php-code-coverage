@@ -94,6 +94,7 @@ class PHP_CodeCoverage_Filter
         'Text_Template' => 1,
         'Symfony\Component\Yaml\Yaml' => 1,
         'SebastianBergmann\Diff\Diff' => 1,
+        'SebastianBergmann\Comparator\Comparator' => 1,
         'SebastianBergmann\Environment\Runtime' => 1,
         'SebastianBergmann\Exporter\Exporter' => 1,
         'SebastianBergmann\Version' => 1,

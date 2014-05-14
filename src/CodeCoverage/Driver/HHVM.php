@@ -88,4 +88,52 @@ class PHP_CodeCoverage_Driver_HHVM extends PHP_CodeCoverage_Driver
 
         return $data;
     }
+	
+	/**
+	 * {@inheritdoc}
+	 * 
+     * @param array $data
+     */
+    protected function cleanup(array &$data) 
+	{
+		foreach (array_keys($data) as $file) {
+			if (!file_exists($file)) {
+				continue;
+			}
+			
+			$lines = $this->getLines($file);
+			foreach ($lines as $line => $dead) {
+				if ($dead) {
+					$data[$file][$line] = -2;
+				} elseif (isset($data[$file][$line])) {
+					$data[$file][$line] = 1;
+				} else {
+					$data[$file][$line] = -1;
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns file lines anad mark some as dead
+	 * 
+     * @param string $file
+     * @return array
+     */
+    private function getLines($file)
+    {
+        $buffer = file($file);
+        $lines  = array();
+		
+		foreach ($buffer as $line => $content) {
+			if (trim($content) === '}') {
+				$lines[$line + 1] = true;
+				continue;
+			}
+			$lines[$line + 1] = false;
+		}
+		return $lines;
+	}
+	
 }

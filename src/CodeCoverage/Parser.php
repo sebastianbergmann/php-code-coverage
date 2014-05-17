@@ -127,7 +127,7 @@ class PHP_CodeCoverage_Parser
             $this->ignoredLines[$filename] = array();
             $ignore                        = false;
             $stop                          = false;
-            $lines                         = file($filename);
+            $lines                         = file_exists($filename) ? file($filename) : array();
             $numLines                      = count($lines);
 
             foreach ($lines as $index => $line) {

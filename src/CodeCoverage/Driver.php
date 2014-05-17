@@ -140,7 +140,7 @@ abstract class PHP_CodeCoverage_Driver
     private function filter(array &$data)
     {
         foreach (array_keys($data) as $filename) {
-            if ($this->filter->isFiltered($filename)) {
+            if (!file_exists($filename) || $this->filter->isFiltered($filename)) {
                 unset($data[$filename]);
                 continue;
             }

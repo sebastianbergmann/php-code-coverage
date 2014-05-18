@@ -307,6 +307,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testNonFilesAreFiltered()
     {
+        $this->assertTrue($this->filter->isFiltered('xdebug://debug-eval'));
         $this->assertTrue($this->filter->isFiltered('eval()\'d code'));
         $this->assertTrue($this->filter->isFiltered('runtime-created function'));
         $this->assertTrue($this->filter->isFiltered('assert code'));

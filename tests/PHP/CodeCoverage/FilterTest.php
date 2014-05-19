@@ -267,6 +267,8 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testIsFile()
     {
+        $this->assertFalse($this->filter->isFile('vfs://root/a/path'));
+        $this->assertFalse($this->filter->isFile('xdebug://debug-eval'));
         $this->assertfalse($this->filter->isFile('eval()\'d code'));
         $this->assertfalse($this->filter->isFile('runtime-created function'));
         $this->assertfalse($this->filter->isFile('assert code'));
@@ -307,6 +309,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
      */
     public function testNonFilesAreFiltered()
     {
+        $this->assertTrue($this->filter->isFiltered('vfs://root/a/path'));
         $this->assertTrue($this->filter->isFiltered('xdebug://debug-eval'));
         $this->assertTrue($this->filter->isFiltered('eval()\'d code'));
         $this->assertTrue($this->filter->isFiltered('runtime-created function'));

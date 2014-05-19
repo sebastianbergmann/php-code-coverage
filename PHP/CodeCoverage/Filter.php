@@ -231,6 +231,7 @@ class PHP_CodeCoverage_Filter
     public function isFile($filename)
     {
         if ($filename == '-' ||
+            strpos($filename, 'vfs://') === 0 ||
             strpos($filename, 'xdebug://debug-eval') !== FALSE ||
             strpos($filename, 'eval()\'d code') !== FALSE ||
             strpos($filename, 'runtime-created function') !== FALSE ||

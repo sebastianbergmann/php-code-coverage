@@ -269,11 +269,11 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     {
         $this->assertFalse($this->filter->isFile('vfs://root/a/path'));
         $this->assertFalse($this->filter->isFile('xdebug://debug-eval'));
-        $this->assertfalse($this->filter->isFile('eval()\'d code'));
-        $this->assertfalse($this->filter->isFile('runtime-created function'));
-        $this->assertfalse($this->filter->isFile('assert code'));
-        $this->assertfalse($this->filter->isFile('regexp code'));
-        $this->asserttrue($this->filter->isFile('filename'));
+        $this->assertFalse($this->filter->isFile('eval()\'d code'));
+        $this->assertFalse($this->filter->isFile('runtime-created function'));
+        $this->assertFalse($this->filter->isFile('assert code'));
+        $this->assertFalse($this->filter->isFile('regexp code'));
+        $this->assertTrue($this->filter->isFile('filename'));
     }
 
     /**
@@ -282,7 +282,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testBlacklistedFileIsFiltered()
     {
         $this->filter->addFileToBlacklist($this->files[0]);
-        $this->asserttrue($this->filter->isFiltered($this->files[0]));
+        $this->assertTrue($this->filter->isFiltered($this->files[0]));
     }
 
     /**
@@ -291,7 +291,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testWhitelistedFileIsNotFiltered()
     {
         $this->filter->addFileToWhitelist($this->files[0]);
-        $this->assertfalse($this->filter->isFiltered($this->files[0]));
+        $this->assertFalse($this->filter->isFiltered($this->files[0]));
     }
 
     /**
@@ -300,7 +300,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     public function testNotWhitelistedFileIsFiltered()
     {
         $this->filter->addFileToWhitelist($this->files[0]);
-        $this->asserttrue($this->filter->isFiltered($this->files[1]));
+        $this->assertTrue($this->filter->isFiltered($this->files[1]));
     }
 
     /**

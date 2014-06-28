@@ -229,7 +229,7 @@ class PHP_CodeCoverage_Filter
             return false;
         }
 
-        return true;
+        return file_exists($filename);
     }
 
     /**

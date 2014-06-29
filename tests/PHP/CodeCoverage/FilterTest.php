@@ -273,7 +273,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->filter->isFile('runtime-created function'));
         $this->assertFalse($this->filter->isFile('assert code'));
         $this->assertFalse($this->filter->isFile('regexp code'));
-        $this->assertTrue($this->filter->isFile('filename'));
+        $this->assertTrue($this->filter->isFile(__FILE__));
     }
 
     /**
@@ -315,6 +315,6 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->filter->isFiltered('runtime-created function'));
         $this->assertTrue($this->filter->isFiltered('assert code'));
         $this->assertTrue($this->filter->isFiltered('regexp code'));
-        $this->assertFalse($this->filter->isFiltered('filename'));
+        $this->assertFalse($this->filter->isFiltered(__FILE__));
     }
 }

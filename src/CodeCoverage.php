@@ -714,22 +714,24 @@ class PHP_CodeCoverage
                             $stop = true;
                         }
 
-                        // Do not ignore the whole line when there is a token
-                        // before the comment on the same line
-                        if (0 === strpos($_token, $_line)) {
-                            $count = substr_count($token, "\n");
-                            $line  = $token->getLine();
+                        if (!$ignore) {
+                            $start = $token->getLine();
+                            $end = $start + substr_count($token, "\n");
 
-                            for ($i = $line; $i < $line + $count; $i++) {
+                            // Do not ignore the first line when there is a token
+                            // before the comment
+                            if (0 !== strpos($_token, $_line)) {
+                                $start++;
+                            }
+
+                            for ($i = $start; $i < $end; $i++) {
                                 $this->ignoredLines[$filename][] = $i;
                             }
 
-                            if ($token instanceof PHP_Token_DOC_COMMENT) {
-                                // The DOC_COMMENT token does not contain the
-                                // final \n character in its text
-                                if (substr(trim($lines[$i-1]), -2) == '*/') {
-                                    $this->ignoredLines[$filename][] = $i;
-                                }
+                            // A DOC_COMMENT token or a COMMENT token starting with "/*"
+                            // does not contain the final \n character in its text
+                            if (0 === strpos($_token, '/*') && '*/' === substr(trim($lines[$i-1]), -2)) {
+                                $this->ignoredLines[$filename][] = $i;
                             }
                         }
                         break;

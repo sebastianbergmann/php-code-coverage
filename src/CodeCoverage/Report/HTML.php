@@ -188,7 +188,7 @@ class PHP_CodeCoverage_Report_HTML
         copy($this->templatePath . 'js/d3.min.js', $dir . 'd3.min.js');
         copy($this->templatePath . 'js/holder.js', $dir . 'holder.js');
         copy($this->templatePath . 'js/html5shiv.js', $dir . 'html5shiv.js');
-        copy($this->templatePath . 'js/jquery.js', $dir . 'jquery.js');
+        copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
         copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/respond.min.js', $dir . 'respond.min.js');
     }

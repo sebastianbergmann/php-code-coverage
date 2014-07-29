@@ -60,7 +60,7 @@
     <a title="Back to the top" id="toplink" href="#"><span class="glyphicon glyphicon-arrow-up"></span></a>
    </footer>
   </div>
-  <script src="{{path_to_root}}js/jquery.js" type="text/javascript"></script>
+  <script src="{{path_to_root}}js/jquery.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/bootstrap.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/holder.js" type="text/javascript"></script>
   <script type="text/javascript">

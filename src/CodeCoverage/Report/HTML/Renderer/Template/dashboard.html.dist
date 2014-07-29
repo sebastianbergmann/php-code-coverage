@@ -138,7 +138,7 @@
     </p>
    </footer>
   </div>
-  <script src="{{path_to_root}}js/jquery.js" type="text/javascript"></script>
+  <script src="{{path_to_root}}js/jquery.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/bootstrap.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/holder.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/d3.min.js" type="text/javascript"></script>

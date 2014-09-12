@@ -65,7 +65,8 @@ class PHP_CodeCoverage_Parser
      * @var array
      */
     private $ignoredLines = array();
-
+    private $doNotIgnoreLines = array();
+    
     /**
      * @param  array $linesToBeCovered
      * @param  array $linesToBeUsed
@@ -125,6 +126,9 @@ class PHP_CodeCoverage_Parser
 
         if (!isset($this->ignoredLines[$filename])) {
             $this->ignoredLines[$filename] = array();
+            $this->doNotIgnoreLines[$filename] = array();
+            $lastLineIgnoredForStartOrEndPhpTag = 0;
+            $lastLine = 0;
             $ignore                        = false;
             $stop                          = false;
             $lines                         = file($filename);
@@ -244,11 +248,24 @@ class PHP_CodeCoverage_Parser
                         $this->ignoredLines[$filename][] = $token->getEndLine();
 
                     // Intentional fallthrough
-                    case 'PHP_Token_OPEN_TAG':
-                    case 'PHP_Token_CLOSE_TAG':
                     case 'PHP_Token_USE':
                         $this->ignoredLines[$filename][] = $token->getLine();
                         break;
+                    case 'PHP_Token_OPEN_TAG':
+                    case 'PHP_Token_CLOSE_TAG':
+                        $lastLineIgnoredForStartOrEndPhpTag = $token->getLine();
+                        $this->ignoredLines[$filename][] = $token->getLine();
+                        break;
+                    case 'PHP_Token_WHITESPACE':
+                        break;
+                    default:
+                        if ($lastLineIgnoredForStartOrEndPhpTag == $token->getLine())
+                        {
+                            //This line possibly has some code and cannot be ignored
+                            $this->doNotIgnoreLines[$filename][] = $token->getLine();
+                        }
+                        break;
+                        
                 }
 
                 if ($ignore) {
@@ -259,12 +276,16 @@ class PHP_CodeCoverage_Parser
                         $stop   = false;
                     }
                 }
+                
+                $lastLine = $token->getLine();
             }
 
             $this->ignoredLines[$filename][] = $numLines + 1;
 
+            $this->doNotIgnoreLines[$filename] = array_unique($this->doNotIgnoreLines[$filename]);
+            
             $this->ignoredLines[$filename] = array_unique(
-                $this->ignoredLines[$filename]
+                array_diff($this->ignoredLines[$filename], $this->doNotIgnoreLines[$filename])
             );
 
             sort($this->ignoredLines[$filename]);

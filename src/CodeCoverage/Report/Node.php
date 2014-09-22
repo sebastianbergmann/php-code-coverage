@@ -125,7 +125,9 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
                 }
             }
         }
-
+        
+        $this->id = substr($this->id, 0, 50);
+        
         return $this->id;
     }
 

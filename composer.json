@@ -30,7 +30,7 @@
         "sebastian/version": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "dev-master",
+        "phpunit/phpunit": "~4.5",
         "ext-xdebug": ">=2.1.4"
     },
     "suggest": {

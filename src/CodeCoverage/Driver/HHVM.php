@@ -82,7 +82,7 @@ class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
-        $codeCoverage = fb_get_code_coverage(TRUE);
+        $codeCoverage = fb_get_code_coverage(true);
 
         fb_disable_code_coverage();
 

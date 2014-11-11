@@ -411,17 +411,17 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
 
                 // Start line of a trait.
-                else if (isset($this->startLines[$lineNumber]['traitName'])) {
+                elseif (isset($this->startLines[$lineNumber]['traitName'])) {
                     $currentTrait = &$this->startLines[$lineNumber];
                 }
 
                 // Start line of a method.
-                else if (isset($this->startLines[$lineNumber]['methodName'])) {
+                elseif (isset($this->startLines[$lineNumber]['methodName'])) {
                     $currentMethod = &$this->startLines[$lineNumber];
                 }
 
                 // Start line of a function.
-                else if (isset($this->startLines[$lineNumber]['functionName'])) {
+                elseif (isset($this->startLines[$lineNumber]['functionName'])) {
                     $currentFunction = &$this->startLines[$lineNumber];
                 }
             }
@@ -474,17 +474,17 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
 
                 // End line of a trait.
-                else if (isset($this->endLines[$lineNumber]['traitName'])) {
+                elseif (isset($this->endLines[$lineNumber]['traitName'])) {
                     unset($currentTrait);
                 }
 
                 // End line of a method.
-                else if (isset($this->endLines[$lineNumber]['methodName'])) {
+                elseif (isset($this->endLines[$lineNumber]['methodName'])) {
                     unset($currentMethod);
                 }
 
                 // End line of a function.
-                else if (isset($this->endLines[$lineNumber]['functionName'])) {
+                elseif (isset($this->endLines[$lineNumber]['functionName'])) {
                     unset($currentFunction);
                 }
             }

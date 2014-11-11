@@ -88,4 +88,20 @@ class PHP_CodeCoverage_Driver_HHVM extends PHP_CodeCoverage_Driver
 
         return $data;
     }
+	
+	/**
+	 * {@inheritdoc}
+	 * 
+     * @param array $data
+     */
+    protected function cleanup(array &$data) 
+	{
+		foreach (array_keys($data) as $file) {			
+			$data[$file] = array_map(function($number) {
+				return $number > 0 ? 1 : -1;
+			}, $data[$file]);
+		}
+		return $data;
+	}
+	
 }

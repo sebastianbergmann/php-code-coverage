@@ -467,6 +467,14 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @return bool
+     */
+    public function getMapTestClassNameToCoveredClassName()
+    {
+        return $this->mapTestClassNameToCoveredClassName;
+    }
+
+    /**
      * @param  boolean                    $flag
      * @throws PHP_CodeCoverage_Exception
      */

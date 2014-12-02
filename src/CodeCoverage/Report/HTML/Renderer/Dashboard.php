@@ -62,19 +62,17 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
      */
     public function render(PHP_CodeCoverage_Report_Node_Directory $node, $file)
     {
-        $classes = $node->getClassesAndTraits();
-        $isRoot  = $node->getParent() === null;
-
+        $classes  = $node->getClassesAndTraits();
         $template = new Text_Template(
             $this->templatePath . 'dashboard.html', '{{', '}}'
         );
 
         $this->setCommonTemplateVariables($template, $node);
 
-        $complexity           = $this->complexity($classes, $isRoot);
-        $coverageDistribution = $this->coverageDistribution($classes, $isRoot);
-        $insufficientCoverage = $this->insufficientCoverage($classes, $isRoot);
-        $projectRisks         = $this->projectRisks($classes, $isRoot);
+        $complexity           = $this->complexity($classes);
+        $coverageDistribution = $this->coverageDistribution($classes);
+        $insufficientCoverage = $this->insufficientCoverage($classes);
+        $projectRisks         = $this->projectRisks($classes);
 
         $template->setVar(
             array(
@@ -95,11 +93,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the data for the Class/Method Complexity charts.
      *
-     * @param  array   $classes
-     * @param  boolean $isRoot
+     * @param  array $classes
      * @return array
      */
-    protected function complexity(array $classes, $isRoot)
+    protected function complexity(array $classes)
     {
         $result = array('class' => array(), 'method' => array());
 
@@ -114,7 +111,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                     $method['ccn'],
                     sprintf(
                         '<a href="%s">%s</a>',
-                        $this->rebaseLink($method['link'], $isRoot),
+                        $method['link'],
                         $methodName
                     )
                 );
@@ -125,7 +122,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
                 $class['ccn'],
                 sprintf(
                     '<a href="%s">%s</a>',
-                    $this->rebaseLink($class['link'], $isRoot),
+                    $class['link'],
                     $className
                 )
             );
@@ -140,11 +137,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the data for the Class / Method Coverage Distribution chart.
      *
-     * @param  array   $classes
-     * @param  boolean $isRoot
+     * @param  array $classes
      * @return array
      */
-    protected function coverageDistribution(array $classes, $isRoot)
+    protected function coverageDistribution(array $classes)
     {
         $result = array(
             'class' => array(
@@ -210,11 +206,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the classes / methods with insufficient coverage.
      *
-     * @param  array   $classes
-     * @param  boolean $isRoot
+     * @param  array $classes
      * @return array
      */
-    protected function insufficientCoverage(array $classes, $isRoot)
+    protected function insufficientCoverage(array $classes)
     {
         $leastTestedClasses = array();
         $leastTestedMethods = array();
@@ -244,7 +239,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         foreach ($leastTestedClasses as $className => $coverage) {
             $result['class'] .= sprintf(
                 '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d%%</td></tr>' . "\n",
-                $this->rebaseLink($classes[$className]['link'], $isRoot),
+                $classes[$className]['link'],
                 $className,
                 $coverage
             );
@@ -255,7 +250,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</a></a></td><td class="text-right">%d%%</td></tr>' . "\n",
-                $this->rebaseLink($classes[$class]['methods'][$method]['link'], $isRoot),
+                $classes[$class]['methods'][$method]['link'],
                 $methodName,
                 $method,
                 $coverage
@@ -268,11 +263,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the project risks according to the CRAP index.
      *
-     * @param  array   $classes
-     * @param  boolean $isRoot
+     * @param  array $classes
      * @return array
      */
-    protected function projectRisks(array $classes, $isRoot)
+    protected function projectRisks(array $classes)
     {
         $classRisks  = array();
         $methodRisks = array();
@@ -304,7 +298,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         foreach ($classRisks as $className => $crap) {
             $result['class'] .= sprintf(
                 '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td></tr>' . "\n",
-                $this->rebaseLink($classes[$className]['link'], $isRoot),
+                $classes[$className]['link'],
                 $className,
                 $crap
             );
@@ -315,7 +309,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d</td></tr>' . "\n",
-                $this->rebaseLink($classes[$class]['methods'][$method]['link'], $isRoot),
+                $classes[$class]['methods'][$method]['link'],
                 $methodName,
                 $method,
                 $crap
@@ -332,16 +326,5 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             '        <li class="active">(Dashboard)</li>' . "\n",
             $node->getName()
         );
-    }
-
-    /**
-     * @param  string  $link
-     * @param  boolean $isRoot
-     * @return string
-     * @since  Method available since Release 2.0.12
-     */
-    private function rebaseLink($link, $isRoot)
-    {
-        return $isRoot ? $link : substr($link, strpos($link, '/') + 1);
     }
 }

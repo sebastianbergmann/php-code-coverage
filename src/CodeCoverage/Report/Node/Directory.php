@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the PHP_CodeCoverage.
+ * This file is part of the PHP_CodeCoverage package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *

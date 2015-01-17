@@ -51,6 +51,47 @@ class PHP_CodeCoverage_Driver_HHVM implements PHP_CodeCoverage_Driver
 
         fb_disable_code_coverage();
 
-        return $codeCoverage;
+        return $this->expandCoverage($codeCoverage);
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     */
+    private function expandCoverage(array $data)
+    {
+        $coverages = [];
+        foreach($data as $file => $lines) {
+            $num = array_keys($lines);
+            foreach(range(0, $this->getNumberOfLinesInFile($file)) as $l) {
+                if(isset($lines[$l])) {
+                    $lines[$l] = 1;
+                } else {
+                    $lines[$l] = -1;
+                }
+            }
+            ksort($lines);
+            $coverages[$file] = $lines;
+        }
+        return $coverages;
+    }
+
+    /**
+     * @param  string $file
+     * @return integer
+     */
+    private function getNumberOfLinesInFile($file)
+    {
+        if (!file_exists($file)) {
+            return 0;
+        }
+        $buffer = file_get_contents($file);
+        $lines  = substr_count($buffer, "\n");
+
+        if (substr($buffer, -1) !== "\n") {
+            $lines++;
+        }
+
+        return $lines;
     }
 }

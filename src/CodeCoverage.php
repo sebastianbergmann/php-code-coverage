@@ -322,7 +322,9 @@ class PHP_CodeCoverage
 
             foreach ($lines as $k => $v) {
                 if ($v == 1) {
-                    $this->data[$file][$k][] = $id;
+                    if (empty($this->data[$file][$k]) || !in_array($id, $this->data[$file][$k])) {
+                        $this->data[$file][$k][] = $id;
+                    }
                 }
             }
         }

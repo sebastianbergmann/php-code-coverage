@@ -219,7 +219,7 @@ class PHP_CodeCoverage_Report_Text
             $numberOfCoveredElements, $totalNumberOfElements
         );
 
-        if ($coverage > $this->highLowerBound) {
+        if ($coverage >= $this->highLowerBound) {
             return $this->colors['green'];
         } elseif ($coverage > $this->lowUpperBound) {
             return $this->colors['yellow'];

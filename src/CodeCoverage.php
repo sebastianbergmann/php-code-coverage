@@ -335,9 +335,9 @@ class PHP_CodeCoverage
      */
     public function merge(PHP_CodeCoverage $that)
     {
-        foreach ($that->data as $file => $lines) {
+        foreach ($that->getData() as $file => $lines) {
             if (!isset($this->data[$file])) {
-                if (!$this->filter->isFiltered($file)) {
+                if (!$that->filter()->isFiltered($file)) {
                     $this->data[$file] = $lines;
                 }
 

@@ -51,6 +51,8 @@ class PHP_CodeCoverage_Report_Crap4j
         $fullCrap = 0;
 
         foreach ($report as $item) {
+            $namespace = 'global';
+
             if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
                 continue;
             }
@@ -74,7 +76,11 @@ class PHP_CodeCoverage_Report_Crap4j
 
                     $methodNode = $document->createElement('method');
 
-                    $methodNode->appendChild($document->createElement('package', ''));
+                    if (!empty($class['package']['namespace'])) {
+                        $namespace = $class['package']['namespace'];
+                    }
+                    $methodNode->appendChild($document->createElement('package', $namespace));
+
                     $methodNode->appendChild($document->createElement('className', $className));
                     $methodNode->appendChild($document->createElement('methodName', $methodName));
                     $methodNode->appendChild($document->createElement('methodSignature', htmlspecialchars($method['signature'])));

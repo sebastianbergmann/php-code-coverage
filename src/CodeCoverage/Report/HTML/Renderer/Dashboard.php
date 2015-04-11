@@ -29,7 +29,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     {
         $classes  = $node->getClassesAndTraits();
         $template = new Text_Template(
-            $this->templatePath . 'dashboard.html', '{{', '}}'
+            $this->templatePath . 'dashboard.html',
+            '{{',
+            '}}'
         );
 
         $this->setCommonTemplateVariables($template, $node);

@@ -56,7 +56,6 @@ class PHP_CodeCoverage_Report_HTML
 
         $this->templatePath = sprintf(
             '%s%sHTML%sRenderer%sTemplate%s',
-
             dirname(__FILE__),
             DIRECTORY_SEPARATOR,
             DIRECTORY_SEPARATOR,

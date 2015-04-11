@@ -25,7 +25,8 @@ class PHP_CodeCoverage_Report_XML_File_Report extends PHP_CodeCoverage_Report_XM
         $this->dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
 
         $this->contextNode = $this->dom->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0', 'file'
+            'http://schema.phpunit.de/coverage/1.0',
+            'file'
         )->item(0);
 
         $this->setName($name);
@@ -45,7 +46,8 @@ class PHP_CodeCoverage_Report_XML_File_Report extends PHP_CodeCoverage_Report_XM
     {
         $node = $this->contextNode->appendChild(
             $this->dom->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0', 'function'
+                'http://schema.phpunit.de/coverage/1.0',
+                'function'
             )
         );
 
@@ -66,7 +68,8 @@ class PHP_CodeCoverage_Report_XML_File_Report extends PHP_CodeCoverage_Report_XM
     {
         $node = $this->contextNode->appendChild(
             $this->dom->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0', $tagName
+                'http://schema.phpunit.de/coverage/1.0',
+                $tagName
             )
         );
 

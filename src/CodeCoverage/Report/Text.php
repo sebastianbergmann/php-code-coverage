@@ -157,8 +157,9 @@ class PHP_CodeCoverage_Report_Text
                 $classMethods           = 0;
 
                 foreach ($class['methods'] as $method) {
-                    if ($method['executableLines'] == 0)
+                    if ($method['executableLines'] == 0) {
                         continue;
+                    }
 
                     $classMethods++;
                     $classStatements        += $method['executableLines'];
@@ -196,7 +197,6 @@ class PHP_CodeCoverage_Report_Text
         foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
             if ($classInfo['statementsCovered'] != 0 ||
                 $this->showUncoveredFiles) {
-
                 if ($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
                     $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
@@ -216,7 +216,8 @@ class PHP_CodeCoverage_Report_Text
     protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
     {
         $coverage = PHP_CodeCoverage_Util::percent(
-            $numberOfCoveredElements, $totalNumberOfElements
+            $numberOfCoveredElements,
+            $totalNumberOfElements
         );
 
         if ($coverage > $this->highLowerBound) {
@@ -233,7 +234,10 @@ class PHP_CodeCoverage_Report_Text
         $format = '%' . $presicion . 's';
 
         return PHP_CodeCoverage_Util::percent(
-            $numberOfCoveredElements, $totalNumberOfElements, true, true
+            $numberOfCoveredElements,
+            $totalNumberOfElements,
+            true,
+            true
         ) .
         ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
         sprintf($format, $totalNumberOfElements) . ')';

@@ -30,7 +30,8 @@ class PHP_CodeCoverage_Report_Factory
         $files      = $coverage->getData();
         $commonPath = $this->reducePaths($files);
         $root       = new PHP_CodeCoverage_Report_Node_Directory(
-            $commonPath, null
+            $commonPath,
+            null
         );
 
         $this->addItems(

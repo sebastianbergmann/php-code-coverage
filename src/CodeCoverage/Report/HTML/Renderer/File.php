@@ -329,7 +329,19 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
                         switch ($testData[$test]['status']) {
                             case 0:
-                                $testCSS = ' class="success"';
+                                switch ($testData[$test]['size']) {
+                                    case 'small':
+                                        $testCSS = ' class="covered-by-small-tests"';
+                                        break;
+
+                                    case 'medium':
+                                        $testCSS = ' class="covered-by-medium-tests"';
+                                        break;
+
+                                    case 'large':
+                                        $testCSS = ' class="covered-by-large-tests"';
+                                        break;
+                                }
                                 break;
 
                             case 1:

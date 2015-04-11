@@ -10,9 +10,9 @@
 
 if (!defined('TEST_FILES_PATH')) {
     define(
-      'TEST_FILES_PATH',
-      dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR .
-      '_files' . DIRECTORY_SEPARATOR
+        'TEST_FILES_PATH',
+        dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR .
+        '_files' . DIRECTORY_SEPARATOR
     );
 }
 
@@ -63,76 +63,76 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         #$this->assertEquals(array(), $root->getChildNodes());
 
         $this->assertEquals(
-          array(
-            'BankAccount' => array(
-              'methods' => array(
-                'getBalance' => array(
-                  'signature' => 'getBalance()',
-                  'startLine' => 6,
-                  'endLine' => 9,
-                  'executableLines' => 1,
-                  'executedLines' => 1,
-                  'ccn' => 1,
-                  'coverage' => 100,
-                  'crap' => '1',
-                  'link' => 'BankAccount.php.html#6',
-                  'methodName' => 'getBalance'
-                ),
-                'setBalance' => array(
-                  'signature' => 'setBalance($balance)',
-                  'startLine' => 11,
-                  'endLine' => 18,
-                  'executableLines' => 5,
-                  'executedLines' => 0,
-                  'ccn' => 2,
-                  'coverage' => 0,
-                  'crap' => 6,
-                  'link' => 'BankAccount.php.html#11',
-                  'methodName' => 'setBalance'
-                ),
-                'depositMoney' => array(
-                  'signature' => 'depositMoney($balance)',
-                  'startLine' => 20,
-                  'endLine' => 25,
-                  'executableLines' => 2,
-                  'executedLines' => 2,
-                  'ccn' => 1,
-                  'coverage' => 100,
-                  'crap' => '1',
-                  'link' => 'BankAccount.php.html#20',
-                  'methodName' => 'depositMoney'
-                ),
-                'withdrawMoney' => array(
-                  'signature' => 'withdrawMoney($balance)',
-                  'startLine' => 27,
-                  'endLine' => 32,
-                  'executableLines' => 2,
-                  'executedLines' => 2,
-                  'ccn' => 1,
-                  'coverage' => 100,
-                  'crap' => '1',
-                  'link' => 'BankAccount.php.html#27',
-                  'methodName' => 'withdrawMoney'
-                ),
-              ),
-              'startLine' => 2,
-              'executableLines' => 10,
-              'executedLines' => 5,
-              'ccn' => 5,
-              'coverage' => 50,
-              'crap' => '8.12',
-              'package' => array(
-                'namespace' => '',
-                'fullPackage' => '',
-                'category' => '',
-                'package' => '',
-                'subpackage' => ''
-              ),
-              'link' => 'BankAccount.php.html#2',
-              'className' => 'BankAccount'
-            )
-          ),
-          $root->getClasses()
+            array(
+                'BankAccount' => array(
+                    'methods' => array(
+                        'getBalance' => array(
+                            'signature' => 'getBalance()',
+                            'startLine' => 6,
+                            'endLine' => 9,
+                            'executableLines' => 1,
+                            'executedLines' => 1,
+                            'ccn' => 1,
+                            'coverage' => 100,
+                            'crap' => '1',
+                            'link' => 'BankAccount.php.html#6',
+                            'methodName' => 'getBalance'
+                        ),
+                        'setBalance' => array(
+                            'signature' => 'setBalance($balance)',
+                            'startLine' => 11,
+                            'endLine' => 18,
+                            'executableLines' => 5,
+                            'executedLines' => 0,
+                            'ccn' => 2,
+                            'coverage' => 0,
+                            'crap' => 6,
+                            'link' => 'BankAccount.php.html#11',
+                            'methodName' => 'setBalance'
+                        ),
+                        'depositMoney' => array(
+                            'signature' => 'depositMoney($balance)',
+                            'startLine' => 20,
+                            'endLine' => 25,
+                            'executableLines' => 2,
+                            'executedLines' => 2,
+                            'ccn' => 1,
+                            'coverage' => 100,
+                            'crap' => '1',
+                            'link' => 'BankAccount.php.html#20',
+                            'methodName' => 'depositMoney'
+                        ),
+                        'withdrawMoney' => array(
+                            'signature' => 'withdrawMoney($balance)',
+                            'startLine' => 27,
+                            'endLine' => 32,
+                            'executableLines' => 2,
+                            'executedLines' => 2,
+                            'ccn' => 1,
+                            'coverage' => 100,
+                            'crap' => '1',
+                            'link' => 'BankAccount.php.html#27',
+                            'methodName' => 'withdrawMoney'
+                        ),
+                    ),
+                    'startLine' => 2,
+                    'executableLines' => 10,
+                    'executedLines' => 5,
+                    'ccn' => 5,
+                    'coverage' => 50,
+                    'crap' => '8.12',
+                    'package' => array(
+                        'namespace' => '',
+                        'fullPackage' => '',
+                        'category' => '',
+                        'package' => '',
+                        'subpackage' => ''
+                    ),
+                    'link' => 'BankAccount.php.html#2',
+                    'className' => 'BankAccount'
+                )
+            ),
+            $root->getClasses()
         );
 
         $this->assertEquals(array(), $root->getFunctions());
@@ -144,22 +144,23 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
     public function testBuildDirectoryStructure()
     {
         $method = new ReflectionMethod(
-          'PHP_CodeCoverage_Report_Factory', 'buildDirectoryStructure'
+            'PHP_CodeCoverage_Report_Factory',
+            'buildDirectoryStructure'
         );
 
         $method->setAccessible(true);
 
         $this->assertEquals(
-          array(
-            'src' => array(
-              'Money.php/f' => array(),
-              'MoneyBag.php/f' => array()
+            array(
+                'src' => array(
+                    'Money.php/f' => array(),
+                    'MoneyBag.php/f' => array()
+                )
+            ),
+            $method->invoke(
+                $this->factory,
+                array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
             )
-          ),
-          $method->invoke(
-            $this->factory,
-            array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
-          )
         );
     }
 
@@ -170,7 +171,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
     public function testReducePaths($reducedPaths, $commonPath, $paths)
     {
         $method = new ReflectionMethod(
-          'PHP_CodeCoverage_Report_Factory', 'reducePaths'
+            'PHP_CodeCoverage_Report_Factory',
+            'reducePaths'
         );
 
         $method->setAccessible(true);
@@ -184,44 +186,44 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
     public function reducePathsProvider()
     {
         return array(
-          array(
             array(
-              'Money.php' => array(),
-              'MoneyBag.php' => array()
+                array(
+                    'Money.php' => array(),
+                    'MoneyBag.php' => array()
+                ),
+                '/home/sb/Money',
+                array(
+                    '/home/sb/Money/Money.php' => array(),
+                    '/home/sb/Money/MoneyBag.php' => array()
+                )
             ),
-            '/home/sb/Money',
             array(
-              '/home/sb/Money/Money.php' => array(),
-              '/home/sb/Money/MoneyBag.php' => array()
-            )
-          ),
-          array(
-            array(
-              'Money.php' => array()
+                array(
+                    'Money.php' => array()
+                ),
+                '/home/sb/Money/',
+                array(
+                    '/home/sb/Money/Money.php' => array()
+                )
             ),
-            '/home/sb/Money/',
             array(
-              '/home/sb/Money/Money.php' => array()
-            )
-          ),
-          array(
-            array(),
-            '.',
-            array()
-          ),
-          array(
-            array(
-              'Money.php' => array(),
-              'MoneyBag.php' => array(),
-              'Cash.phar/Cash.php' => array(),
+                array(),
+                '.',
+                array()
             ),
-            '/home/sb/Money',
             array(
-              '/home/sb/Money/Money.php' => array(),
-              '/home/sb/Money/MoneyBag.php' => array(),
-              'phar:///home/sb/Money/Cash.phar/Cash.php' => array(),
+                array(
+                    'Money.php' => array(),
+                    'MoneyBag.php' => array(),
+                    'Cash.phar/Cash.php' => array(),
+                ),
+                '/home/sb/Money',
+                array(
+                    '/home/sb/Money/Money.php' => array(),
+                    '/home/sb/Money/MoneyBag.php' => array(),
+                    'phar:///home/sb/Money/Cash.phar/Cash.php' => array(),
+                ),
             ),
-          ),
         );
     }
 }

@@ -10,9 +10,9 @@
 
 if (!defined('TEST_FILES_PATH')) {
     define(
-      'TEST_FILES_PATH',
-      dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-      '_files' . DIRECTORY_SEPARATOR
+        'TEST_FILES_PATH',
+        dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
+        '_files' . DIRECTORY_SEPARATOR
     );
 }
 
@@ -40,8 +40,8 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
         $clover = new PHP_CodeCoverage_Report_Clover;
 
         $this->assertStringMatchesFormatFile(
-          TEST_FILES_PATH . 'BankAccount-clover.xml',
-          $clover->process($this->getCoverageForBankAccount(), null, 'BankAccount')
+            TEST_FILES_PATH . 'BankAccount-clover.xml',
+            $clover->process($this->getCoverageForBankAccount(), null, 'BankAccount')
         );
     }
 
@@ -53,8 +53,8 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
         $clover = new PHP_CodeCoverage_Report_Clover;
 
         $this->assertStringMatchesFormatFile(
-          TEST_FILES_PATH . 'ignored-lines-clover.xml',
-          $clover->process($this->getCoverageForFileWithIgnoredLines())
+            TEST_FILES_PATH . 'ignored-lines-clover.xml',
+            $clover->process($this->getCoverageForFileWithIgnoredLines())
         );
     }
 
@@ -66,8 +66,8 @@ class PHP_CodeCoverage_Report_CloverTest extends PHP_CodeCoverage_TestCase
         $clover = new PHP_CodeCoverage_Report_Clover;
 
         $this->assertStringMatchesFormatFile(
-          TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
-          $clover->process($this->getCoverageForClassWithAnonymousFunction())
+            TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
+            $clover->process($this->getCoverageForClassWithAnonymousFunction())
         );
     }
 }

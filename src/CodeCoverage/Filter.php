@@ -36,42 +36,6 @@ class PHP_CodeCoverage_Filter
     private $whitelistedFiles = array();
 
     /**
-     * @var boolean
-     */
-    private $blacklistPrefilled = false;
-
-    /**
-     * A list of classes which are always blacklisted
-     *
-     * @var array
-     */
-    public static $blacklistClassNames = array(
-        'File_Iterator' => 1,
-        'PHP_CodeCoverage' => 1,
-        'PHP_Invoker' => 1,
-        'PHP_Timer' => 1,
-        'PHP_Token' => 1,
-        'PHPUnit_Framework_TestCase' => 2,
-        'PHPUnit_Extensions_Database_TestCase' => 2,
-        'PHPUnit_Framework_MockObject_Generator' => 2,
-        'PHPUnit_Extensions_SeleniumTestCase' => 2,
-        'PHPUnit_Extensions_Story_TestCase' => 2,
-        'Text_Template' => 1,
-        'Symfony\Component\Yaml\Yaml' => 1,
-        'SebastianBergmann\Diff\Diff' => 1,
-        'SebastianBergmann\Environment\Runtime' => 1,
-        'SebastianBergmann\Comparator\Comparator' => 1,
-        'SebastianBergmann\Exporter\Exporter' => 1,
-        'SebastianBergmann\GlobalState\Snapshot' => 1,
-        'SebastianBergmann\RecursionContext\Context' => 1,
-        'SebastianBergmann\Version' => 1,
-        'Composer\Autoload\ClassLoader' => 1,
-        'Doctrine\Instantiator\Instantiator' => 1,
-        'phpDocumentor\Reflection\DocBlock' => 1,
-        'Prophecy\Prophet' => 1
-    );
-
-    /**
      * Adds a directory to the blacklist (recursively).
      *
      * @param string $directory
@@ -255,10 +219,6 @@ class PHP_CodeCoverage_Filter
             return !isset($this->whitelistedFiles[$filename]);
         }
 
-        if (!$this->blacklistPrefilled) {
-            $this->prefillBlacklist();
-        }
-
         return isset($this->blacklistedFiles[$filename]);
     }
 
@@ -291,43 +251,6 @@ class PHP_CodeCoverage_Filter
     public function hasWhitelist()
     {
         return !empty($this->whitelistedFiles);
-    }
-
-    /**
-     * @since Method available since Release 1.2.3
-     */
-    private function prefillBlacklist()
-    {
-        if (defined('__PHPUNIT_PHAR__')) {
-            $this->addFileToBlacklist(__PHPUNIT_PHAR__);
-        }
-
-        foreach (self::$blacklistClassNames as $className => $parent) {
-            $this->addDirectoryContainingClassToBlacklist($className, $parent);
-        }
-
-        $this->blacklistPrefilled = true;
-    }
-
-    /**
-     * @param string  $className
-     * @param integer $parent
-     * @since Method available since Release 1.2.3
-     */
-    private function addDirectoryContainingClassToBlacklist($className, $parent = 1)
-    {
-        if (!class_exists($className)) {
-            return;
-        }
-
-        $reflector = new ReflectionClass($className);
-        $directory = $reflector->getFileName();
-
-        for ($i = 0; $i < $parent; $i++) {
-            $directory = dirname($directory);
-        }
-
-        $this->addDirectoryToBlacklist($directory);
     }
 
     /**

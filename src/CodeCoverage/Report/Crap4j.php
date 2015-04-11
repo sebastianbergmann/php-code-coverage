@@ -39,16 +39,16 @@ class PHP_CodeCoverage_Report_Crap4j
         $root->appendChild($project);
         $root->appendChild($document->createElement('timestamp', date('Y-m-d H:i:s', (int) $_SERVER['REQUEST_TIME'])));
 
-        $stats = $document->createElement('stats');
+        $stats       = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
 
-        $report   = $coverage->getReport();
+        $report = $coverage->getReport();
         unset($coverage);
 
-        $fullMethodCount = 0;
+        $fullMethodCount     = 0;
         $fullCrapMethodCount = 0;
-        $fullCrapLoad = 0;
-        $fullCrap = 0;
+        $fullCrapLoad        = 0;
+        $fullCrap            = 0;
 
         foreach ($report as $item) {
             $namespace = 'global';
@@ -66,7 +66,7 @@ class PHP_CodeCoverage_Report_Crap4j
                 foreach ($class['methods'] as $methodName => $method) {
                     $crapLoad = $this->getCrapLoad($method['crap'], $method['ccn'], $method['coverage']);
 
-                    $fullCrap += $method['crap'];
+                    $fullCrap     += $method['crap'];
                     $fullCrapLoad += $crapLoad;
                     $fullMethodCount++;
 
@@ -79,8 +79,8 @@ class PHP_CodeCoverage_Report_Crap4j
                     if (!empty($class['package']['namespace'])) {
                         $namespace = $class['package']['namespace'];
                     }
-                    $methodNode->appendChild($document->createElement('package', $namespace));
 
+                    $methodNode->appendChild($document->createElement('package', $namespace));
                     $methodNode->appendChild($document->createElement('className', $className));
                     $methodNode->appendChild($document->createElement('methodName', $methodName));
                     $methodNode->appendChild($document->createElement('methodSignature', htmlspecialchars($method['signature'])));

@@ -299,7 +299,6 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
         $i            = 1;
 
         foreach ($codeLines as $line) {
-            $numTests       = '';
             $trClass        = '';
             $popoverContent = '';
             $popoverTitle   = '';

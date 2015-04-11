@@ -321,7 +321,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     }
 
                     foreach ($coverageData[$i] as $test) {
-                        if ($testData[$test]['size'] == 'medium') {
+                        if ($lineCss == 'covered-by-large-tests' && $testData[$test]['size'] == 'medium') {
                             $lineCss = 'covered-by-medium-tests';
                         } elseif ($testData[$test]['size'] == 'small') {
                             $lineCss = 'covered-by-small-tests';

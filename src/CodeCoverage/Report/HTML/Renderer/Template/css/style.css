@@ -32,8 +32,16 @@ body {
  border: 0 !important;
 }
 
-.table tbody td.success, li.success, span.success {
+.table tbody tr.covered-by-large-tests, tr.success, td.success, li.success, span.success {
  background-color: #dff0d8;
+}
+
+.table tbody tr.covered-by-medium-tests {
+ background-color: #c3e3b5;
+}
+
+.table tbody tr.covered-by-small-tests {
+ background-color: #99cb84;
 }
 
 .table tbody tr.danger, .table tbody td.danger, li.danger, span.danger {

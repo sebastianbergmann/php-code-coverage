@@ -257,10 +257,10 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 
         $this->assertEquals(
           array(
-            'BankAccountTest::testBalanceIsInitiallyZero' => null,
-            'BankAccountTest::testBalanceCannotBecomeNegative' => null,
-            'BankAccountTest::testBalanceCannotBecomeNegative2' => null,
-            'BankAccountTest::testDepositWithdrawMoney' => null
+            'BankAccountTest::testBalanceIsInitiallyZero' => array('size' => 'small', 'status' => null),
+            'BankAccountTest::testBalanceCannotBecomeNegative' => array('size' => 'small', 'status' => null),
+            'BankAccountTest::testBalanceCannotBecomeNegative2' => array('size' => 'small', 'status' => null),
+            'BankAccountTest::testDepositWithdrawMoney' => array('size' => 'small', 'status' => null)
           ),
           $coverage->getTests()
         );

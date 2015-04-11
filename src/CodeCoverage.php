@@ -304,16 +304,28 @@ class PHP_CodeCoverage
             return;
         }
 
+        $size   = null;
         $status = null;
 
         if ($id instanceof PHPUnit_Framework_TestCase) {
+            $size   = $id->getSize();
+
+            if ($size == 0) {
+                $size = 'small';
+            } elseif ($size == 1) {
+                $size = 'medium';
+            } else {
+                $size = 'large';
+            }
+
             $status = $id->getStatus();
             $id     = get_class($id) . '::' . $id->getName();
         } elseif ($id instanceof PHPUnit_Extensions_PhptTestCase) {
-            $id = $id->getName();
+            $size = 'large';
+            $id   = $id->getName();
         }
 
-        $this->tests[$id] = $status;
+        $this->tests[$id] = array('size' => $size, 'status' => $status);
 
         foreach ($data as $file => $lines) {
             if (!$this->filter->isFile($file)) {

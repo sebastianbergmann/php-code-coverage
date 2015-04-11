@@ -57,8 +57,7 @@ class PHP_CodeCoverage_Report_XML_Totals
         $this->linesNode = $dom->createElementNS(
             'http://schema.phpunit.de/coverage/1.0',
             'lines'
-        )
-        ;
+        );
 
         $this->methodsNode = $dom->createElementNS(
             'http://schema.phpunit.de/coverage/1.0',

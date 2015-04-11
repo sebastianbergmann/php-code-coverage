@@ -307,7 +307,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 } elseif ($numTests == 0) {
                     $trClass = ' class="danger"';
                 } else {
-                    $trClass        = ' class="success popin"';
+                    $lineCss        = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
                     if ($numTests > 1) {
@@ -317,7 +317,13 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     }
 
                     foreach ($coverageData[$i] as $test) {
-                        switch ($testData[$test]) {
+                        if ($testData[$test]['size'] == 'medium') {
+                            $lineCss = 'covered-by-medium-tests';
+                        } else if ($testData[$test]['size'] == 'small') {
+                            $lineCss = 'covered-by-small-tests';
+                        }
+
+                        switch ($testData[$test]['status']) {
                             case 0: {
                                 $testCSS = ' class="success"';
                             }
@@ -353,6 +359,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     }
 
                     $popoverContent .= '</ul>';
+                    $trClass         = ' class="' . $lineCss . ' popin"';
                 }
             }
 

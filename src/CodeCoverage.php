@@ -310,9 +310,9 @@ class PHP_CodeCoverage
         if ($id instanceof PHPUnit_Framework_TestCase) {
             $size   = $id->getSize();
 
-            if ($size == 0) {
+            if ($size == PHPUnit_Util_Test::SMALL) {
                 $size = 'small';
-            } elseif ($size == 1) {
+            } elseif ($size == PHPUnit_Util_Test::MEDIUM) {
                 $size = 'medium';
             } else {
                 $size = 'large';

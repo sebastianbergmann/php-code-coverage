@@ -318,6 +318,25 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage::getData
+     * @covers PHP_CodeCoverage::merge
+     */
+    public function testMergeRespectsTargetFilter()
+    {
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = $this->getCoverageForBankAccount($filter);
+
+        $coverage->merge($this->getCoverageForClassWithAnonymousFunction());
+
+        $this->assertEquals(
+            $this->getExpectedDataArrayForBankAccount(),
+            $coverage->getData()
+        );
+    }
+
+    /**
      * @covers PHP_CodeCoverage::getLinesToBeIgnored
      */
     public function testGetLinesToBeIgnored()

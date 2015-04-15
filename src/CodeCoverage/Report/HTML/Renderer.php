@@ -81,7 +81,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function renderItemTemplate(Text_Template $template, array $data)
     {
-        $numSeperator = '&nbsp;/&nbsp;';
+        $numSeperator  = '&nbsp;/&nbsp;';
         $classesBar    = '&nbsp;';
         $classesLevel  = 'None';
         $classesNumber = '&nbsp;';

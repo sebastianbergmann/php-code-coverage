@@ -252,10 +252,11 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $template,
             array(
                 'name'                         => sprintf(
-                    '%s<a href="#%d">%s</a>',
+                    '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
                     $item['startLine'],
-                    htmlspecialchars($item['signature'])
+                    htmlspecialchars($item['signature']),
+                    isset($item['functionName']) ? $item['functionName'] : $item['methodName']
                 ),
                 'numMethods'                   => 1,
                 'numTestedMethods'             => $numTestedItems,

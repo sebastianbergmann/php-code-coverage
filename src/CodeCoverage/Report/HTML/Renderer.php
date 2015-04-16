@@ -262,9 +262,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     protected function getColorLevel($percent)
     {
-        if ($percent < $this->lowUpperBound) {
+        if ($percent <= $this->lowUpperBound) {
             return 'danger';
-        } elseif ($percent >= $this->lowUpperBound &&
+        } elseif ($percent > $this->lowUpperBound &&
             $percent <  $this->highLowerBound) {
             return 'warning';
         } else {

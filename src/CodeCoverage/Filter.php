@@ -203,7 +203,6 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is not empty, whitelisting is used.
      *
      * @param  string                     $filename
-     * @param  boolean                    $ignoreWhitelist
      * @return boolean
      * @throws PHP_CodeCoverage_Exception
      */

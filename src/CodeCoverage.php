@@ -304,17 +304,17 @@ class PHP_CodeCoverage
             return;
         }
 
-        $size   = null;
+        $size   = 'unknown';
         $status = null;
 
         if ($id instanceof PHPUnit_Framework_TestCase) {
-            $size   = $id->getSize();
+            $_size = $id->getSize();
 
-            if ($size == PHPUnit_Util_Test::SMALL) {
+            if ($_size == PHPUnit_Util_Test::SMALL) {
                 $size = 'small';
-            } elseif ($size == PHPUnit_Util_Test::MEDIUM) {
+            } elseif ($_size == PHPUnit_Util_Test::MEDIUM) {
                 $size = 'medium';
-            } else {
+            } elseif ($_size == PHPUnit_Util_Test::LARGE) {
                 $size = 'large';
             }
 

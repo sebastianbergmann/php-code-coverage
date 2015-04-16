@@ -339,7 +339,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                                         $testCSS = ' class="covered-by-medium-tests"';
                                         break;
 
-                                    case 'large':
+                                    default:
                                         $testCSS = ' class="covered-by-large-tests"';
                                         break;
                                 }

@@ -647,7 +647,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected function crap($ccn, $coverage)
     {
         if ($coverage == 0) {
-            return (string) pow($ccn, 2) + $ccn;
+            return (string) (pow($ccn, 2) + $ccn);
         }
 
         if ($coverage >= 95) {

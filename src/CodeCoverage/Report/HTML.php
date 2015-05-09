@@ -138,7 +138,7 @@ class PHP_CodeCoverage_Report_HTML
     {
         $dir = $this->getDirectory($target . 'css');
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
-        copy($this->templatePath . 'css/nv.d3.css', $dir . 'nv.d3.css');
+        copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
         copy($this->templatePath . 'css/style.css', $dir . 'style.css');
 
         $dir = $this->getDirectory($target . 'fonts');

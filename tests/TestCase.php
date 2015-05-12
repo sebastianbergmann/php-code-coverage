@@ -74,7 +74,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         );
     }
 
-    protected function getCoverageForBankAccount()
+    protected function getCoverageForBankAccount(PHP_CodeCoverage_Filter $filter = null)
     {
         $data = $this->getXdebugDataForBankAccount();
 
@@ -88,7 +88,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                 $data[3]
             ));
 
-        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+        $coverage = new PHP_CodeCoverage($stub, $filter ?: new PHP_CodeCoverage_Filter);
 
         $coverage->start(
             new BankAccountTest('testBalanceIsInitiallyZero'),

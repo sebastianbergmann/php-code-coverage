@@ -349,7 +349,7 @@ class PHP_CodeCoverage
      */
     public function merge(PHP_CodeCoverage $that)
     {
-        foreach ($that->getData() as $file => $lines) {
+        foreach ($that->getData(true) as $file => $lines) {
             if (!isset($this->data[$file])) {
                 if (!$that->filter()->isFiltered($file)) {
                     $this->data[$file] = $lines;
@@ -372,6 +372,8 @@ class PHP_CodeCoverage
         }
 
         $this->tests = array_merge($this->tests, $that->getTests());
+        $this->filter->addFilesToBlacklist(array_keys($that->filter()->getBlacklistedFiles()));
+        $this->filter->addFilesToWhitelist(array_keys($that->filter()->getWhitelistedFiles()));
     }
 
     /**

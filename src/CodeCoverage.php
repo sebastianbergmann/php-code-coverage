@@ -81,6 +81,11 @@ class PHP_CodeCoverage
     private $ignoredLines = array();
 
     /**
+     * @var bool
+     */
+    private $disableIgnoredLines = false;
+
+    /**
      * Test data.
      *
      * @var array
@@ -481,6 +486,22 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param  boolean                    $flag
+     * @throws PHP_CodeCoverage_Exception
+     */
+    public function setDisableIgnoredLines($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+                1,
+                'boolean'
+            );
+        }
+
+        $this->disableIgnoredLines = $flag;
+    }
+
+    /**
      * Applies the @covers annotation filtering.
      *
      * @param  array                                                 $data
@@ -654,6 +675,11 @@ class PHP_CodeCoverage
             $stop                          = false;
             $lines                         = file($filename);
             $numLines                      = count($lines);
+
+            if ($this->disableIgnoredLines)
+            {
+                return $this->ignoredLines[$filename];
+            }
 
             foreach ($lines as $index => $line) {
                 if (!trim($line)) {

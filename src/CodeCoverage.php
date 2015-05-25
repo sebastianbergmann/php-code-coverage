@@ -99,13 +99,11 @@ class PHP_CodeCoverage
         if ($driver === null) {
             $runtime = new Runtime;
 
-            if ($runtime->isHHVM()) {
-                $driver = new PHP_CodeCoverage_Driver_HHVM;
-            } elseif ($runtime->hasXdebug()) {
-                $driver = new PHP_CodeCoverage_Driver_Xdebug;
-            } else {
+            if (!$runtime->hasXdebug()) {
                 throw new PHP_CodeCoverage_Exception('No code coverage driver available');
             }
+
+            $driver = new PHP_CodeCoverage_Driver_Xdebug;
         }
 
         if ($filter === null) {

@@ -5,7 +5,7 @@
   <title>Dashboard for {{full_path}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="{{path_to_root}}css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{path_to_root}}css/nv.d3.css" rel="stylesheet">
+  <link href="{{path_to_root}}css/nv.d3.min.css" rel="stylesheet">
   <link href="{{path_to_root}}css/style.css" rel="stylesheet">
   <!--[if lt IE 9]>
   <script src="{{path_to_root}}js/html5shiv.min.js"></script>
@@ -140,7 +140,7 @@
   </div>
   <script src="{{path_to_root}}js/jquery.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/bootstrap.min.js" type="text/javascript"></script>
-  <script src="{{path_to_root}}js/holder.js" type="text/javascript"></script>
+  <script src="{{path_to_root}}js/holder.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/d3.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/nv.d3.min.js" type="text/javascript"></script>
   <script type="text/javascript">

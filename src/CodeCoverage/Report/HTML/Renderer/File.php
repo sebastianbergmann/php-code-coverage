@@ -439,7 +439,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $value = str_replace(
                 array("\t", ' '),
                 array('&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'),
-                htmlspecialchars($value)
+                htmlspecialchars($value, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE)
             );
 
             if ($value === "\n") {

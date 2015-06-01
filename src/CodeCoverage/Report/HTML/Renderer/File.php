@@ -44,6 +44,11 @@ if (!defined('T_YIELD')) {
 class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report_HTML_Renderer
 {
     /**
+     * @var integer
+     */
+    private $htmlspecialcharsFlags;
+
+    /**
      * Constructor.
      *
      * @param string  $templatePath
@@ -61,6 +66,12 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $lowUpperBound,
             $highLowerBound
         );
+
+        $this->htmlspecialcharsFlags = ENT_COMPAT;
+
+        if (defined('ENT_SUBSTITUTE')) {
+            $this->htmlspecialcharsFlags = $this->htmlspecialcharsFlags | ENT_HTML401 | ENT_SUBSTITUTE;
+        }
     }
 
     /**
@@ -439,7 +450,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $value = str_replace(
                 array("\t", ' '),
                 array('&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'),
-                htmlspecialchars($value, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE)
+                htmlspecialchars($value, $this->htmlspecialcharsFlags)
             );
 
             if ($value === "\n") {

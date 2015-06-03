@@ -682,8 +682,7 @@ class PHP_CodeCoverage
             $lines                         = file($filename);
             $numLines                      = count($lines);
 
-            if ($this->disableIgnoredLines)
-            {
+            if ($this->disableIgnoredLines) {
                 return $this->ignoredLines[$filename];
             }
 

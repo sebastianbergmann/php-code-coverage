@@ -376,6 +376,7 @@ class PHP_CodeCoverage
         $this->filter->setBlacklistedFiles(
             array_merge($this->filter->getBlacklistedFiles(), $that->filter()->getBlacklistedFiles())
         );
+
         $this->filter->setWhitelistedFiles(
             array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
         );

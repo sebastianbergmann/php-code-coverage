@@ -34,6 +34,9 @@ require_once TEST_FILES_PATH . 'BankAccountTest.php';
  */
 class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
 {
+    /**
+     * @var PHP_CodeCoverage
+     */
     private $coverage;
 
     protected function setUp()
@@ -471,5 +474,21 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $getLinesToBeIgnored->setAccessible(true);
 
         return $getLinesToBeIgnored;
+    }
+
+    /**
+     * @covers PHP_CodeCoverage::getLinesToBeIgnored
+     */
+    public function testGetLinesToBeIgnoredWhenIgnoreIsDisabled()
+    {
+        $this->coverage->setDisableIgnoredLines(true);
+
+        $this->assertEquals(
+            array(),
+            $this->getLinesToBeIgnored()->invoke(
+                $this->coverage,
+                TEST_FILES_PATH . 'source_with_ignore.php'
+            )
+        );
     }
 }

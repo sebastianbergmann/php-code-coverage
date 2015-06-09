@@ -69,7 +69,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         $this->htmlspecialcharsFlags = ENT_COMPAT;
 
-        if (defined('ENT_SUBSTITUTE')) {
+        if (PHP_VERSION_ID >= 50400 && defined('ENT_SUBSTITUTE')) {
             $this->htmlspecialcharsFlags = $this->htmlspecialcharsFlags | ENT_HTML401 | ENT_SUBSTITUTE;
         }
     }

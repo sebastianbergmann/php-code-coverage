@@ -23,7 +23,7 @@
     </div>
    </div>
   </header>
-  <div class="container">
+  <div class="container" id="container_table">
    <table class="table table-bordered">
     <thead>
      <tr>
@@ -31,7 +31,7 @@
       <td colspan="9"><div align="center"><strong>Code Coverage</strong></div></td>
      </tr>
      <tr>
-      <td><strong class="sort" data-sort="name">Name</strong></td>
+      <td><strong class="sort pointer" data-sort="name">Name</strong></td>
       <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="lines_executed_percent">Lines</strong></div></td>
       <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="methods_tested_percent">Functions and Methods</strong></div></td>
       <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="classes_tested_percent">Classes and Traits</strong></div></td>

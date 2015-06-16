@@ -31,10 +31,10 @@
       <td colspan="9"><div align="center"><strong>Code Coverage</strong></div></td>
      </tr>
      <tr>
-      <td>&nbsp;</td>
-      <td colspan="3"><div align="center"><strong>Lines</strong></div></td>
-      <td colspan="3"><div align="center"><strong>Functions and Methods</strong></div></td>
-      <td colspan="3"><div align="center"><strong>Classes and Traits</strong></div></td>
+      <td><strong class="sort" data-sort="name">Name</strong></td>
+      <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="lines_executed_percent">Lines</strong></div></td>
+      <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="methods_tested_percent">Functions and Methods</strong></div></td>
+      <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="classes_tested_percent">Classes and Traits</strong></div></td>
      </tr>
     </thead>
     <tbody>
@@ -57,5 +57,21 @@
   <script src="{{path_to_root}}js/jquery.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/bootstrap.min.js" type="text/javascript"></script>
   <script src="{{path_to_root}}js/holder.min.js" type="text/javascript"></script>
+  <script src="{{path_to_root}}js/list.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+        var options = {
+          valueNames: [
+            'name',
+            'lines_executed_percent',
+            'methods_tested_percent',
+            'classes_tested_percent'
+            ]
+        };
+
+        // Remove sort on first line (the summary)
+        $('#container_table tbody tr:first td').removeClass(options.valueNames.join(' '));
+
+        new List('container_table', options);
+  </script>
  </body>
 </html>

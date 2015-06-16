@@ -37,7 +37,7 @@
       <td colspan="3"><div align="center"><strong class="sort pointer" data-sort="classes_tested_percent">Classes and Traits</strong></div></td>
      </tr>
     </thead>
-    <tbody>
+    <tbody class="list">
 {{items}}
     </tbody>
    </table>

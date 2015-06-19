@@ -13,6 +13,9 @@
  */
 class PHP_CodeCoverage_Report_Crap4j
 {
+    /**
+     * @var int
+     */
     private $threshold = 30;
 
     /**
@@ -110,6 +113,12 @@ class PHP_CodeCoverage_Report_Crap4j
         }
     }
 
+    /**
+     * @param  float   $crapValue
+     * @param  integer $cyclomaticComplexity
+     * @param  float   $coveragePercent
+     * @return float
+     */
     private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent)
     {
         $crapLoad = 0;
@@ -121,6 +130,10 @@ class PHP_CodeCoverage_Report_Crap4j
         return $crapLoad;
     }
 
+    /**
+     * @param  float $value
+     * @return float
+     */
     private function roundValue($value)
     {
         return round($value, 2);

@@ -744,7 +744,7 @@ class PHP_CodeCoverage
 
                         $this->ignoredLines[$filename][] = $token->getLine();
 
-                        if (strpos($docblock, '@codeCoverageIgnore')) {
+                        if (strpos($docblock, '@codeCoverageIgnore') || strpos($docblock, '@deprecated')) {
                             $endLine = $token->getEndLine();
 
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {

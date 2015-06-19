@@ -122,6 +122,7 @@ class PHP_CodeCoverage_Report_Crap4j
     private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent)
     {
         $crapLoad = 0;
+
         if ($crapValue >= $this->threshold) {
             $crapLoad += $cyclomaticComplexity * (1.0 - $coveragePercent / 100);
             $crapLoad += $cyclomaticComplexity / $this->threshold;

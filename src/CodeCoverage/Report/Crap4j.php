@@ -9,17 +9,29 @@
  */
 
 /**
- * @category   PHP
- * @package    CodeCoverage
- * @author     Zsolt Takács <zsolt@takacs.cc>
- * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 2.0.0
+ * @since Class available since Release 2.0.0
  */
 class PHP_CodeCoverage_Report_Crap4j
 {
-    private $threshold = 30;
+    /**
+     * @var int
+     */
+    private $threshold;
+
+    /**
+     * @param int $threshold
+     */
+    public function __construct($threshold = 30)
+    {
+        if (!is_int($threshold)) {
+            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+                1,
+                'integer'
+            );
+        }
+
+        $this->threshold = $threshold;
+    }
 
     /**
      * @param  PHP_CodeCoverage $coverage
@@ -116,9 +128,16 @@ class PHP_CodeCoverage_Report_Crap4j
         }
     }
 
+    /**
+     * @param  float   $crapValue
+     * @param  integer $cyclomaticComplexity
+     * @param  float   $coveragePercent
+     * @return float
+     */
     private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent)
     {
         $crapLoad = 0;
+
         if ($crapValue >= $this->threshold) {
             $crapLoad += $cyclomaticComplexity * (1.0 - $coveragePercent / 100);
             $crapLoad += $cyclomaticComplexity / $this->threshold;
@@ -127,6 +146,10 @@ class PHP_CodeCoverage_Report_Crap4j
         return $crapLoad;
     }
 
+    /**
+     * @param  float $value
+     * @return float
+     */
     private function roundValue($value)
     {
         return round($value, 2);

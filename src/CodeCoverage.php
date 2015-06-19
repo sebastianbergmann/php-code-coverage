@@ -74,6 +74,12 @@ class PHP_CodeCoverage
      */
     private $ignoredLines = array();
 
+    /** 
+     * To track lines which have open brackets/close brackets + code
+     * @var array
+     */
+    private $doNotIgnoreLines = array();
+
     /**
      * @var bool
      */
@@ -671,6 +677,10 @@ class PHP_CodeCoverage
 
         if (!isset($this->ignoredLines[$filename])) {
             $this->ignoredLines[$filename] = array();
+            //[TARLABS] Added below 2 lines for
+            $this->doNotIgnoreLines[$filename] = array();
+            $lastLineIgnoredForStartOrEndPhpTag = 0;
+
             $ignore                        = false;
             $stop                          = false;
             $lines                         = file($filename);
@@ -794,10 +804,25 @@ class PHP_CodeCoverage
                         $this->ignoredLines[$filename][] = $token->getEndLine();
 
                     // Intentional fallthrough
-                    case 'PHP_Token_OPEN_TAG':
-                    case 'PHP_Token_CLOSE_TAG':
+                    case 'PHP_Token_NAMESPACE':
+                        $this->ignoredLines[$filename][] = $token->getEndLine();
+                    // Intentional fallthrough
                     case 'PHP_Token_USE':
                         $this->ignoredLines[$filename][] = $token->getLine();
+                        break;
+                    case 'PHP_Token_OPEN_TAG':
+                    case 'PHP_Token_CLOSE_TAG':
+                        $lastLineIgnoredForStartOrEndPhpTag = $token->getLine();
+                        $this->ignoredLines[$filename][] = $token->getLine();
+                        break;
+                    case 'PHP_Token_WHITESPACE':
+                        break;
+                    default:
+                        if ($lastLineIgnoredForStartOrEndPhpTag == $token->getLine())
+                        {
+                            //This line possibly has some code and cannot be ignored
+                            $this->doNotIgnoreLines[$filename][] = $token->getLine();
+                        }
                         break;
                 }
 
@@ -811,12 +836,13 @@ class PHP_CodeCoverage
                 }
             }
 
+
             $this->ignoredLines[$filename][] = $numLines + 1;
+            $this->doNotIgnoreLines[$filename] = array_unique($this->doNotIgnoreLines[$filename]);
 
             $this->ignoredLines[$filename] = array_unique(
-                $this->ignoredLines[$filename]
+                array_diff($this->ignoredLines[$filename], $this->doNotIgnoreLines[$filename])
             );
-
             sort($this->ignoredLines[$filename]);
         }
 

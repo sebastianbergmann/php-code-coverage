@@ -92,7 +92,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         }
 
         return array(
-            'class' => json_encode($result['class']),
+            'class'  => json_encode($result['class']),
             'method' => json_encode($result['method'])
         );
     }
@@ -161,7 +161,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         }
 
         return array(
-            'class' => json_encode(array_values($result['class'])),
+            'class'  => json_encode(array_values($result['class'])),
             'method' => json_encode(array_values($result['method']))
         );
     }

@@ -16,7 +16,7 @@
 class PHP_CodeCoverage_Report_Factory
 {
     /**
-     * @param  PHP_CodeCoverage $coverage
+     * @param  PHP_CodeCoverage                       $coverage
      * @return PHP_CodeCoverage_Report_Node_Directory
      */
     public function create(PHP_CodeCoverage $coverage)
@@ -42,7 +42,7 @@ class PHP_CodeCoverage_Report_Factory
      * @param PHP_CodeCoverage_Report_Node_Directory $root
      * @param array                                  $items
      * @param array                                  $tests
-     * @param boolean                                $cacheTokens
+     * @param bool                                   $cacheTokens
      */
     private function addItems(PHP_CodeCoverage_Report_Node_Directory $root, array $items, array $tests, $cacheTokens)
     {
@@ -231,7 +231,7 @@ class PHP_CodeCoverage_Report_Factory
         $max      = count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $files[join('/', $paths[$i])] = $files[$original[$i]];
+            $files[implode('/', $paths[$i])] = $files[$original[$i]];
             unset($files[$original[$i]]);
         }
 

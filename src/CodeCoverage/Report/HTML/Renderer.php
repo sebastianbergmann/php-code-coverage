@@ -33,12 +33,12 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected $date;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $lowUpperBound;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $highLowerBound;
 
@@ -50,11 +50,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     /**
      * Constructor.
      *
-     * @param string  $templatePath
-     * @param string  $generator
-     * @param string  $date
-     * @param integer $lowUpperBound
-     * @param integer $highLowerBound
+     * @param string $templatePath
+     * @param string $generator
+     * @param string $date
+     * @param int    $lowUpperBound
+     * @param int    $highLowerBound
      */
     public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound)
     {
@@ -123,21 +123,21 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
 
         $template->setVar(
             array(
-                'icon' => isset($data['icon']) ? $data['icon'] : '',
-                'crap' => isset($data['crap']) ? $data['crap'] : '',
-                'name' => $data['name'],
-                'lines_bar' => $linesBar,
+                'icon'                   => isset($data['icon']) ? $data['icon'] : '',
+                'crap'                   => isset($data['crap']) ? $data['crap'] : '',
+                'name'                   => $data['name'],
+                'lines_bar'              => $linesBar,
                 'lines_executed_percent' => $data['linesExecutedPercentAsString'],
-                'lines_level' => $linesLevel,
-                'lines_number' => $linesNumber,
-                'methods_bar' => $methodsBar,
+                'lines_level'            => $linesLevel,
+                'lines_number'           => $linesNumber,
+                'methods_bar'            => $methodsBar,
                 'methods_tested_percent' => $data['testedMethodsPercentAsString'],
-                'methods_level' => $methodsLevel,
-                'methods_number' => $methodsNumber,
-                'classes_bar' => $classesBar,
+                'methods_level'          => $methodsLevel,
+                'methods_number'         => $methodsNumber,
+                'classes_bar'            => $classesBar,
                 'classes_tested_percent' => isset($data['testedClassesPercentAsString']) ? $data['testedClassesPercentAsString'] : '',
-                'classes_level' => $classesLevel,
-                'classes_number' => $classesNumber
+                'classes_level'          => $classesLevel,
+                'classes_number'         => $classesNumber
             )
         );
 
@@ -245,13 +245,13 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             '}}'
         );
 
-        $template->setVar(array('level' => $level, 'percent' => sprintf("%.2F", $percent)));
+        $template->setVar(array('level' => $level, 'percent' => sprintf('%.2F', $percent)));
 
         return $template->render();
     }
 
     /**
-     * @param  integer $percent
+     * @param  int    $percent
      * @return string
      */
     protected function getColorLevel($percent)

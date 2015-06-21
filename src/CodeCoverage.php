@@ -486,7 +486,7 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  boolean                    $flag
+     * @param  bool                       $flag
      * @throws PHP_CodeCoverage_Exception
      */
     public function setDisableIgnoredLines($flag)

@@ -197,7 +197,7 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is not empty, whitelisting is used.
      *
      * @param  string                     $filename
-     * @return boolean
+     * @return bool
      * @throws PHP_CodeCoverage_Exception
      */
     public function isFiltered($filename)
@@ -238,7 +238,7 @@ class PHP_CodeCoverage_Filter
     /**
      * Returns whether this filter has a whitelist.
      *
-     * @return boolean
+     * @return bool
      * @since  Method available since Release 1.1.0
      */
     public function hasWhitelist()

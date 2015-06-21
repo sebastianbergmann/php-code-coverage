@@ -113,12 +113,12 @@ class PHP_CodeCoverage_Report_Text
         $padding = max(array_map('strlen', array($classes, $methods, $lines)));
 
         if ($this->showOnlySummary) {
-            $title = 'Code Coverage Report Summary:';
+            $title   = 'Code Coverage Report Summary:';
             $padding = max($padding, strlen($title));
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date = date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $date  = date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);

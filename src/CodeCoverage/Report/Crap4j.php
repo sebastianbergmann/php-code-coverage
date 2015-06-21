@@ -41,7 +41,7 @@ class PHP_CodeCoverage_Report_Crap4j
      */
     public function process(PHP_CodeCoverage $coverage, $target = null, $name = null)
     {
-        $document = new DOMDocument('1.0', 'UTF-8');
+        $document               = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
 
         $root = $document->createElement('crap_result');
@@ -136,9 +136,9 @@ class PHP_CodeCoverage_Report_Crap4j
     }
 
     /**
-     * @param  float   $crapValue
-     * @param  integer $cyclomaticComplexity
-     * @param  float   $coveragePercent
+     * @param  float $crapValue
+     * @param  int   $cyclomaticComplexity
+     * @param  float $coveragePercent
      * @return float
      */
     private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent)

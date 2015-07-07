@@ -676,10 +676,10 @@ class PHP_CodeCoverage
                 return $this->ignoredLines[$filename];
             }
 
-            $ignore                        = false;
-            $stop                          = false;
-            $lines                         = file($filename);
-            $numLines                      = count($lines);
+            $ignore   = false;
+            $stop     = false;
+            $lines    = file($filename);
+            $numLines = count($lines);
 
             foreach ($lines as $index => $line) {
                 if (!trim($line)) {

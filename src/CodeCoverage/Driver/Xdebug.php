@@ -62,9 +62,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     private function cleanup(array $data)
     {
         foreach (array_keys($data) as $file) {
-            if (isset($data[$file][0])) {
-                unset($data[$file][0]);
-            }
+            unset($data[$file][0]);
 
             if ($file != 'xdebug://debug-eval' && file_exists($file)) {
                 $numLines = $this->getNumberOfLinesInFile($file);

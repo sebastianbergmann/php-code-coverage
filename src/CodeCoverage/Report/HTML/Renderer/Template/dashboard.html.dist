@@ -215,7 +215,6 @@ $(document).ready(function() {
       .showDistY(true)
       .showLegend(false)
       .forceX([0, 100]);
-    chart.scatter.onlyCircles(false);
     chart.tooltipContent(function(key, y, e, graph) {
       return '<p>' + graph.point.class + '</p>';
     });
@@ -240,7 +239,6 @@ $(document).ready(function() {
       .showDistY(true)
       .showLegend(false)
       .forceX([0, 100]);
-    chart.scatter.onlyCircles(false);
     chart.tooltipContent(function(key, y, e, graph) {
       return '<p>' + graph.point.class + '</p>';
     });

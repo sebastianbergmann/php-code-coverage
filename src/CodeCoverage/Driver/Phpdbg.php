@@ -48,44 +48,18 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
-        $sourceLines = $this->fetchSourceLines();
+        $dbgData = phpdbg_end_oplog();
 
-        $dbgData = phpdbg_end_oplog(array('show_unexecuted' => true));
-        $data = $this->detectExecutedLines($sourceLines, $dbgData);
-
-        return $data;
-    }
-
-    /**
-     * Fetches all lines loaded at the time of calling, each source line marked as not executed.
-     *
-     * @return string
-     */
-    private function fetchSourceLines()
-    {
-        $sourceLines = array();
-
-        foreach(get_included_files() as $file) {
-            foreach(token_get_all(file_get_contents($file)) as $token) {
-
-                if (is_array($token)) {
-                    list($name, $data, $lineNo) = $token;
-
-                    switch($name) {
-                        case T_COMMENT:
-                        case T_DOC_COMMENT:
-                        case T_WHITESPACE:
-                            // comments and whitespaces can never be executed, therefore skip them.
-                            break;
-                        default: {
-                            $sourceLines[$file][$lineNo] = self::LINE_NOT_EXECUTED;
-                        }
-                    }
-                }
+        $sourceLines = phpdbg_get_executable();
+        foreach ($sourceLines as &$lines) {
+            foreach ($lines as &$line) {
+                $line = self::LINE_NOT_EXECUTED;
             }
         }
 
-        return $sourceLines;
+        $data = $this->detectExecutedLines($sourceLines, $dbgData);
+
+        return $data;
     }
 
     /**
@@ -98,8 +72,8 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
     private function detectExecutedLines(array $sourceLines, array $dbgData)
     {
         foreach ($dbgData as $file => $coveredLines) {
-            foreach($coveredLines as $lineNo => $numExecuted) {
-                $sourceLines[$file][$lineNo] = $numExecuted > 0 ? self::LINE_EXECUTED : self::LINE_NOT_EXECUTED;
+            foreach ($coveredLines as $lineNo => $numExecuted) {
+                $sourceLines[$file][$lineNo] = self::LINE_EXECUTED;
             }
         }
 

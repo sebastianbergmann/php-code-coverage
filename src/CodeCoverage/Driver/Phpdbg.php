@@ -48,16 +48,30 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
+        static $fetchedLines = array();
+
         $dbgData = phpdbg_end_oplog();
 
-        $sourceLines = phpdbg_get_executable();
+        if ($fetchedLines == array()) {
+            $sourceLines = phpdbg_get_executable();
+        } else {
+            $newFiles = array_diff(get_included_files(), array_keys($fetchedLines));
+            if ($newFiles) {
+                $sourceLines = phpdbg_get_executable(array("files" => $newFiles));
+            } else {
+                $sourceLines = array();
+            }
+        }
+
         foreach ($sourceLines as &$lines) {
             foreach ($lines as &$line) {
                 $line = self::LINE_NOT_EXECUTED;
             }
         }
 
-        $data = $this->detectExecutedLines($sourceLines, $dbgData);
+        $fetchedLines += $sourceLines;
+
+        $data = $this->detectExecutedLines($fetchedLines, $dbgData);
 
         return $data;
     }

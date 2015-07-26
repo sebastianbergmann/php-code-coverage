@@ -9,12 +9,12 @@
  */
 
 /**
- * Driver for Phpdbg's code coverage functionality.
+ * Driver for PHPDBG's code coverage functionality.
  *
  * @since Class available since Release 2.2.0
  * @codeCoverageIgnore
  */
-class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
+class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
 {
     /**
      * Constructor.
@@ -22,13 +22,14 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
     public function __construct()
     {
         if (PHP_SAPI !== 'phpdbg') {
-            throw new PHP_CodeCoverage_Exception('This driver requires the phpdbg sapi');
+            throw new PHP_CodeCoverage_Exception(
+                'This driver requires the PHPDBG SAPI'
+            );
         }
 
-        if (version_compare(phpversion(), '7.0', '<')) {
-            // actually we require the phpdbg version shipped with php7, not php7 itself
+        if (!function_exists('phpdbg_start_oplog')) {
             throw new PHP_CodeCoverage_Exception(
-                'phpdbg based code coverage requires at least php7'
+                'This build of PHPDBG does not support code coverage'
             );
         }
     }
@@ -55,9 +56,15 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
         if ($fetchedLines == array()) {
             $sourceLines = phpdbg_get_executable();
         } else {
-            $newFiles = array_diff(get_included_files(), array_keys($fetchedLines));
+            $newFiles = array_diff(
+                get_included_files(),
+                array_keys($fetchedLines)
+            );
+
             if ($newFiles) {
-                $sourceLines = phpdbg_get_executable(array("files" => $newFiles));
+                $sourceLines = phpdbg_get_executable(
+                    array('files' => $newFiles)
+                );
             } else {
                 $sourceLines = array();
             }
@@ -69,11 +76,9 @@ class PHP_CodeCoverage_Driver_Phpdbg implements PHP_CodeCoverage_Driver
             }
         }
 
-        $fetchedLines += $sourceLines;
+        $fetchedLines = array_merge($fetchedLines, $sourceLines);
 
-        $data = $this->detectExecutedLines($fetchedLines, $dbgData);
-
-        return $data;
+        return $this->detectExecutedLines($fetchedLines, $dbgData);
     }
 
     /**

@@ -439,7 +439,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 continue;
             }
 
-            list ($token, $value) = $token;
+            list($token, $value) = $token;
 
             $value = str_replace(
                 array("\t", ' '),

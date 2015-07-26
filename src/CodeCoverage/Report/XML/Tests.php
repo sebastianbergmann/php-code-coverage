@@ -41,6 +41,5 @@ class PHP_CodeCoverage_Report_XML_Tests
         $node->setAttribute('size', $result['size']);
         $node->setAttribute('result', (int) $result['status']);
         $node->setAttribute('status', $this->codeMap[(int) $result['status']]);
-
     }
 }

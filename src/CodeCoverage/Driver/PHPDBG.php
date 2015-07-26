@@ -39,7 +39,7 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
      */
     public function start()
     {
-       phpdbg_start_oplog();
+        phpdbg_start_oplog();
     }
 
     /**

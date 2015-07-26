@@ -96,17 +96,7 @@ class PHP_CodeCoverage
     public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null)
     {
         if ($driver === null) {
-            if (PHP_SAPI === 'phpdbg') {
-                $driver = new PHP_CodeCoverage_Driver_Phpdbg;
-            } else {
-                $runtime = new Runtime;
-
-                if (!$runtime->hasXdebug()) {
-                    throw new PHP_CodeCoverage_Exception('No code coverage driver available');
-                }
-
-                $driver = new PHP_CodeCoverage_Driver_Xdebug;
-            }
+            $driver = $this->selectDriver();
         }
 
         if ($filter === null) {
@@ -904,5 +894,24 @@ class PHP_CodeCoverage
         }
 
         return $allowedLines;
+    }
+
+    /**
+     * @return PHP_CodeCoverage_Driver
+     * @throws PHP_CodeCoverage_Exception
+     */
+    private function selectDriver()
+    {
+        $runtime = new Runtime;
+
+        if (!$runtime->canCollectCodeCoverage()) {
+            throw new PHP_CodeCoverage_Exception('No code coverage driver available');
+        }
+
+        if ($runtime->isPHPDBG()) {
+            return new PHP_CodeCoverage_Driver_PHPDBG;
+        } else {
+            return new PHP_CodeCoverage_Driver_Xdebug;
+        }
     }
 }

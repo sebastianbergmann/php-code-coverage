@@ -15,10 +15,22 @@
  */
 interface PHP_CodeCoverage_Driver
 {
-    // const values map to the defaults provided by xdebug-code-coverage
-    // see http://xdebug.org/docs/code_coverage
+    /**
+     * @var int
+     * @see http://xdebug.org/docs/code_coverage
+     */
     const LINE_EXECUTED = 1;
+
+    /**
+     * @var int
+     * @see http://xdebug.org/docs/code_coverage
+     */
     const LINE_NOT_EXECUTED = -1;
+
+    /**
+     * @var int
+     * @see http://xdebug.org/docs/code_coverage
+     */
     const LINE_NOT_EXECUTABLE = -2;
 
     /**

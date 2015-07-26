@@ -96,13 +96,17 @@ class PHP_CodeCoverage
     public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null)
     {
         if ($driver === null) {
-            $runtime = new Runtime;
+            if (PHP_SAPI === 'phpdbg') {
+                $driver = new PHP_CodeCoverage_Driver_Phpdbg;
+            } else {
+                $runtime = new Runtime;
 
-            if (!$runtime->hasXdebug()) {
-                throw new PHP_CodeCoverage_Exception('No code coverage driver available');
+                if (!$runtime->hasXdebug()) {
+                    throw new PHP_CodeCoverage_Exception('No code coverage driver available');
+                }
+
+                $driver = new PHP_CodeCoverage_Driver_Xdebug;
             }
-
-            $driver = new PHP_CodeCoverage_Driver_Xdebug;
         }
 
         if ($filter === null) {

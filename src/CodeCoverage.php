@@ -324,7 +324,7 @@ class PHP_CodeCoverage
             }
 
             foreach ($lines as $k => $v) {
-                if ($v == 1) {
+                if ($v == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
                     if (empty($this->data[$file][$k]) || !in_array($id, $this->data[$file][$k])) {
                         $this->data[$file][$k][] = $id;
                     }
@@ -613,7 +613,7 @@ class PHP_CodeCoverage
                 $lines = count(file($uncoveredFile));
 
                 for ($i = 1; $i <= $lines; $i++) {
-                    $data[$uncoveredFile][$i] = -1;
+                    $data[$uncoveredFile][$i] = PHP_CodeCoverage_Driver::LINE_NOT_EXECUTED;
                 }
             }
         }
@@ -636,8 +636,8 @@ class PHP_CodeCoverage
             if (!isset($data[$file]) &&
                 in_array($file, $uncoveredFiles)) {
                 foreach (array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] == 1) {
-                        $fileCoverage[$key] = -1;
+                    if ($fileCoverage[$key] == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
+                        $fileCoverage[$key] = PHP_CodeCoverage_Driver::LINE_NOT_EXECUTED;
                     }
                 }
 

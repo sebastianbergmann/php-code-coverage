@@ -88,9 +88,9 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
             }
         }
 
-        foreach ($sourceLines as &$lines) {
-            foreach ($lines as &$line) {
-                $line = self::LINE_NOT_EXECUTED;
+        foreach ($sourceLines as $file => $lines) {
+            foreach ($lines as $lineNo => $numExecuted) {
+                $sourceLines[$file][$lineNo] = self::LINE_NOT_EXECUTED;
             }
         }
 

@@ -23,5 +23,6 @@ All notable changes of the PHP_CodeCoverage 2.2 release series are documented in
 
 * The dedicated driver for HHVM, `PHP_CodeCoverage_Driver_HHVM` has been removed
 
+[2.2.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.1...2.2.0
 

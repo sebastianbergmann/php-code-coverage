@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 2.2 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [2.2.0] - 2015-08-02
+## [2.2.1] - 2015-08-02
 
 ### Changed
 

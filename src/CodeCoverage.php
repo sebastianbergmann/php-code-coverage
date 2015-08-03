@@ -340,6 +340,14 @@ class PHP_CodeCoverage
      */
     public function merge(PHP_CodeCoverage $that)
     {
+       $this->filter->setBlacklistedFiles(
+            array_merge($this->filter->getBlacklistedFiles(), $that->filter()->getBlacklistedFiles())
+        );
+
+        $this->filter->setWhitelistedFiles(
+            array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
+        );
+        
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {
                 if (!$this->filter->isFiltered($file)) {
@@ -364,13 +372,6 @@ class PHP_CodeCoverage
 
         $this->tests = array_merge($this->tests, $that->getTests());
 
-        $this->filter->setBlacklistedFiles(
-            array_merge($this->filter->getBlacklistedFiles(), $that->filter()->getBlacklistedFiles())
-        );
-
-        $this->filter->setWhitelistedFiles(
-            array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
-        );
     }
 
     /**

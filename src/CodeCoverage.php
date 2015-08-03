@@ -908,7 +908,9 @@ class PHP_CodeCoverage
             throw new PHP_CodeCoverage_Exception('No code coverage driver available');
         }
 
-        if ($runtime->isPHPDBG()) {
+        if ($runtime->isHHVM()) {
+            return new PHP_CodeCoverage_Driver_HHVM;
+        } elseif ($runtime->isPHPDBG()) {
             return new PHP_CodeCoverage_Driver_PHPDBG;
         } else {
             return new PHP_CodeCoverage_Driver_Xdebug;

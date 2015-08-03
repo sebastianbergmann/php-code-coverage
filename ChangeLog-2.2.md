@@ -4,6 +4,10 @@ All notable changes of the PHP_CodeCoverage 2.2 release series are documented in
 
 ## [2.2.2] - 2015-08-DD
 
+### Added
+
+* Reintroduced the `PHP_CodeCoverage_Driver_HHVM` driver as an extension of `PHP_CodeCoverage_Driver_Xdebug` that does not use `xdebug_start_code_coverage()` with options not supported by HHVM
+
 ### Changed
 
 * Bumped required version of `sebastian/environment` to 1.3.2 for [#365](https://github.com/sebastianbergmann/php-code-coverage/issues/365)

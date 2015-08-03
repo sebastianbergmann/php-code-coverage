@@ -340,7 +340,7 @@ class PHP_CodeCoverage
      */
     public function merge(PHP_CodeCoverage $that)
     {
-       $this->filter->setBlacklistedFiles(
+        $this->filter->setBlacklistedFiles(
             array_merge($this->filter->getBlacklistedFiles(), $that->filter()->getBlacklistedFiles())
         );
 

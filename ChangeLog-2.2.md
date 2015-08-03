@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 2.2 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.2] - 2015-08-DD
+
+### Changed
+
+* Bumped required version of `sebastian/environment` to 1.3.2 for [#365](https://github.com/sebastianbergmann/php-code-coverage/issues/365)
+
 ## [2.2.1] - 2015-08-02
 
 ### Changed
@@ -23,6 +29,7 @@ All notable changes of the PHP_CodeCoverage 2.2 release series are documented in
 
 * The dedicated driver for HHVM, `PHP_CodeCoverage_Driver_HHVM` has been removed
 
+[2.2.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.1...2.2.0
 

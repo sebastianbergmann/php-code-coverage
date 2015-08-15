@@ -351,7 +351,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     protected function calculateStatistics()
     {
-        $classStack = $functionStack = [];
+        $classStack = $functionStack = array();
 
         if ($this->cacheTokens) {
             $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());

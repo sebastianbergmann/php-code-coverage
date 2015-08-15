@@ -150,6 +150,7 @@ class PHP_CodeCoverage_Report_HTML
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
         copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/respond.min.js', $dir . 'respond.min.js');
+        copy($this->templatePath . 'js/list.min.js', $dir . 'list.min.js');
     }
 
     /**

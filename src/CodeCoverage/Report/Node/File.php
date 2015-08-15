@@ -351,6 +351,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     protected function calculateStatistics()
     {
+        $classStack = $functionStack = [];
+
         if ($this->cacheTokens) {
             $tokens = PHP_Token_Stream_CachingFactory::get($this->getPath());
         } else {
@@ -367,6 +369,10 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             if (isset($this->startLines[$lineNumber])) {
                 // Start line of a class.
                 if (isset($this->startLines[$lineNumber]['className'])) {
+                    if (isset($currentClass)) {
+                        $classStack[] = &$currentClass;
+                    }
+
                     $currentClass = &$this->startLines[$lineNumber];
                 } // Start line of a trait.
                 elseif (isset($this->startLines[$lineNumber]['traitName'])) {
@@ -376,12 +382,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                     $currentMethod = &$this->startLines[$lineNumber];
                 } // Start line of a function.
                 elseif (isset($this->startLines[$lineNumber]['functionName'])) {
+                    if (isset($currentFunction)) {
+                        $functionStack[] = &$currentFunction;
+                    }
+
                     $currentFunction = &$this->startLines[$lineNumber];
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber]) &&
-                $this->coverageData[$lineNumber] !== null) {
+            if (isset($this->coverageData[$lineNumber])) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
                 }
@@ -425,6 +434,13 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 // End line of a class.
                 if (isset($this->endLines[$lineNumber]['className'])) {
                     unset($currentClass);
+
+                    if ($classStack) {
+                        end($classStack);
+                        $key = key($classStack);
+                        $currentClass = &$classStack[$key];
+                        unset($classStack[$key]);
+                    }
                 } // End line of a trait.
                 elseif (isset($this->endLines[$lineNumber]['traitName'])) {
                     unset($currentTrait);
@@ -434,6 +450,13 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 } // End line of a function.
                 elseif (isset($this->endLines[$lineNumber]['functionName'])) {
                     unset($currentFunction);
+
+                    if ($functionStack) {
+                        end($functionStack);
+                        $key = key($functionStack);
+                        $currentFunction = &$functionStack[$key];
+                        unset($functionsStack[$key]);
+                    }
                 }
             }
         }

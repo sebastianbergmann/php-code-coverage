@@ -76,9 +76,6 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected function renderItemTemplate(Text_Template $template, array $data)
     {
         $numSeparator  = '&nbsp;/&nbsp;';
-        $classesBar    = '&nbsp;';
-        $classesLevel  = 'None';
-        $classesNumber = '&nbsp;';
 
         if (isset($data['numClasses']) && $data['numClasses'] > 0) {
             $classesLevel = $this->getColorLevel($data['testedClassesPercent']);
@@ -89,11 +86,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             $classesBar = $this->getCoverageBar(
                 $data['testedClassesPercent']
             );
+        } else {
+            $classesLevel = 'success';
+            $classesNumber = '0' . $numSeparator . '0';
+            $classesBar = $this->getCoverageBar(100);
         }
-
-        $methodsBar    = '&nbsp;';
-        $methodsLevel  = 'None';
-        $methodsNumber = '&nbsp;';
 
         if ($data['numMethods'] > 0) {
             $methodsLevel = $this->getColorLevel($data['testedMethodsPercent']);
@@ -104,11 +101,12 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             $methodsBar = $this->getCoverageBar(
                 $data['testedMethodsPercent']
             );
+        } else {
+            $methodsLevel = 'success';
+            $methodsNumber = '0' . $numSeparator . '0';
+            $methodsBar = $this->getCoverageBar(100);
+            $data['testedMethodsPercentAsString'] = '100.00%';
         }
-
-        $linesBar    = '&nbsp;';
-        $linesLevel  = 'None';
-        $linesNumber = '&nbsp;';
 
         if ($data['numExecutableLines'] > 0) {
             $linesLevel = $this->getColorLevel($data['linesExecutedPercent']);
@@ -119,6 +117,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             $linesBar = $this->getCoverageBar(
                 $data['linesExecutedPercent']
             );
+        } else {
+            $linesLevel = 'success';
+            $linesNumber = '0' . $numSeparator . '0';
+            $linesBar = $this->getCoverageBar(100);
+            $data['linesExecutedPercentAsString'] = '100.00%';
         }
 
         $template->setVar(

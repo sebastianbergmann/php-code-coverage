@@ -455,7 +455,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                         end($functionStack);
                         $key = key($functionStack);
                         $currentFunction = &$functionStack[$key];
-                        unset($functionsStack[$key]);
+                        unset($functionStack[$key]);
                     }
                 }
             }

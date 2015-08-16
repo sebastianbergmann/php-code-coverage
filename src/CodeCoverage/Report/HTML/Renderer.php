@@ -87,9 +87,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 $data['testedClassesPercent']
             );
         } else {
-            $classesLevel = 'success';
+            $classesLevel  = 'success';
             $classesNumber = '0' . $numSeparator . '0';
-            $classesBar = $this->getCoverageBar(100);
+            $classesBar    = $this->getCoverageBar(100);
         }
 
         if ($data['numMethods'] > 0) {
@@ -102,9 +102,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 $data['testedMethodsPercent']
             );
         } else {
-            $methodsLevel = 'success';
-            $methodsNumber = '0' . $numSeparator . '0';
-            $methodsBar = $this->getCoverageBar(100);
+            $methodsLevel                         = 'success';
+            $methodsNumber                        = '0' . $numSeparator . '0';
+            $methodsBar                           = $this->getCoverageBar(100);
             $data['testedMethodsPercentAsString'] = '100.00%';
         }
 
@@ -118,9 +118,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 $data['linesExecutedPercent']
             );
         } else {
-            $linesLevel = 'success';
-            $linesNumber = '0' . $numSeparator . '0';
-            $linesBar = $this->getCoverageBar(100);
+            $linesLevel                           = 'success';
+            $linesNumber                          = '0' . $numSeparator . '0';
+            $linesBar                             = $this->getCoverageBar(100);
             $data['linesExecutedPercentAsString'] = '100.00%';
         }
 

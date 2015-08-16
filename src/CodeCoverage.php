@@ -347,7 +347,7 @@ class PHP_CodeCoverage
         $this->filter->setWhitelistedFiles(
             array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
         );
-        
+
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {
                 if (!$this->filter->isFiltered($file)) {

@@ -437,7 +437,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
                     if ($classStack) {
                         end($classStack);
-                        $key = key($classStack);
+                        $key          = key($classStack);
                         $currentClass = &$classStack[$key];
                         unset($classStack[$key]);
                     }
@@ -453,7 +453,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
                     if ($functionStack) {
                         end($functionStack);
-                        $key = key($functionStack);
+                        $key             = key($functionStack);
                         $currentFunction = &$functionStack[$key];
                         unset($functionStack[$key]);
                     }

@@ -8,7 +8,12 @@
 ## Requirements
 
 * PHP 5.3.3 is required but using the latest version of PHP is highly recommended
+
+With PHP 5:
 * [Xdebug](http://xdebug.org/) 2.1.3 is required but using the latest version of Xdebug is highly recommended
+
+With PHP 7:
+* [phpdbg](http://phpdbg.com)
 
 ## Installation
 
@@ -16,7 +21,7 @@ To add PHP_CodeCoverage as a local, per-project dependency to your project, simp
 
     {
         "require": {
-            "phpunit/php-code-coverage": "~2.0"
+            "phpunit/php-code-coverage": "^2"
         }
     }
 
@@ -37,4 +42,3 @@ $writer->process($coverage, '/tmp/clover.xml');
 $writer = new PHP_CodeCoverage_Report_HTML;
 $writer->process($coverage, '/tmp/code-coverage-report');
 ```
-

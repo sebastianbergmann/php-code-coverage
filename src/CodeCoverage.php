@@ -736,6 +736,8 @@ class PHP_CodeCoverage
                     case 'PHP_Token_TRAIT':
                     case 'PHP_Token_CLASS':
                     case 'PHP_Token_FUNCTION':
+                        /* @var PHP_Token_Interface $token */
+
                         $docblock = $token->getDocblock();
 
                         $this->ignoredLines[$filename][] = $token->getLine();

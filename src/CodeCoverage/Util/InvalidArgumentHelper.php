@@ -17,9 +17,10 @@
 class PHP_CodeCoverage_Util_InvalidArgumentHelper
 {
     /**
-     * @param int    $argument
-     * @param string $type
-     * @param mixed  $value
+     * @param  int                        $argument
+     * @param  string                     $type
+     * @param  mixed                      $value
+     * @return PHP_CodeCoverage_Exception
      */
     public static function factory($argument, $type, $value = null)
     {

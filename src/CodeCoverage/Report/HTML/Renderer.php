@@ -125,7 +125,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         }
 
         $template->setVar(
-            array(
+            [
                 'icon'                   => isset($data['icon']) ? $data['icon'] : '',
                 'crap'                   => isset($data['crap']) ? $data['crap'] : '',
                 'name'                   => $data['name'],
@@ -141,7 +141,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'classes_tested_percent' => isset($data['testedClassesPercentAsString']) ? $data['testedClassesPercentAsString'] : '',
                 'classes_level'          => $classesLevel,
                 'classes_number'         => $classesNumber
-            )
+            ]
         );
 
         return $template->render();
@@ -156,7 +156,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         $runtime = new Runtime;
 
         $template->setVar(
-            array(
+            [
                 'id'               => $node->getId(),
                 'full_path'        => $node->getPath(),
                 'path_to_root'     => $this->getPathToRoot($node),
@@ -169,7 +169,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound
-            )
+            ]
         );
     }
 
@@ -177,7 +177,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     {
         $breadcrumbs = '';
         $path        = $node->getPathAsArray();
-        $pathToRoot  = array();
+        $pathToRoot  = [];
         $max         = count($path);
 
         if ($node instanceof PHP_CodeCoverage_Report_Node_File) {
@@ -248,7 +248,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             '}}'
         );
 
-        $template->setVar(array('level' => $level, 'percent' => sprintf('%.2F', $percent)));
+        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent)]);
 
         return $template->render();
     }

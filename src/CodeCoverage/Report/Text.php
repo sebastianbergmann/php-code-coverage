@@ -22,14 +22,14 @@ class PHP_CodeCoverage_Report_Text
     protected $showUncoveredFiles;
     protected $showOnlySummary;
 
-    protected $colors = array(
+    protected $colors = [
         'green'  => "\x1b[30;42m",
         'yellow' => "\x1b[30;43m",
         'red'    => "\x1b[37;41m",
         'header' => "\x1b[1;37;40m",
         'reset'  => "\x1b[0m",
         'eol'    => "\x1b[2K",
-    );
+    ];
 
     public function __construct($lowUpperBound, $highLowerBound, $showUncoveredFiles, $showOnlySummary)
     {
@@ -50,14 +50,14 @@ class PHP_CodeCoverage_Report_Text
         $report = $coverage->getReport();
         unset($coverage);
 
-        $colors = array(
+        $colors = [
             'header'  => '',
             'classes' => '',
             'methods' => '',
             'lines'   => '',
             'reset'   => '',
             'eol'     => ''
-        );
+        ];
 
         if ($showColors) {
             $colors['classes'] = $this->getCoverageColor(
@@ -110,7 +110,7 @@ class PHP_CodeCoverage_Report_Text
             $report->getNumExecutableLines()
         );
 
-        $padding = max(array_map('strlen', array($classes, $methods, $lines)));
+        $padding = max(array_map('strlen', [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
             $title   = 'Code Coverage Report Summary:';
@@ -135,7 +135,7 @@ class PHP_CodeCoverage_Report_Text
             return $output . PHP_EOL;
         }
 
-        $classCoverage = array();
+        $classCoverage = [];
 
         foreach ($report as $item) {
             if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
@@ -171,14 +171,14 @@ class PHP_CodeCoverage_Report_Text
                     $namespace = '';
                 }
 
-                $classCoverage[$namespace . $className] = array(
+                $classCoverage[$namespace . $className] = [
                     'namespace'         => $namespace,
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,
                     'statementsCovered' => $coveredClassStatements,
                     'statementCount'    => $classStatements,
-                );
+                ];
             }
         }
 

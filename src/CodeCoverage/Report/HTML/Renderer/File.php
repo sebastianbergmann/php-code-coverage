@@ -77,10 +77,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
         $template = new Text_Template($this->templatePath . 'file.html', '{{', '}}');
 
         $template->setVar(
-            array(
+            [
                 'items' => $this->renderItems($node),
                 'lines' => $this->renderSource($node)
-            )
+            ]
         );
 
         $this->setCommonTemplateVariables($template, $node);
@@ -104,7 +104,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         $items = $this->renderItemTemplate(
             $template,
-            array(
+            [
                 'name'                         => 'Total',
                 'numClasses'                   => $node->getNumClassesAndTraits(),
                 'numTestedClasses'             => $node->getNumTestedClassesAndTraits(),
@@ -119,7 +119,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
                 'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
                 'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>'
-            )
+            ]
         );
 
         $items .= $this->renderFunctionItems(
@@ -168,7 +168,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
             $buffer .= $this->renderItemTemplate(
                 $template,
-                array(
+                [
                     'name'                         => $name,
                     'numClasses'                   => 1,
                     'numTestedClasses'             => $numTestedMethods == $numMethods ? 1 : 0,
@@ -207,7 +207,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                         true
                     ),
                     'crap'                         => $item['crap']
-                )
+                ]
             );
 
             foreach ($item['methods'] as $method) {
@@ -255,7 +255,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         return $this->renderItemTemplate(
             $template,
-            array(
+            [
                 'name'                         => sprintf(
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
@@ -288,7 +288,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     true
                 ),
                 'crap'                         => $item['crap']
-            )
+            ]
         );
     }
 
@@ -413,7 +413,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     {
         $buffer              = file_get_contents($file);
         $tokens              = token_get_all($buffer);
-        $result              = array('');
+        $result              = [''];
         $i                   = 0;
         $stringFlag          = false;
         $fileEndsWithNewLine = substr($buffer, -1) == "\n";
@@ -442,8 +442,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             list($token, $value) = $token;
 
             $value = str_replace(
-                array("\t", ' '),
-                array('&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'),
+                ["\t", ' '],
+                ['&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'],
                 htmlspecialchars($value, $this->htmlspecialcharsFlags)
             );
 

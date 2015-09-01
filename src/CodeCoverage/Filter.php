@@ -20,14 +20,14 @@ class PHP_CodeCoverage_Filter
      *
      * @var array
      */
-    private $blacklistedFiles = array();
+    private $blacklistedFiles = [];
 
     /**
      * Source files that are whitelisted.
      *
      * @var array
      */
-    private $whitelistedFiles = array();
+    private $whitelistedFiles = [];
 
     /**
      * Adds a directory to the blacklist (recursively).

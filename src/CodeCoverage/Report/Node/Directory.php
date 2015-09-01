@@ -18,17 +18,17 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var PHP_CodeCoverage_Report_Node[]
      */
-    protected $children = array();
+    protected $children = [];
 
     /**
      * @var PHP_CodeCoverage_Report_Node_Directory[]
      */
-    protected $directories = array();
+    protected $directories = [];
 
     /**
      * @var PHP_CodeCoverage_Report_Node_File[]
      */
-    protected $files = array();
+    protected $files = [];
 
     /**
      * @var array
@@ -219,7 +219,7 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     public function getClasses()
     {
         if ($this->classes === null) {
-            $this->classes = array();
+            $this->classes = [];
 
             foreach ($this->children as $child) {
                 $this->classes = array_merge(
@@ -240,7 +240,7 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     public function getTraits()
     {
         if ($this->traits === null) {
-            $this->traits = array();
+            $this->traits = [];
 
             foreach ($this->children as $child) {
                 $this->traits = array_merge(
@@ -261,7 +261,7 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     public function getFunctions()
     {
         if ($this->functions === null) {
-            $this->functions = array();
+            $this->functions = [];
 
             foreach ($this->children as $child) {
                 $this->functions = array_merge(
@@ -282,7 +282,7 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     public function getLinesOfCode()
     {
         if ($this->linesOfCode === null) {
-            $this->linesOfCode = array('loc' => 0, 'cloc' => 0, 'ncloc' => 0);
+            $this->linesOfCode = ['loc' => 0, 'cloc' => 0, 'ncloc' => 0];
 
             foreach ($this->children as $child) {
                 $linesOfCode = $child->getLinesOfCode();

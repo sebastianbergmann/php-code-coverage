@@ -51,15 +51,15 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         $this->assertEquals(0, $root->getNumFunctions());
         $this->assertEquals(0, $root->getNumTestedFunctions());
         $this->assertNull($root->getParent());
-        $this->assertEquals(array(), $root->getDirectories());
+        $this->assertEquals([], $root->getDirectories());
         #$this->assertEquals(array(), $root->getFiles());
         #$this->assertEquals(array(), $root->getChildNodes());
 
         $this->assertEquals(
-            array(
-                'BankAccount' => array(
-                    'methods' => array(
-                        'getBalance' => array(
+            [
+                'BankAccount' => [
+                    'methods' => [
+                        'getBalance' => [
                             'signature'       => 'getBalance()',
                             'startLine'       => 6,
                             'endLine'         => 9,
@@ -70,8 +70,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#6',
                             'methodName'      => 'getBalance'
-                        ),
-                        'setBalance' => array(
+                        ],
+                        'setBalance' => [
                             'signature'       => 'setBalance($balance)',
                             'startLine'       => 11,
                             'endLine'         => 18,
@@ -82,8 +82,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'crap'            => 6,
                             'link'            => 'BankAccount.php.html#11',
                             'methodName'      => 'setBalance'
-                        ),
-                        'depositMoney' => array(
+                        ],
+                        'depositMoney' => [
                             'signature'       => 'depositMoney($balance)',
                             'startLine'       => 20,
                             'endLine'         => 25,
@@ -94,8 +94,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#20',
                             'methodName'      => 'depositMoney'
-                        ),
-                        'withdrawMoney' => array(
+                        ],
+                        'withdrawMoney' => [
                             'signature'       => 'withdrawMoney($balance)',
                             'startLine'       => 27,
                             'endLine'         => 32,
@@ -106,29 +106,29 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#27',
                             'methodName'      => 'withdrawMoney'
-                        ),
-                    ),
+                        ],
+                    ],
                     'startLine'       => 2,
                     'executableLines' => 10,
                     'executedLines'   => 5,
                     'ccn'             => 5,
                     'coverage'        => 50,
                     'crap'            => '8.12',
-                    'package'         => array(
+                    'package'         => [
                         'namespace'   => '',
                         'fullPackage' => '',
                         'category'    => '',
                         'package'     => '',
                         'subpackage'  => ''
-                    ),
+                    ],
                     'link'      => 'BankAccount.php.html#2',
                     'className' => 'BankAccount'
-                )
-            ),
+                ]
+            ],
             $root->getClasses()
         );
 
-        $this->assertEquals(array(), $root->getFunctions());
+        $this->assertEquals([], $root->getFunctions());
     }
 
     /**
@@ -144,15 +144,15 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
         $method->setAccessible(true);
 
         $this->assertEquals(
-            array(
-                'src' => array(
-                    'Money.php/f'    => array(),
-                    'MoneyBag.php/f' => array()
-                )
-            ),
+            [
+                'src' => [
+                    'Money.php/f'    => [],
+                    'MoneyBag.php/f' => []
+                ]
+            ],
             $method->invoke(
                 $this->factory,
-                array('src/Money.php' => array(), 'src/MoneyBag.php' => array())
+                ['src/Money.php' => [], 'src/MoneyBag.php' => []]
             )
         );
     }
@@ -170,7 +170,7 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
 
         $method->setAccessible(true);
 
-        $_commonPath = $method->invokeArgs($this->factory, array(&$paths));
+        $_commonPath = $method->invokeArgs($this->factory, [&$paths]);
 
         $this->assertEquals($reducedPaths, $paths);
         $this->assertEquals($commonPath, $_commonPath);
@@ -178,45 +178,45 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
 
     public function reducePathsProvider()
     {
-        return array(
-            array(
-                array(
-                    'Money.php'    => array(),
-                    'MoneyBag.php' => array()
-                ),
+        return [
+            [
+                [
+                    'Money.php'    => [],
+                    'MoneyBag.php' => []
+                ],
                 '/home/sb/Money',
-                array(
-                    '/home/sb/Money/Money.php'    => array(),
-                    '/home/sb/Money/MoneyBag.php' => array()
-                )
-            ),
-            array(
-                array(
-                    'Money.php' => array()
-                ),
+                [
+                    '/home/sb/Money/Money.php'    => [],
+                    '/home/sb/Money/MoneyBag.php' => []
+                ]
+            ],
+            [
+                [
+                    'Money.php' => []
+                ],
                 '/home/sb/Money/',
-                array(
-                    '/home/sb/Money/Money.php' => array()
-                )
-            ),
-            array(
-                array(),
+                [
+                    '/home/sb/Money/Money.php' => []
+                ]
+            ],
+            [
+                [],
                 '.',
-                array()
-            ),
-            array(
-                array(
-                    'Money.php'          => array(),
-                    'MoneyBag.php'       => array(),
-                    'Cash.phar/Cash.php' => array(),
-                ),
+                []
+            ],
+            [
+                [
+                    'Money.php'          => [],
+                    'MoneyBag.php'       => [],
+                    'Cash.phar/Cash.php' => [],
+                ],
                 '/home/sb/Money',
-                array(
-                    '/home/sb/Money/Money.php'                 => array(),
-                    '/home/sb/Money/MoneyBag.php'              => array(),
-                    'phar:///home/sb/Money/Cash.phar/Cash.php' => array(),
-                ),
-            ),
-        );
+                [
+                    '/home/sb/Money/Money.php'                 => [],
+                    '/home/sb/Money/MoneyBag.php'              => [],
+                    'phar:///home/sb/Money/Cash.phar/Cash.php' => [],
+                ],
+            ],
+        ];
     }
 }

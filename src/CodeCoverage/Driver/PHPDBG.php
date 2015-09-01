@@ -49,11 +49,11 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
-        static $fetchedLines = array();
+        static $fetchedLines = [];
 
         $dbgData = phpdbg_end_oplog();
 
-        if ($fetchedLines == array()) {
+        if ($fetchedLines == []) {
             $sourceLines = phpdbg_get_executable();
         } else {
             $newFiles = array_diff(
@@ -63,10 +63,10 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
 
             if ($newFiles) {
                 $sourceLines = phpdbg_get_executable(
-                    array('files' => $newFiles)
+                    ['files' => $newFiles]
                 );
             } else {
-                $sourceLines = array();
+                $sourceLines = [];
             }
         }
 

@@ -30,7 +30,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
     {
         $this->filter = unserialize('O:23:"PHP_CodeCoverage_Filter":0:{}');
 
-        $this->files = array(
+        $this->files = [
             TEST_FILES_PATH . 'BankAccount.php',
             TEST_FILES_PATH . 'BankAccountTest.php',
             TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
@@ -72,7 +72,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
             TEST_FILES_PATH . 'source_with_oneline_annotations.php',
             TEST_FILES_PATH . 'source_without_ignore.php',
             TEST_FILES_PATH . 'source_without_namespace.php'
-        );
+        ];
     }
 
     /**
@@ -84,7 +84,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
 
         $this->assertEquals(
-            array($this->files[0]),
+            [$this->files[0]],
             $this->filter->getBlacklist()
         );
     }
@@ -98,7 +98,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToBlacklist($this->files[0]);
         $this->filter->removeFileFromBlacklist($this->files[0]);
 
-        $this->assertEquals(array(), $this->filter->getBlacklist());
+        $this->assertEquals([], $this->filter->getBlacklist());
     }
 
     /**
@@ -146,7 +146,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToBlacklist(TEST_FILES_PATH);
         $this->filter->removeDirectoryFromBlacklist(TEST_FILES_PATH);
 
-        $this->assertEquals(array(), $this->filter->getBlacklist());
+        $this->assertEquals([], $this->filter->getBlacklist());
     }
 
     /**
@@ -158,7 +158,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToWhitelist($this->files[0]);
 
         $this->assertEquals(
-            array($this->files[0]),
+            [$this->files[0]],
             $this->filter->getWhitelist()
         );
     }
@@ -172,7 +172,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addFileToWhitelist($this->files[0]);
         $this->filter->removeFileFromWhitelist($this->files[0]);
 
-        $this->assertEquals(array(), $this->filter->getWhitelist());
+        $this->assertEquals([], $this->filter->getWhitelist());
     }
 
     /**
@@ -220,7 +220,7 @@ class PHP_CodeCoverage_FilterTest extends PHPUnit_Framework_TestCase
         $this->filter->addDirectoryToWhitelist(TEST_FILES_PATH);
         $this->filter->removeDirectoryFromWhitelist(TEST_FILES_PATH);
 
-        $this->assertEquals(array(), $this->filter->getWhitelist());
+        $this->assertEquals([], $this->filter->getWhitelist());
     }
 
     /**

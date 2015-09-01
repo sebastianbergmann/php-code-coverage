@@ -4,7 +4,7 @@ class CoveredClassWithAnonymousFunctionInStaticMethod
 {
     public static function runAnonymous()
     {
-        $filter = array('abc124', 'abc123', '123');
+        $filter = ['abc124', 'abc123', '123'];
 
         array_walk(
             $filter,

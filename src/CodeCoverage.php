@@ -67,12 +67,12 @@ class PHP_CodeCoverage
      *
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
     /**
      * @var array
      */
-    private $ignoredLines = array();
+    private $ignoredLines = [];
 
     /**
      * @var bool
@@ -84,7 +84,7 @@ class PHP_CodeCoverage
      *
      * @var array
      */
-    private $tests = array();
+    private $tests = [];
 
     /**
      * Constructor.
@@ -127,8 +127,8 @@ class PHP_CodeCoverage
     public function clear()
     {
         $this->currentId = null;
-        $this->data      = array();
-        $this->tests     = array();
+        $this->data      = [];
+        $this->tests     = [];
     }
 
     /**
@@ -231,7 +231,7 @@ class PHP_CodeCoverage
      * @return array
      * @throws PHP_CodeCoverage_Exception
      */
-    public function stop($append = true, $linesToBeCovered = array(), array $linesToBeUsed = array())
+    public function stop($append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
     {
         if (!is_bool($append)) {
             throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
@@ -265,7 +265,7 @@ class PHP_CodeCoverage
      * @param  array                      $linesToBeUsed
      * @throws PHP_CodeCoverage_Exception
      */
-    public function append(array $data, $id = null, $append = true, $linesToBeCovered = array(), array $linesToBeUsed = array())
+    public function append(array $data, $id = null, $append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -316,7 +316,7 @@ class PHP_CodeCoverage
             $id   = $id->getName();
         }
 
-        $this->tests[$id] = array('size' => $size, 'status' => $status);
+        $this->tests[$id] = ['size' => $size, 'status' => $status];
 
         foreach ($data as $file => $lines) {
             if (!$this->filter->isFile($file)) {
@@ -508,7 +508,7 @@ class PHP_CodeCoverage
     {
         if ($linesToBeCovered === false ||
             ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
-            $data = array();
+            $data = [];
 
             return;
         }
@@ -577,10 +577,10 @@ class PHP_CodeCoverage
     {
         foreach ($data as $file => $lines) {
             if ($this->filter->isFile($file) && !isset($this->data[$file])) {
-                $this->data[$file] = array();
+                $this->data[$file] = [];
 
                 foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = $v == -2 ? null : array();
+                    $this->data[$file][$k] = $v == -2 ? null : [];
                 }
             }
         }
@@ -591,7 +591,7 @@ class PHP_CodeCoverage
      */
     private function addUncoveredFilesFromWhitelist()
     {
-        $data           = array();
+        $data           = [];
         $uncoveredFiles = array_diff(
             $this->filter->getWhitelist(),
             array_keys($this->data)
@@ -609,7 +609,7 @@ class PHP_CodeCoverage
                     $uncoveredFiles
                 );
             } else {
-                $data[$uncoveredFile] = array();
+                $data[$uncoveredFile] = [];
 
                 $lines = count(file($uncoveredFile));
 
@@ -665,7 +665,7 @@ class PHP_CodeCoverage
         }
 
         if (!isset($this->ignoredLines[$filename])) {
-            $this->ignoredLines[$filename] = array();
+            $this->ignoredLines[$filename] = [];
 
             if ($this->disableIgnoredLines) {
                 return $this->ignoredLines[$filename];
@@ -864,11 +864,11 @@ class PHP_CodeCoverage
      */
     private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed)
     {
-        $allowedLines = array();
+        $allowedLines = [];
 
         foreach (array_keys($linesToBeCovered) as $file) {
             if (!isset($allowedLines[$file])) {
-                $allowedLines[$file] = array();
+                $allowedLines[$file] = [];
             }
 
             $allowedLines[$file] = array_merge(
@@ -879,7 +879,7 @@ class PHP_CodeCoverage
 
         foreach (array_keys($linesToBeUsed) as $file) {
             if (!isset($allowedLines[$file])) {
-                $allowedLines[$file] = array();
+                $allowedLines[$file] = [];
             }
 
             $allowedLines[$file] = array_merge(

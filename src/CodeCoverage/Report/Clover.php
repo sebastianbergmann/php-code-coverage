@@ -39,7 +39,7 @@ class PHP_CodeCoverage_Report_Clover
 
         $xmlCoverage->appendChild($xmlProject);
 
-        $packages = array();
+        $packages = [];
         $report   = $coverage->getReport();
         unset($coverage);
 
@@ -55,7 +55,7 @@ class PHP_CodeCoverage_Report_Clover
 
             $classes  = $item->getClassesAndTraits();
             $coverage = $item->getCoverageData();
-            $lines    = array();
+            $lines    = [];
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
@@ -84,12 +84,12 @@ class PHP_CodeCoverage_Report_Clover
                         }
                     }
 
-                    $lines[$method['startLine']] = array(
+                    $lines[$method['startLine']] = [
                         'count' => $methodCount,
                         'crap'  => $method['crap'],
                         'type'  => 'method',
                         'name'  => $methodName
-                    );
+                    ];
                 }
 
                 if (!empty($class['package']['namespace'])) {
@@ -160,9 +160,9 @@ class PHP_CodeCoverage_Report_Clover
                     continue;
                 }
 
-                $lines[$line] = array(
+                $lines[$line] = [
                     'count' => count($data), 'type' => 'stmt'
-                );
+                ];
             }
 
             ksort($lines);

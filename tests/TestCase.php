@@ -17,9 +17,9 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
     protected function getXdebugDataForBankAccount()
     {
-        return array(
-            array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+        return [
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
                     13 => -1,
@@ -33,26 +33,26 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                     29 => -1,
                     31 => -1,
                     32 => -2
-                )
-            ),
-            array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+                ]
+            ],
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
                     16 => 1,
                     29 => 1,
-                )
-            ),
-            array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+                ]
+            ],
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
                     16 => 1,
                     22 => 1,
-                )
-            ),
-            array(
-                TEST_FILES_PATH . 'BankAccount.php' => array(
+                ]
+            ],
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
                     14 => 1,
@@ -62,9 +62,9 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                     24 => 1,
                     29 => 1,
                     31 => 1,
-                )
-            )
-        );
+                ]
+            ]
+        ];
     }
 
     protected function getCoverageForBankAccount()
@@ -90,7 +90,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(6, 9))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
@@ -99,7 +99,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(27, 32))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         $coverage->start(
@@ -108,7 +108,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(20, 25))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
@@ -117,13 +117,13 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(
+            [
                 TEST_FILES_PATH . 'BankAccount.php' => array_merge(
                     range(6, 9),
                     range(20, 25),
                     range(27, 32)
                 )
-            )
+            ]
         );
 
         return $coverage;
@@ -150,7 +150,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(6, 9))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
@@ -159,7 +159,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(27, 32))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         return $coverage;
@@ -185,7 +185,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(TEST_FILES_PATH . 'BankAccount.php' => range(20, 25))
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
@@ -194,13 +194,13 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            array(
+            [
                 TEST_FILES_PATH . 'BankAccount.php' => array_merge(
                     range(6, 9),
                     range(20, 25),
                     range(27, 32)
                 )
-            )
+            ]
         );
 
         return $coverage;
@@ -208,36 +208,36 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getExpectedDataArrayForBankAccount()
     {
-        return array(
-            TEST_FILES_PATH . 'BankAccount.php' => array(
-                8 => array(
+        return [
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8 => [
                     0 => 'BankAccountTest::testBalanceIsInitiallyZero',
                     1 => 'BankAccountTest::testDepositWithdrawMoney'
-                ),
+                ],
                 9  => null,
-                13 => array(),
-                14 => array(),
-                15 => array(),
-                16 => array(),
-                18 => array(),
-                22 => array(
+                13 => [],
+                14 => [],
+                15 => [],
+                16 => [],
+                18 => [],
+                22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
                     1 => 'BankAccountTest::testDepositWithdrawMoney'
-                ),
-                24 => array(
+                ],
+                24 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
-                ),
+                ],
                 25 => null,
-                29 => array(
+                29 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
                     1 => 'BankAccountTest::testDepositWithdrawMoney'
-                ),
-                31 => array(
+                ],
+                31 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney'
-                ),
+                ],
                 32 => null
-            )
-        );
+            ]
+        ];
     }
 
     protected function getCoverageForFileWithIgnoredLines()
@@ -259,14 +259,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(
-                array(
-                    TEST_FILES_PATH . 'source_with_ignore.php' => array(
+                [
+                    TEST_FILES_PATH . 'source_with_ignore.php' => [
                         2 => 1,
                         4 => -1,
                         6 => -1,
                         7 => 1
-                    )
-                )
+                    ]
+                ]
             ));
 
         return $stub;
@@ -291,8 +291,8 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(
-                array(
-                    TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => array(
+                [
+                    TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
                         7  => 1,
                         9  => 1,
                         10 => -1,
@@ -302,8 +302,8 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         14 => 1,
                         17 => 1,
                         18 => 1
-                    )
-                )
+                    ]
+                ]
             ));
 
         return $stub;

@@ -172,7 +172,8 @@ class PHP_CodeCoverage_Filter
     /**
      * Checks whether a filename is a real filename.
      *
-     * @param string $filename
+     * @param  string $filename
+     * @return bool
      */
     public function isFile($filename)
     {

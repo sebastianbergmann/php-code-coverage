@@ -98,17 +98,17 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * Constructor.
      *
-     * @param  string                       $name
-     * @param  PHP_CodeCoverage_Report_Node $parent
-     * @param  array                        $coverageData
-     * @param  array                        $testData
-     * @param  bool                         $cacheTokens
-     * @throws PHP_CodeCoverage_Exception
+     * @param  string                                    $name
+     * @param  PHP_CodeCoverage_Report_Node              $parent
+     * @param  array                                     $coverageData
+     * @param  array                                     $testData
+     * @param  bool                                      $cacheTokens
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function __construct($name, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData, $cacheTokens)
     {
         if (!is_bool($cacheTokens)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );

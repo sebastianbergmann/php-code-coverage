@@ -41,7 +41,7 @@ class PHP_CodeCoverage_Report_XML_File_Coverage
     public function addTest($test)
     {
         if ($this->finalized) {
-            throw new PHP_CodeCoverage_Exception('Coverage Report already finalized');
+            throw new PHP_CodeCoverage_RuntimeException('Coverage Report already finalized');
         }
 
         $this->writer->startElement('covered');

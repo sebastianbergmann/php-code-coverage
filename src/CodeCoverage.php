@@ -89,9 +89,9 @@ class PHP_CodeCoverage
     /**
      * Constructor.
      *
-     * @param  PHP_CodeCoverage_Driver    $driver
-     * @param  PHP_CodeCoverage_Filter    $filter
-     * @throws PHP_CodeCoverage_Exception
+     * @param  PHP_CodeCoverage_Driver           $driver
+     * @param  PHP_CodeCoverage_Filter           $filter
+     * @throws PHP_CodeCoverage_RuntimeException
      */
     public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null)
     {
@@ -200,14 +200,14 @@ class PHP_CodeCoverage
     /**
      * Start collection of code coverage information.
      *
-     * @param  mixed                      $id
-     * @param  bool                       $clear
-     * @throws PHP_CodeCoverage_Exception
+     * @param  mixed                                     $id
+     * @param  bool                                      $clear
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function start($id, $clear = false)
     {
         if (!is_bool($clear)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -225,23 +225,23 @@ class PHP_CodeCoverage
     /**
      * Stop collection of code coverage information.
      *
-     * @param  bool                       $append
-     * @param  mixed                      $linesToBeCovered
-     * @param  array                      $linesToBeUsed
+     * @param  bool                                      $append
+     * @param  mixed                                     $linesToBeCovered
+     * @param  array                                     $linesToBeUsed
      * @return array
-     * @throws PHP_CodeCoverage_Exception
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function stop($append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
     {
         if (!is_bool($append)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
         }
 
         if (!is_array($linesToBeCovered) && $linesToBeCovered !== false) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 2,
                 'array or false'
             );
@@ -258,12 +258,12 @@ class PHP_CodeCoverage
     /**
      * Appends code coverage data.
      *
-     * @param  array                      $data
-     * @param  mixed                      $id
-     * @param  bool                       $append
-     * @param  mixed                      $linesToBeCovered
-     * @param  array                      $linesToBeUsed
-     * @throws PHP_CodeCoverage_Exception
+     * @param  array                             $data
+     * @param  mixed                             $id
+     * @param  bool                              $append
+     * @param  mixed                             $linesToBeCovered
+     * @param  array                             $linesToBeUsed
+     * @throws PHP_CodeCoverage_RuntimeException
      */
     public function append(array $data, $id = null, $append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
     {
@@ -272,7 +272,7 @@ class PHP_CodeCoverage
         }
 
         if ($id === null) {
-            throw new PHP_CodeCoverage_Exception;
+            throw new PHP_CodeCoverage_RuntimeException;
         }
 
         $this->applyListsFilter($data);
@@ -375,14 +375,14 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      * @since  Method available since Release 1.1.0
      */
     public function setCacheTokens($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -400,14 +400,14 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      * @since  Method available since Release 2.0.0
      */
     public function setCheckForUnintentionallyCoveredCode($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -417,13 +417,13 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setForceCoversAnnotation($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -433,13 +433,13 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setMapTestClassNameToCoveredClassName($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -449,13 +449,13 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setAddUncoveredFilesFromWhitelist($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -465,13 +465,13 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setProcessUncoveredFilesFromWhitelist($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -481,13 +481,13 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  bool                       $flag
-     * @throws PHP_CodeCoverage_Exception
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setDisableIgnoredLines($flag)
     {
         if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'boolean'
             );
@@ -499,10 +499,10 @@ class PHP_CodeCoverage
     /**
      * Applies the @covers annotation filtering.
      *
-     * @param  array                                                 $data
-     * @param  mixed                                                 $linesToBeCovered
-     * @param  array                                                 $linesToBeUsed
-     * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
+     * @param  array                                                $data
+     * @param  mixed                                                $linesToBeCovered
+     * @param  array                                                $linesToBeUsed
+     * @throws PHP_CodeCoverage_UnintentionallyCoveredCodeException
      */
     private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
     {
@@ -650,15 +650,15 @@ class PHP_CodeCoverage
     /**
      * Returns the lines of a source file that should be ignored.
      *
-     * @param  string                     $filename
+     * @param  string                                    $filename
      * @return array
-     * @throws PHP_CodeCoverage_Exception
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      * @since  Method available since Release 2.0.0
      */
     private function getLinesToBeIgnored($filename)
     {
         if (!is_string($filename)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'string'
             );
@@ -822,10 +822,10 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  array                                                 $data
-     * @param  array                                                 $linesToBeCovered
-     * @param  array                                                 $linesToBeUsed
-     * @throws PHP_CodeCoverage_Exception_UnintentionallyCoveredCode
+     * @param  array                                                $data
+     * @param  array                                                $linesToBeCovered
+     * @param  array                                                $linesToBeUsed
+     * @throws PHP_CodeCoverage_UnintentionallyCoveredCodeException
      * @since Method available since Release 2.0.0
      */
     private function performUnintentionallyCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
@@ -852,7 +852,7 @@ class PHP_CodeCoverage
         }
 
         if (!empty($message)) {
-            throw new PHP_CodeCoverage_Exception_UnintentionallyCoveredCode(
+            throw new PHP_CodeCoverage_UnintentionallyCoveredCodeException(
                 $message
             );
         }
@@ -901,14 +901,14 @@ class PHP_CodeCoverage
 
     /**
      * @return PHP_CodeCoverage_Driver
-     * @throws PHP_CodeCoverage_Exception
+     * @throws PHP_CodeCoverage_RuntimeException
      */
     private function selectDriver()
     {
         $runtime = new Runtime;
 
         if (!$runtime->canCollectCodeCoverage()) {
-            throw new PHP_CodeCoverage_Exception('No code coverage driver available');
+            throw new PHP_CodeCoverage_RuntimeException('No code coverage driver available');
         }
 
         if ($runtime->isHHVM()) {

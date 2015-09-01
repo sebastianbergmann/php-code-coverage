@@ -24,7 +24,7 @@ class PHP_CodeCoverage_Report_Crap4j
     public function __construct($threshold = 30)
     {
         if (!is_int($threshold)) {
-            throw PHP_CodeCoverage_Util_InvalidArgumentHelper::factory(
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
                 1,
                 'integer'
             );

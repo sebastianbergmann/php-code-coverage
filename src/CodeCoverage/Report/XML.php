@@ -51,18 +51,18 @@ class PHP_CodeCoverage_Report_XML
     {
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
-                throw new PHP_CodeCoverage_Exception(
+                throw new PHP_CodeCoverage_RuntimeException(
                     "'$dir' exists but is not a directory."
                 );
             }
 
             if (!is_writable($dir)) {
-                throw new PHP_CodeCoverage_Exception(
+                throw new PHP_CodeCoverage_RuntimeException(
                     "'$dir' exists but is not writable."
                 );
             }
         } elseif (!@mkdir($dir, 0777, true)) {
-            throw new PHP_CodeCoverage_Exception(
+            throw new PHP_CodeCoverage_RuntimeException(
                 "'$dir' could not be created."
             );
         }
@@ -85,7 +85,7 @@ class PHP_CodeCoverage_Report_XML
                 continue;
             }
 
-            throw new PHP_CodeCoverage_Exception(
+            throw new PHP_CodeCoverage_RuntimeException(
                 'Unknown node type for XML report'
             );
         }

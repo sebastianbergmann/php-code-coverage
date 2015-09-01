@@ -22,13 +22,13 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
     public function __construct()
     {
         if (PHP_SAPI !== 'phpdbg') {
-            throw new PHP_CodeCoverage_Exception(
+            throw new PHP_CodeCoverage_RuntimeException(
                 'This driver requires the PHPDBG SAPI'
             );
         }
 
         if (!function_exists('phpdbg_start_oplog')) {
-            throw new PHP_CodeCoverage_Exception(
+            throw new PHP_CodeCoverage_RuntimeException(
                 'This build of PHPDBG does not support code coverage'
             );
         }

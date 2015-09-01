@@ -9,10 +9,10 @@
  */
 
 /**
- * Exception class for PHP_CodeCoverage component.
+ * Exception interface for PHP_CodeCoverage component.
  *
- * @since Class available since Release 1.1.0
+ * @since Interface available since Release 3.0.0
  */
-class PHP_CodeCoverage_Exception extends RuntimeException
+interface PHP_CodeCoverage_Exception
 {
 }

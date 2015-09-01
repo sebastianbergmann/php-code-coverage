@@ -197,9 +197,8 @@ class PHP_CodeCoverage_Filter
      * When the whitelist is empty (default), blacklisting is used.
      * When the whitelist is not empty, whitelisting is used.
      *
-     * @param  string                     $filename
+     * @param  string $filename
      * @return bool
-     * @throws PHP_CodeCoverage_Exception
      */
     public function isFiltered($filename)
     {

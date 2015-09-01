@@ -13,6 +13,6 @@
  *
  * @since Class available since Release 2.0.0
  */
-class PHP_CodeCoverage_Exception_UnintentionallyCoveredCode extends PHP_CodeCoverage_Exception
+class PHP_CodeCoverage_UnintentionallyCoveredCodeException extends PHP_CodeCoverage_RuntimeException
 {
 }

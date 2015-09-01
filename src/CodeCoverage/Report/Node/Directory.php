@@ -155,12 +155,12 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * Adds a new file.
      *
-     * @param  string                            $name
-     * @param  array                             $coverageData
-     * @param  array                             $testData
-     * @param  bool                              $cacheTokens
+     * @param  string                                    $name
+     * @param  array                                     $coverageData
+     * @param  array                                     $testData
+     * @param  bool                                      $cacheTokens
      * @return PHP_CodeCoverage_Report_Node_File
-     * @throws PHP_CodeCoverage_Exception
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function addFile($name, array $coverageData, array $testData, $cacheTokens)
     {

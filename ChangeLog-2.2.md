@@ -6,6 +6,9 @@ All notable changes of the PHP_CodeCoverage 2.2 release series are documented in
 
 ### Fixed
 
+* Fixed [#368](https://github.com/sebastianbergmann/php-code-coverage/pull/368): Blacklists and whitelists are not merged when merging data sets
+* Fixed [#370](https://github.com/sebastianbergmann/php-code-coverage/issues/370): Confusing statistics for source file that declares a class without methods
+* Fixed [#372](https://github.com/sebastianbergmann/php-code-coverage/pull/372): Nested classes and functions are not handled correctly
 * Fixed [#382](https://github.com/sebastianbergmann/php-code-coverage/issues/382): Crap4J report generates incorrect XML logfile
 
 ## [2.2.2] - 2015-08-04

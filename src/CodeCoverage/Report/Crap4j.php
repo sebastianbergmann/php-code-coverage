@@ -116,7 +116,7 @@ class PHP_CodeCoverage_Report_Crap4j
         if ($fullMethodCount > 0) {
             $crapMethodPercent = $this->roundValue((100 * $fullCrapMethodCount) / $fullMethodCount);
         } else {
-            $crapMethodPercent = '';
+            $crapMethodPercent = 0;
         }
 
         $stats->appendChild($document->createElement('crapMethodPercent', $crapMethodPercent));

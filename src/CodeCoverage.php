@@ -82,6 +82,20 @@ class PHP_CodeCoverage
     private $tests = [];
 
     /**
+     * Determine if the data has been initialized or not
+     *
+     * @var bool
+     */
+    private $isInitialized = false;
+
+    /**
+     * Determine whether we need to check for dead and unused code on each test
+     *
+     * @var bool
+     */
+    private $shouldCheckForDeadAndUnused = true;
+
+    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver           $driver
@@ -121,6 +135,7 @@ class PHP_CodeCoverage
      */
     public function clear()
     {
+        $this->isInitialized = false;
         $this->currentId = null;
         $this->data      = [];
         $this->tests     = [];
@@ -206,9 +221,13 @@ class PHP_CodeCoverage
             $this->clear();
         }
 
+        if ($this->isInitialized === false) {
+            $this->initializeData();
+        }
+
         $this->currentId = $id;
 
-        $this->driver->start();
+        $this->driver->start($this->shouldCheckForDeadAndUnused);
     }
 
     /**
@@ -580,13 +599,7 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            if ($this->processUncoveredFilesFromWhitelist) {
-                $this->processUncoveredFileFromWhitelist(
-                    $uncoveredFile,
-                    $data,
-                    $uncoveredFiles
-                );
-            } else {
+            if (!$this->processUncoveredFilesFromWhitelist) {
                 $data[$uncoveredFile] = [];
 
                 $lines = count(file($uncoveredFile));
@@ -598,31 +611,6 @@ class PHP_CodeCoverage
         }
 
         $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
-    }
-
-    /**
-     * @param string $uncoveredFile
-     * @param array  $data
-     * @param array  $uncoveredFiles
-     */
-    private function processUncoveredFileFromWhitelist($uncoveredFile, array &$data, array $uncoveredFiles)
-    {
-        $this->driver->start();
-        include_once $uncoveredFile;
-        $coverage = $this->driver->stop();
-
-        foreach ($coverage as $file => $fileCoverage) {
-            if (!isset($data[$file]) &&
-                in_array($file, $uncoveredFiles)) {
-                foreach (array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
-                        $fileCoverage[$key] = PHP_CodeCoverage_Driver::LINE_NOT_EXECUTED;
-                    }
-                }
-
-                $data[$file] = $fileCoverage;
-            }
-        }
     }
 
     /**
@@ -895,6 +883,47 @@ class PHP_CodeCoverage
             return new PHP_CodeCoverage_Driver_PHPDBG;
         } else {
             return new PHP_CodeCoverage_Driver_Xdebug;
+        }
+    }
+
+    /**
+     * If we are processing uncovered files from whitelist,
+     * we can initialize the data before we start to speed up the tests
+     */
+    protected function initializeData()
+    {
+        $this->isInitialized = true;
+
+        if ($this->processUncoveredFilesFromWhitelist) {
+
+            $this->shouldCheckForDeadAndUnused = false;
+
+            $this->driver->start(true);
+
+            foreach ($this->filter->getWhitelist() as $file) {
+                if ($this->filter->isFile($file)) {
+                    include_once($file);
+                }
+            }
+
+            $data = [];
+            $coverage = $this->driver->stop();
+
+            foreach ($coverage as $file => $fileCoverage) {
+                if ($this->filter->isFiltered($file)) {
+                    continue;
+                }
+
+                foreach (array_keys($fileCoverage) as $key) {
+                    if ($fileCoverage[$key] == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
+                        $fileCoverage[$key] = PHP_CodeCoverage_Driver::LINE_NOT_EXECUTED;
+                    }
+                }
+
+                $data[$file] = $fileCoverage;
+            }
+
+            $this->append($coverage, 'UNCOVERED_FILES_FROM_WHITELIST');
         }
     }
 }

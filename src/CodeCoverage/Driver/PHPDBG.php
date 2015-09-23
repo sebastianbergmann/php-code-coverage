@@ -37,7 +37,7 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
     /**
      * Start collection of code coverage information.
      */
-    public function start()
+    public function start($determineUnusedAndDead = true)
     {
         phpdbg_start_oplog();
     }

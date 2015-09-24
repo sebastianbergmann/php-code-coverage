@@ -155,12 +155,6 @@ class PHP_CodeCoverage
             $this->addUncoveredFilesFromWhitelist();
         }
 
-        // We need to apply the blacklist filter a second time
-        // when no whitelist is used.
-        if (!$raw && !$this->filter->hasWhitelist()) {
-            $this->applyListsFilter($this->data);
-        }
-
         return $this->data;
     }
 
@@ -340,10 +334,6 @@ class PHP_CodeCoverage
      */
     public function merge(PHP_CodeCoverage $that)
     {
-        $this->filter->setBlacklistedFiles(
-            array_merge($this->filter->getBlacklistedFiles(), $that->filter()->getBlacklistedFiles())
-        );
-
         $this->filter->setWhitelistedFiles(
             array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
         );
@@ -538,7 +528,7 @@ class PHP_CodeCoverage
     }
 
     /**
-     * Applies the blacklist/whitelist filtering.
+     * Applies the whitelist filtering.
      *
      * @param array $data
      */

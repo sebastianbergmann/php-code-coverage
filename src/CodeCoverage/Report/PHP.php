@@ -31,13 +31,11 @@ $coverage->setData(%s);
 $coverage->setTests(%s);
 
 $filter = $coverage->filter();
-$filter->setBlacklistedFiles(%s);
 $filter->setWhitelistedFiles(%s);
 
 return $coverage;',
             var_export($coverage->getData(true), 1),
             var_export($coverage->getTests(), 1),
-            var_export($filter->getBlacklistedFiles(), 1),
             var_export($filter->getWhitelistedFiles(), 1)
         );
 

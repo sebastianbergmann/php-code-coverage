@@ -81,7 +81,10 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                 $data[3]
             ));
 
-        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new PHP_CodeCoverage($stub, $filter);
 
         $coverage->start(
             new BankAccountTest('testBalanceIsInitiallyZero'),
@@ -141,7 +144,10 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                 $data[1]
             ));
 
-        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new PHP_CodeCoverage($stub, $filter);
 
         $coverage->start(
             new BankAccountTest('testBalanceIsInitiallyZero'),
@@ -177,7 +183,10 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                 $data[3]
             ));
 
-        $coverage = new PHP_CodeCoverage($stub, new PHP_CodeCoverage_Filter);
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new PHP_CodeCoverage($stub, $filter);
 
         $coverage->start(
             new BankAccountTest('testBalanceCannotBecomeNegative2')
@@ -242,9 +251,12 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getCoverageForFileWithIgnoredLines()
     {
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_ignore.php');
+
         $coverage = new PHP_CodeCoverage(
             $this->setUpXdebugStubForFileWithIgnoredLines(),
-            new PHP_CodeCoverage_Filter
+            $filter
         );
 
         $coverage->start('FileWithIgnoredLines', true);
@@ -274,9 +286,12 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getCoverageForClassWithAnonymousFunction()
     {
+        $filter = new PHP_CodeCoverage_Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
+
         $coverage = new PHP_CodeCoverage(
             $this->setUpXdebugStubForClassWithAnonymousFunction(),
-            new PHP_CodeCoverage_Filter
+            $filter
         );
 
         $coverage->start('ClassWithAnonymousFunction', true);

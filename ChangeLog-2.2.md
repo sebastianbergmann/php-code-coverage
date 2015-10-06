@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 2.2 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.4] - 2015-10-06
+
+### Fixed
+
+* Fixed [#391](https://github.com/sebastianbergmann/php-code-coverage/pull/391): Missing `</abbr>` tag
+
 ## [2.2.3] - 2015-09-14
 
 ### Fixed
@@ -42,7 +48,8 @@ All notable changes of the PHP_CodeCoverage 2.2 release series are documented in
 
 * The dedicated driver for HHVM, `PHP_CodeCoverage_Driver_HHVM` has been removed
 
-[2.2.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.3...2.2.3
+[2.2.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.3...2.2.4
+[2.2.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.2...2.2.3
 [2.2.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/2.1...2.2.0

@@ -1092,15 +1092,15 @@ class CodeCoverage
                 }
 
                 foreach (array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
-                        $fileCoverage[$key] = PHP_CodeCoverage_Driver::LINE_NOT_EXECUTED;
+                    if ($fileCoverage[$key] == Driver::LINE_EXECUTED) {
+                        $fileCoverage[$key] = Driver::LINE_NOT_EXECUTED;
                     }
                 }
 
                 $data[$file] = $fileCoverage;
             }
 
-            $this->append($coverage, 'UNCOVERED_FILES_FROM_WHITELIST');
+            $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
         }
     }
 }

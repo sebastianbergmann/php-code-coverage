@@ -923,7 +923,7 @@ class PHP_CodeCoverage
                 $data[$file] = $fileCoverage;
             }
 
-            $this->append($coverage, 'UNCOVERED_FILES_FROM_WHITELIST');
+            $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
         }
     }
 }

@@ -42,6 +42,8 @@
             "src/"
         ]
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "extra": {
         "branch-alias": {
             "dev-master": "2.2.x-dev"

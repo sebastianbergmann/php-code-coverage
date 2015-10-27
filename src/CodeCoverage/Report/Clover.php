@@ -44,8 +44,6 @@ class PHP_CodeCoverage_Report_Clover
         unset($coverage);
 
         foreach ($report as $item) {
-            $namespace = 'global';
-
             if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
                 continue;
             }
@@ -53,9 +51,10 @@ class PHP_CodeCoverage_Report_Clover
             $xmlFile = $xmlDocument->createElement('file');
             $xmlFile->setAttribute('name', $item->getPath());
 
-            $classes  = $item->getClassesAndTraits();
-            $coverage = $item->getCoverageData();
-            $lines    = [];
+            $classes   = $item->getClassesAndTraits();
+            $coverage  = $item->getCoverageData();
+            $lines     = [];
+            $namespace = 'global';
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;

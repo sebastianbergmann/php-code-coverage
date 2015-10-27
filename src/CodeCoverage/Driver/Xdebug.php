@@ -68,7 +68,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
                 $numLines = $this->getNumberOfLinesInFile($file);
 
                 foreach (array_keys($data[$file]) as $line) {
-                    if (isset($data[$file][$line]) && $line > $numLines) {
+                    if ($line > $numLines) {
                         unset($data[$file][$line]);
                     }
                 }

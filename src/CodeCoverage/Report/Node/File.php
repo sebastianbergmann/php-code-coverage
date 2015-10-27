@@ -390,7 +390,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber])) {
+            if (isset($this->coverageData['lines'][$lineNumber])) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
                 }
@@ -409,7 +409,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
                 $this->numExecutableLines++;
 
-                if (count($this->coverageData[$lineNumber]) > 0) {
+                if (count($this->coverageData['lines'][$lineNumber]) > 0) {
                     if (isset($currentClass)) {
                         $currentClass['executedLines']++;
                     }

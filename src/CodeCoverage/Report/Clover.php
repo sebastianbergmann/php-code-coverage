@@ -78,8 +78,8 @@ class PHP_CodeCoverage_Report_Clover
                     for ($i  = $method['startLine'];
                          $i <= $method['endLine'];
                          $i++) {
-                        if (isset($coverage[$i]) && ($coverage[$i] !== null)) {
-                            $methodCount = max($methodCount, count($coverage[$i]));
+                        if (isset($coverage['lines'][$i]) && ($coverage['lines'][$i] !== null)) {
+                            $methodCount = max($methodCount, count($coverage['lines'][$i]));
                         }
                     }
 
@@ -157,7 +157,7 @@ class PHP_CodeCoverage_Report_Clover
                 $xmlClass->appendChild($xmlMetrics);
             }
 
-            foreach ($coverage as $line => $data) {
+            foreach ($coverage['lines'] as $line => $data) {
                 if ($data === null || isset($lines[$line])) {
                     continue;
                 }

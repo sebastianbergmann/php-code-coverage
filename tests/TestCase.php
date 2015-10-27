@@ -31,48 +31,56 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
         return [
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
-                    8  => 1,
-                    9  => -2,
-                    13 => -1,
-                    14 => -1,
-                    15 => -1,
-                    16 => -1,
-                    18 => -1,
-                    22 => -1,
-                    24 => -1,
-                    25 => -2,
-                    29 => -1,
-                    31 => -1,
-                    32 => -2
+                    'lines' => [
+                        8  => 1,
+                        9  => -2,
+                        13 => -1,
+                        14 => -1,
+                        15 => -1,
+                        16 => -1,
+                        18 => -1,
+                        22 => -1,
+                        24 => -1,
+                        25 => -2,
+                        29 => -1,
+                        31 => -1,
+                        32 => -2,
+                    ],
                 ]
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
-                    8  => 1,
-                    13 => 1,
-                    16 => 1,
-                    29 => 1,
+                    'lines' => [
+                        8  => 1,
+                        13 => 1,
+                        16 => 1,
+                        29 => 1,
+                    ],
                 ]
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
-                    8  => 1,
-                    13 => 1,
-                    16 => 1,
-                    22 => 1,
+                    'lines' => [
+                        8  => 1,
+                        13 => 1,
+                        16 => 1,
+                        22 => 1,
+                    ],
                 ]
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
-                    8  => 1,
-                    13 => 1,
-                    14 => 1,
-                    15 => 1,
-                    18 => 1,
-                    22 => 1,
-                    24 => 1,
-                    29 => 1,
-                    31 => 1,
+                    'lines' => [
+                        8  => 1,
+                        13 => 1,
+                        14 => 1,
+                        15 => 1,
+                        18 => 1,
+                        22 => 1,
+                        24 => 1,
+                        29 => 1,
+                        31 => 1,
+                    ],
                 ]
             ]
         ];
@@ -231,32 +239,34 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
     {
         return [
             TEST_FILES_PATH . 'BankAccount.php' => [
-                8 => [
-                    0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
+                'lines' => [
+                    8 => [
+                        0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                    ],
+                    9  => null,
+                    13 => [],
+                    14 => [],
+                    15 => [],
+                    16 => [],
+                    18 => [],
+                    22 => [
+                        0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                    ],
+                    24 => [
+                        0 => 'BankAccountTest::testDepositWithdrawMoney',
+                    ],
+                    25 => null,
+                    29 => [
+                        0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                    ],
+                    31 => [
+                        0 => 'BankAccountTest::testDepositWithdrawMoney',
+                    ],
+                    32 => null,
                 ],
-                9  => null,
-                13 => [],
-                14 => [],
-                15 => [],
-                16 => [],
-                18 => [],
-                22 => [
-                    0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
-                ],
-                24 => [
-                    0 => 'BankAccountTest::testDepositWithdrawMoney',
-                ],
-                25 => null,
-                29 => [
-                    0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
-                ],
-                31 => [
-                    0 => 'BankAccountTest::testDepositWithdrawMoney'
-                ],
-                32 => null
             ]
         ];
     }
@@ -285,10 +295,12 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 [
                     TEST_FILES_PATH . 'source_with_ignore.php' => [
-                        2 => 1,
-                        4 => -1,
-                        6 => -1,
-                        7 => 1
+                        'lines' => [
+                            2 => 1,
+                            4 => -1,
+                            6 => -1,
+                            7 => 1,
+                        ],
                     ]
                 ]
             ));
@@ -320,15 +332,17 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 [
                     TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
-                        7  => 1,
-                        9  => 1,
-                        10 => -1,
-                        11 => 1,
-                        12 => 1,
-                        13 => 1,
-                        14 => 1,
-                        17 => 1,
-                        18 => 1
+                        'lines' => [
+                            7  => 1,
+                            9  => 1,
+                            10 => -1,
+                            11 => 1,
+                            12 => 1,
+                            13 => 1,
+                            14 => 1,
+                            17 => 1,
+                            18 => 1,
+                        ],
                     ]
                 ]
             ));

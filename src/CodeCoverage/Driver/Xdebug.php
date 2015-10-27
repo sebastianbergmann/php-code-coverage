@@ -17,19 +17,32 @@
 class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
 {
     /**
-     * Constructor.
+     * @var int
      */
-    public function __construct()
+    private $flags;
+
+    /**
+     * @param bool $pathCoverage
+     */
+    public function __construct($pathCoverage = true)
     {
-        if (!extension_loaded('xdebug')) {
-            throw new PHP_CodeCoverage_RuntimeException('This driver requires Xdebug');
+        if (!extension_loaded('xdebug') ||
+            version_compare(phpversion('xdebug'), '2.3.2', '<')) {
+            throw new PHP_CodeCoverage_RuntimeException(
+                'This driver requires Xdebug 2.3.2 (or newer)'
+            );
         }
 
-        if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
-            !ini_get('xdebug.coverage_enable')) {
+        if (!ini_get('xdebug.coverage_enable')) {
             throw new PHP_CodeCoverage_RuntimeException(
                 'xdebug.coverage_enable=On has to be set in php.ini'
             );
+        }
+
+        $this->flags = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
+
+        if ($pathCoverage) {
+            $this->flags |= XDEBUG_CC_BRANCH_CHECK;
         }
     }
 
@@ -38,7 +51,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function start()
     {
-        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        xdebug_start_code_coverage($this->flags);
     }
 
     /**
@@ -62,14 +75,18 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     private function cleanup(array $data)
     {
         foreach (array_keys($data) as $file) {
-            unset($data[$file][0]);
+            if (!isset($data[$file]['lines'])) {
+                $data[$file] = ['lines' => $data[$file]];
+            }
+
+            unset($data[$file]['lines'][0]);
 
             if ($file != 'xdebug://debug-eval' && file_exists($file)) {
                 $numLines = $this->getNumberOfLinesInFile($file);
 
-                foreach (array_keys($data[$file]) as $line) {
+                foreach (array_keys($data[$file]['lines']) as $line) {
                     if ($line > $numLines) {
-                        unset($data[$file][$line]);
+                        unset($data[$file]['lines'][$line]);
                     }
                 }
             }

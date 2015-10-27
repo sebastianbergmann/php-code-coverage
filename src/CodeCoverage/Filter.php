@@ -87,9 +87,7 @@ class PHP_CodeCoverage_Filter
     {
         $filename = realpath($filename);
 
-        if (isset($this->whitelistedFiles[$filename])) {
-            unset($this->whitelistedFiles[$filename]);
-        }
+        unset($this->whitelistedFiles[$filename]);
     }
 
     /**

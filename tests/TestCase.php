@@ -28,6 +28,153 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 
     protected function getXdebugDataForBankAccount()
     {
+        $bankAccountFunctions = [
+            'BankAccount->depositMoney' => [
+                'branches' => [
+                    0 => [
+                        'op_start'   => 0,
+                        'op_end'     => 20,
+                        'line_start' => 20,
+                        'line_end'   => 25,
+                        'hit'        => 0,
+                        'out'        => [
+                        ],
+                        'out_hit' => [
+                        ],
+                    ],
+                ],
+                'paths' => [
+                    0 => [
+                        'path' => [
+                            0 => 0,
+                        ],
+                        'hit' => 0,
+                    ],
+                ],
+            ],
+            'BankAccount->getBalance' => [
+                'branches' => [
+                    0 => [
+                        'op_start'   => 0,
+                        'op_end'     => 5,
+                        'line_start' => 6,
+                        'line_end'   => 9,
+                        'hit'        => 1,
+                        'out'        => [
+                        ],
+                        'out_hit' => [
+                        ],
+                    ],
+                ],
+                'paths' => [
+                    0 => [
+                        'path' => [
+                            0 => 0,
+                        ],
+                        'hit' => 1,
+                    ],
+                ],
+            ],
+            'BankAccount->withdrawMoney' => [
+                'branches' => [
+                    0 => [
+                        'op_start'   => 0,
+                        'op_end'     => 20,
+                        'line_start' => 27,
+                        'line_end'   => 32,
+                        'hit'        => 0,
+                        'out'        => [
+                        ],
+                        'out_hit' => [
+                        ],
+                    ],
+                ],
+                'paths' => [
+                    0 => [
+                        'path' => [
+                            0 => 0,
+                        ],
+                        'hit' => 0,
+                    ],
+                ],
+            ],
+            'BankAccount->setBalance' => [
+                'branches' => [
+                    0 => [
+                        'op_start'   => 0,
+                        'op_end'     => 4,
+                        'line_start' => 11,
+                        'line_end'   => 13,
+                        'hit'        => 0,
+                        'out'        => [
+                            0 => 5,
+                            1 => 9,
+                        ],
+                        'out_hit' => [
+                            0 => 0,
+                            1 => 0,
+                        ],
+                    ],
+                    5 => [
+                        'op_start'   => 5,
+                        'op_end'     => 8,
+                        'line_start' => 14,
+                        'line_end'   => 15,
+                        'hit'        => 0,
+                        'out'        => [
+                            0 => 16,
+                        ],
+                        'out_hit' => [
+                            0 => 0,
+                        ],
+                    ],
+                    9 => [
+                        'op_start'   => 9,
+                        'op_end'     => 15,
+                        'line_start' => 16,
+                        'line_end'   => 16,
+                        'hit'        => 0,
+                        'out'        => [
+                            0 => 2147483645,
+                        ],
+                        'out_hit' => [
+                            0 => 0,
+                        ],
+                    ],
+                    16 => [
+                        'op_start'   => 16,
+                        'op_end'     => 17,
+                        'line_start' => 18,
+                        'line_end'   => 18,
+                        'hit'        => 0,
+                        'out'        => [
+                            0 => 2147483645,
+                        ],
+                        'out_hit' => [
+                            0 => 0,
+                        ],
+                    ],
+                ],
+                'paths' => [
+                    0 => [
+                        'path' => [
+                            0 => 0,
+                            1 => 5,
+                            2 => 16,
+                        ],
+                        'hit' => 0,
+                    ],
+                    1 => [
+                        'path' => [
+                            0 => 0,
+                            1 => 9,
+                        ],
+                        'hit' => 0,
+                    ],
+                ],
+            ],
+        ];
+
         return [
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
@@ -46,6 +193,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         31 => -1,
                         32 => -2,
                     ],
+                    'functions' => $bankAccountFunctions,
                 ]
             ],
             [
@@ -56,6 +204,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         16 => 1,
                         29 => 1,
                     ],
+                    'functions' => $bankAccountFunctions,
                 ]
             ],
             [
@@ -66,6 +215,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         16 => 1,
                         22 => 1,
                     ],
+                    'functions' => $bankAccountFunctions,
                 ]
             ],
             [
@@ -81,6 +231,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         29 => 1,
                         31 => 1,
                     ],
+                    'functions' => $bankAccountFunctions,
                 ]
             ]
         ];
@@ -267,6 +418,94 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                     ],
                     32 => null,
                 ],
+                'branches' => [
+                    'BankAccount->depositMoney' => [
+                        0 => [
+                            'line_start' => 20,
+                            'line_end'   => 25,
+                            'tests'      => [],
+                        ],
+                    ],
+                    'BankAccount->getBalance' => [
+                        0 => [
+                            'line_start' => 6,
+                            'line_end'   => 9,
+                            'tests'      => [],
+                        ],
+                    ],
+                    'BankAccount->withdrawMoney' => [
+                        0 => [
+                            'line_start' => 27,
+                            'line_end'   => 32,
+                            'tests'      => [],
+                        ],
+                    ],
+                    'BankAccount->setBalance' => [
+                        0 => [
+                            'line_start' => 11,
+                            'line_end'   => 13,
+                            'tests'      => [],
+                        ],
+                        1 => [
+                            'line_start' => 14,
+                            'line_end'   => 15,
+                            'tests'      => [],
+                        ],
+                        2 => [
+                            'line_start' => 16,
+                            'line_end'   => 16,
+                            'tests'      => [],
+                        ],
+                        3 => [
+                            'line_start' => 18,
+                            'line_end'   => 18,
+                            'tests'      => [],
+                        ],
+                    ],
+                ],
+                'paths' => [
+                    'BankAccount->depositMoney' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'tests' => [],
+                        ],
+                    ],
+                    'BankAccount->getBalance' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'tests' => [],
+                        ],
+                    ],
+                    'BankAccount->withdrawMoney' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'tests' => [],
+                        ],
+                    ],
+                    'BankAccount->setBalance' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                                1 => 5,
+                                2 => 16,
+                            ],
+                            'tests' => [],
+                        ],
+                        1 => [
+                            'path' => [
+                                0 => 0,
+                                1 => 9,
+                            ],
+                            'tests' => [],
+                        ],
+                    ],
+                ],
             ]
         ];
     }
@@ -300,6 +539,83 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             4 => -1,
                             6 => -1,
                             7 => 1,
+                        ],
+                        'functions' => [
+                            'Bar->foo' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 2,
+                                        'line_start' => 23,
+                                        'line_end'   => 25,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
+                            'Foo->bar' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 2,
+                                        'line_start' => 13,
+                                        'line_end'   => 15,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
+                            'baz' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 5,
+                                        'line_start' => 28,
+                                        'line_end'   => 31,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ]
@@ -342,6 +658,58 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             14 => 1,
                             17 => 1,
                             18 => 1,
+                        ],
+                        'functions' => [
+                            'CoveredClassWithAnonymousFunctionInStaticMethod->runAnonymous' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 16,
+                                        'line_start' => 5,
+                                        'line_end'   => 18,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
+                            '{closure:' . TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php:11-13}' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 12,
+                                        'line_start' => 11,
+                                        'line_end'   => 13,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ]

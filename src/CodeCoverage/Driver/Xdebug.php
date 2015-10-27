@@ -78,6 +78,9 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
             if (!isset($data[$file]['lines'])) {
                 $data[$file] = ['lines' => $data[$file]];
             }
+            if (!isset($data[$file]['functions'])) {
+                $data[$file]['functions'] = [];
+            }
 
             unset($data[$file]['lines'][0]);
 

@@ -350,7 +350,7 @@ class PHP_CodeCoverage
         foreach ($that->getData() as $file => $fileData) {
             if (!isset($this->data[$file])) {
                 if (!$that->filter()->isFiltered($file)) {
-                    $this->data[$file] = ['lines' => $fileData['lines']];
+                    $this->data[$file] = $fileData;
                 }
 
                 continue;
@@ -500,7 +500,10 @@ class PHP_CodeCoverage
     {
         if ($linesToBeCovered === false ||
             ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
-            $data = ['lines' => []];
+            $data = [
+                'lines'     => [],
+                'functions' => [],
+            ];
 
             return;
         }
@@ -626,7 +629,10 @@ class PHP_CodeCoverage
                     $uncoveredFiles
                 );
             } else {
-                $data[$uncoveredFile] = ['lines' => []];
+                $data[$uncoveredFile] = [
+                    'lines'     => [],
+                    'functions' => [],
+                ];
 
                 $lines = count(file($uncoveredFile));
 
@@ -659,7 +665,7 @@ class PHP_CodeCoverage
                     }
                 }
 
-                $data[$file] = ['lines' => $fileCoverage];
+                $data[$file] = $fileCoverage;
             }
         }
     }

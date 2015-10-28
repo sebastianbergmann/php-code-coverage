@@ -21,7 +21,7 @@ class PHP_CodeCoverage_InvalidArgumentException extends InvalidArgumentException
      */
     public static function create($argument, $type, $value = null)
     {
-        $stack = debug_backtrace(PHP_VERSION_ID < 50306 ? false : 0);
+        $stack = debug_backtrace(0);
 
         return new self(
             sprintf(

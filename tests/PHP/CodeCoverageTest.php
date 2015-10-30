@@ -217,28 +217,6 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers PHP_CodeCoverage::setMapTestClassNameToCoveredClassName
-     */
-    public function testSetMapTestClassNameToCoveredClassName()
-    {
-        $this->coverage->setMapTestClassNameToCoveredClassName(true);
-        $this->assertAttributeEquals(
-            true,
-            'mapTestClassNameToCoveredClassName',
-            $this->coverage
-        );
-    }
-
-    /**
-     * @covers            PHP_CodeCoverage::setMapTestClassNameToCoveredClassName
-     * @expectedException PHP_CodeCoverage_Exception
-     */
-    public function testSetMapTestClassNameToCoveredClassNameThrowsExceptionForInvalidArgument()
-    {
-        $this->coverage->setMapTestClassNameToCoveredClassName(null);
-    }
-
-    /**
      * @covers PHP_CodeCoverage::clear
      */
     public function testClear()

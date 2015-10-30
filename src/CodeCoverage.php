@@ -45,11 +45,6 @@ class PHP_CodeCoverage
     /**
      * @var bool
      */
-    private $mapTestClassNameToCoveredClassName = false;
-
-    /**
-     * @var bool
-     */
     private $addUncoveredFilesFromWhitelist = true;
 
     /**
@@ -423,19 +418,12 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @deprecated
      * @param  bool                                      $flag
      * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setMapTestClassNameToCoveredClassName($flag)
     {
-        if (!is_bool($flag)) {
-            throw PHP_CodeCoverage_InvalidArgumentException::create(
-                1,
-                'boolean'
-            );
-        }
-
-        $this->mapTestClassNameToCoveredClassName = $flag;
     }
 
     /**

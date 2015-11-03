@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'TestCase.php';
+
 /**
  * Tests for the PHP_CodeCoverage_Util class.
  *

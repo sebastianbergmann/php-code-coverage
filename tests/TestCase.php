@@ -8,6 +8,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('TEST_FILES_PATH')) {
+    define('TEST_FILES_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR);
+}
+
 /**
  * Abstract base class for test case classes.
  *
@@ -70,6 +74,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
     protected function getCoverageForBankAccount()
     {
         $data = $this->getXdebugDataForBankAccount();
+        require_once TEST_FILES_PATH . 'BankAccountTest.php';
 
         $stub = $this->getMock('PHP_CodeCoverage_Driver_Xdebug');
         $stub->expects($this->any())

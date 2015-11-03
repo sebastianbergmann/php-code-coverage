@@ -8,13 +8,7 @@
  * file that was distributed with this source code.
  */
 
-if (!defined('TEST_FILES_PATH')) {
-    define(
-        'TEST_FILES_PATH',
-        dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .
-        '_files' . DIRECTORY_SEPARATOR
-    );
-}
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'TestCase.php';
 
 /**
  * Tests for the PHP_CodeCoverage_Filter class.

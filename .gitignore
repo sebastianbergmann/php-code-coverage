@@ -5,6 +5,7 @@ build/logs
 build/pdepend
 cache.properties
 phpunit.xml
+/tests/_files/tmp
 /vendor
 /composer.lock
 /composer.phar

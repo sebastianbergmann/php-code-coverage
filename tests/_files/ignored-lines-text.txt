@@ -1,0 +1,10 @@
+
+
+Code Coverage Report:   
+  %s
+                        
+ Summary:               
+  Classes: 100.00% (2/2)
+  Methods:        (0/0) 
+  Lines:   50.00% (1/2) 
+

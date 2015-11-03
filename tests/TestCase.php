@@ -19,6 +19,13 @@ if (!defined('TEST_FILES_PATH')) {
  */
 abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
+    static protected $TEST_TMP_PATH;
+
+    public static function setUpBeforeClass()
+    {
+        self::$TEST_TMP_PATH = TEST_FILES_PATH . 'tmp';
+    }
+
     protected function getXdebugDataForBankAccount()
     {
         return [

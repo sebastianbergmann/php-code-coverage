@@ -558,18 +558,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             $this->endLines[$class['endLine']]     = &$this->classes[$className];
 
             foreach ($class['methods'] as $methodName => $method) {
-                $this->classes[$className]['methods'][$methodName] = [
-                    'methodName'      => $methodName,
-                    'signature'       => $method['signature'],
-                    'startLine'       => $method['startLine'],
-                    'endLine'         => $method['endLine'],
-                    'executableLines' => 0,
-                    'executedLines'   => 0,
-                    'ccn'             => $method['ccn'],
-                    'coverage'        => 0,
-                    'crap'            => 0,
-                    'link'            => $link . $method['startLine']
-                ];
+                $this->classes[$className]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->classes[$className]['methods'][$methodName];
@@ -605,18 +594,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             $this->endLines[$trait['endLine']]     = &$this->traits[$traitName];
 
             foreach ($trait['methods'] as $methodName => $method) {
-                $this->traits[$traitName]['methods'][$methodName] = [
-                    'methodName'      => $methodName,
-                    'signature'       => $method['signature'],
-                    'startLine'       => $method['startLine'],
-                    'endLine'         => $method['endLine'],
-                    'executableLines' => 0,
-                    'executedLines'   => 0,
-                    'ccn'             => $method['ccn'],
-                    'coverage'        => 0,
-                    'crap'            => 0,
-                    'link'            => $link . $method['startLine']
-                ];
+                $this->traits[$traitName]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
                 $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->traits[$traitName]['methods'][$methodName];
@@ -675,5 +653,28 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             '%01.2F',
             pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn
         );
+    }
+
+    /**
+     * @param string $methodName
+     * @param array $method
+     * @param string $link
+     *
+     * @return array
+     */
+    private function newMethod($methodName, array $method, $link)
+    {
+        return [
+            'methodName' => $methodName,
+            'signature' => $method['signature'],
+            'startLine' => $method['startLine'],
+            'endLine' => $method['endLine'],
+            'executableLines' => 0,
+            'executedLines' => 0,
+            'ccn' => $method['ccn'],
+            'coverage' => 0,
+            'crap' => 0,
+            'link' => $link . $method['startLine']
+        ];
     }
 }

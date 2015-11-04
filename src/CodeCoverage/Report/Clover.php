@@ -135,8 +135,8 @@ class PHP_CodeCoverage_Report_Clover
                 $xmlMetrics->setAttribute('complexity', $class['ccn']);
                 $xmlMetrics->setAttribute('methods', $classMethods);
                 $xmlMetrics->setAttribute('coveredmethods', $coveredMethods);
-                $xmlMetrics->setAttribute('conditionals', 0);
-                $xmlMetrics->setAttribute('coveredconditionals', 0);
+                $xmlMetrics->setAttribute('conditionals', $class['executablePaths']);
+                $xmlMetrics->setAttribute('coveredconditionals', $class['executedPaths']);
                 $xmlMetrics->setAttribute('statements', $classStatements);
                 $xmlMetrics->setAttribute(
                     'coveredstatements',
@@ -205,8 +205,8 @@ class PHP_CodeCoverage_Report_Clover
                 'coveredmethods',
                 $item->getNumTestedMethods()
             );
-            $xmlMetrics->setAttribute('conditionals', 0);
-            $xmlMetrics->setAttribute('coveredconditionals', 0);
+            $xmlMetrics->setAttribute('conditionals', $item->getNumExecutablePaths());
+            $xmlMetrics->setAttribute('coveredconditionals', $item->getNumExecutedPaths());
             $xmlMetrics->setAttribute(
                 'statements',
                 $item->getNumExecutableLines()
@@ -258,8 +258,8 @@ class PHP_CodeCoverage_Report_Clover
             'coveredmethods',
             $report->getNumTestedMethods()
         );
-        $xmlMetrics->setAttribute('conditionals', 0);
-        $xmlMetrics->setAttribute('coveredconditionals', 0);
+        $xmlMetrics->setAttribute('conditionals', $report->getNumExecutablePaths());
+        $xmlMetrics->setAttribute('coveredconditionals', $report->getNumExecutedPaths());
         $xmlMetrics->setAttribute(
             'statements',
             $report->getNumExecutableLines()

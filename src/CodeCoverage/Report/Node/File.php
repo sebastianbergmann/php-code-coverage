@@ -657,7 +657,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
     /**
      * @param string $methodName
-     * @param array $method
+     * @param array  $method
      * @param string $link
      *
      * @return array
@@ -665,16 +665,17 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     private function newMethod($methodName, array $method, $link)
     {
         return [
-            'methodName' => $methodName,
-            'signature' => $method['signature'],
-            'startLine' => $method['startLine'],
-            'endLine' => $method['endLine'],
+            'methodName'      => $methodName,
+            'visibility'      => $method['visibility'],
+            'signature'       => $method['signature'],
+            'startLine'       => $method['startLine'],
+            'endLine'         => $method['endLine'],
             'executableLines' => 0,
-            'executedLines' => 0,
-            'ccn' => $method['ccn'],
-            'coverage' => 0,
-            'crap' => 0,
-            'link' => $link . $method['startLine']
+            'executedLines'   => 0,
+            'ccn'             => $method['ccn'],
+            'coverage'        => 0,
+            'crap'            => 0,
+            'link'            => $link . $method['startLine'],
         ];
     }
 }

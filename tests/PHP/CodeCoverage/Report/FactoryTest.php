@@ -61,7 +61,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'coverage'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#6',
-                            'methodName'      => 'getBalance'
+                            'methodName'      => 'getBalance',
+                            'visibility'      => 'public',
                         ],
                         'setBalance' => [
                             'signature'       => 'setBalance($balance)',
@@ -73,7 +74,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'coverage'        => 0,
                             'crap'            => 6,
                             'link'            => 'BankAccount.php.html#11',
-                            'methodName'      => 'setBalance'
+                            'methodName'      => 'setBalance',
+                            'visibility'      => 'protected',
                         ],
                         'depositMoney' => [
                             'signature'       => 'depositMoney($balance)',
@@ -85,7 +87,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'coverage'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#20',
-                            'methodName'      => 'depositMoney'
+                            'methodName'      => 'depositMoney',
+                            'visibility'      => 'public',
                         ],
                         'withdrawMoney' => [
                             'signature'       => 'withdrawMoney($balance)',
@@ -97,7 +100,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                             'coverage'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#27',
-                            'methodName'      => 'withdrawMoney'
+                            'methodName'      => 'withdrawMoney',
+                            'visibility'      => 'public',
                         ],
                     ],
                     'startLine'       => 2,

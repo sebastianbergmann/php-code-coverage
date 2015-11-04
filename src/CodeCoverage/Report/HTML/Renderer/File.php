@@ -90,6 +90,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
                 'numExecutedLines'             => $node->getNumExecutedLines(),
                 'numExecutableLines'           => $node->getNumExecutableLines(),
+                'pathsExecutedPercent'         => $node->getPathExecutedPercent(false),
+                'pathsExecutedPercentAsString' => $node->getPathExecutedPercent(),
+                'numExecutedPaths'             => $node->getNumExecutedPaths(),
+                'numExecutablePaths'           => $node->getNumExecutablePaths(),
                 'testedMethodsPercent'         => $node->getTestedMethodsPercent(false),
                 'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
                 'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
@@ -162,6 +166,18 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     ),
                     'numExecutedLines'             => $item['executedLines'],
                     'numExecutableLines'           => $item['executableLines'],
+                    'pathsExecutedPercent'         => PHP_CodeCoverage_Util::percent(
+                        $item['executedPaths'],
+                        $item['executablePaths'],
+                        false
+                    ),
+                    'pathsExecutedPercentAsString' => PHP_CodeCoverage_Util::percent(
+                        $item['executedPaths'],
+                        $item['executablePaths'],
+                        true
+                    ),
+                    'numExecutedPaths'             => $item['executedPaths'],
+                    'numExecutablePaths'           => $item['executablePaths'],
                     'testedMethodsPercent'         => PHP_CodeCoverage_Util::percent(
                         $numTestedMethods,
                         $numMethods,
@@ -253,6 +269,18 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 ),
                 'numExecutedLines'             => $item['executedLines'],
                 'numExecutableLines'           => $item['executableLines'],
+                'pathsExecutedPercent'         => PHP_CodeCoverage_Util::percent(
+                    $item['executedPaths'],
+                    $item['executablePaths'],
+                    false
+                ),
+                'pathsExecutedPercentAsString' => PHP_CodeCoverage_Util::percent(
+                    $item['executedPaths'],
+                    $item['executablePaths'],
+                    true
+                ),
+                'numExecutedPaths'             => $item['executedPaths'],
+                'numExecutablePaths'           => $item['executablePaths'],
                 'testedMethodsPercent'         => PHP_CodeCoverage_Util::percent(
                     $numTestedItems,
                     1,

@@ -694,7 +694,18 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected function calcAndApplyClassAggregate(&$classOrTrait, $classOrTraitName)
     {
         foreach ($classOrTrait['methods'] as &$method) {
-            $methodCoveragePath = $classOrTraitName . '->' . $method['methodName'];
+            if ($method['methodName'] === 'anonymous function') {
+                // Locate index
+                $methodCoveragePath = $method['methodName'];
+                foreach ($this->coverageData['branches'] as $index => $branch) {
+                    if ($method['startLine'] === $branch[0]['line_start']) {
+                        $methodCoveragePath = $index;
+                    }
+                }
+
+            } else {
+                $methodCoveragePath = $classOrTraitName . '->' . $method['methodName'];
+            }
             if (isset($this->coverageData['paths'][$methodCoveragePath])) {
                 $methodPaths = $this->coverageData['paths'][$methodCoveragePath];
                 $this->calcPathsAggregate($methodPaths, $numExecutablePaths, $numExecutedPaths);

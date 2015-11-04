@@ -78,7 +78,7 @@ class PHP_CodeCoverage_Report_Clover
                     for ($i  = $method['startLine'];
                          $i <= $method['endLine'];
                          $i++) {
-                        if (isset($coverage['lines'][$i]) && ($coverage['lines'][$i] !== null)) {
+                        if (isset($coverage['lines'][$i])) {
                             $methodCount = max($methodCount, count($coverage['lines'][$i]));
                         }
                     }

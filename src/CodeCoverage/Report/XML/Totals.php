@@ -26,6 +26,11 @@ class PHP_CodeCoverage_Report_XML_Totals
     /**
      * @var DOMElement
      */
+    private $pathsNode;
+
+    /**
+     * @var DOMElement
+     */
     private $methodsNode;
 
     /**
@@ -53,6 +58,11 @@ class PHP_CodeCoverage_Report_XML_Totals
             'lines'
         );
 
+        $this->pathsNode = $dom->createElementNS(
+            'http://schema.phpunit.de/coverage/1.0',
+            'paths'
+        );
+
         $this->methodsNode = $dom->createElementNS(
             'http://schema.phpunit.de/coverage/1.0',
             'methods'
@@ -74,6 +84,7 @@ class PHP_CodeCoverage_Report_XML_Totals
         );
 
         $container->appendChild($this->linesNode);
+        $container->appendChild($this->pathsNode);
         $container->appendChild($this->methodsNode);
         $container->appendChild($this->functionsNode);
         $container->appendChild($this->classesNode);
@@ -95,6 +106,16 @@ class PHP_CodeCoverage_Report_XML_Totals
         $this->linesNode->setAttribute(
             'percent',
             PHP_CodeCoverage_Util::percent($executed, $executable, true)
+        );
+    }
+
+    public function setNumPaths($count, $tested)
+    {
+        $this->pathsNode->setAttribute('count', $count);
+        $this->pathsNode->setAttribute('tested', $tested);
+        $this->pathsNode->setAttribute(
+            'percent',
+            PHP_CodeCoverage_Util::percent($tested, $count, true)
         );
     }
 

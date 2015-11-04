@@ -7,4 +7,5 @@ Code Coverage Report:
   Classes: 100.00% (2/2)
   Methods:        (0/0) 
   Lines:   50.00% (1/2) 
+  Paths:    0.00% (0/3) 
 

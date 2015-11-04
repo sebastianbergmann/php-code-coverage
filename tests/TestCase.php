@@ -469,7 +469,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             'path' => [
                                 0 => 0,
                             ],
-                            'tests' => [],
+                            'hit' => 0,
                         ],
                     ],
                     'BankAccount->getBalance' => [
@@ -477,7 +477,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             'path' => [
                                 0 => 0,
                             ],
-                            'tests' => [],
+                            'hit' => 1,
                         ],
                     ],
                     'BankAccount->withdrawMoney' => [
@@ -485,7 +485,7 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             'path' => [
                                 0 => 0,
                             ],
-                            'tests' => [],
+                            'hit' => 0,
                         ],
                     ],
                     'BankAccount->setBalance' => [
@@ -495,14 +495,14 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                                 1 => 5,
                                 2 => 16,
                             ],
-                            'tests' => [],
+                            'hit' => 0,
                         ],
                         1 => [
                             'path' => [
                                 0 => 0,
                                 1 => 9,
                             ],
-                            'tests' => [],
+                            'hit' => 0,
                         ],
                     ],
                 ],

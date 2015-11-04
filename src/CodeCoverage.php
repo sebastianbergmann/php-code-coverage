@@ -591,10 +591,7 @@ class PHP_CodeCoverage
                         }
 
                         foreach ($functionData['paths'] as $path) {
-                            $this->data[$file]['paths'][$functionName][] = [
-                                'path'  => $path['path'],
-                                'tests' => []
-                            ];
+                            $this->data[$file]['paths'][$functionName][] = $path;
                         }
                     }
                 }

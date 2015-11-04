@@ -36,6 +36,16 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected $numExecutedLines = 0;
 
     /**
+     * @var int
+     */
+    protected $numExecutablePaths = 0;
+
+    /**
+     * @var int
+     */
+    protected $numExecutedPaths = 0;
+
+    /**
      * @var array
      */
     protected $classes = [];
@@ -211,6 +221,26 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     public function getNumExecutedLines()
     {
         return $this->numExecutedLines;
+    }
+
+    /**
+     * Returns the number of executable paths.
+     *
+     * @return int
+     */
+    public function getNumExecutablePaths()
+    {
+        return $this->numExecutablePaths;
+    }
+
+    /**
+     * Returns the number of executed paths.
+     *
+     * @return int
+     */
+    public function getNumExecutedPaths()
+    {
+        return $this->numExecutedPaths;
     }
 
     /**
@@ -461,72 +491,25 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             }
         }
 
+        foreach ($this->functions as &$function) {
+            if (isset($this->coverageData['paths'][$function['functionName']])) {
+                $functionPaths = $this->coverageData['paths'][$function['functionName']];
+                $this->calcPathsAggregate($functionPaths, $numExecutablePaths, $numExecutedPaths);
+
+                $function['executablePaths'] = $numExecutablePaths;
+                $this->numExecutablePaths   += $numExecutablePaths;
+
+                $function['executedPaths'] = $numExecutedPaths;
+                $this->numExecutedPaths   += $numExecutedPaths;
+            }
+        }
+
         foreach ($this->traits as &$trait) {
-            foreach ($trait['methods'] as &$method) {
-                if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
-                } else {
-                    $method['coverage'] = 100;
-                }
-
-                $method['crap'] = $this->crap(
-                    $method['ccn'],
-                    $method['coverage']
-                );
-
-                $trait['ccn'] += $method['ccn'];
-            }
-
-            if ($trait['executableLines'] > 0) {
-                $trait['coverage'] = ($trait['executedLines'] /
-                        $trait['executableLines']) * 100;
-            } else {
-                $trait['coverage'] = 100;
-            }
-
-            if ($trait['coverage'] == 100) {
-                $this->numTestedClasses++;
-            }
-
-            $trait['crap'] = $this->crap(
-                $trait['ccn'],
-                $trait['coverage']
-            );
+            $this->calcAndApplyClassAggregate($trait, $trait['traitName']);
         }
 
         foreach ($this->classes as &$class) {
-            foreach ($class['methods'] as &$method) {
-                if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
-                } else {
-                    $method['coverage'] = 100;
-                }
-
-                $method['crap'] = $this->crap(
-                    $method['ccn'],
-                    $method['coverage']
-                );
-
-                $class['ccn'] += $method['ccn'];
-            }
-
-            if ($class['executableLines'] > 0) {
-                $class['coverage'] = ($class['executedLines'] /
-                        $class['executableLines']) * 100;
-            } else {
-                $class['coverage'] = 100;
-            }
-
-            if ($class['coverage'] == 100) {
-                $this->numTestedClasses++;
-            }
-
-            $class['crap'] = $this->crap(
-                $class['ccn'],
-                $class['coverage']
-            );
+            $this->calcAndApplyClassAggregate($class, $class['className']);
         }
     }
 
@@ -547,6 +530,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 'startLine'       => $class['startLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
+                'executablePaths' => 0,
+                'executedPaths'   => 0,
                 'ccn'             => 0,
                 'coverage'        => 0,
                 'crap'            => 0,
@@ -583,6 +568,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 'startLine'       => $trait['startLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
+                'executablePaths' => 0,
+                'executedPaths'   => 0,
                 'ccn'             => 0,
                 'coverage'        => 0,
                 'crap'            => 0,
@@ -619,6 +606,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 'startLine'       => $function['startLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
+                'executablePaths' => 0,
+                'executedPaths'   => 0,
                 'ccn'             => $function['ccn'],
                 'coverage'        => 0,
                 'crap'            => 0,
@@ -672,10 +661,73 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             'endLine'         => $method['endLine'],
             'executableLines' => 0,
             'executedLines'   => 0,
+            'executablePaths' => 0,
+            'executedPaths'   => 0,
             'ccn'             => $method['ccn'],
             'coverage'        => 0,
             'crap'            => 0,
             'link'            => $link . $method['startLine'],
         ];
+    }
+
+    /**
+     * @param string $paths
+     * @param int    $functionExecutablePaths
+     * @param int    $functionExecutedPaths
+     */
+    private function calcPathsAggregate($paths, &$functionExecutablePaths, &$functionExecutedPaths)
+    {
+        $functionExecutablePaths = count($paths);
+        $functionExecutedPaths   = array_reduce(
+            $paths,
+            function ($carry, $value) {
+                return ($value['hit'] > 0) ? $carry + 1 : $carry;
+            },
+            0
+        );
+    }
+
+    /**
+     * @param array  $classOrTrait
+     * @param string $classOrTraitName
+     */
+    protected function calcAndApplyClassAggregate(&$classOrTrait, $classOrTraitName)
+    {
+        foreach ($classOrTrait['methods'] as &$method) {
+            $methodCoveragePath = $classOrTraitName . '->' . $method['methodName'];
+            if (isset($this->coverageData['paths'][$methodCoveragePath])) {
+                $methodPaths = $this->coverageData['paths'][$methodCoveragePath];
+                $this->calcPathsAggregate($methodPaths, $numExecutablePaths, $numExecutedPaths);
+
+                $method['executablePaths']        = $numExecutablePaths;
+                $classOrTrait['executablePaths'] += $numExecutablePaths;
+                $this->numExecutablePaths        += $numExecutablePaths;
+
+                $method['executedPaths']        = $numExecutedPaths;
+                $classOrTrait['executedPaths'] += $numExecutedPaths;
+                $this->numExecutedPaths        += $numExecutedPaths;
+            }
+            if ($method['executableLines'] > 0) {
+                $method['coverage'] = ($method['executedLines'] / $method['executableLines']) * 100;
+            } else {
+                $method['coverage'] = 100;
+            }
+
+            $method['crap'] = $this->crap($method['ccn'], $method['coverage']);
+
+            $classOrTrait['ccn'] += $method['ccn'];
+        }
+
+        if ($classOrTrait['executableLines'] > 0) {
+            $classOrTrait['coverage'] = ($classOrTrait['executedLines'] / $classOrTrait['executableLines']) * 100;
+        } else {
+            $classOrTrait['coverage'] = 100;
+        }
+
+        if ($classOrTrait['coverage'] == 100) {
+            $this->numTestedClasses++;
+        }
+
+        $classOrTrait['crap'] = $this->crap($classOrTrait['ccn'], $classOrTrait['coverage']);
     }
 }

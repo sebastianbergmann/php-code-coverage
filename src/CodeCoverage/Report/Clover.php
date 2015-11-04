@@ -85,10 +85,11 @@ class PHP_CodeCoverage_Report_Clover
                     }
 
                     $lines[$method['startLine']] = [
-                        'count' => $methodCount,
-                        'crap'  => $method['crap'],
-                        'type'  => 'method',
-                        'name'  => $methodName
+                        'count'       => $methodCount,
+                        'crap'        => $method['crap'],
+                        'type'        => 'method',
+                        'visibility'  => $method['visibility'],
+                        'name'        => $methodName
                     ];
                 }
 
@@ -174,6 +175,10 @@ class PHP_CodeCoverage_Report_Clover
 
                 if (isset($data['name'])) {
                     $xmlLine->setAttribute('name', $data['name']);
+                }
+
+                if (isset($data['visibility'])) {
+                    $xmlLine->setAttribute('visibility', $data['visibility']);
                 }
 
                 if (isset($data['crap'])) {

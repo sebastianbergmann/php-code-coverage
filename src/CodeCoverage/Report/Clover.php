@@ -85,6 +85,7 @@ class PHP_CodeCoverage_Report_Clover
                     }
 
                     $lines[$method['startLine']] = [
+                        'ccn'         => $method['ccn'],
                         'count'       => $methodCount,
                         'crap'        => $method['crap'],
                         'type'        => 'method',
@@ -132,6 +133,7 @@ class PHP_CodeCoverage_Report_Clover
                 $xmlFile->appendChild($xmlClass);
 
                 $xmlMetrics = $xmlDocument->createElement('metrics');
+                $xmlMetrics->setAttribute('complexity', $class['ccn']);
                 $xmlMetrics->setAttribute('methods', $classMethods);
                 $xmlMetrics->setAttribute('coveredmethods', $coveredMethods);
                 $xmlMetrics->setAttribute('conditionals', 0);
@@ -179,6 +181,10 @@ class PHP_CodeCoverage_Report_Clover
 
                 if (isset($data['visibility'])) {
                     $xmlLine->setAttribute('visibility', $data['visibility']);
+                }
+
+                if (isset($data['ccn'])) {
+                    $xmlLine->setAttribute('complexity', $data['ccn']);
                 }
 
                 if (isset($data['crap'])) {

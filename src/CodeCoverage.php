@@ -367,6 +367,9 @@ class PHP_CodeCoverage
                     if (!isset($this->data[$file]['lines'][$line])) {
                         $this->data[$file]['lines'][$line] = $data;
                     } else {
+                        if ($data['pathCovered']) {
+                            $this->data[$file]['lines'][$line]['pathCovered'] = $data['pathCovered'];
+                        }
                         $this->data[$file]['lines'][$line]['tests'] = array_unique(
                             array_merge($this->data[$file]['lines'][$line]['tests'], $data['tests'])
                         );

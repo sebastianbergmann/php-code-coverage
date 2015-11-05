@@ -326,10 +326,15 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            foreach ($fileData['lines'] as $k => $v) {
-                if ($v == PHP_CodeCoverage_Driver::LINE_EXECUTED) {
-                    if (empty($this->data[$file]['lines'][$k]) || !in_array($id, $this->data[$file]['lines'][$k])) {
-                        $this->data[$file]['lines'][$k][] = $id;
+            foreach ($fileData['lines'] as $line => $flag) {
+                if ($flag === PHP_CodeCoverage_Driver::LINE_EXECUTED) {
+                    $lineData = &$this->data[$file]['lines'][$line];
+                    if ($lineData === null) {
+                        $lineData = [
+                            'tests' => [$id],
+                        ];
+                    } elseif (!in_array($id, $lineData['tests'])) {
+                        $lineData['tests'][] = $id;
                     }
                 }
             }
@@ -361,8 +366,8 @@ class PHP_CodeCoverage
                     if (!isset($this->data[$file]['lines'][$line])) {
                         $this->data[$file]['lines'][$line] = $data;
                     } else {
-                        $this->data[$file]['lines'][$line] = array_unique(
-                            array_merge($this->data[$file]['lines'][$line], $data)
+                        $this->data[$file]['lines'][$line]['tests'] = array_unique(
+                            array_merge($this->data[$file]['lines'][$line]['tests'], $data['tests'])
                         );
                     }
                 }
@@ -597,7 +602,13 @@ class PHP_CodeCoverage
                 }
 
                 foreach ($fileData['lines'] as $lineNumber => $flag) {
-                    $this->data[$file]['lines'][$lineNumber] = $flag == -2 ? null : [];
+                    if ($flag === PHP_CodeCoverage_Driver::LINE_NOT_EXECUTABLE) {
+                        $this->data[$file]['lines'][$lineNumber] = null;
+                    } else {
+                        $this->data[$file]['lines'][$lineNumber] = [
+                            'tests' => [],
+                        ];
+                    }
                 }
             }
         }

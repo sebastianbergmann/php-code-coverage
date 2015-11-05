@@ -79,7 +79,7 @@ class PHP_CodeCoverage_Report_Clover
                          $i <= $method['endLine'];
                          $i++) {
                         if (isset($coverage['lines'][$i])) {
-                            $methodCount = max($methodCount, count($coverage['lines'][$i]));
+                            $methodCount = max($methodCount, count($coverage['lines'][$i]['tests']));
                         }
                     }
 
@@ -163,7 +163,8 @@ class PHP_CodeCoverage_Report_Clover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data), 'type' => 'stmt'
+                    'count' => count($data['tests']),
+                    'type'  => 'stmt',
                 ];
             }
 

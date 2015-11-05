@@ -116,8 +116,13 @@ class PHP_CodeCoverage_Report_XML
 
         $fileData = $file->getCoverageData();
 
-        foreach ($fileData['lines'] as $line => $tests) {
-            if (!is_array($tests) || count($tests) == 0) {
+        foreach ($fileData['lines'] as $line => $lineData) {
+            if ($lineData === null) {
+                continue;
+            }
+
+            $tests = $lineData['tests'];
+            if (empty($tests)) {
                 continue;
             }
 

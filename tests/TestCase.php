@@ -392,29 +392,49 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
             TEST_FILES_PATH . 'BankAccount.php' => [
                 'lines' => [
                     8 => [
-                        0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        'tests' => [
+                            0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+                            1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        ],
                     ],
                     9  => null,
-                    13 => [],
-                    14 => [],
-                    15 => [],
-                    16 => [],
-                    18 => [],
+                    13 => [
+                        'tests' => [],
+                    ],
+                    14 => [
+                        'tests' => [],
+                    ],
+                    15 => [
+                        'tests' => [],
+                    ],
+                    16 => [
+                        'tests' => [],
+                    ],
+                    18 => [
+                        'tests' => [],
+                    ],
                     22 => [
-                        0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        'tests' => [
+                            0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+                            1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        ],
                     ],
                     24 => [
-                        0 => 'BankAccountTest::testDepositWithdrawMoney',
+                        'tests' => [
+                            0 => 'BankAccountTest::testDepositWithdrawMoney',
+                        ],
                     ],
                     25 => null,
                     29 => [
-                        0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                        1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        'tests' => [
+                            0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+                            1 => 'BankAccountTest::testDepositWithdrawMoney',
+                        ],
                     ],
                     31 => [
-                        0 => 'BankAccountTest::testDepositWithdrawMoney',
+                        'tests' => [
+                            0 => 'BankAccountTest::testDepositWithdrawMoney',
+                        ],
                     ],
                     32 => null,
                 ],

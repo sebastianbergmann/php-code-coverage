@@ -314,23 +314,24 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $popoverTitle   = '';
 
             if (array_key_exists($i, $coverageData['lines'])) {
-                $numTests = count($coverageData['lines'][$i]);
+                $lineData = $coverageData['lines'][$i];
 
-                if ($coverageData['lines'][$i] === null) {
+                if ($lineData === null) {
                     $trClass = ' class="warning"';
-                } elseif ($numTests == 0) {
+                } elseif (empty($lineData['tests'])) {
                     $trClass = ' class="danger"';
                 } else {
                     $lineCss        = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
+                    $numTests = count($lineData['tests']);
                     if ($numTests > 1) {
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
                     } else {
                         $popoverTitle = '1 test covers line ' . $i;
                     }
 
-                    foreach ($coverageData['lines'][$i] as $test) {
+                    foreach ($lineData['tests'] as $test) {
                         if ($lineCss == 'covered-by-large-tests' && $testData[$test]['size'] == 'medium') {
                             $lineCss = 'covered-by-medium-tests';
                         } elseif ($testData[$test]['size'] == 'small') {

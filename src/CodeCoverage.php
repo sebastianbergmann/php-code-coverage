@@ -326,9 +326,9 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            foreach ($fileData['lines'] as $line => $flag) {
-                if ($flag === PHP_CodeCoverage_Driver::LINE_EXECUTED) {
-                    $lineData = &$this->data[$file]['lines'][$line];
+            foreach ($fileData['lines'] as $function => $functionCoverage) {
+                if ($functionCoverage === PHP_CodeCoverage_Driver::LINE_EXECUTED) {
+                    $lineData = &$this->data[$file]['lines'][$function];
                     if ($lineData === null) {
                         $lineData = [
                             'pathCovered' => false,
@@ -336,6 +336,22 @@ class PHP_CodeCoverage
                         ];
                     } elseif (!in_array($id, $lineData['tests'])) {
                         $lineData['tests'][] = $id;
+                    }
+                }
+            }
+
+            foreach ($fileData['functions'] as $function => $functionCoverage) {
+                foreach ($functionCoverage['branches'] as $branch => $branchCoverage) {
+                    if ($branchCoverage['hit'] === 1){
+                        $this->data[$file]['branches'][$function][$branch]['hit'] = 1;
+                        if (!in_array($id, $this->data[$file]['branches'][$function][$branch]['tests'])) {
+                            $this->data[$file]['branches'][$function][$branch]['tests'][] = $id;
+                        }
+                    }
+                }
+                foreach ($functionCoverage['paths'] as $path => $pathCoverage) {
+                    if ($pathCoverage['hit'] === 1 && $this->data[$file]['paths'][$function][$path]['hit'] === 0){
+                        $this->data[$file]['paths'][$function][$path]['hit'] = 1;
                     }
                 }
             }
@@ -591,8 +607,8 @@ class PHP_CodeCoverage
                         $this->data[$file]['branches'][$functionName] = [];
                         $this->data[$file]['paths'][$functionName]    = [];
 
-                        foreach ($functionData['branches'] as $branch) {
-                            $this->data[$file]['branches'][$functionName][] = [
+                        foreach ($functionData['branches'] as $index => $branch) {
+                            $this->data[$file]['branches'][$functionName][$index] = [
                                 'hit'        => $branch['hit'],
                                 'line_start' => $branch['line_start'],
                                 'line_end'   => $branch['line_end'],

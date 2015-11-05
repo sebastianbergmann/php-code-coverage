@@ -461,7 +461,12 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                         0 => [
                             'line_start' => 6,
                             'line_end'   => 9,
-                            'tests'      => [],
+                            'tests'      => [
+                                'BankAccountTest::testBalanceIsInitiallyZero',
+                                'BankAccountTest::testBalanceCannotBecomeNegative',
+                                'BankAccountTest::testBalanceCannotBecomeNegative2',
+                                'BankAccountTest::testDepositWithdrawMoney',
+                            ],
                             'hit'        => 1,
                         ],
                     ],
@@ -480,19 +485,19 @@ abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
                             'tests'      => [],
                             'hit'        => 0,
                         ],
-                        1 => [
+                        5 => [
                             'line_start' => 14,
                             'line_end'   => 15,
                             'tests'      => [],
                             'hit'        => 0,
                         ],
-                        2 => [
+                        9 => [
                             'line_start' => 16,
                             'line_end'   => 16,
                             'tests'      => [],
                             'hit'        => 0,
                         ],
-                        3 => [
+                        16 => [
                             'line_start' => 18,
                             'line_end'   => 18,
                             'tests'      => [],

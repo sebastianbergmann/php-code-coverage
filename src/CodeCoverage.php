@@ -331,7 +331,8 @@ class PHP_CodeCoverage
                     $lineData = &$this->data[$file]['lines'][$line];
                     if ($lineData === null) {
                         $lineData = [
-                            'tests' => [$id],
+                            'pathCovered' => false,
+                            'tests'       => [$id],
                         ];
                     } elseif (!in_array($id, $lineData['tests'])) {
                         $lineData['tests'][] = $id;
@@ -589,6 +590,7 @@ class PHP_CodeCoverage
 
                         foreach ($functionData['branches'] as $branch) {
                             $this->data[$file]['branches'][$functionName][] = [
+                                'hit'        => $branch['hit'],
                                 'line_start' => $branch['line_start'],
                                 'line_end'   => $branch['line_end'],
                                 'tests'      => []
@@ -606,8 +608,19 @@ class PHP_CodeCoverage
                         $this->data[$file]['lines'][$lineNumber] = null;
                     } else {
                         $this->data[$file]['lines'][$lineNumber] = [
-                            'tests' => [],
+                            'pathCovered' => false,
+                            'tests'       => [],
                         ];
+                    }
+                }
+
+                foreach ($this->data[$file]['branches'] as $function) {
+                    foreach ($function as $branch) {
+                        for ($i = $branch['line_start']; $i < $branch['line_end']; $i++) {
+                            if (isset($this->data[$file]['lines'][$i])) {
+                                $this->data[$file]['lines'][$i]['pathCovered'] = (bool) $branch['hit'];
+                            }
+                        }
                     }
                 }
             }

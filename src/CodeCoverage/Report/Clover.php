@@ -87,6 +87,7 @@ class PHP_CodeCoverage_Report_Clover
                         'ccn'         => $method['ccn'],
                         'count'       => $methodCount,
                         'crap'        => $method['crap'],
+                        'pathCovered' => $methodCount ? 1 : 0,
                         'type'        => 'method',
                         'visibility'  => $method['visibility'],
                         'name'        => $methodName
@@ -163,8 +164,9 @@ class PHP_CodeCoverage_Report_Clover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data['tests']),
-                    'type'  => 'stmt',
+                    'count'       => count($data['tests']),
+                    'pathCovered' => $data['pathCovered'] ? 1 : 0,
+                    'type'        => 'stmt',
                 ];
             }
 
@@ -191,6 +193,7 @@ class PHP_CodeCoverage_Report_Clover
                     $xmlLine->setAttribute('crap', $data['crap']);
                 }
 
+                $xmlLine->setAttribute('pathCovered', $data['pathCovered']);
                 $xmlLine->setAttribute('count', $data['count']);
                 $xmlFile->appendChild($xmlLine);
             }

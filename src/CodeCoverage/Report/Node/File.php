@@ -505,11 +505,21 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         }
 
         foreach ($this->traits as &$trait) {
-            $this->calcAndApplyClassAggregate($trait, $trait['traitName']);
+            $fqcn = $trait['traitName'];
+            if (!empty($trait['package']['namespace'])) {
+                $fqcn = $trait['package']['namespace'] . '\\' . $fqcn;
+            }
+
+            $this->calcAndApplyClassAggregate($trait, $fqcn);
         }
 
         foreach ($this->classes as &$class) {
-            $this->calcAndApplyClassAggregate($class, $class['className']);
+            $fqcn = $class['className'];
+            if (!empty($class['package']['namespace'])) {
+                $fqcn = $class['package']['namespace'] . '\\' . $fqcn;
+            }
+
+            $this->calcAndApplyClassAggregate($class, $fqcn);
         }
     }
 

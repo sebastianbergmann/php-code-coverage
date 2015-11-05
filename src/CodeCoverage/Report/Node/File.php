@@ -704,29 +704,31 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     protected function calcAndApplyClassAggregate(&$classOrTrait, $classOrTraitName)
     {
         foreach ($classOrTrait['methods'] as &$method) {
-            if ($method['methodName'] === 'anonymous function') {
-                // Locate index
-                $methodCoveragePath = $method['methodName'];
-                foreach ($this->coverageData['branches'] as $index => $branch) {
-                    if ($method['startLine'] === $branch[0]['line_start']) {
-                        $methodCoveragePath = $index;
+            if (isset($this->coverageData['branches'])) {
+                if ($method['methodName'] === 'anonymous function') {
+                    // Locate index
+                    $methodCoveragePath = $method['methodName'];
+                    foreach ($this->coverageData['branches'] as $index => $branch) {
+                        if ($method['startLine'] === $branch[0]['line_start']) {
+                            $methodCoveragePath = $index;
+                        }
                     }
+
+                } else {
+                    $methodCoveragePath = $classOrTraitName . '->' . $method['methodName'];
                 }
+                if (isset($this->coverageData['paths'][$methodCoveragePath])) {
+                    $methodPaths = $this->coverageData['paths'][$methodCoveragePath];
+                    $this->calcPathsAggregate($methodPaths, $numExecutablePaths, $numExecutedPaths);
 
-            } else {
-                $methodCoveragePath = $classOrTraitName . '->' . $method['methodName'];
-            }
-            if (isset($this->coverageData['paths'][$methodCoveragePath])) {
-                $methodPaths = $this->coverageData['paths'][$methodCoveragePath];
-                $this->calcPathsAggregate($methodPaths, $numExecutablePaths, $numExecutedPaths);
+                    $method['executablePaths']        = $numExecutablePaths;
+                    $classOrTrait['executablePaths'] += $numExecutablePaths;
+                    $this->numExecutablePaths        += $numExecutablePaths;
 
-                $method['executablePaths']        = $numExecutablePaths;
-                $classOrTrait['executablePaths'] += $numExecutablePaths;
-                $this->numExecutablePaths        += $numExecutablePaths;
-
-                $method['executedPaths']        = $numExecutedPaths;
-                $classOrTrait['executedPaths'] += $numExecutedPaths;
-                $this->numExecutedPaths        += $numExecutedPaths;
+                    $method['executedPaths']        = $numExecutedPaths;
+                    $classOrTrait['executedPaths'] += $numExecutedPaths;
+                    $this->numExecutedPaths        += $numExecutedPaths;
+                }
             }
             if ($method['executableLines'] > 0) {
                 $method['coverage'] = ($method['executedLines'] / $method['executableLines']) * 100;

@@ -91,12 +91,14 @@ class PHP_CodeCoverage
      *
      * @param  PHP_CodeCoverage_Driver                   $driver
      * @param  PHP_CodeCoverage_Filter                   $filter
-     * @param  bool                                      $pathCoverage
+     * @param  null|bool                                 $pathCoverage `null` enables path coverage if supported.
      * @throws PHP_CodeCoverage_InvalidArgumentException
      */
-    public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null, $pathCoverage = true)
+    public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null, $pathCoverage = null)
     {
-        if (!is_bool($pathCoverage)) {
+        if ($pathCoverage === null) {
+            $pathCoverage = version_compare(phpversion('xdebug'), '2.3.2', '>=');
+        } elseif (!is_bool($pathCoverage)) {
             throw PHP_CodeCoverage_InvalidArgumentException::create(
                 3,
                 'boolean'
@@ -334,24 +336,26 @@ class PHP_CodeCoverage
                             'pathCovered' => false,
                             'tests'       => [$id],
                         ];
-                    } elseif (!in_array($id, $lineData['tests'])) {
+                    } elseif ($this->pathCoverage && !in_array($id, $lineData['tests'])) {
                         $lineData['tests'][] = $id;
                     }
                 }
             }
 
-            foreach ($fileData['functions'] as $function => $functionCoverage) {
-                foreach ($functionCoverage['branches'] as $branch => $branchCoverage) {
-                    if ($branchCoverage['hit'] === 1){
-                        $this->data[$file]['branches'][$function][$branch]['hit'] = 1;
-                        if (!in_array($id, $this->data[$file]['branches'][$function][$branch]['tests'])) {
-                            $this->data[$file]['branches'][$function][$branch]['tests'][] = $id;
+            if ($this->pathCoverage) {
+                foreach ($fileData['functions'] as $function => $functionCoverage) {
+                    foreach ($functionCoverage['branches'] as $branch => $branchCoverage) {
+                        if ($branchCoverage['hit'] === 1) {
+                            $this->data[$file]['branches'][$function][$branch]['hit'] = 1;
+                            if (!in_array($id, $this->data[$file]['branches'][$function][$branch]['tests'])) {
+                                $this->data[$file]['branches'][$function][$branch]['tests'][] = $id;
+                            }
                         }
                     }
-                }
-                foreach ($functionCoverage['paths'] as $path => $pathCoverage) {
-                    if ($pathCoverage['hit'] === 1 && $this->data[$file]['paths'][$function][$path]['hit'] === 0){
-                        $this->data[$file]['paths'][$function][$path]['hit'] = 1;
+                    foreach ($functionCoverage['paths'] as $path => $pathCoverage) {
+                        if ($pathCoverage['hit'] === 1 && $this->data[$file]['paths'][$function][$path]['hit'] === 0) {
+                            $this->data[$file]['paths'][$function][$path]['hit'] = 1;
+                        }
                     }
                 }
             }
@@ -380,15 +384,17 @@ class PHP_CodeCoverage
 
             foreach ($fileData['lines'] as $line => $data) {
                 if ($data !== null) {
-                    if (!isset($this->data[$file]['lines'][$line])) {
-                        $this->data[$file]['lines'][$line] = $data;
-                    } else {
-                        if ($data['pathCovered']) {
-                            $this->data[$file]['lines'][$line]['pathCovered'] = $data['pathCovered'];
+                    if ($this->pathCoverage) {
+                        if (!isset($this->data[$file]['lines'][$line])) {
+                            $this->data[$file]['lines'][$line] = $data;
+                        } else {
+                            if ($data['pathCovered']) {
+                                $this->data[$file]['lines'][$line]['pathCovered'] = $data['pathCovered'];
+                            }
+                            $this->data[$file]['lines'][$line]['tests'] = array_unique(
+                                array_merge($this->data[$file]['lines'][$line]['tests'], $data['tests'])
+                            );
                         }
-                        $this->data[$file]['lines'][$line]['tests'] = array_unique(
-                            array_merge($this->data[$file]['lines'][$line]['tests'], $data['tests'])
-                        );
                     }
                 }
             }

@@ -602,29 +602,6 @@ class PHP_CodeCoverage
 
             $this->data[$file] = ['lines' => []];
 
-            if ($this->pathCoverage) {
-                $this->data[$file]['branches'] = [];
-                $this->data[$file]['paths']    = [];
-
-                foreach ($fileData['functions'] as $functionName => $functionData) {
-                    $this->data[$file]['branches'][$functionName] = [];
-                    $this->data[$file]['paths'][$functionName]    = [];
-
-                    foreach ($functionData['branches'] as $index => $branch) {
-                        $this->data[$file]['branches'][$functionName][$index] = [
-                            'hit'        => $branch['hit'],
-                            'line_start' => $branch['line_start'],
-                            'line_end'   => $branch['line_end'],
-                            'tests'      => []
-                        ];
-                    }
-
-                    foreach ($functionData['paths'] as $path) {
-                        $this->data[$file]['paths'][$functionName][] = $path;
-                    }
-                }
-            }
-
             foreach ($fileData['lines'] as $lineNumber => $flag) {
                 if ($flag === PHP_CodeCoverage_Driver::LINE_NOT_EXECUTABLE) {
                     $this->data[$file]['lines'][$lineNumber] = null;
@@ -636,11 +613,26 @@ class PHP_CodeCoverage
                 }
             }
 
-            foreach ($this->data[$file]['branches'] as $function) {
-                foreach ($function as $branch) {
-                    for ($i = $branch['line_start']; $i < $branch['line_end']; $i++) {
-                        if (isset($this->data[$file]['lines'][$i])) {
-                            $this->data[$file]['lines'][$i]['pathCovered'] = (bool) $branch['hit'];
+            if ($this->pathCoverage) {
+                $this->data[$file]['branches'] = [];
+                $this->data[$file]['paths']    = [];
+
+                foreach ($fileData['functions'] as $functionName => $functionData) {
+                    $this->data[$file]['branches'][$functionName] = [];
+                    $this->data[$file]['paths'][$functionName]    = $functionData['paths'];
+
+                    foreach ($functionData['branches'] as $index => $branch) {
+                        $this->data[$file]['branches'][$functionName][$index] = [
+                            'hit'        => $branch['hit'],
+                            'line_start' => $branch['line_start'],
+                            'line_end'   => $branch['line_end'],
+                            'tests'      => []
+                        ];
+
+                        for ($i = $branch['line_start']; $i < $branch['line_end']; $i++) {
+                            if (isset($this->data[$file]['lines'][$i])) {
+                                $this->data[$file]['lines'][$i]['pathCovered'] = (bool) $branch['hit'];
+                            }
                         }
                     }
                 }

@@ -24,16 +24,14 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     /**
      * @param bool $pathCoverage
      */
-    public function __construct($pathCoverage = true)
+    public function __construct($pathCoverage = false)
     {
-        if (!extension_loaded('xdebug') ||
-            version_compare(phpversion('xdebug'), '2.3.2', '<')) {
-            throw new PHP_CodeCoverage_RuntimeException(
-                'This driver requires Xdebug 2.3.2 (or newer)'
-            );
+        if (!extension_loaded('xdebug')) {
+            throw new PHP_CodeCoverage_RuntimeException('This driver requires Xdebug');
         }
 
-        if (!ini_get('xdebug.coverage_enable')) {
+        if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
+            !ini_get('xdebug.coverage_enable')) {
             throw new PHP_CodeCoverage_RuntimeException(
                 'xdebug.coverage_enable=On has to be set in php.ini'
             );
@@ -42,6 +40,12 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
         $this->flags = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
 
         if ($pathCoverage) {
+            if (version_compare(phpversion('xdebug'), '2.3.2', '<')) {
+                throw new PHP_CodeCoverage_RuntimeException(
+                    'Path coverage requires Xdebug 2.3.2 (or newer)'
+                );
+            }
+
             $this->flags |= XDEBUG_CC_BRANCH_CHECK;
         }
     }

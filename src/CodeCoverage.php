@@ -82,21 +82,18 @@ class PHP_CodeCoverage
     private $tests = [];
 
     /**
-     * @var bool
-     */
-    private $pathCoverage;
-
-    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver                   $driver
      * @param  PHP_CodeCoverage_Filter                   $filter
-     * @param  bool                                      $pathCoverage
+     * @param  null|bool                                 $pathCoverage `null` enables path coverage if supported.
      * @throws PHP_CodeCoverage_InvalidArgumentException
      */
-    public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null, $pathCoverage = true)
+    public function __construct(PHP_CodeCoverage_Driver $driver = null, PHP_CodeCoverage_Filter $filter = null, $pathCoverage = null)
     {
-        if (!is_bool($pathCoverage)) {
+        if ($pathCoverage === null) {
+            $pathCoverage = version_compare(phpversion('xdebug'), '2.3.2', '>=');
+        } elseif (!is_bool($pathCoverage)) {
             throw PHP_CodeCoverage_InvalidArgumentException::create(
                 3,
                 'boolean'
@@ -113,7 +110,6 @@ class PHP_CodeCoverage
 
         $this->driver       = $driver;
         $this->filter       = $filter;
-        $this->pathCoverage = $pathCoverage;
     }
 
     /**
@@ -600,7 +596,11 @@ class PHP_CodeCoverage
                 continue;
             }
 
-            $this->data[$file] = ['lines' => []];
+            $this->data[$file] = [
+                'lines' => [],
+                'branches' =>[],
+                'paths' => [],
+            ];
 
             foreach ($fileData['lines'] as $lineNumber => $flag) {
                 if ($flag === PHP_CodeCoverage_Driver::LINE_NOT_EXECUTABLE) {
@@ -613,26 +613,21 @@ class PHP_CodeCoverage
                 }
             }
 
-            if ($this->pathCoverage) {
-                $this->data[$file]['branches'] = [];
-                $this->data[$file]['paths']    = [];
+            foreach ($fileData['functions'] as $functionName => $functionData) {
+                $this->data[$file]['branches'][$functionName] = [];
+                $this->data[$file]['paths'][$functionName]    = $functionData['paths'];
 
-                foreach ($fileData['functions'] as $functionName => $functionData) {
-                    $this->data[$file]['branches'][$functionName] = [];
-                    $this->data[$file]['paths'][$functionName]    = $functionData['paths'];
+                foreach ($functionData['branches'] as $index => $branch) {
+                    $this->data[$file]['branches'][$functionName][$index] = [
+                        'hit'        => $branch['hit'],
+                        'line_start' => $branch['line_start'],
+                        'line_end'   => $branch['line_end'],
+                        'tests'      => []
+                    ];
 
-                    foreach ($functionData['branches'] as $index => $branch) {
-                        $this->data[$file]['branches'][$functionName][$index] = [
-                            'hit'        => $branch['hit'],
-                            'line_start' => $branch['line_start'],
-                            'line_end'   => $branch['line_end'],
-                            'tests'      => []
-                        ];
-
-                        for ($i = $branch['line_start']; $i < $branch['line_end']; $i++) {
-                            if (isset($this->data[$file]['lines'][$i])) {
-                                $this->data[$file]['lines'][$i]['pathCovered'] = (bool) $branch['hit'];
-                            }
+                    for ($i = $branch['line_start']; $i < $branch['line_end']; $i++) {
+                        if (isset($this->data[$file]['lines'][$i])) {
+                            $this->data[$file]['lines'][$i]['pathCovered'] = (bool) $branch['hit'];
                         }
                     }
                 }

@@ -207,6 +207,21 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     }
 
     /**
+     * Returns the percentage of executed paths.
+     *
+     * @param  bool $asString
+     * @return int
+     */
+    public function getPathExecutedPercent($asString = true)
+    {
+        return PHP_CodeCoverage_Util::percent(
+            $this->getNumExecutedPaths(),
+            $this->getNumExecutablePaths(),
+            $asString
+        );
+    }
+
+    /**
      * Returns the number of classes and traits.
      *
      * @return int
@@ -280,6 +295,20 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * @return int
      */
     abstract public function getNumExecutedLines();
+
+    /**
+     * Returns the number of executable paths.
+     *
+     * @return int
+     */
+    abstract public function getNumExecutablePaths();
+
+    /**
+     * Returns the number of executed paths.
+     *
+     * @return int
+     */
+    abstract public function getNumExecutedPaths();
 
     /**
      * Returns the number of classes.

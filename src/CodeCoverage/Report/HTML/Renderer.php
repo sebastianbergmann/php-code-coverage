@@ -124,6 +124,22 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
             $data['linesExecutedPercentAsString'] = '100.00%';
         }
 
+        if ($data['numExecutablePaths'] > 0) {
+            $pathsLevel = $this->getColorLevel($data['pathsExecutedPercent']);
+
+            $pathsNumber = $data['numExecutedPaths'] . $numSeparator .
+                $data['numExecutablePaths'];
+
+            $pathsBar = $this->getCoverageBar(
+                $data['pathsExecutedPercent']
+            );
+        } else {
+            $pathsLevel                           = 'success';
+            $pathsNumber                          = '0' . $numSeparator . '0';
+            $pathsBar                             = $this->getCoverageBar(100);
+            $data['pathsExecutedPercentAsString'] = '100.00%';
+        }
+
         $template->setVar(
             [
                 'icon'                   => isset($data['icon']) ? $data['icon'] : '',
@@ -133,6 +149,10 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'lines_executed_percent' => $data['linesExecutedPercentAsString'],
                 'lines_level'            => $linesLevel,
                 'lines_number'           => $linesNumber,
+                'paths_bar'              => $pathsBar,
+                'paths_executed_percent' => $data['pathsExecutedPercentAsString'],
+                'paths_level'            => $pathsLevel,
+                'paths_number'           => $pathsNumber,
                 'methods_bar'            => $methodsBar,
                 'methods_tested_percent' => $data['testedMethodsPercentAsString'],
                 'methods_level'          => $methodsLevel,

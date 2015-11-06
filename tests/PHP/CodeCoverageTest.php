@@ -262,8 +262,14 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
         $coverage = $this->getCoverageForBankAccountForFirstTwoTests();
         $coverage->merge($this->getCoverageForBankAccountForLastTwoTests());
 
+        $expectedData = $this->getExpectedDataArrayForBankAccount();
+        $expectedData[TEST_FILES_PATH . 'BankAccount.php']['branches']['BankAccount->getBalance'][0]['tests'] = [
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            'BankAccountTest::testBalanceCannotBecomeNegative',
+        ];
+
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $expectedData,
             $coverage->getData()
         );
     }

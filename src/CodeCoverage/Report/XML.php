@@ -114,8 +114,15 @@ class PHP_CodeCoverage_Report_XML
             $this->processFunction($function, $fileReport);
         }
 
-        foreach ($file->getCoverageData() as $line => $tests) {
-            if (!is_array($tests) || count($tests) == 0) {
+        $fileData = $file->getCoverageData();
+
+        foreach ($fileData['lines'] as $line => $lineData) {
+            if ($lineData === null) {
+                continue;
+            }
+
+            $tests = $lineData['tests'];
+            if (empty($tests)) {
                 continue;
             }
 
@@ -171,7 +178,9 @@ class PHP_CodeCoverage_Report_XML
             $methodObject->setTotals(
                 $method['executableLines'],
                 $method['executedLines'],
-                $method['coverage']
+                $method['coverage'],
+                $method['executablePaths'],
+                $method['executedPaths']
             );
         }
     }
@@ -183,7 +192,7 @@ class PHP_CodeCoverage_Report_XML
         $functionObject->setSignature($function['signature']);
         $functionObject->setLines($function['startLine']);
         $functionObject->setCrap($function['crap']);
-        $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['coverage']);
+        $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['coverage'], $function['executablePaths'], $function['executedPaths']);
     }
 
     private function processTests(array $tests)
@@ -214,6 +223,11 @@ class PHP_CodeCoverage_Report_XML
         $totals->setNumClasses(
             $node->getNumClasses(),
             $node->getNumTestedClasses()
+        );
+
+        $totals->setNumPaths(
+            $node->getNumExecutablePaths(),
+            $node->getNumExecutedPaths()
         );
 
         $totals->setNumTraits(

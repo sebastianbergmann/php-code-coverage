@@ -11,7 +11,7 @@ PHP 5.6 is required but using the latest version of PHP is highly recommended
 
 ### PHP 5
 
-[Xdebug](http://xdebug.org/) is the only source of raw code coverage data supported for PHP 5. Version 2.1.3 of Xdebug is required but using the latest version is highly recommended.
+[Xdebug](http://xdebug.org/) is the only source of raw code coverage data supported for PHP 5. Version 2.2.1 of Xdebug is required but using the latest version is highly recommended.
 
 ### PHP 7
 

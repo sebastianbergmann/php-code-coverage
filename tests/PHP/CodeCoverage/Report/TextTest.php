@@ -13,7 +13,7 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR 
 /**
  * Tests for the PHP_CodeCoverage_Report_Text class.
  *
- * @since Class available since Release 3.0.2
+ * @since Class available since Release 3.1.0
  */
 class PHP_CodeCoverage_Report_TextTest extends PHP_CodeCoverage_TestCase
 {

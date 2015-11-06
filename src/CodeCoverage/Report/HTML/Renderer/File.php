@@ -8,28 +8,6 @@
  * file that was distributed with this source code.
  */
 
-// @codeCoverageIgnoreStart
-if (!defined('T_TRAIT')) {
-    define('T_TRAIT', 1001);
-}
-
-if (!defined('T_INSTEADOF')) {
-    define('T_INSTEADOF', 1002);
-}
-
-if (!defined('T_CALLABLE')) {
-    define('T_CALLABLE', 1003);
-}
-
-if (!defined('T_FINALLY')) {
-    define('T_FINALLY', 1004);
-}
-
-if (!defined('T_YIELD')) {
-    define('T_YIELD', 1005);
-}
-// @codeCoverageIgnoreEnd
-
 /**
  * Renders a PHP_CodeCoverage_Report_Node_File node.
  *
@@ -63,9 +41,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
 
         $this->htmlspecialcharsFlags = ENT_COMPAT;
 
-        if (PHP_VERSION_ID >= 50400 && defined('ENT_SUBSTITUTE')) {
-            $this->htmlspecialcharsFlags = $this->htmlspecialcharsFlags | ENT_HTML401 | ENT_SUBSTITUTE;
-        }
+        $this->htmlspecialcharsFlags = $this->htmlspecialcharsFlags | ENT_HTML401 | ENT_SUBSTITUTE;
     }
 
     /**

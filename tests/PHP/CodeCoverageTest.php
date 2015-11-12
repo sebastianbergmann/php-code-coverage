@@ -220,7 +220,7 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
-     * @covers             PHP_CodeCoverage::setIgnoreDeprecatedCode
+     * @covers            PHP_CodeCoverage::setIgnoreDeprecatedCode
      * @expectedException PHP_CodeCoverage_Exception
      */
     public function testSetIgnoreDeprecatedCodeThrowsExceptionForInvalidArgument()

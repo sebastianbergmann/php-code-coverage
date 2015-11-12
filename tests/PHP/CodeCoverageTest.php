@@ -207,6 +207,28 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage::setIgnoreDeprecatedCode
+     */
+    public function testSetIgnoreDeprecatedCode()
+    {
+        $this->coverage->setIgnoreDeprecatedCode(true);
+        $this->assertAttributeEquals(
+            true,
+            'ignoreDeprecatedCode',
+            $this->coverage
+        );
+    }
+
+    /**
+     * @covers             PHP_CodeCoverage::setIgnoreDeprecatedCode
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testSetIgnoreDeprecatedCodeThrowsExceptionForInvalidArgument()
+    {
+        $this->coverage->setIgnoreDeprecatedCode(null);
+    }
+
+    /**
      * @covers PHP_CodeCoverage::clear
      */
     public function testClear()

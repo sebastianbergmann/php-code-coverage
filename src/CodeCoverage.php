@@ -53,6 +53,11 @@ class PHP_CodeCoverage
     private $processUncoveredFilesFromWhitelist = false;
 
     /**
+     * @var bool
+     */
+    private $ignoreDeprecatedCode = false;
+
+    /**
      * @var mixed
      */
     private $currentId;
@@ -475,6 +480,23 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
+     * @since  Method available since Release 3.0.2
+     */
+    public function setIgnoreDeprecatedCode($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
+                1,
+                'boolean'
+            );
+        }
+
+        $this->ignoreDeprecatedCode = $flag;
+    }
+
+    /**
      * Applies the @covers annotation filtering.
      *
      * @param  array                                                $data
@@ -720,7 +742,7 @@ class PHP_CodeCoverage
 
                         $this->ignoredLines[$filename][] = $token->getLine();
 
-                        if (strpos($docblock, '@codeCoverageIgnore') || strpos($docblock, '@deprecated')) {
+                        if (strpos($docblock, '@codeCoverageIgnore') || ($this->ignoreDeprecatedCode && strpos($docblock, '@deprecated'))) {
                             $endLine = $token->getEndLine();
 
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {

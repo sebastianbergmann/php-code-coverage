@@ -118,7 +118,8 @@ class PHP_CodeCoverage_Report_FactoryTest extends PHP_CodeCoverage_TestCase
                         'subpackage'  => ''
                     ],
                     'link'      => 'BankAccount.php.html#2',
-                    'className' => 'BankAccount'
+                    'className' => 'BankAccount',
+                    'endLine'   => 33,
                 ]
             ],
             $root->getClasses()

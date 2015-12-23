@@ -45,6 +45,11 @@ class PHP_CodeCoverage
     /**
      * @var bool
      */
+    private $checkForUnexecutedCoveredCode = false;
+
+    /**
+     * @var bool
+     */
     private $addUncoveredFilesFromWhitelist = true;
 
     /**
@@ -423,6 +428,22 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
+     */
+    public function setCheckForUnexecutedCoveredCode($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
+                1,
+                'boolean'
+            );
+        }
+
+        $this->checkForUnexecutedCoveredCode = $flag;
+    }
+
+    /**
      * @deprecated
      * @param  bool                                      $flag
      * @throws PHP_CodeCoverage_InvalidArgumentException
@@ -523,6 +544,10 @@ class PHP_CodeCoverage
                 $linesToBeCovered,
                 $linesToBeUsed
             );
+        }
+
+        if($this->checkForUnexecutedCoveredCode) {
+            $this->performUnexecutedCoveredCodeCheck($data, $linesToBeCovered, $linesToBeUsed);
         }
 
         $data = array_intersect_key($data, $linesToBeCovered);
@@ -857,6 +882,45 @@ class PHP_CodeCoverage
             );
         }
     }
+
+    /**
+     * @param  array                                                $data
+     * @param  array                                                $linesToBeCovered
+     * @param  array                                                $linesToBeUsed
+     * @throws PHP_CodeCoverage_CoveredCodeNotExecutedException
+     */
+    private function performUnexecutedCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
+    {
+        $expectedLines = $this->getAllowedLines(
+            $linesToBeCovered,
+            $linesToBeUsed
+        );
+
+        foreach ($data as $file => $_data) {
+            foreach (array_keys($_data) as $line) {
+                if (!isset($expectedLines[$file][$line])) {
+                    continue;
+                }
+                unset($expectedLines[$file][$line]);
+            }
+        }
+
+        $message = '';
+        foreach ($expectedLines as $file => $lines) {
+            if (empty($lines)) {
+                continue;
+            }
+            foreach (array_keys($lines) as $line) {
+                $message .= sprintf('- %s:%d' . PHP_EOL, $file, $line);
+            }
+        }
+
+        if (!empty($message)) {
+            throw new PHP_CodeCoverage_CoveredCodeNotExecutedException($message);
+        }
+
+    }
+
 
     /**
      * @param  array $linesToBeCovered

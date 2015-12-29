@@ -33,6 +33,11 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     protected $date;
 
     /**
+     * @var string
+     */
+    protected $elapsedTime;
+
+    /**
      * @var int
      */
     protected $lowUpperBound;
@@ -63,6 +68,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
         $this->templatePath   = $templatePath;
         $this->generator      = $generator;
         $this->date           = $date;
+        $this->elapsedTime    = PHP_Timer::timeSinceStartOfRequest();
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
         $this->version        = $version->getVersion();
@@ -162,6 +168,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
                 'path_to_root'     => $this->getPathToRoot($node),
                 'breadcrumbs'      => $this->getBreadcrumbs($node),
                 'date'             => $this->date,
+                'elapsed_time'     => $this->elapsedTime,
                 'version'          => $this->version,
                 'runtime_name'     => $runtime->getName(),
                 'runtime_version'  => $runtime->getVersion(),

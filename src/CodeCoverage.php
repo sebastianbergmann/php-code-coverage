@@ -546,7 +546,7 @@ class PHP_CodeCoverage
             );
         }
 
-        if($this->checkForUnexecutedCoveredCode) {
+        if ($this->checkForUnexecutedCoveredCode) {
             $this->performUnexecutedCoveredCodeCheck($data, $linesToBeCovered, $linesToBeUsed);
         }
 
@@ -884,9 +884,9 @@ class PHP_CodeCoverage
     }
 
     /**
-     * @param  array                                                $data
-     * @param  array                                                $linesToBeCovered
-     * @param  array                                                $linesToBeUsed
+     * @param  array                                            $data
+     * @param  array                                            $linesToBeCovered
+     * @param  array                                            $linesToBeUsed
      * @throws PHP_CodeCoverage_CoveredCodeNotExecutedException
      */
     private function performUnexecutedCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
@@ -901,15 +901,18 @@ class PHP_CodeCoverage
                 if (!isset($expectedLines[$file][$line])) {
                     continue;
                 }
+
                 unset($expectedLines[$file][$line]);
             }
         }
 
         $message = '';
+
         foreach ($expectedLines as $file => $lines) {
             if (empty($lines)) {
                 continue;
             }
+
             foreach (array_keys($lines) as $line) {
                 $message .= sprintf('- %s:%d' . PHP_EOL, $file, $line);
             }
@@ -920,7 +923,6 @@ class PHP_CodeCoverage
         }
 
     }
-
 
     /**
      * @param  array $linesToBeCovered

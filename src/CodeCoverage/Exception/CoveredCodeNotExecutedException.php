@@ -11,7 +11,7 @@
 /**
  * Exception that is raised when covered code is not executed.
  *
- * @since Class available since Release 2.0.0
+ * @since Class available since Release 3.1.0
  */
 class PHP_CodeCoverage_CoveredCodeNotExecutedException extends PHP_CodeCoverage_RuntimeException
 {

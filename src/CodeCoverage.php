@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -26,6 +27,11 @@ class PHP_CodeCoverage
      * @var PHP_CodeCoverage_Filter
      */
     private $filter;
+
+    /**
+     * @var Wizard
+     */
+    private $wizard;
 
     /**
      * @var bool
@@ -115,6 +121,8 @@ class PHP_CodeCoverage
 
         $this->driver = $driver;
         $this->filter = $filter;
+
+        $this->wizard = new Wizard;
     }
 
     /**
@@ -887,23 +895,32 @@ class PHP_CodeCoverage
             $linesToBeUsed
         );
 
-        $message = '';
+        $unintentionallyCoveredUnits = [];
 
         foreach ($data as $file => $_data) {
             foreach ($_data as $line => $flag) {
                 if ($flag == 1 &&
                     (!isset($allowedLines[$file]) ||
                         !isset($allowedLines[$file][$line]))) {
-                    $message .= sprintf(
-                        '- %s:%d' . PHP_EOL,
-                        $file,
-                        $line
-                    );
+                    if ($this->wizard->lookup($file, $line)) {
+                        $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
+                    } else {
+                        $unintentionallyCoveredUnits[] = $file . ':' . $line;
+                    }
                 }
             }
         }
 
-        if (!empty($message)) {
+        if (!empty($unintentionallyCoveredUnits)) {
+            $message = '';
+
+            $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
+            sort($unintentionallyCoveredUnits);
+
+            foreach ($unintentionallyCoveredUnits as $unit) {
+                $message .= '- ' . $unit . "\n";
+            }
+
             throw new PHP_CodeCoverage_UnintentionallyCoveredCodeException(
                 $message
             );

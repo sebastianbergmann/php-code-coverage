@@ -3,6 +3,7 @@
   <file name="source_with_class_and_anonymous_function.php">
     <totals>
       <lines total="19" comments="2" code="17" executable="8" executed="7" percent="87.50%"/>
+      <paths count="2" tested="0" percent="0.00%"/>
       <methods count="2" tested="1" percent="50.00%"/>
       <functions count="0" tested="0" percent=""/>
       <classes count="1" tested="0" percent="0.00%"/>
@@ -11,8 +12,8 @@
     <class name="CoveredClassWithAnonymousFunctionInStaticMethod" start="3" executable="8" executed="7" crap="2.01">
       <package full="" name="" sub="" category=""/>
       <namespace name=""/>
-      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1.04" executable="3" executed="2" coverage="66.666666666667"/>
-      <method name="anonymous function" signature="anonymous function (&amp;$val, $key)" start="11" end="13" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1.04" executable="3" executed="2" coverage="66.666666666667" executablePaths="1" executedPaths="0"/>
+      <method name="anonymous function" signature="anonymous function (&amp;$val, $key)" start="11" end="13" crap="1" executable="2" executed="2" coverage="100" executablePaths="1" executedPaths="0"/>
     </class>
     <coverage>
       <line nr="7">

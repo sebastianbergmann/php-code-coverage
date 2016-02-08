@@ -68,6 +68,16 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
     /**
      * @var int
      */
+    protected $numExecutablePaths = -1;
+
+    /**
+     * @var int
+     */
+    protected $numExecutedPaths = -1;
+
+    /**
+     * @var int
+     */
     protected $numClasses = -1;
 
     /**
@@ -177,6 +187,8 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
 
         $this->numExecutableLines = -1;
         $this->numExecutedLines   = -1;
+        $this->numExecutablePaths = -1;
+        $this->numExecutedPaths   = -1;
 
         return $file;
     }
@@ -330,6 +342,42 @@ class PHP_CodeCoverage_Report_Node_Directory extends PHP_CodeCoverage_Report_Nod
         }
 
         return $this->numExecutedLines;
+    }
+
+    /**
+     * Returns the number of executable paths.
+     *
+     * @return int
+     */
+    public function getNumExecutablePaths()
+    {
+        if ($this->numExecutablePaths == -1) {
+            $this->numExecutablePaths = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutablePaths += $child->getNumExecutablePaths();
+            }
+        }
+
+        return $this->numExecutablePaths;
+    }
+
+    /**
+     * Returns the number of executed paths.
+     *
+     * @return int
+     */
+    public function getNumExecutedPaths()
+    {
+        if ($this->numExecutedPaths == -1) {
+            $this->numExecutedPaths = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutedPaths += $child->getNumExecutedPaths();
+            }
+        }
+
+        return $this->numExecutedPaths;
     }
 
     /**

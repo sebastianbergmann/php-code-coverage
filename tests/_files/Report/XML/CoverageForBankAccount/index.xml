@@ -10,6 +10,7 @@
     <directory name="%s">
       <totals>
         <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00%"/>
+        <paths count="5" tested="1" percent="20.00%"/>
         <methods count="4" tested="3" percent="75.00%"/>
         <functions count="0" tested="0" percent=""/>
         <classes count="1" tested="0" percent="0.00%"/>
@@ -18,6 +19,7 @@
       <file name="BankAccount.php" href="BankAccount.php.xml">
         <totals>
           <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00%"/>
+          <paths count="5" tested="1" percent="20.00%"/>
           <methods count="4" tested="3" percent="75.00%"/>
           <functions count="0" tested="0" percent=""/>
           <classes count="1" tested="0" percent="0.00%"/>

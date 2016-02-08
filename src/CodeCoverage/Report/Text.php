@@ -55,6 +55,7 @@ class PHP_CodeCoverage_Report_Text
             'classes' => '',
             'methods' => '',
             'lines'   => '',
+            'paths'   => '',
             'reset'   => '',
             'eol'     => ''
         ];
@@ -71,6 +72,10 @@ class PHP_CodeCoverage_Report_Text
             $colors['lines']   = $this->getCoverageColor(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines()
+            );
+            $colors['paths']   = $this->getCoverageColor(
+                $report->getNumExecutedPaths(),
+                $report->getNumExecutablePaths()
             );
             $colors['reset']   = $this->colors['reset'];
             $colors['header']  = $this->colors['header'];
@@ -110,6 +115,17 @@ class PHP_CodeCoverage_Report_Text
             $report->getNumExecutableLines()
         );
 
+        $paths = sprintf(
+            '  Paths:   %6s (%d/%d)',
+            PHP_CodeCoverage_Util::percent(
+                $report->getNumExecutedPaths(),
+                $report->getNumExecutablePaths(),
+                true
+            ),
+            $report->getNumExecutedPaths(),
+            $report->getNumExecutablePaths()
+        );
+
         $padding = max(array_map('strlen', [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
@@ -130,6 +146,7 @@ class PHP_CodeCoverage_Report_Text
         $output .= $this->format($colors['classes'], $padding, $classes);
         $output .= $this->format($colors['methods'], $padding, $methods);
         $output .= $this->format($colors['lines'], $padding, $lines);
+        $output .= $this->format($colors['paths'], $padding, $paths);
 
         if ($this->showOnlySummary) {
             return $output . PHP_EOL;
@@ -147,6 +164,8 @@ class PHP_CodeCoverage_Report_Text
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
                 $coveredClassStatements = 0;
+                $classPaths             = 0;
+                $coveredClassPaths      = 0;
                 $coveredMethods         = 0;
                 $classMethods           = 0;
 
@@ -158,6 +177,8 @@ class PHP_CodeCoverage_Report_Text
                     $classMethods++;
                     $classStatements        += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
+                    $classPaths             += $method['executablePaths'];
+                    $coveredClassPaths      += $method['executedPaths'];
                     if ($method['coverage'] == 100) {
                         $coveredMethods++;
                     }
@@ -178,6 +199,8 @@ class PHP_CodeCoverage_Report_Text
                     'methodCount'       => $classMethods,
                     'statementsCovered' => $coveredClassStatements,
                     'statementCount'    => $classStatements,
+                    'pathsCovered'      => $coveredClassPaths,
+                    'pathCount'         => $classPaths,
                 ];
             }
         }
@@ -186,6 +209,7 @@ class PHP_CodeCoverage_Report_Text
 
         $methodColor = '';
         $linesColor  = '';
+        $pathsColor  = '';
         $resetColor  = '';
 
         foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
@@ -194,12 +218,14 @@ class PHP_CodeCoverage_Report_Text
                 if ($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
                     $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
+                    $pathsColor  = $this->getCoverageColor($classInfo['pathsCovered'], $classInfo['pathCount']);
                     $resetColor  = $colors['reset'];
                 }
 
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
                     . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
                     . '  ' . $linesColor  . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
+                    . '  ' . $pathsColor . ' Paths: ' . $this->printCoverageCounts($classInfo['pathsCovered'], $classInfo['pathCount'], 2) . $resetColor
                 ;
             }
         }

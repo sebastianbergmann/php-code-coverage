@@ -90,6 +90,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
                 'numExecutedLines'             => $node->getNumExecutedLines(),
                 'numExecutableLines'           => $node->getNumExecutableLines(),
+                'pathsExecutedPercent'         => $node->getPathExecutedPercent(false),
+                'pathsExecutedPercentAsString' => $node->getPathExecutedPercent(),
+                'numExecutedPaths'             => $node->getNumExecutedPaths(),
+                'numExecutablePaths'           => $node->getNumExecutablePaths(),
                 'testedMethodsPercent'         => $node->getTestedMethodsPercent(false),
                 'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
                 'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
@@ -162,6 +166,18 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                     ),
                     'numExecutedLines'             => $item['executedLines'],
                     'numExecutableLines'           => $item['executableLines'],
+                    'pathsExecutedPercent'         => PHP_CodeCoverage_Util::percent(
+                        $item['executedPaths'],
+                        $item['executablePaths'],
+                        false
+                    ),
+                    'pathsExecutedPercentAsString' => PHP_CodeCoverage_Util::percent(
+                        $item['executedPaths'],
+                        $item['executablePaths'],
+                        true
+                    ),
+                    'numExecutedPaths'             => $item['executedPaths'],
+                    'numExecutablePaths'           => $item['executablePaths'],
                     'testedMethodsPercent'         => PHP_CodeCoverage_Util::percent(
                         $numTestedMethods,
                         $numMethods,
@@ -253,6 +269,18 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
                 ),
                 'numExecutedLines'             => $item['executedLines'],
                 'numExecutableLines'           => $item['executableLines'],
+                'pathsExecutedPercent'         => PHP_CodeCoverage_Util::percent(
+                    $item['executedPaths'],
+                    $item['executablePaths'],
+                    false
+                ),
+                'pathsExecutedPercentAsString' => PHP_CodeCoverage_Util::percent(
+                    $item['executedPaths'],
+                    $item['executablePaths'],
+                    true
+                ),
+                'numExecutedPaths'             => $item['executedPaths'],
+                'numExecutablePaths'           => $item['executablePaths'],
                 'testedMethodsPercent'         => PHP_CodeCoverage_Util::percent(
                     $numTestedItems,
                     1,
@@ -285,24 +313,25 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
             $popoverContent = '';
             $popoverTitle   = '';
 
-            if (array_key_exists($i, $coverageData)) {
-                $numTests = count($coverageData[$i]);
+            if (array_key_exists($i, $coverageData['lines'])) {
+                $lineData = $coverageData['lines'][$i];
 
-                if ($coverageData[$i] === null) {
+                if ($lineData === null) {
                     $trClass = ' class="warning"';
-                } elseif ($numTests == 0) {
+                } elseif (empty($lineData['tests'])) {
                     $trClass = ' class="danger"';
                 } else {
                     $lineCss        = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
+                    $numTests = count($lineData['tests']);
                     if ($numTests > 1) {
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
                     } else {
                         $popoverTitle = '1 test covers line ' . $i;
                     }
 
-                    foreach ($coverageData[$i] as $test) {
+                    foreach ($lineData['tests'] as $test) {
                         if ($lineCss == 'covered-by-large-tests' && $testData[$test]['size'] == 'medium') {
                             $lineCss = 'covered-by-medium-tests';
                         } elseif ($testData[$test]['size'] == 'small') {

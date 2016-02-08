@@ -28,11 +28,12 @@
     <thead>
      <tr>
       <td>&nbsp;</td>
-      <td colspan="9"><div align="center"><strong>Code Coverage</strong></div></td>
+      <td colspan="12"><div align="center"><strong>Code Coverage</strong></div></td>
      </tr>
      <tr>
       <td>&nbsp;</td>
       <td colspan="3"><div align="center"><strong>Lines</strong></div></td>
+      <td colspan="3"><div align="center"><strong>Paths</strong></div></td>
       <td colspan="3"><div align="center"><strong>Functions and Methods</strong></div></td>
       <td colspan="3"><div align="center"><strong>Classes and Traits</strong></div></td>
      </tr>

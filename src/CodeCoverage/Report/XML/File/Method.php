@@ -44,11 +44,13 @@ class PHP_CodeCoverage_Report_XML_File_Method
         }
     }
 
-    public function setTotals($executable, $executed, $coverage)
+    public function setTotals($executable, $executed, $coverage, $executablePaths, $executedPaths)
     {
         $this->contextNode->setAttribute('executable', $executable);
         $this->contextNode->setAttribute('executed', $executed);
         $this->contextNode->setAttribute('coverage', $coverage);
+        $this->contextNode->setAttribute('executablePaths', $executablePaths);
+        $this->contextNode->setAttribute('executedPaths', $executedPaths);
     }
 
     public function setCrap($crap)

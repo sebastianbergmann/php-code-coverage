@@ -50,6 +50,11 @@ class PHP_CodeCoverage
     /**
      * @var bool
      */
+    private $checkForMissingCoversAnnotation = false;
+
+    /**
+     * @var bool
+     */
     private $addUncoveredFilesFromWhitelist = true;
 
     /**
@@ -430,6 +435,23 @@ class PHP_CodeCoverage
     /**
      * @param  bool                                      $flag
      * @throws PHP_CodeCoverage_InvalidArgumentException
+     * @since  Method available since Release 3.2.0
+     */
+    public function setCheckForMissingCoversAnnotation($flag)
+    {
+        if (!is_bool($flag)) {
+            throw PHP_CodeCoverage_InvalidArgumentException::create(
+                1,
+                'boolean'
+            );
+        }
+
+        $this->checkForMissingCoversAnnotation = $flag;
+    }
+
+    /**
+     * @param  bool                                      $flag
+     * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function setCheckForUnexecutedCoveredCode($flag)
     {
@@ -523,12 +545,17 @@ class PHP_CodeCoverage
      * @param  array                                                $data
      * @param  mixed                                                $linesToBeCovered
      * @param  array                                                $linesToBeUsed
+     * @throws PHP_CodeCoverage_MissingCoversAnnotationException
      * @throws PHP_CodeCoverage_UnintentionallyCoveredCodeException
      */
     private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
     {
         if ($linesToBeCovered === false ||
             ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
+            if ($this->checkForMissingCoversAnnotation) {
+                throw new PHP_CodeCoverage_MissingCoversAnnotationException;
+            }
+
             $data = [];
 
             return;

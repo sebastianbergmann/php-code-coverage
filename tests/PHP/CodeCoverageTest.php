@@ -150,6 +150,28 @@ class PHP_CodeCoverageTest extends PHP_CodeCoverage_TestCase
     }
 
     /**
+     * @covers PHP_CodeCoverage::setCheckForMissingCoversAnnotation
+     */
+    public function testSetCheckForMissingCoversAnnotation()
+    {
+        $this->coverage->setCheckForMissingCoversAnnotation(true);
+        $this->assertAttributeEquals(
+            true,
+            'checkForMissingCoversAnnotation',
+            $this->coverage
+        );
+    }
+
+    /**
+     * @covers            PHP_CodeCoverage::setCheckForMissingCoversAnnotation
+     * @expectedException PHP_CodeCoverage_Exception
+     */
+    public function testSetCheckForMissingCoversAnnotationThrowsExceptionForInvalidArgument()
+    {
+        $this->coverage->setCheckForMissingCoversAnnotation(null);
+    }
+
+    /**
      * @covers PHP_CodeCoverage::setForceCoversAnnotation
      */
     public function testSetForceCoversAnnotation()

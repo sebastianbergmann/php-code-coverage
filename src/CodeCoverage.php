@@ -900,11 +900,7 @@ class PHP_CodeCoverage
         foreach ($data as $file => $_data) {
             foreach ($_data as $line => $flag) {
                 if ($flag == 1 && !isset($allowedLines[$file][$line])) {
-                    if ($this->wizard->lookup($file, $line)) {
-                        $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
-                    } else {
-                        $unintentionallyCoveredUnits[] = $file . ':' . $line;
-                    }
+                    $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
                 }
             }
         }

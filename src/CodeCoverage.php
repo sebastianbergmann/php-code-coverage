@@ -906,17 +906,11 @@ class PHP_CodeCoverage
         }
 
         if (!empty($unintentionallyCoveredUnits)) {
-            $message = '';
-
             $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
             sort($unintentionallyCoveredUnits);
 
-            foreach ($unintentionallyCoveredUnits as $unit) {
-                $message .= '- ' . $unit . "\n";
-            }
-
             throw new PHP_CodeCoverage_UnintentionallyCoveredCodeException(
-                $message
+                $unintentionallyCoveredUnits
             );
         }
     }

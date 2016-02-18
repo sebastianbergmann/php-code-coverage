@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 3.2 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [3.2.1] - 2016-MM-DD
+## [3.2.1] - 2016-02-18
 
 ### Changed
 

@@ -357,6 +357,35 @@ class PHP_CodeCoverage
                 continue;
             }
 
+            // Check if there are some lines already present in the two
+            // versions being merged, and also that the number of lines
+            // in each is different. This indicates that one is based on
+            // pulling lines in from glancing through the code in unexecuted
+            // code (the one with more lines in), and one is based on using Xdebug
+            // to properly analyse the code (the one with less lines in).
+            // In this scenario, ditch the lines from the unexecuted analysis,
+            // as it will contain lines which are not classed as executable by
+            // Xdebug, and those lines will throw the code analysis by appearing
+            // as if they should be run but weren't.
+            if ((count($lines) > 0)
+                && (count($this->data[$file]) > 0)
+                && (count($lines) != count($this->data[$file]))
+            ) {
+                if (count($lines) > count($this->data[$file])) {
+                    // More lines in the one being added in, so just ignore them
+                    // and move on to the next file.
+                    continue;
+                } else {
+                    // More lines in the one we currently have, so ditch what we
+                    // currently have and take what's being merged in exactly as
+                    // it is.
+                    $this->data[$file] = $lines;
+
+                    // Move on to the next file.
+                    continue;
+                }
+            }
+            
             foreach ($lines as $line => $data) {
                 if ($data !== null) {
                     if (!isset($this->data[$file][$line])) {

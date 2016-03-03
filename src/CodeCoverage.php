@@ -103,6 +103,11 @@ class PHP_CodeCoverage
     private $tests = [];
 
     /**
+     * @var string[]
+     */
+    private $unintentionallyCoveredSubclassesWhitelist = [];
+
+    /**
      * Constructor.
      *
      * @param  PHP_CodeCoverage_Driver           $driver
@@ -548,6 +553,15 @@ class PHP_CodeCoverage
     }
 
     /**
+     * @param array $whitelist
+     * @since Method available since Release 3.3.0
+     */
+    public function setUnintentionallyCoveredSubclassesWhitelist(array $whitelist)
+    {
+        $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
+    }
+
+    /**
      * Applies the @covers annotation filtering.
      *
      * @param  array                                                $data
@@ -905,10 +919,9 @@ class PHP_CodeCoverage
             }
         }
 
-        if (!empty($unintentionallyCoveredUnits)) {
-            $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
-            sort($unintentionallyCoveredUnits);
+        $unintentionallyCoveredUnits = $this->processUnintentionallyCoveredUnits($unintentionallyCoveredUnits);
 
+        if (!empty($unintentionallyCoveredUnits)) {
             throw new PHP_CodeCoverage_UnintentionallyCoveredCodeException(
                 $unintentionallyCoveredUnits
             );
@@ -1016,5 +1029,35 @@ class PHP_CodeCoverage
         } else {
             return new PHP_CodeCoverage_Driver_Xdebug;
         }
+    }
+
+    /**
+     * @param array $unintentionallyCoveredUnits
+     *
+     * @return array
+     */
+    private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits)
+    {
+        $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
+        sort($unintentionallyCoveredUnits);
+
+        foreach (array_keys($unintentionallyCoveredUnits) as $k => $v) {
+            $unit = explode('::', $unintentionallyCoveredUnits[$k]);
+
+            if (count($unit) != 2) {
+                continue;
+            }
+
+            $class = new ReflectionClass($unit[0]);
+
+            foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
+                if ($class->isSubclassOf($whitelisted)) {
+                    unset($unintentionallyCoveredUnits[$k]);
+                    break;
+                }
+            }
+        }
+
+        return array_values($unintentionallyCoveredUnits);
     }
 }

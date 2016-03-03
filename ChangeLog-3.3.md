@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 3.3 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [3.3.0] - 2016-MM-DD
+## [3.3.0] - 2016-03-03
 
 ### Added
 

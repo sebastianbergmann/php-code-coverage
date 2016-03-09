@@ -93,7 +93,8 @@ class PHP_CodeCoverage_Filter
     /**
      * Checks whether a filename is a real filename.
      *
-     * @param  string $filename
+     * @param string $filename
+     *
      * @return bool
      */
     public function isFile($filename)
@@ -115,7 +116,8 @@ class PHP_CodeCoverage_Filter
     /**
      * Checks whether or not a file is filtered.
      *
-     * @param  string $filename
+     * @param string $filename
+     *
      * @return bool
      */
     public function isFiltered($filename)
@@ -143,6 +145,7 @@ class PHP_CodeCoverage_Filter
      * Returns whether this filter has a whitelist.
      *
      * @return bool
+     *
      * @since  Method available since Release 1.1.0
      */
     public function hasWhitelist()
@@ -154,6 +157,7 @@ class PHP_CodeCoverage_Filter
      * Returns the whitelisted files.
      *
      * @return array
+     *
      * @since Method available since Release 2.0.0
      */
     public function getWhitelistedFiles()
@@ -165,6 +169,7 @@ class PHP_CodeCoverage_Filter
      * Sets the whitelisted files.
      *
      * @param array $whitelistedFiles
+     *
      * @since Method available since Release 2.0.0
      */
     public function setWhitelistedFiles($whitelistedFiles)

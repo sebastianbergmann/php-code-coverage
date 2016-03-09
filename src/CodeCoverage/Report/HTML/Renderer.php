@@ -69,8 +69,9 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     }
 
     /**
-     * @param  Text_Template $template
-     * @param  array         $data
+     * @param Text_Template $template
+     * @param array         $data
+     *
      * @return string
      */
     protected function renderItemTemplate(Text_Template $template, array $data)
@@ -254,7 +255,8 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
     }
 
     /**
-     * @param  int    $percent
+     * @param int $percent
+     *
      * @return string
      */
     protected function getColorLevel($percent)

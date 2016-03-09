@@ -65,7 +65,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  PHP_CodeCoverage_Report_Node_File $node
+     * @param PHP_CodeCoverage_Report_Node_File $node
+     *
      * @return string
      */
     protected function renderItems(PHP_CodeCoverage_Report_Node_File $node)
@@ -119,9 +120,10 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  array         $items
-     * @param  Text_Template $template
-     * @param  Text_Template $methodItemTemplate
+     * @param array         $items
+     * @param Text_Template $template
+     * @param Text_Template $methodItemTemplate
+     *
      * @return string
      */
     protected function renderTraitOrClassItems(array $items, Text_Template $template, Text_Template $methodItemTemplate)
@@ -199,8 +201,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  array         $functions
-     * @param  Text_Template $template
+     * @param array         $functions
+     * @param Text_Template $template
+     *
      * @return string
      */
     protected function renderFunctionItems(array $functions, Text_Template $template)
@@ -222,7 +225,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  Text_Template $template
+     * @param Text_Template $template
+     *
      * @return string
      */
     protected function renderFunctionOrMethodItem(Text_Template $template, array $item, $indent = '')
@@ -269,7 +273,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  PHP_CodeCoverage_Report_Node_File $node
+     * @param PHP_CodeCoverage_Report_Node_File $node
+     *
      * @return string
      */
     protected function renderSource(PHP_CodeCoverage_Report_Node_File $node)
@@ -382,7 +387,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
     }
 
     /**
-     * @param  string $file
+     * @param string $file
+     *
      * @return array
      */
     protected function loadFile($file)

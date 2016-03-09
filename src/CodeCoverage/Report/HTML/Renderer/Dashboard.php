@@ -55,8 +55,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the data for the Class/Method Complexity charts.
      *
-     * @param  array  $classes
-     * @param  string $baseLink
+     * @param array  $classes
+     * @param string $baseLink
+     *
      * @return array
      */
     protected function complexity(array $classes, $baseLink)
@@ -100,7 +101,8 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the data for the Class / Method Coverage Distribution chart.
      *
-     * @param  array $classes
+     * @param array $classes
+     *
      * @return array
      */
     protected function coverageDistribution(array $classes)
@@ -169,8 +171,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the classes / methods with insufficient coverage.
      *
-     * @param  array  $classes
-     * @param  string $baseLink
+     * @param array  $classes
+     * @param string $baseLink
+     *
      * @return array
      */
     protected function insufficientCoverage(array $classes, $baseLink)
@@ -227,8 +230,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
     /**
      * Returns the project risks according to the CRAP index.
      *
-     * @param  array  $classes
-     * @param  string $baseLink
+     * @param array  $classes
+     * @param string $baseLink
+     *
      * @return array
      */
     protected function projectRisks(array $classes, $baseLink)

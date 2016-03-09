@@ -40,8 +40,9 @@ class PHP_CodeCoverage_Report_Text
     }
 
     /**
-     * @param  PHP_CodeCoverage $coverage
-     * @param  bool             $showColors
+     * @param PHP_CodeCoverage $coverage
+     * @param bool             $showColors
+     *
      * @return string
      */
     public function process(PHP_CodeCoverage $coverage, $showColors = false)

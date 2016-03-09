@@ -17,7 +17,7 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR 
  */
 class PHP_CodeCoverage_Report_XMLTest extends PHP_CodeCoverage_TestCase
 {
-    static private $TEST_REPORT_PATH_SOURCE;
+    private static $TEST_REPORT_PATH_SOURCE;
 
     public static function setUpBeforeClass()
     {

@@ -55,8 +55,10 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return array
+     *
      * @since Method available since Release 2.0.0
      */
     private function cleanup(array $data)
@@ -79,8 +81,10 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     }
 
     /**
-     * @param  string $file
+     * @param string $file
+     *
      * @return int
+     *
      * @since Method available since Release 2.0.0
      */
     private function getNumberOfLinesInFile($file)

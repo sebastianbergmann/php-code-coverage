@@ -16,9 +16,10 @@
 class PHP_CodeCoverage_Report_Clover
 {
     /**
-     * @param  PHP_CodeCoverage $coverage
-     * @param  string           $target
-     * @param  string           $name
+     * @param PHP_CodeCoverage $coverage
+     * @param string           $target
+     * @param string           $name
+     *
      * @return string
      */
     public function process(PHP_CodeCoverage $coverage, $target = null, $name = null)

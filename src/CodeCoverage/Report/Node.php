@@ -133,7 +133,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of classes that has been tested.
      *
-     * @param  bool $asString
+     * @param bool $asString
+     *
      * @return int
      */
     public function getTestedClassesPercent($asString = true)
@@ -148,7 +149,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of traits that has been tested.
      *
-     * @param  bool $asString
+     * @param bool $asString
+     *
      * @return int
      */
     public function getTestedTraitsPercent($asString = true)
@@ -163,8 +165,10 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of traits that has been tested.
      *
-     * @param  bool $asString
+     * @param bool $asString
+     *
      * @return int
+     *
      * @since  Method available since Release 1.2.0
      */
     public function getTestedClassesAndTraitsPercent($asString = true)
@@ -179,7 +183,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of methods that has been tested.
      *
-     * @param  bool $asString
+     * @param bool $asString
+     *
      * @return int
      */
     public function getTestedMethodsPercent($asString = true)
@@ -194,7 +199,8 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
     /**
      * Returns the percentage of executed lines.
      *
-     * @param  bool $asString
+     * @param bool $asString
+     *
      * @return int
      */
     public function getLineExecutedPercent($asString = true)
@@ -210,6 +216,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * Returns the number of classes and traits.
      *
      * @return int
+     *
      * @since  Method available since Release 1.2.0
      */
     public function getNumClassesAndTraits()
@@ -221,6 +228,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * Returns the number of tested classes and traits.
      *
      * @return int
+     *
      * @since  Method available since Release 1.2.0
      */
     public function getNumTestedClassesAndTraits()
@@ -232,6 +240,7 @@ abstract class PHP_CodeCoverage_Report_Node implements Countable
      * Returns the classes and traits of this node.
      *
      * @return array
+     *
      * @since  Method available since Release 1.2.0
      */
     public function getClassesAndTraits()

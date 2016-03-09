@@ -19,7 +19,7 @@ if (!defined('TEST_FILES_PATH')) {
  */
 abstract class PHP_CodeCoverage_TestCase extends PHPUnit_Framework_TestCase
 {
-    static protected $TEST_TMP_PATH;
+    protected static $TEST_TMP_PATH;
 
     public static function setUpBeforeClass()
     {

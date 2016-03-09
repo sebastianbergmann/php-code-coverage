@@ -16,7 +16,8 @@
 class PHP_CodeCoverage_Report_Factory
 {
     /**
-     * @param  PHP_CodeCoverage                       $coverage
+     * @param PHP_CodeCoverage $coverage
+     *
      * @return PHP_CodeCoverage_Report_Node_Directory
      */
     public function create(PHP_CodeCoverage $coverage)
@@ -100,7 +101,8 @@ class PHP_CodeCoverage_Report_Factory
      * )
      * </code>
      *
-     * @param  array $files
+     * @param array $files
+     *
      * @return array
      */
     private function buildDirectoryStructure($files)
@@ -165,7 +167,8 @@ class PHP_CodeCoverage_Report_Factory
      * )
      * </code>
      *
-     * @param  array  $files
+     * @param array $files
+     *
      * @return string
      */
     private function reducePaths(&$files)

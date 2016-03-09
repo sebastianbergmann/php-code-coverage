@@ -98,11 +98,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * Constructor.
      *
-     * @param  string                                    $name
-     * @param  PHP_CodeCoverage_Report_Node              $parent
-     * @param  array                                     $coverageData
-     * @param  array                                     $testData
-     * @param  bool                                      $cacheTokens
+     * @param string                       $name
+     * @param PHP_CodeCoverage_Report_Node $parent
+     * @param array                        $coverageData
+     * @param array                        $testData
+     * @param bool                         $cacheTokens
+     *
      * @throws PHP_CodeCoverage_InvalidArgumentException
      */
     public function __construct($name, PHP_CodeCoverage_Report_Node $parent, array $coverageData, array $testData, $cacheTokens)
@@ -634,9 +635,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
      * based on its cyclomatic complexity and percentage of code coverage.
      *
-     * @param  int    $ccn
-     * @param  float  $coverage
+     * @param int   $ccn
+     * @param float $coverage
+     *
      * @return string
+     *
      * @since  Method available since Release 1.2.0
      */
     protected function crap($ccn, $coverage)

@@ -16,8 +16,9 @@
 class PHP_CodeCoverage_Report_PHP
 {
     /**
-     * @param  PHP_CodeCoverage $coverage
-     * @param  string           $target
+     * @param PHP_CodeCoverage $coverage
+     * @param string           $target
+     *
      * @return string
      */
     public function process(PHP_CodeCoverage $coverage, $target = null)

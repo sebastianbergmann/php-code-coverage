@@ -84,8 +84,9 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
     /**
      * Convert phpdbg based data into the format CodeCoverage expects
      *
-     * @param  array $sourceLines
-     * @param  array $dbgData
+     * @param array $sourceLines
+     * @param array $dbgData
+     *
      * @return array
      */
     private function detectExecutedLines(array $sourceLines, array $dbgData)

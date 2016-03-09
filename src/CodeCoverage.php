@@ -966,7 +966,6 @@ class PHP_CodeCoverage
         if (!empty($message)) {
             throw new PHP_CodeCoverage_CoveredCodeNotExecutedException($message);
         }
-
     }
 
     /**

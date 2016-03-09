@@ -35,7 +35,7 @@
     },
     "suggest": {
         "ext-dom": "*",
-        "ext-xdebug": ">=2.2.1",
+        "ext-xdebug": ">=2.4.0",
         "ext-xmlwriter": "*"
     },
     "autoload": {

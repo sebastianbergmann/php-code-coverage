@@ -55,6 +55,7 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
 
         if ($fetchedLines == []) {
             $sourceLines = phpdbg_get_executable();
+            $newFiles = array_keys($sourceLines);
         } else {
             $newFiles = array_diff(
                 get_included_files(),
@@ -70,13 +71,15 @@ class PHP_CodeCoverage_Driver_PHPDBG implements PHP_CodeCoverage_Driver
             }
         }
 
-        foreach ($sourceLines as $file => $lines) {
-            foreach ($lines as $lineNo => $numExecuted) {
-                $sourceLines[$file][$lineNo] = self::LINE_NOT_EXECUTED;
-            }
+        foreach ($newFiles as $file) {
+            $fetchedLines[$file] = $sourceLines[$file];
         }
 
-        $fetchedLines = array_merge($fetchedLines, $sourceLines);
+        foreach ($fetchedLines as $file => $lines) {
+            foreach ($lines as $lineNo => $status) {
+                $fetchedLines[$file][$lineNo] = self::LINE_NOT_EXECUTED;
+            }
+        }
 
         return $this->detectExecutedLines($fetchedLines, $dbgData);
     }

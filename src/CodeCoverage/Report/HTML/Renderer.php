@@ -58,7 +58,7 @@ abstract class PHP_CodeCoverage_Report_HTML_Renderer
      */
     public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound)
     {
-        $version = new SebastianBergmann\Version('3.3.0', dirname(dirname(dirname(dirname(__DIR__)))));
+        $version = new SebastianBergmann\Version('3.3.1', dirname(dirname(dirname(dirname(__DIR__)))));
 
         $this->templatePath   = $templatePath;
         $this->generator      = $generator;

@@ -6,7 +6,7 @@ php:
 before_script:
     - COMPOSER_ROOT_VERSION=dev-master composer install --prefer-source
 
-script: vendor/bin/phpunit --configuration ./build/travis-ci.xml
+script: vendor/bin/phpunit --configuration build
 
 notifications:
   email: false

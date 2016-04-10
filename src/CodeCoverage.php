@@ -878,6 +878,7 @@ class CodeCoverage
                         $this->ignoredLines[$filename][] = $token->getEndLine();
 
                     // Intentional fallthrough
+                    case 'PHP_Token_DECLARE':
                     case 'PHP_Token_OPEN_TAG':
                     case 'PHP_Token_CLOSE_TAG':
                     case 'PHP_Token_USE':

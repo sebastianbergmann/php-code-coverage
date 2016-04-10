@@ -27,7 +27,7 @@ class CodeCoverageTest extends TestCase
         $this->coverage = new CodeCoverage;
     }
 
-    public function testConstructor()
+    public function testCanBeConstructedWithoutGivenFilterObject()
     {
         $this->assertAttributeInstanceOf(
             Xdebug::class,
@@ -42,7 +42,7 @@ class CodeCoverageTest extends TestCase
         );
     }
 
-    public function testConstructor2()
+    public function testCanBeConstructedWithGivenFilterObject()
     {
         $filter   = new Filter;
         $coverage = new CodeCoverage(null, $filter);
@@ -59,7 +59,7 @@ class CodeCoverageTest extends TestCase
     /**
      * @expectedException SebastianBergmann\CodeCoverage\Exception
      */
-    public function testStartThrowsExceptionForInvalidArgument()
+    public function testCannotStartWithInvalidArgument()
     {
         $this->coverage->start(null, null);
     }
@@ -67,7 +67,7 @@ class CodeCoverageTest extends TestCase
     /**
      * @expectedException SebastianBergmann\CodeCoverage\Exception
      */
-    public function testStopThrowsExceptionForInvalidArgument()
+    public function testCannotStopWithInvalidFirstArgument()
     {
         $this->coverage->stop(null);
     }
@@ -75,7 +75,7 @@ class CodeCoverageTest extends TestCase
     /**
      * @expectedException SebastianBergmann\CodeCoverage\Exception
      */
-    public function testStopThrowsExceptionForInvalidArgument2()
+    public function testCannotStopWithInvalidSecondArgument()
     {
         $this->coverage->stop(true, null);
     }
@@ -83,7 +83,7 @@ class CodeCoverageTest extends TestCase
     /**
      * @expectedException SebastianBergmann\CodeCoverage\Exception
      */
-    public function testAppendThrowsExceptionForInvalidArgument()
+    public function testCannotAppendWithInvalidArgument()
     {
         $this->coverage->append([], null);
     }

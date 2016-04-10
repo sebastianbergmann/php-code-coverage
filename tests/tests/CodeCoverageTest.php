@@ -10,6 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage;
 
+use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 
 /**
@@ -27,8 +28,12 @@ class CodeCoverageTest extends TestCase
         $this->coverage = new CodeCoverage;
     }
 
-    public function testCanBeConstructedWithoutGivenFilterObject()
+    public function testCanBeConstructedForXdebugWithoutGivenFilterObject()
     {
+        if (PHP_SAPI == 'phpdbg') {
+            $this->markTestSkipped('Requires PHP CLI and Xdebug');
+        }
+
         $this->assertAttributeInstanceOf(
             Xdebug::class,
             'driver',
@@ -42,13 +47,54 @@ class CodeCoverageTest extends TestCase
         );
     }
 
-    public function testCanBeConstructedWithGivenFilterObject()
+    public function testCanBeConstructedForXdebugWithGivenFilterObject()
     {
+        if (PHP_SAPI == 'phpdbg') {
+            $this->markTestSkipped('Requires PHP CLI and Xdebug');
+        }
+
         $filter   = new Filter;
         $coverage = new CodeCoverage(null, $filter);
 
         $this->assertAttributeInstanceOf(
             Xdebug::class,
+            'driver',
+            $coverage
+        );
+
+        $this->assertSame($filter, $coverage->filter());
+    }
+
+    public function testCanBeConstructedForPhpdbgWithoutGivenFilterObject()
+    {
+        if (PHP_SAPI != 'phpdbg') {
+            $this->markTestSkipped('Requires PHPDBG');
+        }
+
+        $this->assertAttributeInstanceOf(
+            PHPDBG::class,
+            'driver',
+            $this->coverage
+        );
+
+        $this->assertAttributeInstanceOf(
+            Filter::class,
+            'filter',
+            $this->coverage
+        );
+    }
+
+    public function testCanBeConstructedForPhpdbgWithGivenFilterObject()
+    {
+        if (PHP_SAPI != 'phpdbg') {
+            $this->markTestSkipped('Requires PHPDBG');
+        }
+
+        $filter   = new Filter;
+        $coverage = new CodeCoverage(null, $filter);
+
+        $this->assertAttributeInstanceOf(
+            PHPDBG::class,
             'driver',
             $coverage
         );

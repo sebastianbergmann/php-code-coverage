@@ -10,6 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 
 /**
@@ -290,7 +291,7 @@ class Dashboard extends Renderer
         return $result;
     }
 
-    protected function getActiveBreadcrumb(DirectoryNode $node)
+    protected function getActiveBreadcrumb(AbstractNode $node)
     {
         return sprintf(
             '        <li><a href="index.html">%s</a></li>' . "\n" .

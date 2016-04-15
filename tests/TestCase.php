@@ -83,7 +83,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $data = $this->getXdebugDataForBankAccount();
         require_once TEST_FILES_PATH . '/BankAccountTest.php';
 
-        $stub = $this->getMock(Xdebug::class);
+        $stub = $this->createMock(Xdebug::class);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->onConsecutiveCalls(
@@ -148,7 +149,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->getMock(Xdebug::class);
+        $stub = $this->createMock(Xdebug::class);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->onConsecutiveCalls(
@@ -187,7 +189,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->getMock(Xdebug::class);
+        $stub = $this->createMock(Xdebug::class);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->onConsecutiveCalls(
@@ -279,7 +282,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUpXdebugStubForFileWithIgnoredLines()
     {
-        $stub = $this->getMock(Xdebug::class);
+        $stub = $this->createMock(Xdebug::class);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(
@@ -314,7 +318,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUpXdebugStubForClassWithAnonymousFunction()
     {
-        $stub = $this->getMock(Xdebug::class);
+        $stub = $this->createMock(Xdebug::class);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(

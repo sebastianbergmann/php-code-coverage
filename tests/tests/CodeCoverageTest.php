@@ -323,7 +323,7 @@ class CodeCoverageTest extends TestCase
     public function testMerge2()
     {
         $coverage = new CodeCoverage(
-            $this->getMock(Xdebug::class),
+            $this->createMock(Xdebug::class),
             new Filter
         );
 

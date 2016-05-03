@@ -20,6 +20,13 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 class Xdebug implements Driver
 {
     /**
+     * Cache the number of lines for each file
+     *
+     * @var array
+     */
+    private $cacheNumLines = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -39,9 +46,13 @@ class Xdebug implements Driver
     /**
      * Start collection of code coverage information.
      */
-    public function start()
+    public function start($determineUnusedAndDead = true)
     {
-        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        if ($determineUnusedAndDead) {
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        } else {
+            xdebug_start_code_coverage();
+        }
     }
 
     /**
@@ -88,13 +99,17 @@ class Xdebug implements Driver
      */
     private function getNumberOfLinesInFile($file)
     {
-        $buffer = file_get_contents($file);
-        $lines  = substr_count($buffer, "\n");
+        if (!isset($this->cacheNumLines[$file])) {
+            $buffer = file_get_contents($file);
+            $lines  = substr_count($buffer, "\n");
 
-        if (substr($buffer, -1) !== "\n") {
-            $lines++;
+            if (substr($buffer, -1) !== "\n") {
+                $lines++;
+            }
+
+            $this->cacheNumLines[$file] = $lines;
         }
 
-        return $lines;
+        return $this->cacheNumLines[$file];
     }
 }

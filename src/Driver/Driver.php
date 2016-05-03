@@ -39,7 +39,7 @@ interface Driver
     /**
      * Start collection of code coverage information.
      */
-    public function start();
+    public function start($determineUnusedAndDead = true);
 
     /**
      * Stop collection of code coverage information.

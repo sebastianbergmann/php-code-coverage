@@ -20,7 +20,7 @@ class HHVM extends Xdebug
     /**
      * Start collection of code coverage information.
      */
-    public function start()
+    public function start($determineUnusedAndDead = true)
     {
         xdebug_start_code_coverage();
     }

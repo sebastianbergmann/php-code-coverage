@@ -19,6 +19,8 @@ class HHVM extends Xdebug
 {
     /**
      * Start collection of code coverage information.
+     *
+     * @param bool $determineUnusedAndDead
      */
     public function start($determineUnusedAndDead = true)
     {

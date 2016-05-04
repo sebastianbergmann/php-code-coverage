@@ -158,8 +158,6 @@ abstract class Renderer
      */
     protected function setCommonTemplateVariables(\Text_Template $template, AbstractNode $node)
     {
-        $runtime = new Runtime;
-
         $template->setVar(
             [
                 'id'               => $node->getId(),
@@ -168,9 +166,7 @@ abstract class Renderer
                 'breadcrumbs'      => $this->getBreadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,
-                'runtime_name'     => $runtime->getName(),
-                'runtime_version'  => $runtime->getVersion(),
-                'runtime_link'     => $runtime->getVendorUrl(),
+                'runtime'          => $this->getRuntimeString(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound
@@ -273,5 +269,29 @@ abstract class Renderer
         } else {
             return 'success';
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function getRuntimeString()
+    {
+        $runtime = new Runtime;
+
+        $buffer = sprintf(
+            '<a href="%s" target="_top">%s %s</a>',
+            $runtime->getVendorUrl(),
+            $runtime->getName(),
+            $runtime->getVersion()
+        );
+
+        if ($runtime->hasXdebug() && !$runtime->hasPHPDBGCodeCoverage()) {
+            $buffer .= sprintf(
+                ' with <a href="https://xdebug.org/">Xdebug %s</a>',
+                phpversion('xdebug')
+            );
+        }
+
+        return $buffer;
     }
 }

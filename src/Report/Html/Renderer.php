@@ -92,9 +92,10 @@ abstract class Renderer
                 $data['testedClassesPercent']
             );
         } else {
-            $classesLevel  = 'success';
-            $classesNumber = '0' . $numSeparator . '0';
-            $classesBar    = $this->getCoverageBar(100);
+            $classesLevel                         = '';
+            $classesNumber                        = '0' . $numSeparator . '0';
+            $classesBar                           = '';
+            $data['testedClassesPercentAsString'] = 'n/a';
         }
 
         if ($data['numMethods'] > 0) {
@@ -107,10 +108,10 @@ abstract class Renderer
                 $data['testedMethodsPercent']
             );
         } else {
-            $methodsLevel                         = 'success';
+            $methodsLevel                         = '';
             $methodsNumber                        = '0' . $numSeparator . '0';
-            $methodsBar                           = $this->getCoverageBar(100);
-            $data['testedMethodsPercentAsString'] = '100.00%';
+            $methodsBar                           = '';
+            $data['testedMethodsPercentAsString'] = 'n/a';
         }
 
         if ($data['numExecutableLines'] > 0) {
@@ -123,10 +124,10 @@ abstract class Renderer
                 $data['linesExecutedPercent']
             );
         } else {
-            $linesLevel                           = 'success';
+            $linesLevel                           = '';
             $linesNumber                          = '0' . $numSeparator . '0';
-            $linesBar                             = $this->getCoverageBar(100);
-            $data['linesExecutedPercentAsString'] = '100.00%';
+            $linesBar                             = '';
+            $data['linesExecutedPercentAsString'] = 'n/a';
         }
 
         $template->setVar(

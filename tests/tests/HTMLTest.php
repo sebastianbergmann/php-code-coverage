@@ -10,7 +10,6 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Report\Html\Facade;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 class HTMLTest extends TestCase

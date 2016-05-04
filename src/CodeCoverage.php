@@ -169,9 +169,9 @@ class CodeCoverage
     public function clear()
     {
         $this->isInitialized = false;
-        $this->currentId = null;
-        $this->data      = [];
-        $this->tests     = [];
+        $this->currentId     = null;
+        $this->data          = [];
+        $this->tests         = [];
     }
 
     /**
@@ -1072,7 +1072,6 @@ class CodeCoverage
         $this->isInitialized = true;
 
         if ($this->processUncoveredFilesFromWhitelist) {
-
             $this->shouldCheckForDeadAndUnused = false;
 
             $this->driver->start(true);
@@ -1083,7 +1082,7 @@ class CodeCoverage
                 }
             }
 
-            $data = [];
+            $data     = [];
             $coverage = $this->driver->stop();
 
             foreach ($coverage as $file => $fileCoverage) {

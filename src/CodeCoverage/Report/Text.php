@@ -31,7 +31,7 @@ class PHP_CodeCoverage_Report_Text
         'eol'    => "\x1b[2K",
     ];
 
-    public function __construct($lowUpperBound, $highLowerBound, $showUncoveredFiles, $showOnlySummary)
+    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $showUncoveredFiles = false, $showOnlySummary = false)
     {
         $this->lowUpperBound      = $lowUpperBound;
         $this->highLowerBound     = $highLowerBound;

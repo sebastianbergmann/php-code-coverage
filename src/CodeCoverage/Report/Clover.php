@@ -231,14 +231,16 @@ class PHP_CodeCoverage_Report_Clover
         $xmlMetrics->setAttribute('coveredelements', $report->getNumTestedMethods() + $report->getNumExecutedLines() /* + coveredconditionals */);
         $xmlProject->appendChild($xmlMetrics);
 
+        $buffer = $xmlDocument->saveXML();
+
         if ($target !== null) {
             if (!is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }
 
-            return $xmlDocument->save($target);
-        } else {
-            return $xmlDocument->saveXML();
+            file_put_contents($target, $buffer);
         }
+
+        return $buffer;
     }
 }

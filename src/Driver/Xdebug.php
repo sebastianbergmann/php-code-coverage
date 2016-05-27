@@ -75,7 +75,7 @@ class Xdebug implements Driver
      *
      * @return array
      */
-    private function cleanup(array $data)
+    protected function cleanup(array $data)
     {
         foreach (array_keys($data) as $file) {
             unset($data[$file][0]);

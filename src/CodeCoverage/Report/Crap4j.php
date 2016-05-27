@@ -125,15 +125,17 @@ class PHP_CodeCoverage_Report_Crap4j
         $root->appendChild($stats);
         $root->appendChild($methodsNode);
 
+        $buffer = $document->saveXML();
+
         if ($target !== null) {
             if (!is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }
 
-            return $document->save($target);
-        } else {
-            return $document->saveXML();
+            file_put_contents($target, $buffer);
         }
+
+        return $buffer;
     }
 
     /**

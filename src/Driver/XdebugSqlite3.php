@@ -21,7 +21,7 @@ use SebastianBergmann\CodeCoverage\Handler\Sqlite3Data as DataHandler;
  * @since Class available since Release 3.0.1
  * @codeCoverageIgnore
  */
-class XdebugSqlite3 extends Xdebug
+class XdebugSQLite3 extends Xdebug
 {
 
     /**

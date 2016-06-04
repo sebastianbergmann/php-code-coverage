@@ -185,6 +185,16 @@ class CodeCoverage
     }
 
     /**
+     * Returns the Driver used.
+     *
+     * @return Driver
+     */
+    public function driver()
+    {
+        return $this->driver;
+    }
+
+    /**
      * Returns the collected code coverage data.
      * Set $raw = true to bypass all filters.
      *
@@ -259,6 +269,15 @@ class CodeCoverage
         $this->currentId = $id;
 
         $this->driver->start($this->shouldCheckForDeadAndUnused);
+    }
+
+    /**
+     * Sets the current id.
+     *
+     * @param string $id
+     */
+    public function setCurrentId($id) {
+        $this->currentId = $id;
     }
 
     /**

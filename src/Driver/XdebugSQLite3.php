@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Handler\Sqlite3Data as DataHandler;
 /**
  * Driver for Xdebug's code coverage functionality which saves data to Sqlite3.
  *
- * @since Class available since Release 3.0.1
+ * @since Class available since Release 3.1.0
  * @codeCoverageIgnore
  */
 class XdebugSQLite3 extends Xdebug
@@ -32,9 +32,14 @@ class XdebugSQLite3 extends Xdebug
     public $root;
 
     /**
+     *
+     */
+    public $log;
+
+    /**
      * The name of the database.
      */
-    const SQLITE_DB = 'coverage.sqlite';
+    const SQLITE_DB = '/tmp/coverage.sqlite';
 
     /**
      * @var XdebugSqlite3
@@ -48,8 +53,8 @@ class XdebugSQLite3 extends Xdebug
      */
     public function stop()
     {
-        xdebug_stop_code_coverage();
         $cov = xdebug_get_code_coverage();
+        xdebug_stop_code_coverage();
 
         if (!isset($this->root)) {
             $this->root = getcwd();
@@ -104,8 +109,7 @@ class XdebugSQLite3 extends Xdebug
      */
     public static function isCoverageOn()
     {
-        $coverage = self::getInstance();
-        if (empty($coverage->log) || !file_exists($coverage->log)) {
+        if (empty(self::SQLITE_DB) || !file_exists(self::SQLITE_DB)) {
             trigger_error('No coverage log');
 
             return false;

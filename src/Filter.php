@@ -46,7 +46,9 @@ class Filter
      */
     public function addFileToWhitelist($filename)
     {
-        $this->whitelistedFiles[realpath($filename)] = true;
+        if (file_exists($filename)) {
+            $this->whitelistedFiles[realpath($filename)] = true;
+        }
     }
 
     /**

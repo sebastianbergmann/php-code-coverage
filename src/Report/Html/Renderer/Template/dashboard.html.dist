@@ -216,7 +216,7 @@ $(document).ready(function() {
       .showLegend(false)
       .forceX([0, 100]);
     chart.tooltipContent(function(key, y, e, graph) {
-      return '<p>' + graph.point.class + '</p>';
+      return '<p>' + key.point.class + '</p>';
     });
 
     chart.xAxis.axisLabel('Code Coverage (in percent)');
@@ -240,7 +240,7 @@ $(document).ready(function() {
       .showLegend(false)
       .forceX([0, 100]);
     chart.tooltipContent(function(key, y, e, graph) {
-      return '<p>' + graph.point.class + '</p>';
+      return '<p>' + key.point.class + '</p>';
     });
 
     chart.xAxis.axisLabel('Code Coverage (in percent)');

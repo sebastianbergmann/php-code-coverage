@@ -219,7 +219,7 @@ $(document).ready(function() {
       .showDistY(true)
       .showLegend(false)
       .forceX([0, 100]);
-    chart.tooltipContent(function(key, y, e, graph) {
+    chart.tooltipContent(function(graph) {
       return '<p>' + graph.point.class + '</p>';
     });
 
@@ -243,7 +243,7 @@ $(document).ready(function() {
       .showDistY(true)
       .showLegend(false)
       .forceX([0, 100]);
-    chart.tooltipContent(function(key, y, e, graph) {
+    chart.tooltipContent(function(graph) {
       return '<p>' + graph.point.class + '</p>';
     });
 

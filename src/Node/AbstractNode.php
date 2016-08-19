@@ -165,7 +165,7 @@ abstract class AbstractNode implements \Countable
     }
 
     /**
-     * Returns the percentage of traits that has been tested.
+     * Returns the percentage of classes and traits that has been tested.
      *
      * @param bool $asString
      *
@@ -176,6 +176,22 @@ abstract class AbstractNode implements \Countable
         return Util::percent(
             $this->getNumTestedClassesAndTraits(),
             $this->getNumClassesAndTraits(),
+            $asString
+        );
+    }
+
+    /**
+     * Returns the percentage of functions that has been tested.
+     *
+     * @param bool $asString
+     *
+     * @return int
+     */
+    public function getTestedFunctionsPercent($asString = true)
+    {
+        return Util::percent(
+            $this->getNumTestedFunctions(),
+            $this->getNumFunctions(),
             $asString
         );
     }
@@ -192,6 +208,22 @@ abstract class AbstractNode implements \Countable
         return Util::percent(
             $this->getNumTestedMethods(),
             $this->getNumMethods(),
+            $asString
+        );
+    }
+
+    /**
+     * Returns the percentage of functions and methods that has been tested.
+     *
+     * @param bool $asString
+     *
+     * @return int
+     */
+    public function getTestedFunctionsAndMethodsPercent($asString = true)
+    {
+        return Util::percent(
+            $this->getNumTestedFunctionsAndMethods(),
+            $this->getNumFunctionsAndMethods(),
             $asString
         );
     }
@@ -240,6 +272,36 @@ abstract class AbstractNode implements \Countable
     public function getClassesAndTraits()
     {
         return \array_merge($this->getClasses(), $this->getTraits());
+    }
+
+    /**
+     * Returns the number of functions and methods.
+     *
+     * @return int
+     */
+    public function getNumFunctionsAndMethods()
+    {
+        return $this->getNumFunctions() + $this->getNumMethods();
+    }
+
+    /**
+     * Returns the number of tested functions and methods.
+     *
+     * @return int
+     */
+    public function getNumTestedFunctionsAndMethods()
+    {
+        return $this->getNumTestedFunctions() + $this->getNumTestedMethods();
+    }
+
+    /**
+     * Returns the functions and methods of this node.
+     *
+     * @return array
+     */
+    public function getFunctionsAndMethods()
+    {
+        return array_merge($this->getFunctions(), $this->getMethods());
     }
 
     /**

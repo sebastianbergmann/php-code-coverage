@@ -59,14 +59,14 @@ class Directory extends Renderer
         $data = [
             'numClasses'                   => $node->getNumClassesAndTraits(),
             'numTestedClasses'             => $node->getNumTestedClassesAndTraits(),
-            'numMethods'                   => $node->getNumMethods(),
-            'numTestedMethods'             => $node->getNumTestedMethods(),
+            'numMethods'                   => $node->getNumFunctionsAndMethods(),
+            'numTestedMethods'             => $node->getNumTestedFunctionsAndMethods(),
             'linesExecutedPercent'         => $node->getLineExecutedPercent(false),
             'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
             'numExecutedLines'             => $node->getNumExecutedLines(),
             'numExecutableLines'           => $node->getNumExecutableLines(),
-            'testedMethodsPercent'         => $node->getTestedMethodsPercent(false),
-            'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
+            'testedMethodsPercent'         => $node->getTestedFunctionsAndMethodsPercent(false),
+            'testedMethodsPercentAsString' => $node->getTestedFunctionsAndMethodsPercent(),
             'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
             'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent()
         ];

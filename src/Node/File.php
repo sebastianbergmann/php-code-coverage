@@ -569,6 +569,24 @@ class File extends AbstractNode
                 $class['coverage']
             );
         }
+
+        foreach ($this->functions as &$function) {
+            if ($function['executableLines'] > 0) {
+                $function['coverage'] = ($function['executedLines'] /
+                        $function['executableLines']) * 100;
+            } else {
+                $function['coverage'] = 100;
+            }
+
+            if ($function['coverage'] == 100) {
+                $this->numTestedFunctions++;
+            }
+
+            $function['crap'] = $this->crap(
+                $function['ccn'],
+                $function['coverage']
+            );
+        }
     }
 
     /**

@@ -129,7 +129,7 @@ class Text
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date  = date('Y-m-d H:i:s', (int) $_SERVER['REQUEST_TIME']);
+            $date  = date('  Y-m-d H:i:s', (int) $_SERVER['REQUEST_TIME']);
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);

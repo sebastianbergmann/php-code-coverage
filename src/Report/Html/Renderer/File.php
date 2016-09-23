@@ -147,12 +147,26 @@ class File extends Renderer
                 }
             }
 
+            if ($item['executableLines'] > 0) {
+                $numClasses                   = 1;
+                $numTestedClasses             = $numTestedMethods == $numMethods ? 1 : 0;
+                $linesExecutedPercentAsString = Util::percent(
+                    $item['executedLines'],
+                    $item['executableLines'],
+                    false
+                );
+            } else {
+                $numClasses                   = 'n/a';
+                $numTestedClasses             = 'n/a';
+                $linesExecutedPercentAsString = 'n/a';
+            }
+
             $buffer .= $this->renderItemTemplate(
                 $template,
                 [
                     'name'                         => $name,
-                    'numClasses'                   => 1,
-                    'numTestedClasses'             => $numTestedMethods == $numMethods ? 1 : 0,
+                    'numClasses'                   => $numClasses,
+                    'numTestedClasses'             => $numTestedClasses,
                     'numMethods'                   => $numMethods,
                     'numTestedMethods'             => $numTestedMethods,
                     'linesExecutedPercent'         => Util::percent(
@@ -160,11 +174,7 @@ class File extends Renderer
                         $item['executableLines'],
                         false
                     ),
-                    'linesExecutedPercentAsString' => Util::percent(
-                        $item['executedLines'],
-                        $item['executableLines'],
-                        true
-                    ),
+                    'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
                     'numExecutedLines'             => $item['executedLines'],
                     'numExecutableLines'           => $item['executableLines'],
                     'testedMethodsPercent'         => Util::percent(

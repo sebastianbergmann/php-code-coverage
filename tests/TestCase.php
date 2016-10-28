@@ -232,8 +232,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function getExpectedDataArrayForBankAccount()
     {
+        $filter = new Filter();
+
         return [
-            TEST_FILES_PATH . 'BankAccount.php' => [
+            $filter->unifyFilename(TEST_FILES_PATH . 'BankAccount.php') => [
                 8 => [
                     0 => 'BankAccountTest::testBalanceIsInitiallyZero',
                     1 => 'BankAccountTest::testDepositWithdrawMoney'

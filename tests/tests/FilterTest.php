@@ -69,6 +69,12 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             TEST_FILES_PATH . 'source_without_ignore.php',
             TEST_FILES_PATH . 'source_without_namespace.php'
         ];
+
+        $filter = $this->filter;
+
+        $this->files = array_map(function($file) use ($filter) {
+            return $filter->unifyFilename($file);
+        }, $this->files);
     }
 
     /**
@@ -78,9 +84,10 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     public function testAddingAFileToTheWhitelistWorks()
     {
         $this->filter->addFileToWhitelist($this->files[0]);
+        $expected = $this->filter->unifyFilename($this->files[0]);
 
         $this->assertEquals(
-            [$this->files[0]],
+            [$expected],
             $this->filter->getWhitelist()
         );
     }

@@ -361,6 +361,8 @@ class CodeCoverage
         $this->tests[$id] = ['size' => $size, 'status' => $status];
 
         foreach ($data as $file => $lines) {
+            $file = $this->filter->unifyFilename($file);
+
             if (!$this->filter->isFile($file)) {
                 continue;
             }
@@ -387,6 +389,8 @@ class CodeCoverage
         );
 
         foreach ($that->data as $file => $lines) {
+            $file = $this->filter->unifyFilename($file);
+
             if (!isset($this->data[$file])) {
                 if (!$this->filter->isFiltered($file)) {
                     $this->data[$file] = $lines;
@@ -680,6 +684,8 @@ class CodeCoverage
     private function initializeFilesThatAreSeenTheFirstTime(array $data)
     {
         foreach ($data as $file => $lines) {
+            $file = $this->filter->unifyFilename($file);
+
             if ($this->filter->isFile($file) && !isset($this->data[$file])) {
                 $this->data[$file] = [];
 

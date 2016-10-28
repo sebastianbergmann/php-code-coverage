@@ -46,7 +46,7 @@ class Filter
      */
     public function addFileToWhitelist($filename)
     {
-        $this->whitelistedFiles[realpath($filename)] = true;
+        $this->whitelistedFiles[$this->unifyFilename($filename)] = true;
     }
 
     /**
@@ -85,7 +85,7 @@ class Filter
      */
     public function removeFileFromWhitelist($filename)
     {
-        $filename = realpath($filename);
+        $filename = $this->unifyFilename($filename);
 
         unset($this->whitelistedFiles[$filename]);
     }
@@ -126,7 +126,7 @@ class Filter
             return true;
         }
 
-        $filename = realpath($filename);
+        $filename = $this->unifyFilename($filename);
 
         return !isset($this->whitelistedFiles[$filename]);
     }
@@ -166,8 +166,24 @@ class Filter
      *
      * @param array $whitelistedFiles
      */
-    public function setWhitelistedFiles($whitelistedFiles)
+    public function setWhitelistedFiles(array $whitelistedFiles)
     {
         $this->whitelistedFiles = $whitelistedFiles;
+
+        $this->addFilesToWhitelist(array_keys($whitelistedFiles));
+    }
+
+    /**
+     * Gets unified filename with lower-cased directory path and original name of file.
+     *
+     * @param string $filename
+     *
+     * @return string
+     */
+    public function unifyFilename($filename)
+    {
+        $filename = realpath($filename);
+
+        return strtolower(dirname($filename)) . DIRECTORY_SEPARATOR . basename($filename);
     }
 }

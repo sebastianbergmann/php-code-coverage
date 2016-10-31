@@ -10,6 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 

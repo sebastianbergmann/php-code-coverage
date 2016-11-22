@@ -184,28 +184,6 @@
   <script src="js/jquery.min.js" type="text/javascript"></script>
   <script src="js/bootstrap.min.js" type="text/javascript"></script>
   <script src="js/holder.min.js" type="text/javascript"></script>
-  <script type="text/javascript">
-  $(function() {
-   var $window   = $(window)
-     , $top_link = $('#toplink')
-     , $body     = $('body, html')
-     , offset    = $('#code').offset().top;
-
-   $top_link.hide().click(function(event) {
-    event.preventDefault();
-    $body.animate({scrollTop:0}, 800);
-   });
-
-   $window.scroll(function() {
-    if($window.scrollTop() > offset) {
-     $top_link.fadeIn();
-    } else {
-     $top_link.fadeOut();
-    }
-   }).scroll();
-
-   $('.popin').popover({trigger: 'hover'});
-  });
-  </script>
+  <script src="js/file.js" type="text/javascript"></script>
  </body>
 </html>

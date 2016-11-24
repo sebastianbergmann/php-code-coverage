@@ -424,6 +424,9 @@ class PHP_CodeCoverage_Report_HTML_Renderer_File extends PHP_CodeCoverage_Report
      */
     protected function loadFile($file)
     {
+        if (!file_exists($file)) {
+            return array();
+        }
         $buffer = file_get_contents($file);
         $lines  = explode("\n", str_replace("\t", '    ', $buffer));
         $result = array();

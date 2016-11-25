@@ -1,0 +1,6 @@
+extern
+node_modules
+tmp
+vendor
+.idea/workspace.xml
+.idea/misc.xml

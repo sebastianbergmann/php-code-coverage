@@ -618,7 +618,9 @@ class CodeCoverage
             return;
         }
 
-        if ($this->checkForUnintentionallyCoveredCode) {
+        if ($this->checkForUnintentionallyCoveredCode &&
+            (!$this->currentId instanceof \PHPUnit_Framework_TestCase ||
+            (!$this->currentId->isMedium() && !$this->currentId->isLarge()))) {
             $this->performUnintentionallyCoveredCodeCheck(
                 $data,
                 $linesToBeCovered,

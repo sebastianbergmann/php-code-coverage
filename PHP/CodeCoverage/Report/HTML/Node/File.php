@@ -169,6 +169,8 @@ class PHP_CodeCoverage_Report_HTML_Node_File extends PHP_CodeCoverage_Report_HTM
                                );
 
         $this->calculateStatistics();
+
+        PHP_Token_Stream_CachingFactory::delete($path);
     }
 
     /**

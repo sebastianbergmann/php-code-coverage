@@ -193,7 +193,7 @@ class PHP_CodeCoverage_Report_Text
                         }
                     }
 
-                    if ($methodCount > 0) {
+                    if ($method['executedLines'] == $method['executableLines']) {
                         $coveredMethods++;
                     }
 

@@ -146,7 +146,7 @@ class PHP_CodeCoverage_Report_Clover
                         }
                     }
 
-                    if ($methodCount > 0) {
+                    if ($method['executedLines'] == $method['executableLines']) {
                         $coveredMethods++;
                     }
 

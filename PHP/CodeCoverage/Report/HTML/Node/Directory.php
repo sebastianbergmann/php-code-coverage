@@ -43,6 +43,7 @@
  * @since      File available since Release 1.0.0
  */
 
+require_once 'PHP/CodeCoverage/Report/HTML/Node.php';
 require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
 
 /**

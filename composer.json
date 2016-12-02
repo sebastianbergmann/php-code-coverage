@@ -31,6 +31,7 @@
     },
     "suggest": {
         "ext-dom": "*",
+        "ext-xcache": ">=3.1.0",
         "ext-xdebug": ">=2.0.5"
     },
     "autoload": {

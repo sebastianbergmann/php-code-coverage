@@ -64,6 +64,7 @@ spl_autoload_register(
             'php_codecoverage_driver_xdebug' => '/CodeCoverage/Driver/Xdebug.php',
             'php_codecoverage_exception' => '/CodeCoverage/Exception.php',
             'php_codecoverage_filter' => '/CodeCoverage/Filter.php',
+            'php_codecoverage_report_csv' => '/CodeCoverage/Report/CSV.php',
             'php_codecoverage_report_clover' => '/CodeCoverage/Report/Clover.php',
             'php_codecoverage_report_factory' => '/CodeCoverage/Report/Factory.php',
             'php_codecoverage_report_html' => '/CodeCoverage/Report/HTML.php',

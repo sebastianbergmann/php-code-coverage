@@ -134,23 +134,24 @@ class PHP_CodeCoverage_Util
                             $stop = TRUE;
                         }
 
-                        // be sure the comment doesn't have some token BEFORE it on the same line...
-                        // it would not be safe to ignore the whole line in those cases.
-                        if (0 === strpos($_token, $_line)) {
-                            $count = substr_count($token, "\n");
-                            $line  = $token->getLine();
+                        if (!$ignore) {
+                            $start = $token->getLine();
+                            $end = $start + substr_count($token, "\n");
 
-                            for ($i = $line; $i < $line + $count; $i++) {
+                            // Do not ignore the first line when there is a token
+                            // before the comment
+                            if (0 !== strpos($_token, $_line)) {
+                                $start++;
+                            }
+
+                            for ($i = $start; $i < $end; $i++) {
                                 self::$ignoredLines[$filename][$i] = TRUE;
                             }
 
-                            if ($token instanceof PHP_Token_DOC_COMMENT) {
-                                // Workaround for the fact the DOC_COMMENT token
-                                // does not include the final \n character in its
-                                // text.
-                                if (substr(trim($lines[$i-1]), -2) == '*/') {
-                                    self::$ignoredLines[$filename][$i] = TRUE;
-                                }
+                            // A DOC_COMMENT token or a COMMENT token starting with "/*"
+                            // does not contain the final \n character in its text
+                            if (0 === strpos($_token, '/*') && '*/' === substr(trim($lines[$i-1]), -2)) {
+                                self::$ignoredLines[$filename][$i] = TRUE;
                             }
                         }
                     }

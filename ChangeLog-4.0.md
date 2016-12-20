@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 4.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [4.0.4] - 201Y-MM-DD
+## [4.0.4] - 2016-12-20
 
 ### Changed
 

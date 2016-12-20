@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 4.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.0.4] - 2016-12-20
+
+### Changed
+
+* Implemented [#432](https://github.com/sebastianbergmann/php-code-coverage/issues/432): Change how files with no executable lines are displayed in the HTML report
+
 ## [4.0.3] - 2016-11-28
 
 ### Changed
@@ -26,6 +32,7 @@ All notable changes of the PHP_CodeCoverage 4.0 release series are documented in
 
 * This component now uses namespaces
 
+[4.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.3...4.0.4
 [4.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.2...4.0.3
 [4.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.0...4.0.1

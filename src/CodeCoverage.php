@@ -370,6 +370,14 @@ class CodeCoverage
                     if (empty($this->data[$file][$k]) || !in_array($id, $this->data[$file][$k])) {
                         $this->data[$file][$k][] = $id;
                     }
+                } else if ($v == Driver::LINE_NOT_EXECUTED) {
+                    if (!isset($this->data[$file][$k])) {
+                        $this->data[$file][$k] = [];
+                    }
+                } else if ($v == Driver::LINE_NOT_EXECUTABLE) {
+                    if (!isset($this->data[$file][$k])) {
+                        $this->data[$file][$k] = null;
+                    }
                 }
             }
         }

@@ -343,11 +343,11 @@ class CodeCoverage
         if ($id instanceof \PHPUnit_Framework_TestCase) {
             $_size = $id->getSize();
 
-            if ($_size == \PHPUnit_Util_Test::SMALL) {
+            if ($_size == \PHPUnit\Util\Test::SMALL) {
                 $size = 'small';
-            } elseif ($_size == \PHPUnit_Util_Test::MEDIUM) {
+            } elseif ($_size == \PHPUnit\Util\Test::MEDIUM) {
                 $size = 'medium';
-            } elseif ($_size == \PHPUnit_Util_Test::LARGE) {
+            } elseif ($_size == \PHPUnit\Util\Test::LARGE) {
                 $size = 'large';
             }
 

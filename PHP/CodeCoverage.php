@@ -456,6 +456,13 @@ class PHP_CodeCoverage
     protected function initializeFilesThatAreSeenTheFirstTime($data)
     {
         foreach ($data as $file => $lines) {
+            // Patch for XDebug bug:
+            // http://bugs.xdebug.org/bug_view_page.php?bug_id=0000331
+            preg_match('/.*\.php/', $file, $matches);
+            if(isset($matches[0])) {
+                $file = $matches[0];
+            }
+
             if ($this->filter->isFile($file) && !isset($this->data[$file])) {
                 $this->data[$file] = array();
 

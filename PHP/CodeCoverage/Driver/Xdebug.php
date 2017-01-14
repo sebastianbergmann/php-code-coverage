@@ -92,7 +92,41 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
     {
         $codeCoverage = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
+        $codeCoverage = self::cleanFilenames($codeCoverage);
 
         return $codeCoverage;
+    }
+
+    /**
+     * By-pass http://bugs.xdebug.org/bug_view_page.php?bug_id=0000331
+     *
+     * This Xdebug bug causes some filenames to be corrupted in the form
+     * "[..]/wrongreturn.php(19) : assert code"
+     * instead of
+     * "[..]/wrongreturn.php"
+     * The goal of this function is to by-pass the bug until it is fixed in Xdebug
+     * by cleaning corrupted filenames
+     *
+     * @return array
+     */
+    protected static function cleanFilenames($data)
+    {
+        foreach ($data as $file => $lines) {
+            // check the existence of the wrong pattern in filename
+            $correct_file = preg_replace('/\(\d+\) :.+/', '', $file);
+            if ($file != $correct_file) {
+                // if wrong filename found, we merge code coverage data
+                // with correct filename
+                if (!array_key_exists($correct_file, $data)) {
+                    $data[$correct_file] = array();
+                }
+                $data[$correct_file] += $lines;
+                ksort($data[$correct_file]);
+                // and unset wrong filename data
+                unset($data[$file]);
+            }
+        }
+
+        return $data;
     }
 }

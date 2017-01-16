@@ -10,6 +10,8 @@ env:
   matrix:
     - DEPENDENCIES="high"
     - DEPENDENCIES="low"
+    - DRIVER="phpdbg"
+    - DRIVER="xdebug"
 
 sudo: false
 
@@ -23,7 +25,8 @@ install:
 
 script:
 
-  - vendor/bin/phpunit
+  - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit; fi
+  - if [[ "$DRIVER" = 'xdebug' ]]; then vendor/bin/phpunit; fi
 
 notifications:
   email: false

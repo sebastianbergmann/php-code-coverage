@@ -8,10 +8,10 @@ php:
 
 env:
   matrix:
-    - DEPENDENCIES="high"
-    - DEPENDENCIES="low"
-    - DRIVER="phpdbg"
-    - DRIVER="xdebug"
+    - DEPENDENCIES="high" DRIVER="xdebug"
+    - DEPENDENCIES="low"  DRIVER="xdebug"
+    - DEPENDENCIES="high" DRIVER="phpdbg"
+    - DEPENDENCIES="low"  DRIVER="phpdbg"
 
 sudo: false
 

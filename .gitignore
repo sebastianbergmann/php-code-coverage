@@ -1,12 +1,6 @@
-build/api
-build/code-browser
-build/coverage
-build/logs
-build/pdepend
-cache.properties
 /tests/_files/tmp
 /vendor
 /composer.lock
-/composer.phar
 /.idea
 /.php_cs.cache
+

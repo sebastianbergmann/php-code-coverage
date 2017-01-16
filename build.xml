@@ -9,7 +9,6 @@
 
     <target name="composer" depends="clean" description="Install dependencies with Composer">
         <exec executable="composer" taskname="composer">
-            <env key="COMPOSER_DISABLE_XDEBUG_WARN" value="1"/>
             <arg value="update"/>
             <arg value="--no-interaction"/>
             <arg value="--no-progress"/>

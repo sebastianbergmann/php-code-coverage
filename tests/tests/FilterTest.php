@@ -10,7 +10,9 @@
 
 namespace SebastianBergmann\CodeCoverage;
 
-class FilterTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class FilterTest extends TestCase
 {
     /**
      * @var Filter

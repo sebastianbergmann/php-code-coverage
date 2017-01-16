@@ -17,7 +17,7 @@ use SebastianBergmann\CodeCoverage\Driver\Xdebug;
  *
  * @since Class available since Release 1.0.0
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected static $TEST_TMP_PATH;
 

@@ -153,7 +153,7 @@ class File extends Renderer
                 $linesExecutedPercentAsString = Util::percent(
                     $item['executedLines'],
                     $item['executableLines'],
-                    false
+                    true
                 );
             } else {
                 $numClasses                   = 'n/a';

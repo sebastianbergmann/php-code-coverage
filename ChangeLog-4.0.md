@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 4.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.0.5] - 2017-MM-DD
+
+### Fixed
+
+* Fixed formatting of executed lines percentage for classes in file view
+
 ## [4.0.4] - 2016-12-20
 
 ### Changed
@@ -32,6 +38,7 @@ All notable changes of the PHP_CodeCoverage 4.0 release series are documented in
 
 * This component now uses namespaces
 
+[4.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.4...4.0.5
 [4.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.3...4.0.4
 [4.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.2...4.0.3
 [4.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.1...4.0.2

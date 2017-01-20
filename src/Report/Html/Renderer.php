@@ -62,7 +62,7 @@ abstract class Renderer
      */
     public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound)
     {
-        $version = new Version('4.0.4', dirname(dirname(dirname(dirname(__DIR__)))));
+        $version = new Version('4.0.5', dirname(dirname(dirname(dirname(__DIR__)))));
 
         $this->templatePath   = $templatePath;
         $this->generator      = $generator;

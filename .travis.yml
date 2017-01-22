@@ -8,10 +8,8 @@ php:
 
 env:
   matrix:
-    - DEPENDENCIES="high" DRIVER="xdebug"
-    - DEPENDENCIES="low"  DRIVER="xdebug"
-    - DEPENDENCIES="high" DRIVER="phpdbg"
-    - DEPENDENCIES="low"  DRIVER="phpdbg"
+    - DRIVER="xdebug"
+    - DRIVER="phpdbg"
 
 sudo: false
 
@@ -20,11 +18,9 @@ before_install:
   - composer clear-cache
 
 install:
-  - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest --optimize-autoloader --prefer-stable; fi
-  - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest --optimize-autoloader --prefer-stable --prefer-lowest; fi
+  - travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest --optimize-autoloader --prefer-stable
 
 script:
-
   - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit; fi
   - if [[ "$DRIVER" = 'xdebug' ]]; then vendor/bin/phpunit; fi
 

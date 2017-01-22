@@ -10,8 +10,8 @@
       </class>
       <line num="2" type="stmt" count="1"/>
       <line num="6" type="stmt" count="0"/>
-      <metrics loc="37" ncloc="25" classes="2" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="2" coveredelements="1"/>
+      <metrics loc="37" ncloc="25" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="2" coveredelements="1"/>
     </file>
-    <metrics files="1" loc="37" ncloc="25" classes="2" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="2" coveredelements="1"/>
+    <metrics files="1" loc="37" ncloc="25" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="2" coveredelements="1"/>
   </project>
 </coverage>

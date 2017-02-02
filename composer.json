@@ -20,7 +20,6 @@
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
         "irc": "irc://irc.freenode.net/phpunit"
     },
-    "minimum-stability": "dev",
     "require": {
         "php": "^7.0",
         "phpunit/php-file-iterator": "^1.3",

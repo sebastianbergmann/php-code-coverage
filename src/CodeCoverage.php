@@ -866,6 +866,10 @@ class CodeCoverage
                         }
                         break;
 
+                    case 'PHP_Token_ENUM':
+                        $this->ignoredLines[$filename][] = $token->getLine();
+                        break;
+
                     case 'PHP_Token_NAMESPACE':
                         $this->ignoredLines[$filename][] = $token->getEndLine();
 

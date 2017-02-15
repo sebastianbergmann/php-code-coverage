@@ -44,6 +44,7 @@
  */
 
 require_once 'PHP/CodeCoverage/Report/HTML/Node/Iterator.php';
+require_once 'PHP/CodeCoverage/Report/HTML/Node.php';
 
 /**
  * Represents a directory in the code coverage information tree.

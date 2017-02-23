@@ -2,6 +2,13 @@
 
 All notable changes of the PHP_CodeCoverage 4.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.0.6] - 2017-02-23
+
+### Changed
+
+* Added support for `phpunit/php-token-stream` 2.0
+* Updated HTML report assets
+
 ## [4.0.5] - 2017-01-20
 
 ### Fixed
@@ -38,6 +45,7 @@ All notable changes of the PHP_CodeCoverage 4.0 release series are documented in
 
 * This component now uses namespaces
 
+[4.0.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.5...4.0.6
 [4.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.4...4.0.5
 [4.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.3...4.0.4
 [4.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/4.0.2...4.0.3

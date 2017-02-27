@@ -11,6 +11,11 @@ env:
     - DRIVER="xdebug"
     - DRIVER="phpdbg"
 
+matrix:
+  exclude:
+    - php: 5.6
+      env: DRIVER="phpdbg"
+
 sudo: false
 
 before_install:

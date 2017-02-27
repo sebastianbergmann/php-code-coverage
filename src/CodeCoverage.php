@@ -771,8 +771,8 @@ class CodeCoverage
 
             foreach ($tokens as $token) {
                 switch (get_class($token)) {
-                    case 'PHP_Token_COMMENT':
-                    case 'PHP_Token_DOC_COMMENT':
+                    case \PHP_Token_COMMENT::class:
+                    case \PHP_Token_DOC_COMMENT::class:
                         $_token = trim($token);
                         $_line  = trim($lines[$token->getLine() - 1]);
 
@@ -810,10 +810,10 @@ class CodeCoverage
                         }
                         break;
 
-                    case 'PHP_Token_INTERFACE':
-                    case 'PHP_Token_TRAIT':
-                    case 'PHP_Token_CLASS':
-                    case 'PHP_Token_FUNCTION':
+                    case \PHP_Token_INTERFACE::class:
+                    case \PHP_Token_TRAIT::class:
+                    case \PHP_Token_CLASS::class:
+                    case \PHP_Token_FUNCTION::class:
                         /* @var \PHP_Token_Interface $token */
 
                         $docblock = $token->getDocblock();
@@ -866,18 +866,18 @@ class CodeCoverage
                         }
                         break;
 
-                    case 'PHP_Token_ENUM':
+                    case \PHP_Token_ENUM::class:
                         $this->ignoredLines[$filename][] = $token->getLine();
                         break;
 
-                    case 'PHP_Token_NAMESPACE':
+                    case \PHP_Token_NAMESPACE::class:
                         $this->ignoredLines[$filename][] = $token->getEndLine();
 
                     // Intentional fallthrough
-                    case 'PHP_Token_DECLARE':
-                    case 'PHP_Token_OPEN_TAG':
-                    case 'PHP_Token_CLOSE_TAG':
-                    case 'PHP_Token_USE':
+                    case \PHP_Token_DECLARE::class:
+                    case \PHP_Token_OPEN_TAG::class:
+                    case \PHP_Token_CLOSE_TAG::class:
+                    case \PHP_Token_USE::class:
                         $this->ignoredLines[$filename][] = $token->getLine();
                         break;
                 }

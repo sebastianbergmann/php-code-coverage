@@ -6,6 +6,7 @@ All notable changes of the PHP_CodeCoverage 5.0 release series are documented in
 
 ### Fixed
 
+* Fixed [#451](https://github.com/sebastianbergmann/php-code-coverage/pull/451): Conflict between HTML report assets and directories named `css`, `fonts`, or `js`
 * Fixed [#485](https://github.com/sebastianbergmann/php-code-coverage/issues/485): Large popover contents cannot be viewed
 
 ## [5.0.2] - 2017-03-01

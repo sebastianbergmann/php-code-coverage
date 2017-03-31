@@ -92,7 +92,7 @@ class Facade
             $this->processDirectory($node, $dirObject);
         }
 
-        foreach($directory->getFiles() as $node) {
+        foreach ($directory->getFiles() as $node) {
             $this->processFile($node, $dirObject);
         }
     }

@@ -2,6 +2,10 @@
 
 All notable changes of the PHP_CodeCoverage 5.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [5.0.4] - 2017-MM-DD
+
+* Fixed [#515](https://github.com/sebastianbergmann/php-code-coverage/pull/515): Wrong use of recursive iterator causing duplicate entries in XML coverage report
+
 ## [5.0.3] - 2017-03-06
 
 ### Fixed
@@ -27,6 +31,7 @@ All notable changes of the PHP_CodeCoverage 5.0 release series are documented in
 
 * This component is no longer supported on PHP 5
 
+[5.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.0.3...5.0.4
 [5.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.0.2...5.0.3
 [5.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.0.1...5.0.2
 [5.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.0.0...5.0.1

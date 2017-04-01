@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <build time="%s" phpunit="%s" coverage="%s">
+    <runtime name="PHP" version="%s" url="%s" xdebug="%s"/>
+  </build>
   <project name="%s">
     <tests>
       <test name="FileWithIgnoredLines" size="unknown" result="0" status="PASSED"/>

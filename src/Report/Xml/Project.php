@@ -23,8 +23,8 @@ class Project extends Node
 
     private function init()
     {
-        $dom = new \DOMDocument;
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><project/></phpunit>');
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
 
         $this->setContextNode(
             $dom->getElementsByTagNameNS(
@@ -37,6 +37,28 @@ class Project extends Node
     private function setProjectName($name)
     {
         $this->getContextNode()->setAttribute('name', $name);
+    }
+
+    /**
+     * @return BuildInformation
+     */
+    public function getBuildInformation()
+    {
+        $buildNode = $this->getDom()->getElementsByTagNameNS(
+            'http://schema.phpunit.de/coverage/1.0',
+            'build'
+        )->item(0);
+
+        if (!$buildNode) {
+            $buildNode = $this->getDom()->documentElement->appendChild(
+                $this->getDom()->createElementNS(
+                    'http://schema.phpunit.de/coverage/1.0',
+                    'build'
+                )
+            );
+        }
+
+        return new BuildInformation($buildNode);
     }
 
     public function getTests()

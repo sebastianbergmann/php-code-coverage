@@ -10,7 +10,6 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
@@ -55,14 +54,12 @@ class Facade
     }
 
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
+     * @param DirectoryNode $report
+     * @param string        $target
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(DirectoryNode $report, $target)
     {
         $target = $this->getDirectory($target);
-        $report = $coverage->getReport();
-        unset($coverage);
 
         if (!isset($_SERVER['REQUEST_TIME'])) {
             $_SERVER['REQUEST_TIME'] = time();

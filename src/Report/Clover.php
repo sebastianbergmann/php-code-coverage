@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 
 /**
@@ -19,13 +19,13 @@ use SebastianBergmann\CodeCoverage\Node\File;
 class Clover
 {
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
-     * @param string       $name
+     * @param Directory $report
+     * @param string    $target
+     * @param string    $name
      *
      * @return string
      */
-    public function process(CodeCoverage $coverage, $target = null, $name = null)
+    public function process(Directory $report, $target = null, $name = null)
     {
         $xmlDocument               = new \DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
@@ -44,8 +44,6 @@ class Clover
         $xmlCoverage->appendChild($xmlProject);
 
         $packages = [];
-        $report   = $coverage->getReport();
-        unset($coverage);
 
         foreach ($report as $item) {
             if (!$item instanceof File) {

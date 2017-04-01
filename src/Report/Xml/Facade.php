@@ -44,12 +44,13 @@ class Facade
     }
 
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
+     * @param DirectoryNode $report
+     * @param CodeCoverage  $coverage
+     * @param string        $target
      *
      * @throws RuntimeException
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(DirectoryNode $report, CodeCoverage $coverage, $target)
     {
         if (substr($target, -1, 1) != DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
@@ -58,11 +59,7 @@ class Facade
         $this->target = $target;
         $this->initTargetDirectory($target);
 
-        $report = $coverage->getReport();
-
-        $this->project = new Project(
-            $coverage->getReport()->getName()
-        );
+        $this->project = new Project($coverage->getReport()->getName());
 
         $this->setBuildInformation();
         $this->processTests($coverage->getTests());

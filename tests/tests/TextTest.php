@@ -23,7 +23,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()->getReport()))
         );
     }
 
@@ -33,7 +33,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines()->getReport()))
         );
     }
 
@@ -43,7 +43,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()->getReport()))
         );
     }
 }

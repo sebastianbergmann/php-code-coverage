@@ -2,11 +2,11 @@
 
 All notable changes of the PHP_CodeCoverage 5.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [5.0.4] - 2017-MM-DD
+
 ### Added
 
 * Added `SebastianBergmann\CodeCoverage\Version::id()` method
-
-## [5.0.4] - 2017-MM-DD
 
 ### Fixed
 

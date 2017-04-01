@@ -2,11 +2,11 @@
 <phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
   <file name="source_with_ignore.php">
     <totals>
-      <lines total="37" comments="12" code="25" executable="2" executed="1" percent="50.00%"/>
-      <methods count="0" tested="0" percent=""/>
-      <functions count="1" tested="0" percent="0.00%"/>
-      <classes count="0" tested="0" percent=""/>
-      <traits count="0" tested="0" percent=""/>
+      <lines total="37" comments="12" code="25" executable="2" executed="1" percent="50.00"/>
+      <methods count="0" tested="0" percent="0"/>
+      <functions count="1" tested="0" percent="0.00"/>
+      <classes count="0" tested="0" percent="0"/>
+      <traits count="0" tested="0" percent="0"/>
     </totals>
     <class name="Foo" start="11" executable="0" executed="0" crap="1">
       <package full="" name="" sub="" category=""/>

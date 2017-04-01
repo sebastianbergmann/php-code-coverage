@@ -2,11 +2,11 @@
 <phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
   <file name="BankAccount.php">
     <totals>
-      <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00%"/>
-      <methods count="4" tested="3" percent="75.00%"/>
-      <functions count="0" tested="0" percent=""/>
-      <classes count="1" tested="0" percent="0.00%"/>
-      <traits count="0" tested="0" percent=""/>
+      <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00"/>
+      <methods count="4" tested="3" percent="75.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="0" percent="0.00"/>
+      <traits count="0" tested="0" percent="0"/>
     </totals>
     <class name="BankAccount" start="2" executable="10" executed="5" crap="8.12">
       <package full="" name="" sub="" category=""/>

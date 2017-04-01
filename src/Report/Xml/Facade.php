@@ -105,7 +105,11 @@ class Facade
 
     private function processDirectory(DirectoryNode $directory, Node $context)
     {
-        $dirObject = $context->addDirectory($directory->getName());
+        $dirname = $directory->getName();
+        if ($this->project->getProjectSourceDirectory() === $dirname) {
+            $dirname = '/';
+        }
+        $dirObject = $context->addDirectory($dirname);
 
         $this->setTotals($directory, $dirObject->getTotals());
 
@@ -127,7 +131,11 @@ class Facade
 
         $this->setTotals($file, $fileObject->getTotals());
 
-        $fileReport = new Report($file->getName());
+        $path = substr(
+            $file->getPath(),
+            strlen($this->project->getProjectSourceDirectory())
+        );
+        $fileReport = new Report($path);
 
         $this->setTotals($file, $fileReport->getTotals());
 

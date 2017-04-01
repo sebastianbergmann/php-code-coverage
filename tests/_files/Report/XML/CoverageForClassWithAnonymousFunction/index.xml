@@ -4,7 +4,7 @@
     <runtime name="%s" version="%s" url="%s"/>
     <driver name="%s" version="%s"/>
   </build>
-  <project name="%s">
+  <project source="%s">
     <tests>
       <test name="ClassWithAnonymousFunction" size="unknown" result="0" status="PASSED"/>
     </tests>

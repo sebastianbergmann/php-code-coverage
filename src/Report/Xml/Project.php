@@ -13,12 +13,12 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 class Project extends Node
 {
     /**
-     * @param string $name
+     * @param string $directory
      */
-    public function __construct($name)
+    public function __construct($directory)
     {
         $this->init();
-        $this->setProjectName($name);
+        $this->setProjectSourceDirectory($directory);
     }
 
     private function init()
@@ -34,9 +34,16 @@ class Project extends Node
         );
     }
 
-    private function setProjectName($name)
+    private function setProjectSourceDirectory($name)
     {
-        $this->getContextNode()->setAttribute('name', $name);
+        $this->getContextNode()->setAttribute('source', $name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectSourceDirectory() {
+        return $this->getContextNode()->getAttribute('source');
     }
 
     /**

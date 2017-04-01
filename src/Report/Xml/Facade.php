@@ -15,6 +15,8 @@ use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCoverage\Version;
+use SebastianBergmann\Environment\Runtime;
 
 class Facade
 {
@@ -27,6 +29,19 @@ class Facade
      * @var Project
      */
     private $project;
+
+    /**
+     * @var string
+     */
+    private $phpUnitVersion;
+
+    /**
+     * @param string $version
+     */
+    public function __construct($version)
+    {
+        $this->phpUnitVersion = $version;
+    }
 
     /**
      * @param CodeCoverage $coverage
@@ -49,10 +64,19 @@ class Facade
             $coverage->getReport()->getName()
         );
 
+        $this->setBuildInformation();
         $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
 
         $this->saveDocument($this->project->asDom(), 'index');
+    }
+
+    private function setBuildInformation()
+    {
+        $buildNode = $this->project->getBuildInformation();
+        $buildNode->setRuntimeInformation(new Runtime());
+        $buildNode->setBuildTime(\DateTime::createFromFormat('U', $_SERVER['REQUEST_TIME']));
+        $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
     }
 
     /**

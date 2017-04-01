@@ -12,6 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 class Project extends Node
 {
+    /**
+     * @param string $name
+     */
     public function __construct($name)
     {
         $this->init();

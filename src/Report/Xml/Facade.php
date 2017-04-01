@@ -52,16 +52,13 @@ class Facade
         $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
 
-        $index                     = $this->project->asDom();
-        $index->formatOutput       = true;
-        $index->preserveWhiteSpace = false;
-        $index->save($target . '/index.xml');
+        $this->saveDocument($this->project->asDom(), 'index');
     }
 
     /**
      * @param string $directory
      */
-    private function initTargetDirectory($directory)
+    protected function initTargetDirectory($directory)
     {
         if (file_exists($directory)) {
             if (!is_dir($directory)) {
@@ -101,7 +98,7 @@ class Facade
     {
         $fileObject = $context->addFile(
             $file->getName(),
-            $file->getId() . '.xml'
+            $file->getId().'.xml'
         );
 
         $this->setTotals($file, $fileObject->getTotals());
@@ -132,14 +129,7 @@ class Facade
             $coverage->finalize();
         }
 
-        $this->initTargetDirectory(
-            $this->target . dirname($file->getId()) . '/'
-        );
-
-        $fileDom                     = $fileReport->asDom();
-        $fileDom->formatOutput       = true;
-        $fileDom->preserveWhiteSpace = false;
-        $fileDom->save($this->target . $file->getId() . '.xml');
+        $this->saveDocument($fileReport->asDom(), $file->getId());
     }
 
     private function processUnit($unit, Report $report)
@@ -234,5 +224,24 @@ class Facade
             $node->getNumFunctions(),
             $node->getNumTestedFunctions()
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTargetDirectory()
+    {
+        return $this->target;
+    }
+
+    protected function saveDocument(\DOMDocument $document, $name)
+    {
+        $filename = sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
+
+        $document->formatOutput = true;
+        $document->preserveWhiteSpace = false;
+        $this->initTargetDirectory(dirname($filename));
+
+        $document->save($filename);
     }
 }

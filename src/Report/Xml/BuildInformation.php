@@ -38,18 +38,21 @@ class BuildInformation
         $runtimeNode->setAttribute('version', $runtime->getVersion());
         $runtimeNode->setAttribute('url', $runtime->getVendorUrl());
 
+        $driverNode = $this->getNodeByName('driver');
         if ($runtime->isHHVM()) {
-            $runtimeNode->setAttribute('hhvm', constant('HHVM_VERSION'));
-
+            $driverNode->setAttribute('name', 'hhvm');
+            $driverNode->setAttribute('version', constant('HHVM_VERSION'));
             return;
         }
 
         if ($runtime->hasPHPDBGCodeCoverage()) {
-            $runtimeNode->setAttribute('phpdbg', constant('PHPDBG_VERSION'));
+            $driverNode->setAttribute('name', 'phpdbg');
+            $driverNode->setAttribute('version', constant('PHPDBG_VERSION'));
         }
 
         if ($runtime->hasXdebug()) {
-            $runtimeNode->setAttribute('xdebug', phpversion('xdebug'));
+            $driverNode->setAttribute('name', 'xdebug');
+            $driverNode->setAttribute('version', phpversion('xdebug'));
         }
     }
 

@@ -1,0 +1,12 @@
+# Changes in PHP_CodeCoverage 6.0
+
+All notable changes of the PHP_CodeCoverage 6.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+
+## [6.0.0] - 2017-MM-DD
+
+## Changed
+
+* Implemented [#516](https://github.com/sebastianbergmann/php-code-coverage/pull/516): Add more information to XML code coverage report
+
+[6.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.0...6.0.0
+

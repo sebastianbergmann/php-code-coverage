@@ -14,31 +14,32 @@ class Report extends File
 {
     public function __construct($name)
     {
-        $this->dom = new \DOMDocument;
-        $this->dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
 
-        $this->contextNode = $this->dom->getElementsByTagNameNS(
+        $contextNode = $dom->getElementsByTagNameNS(
             'http://schema.phpunit.de/coverage/1.0',
             'file'
         )->item(0);
 
+        parent::__construct($contextNode);
         $this->setName($name);
     }
 
     private function setName($name)
     {
-        $this->contextNode->setAttribute('name', $name);
+        $this->getContextNode()->setAttribute('name', $name);
     }
 
     public function asDom()
     {
-        return $this->dom;
+        return $this->getDomDocument();
     }
 
     public function getFunctionObject($name)
     {
-        $node = $this->contextNode->appendChild(
-            $this->dom->createElementNS(
+        $node = $this->getContextNode()->appendChild(
+            $this->getDomDocument()->createElementNS(
                 'http://schema.phpunit.de/coverage/1.0',
                 'function'
             )
@@ -59,8 +60,8 @@ class Report extends File
 
     private function getUnitObject($tagName, $name)
     {
-        $node = $this->contextNode->appendChild(
-            $this->dom->createElementNS(
+        $node = $this->getContextNode()->appendChild(
+            $this->getDomDocument()->createElementNS(
                 'http://schema.phpunit.de/coverage/1.0',
                 $tagName
             )

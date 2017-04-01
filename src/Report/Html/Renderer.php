@@ -13,8 +13,8 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
-use SebastianBergmann\Version;
 
 /**
  * Base class for node renderers.
@@ -62,14 +62,12 @@ abstract class Renderer
      */
     public function __construct($templatePath, $generator, $date, $lowUpperBound, $highLowerBound)
     {
-        $version = new Version('5.0.3', dirname(dirname(dirname(dirname(__DIR__)))));
-
         $this->templatePath   = $templatePath;
         $this->generator      = $generator;
         $this->date           = $date;
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
-        $this->version        = $version->getVersion();
+        $this->version        = Version::id();
     }
 
     /**

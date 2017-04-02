@@ -5,22 +5,6 @@
 
 **PHP_CodeCoverage** is a library that provides collection, processing, and rendering functionality for PHP code coverage information.
 
-## Requirements
-
-PHP 5.6 is required but using the latest version of PHP is highly recommended.
-
-### PHP 5
-
-[Xdebug](http://xdebug.org/) is the only source of raw code coverage data supported for PHP 5. Version 2.2.1 of Xdebug is required but using the latest version is highly recommended.
-
-### PHP 7
-
-Version 2.4.0 (or later) of [Xdebug](http://xdebug.org/) as well as [phpdbg](http://phpdbg.com/docs) are supported sources of raw code coverage data for PHP 7.
-
-### HHVM
-
-A version of HHVM that implements the Xdebug API for code coverage (`xdebug_*_code_coverage()`) is required.
-
 ## Installation
 
 You can add this library as a local, per-project dependency to your project using [Composer](https://getcomposer.org/):

@@ -29,7 +29,7 @@ class Node
 
     protected function setContextNode(\DOMElement $context)
     {
-        $this->dom = $context->ownerDocument;
+        $this->dom         = $context->ownerDocument;
         $this->contextNode = $context;
     }
 

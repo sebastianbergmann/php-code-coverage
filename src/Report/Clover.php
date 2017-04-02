@@ -67,7 +67,7 @@ class Clover
                 $classMethods           = 0;
 
                 foreach ($class['methods'] as $methodName => $method) {
-                    if ($method['executableLines']  == 0) {
+                    if ($method['executableLines'] == 0) {
                         continue;
                     }
 

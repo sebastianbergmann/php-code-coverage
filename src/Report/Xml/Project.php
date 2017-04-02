@@ -42,7 +42,8 @@ class Project extends Node
     /**
      * @return string
      */
-    public function getProjectSourceDirectory() {
+    public function getProjectSourceDirectory()
+    {
         return $this->getContextNode()->getAttribute('source');
     }
 

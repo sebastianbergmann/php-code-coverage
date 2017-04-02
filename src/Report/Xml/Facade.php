@@ -123,7 +123,7 @@ class Facade
     {
         $fileObject = $context->addFile(
             $file->getName(),
-            $file->getId().'.xml'
+            $file->getId() . '.xml'
         );
 
         $this->setTotals($file, $fileObject->getTotals());
@@ -267,7 +267,7 @@ class Facade
     {
         $filename = sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
 
-        $document->formatOutput = true;
+        $document->formatOutput       = true;
         $document->preserveWhiteSpace = false;
         $this->initTargetDirectory(dirname($filename));
 

@@ -543,7 +543,7 @@ class File extends Renderer
         }
 
         if ($fileEndsWithNewLine) {
-            unset($result[count($result)-1]);
+            unset($result[count($result) - 1]);
         }
 
         return $result;

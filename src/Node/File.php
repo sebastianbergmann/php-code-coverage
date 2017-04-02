@@ -692,7 +692,7 @@ class File extends AbstractNode
 
         return sprintf(
             '%01.2F',
-            pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn
+            pow($ccn, 2) * pow(1 - $coverage / 100, 3) + $ccn
         );
     }
 

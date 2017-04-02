@@ -42,6 +42,7 @@ class BuildInformation
         if ($runtime->isHHVM()) {
             $driverNode->setAttribute('name', 'hhvm');
             $driverNode->setAttribute('version', constant('HHVM_VERSION'));
+
             return;
         }
 

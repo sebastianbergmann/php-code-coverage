@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 
@@ -37,13 +37,13 @@ class Crap4j
     }
 
     /**
-     * @param Directory $report
-     * @param string    $target
-     * @param string    $name
+     * @param CodeCoverage $coverage
+     * @param string       $target
+     * @param string       $name
      *
      * @return string
      */
-    public function process(Directory $report, $target = null, $name = null)
+    public function process(CodeCoverage $coverage, $target = null, $name = null)
     {
         $document               = new \DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
@@ -57,6 +57,9 @@ class Crap4j
 
         $stats       = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
+
+        $report = $coverage->getReport();
+        unset($coverage);
 
         $fullMethodCount     = 0;
         $fullCrapMethodCount = 0;

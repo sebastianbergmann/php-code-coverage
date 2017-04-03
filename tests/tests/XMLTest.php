@@ -40,7 +40,7 @@ class XMLTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForBankAccount()->getReport(), $this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $xml->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -50,7 +50,7 @@ class XMLTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForFileWithIgnoredLines()->getReport(), $this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
+        $xml->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -61,7 +61,7 @@ class XMLTest extends TestCase
             self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForClassWithAnonymousFunction()->getReport(), $this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
+        $xml->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }

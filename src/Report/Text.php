@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util;
 
@@ -50,14 +50,16 @@ class Text
     }
 
     /**
-     * @param Directory $report
-     * @param bool      $showColors
+     * @param CodeCoverage $coverage
+     * @param bool         $showColors
      *
      * @return string
      */
-    public function process(Directory $report, $showColors = false)
+    public function process(CodeCoverage $coverage, $showColors = false)
     {
         $output = PHP_EOL . PHP_EOL;
+        $report = $coverage->getReport();
+        unset($coverage);
 
         $colors = [
             'header'  => '',

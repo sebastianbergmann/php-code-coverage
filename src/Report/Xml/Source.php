@@ -30,7 +30,7 @@ class Source
     /**
      * @param string $source
      */
-    public function setSourceCode($source)
+    public function setSourceCode(string $source)
     {
         $context = $this->context;
 

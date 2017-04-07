@@ -30,7 +30,7 @@
         "sebastian/code-unit-reverse-lookup": "^1.0",
         "sebastian/environment": "^2.0",
         "sebastian/version": "^2.0",
-        "theseer/tokenizer": "^1.1.0"
+        "theseer/tokenizer": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",

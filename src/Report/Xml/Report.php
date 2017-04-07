@@ -70,4 +70,23 @@ class Report extends File
 
         return new Unit($node, $name);
     }
+
+
+    public function getSource() {
+        $source = $this->getContextNode()->getElementsByTagNameNS(
+            'http://schema.phpunit.de/coverage/1.0',
+            'source'
+        )->item(0);
+
+        if (!$source) {
+            $source = $this->getContextNode()->appendChild(
+                $this->getDomDocument()->createElementNS(
+                    'http://schema.phpunit.de/coverage/1.0',
+                    'source'
+                )
+            );
+        }
+        return new Source($source);
+    }
+
 }

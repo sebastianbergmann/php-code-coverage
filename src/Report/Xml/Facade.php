@@ -161,6 +161,10 @@ class Facade
             $coverage->finalize();
         }
 
+        $fileReport->getSource()->setSourceCode(
+            file_get_contents($file->getPath())
+        );
+
         $this->saveDocument($fileReport->asDom(), $file->getId());
     }
 

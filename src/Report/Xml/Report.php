@@ -71,8 +71,8 @@ class Report extends File
         return new Unit($node, $name);
     }
 
-
-    public function getSource() {
+    public function getSource()
+    {
         $source = $this->getContextNode()->getElementsByTagNameNS(
             'http://schema.phpunit.de/coverage/1.0',
             'source'
@@ -86,7 +86,7 @@ class Report extends File
                 )
             );
         }
+
         return new Source($source);
     }
-
 }

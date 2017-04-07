@@ -148,7 +148,7 @@ class Facade
         }
 
         foreach ($file->getCoverageData() as $line => $tests) {
-            if (!is_array($tests) || count($tests) == 0) {
+            if (!is_array($tests) || count($tests) === 0) {
                 continue;
             }
 

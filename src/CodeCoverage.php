@@ -960,30 +960,24 @@ class CodeCoverage
      */
     private function performUnexecutedCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
     {
-        $expectedLines = $this->getAllowedLines(
-            $linesToBeCovered,
-            $linesToBeUsed
-        );
+        $executedCodeUnits = $this->coverageToCodeUnits($data);
+        $message           = '';
 
-        foreach ($data as $file => $_data) {
-            foreach (array_keys($_data) as $line) {
-                if (!isset($expectedLines[$file][$line])) {
-                    continue;
-                }
-
-                unset($expectedLines[$file][$line]);
+        foreach ($this->linesToCodeUnits($linesToBeCovered) as $codeUnit) {
+            if (!in_array($codeUnit, $executedCodeUnits)) {
+                $message .= sprintf(
+                    '- %s is expected to be covered but was not executed' . "\n",
+                    $codeUnit
+                );
             }
         }
 
-        $message = '';
-
-        foreach ($expectedLines as $file => $lines) {
-            if (empty($lines)) {
-                continue;
-            }
-
-            foreach (array_keys($lines) as $line) {
-                $message .= sprintf('- %s:%d' . PHP_EOL, $file, $line);
+        foreach ($this->linesToCodeUnits($linesToBeUsed) as $codeUnit) {
+            if (!in_array($codeUnit, $executedCodeUnits)) {
+                $message .= sprintf(
+                    '- %s is expected to be used but was not executed' . "\n",
+                    $codeUnit
+                );
             }
         }
 
@@ -1123,5 +1117,43 @@ class CodeCoverage
 
             $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
         }
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function coverageToCodeUnits(array $data)
+    {
+        $codeUnits = [];
+
+        foreach ($data as $filename => $lines) {
+            foreach ($lines as $line => $flag) {
+                if ($flag == 1) {
+                    $codeUnits[] = $this->wizard->lookup($filename, $line);
+                }
+            }
+        }
+
+        return array_unique($codeUnits);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function linesToCodeUnits(array $data)
+    {
+        $codeUnits = [];
+
+        foreach ($data as $filename => $lines) {
+            foreach ($lines as $line) {
+                $codeUnits[] = $this->wizard->lookup($filename, $line);
+            }
+        }
+
+        return array_unique($codeUnits);
     }
 }

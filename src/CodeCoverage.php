@@ -966,7 +966,7 @@ class CodeCoverage
         foreach ($this->linesToCodeUnits($linesToBeCovered) as $codeUnit) {
             if (!in_array($codeUnit, $executedCodeUnits)) {
                 $message .= sprintf(
-                    '- %s is expected to be covered but was not executed' . "\n",
+                    '- %s is expected to be executed (@covers) but was not executed' . "\n",
                     $codeUnit
                 );
             }
@@ -975,7 +975,7 @@ class CodeCoverage
         foreach ($this->linesToCodeUnits($linesToBeUsed) as $codeUnit) {
             if (!in_array($codeUnit, $executedCodeUnits)) {
                 $message .= sprintf(
-                    '- %s is expected to be used but was not executed' . "\n",
+                    '- %s is expected to be executed (@uses) but was not executed' . "\n",
                     $codeUnit
                 );
             }

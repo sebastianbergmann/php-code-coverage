@@ -698,11 +698,14 @@ class CodeCoverage
     private function initializeFilesThatAreSeenTheFirstTime(array $data)
     {
         foreach ($data as $file => $lines) {
-            if ($this->filter->isFile($file) && !isset($this->data[$file])) {
-                $this->data[$file] = [];
-
+            if ($this->filter->isFile($file)) {
+                if (!isset($this->data[$file])) {
+                    $this->data[$file] = [];
+                }
                 foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = $v == -2 ? null : [];
+                    if (!isset($this->data[$file][$k])) {
+                        $this->data[$file][$k] = $v == -2 ? null : [];
+                    }
                 }
             }
         }

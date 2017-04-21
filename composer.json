@@ -28,7 +28,7 @@
         "phpunit/php-token-stream": "^1.4.11 || ^2.0",
         "phpunit/php-text-template": "^1.2",
         "sebastian/code-unit-reverse-lookup": "^1.0",
-        "sebastian/environment": "^2.0",
+        "sebastian/environment": "^2.0 || ^3.0",
         "sebastian/version": "^2.0",
         "theseer/tokenizer": "^1.1"
     },

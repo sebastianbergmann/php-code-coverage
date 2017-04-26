@@ -411,7 +411,7 @@ class CodeCoverage
             }
 
             foreach ($lines as $line => $data) {
-                if ($data !== null) {
+                if (!empty($data)) {
                     if (!isset($this->data[$file][$line])) {
                         $this->data[$file][$line] = $data;
                     } else {

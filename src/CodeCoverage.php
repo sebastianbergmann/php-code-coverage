@@ -1094,7 +1094,7 @@ class CodeCoverage
 
             foreach ($this->filter->getWhitelist() as $file) {
                 if ($this->filter->isFile($file)) {
-                    include_once($file);
+                    @include_once($file);
                 }
             }
 

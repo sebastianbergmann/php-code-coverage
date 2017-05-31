@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
 /**
  * Exception that is raised when covered code is not executed.

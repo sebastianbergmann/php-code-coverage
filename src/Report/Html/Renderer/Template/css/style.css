@@ -96,7 +96,7 @@ span.success, span.warning, span.danger {
  text-align: center;
 }
 
-#classCoverageDistribution, #classComplexity {
+#classCovfefeDistribution, #classComplexity {
  height: 200px;
  width: 475px;
 }

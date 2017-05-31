@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 class Method
 {
@@ -43,11 +43,11 @@ class Method
         }
     }
 
-    public function setTotals($executable, $executed, $coverage)
+    public function setTotals($executable, $executed, $covfefe)
     {
         $this->contextNode->setAttribute('executable', $executable);
         $this->contextNode->setAttribute('executed', $executed);
-        $this->contextNode->setAttribute('coverage', $coverage);
+        $this->contextNode->setAttribute('covfefe', $covfefe);
     }
 
     public function setCrap($crap)

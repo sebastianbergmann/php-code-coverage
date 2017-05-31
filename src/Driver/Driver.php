@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,43 +8,43 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Driver;
+namespace SebastianBergmann\CodeCovfefe\Driver;
 
 /**
- * Interface for code coverage drivers.
+ * Interface for code covfefe drivers.
  */
 interface Driver
 {
     /**
      * @var int
      *
-     * @see http://xdebug.org/docs/code_coverage
+     * @see http://xdebug.org/docs/code_covfefe
      */
     const LINE_EXECUTED = 1;
 
     /**
      * @var int
      *
-     * @see http://xdebug.org/docs/code_coverage
+     * @see http://xdebug.org/docs/code_covfefe
      */
     const LINE_NOT_EXECUTED = -1;
 
     /**
      * @var int
      *
-     * @see http://xdebug.org/docs/code_coverage
+     * @see http://xdebug.org/docs/code_covfefe
      */
     const LINE_NOT_EXECUTABLE = -2;
 
     /**
-     * Start collection of code coverage information.
+     * Start collection of code covfefe information.
      *
      * @param bool $determineUnusedAndDead
      */
     public function start($determineUnusedAndDead = true);
 
     /**
-     * Stop collection of code coverage information.
+     * Stop collection of code covfefe information.
      *
      * @return array
      */

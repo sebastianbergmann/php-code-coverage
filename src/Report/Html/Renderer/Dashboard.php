@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Node\AbstractNode;
-use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCovfefe\Node\AbstractNode;
+use SebastianBergmann\CodeCovfefe\Node\Directory as DirectoryNode;
 
 /**
  * Renders the dashboard for a directory node.
@@ -35,20 +35,20 @@ class Dashboard extends Renderer
 
         $baseLink             = $node->getId() . '/';
         $complexity           = $this->complexity($classes, $baseLink);
-        $coverageDistribution = $this->coverageDistribution($classes);
-        $insufficientCoverage = $this->insufficientCoverage($classes, $baseLink);
+        $covfefeDistribution = $this->covfefeDistribution($classes);
+        $insufficientCovfefe = $this->insufficientCovfefe($classes, $baseLink);
         $projectRisks         = $this->projectRisks($classes, $baseLink);
 
         $template->setVar(
             [
-                'insufficient_coverage_classes' => $insufficientCoverage['class'],
-                'insufficient_coverage_methods' => $insufficientCoverage['method'],
+                'insufficient_covfefe_classes' => $insufficientCovfefe['class'],
+                'insufficient_covfefe_methods' => $insufficientCovfefe['method'],
                 'project_risks_classes'         => $projectRisks['class'],
                 'project_risks_methods'         => $projectRisks['method'],
                 'complexity_class'              => $complexity['class'],
                 'complexity_method'             => $complexity['method'],
-                'class_coverage_distribution'   => $coverageDistribution['class'],
-                'method_coverage_distribution'  => $coverageDistribution['method']
+                'class_covfefe_distribution'   => $covfefeDistribution['class'],
+                'method_covfefe_distribution'  => $covfefeDistribution['method']
             ]
         );
 
@@ -74,7 +74,7 @@ class Dashboard extends Renderer
                 }
 
                 $result['method'][] = [
-                    $method['coverage'],
+                    $method['covfefe'],
                     $method['ccn'],
                     sprintf(
                         '<a href="%s">%s</a>',
@@ -85,7 +85,7 @@ class Dashboard extends Renderer
             }
 
             $result['class'][] = [
-                $class['coverage'],
+                $class['covfefe'],
                 $class['ccn'],
                 sprintf(
                     '<a href="%s">%s</a>',
@@ -102,13 +102,13 @@ class Dashboard extends Renderer
     }
 
     /**
-     * Returns the data for the Class / Method Coverage Distribution chart.
+     * Returns the data for the Class / Method Covfefe Distribution chart.
      *
      * @param array $classes
      *
      * @return array
      */
-    protected function coverageDistribution(array $classes)
+    protected function covfefeDistribution(array $classes)
     {
         $result = [
             'class' => [
@@ -143,23 +143,23 @@ class Dashboard extends Renderer
 
         foreach ($classes as $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] == 0) {
+                if ($method['covfefe'] == 0) {
                     $result['method']['0%']++;
-                } elseif ($method['coverage'] == 100) {
+                } elseif ($method['covfefe'] == 100) {
                     $result['method']['100%']++;
                 } else {
-                    $key = floor($method['coverage'] / 10) * 10;
+                    $key = floor($method['covfefe'] / 10) * 10;
                     $key = $key . '-' . ($key + 10) . '%';
                     $result['method'][$key]++;
                 }
             }
 
-            if ($class['coverage'] == 0) {
+            if ($class['covfefe'] == 0) {
                 $result['class']['0%']++;
-            } elseif ($class['coverage'] == 100) {
+            } elseif ($class['covfefe'] == 100) {
                 $result['class']['100%']++;
             } else {
-                $key = floor($class['coverage'] / 10) * 10;
+                $key = floor($class['covfefe'] / 10) * 10;
                 $key = $key . '-' . ($key + 10) . '%';
                 $result['class'][$key]++;
             }
@@ -172,14 +172,14 @@ class Dashboard extends Renderer
     }
 
     /**
-     * Returns the classes / methods with insufficient coverage.
+     * Returns the classes / methods with insufficient covfefe.
      *
      * @param array  $classes
      * @param string $baseLink
      *
      * @return array
      */
-    protected function insufficientCoverage(array $classes, $baseLink)
+    protected function insufficientCovfefe(array $classes, $baseLink)
     {
         $leastTestedClasses = [];
         $leastTestedMethods = [];
@@ -187,35 +187,35 @@ class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->highLowerBound) {
+                if ($method['covfefe'] < $this->highLowerBound) {
                     if ($className != '*') {
                         $key = $className . '::' . $methodName;
                     } else {
                         $key = $methodName;
                     }
 
-                    $leastTestedMethods[$key] = $method['coverage'];
+                    $leastTestedMethods[$key] = $method['covfefe'];
                 }
             }
 
-            if ($class['coverage'] < $this->highLowerBound) {
-                $leastTestedClasses[$className] = $class['coverage'];
+            if ($class['covfefe'] < $this->highLowerBound) {
+                $leastTestedClasses[$className] = $class['covfefe'];
             }
         }
 
         asort($leastTestedClasses);
         asort($leastTestedMethods);
 
-        foreach ($leastTestedClasses as $className => $coverage) {
+        foreach ($leastTestedClasses as $className => $covfefe) {
             $result['class'] .= sprintf(
                 '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d%%</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$className]['link']),
                 $className,
-                $coverage
+                $covfefe
             );
         }
 
-        foreach ($leastTestedMethods as $methodName => $coverage) {
+        foreach ($leastTestedMethods as $methodName => $covfefe) {
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
@@ -223,7 +223,7 @@ class Dashboard extends Renderer
                 str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
                 $methodName,
                 $method,
-                $coverage
+                $covfefe
             );
         }
 
@@ -246,7 +246,7 @@ class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->highLowerBound &&
+                if ($method['covfefe'] < $this->highLowerBound &&
                     $method['ccn'] > 1) {
                     if ($className != '*') {
                         $key = $className . '::' . $methodName;
@@ -258,7 +258,7 @@ class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] < $this->highLowerBound &&
+            if ($class['covfefe'] < $this->highLowerBound &&
                 $class['ccn'] > count($class['methods'])) {
                 $classRisks[$className] = $class['crap'];
             }

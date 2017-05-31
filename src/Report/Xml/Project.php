@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 class Project extends Node
 {
@@ -24,11 +24,11 @@ class Project extends Node
     private function init()
     {
         $dom = new \DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/covfefe/1.0"><build/><project/></phpunit>');
 
         $this->setContextNode(
             $dom->getElementsByTagNameNS(
-                'http://schema.phpunit.de/coverage/1.0',
+                'http://schema.phpunit.de/covfefe/1.0',
                 'project'
             )->item(0)
         );
@@ -53,14 +53,14 @@ class Project extends Node
     public function getBuildInformation()
     {
         $buildNode = $this->getDom()->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'build'
         )->item(0);
 
         if (!$buildNode) {
             $buildNode = $this->getDom()->documentElement->appendChild(
                 $this->getDom()->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     'build'
                 )
             );
@@ -72,14 +72,14 @@ class Project extends Node
     public function getTests()
     {
         $testsNode = $this->getContextNode()->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'tests'
         )->item(0);
 
         if (!$testsNode) {
             $testsNode = $this->getContextNode()->appendChild(
                 $this->getDom()->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     'tests'
                 )
             );

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCovfefe\RuntimeException;
 
-class Coverage
+class Covfefe
 {
     /**
      * @var \XMLWriter
@@ -35,14 +35,14 @@ class Coverage
 
         $this->writer = new \XMLWriter();
         $this->writer->openMemory();
-        $this->writer->startElementNs(null, $context->nodeName, 'http://schema.phpunit.de/coverage/1.0');
+        $this->writer->startElementNs(null, $context->nodeName, 'http://schema.phpunit.de/covfefe/1.0');
         $this->writer->writeAttribute('nr', $line);
     }
 
     public function addTest($test)
     {
         if ($this->finalized) {
-            throw new RuntimeException('Coverage Report already finalized');
+            throw new RuntimeException('Covfefe Report already finalized');
         }
 
         $this->writer->startElement('covered');

@@ -19,7 +19,7 @@
       <fullMethod>getBalance()</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -30,7 +30,7 @@
       <fullMethod>setBalance($balance)</fullMethod>
       <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>0</coverage>
+      <covfefe>0</covfefe>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -41,7 +41,7 @@
       <fullMethod>depositMoney($balance)</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -52,7 +52,7 @@
       <fullMethod>withdrawMoney($balance)</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
   </methods>

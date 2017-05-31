@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCovfefe\TestCase;
 
 class HTMLTest extends TestCase
 {
@@ -41,20 +41,20 @@ class HTMLTest extends TestCase
 
     public function testForBankAccountTest()
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CovfefeForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $report->process($this->getCovfefeForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
     public function testForFileWithIgnoredLines()
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CovfefeForFileWithIgnoredLines';
 
         $report = new Facade;
-        $report->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
+        $report->process($this->getCovfefeForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -62,10 +62,10 @@ class HTMLTest extends TestCase
     public function testForClassWithAnonymousFunction()
     {
         $expectedFilesPath =
-            self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
+            self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CovfefeForClassWithAnonymousFunction';
 
         $report = new Facade;
-        $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
+        $report->process($this->getCovfefeForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }

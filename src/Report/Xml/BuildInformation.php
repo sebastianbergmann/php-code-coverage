@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 use SebastianBergmann\Environment\Runtime;
 
@@ -46,7 +46,7 @@ class BuildInformation
             return;
         }
 
-        if ($runtime->hasPHPDBGCodeCoverage()) {
+        if ($runtime->hasPHPDBGCodeCovfefe()) {
             $driverNode->setAttribute('name', 'phpdbg');
             $driverNode->setAttribute('version', constant('PHPDBG_VERSION'));
         }
@@ -65,14 +65,14 @@ class BuildInformation
     private function getNodeByName($name)
     {
         $node = $this->contextNode->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             $name
         )->item(0);
 
         if (!$node) {
             $node = $this->contextNode->appendChild(
                 $this->contextNode->ownerDocument->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     $name
                 )
             );
@@ -91,11 +91,11 @@ class BuildInformation
 
     /**
      * @param string $phpUnitVersion
-     * @param string $coverageVersion
+     * @param string $covfefeVersion
      */
-    public function setGeneratorVersions($phpUnitVersion, $coverageVersion)
+    public function setGeneratorVersions($phpUnitVersion, $covfefeVersion)
     {
         $this->contextNode->setAttribute('phpunit', $phpUnitVersion);
-        $this->contextNode->setAttribute('coverage', $coverageVersion);
+        $this->contextNode->setAttribute('covfefe', $covfefeVersion);
     }
 }

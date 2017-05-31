@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
-  <project>CoverageForClassWithAnonymousFunction</project>
+  <project>CovfefeForClassWithAnonymousFunction</project>
   <timestamp>%s</timestamp>
   <stats>
     <name>Method Crap Stats</name>
@@ -19,7 +19,7 @@
       <fullMethod>runAnonymous()</fullMethod>
       <crap>1.04</crap>
       <complexity>1</complexity>
-      <coverage>66.67</coverage>
+      <covfefe>66.67</covfefe>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -30,7 +30,7 @@
       <fullMethod>anonymous function (&amp;$val, $key)</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
   </methods>

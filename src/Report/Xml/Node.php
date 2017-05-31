@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 class Node
 {
@@ -50,7 +50,7 @@ class Node
         if (!$totalsContainer) {
             $totalsContainer = $this->getContextNode()->appendChild(
                 $this->dom->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     'totals'
                 )
             );
@@ -62,7 +62,7 @@ class Node
     public function addDirectory($name)
     {
         $dirNode = $this->getDom()->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'directory'
         );
 
@@ -75,7 +75,7 @@ class Node
     public function addFile($name, $href)
     {
         $fileNode = $this->getDom()->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'file'
         );
 

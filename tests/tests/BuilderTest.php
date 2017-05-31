@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\TestCase;
-use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCovfefe\TestCase;
+use SebastianBergmann\CodeCovfefe\Node\Builder;
 
 class BuilderTest extends TestCase
 {
@@ -24,7 +24,7 @@ class BuilderTest extends TestCase
 
     public function testSomething()
     {
-        $root = $this->getCoverageForBankAccount()->getReport();
+        $root = $this->getCovfefeForBankAccount()->getReport();
 
         $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->getName());
@@ -56,7 +56,7 @@ class BuilderTest extends TestCase
                             'executableLines' => 1,
                             'executedLines'   => 1,
                             'ccn'             => 1,
-                            'coverage'        => 100,
+                            'covfefe'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#6',
                             'methodName'      => 'getBalance',
@@ -69,7 +69,7 @@ class BuilderTest extends TestCase
                             'executableLines' => 5,
                             'executedLines'   => 0,
                             'ccn'             => 2,
-                            'coverage'        => 0,
+                            'covfefe'        => 0,
                             'crap'            => 6,
                             'link'            => 'BankAccount.php.html#11',
                             'methodName'      => 'setBalance',
@@ -82,7 +82,7 @@ class BuilderTest extends TestCase
                             'executableLines' => 2,
                             'executedLines'   => 2,
                             'ccn'             => 1,
-                            'coverage'        => 100,
+                            'covfefe'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#20',
                             'methodName'      => 'depositMoney',
@@ -95,7 +95,7 @@ class BuilderTest extends TestCase
                             'executableLines' => 2,
                             'executedLines'   => 2,
                             'ccn'             => 1,
-                            'coverage'        => 100,
+                            'covfefe'        => 100,
                             'crap'            => '1',
                             'link'            => 'BankAccount.php.html#27',
                             'methodName'      => 'withdrawMoney',
@@ -106,7 +106,7 @@ class BuilderTest extends TestCase
                     'executableLines' => 10,
                     'executedLines'   => 5,
                     'ccn'             => 5,
-                    'coverage'        => 50,
+                    'covfefe'        => 50,
                     'crap'            => '8.12',
                     'package'         => [
                         'namespace'   => '',

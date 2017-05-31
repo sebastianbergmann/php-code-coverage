@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
-  <project>CoverageForFileWithIgnoredLines</project>
+  <project>CovfefeForFileWithIgnoredLines</project>
   <timestamp>%s</timestamp>
   <stats>
     <name>Method Crap Stats</name>
@@ -19,7 +19,7 @@
       <fullMethod>bar()</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -30,7 +30,7 @@
       <fullMethod>foo()</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <covfefe>100</covfefe>
       <crapLoad>0</crapLoad>
     </method>
   </methods>

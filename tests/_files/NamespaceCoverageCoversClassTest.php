@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Foo\CoveredClass
  */
-class NamespaceCoverageCoversClassTest extends TestCase
+class NamespaceCovfefeCoversClassTest extends TestCase
 {
     /**
      * @covers ::privateMethod

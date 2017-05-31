@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,37 +8,37 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
 
 /**
- * Uses var_export() to write a SebastianBergmann\CodeCoverage\CodeCoverage object to a file.
+ * Uses var_export() to write a SebastianBergmann\CodeCovfefe\CodeCovfefe object to a file.
  */
 class PHP
 {
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param string       $target
      *
      * @return string
      */
-    public function process(CodeCoverage $coverage, $target = null)
+    public function process(CodeCovfefe $covfefe, $target = null)
     {
-        $filter = $coverage->filter();
+        $filter = $covfefe->filter();
 
         $output = sprintf(
             '<?php
-$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
-$coverage->setData(%s);
-$coverage->setTests(%s);
+$covfefe = new SebastianBergmann\CodeCovfefe\CodeCovfefe;
+$covfefe->setData(%s);
+$covfefe->setTests(%s);
 
-$filter = $coverage->filter();
+$filter = $covfefe->filter();
 $filter->setWhitelistedFiles(%s);
 
-return $coverage;',
-            var_export($coverage->getData(true), 1),
-            var_export($coverage->getTests(), 1),
+return $covfefe;',
+            var_export($covfefe->getData(true), 1),
+            var_export($covfefe->getTests(), 1),
             var_export($filter->getWhitelistedFiles(), 1)
         );
 

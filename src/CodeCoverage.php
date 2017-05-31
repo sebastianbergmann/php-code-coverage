@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,23 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
-use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
-use SebastianBergmann\CodeCoverage\Driver\HHVM;
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
-use SebastianBergmann\CodeCoverage\Node\Builder;
-use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCovfefe\Driver\Driver;
+use SebastianBergmann\CodeCovfefe\Driver\Xdebug;
+use SebastianBergmann\CodeCovfefe\Driver\HHVM;
+use SebastianBergmann\CodeCovfefe\Driver\PHPDBG;
+use SebastianBergmann\CodeCovfefe\Node\Builder;
+use SebastianBergmann\CodeCovfefe\Node\Directory;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 use SebastianBergmann\Environment\Runtime;
 
 /**
- * Provides collection functionality for PHP code coverage information.
+ * Provides collection functionality for PHP code covfefe information.
  */
-class CodeCoverage
+class CodeCovfefe
 {
     /**
      * @var Driver
@@ -87,7 +87,7 @@ class CodeCoverage
     private $currentId;
 
     /**
-     * Code coverage data.
+     * Code covfefe data.
      *
      * @var array
      */
@@ -159,7 +159,7 @@ class CodeCoverage
     }
 
     /**
-     * Returns the code coverage information as a graph of node objects.
+     * Returns the code covfefe information as a graph of node objects.
      *
      * @return Directory
      */
@@ -175,7 +175,7 @@ class CodeCoverage
     }
 
     /**
-     * Clears collected code coverage data.
+     * Clears collected code covfefe data.
      */
     public function clear()
     {
@@ -197,7 +197,7 @@ class CodeCoverage
     }
 
     /**
-     * Returns the collected code coverage data.
+     * Returns the collected code covfefe data.
      * Set $raw = true to bypass all filters.
      *
      * @param bool $raw
@@ -214,7 +214,7 @@ class CodeCoverage
     }
 
     /**
-     * Sets the coverage data.
+     * Sets the covfefe data.
      *
      * @param array $data
      */
@@ -245,7 +245,7 @@ class CodeCoverage
     }
 
     /**
-     * Start collection of code coverage information.
+     * Start collection of code covfefe information.
      *
      * @param mixed $id
      * @param bool  $clear
@@ -275,7 +275,7 @@ class CodeCoverage
     }
 
     /**
-     * Stop collection of code coverage information.
+     * Stop collection of code covfefe information.
      *
      * @param bool  $append
      * @param mixed $linesToBeCovered
@@ -310,7 +310,7 @@ class CodeCoverage
     }
 
     /**
-     * Appends code coverage data.
+     * Appends code covfefe data.
      *
      * @param array $data
      * @param mixed $id
@@ -393,9 +393,9 @@ class CodeCoverage
     /**
      * Merges the data from another instance.
      *
-     * @param CodeCoverage $that
+     * @param CodeCovfefe $that
      */
-    public function merge(CodeCoverage $that)
+    public function merge(CodeCovfefe $that)
     {
         $this->filter->setWhitelistedFiles(
             array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
@@ -790,15 +790,15 @@ class CodeCoverage
                         $_token = trim($token);
                         $_line  = trim($lines[$token->getLine() - 1]);
 
-                        if ($_token == '// @codeCoverageIgnore' ||
-                            $_token == '//@codeCoverageIgnore') {
+                        if ($_token == '// @codeCovfefeIgnore' ||
+                            $_token == '//@codeCovfefeIgnore') {
                             $ignore = true;
                             $stop   = true;
-                        } elseif ($_token == '// @codeCoverageIgnoreStart' ||
-                            $_token == '//@codeCoverageIgnoreStart') {
+                        } elseif ($_token == '// @codeCovfefeIgnoreStart' ||
+                            $_token == '//@codeCovfefeIgnoreStart') {
                             $ignore = true;
-                        } elseif ($_token == '// @codeCoverageIgnoreEnd' ||
-                            $_token == '//@codeCoverageIgnoreEnd') {
+                        } elseif ($_token == '// @codeCovfefeIgnoreEnd' ||
+                            $_token == '//@codeCovfefeIgnoreEnd') {
                             $stop = true;
                         }
 
@@ -834,7 +834,7 @@ class CodeCoverage
 
                         $this->ignoredLines[$filename][] = $token->getLine();
 
-                        if (strpos($docblock, '@codeCoverageIgnore') || ($this->ignoreDeprecatedCode && strpos($docblock, '@deprecated'))) {
+                        if (strpos($docblock, '@codeCovfefeIgnore') || ($this->ignoreDeprecatedCode && strpos($docblock, '@deprecated'))) {
                             $endLine = $token->getEndLine();
 
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {
@@ -960,7 +960,7 @@ class CodeCoverage
      */
     private function performUnexecutedCoveredCodeCheck(array &$data, array $linesToBeCovered, array $linesToBeUsed)
     {
-        $executedCodeUnits = $this->coverageToCodeUnits($data);
+        $executedCodeUnits = $this->covfefeToCodeUnits($data);
         $message           = '';
 
         foreach ($this->linesToCodeUnits($linesToBeCovered) as $codeUnit) {
@@ -1036,8 +1036,8 @@ class CodeCoverage
     {
         $runtime = new Runtime;
 
-        if (!$runtime->canCollectCodeCoverage()) {
-            throw new RuntimeException('No code coverage driver available');
+        if (!$runtime->canCollectCodeCovfefe()) {
+            throw new RuntimeException('No code covfefe driver available');
         }
 
         if ($runtime->isHHVM()) {
@@ -1099,20 +1099,20 @@ class CodeCoverage
             }
 
             $data     = [];
-            $coverage = $this->driver->stop();
+            $covfefe = $this->driver->stop();
 
-            foreach ($coverage as $file => $fileCoverage) {
+            foreach ($covfefe as $file => $fileCovfefe) {
                 if ($this->filter->isFiltered($file)) {
                     continue;
                 }
 
-                foreach (array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] == Driver::LINE_EXECUTED) {
-                        $fileCoverage[$key] = Driver::LINE_NOT_EXECUTED;
+                foreach (array_keys($fileCovfefe) as $key) {
+                    if ($fileCovfefe[$key] == Driver::LINE_EXECUTED) {
+                        $fileCovfefe[$key] = Driver::LINE_NOT_EXECUTED;
                     }
                 }
 
-                $data[$file] = $fileCoverage;
+                $data[$file] = $fileCovfefe;
             }
 
             $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
@@ -1124,7 +1124,7 @@ class CodeCoverage
      *
      * @return array
      */
-    private function coverageToCodeUnits(array $data)
+    private function covfefeToCodeUnits(array $data)
     {
         $codeUnits = [];
 

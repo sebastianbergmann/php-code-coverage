@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCovfefe\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Text
+ * @covers SebastianBergmann\CodeCovfefe\Report\Text
  */
 class TextTest extends TestCase
 {
@@ -23,7 +23,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCovfefeForBankAccount()))
         );
     }
 
@@ -33,7 +33,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCovfefeForFileWithIgnoredLines()))
         );
     }
 
@@ -43,7 +43,7 @@ class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
-            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCovfefeForClassWithAnonymousFunction()))
         );
     }
 }

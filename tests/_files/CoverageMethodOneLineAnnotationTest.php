@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class CoverageMethodOneLineAnnotationTest extends TestCase
+class CovfefeMethodOneLineAnnotationTest extends TestCase
 {
     /** @covers CoveredClass::publicMethod */
     public function testSomething()

@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class CoverageNotPrivateTest extends TestCase
+class CovfefeNotPrivateTest extends TestCase
 {
     /**
      * @covers CoveredClass::<!private>

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
-use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCovfefe\Node\AbstractNode as Node;
+use SebastianBergmann\CodeCovfefe\Node\Directory as DirectoryNode;
 
 /**
  * Renders a directory node.

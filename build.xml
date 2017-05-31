@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="php-code-coverage" default="setup">
+<project name="php-code-covfefe" default="setup">
     <target name="setup" depends="clean,composer"/>
 
     <target name="clean" description="Cleanup build artifacts">

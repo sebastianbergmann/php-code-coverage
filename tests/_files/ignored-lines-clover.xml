@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="%i">
+<covfefe generated="%i">
   <project timestamp="%i">
     <file name="%s/source_with_ignore.php">
       <class name="Foo" namespace="global">
@@ -14,4 +14,4 @@
     </file>
     <metrics files="1" loc="37" ncloc="25" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="2" coveredelements="1"/>
   </project>
-</coverage>
+</covfefe>

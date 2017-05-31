@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
 use PHPUnit\Framework\TestCase;
 
@@ -26,42 +26,42 @@ class FilterTest extends TestCase
 
     protected function setUp()
     {
-        $this->filter = unserialize('O:37:"SebastianBergmann\CodeCoverage\Filter":0:{}');
+        $this->filter = unserialize('O:37:"SebastianBergmann\CodeCovfefe\Filter":0:{}');
 
         $this->files = [
             TEST_FILES_PATH . 'BankAccount.php',
             TEST_FILES_PATH . 'BankAccountTest.php',
-            TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
-            TEST_FILES_PATH . 'CoverageClassTest.php',
-            TEST_FILES_PATH . 'CoverageFunctionParenthesesTest.php',
-            TEST_FILES_PATH . 'CoverageFunctionParenthesesWhitespaceTest.php',
-            TEST_FILES_PATH . 'CoverageFunctionTest.php',
-            TEST_FILES_PATH . 'CoverageMethodOneLineAnnotationTest.php',
-            TEST_FILES_PATH . 'CoverageMethodParenthesesTest.php',
-            TEST_FILES_PATH . 'CoverageMethodParenthesesWhitespaceTest.php',
-            TEST_FILES_PATH . 'CoverageMethodTest.php',
-            TEST_FILES_PATH . 'CoverageNoneTest.php',
-            TEST_FILES_PATH . 'CoverageNotPrivateTest.php',
-            TEST_FILES_PATH . 'CoverageNotProtectedTest.php',
-            TEST_FILES_PATH . 'CoverageNotPublicTest.php',
-            TEST_FILES_PATH . 'CoverageNothingTest.php',
-            TEST_FILES_PATH . 'CoveragePrivateTest.php',
-            TEST_FILES_PATH . 'CoverageProtectedTest.php',
-            TEST_FILES_PATH . 'CoveragePublicTest.php',
-            TEST_FILES_PATH . 'CoverageTwoDefaultClassAnnotations.php',
+            TEST_FILES_PATH . 'CovfefeClassExtendedTest.php',
+            TEST_FILES_PATH . 'CovfefeClassTest.php',
+            TEST_FILES_PATH . 'CovfefeFunctionParenthesesTest.php',
+            TEST_FILES_PATH . 'CovfefeFunctionParenthesesWhitespaceTest.php',
+            TEST_FILES_PATH . 'CovfefeFunctionTest.php',
+            TEST_FILES_PATH . 'CovfefeMethodOneLineAnnotationTest.php',
+            TEST_FILES_PATH . 'CovfefeMethodParenthesesTest.php',
+            TEST_FILES_PATH . 'CovfefeMethodParenthesesWhitespaceTest.php',
+            TEST_FILES_PATH . 'CovfefeMethodTest.php',
+            TEST_FILES_PATH . 'CovfefeNoneTest.php',
+            TEST_FILES_PATH . 'CovfefeNotPrivateTest.php',
+            TEST_FILES_PATH . 'CovfefeNotProtectedTest.php',
+            TEST_FILES_PATH . 'CovfefeNotPublicTest.php',
+            TEST_FILES_PATH . 'CovfefeNothingTest.php',
+            TEST_FILES_PATH . 'CovfefePrivateTest.php',
+            TEST_FILES_PATH . 'CovfefeProtectedTest.php',
+            TEST_FILES_PATH . 'CovfefePublicTest.php',
+            TEST_FILES_PATH . 'CovfefeTwoDefaultClassAnnotations.php',
             TEST_FILES_PATH . 'CoveredClass.php',
             TEST_FILES_PATH . 'CoveredFunction.php',
-            TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageClassTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageCoversClassPublicTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageCoversClassTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageMethodTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageNotPrivateTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageNotProtectedTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageNotPublicTest.php',
-            TEST_FILES_PATH . 'NamespaceCoveragePrivateTest.php',
-            TEST_FILES_PATH . 'NamespaceCoverageProtectedTest.php',
-            TEST_FILES_PATH . 'NamespaceCoveragePublicTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeClassExtendedTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeClassTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeCoversClassPublicTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeCoversClassTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeMethodTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeNotPrivateTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeNotProtectedTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeNotPublicTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefePrivateTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefeProtectedTest.php',
+            TEST_FILES_PATH . 'NamespaceCovfefePublicTest.php',
             TEST_FILES_PATH . 'NamespaceCoveredClass.php',
             TEST_FILES_PATH . 'NotExistingCoveredElementTest.php',
             TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
@@ -74,8 +74,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::addFileToWhitelist
-     * @covers SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::addFileToWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::getWhitelist
      */
     public function testAddingAFileToTheWhitelistWorks()
     {
@@ -88,8 +88,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::removeFileFromWhitelist
-     * @covers SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::removeFileFromWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::getWhitelist
      */
     public function testRemovingAFileFromTheWhitelistWorks()
     {
@@ -100,8 +100,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers  SebastianBergmann\CodeCoverage\Filter::addDirectoryToWhitelist
-     * @covers  SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     * @covers  SebastianBergmann\CodeCovfefe\Filter::addDirectoryToWhitelist
+     * @covers  SebastianBergmann\CodeCovfefe\Filter::getWhitelist
      * @depends testAddingAFileToTheWhitelistWorks
      */
     public function testAddingADirectoryToTheWhitelistWorks()
@@ -115,8 +115,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::addFilesToWhitelist
-     * @covers SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::addFilesToWhitelist
+     * @covers SebastianBergmann\CodeCovfefe\Filter::getWhitelist
      */
     public function testAddingFilesToTheWhitelistWorks()
     {
@@ -136,8 +136,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers  SebastianBergmann\CodeCoverage\Filter::removeDirectoryFromWhitelist
-     * @covers  SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     * @covers  SebastianBergmann\CodeCovfefe\Filter::removeDirectoryFromWhitelist
+     * @covers  SebastianBergmann\CodeCovfefe\Filter::getWhitelist
      * @depends testAddingADirectoryToTheWhitelistWorks
      */
     public function testRemovingADirectoryFromTheWhitelistWorks()
@@ -149,7 +149,7 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::isFile
+     * @covers SebastianBergmann\CodeCovfefe\Filter::isFile
      */
     public function testIsFile()
     {
@@ -163,7 +163,7 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::isFiltered
+     * @covers SebastianBergmann\CodeCovfefe\Filter::isFiltered
      */
     public function testWhitelistedFileIsNotFiltered()
     {
@@ -172,7 +172,7 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::isFiltered
+     * @covers SebastianBergmann\CodeCovfefe\Filter::isFiltered
      */
     public function testNotWhitelistedFileIsFiltered()
     {
@@ -181,8 +181,8 @@ class FilterTest extends TestCase
     }
 
     /**
-     * @covers SebastianBergmann\CodeCoverage\Filter::isFiltered
-     * @covers SebastianBergmann\CodeCoverage\Filter::isFile
+     * @covers SebastianBergmann\CodeCovfefe\Filter::isFiltered
+     * @covers SebastianBergmann\CodeCovfefe\Filter::isFile
      */
     public function testNonFilesAreFiltered()
     {

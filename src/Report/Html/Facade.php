@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
+use SebastianBergmann\CodeCovfefe\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCovfefe\RuntimeException;
 
 /**
- * Generates an HTML report from a code coverage object.
+ * Generates an HTML report from a code covfefe object.
  */
 class Facade
 {
@@ -55,14 +55,14 @@ class Facade
     }
 
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param string       $target
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(CodeCovfefe $covfefe, $target)
     {
         $target = $this->getDirectory($target);
-        $report = $coverage->getReport();
-        unset($coverage);
+        $report = $covfefe->getReport();
+        unset($covfefe);
 
         if (!isset($_SERVER['REQUEST_TIME'])) {
             $_SERVER['REQUEST_TIME'] = time();

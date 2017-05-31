@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class CoverageNoneTest extends TestCase
+class CovfefeNoneTest extends TestCase
 {
     public function testSomething()
     {

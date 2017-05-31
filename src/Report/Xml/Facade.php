@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\AbstractNode;
-use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\RuntimeException;
-use SebastianBergmann\CodeCoverage\Version;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
+use SebastianBergmann\CodeCovfefe\Node\AbstractNode;
+use SebastianBergmann\CodeCovfefe\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCovfefe\Node\File as FileNode;
+use SebastianBergmann\CodeCovfefe\RuntimeException;
+use SebastianBergmann\CodeCovfefe\Version;
 use SebastianBergmann\Environment\Runtime;
 
 class Facade
@@ -44,12 +44,12 @@ class Facade
     }
 
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param string       $target
      *
      * @throws RuntimeException
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(CodeCovfefe $covfefe, $target)
     {
         if (substr($target, -1, 1) != DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
@@ -58,14 +58,14 @@ class Facade
         $this->target = $target;
         $this->initTargetDirectory($target);
 
-        $report = $coverage->getReport();
+        $report = $covfefe->getReport();
 
         $this->project = new Project(
-            $coverage->getReport()->getName()
+            $covfefe->getReport()->getName()
         );
 
         $this->setBuildInformation();
-        $this->processTests($coverage->getTests());
+        $this->processTests($covfefe->getTests());
         $this->processDirectory($report, $this->project);
 
         $this->saveDocument($this->project->asDom(), 'index');
@@ -147,18 +147,18 @@ class Facade
             $this->processFunction($function, $fileReport);
         }
 
-        foreach ($file->getCoverageData() as $line => $tests) {
+        foreach ($file->getCovfefeData() as $line => $tests) {
             if (!is_array($tests) || count($tests) === 0) {
                 continue;
             }
 
-            $coverage = $fileReport->getLineCoverage($line);
+            $covfefe = $fileReport->getLineCovfefe($line);
 
             foreach ($tests as $test) {
-                $coverage->addTest($test);
+                $covfefe->addTest($test);
             }
 
-            $coverage->finalize();
+            $covfefe->finalize();
         }
 
         $fileReport->getSource()->setSourceCode(
@@ -201,7 +201,7 @@ class Facade
             $methodObject->setTotals(
                 $method['executableLines'],
                 $method['executedLines'],
-                $method['coverage']
+                $method['covfefe']
             );
         }
     }
@@ -213,7 +213,7 @@ class Facade
         $functionObject->setSignature($function['signature']);
         $functionObject->setLines($function['startLine']);
         $functionObject->setCrap($function['crap']);
-        $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['coverage']);
+        $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['covfefe']);
     }
 
     private function processTests(array $tests)

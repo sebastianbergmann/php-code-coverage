@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCovfefe\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Clover
+ * @covers SebastianBergmann\CodeCovfefe\Report\Clover
  */
 class CloverTest extends TestCase
 {
@@ -23,7 +23,7 @@ class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-clover.xml',
-            $clover->process($this->getCoverageForBankAccount(), null, 'BankAccount')
+            $clover->process($this->getCovfefeForBankAccount(), null, 'BankAccount')
         );
     }
 
@@ -33,7 +33,7 @@ class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-clover.xml',
-            $clover->process($this->getCoverageForFileWithIgnoredLines())
+            $clover->process($this->getCovfefeForFileWithIgnoredLines())
         );
     }
 
@@ -43,7 +43,7 @@ class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
-            $clover->process($this->getCoverageForClassWithAnonymousFunction())
+            $clover->process($this->getCovfefeForClassWithAnonymousFunction())
         );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,22 +8,22 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Driver;
+namespace SebastianBergmann\CodeCovfefe\Driver;
 
 /**
- * Driver for HHVM's code coverage functionality.
+ * Driver for HHVM's code covfefe functionality.
  *
- * @codeCoverageIgnore
+ * @codeCovfefeIgnore
  */
 class HHVM extends Xdebug
 {
     /**
-     * Start collection of code coverage information.
+     * Start collection of code covfefe information.
      *
      * @param bool $determineUnusedAndDead
      */
     public function start($determineUnusedAndDead = true)
     {
-        xdebug_start_code_coverage();
+        xdebug_start_code_covfefe();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 class File
 {
@@ -51,7 +51,7 @@ class File
         if (!$totalsContainer) {
             $totalsContainer = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     'totals'
                 )
             );
@@ -60,29 +60,29 @@ class File
         return new Totals($totalsContainer);
     }
 
-    public function getLineCoverage($line)
+    public function getLineCovfefe($line)
     {
-        $coverage = $this->contextNode->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
-            'coverage'
+        $covfefe = $this->contextNode->getElementsByTagNameNS(
+            'http://schema.phpunit.de/covfefe/1.0',
+            'covfefe'
         )->item(0);
 
-        if (!$coverage) {
-            $coverage = $this->contextNode->appendChild(
+        if (!$covfefe) {
+            $covfefe = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
-                    'coverage'
+                    'http://schema.phpunit.de/covfefe/1.0',
+                    'covfefe'
                 )
             );
         }
 
-        $lineNode = $coverage->appendChild(
+        $lineNode = $covfefe->appendChild(
             $this->dom->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0',
+                'http://schema.phpunit.de/covfefe/1.0',
                 'line'
             )
         );
 
-        return new Coverage($lineNode, $line);
+        return new Covfefe($lineNode, $line);
     }
 }

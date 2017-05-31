@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCovfefe\Node\File as FileNode;
+use SebastianBergmann\CodeCovfefe\Util;
 
 /**
  * Renders a file node.
@@ -292,7 +292,7 @@ class File extends Renderer
      */
     protected function renderSource(FileNode $node)
     {
-        $coverageData = $node->getCoverageData();
+        $covfefeData = $node->getCovfefeData();
         $testData     = $node->getTestData();
         $codeLines    = $this->loadFile($node->getPath());
         $lines        = '';
@@ -303,10 +303,10 @@ class File extends Renderer
             $popoverContent = '';
             $popoverTitle   = '';
 
-            if (array_key_exists($i, $coverageData)) {
-                $numTests = count($coverageData[$i]);
+            if (array_key_exists($i, $covfefeData)) {
+                $numTests = count($covfefeData[$i]);
 
-                if ($coverageData[$i] === null) {
+                if ($covfefeData[$i] === null) {
                     $trClass = ' class="warning"';
                 } elseif ($numTests == 0) {
                     $trClass = ' class="danger"';
@@ -320,7 +320,7 @@ class File extends Renderer
                         $popoverTitle = '1 test covers line ' . $i;
                     }
 
-                    foreach ($coverageData[$i] as $test) {
+                    foreach ($covfefeData[$i] as $test) {
                         if ($lineCss == 'covered-by-large-tests' && $testData[$test]['size'] == 'medium') {
                             $lineCss = 'covered-by-medium-tests';
                         } elseif ($testData[$test]['size'] == 'small') {

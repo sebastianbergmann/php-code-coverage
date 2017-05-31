@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Util
+ * @covers SebastianBergmann\CodeCovfefe\Util
  */
 class UtilTest extends TestCase
 {

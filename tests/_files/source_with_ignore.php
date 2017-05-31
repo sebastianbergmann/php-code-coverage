@@ -1,12 +1,12 @@
 <?php
 if ($neverHappens) {
-    // @codeCoverageIgnoreStart
+    // @codeCovfefeIgnoreStart
     print '*';
-    // @codeCoverageIgnoreEnd
+    // @codeCovfefeIgnoreEnd
 }
 
 /**
- * @codeCoverageIgnore
+ * @codeCovfefeIgnore
  */
 class Foo
 {
@@ -18,7 +18,7 @@ class Foo
 class Bar
 {
     /**
-     * @codeCoverageIgnore
+     * @codeCovfefeIgnore
      */
     public function foo()
     {
@@ -27,7 +27,7 @@ class Bar
 
 function baz()
 {
-    print '*'; // @codeCoverageIgnore
+    print '*'; // @codeCovfefeIgnore
 }
 
 interface Bor

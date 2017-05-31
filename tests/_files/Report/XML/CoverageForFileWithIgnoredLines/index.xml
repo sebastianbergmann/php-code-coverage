@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
-  <build time="%s" phpunit="%s" coverage="%s">
+<phpunit xmlns="http://schema.phpunit.de/covfefe/1.0">
+  <build time="%s" phpunit="%s" covfefe="%s">
     <runtime name="%s" version="%s" url="%s"/>
     <driver name="%s" version="%s"/>
   </build>

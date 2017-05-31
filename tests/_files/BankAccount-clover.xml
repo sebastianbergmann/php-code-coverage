@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="%i">
+<covfefe generated="%i">
   <project timestamp="%i" name="BankAccount">
     <file name="%s/BankAccount.php">
       <class name="BankAccount" namespace="global">
@@ -23,4 +23,4 @@
     </file>
     <metrics files="1" loc="33" ncloc="33" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="5" elements="14" coveredelements="8"/>
   </project>
-</coverage>
+</covfefe>

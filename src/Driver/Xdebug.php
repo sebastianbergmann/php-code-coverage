@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Driver;
+namespace SebastianBergmann\CodeCovfefe\Driver;
 
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCovfefe\RuntimeException;
 
 /**
- * Driver for Xdebug's code coverage functionality.
+ * Driver for Xdebug's code covfefe functionality.
  *
- * @codeCoverageIgnore
+ * @codeCovfefeIgnore
  */
 class Xdebug implements Driver
 {
@@ -36,36 +36,36 @@ class Xdebug implements Driver
         }
 
         if (version_compare(phpversion('xdebug'), '2.2.1', '>=') &&
-            !ini_get('xdebug.coverage_enable')) {
+            !ini_get('xdebug.covfefe_enable')) {
             throw new RuntimeException(
-                'xdebug.coverage_enable=On has to be set in php.ini'
+                'xdebug.covfefe_enable=On has to be set in php.ini'
             );
         }
     }
 
     /**
-     * Start collection of code coverage information.
+     * Start collection of code covfefe information.
      *
      * @param bool $determineUnusedAndDead
      */
     public function start($determineUnusedAndDead = true)
     {
         if ($determineUnusedAndDead) {
-            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+            xdebug_start_code_covfefe(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         } else {
-            xdebug_start_code_coverage();
+            xdebug_start_code_covfefe();
         }
     }
 
     /**
-     * Stop collection of code coverage information.
+     * Stop collection of code covfefe information.
      *
      * @return array
      */
     public function stop()
     {
-        $data = xdebug_get_code_coverage();
-        xdebug_stop_code_coverage();
+        $data = xdebug_get_code_covfefe();
+        xdebug_stop_code_covfefe();
 
         return $this->cleanup($data);
     }

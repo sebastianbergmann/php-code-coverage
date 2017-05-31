@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+<phpunit xmlns="http://schema.phpunit.de/covfefe/1.0">
   <file name="source_with_class_and_anonymous_function.php" path="/">
     <totals>
       <lines total="19" comments="2" code="17" executable="8" executed="7" percent="87.50"/>
@@ -11,10 +11,10 @@
     <class name="CoveredClassWithAnonymousFunctionInStaticMethod" start="3" executable="8" executed="7" crap="2.01">
       <package full="" name="" sub="" category=""/>
       <namespace name=""/>
-      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1.04" executable="3" executed="2" coverage="66.666666666667"/>
-      <method name="anonymous function" signature="anonymous function (&amp;$val, $key)" start="11" end="13" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1.04" executable="3" executed="2" covfefe="66.666666666667"/>
+      <method name="anonymous function" signature="anonymous function (&amp;$val, $key)" start="11" end="13" crap="1" executable="2" executed="2" covfefe="100"/>
     </class>
-    <coverage>
+    <covfefe>
       <line nr="7">
         <covered by="ClassWithAnonymousFunction"/>
       </line>
@@ -36,7 +36,7 @@
       <line nr="18">
         <covered by="ClassWithAnonymousFunction"/>
       </line>
-    </coverage>
+    </covfefe>
     <source>
       <line no="1">
         <token name="T_OPEN_TAG">&lt;?php</token>

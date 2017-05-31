@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCovfefe\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Node\AbstractNode;
-use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Version;
+use SebastianBergmann\CodeCovfefe\Node\AbstractNode;
+use SebastianBergmann\CodeCovfefe\Node\File as FileNode;
+use SebastianBergmann\CodeCovfefe\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCovfefe\Version;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -86,7 +86,7 @@ abstract class Renderer
             $classesNumber = $data['numTestedClasses'] . $numSeparator .
                 $data['numClasses'];
 
-            $classesBar = $this->getCoverageBar(
+            $classesBar = $this->getCovfefeBar(
                 $data['testedClassesPercent']
             );
         } else {
@@ -102,7 +102,7 @@ abstract class Renderer
             $methodsNumber = $data['numTestedMethods'] . $numSeparator .
                 $data['numMethods'];
 
-            $methodsBar = $this->getCoverageBar(
+            $methodsBar = $this->getCovfefeBar(
                 $data['testedMethodsPercent']
             );
         } else {
@@ -118,7 +118,7 @@ abstract class Renderer
             $linesNumber = $data['numExecutedLines'] . $numSeparator .
                 $data['numExecutableLines'];
 
-            $linesBar = $this->getCoverageBar(
+            $linesBar = $this->getCovfefeBar(
                 $data['linesExecutedPercent']
             );
         } else {
@@ -238,12 +238,12 @@ abstract class Renderer
         return str_repeat('../', $depth);
     }
 
-    protected function getCoverageBar($percent)
+    protected function getCovfefeBar($percent)
     {
         $level = $this->getColorLevel($percent);
 
         $template = new \Text_Template(
-            $this->templatePath . 'coverage_bar.html',
+            $this->templatePath . 'covfefe_bar.html',
             '{{',
             '}}'
         );
@@ -284,7 +284,7 @@ abstract class Renderer
             $runtime->getVersion()
         );
 
-        if ($runtime->hasXdebug() && !$runtime->hasPHPDBGCodeCoverage()) {
+        if ($runtime->hasXdebug() && !$runtime->hasPHPDBGCodeCovfefe()) {
             $buffer .= sprintf(
                 ' with <a href="https://xdebug.org/">Xdebug %s</a>',
                 phpversion('xdebug')

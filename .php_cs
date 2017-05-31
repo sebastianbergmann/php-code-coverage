@@ -1,6 +1,6 @@
 <?php
 $header = <<<'EOF'
-This file is part of the php-code-coverage package.
+This file is part of the php-code-covfefe package.
 
 (c) Sebastian Bergmann <sebastian@phpunit.de>
 

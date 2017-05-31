@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,20 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Node;
+namespace SebastianBergmann\CodeCovfefe\Node;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
 
 class Builder
 {
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      *
      * @return Directory
      */
-    public function build(CodeCoverage $coverage)
+    public function build(CodeCovfefe $covfefe)
     {
-        $files      = $coverage->getData();
+        $files      = $covfefe->getData();
         $commonPath = $this->reducePaths($files);
         $root       = new Directory(
             $commonPath,
@@ -31,8 +31,8 @@ class Builder
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($files),
-            $coverage->getTests(),
-            $coverage->getCacheTokens()
+            $covfefe->getTests(),
+            $covfefe->getCacheTokens()
         );
 
         return $root;

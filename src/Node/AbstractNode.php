@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Node;
+namespace SebastianBergmann\CodeCovfefe\Node;
 
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCovfefe\Util;
 
 /**
- * Base class for nodes in the code coverage information tree.
+ * Base class for nodes in the code covfefe information tree.
  */
 abstract class AbstractNode implements \Countable
 {

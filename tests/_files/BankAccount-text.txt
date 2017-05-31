@@ -1,11 +1,11 @@
 
 
-Code Coverage Report:   
+Code Covfefe Report:
   %s
-                        
- Summary:               
-  Classes:  0.00% (0/1) 
-  Methods: 75.00% (3/4) 
+
+ Summary:
+  Classes:  0.00% (0/1)
+  Methods: 75.00% (3/4)
   Lines:   50.00% (5/10)
 
 BankAccount

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\File;
-use SebastianBergmann\CodeCoverage\InvalidArgumentException;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
+use SebastianBergmann\CodeCovfefe\Node\File;
+use SebastianBergmann\CodeCovfefe\InvalidArgumentException;
 
 class Crap4j
 {
@@ -37,13 +37,13 @@ class Crap4j
     }
 
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param string       $target
      * @param string       $name
      *
      * @return string
      */
-    public function process(CodeCoverage $coverage, $target = null, $name = null)
+    public function process(CodeCovfefe $covfefe, $target = null, $name = null)
     {
         $document               = new \DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
@@ -58,8 +58,8 @@ class Crap4j
         $stats       = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
 
-        $report = $coverage->getReport();
-        unset($coverage);
+        $report = $covfefe->getReport();
+        unset($covfefe);
 
         $fullMethodCount     = 0;
         $fullCrapMethodCount = 0;
@@ -80,7 +80,7 @@ class Crap4j
 
             foreach ($classes as $className => $class) {
                 foreach ($class['methods'] as $methodName => $method) {
-                    $crapLoad = $this->getCrapLoad($method['crap'], $method['ccn'], $method['coverage']);
+                    $crapLoad = $this->getCrapLoad($method['crap'], $method['ccn'], $method['covfefe']);
 
                     $fullCrap     += $method['crap'];
                     $fullCrapLoad += $crapLoad;
@@ -103,7 +103,7 @@ class Crap4j
                     $methodNode->appendChild($document->createElement('fullMethod', htmlspecialchars($method['signature'])));
                     $methodNode->appendChild($document->createElement('crap', $this->roundValue($method['crap'])));
                     $methodNode->appendChild($document->createElement('complexity', $method['ccn']));
-                    $methodNode->appendChild($document->createElement('coverage', $this->roundValue($method['coverage'])));
+                    $methodNode->appendChild($document->createElement('covfefe', $this->roundValue($method['covfefe'])));
                     $methodNode->appendChild($document->createElement('crapLoad', round($crapLoad)));
 
                     $methodsNode->appendChild($methodNode);
@@ -144,16 +144,16 @@ class Crap4j
     /**
      * @param float $crapValue
      * @param int   $cyclomaticComplexity
-     * @param float $coveragePercent
+     * @param float $covfefePercent
      *
      * @return float
      */
-    private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent)
+    private function getCrapLoad($crapValue, $cyclomaticComplexity, $covfefePercent)
     {
         $crapLoad = 0;
 
         if ($crapValue >= $this->threshold) {
-            $crapLoad += $cyclomaticComplexity * (1.0 - $coveragePercent / 100);
+            $crapLoad += $cyclomaticComplexity * (1.0 - $covfefePercent / 100);
             $crapLoad += $cyclomaticComplexity / $this->threshold;
         }
 

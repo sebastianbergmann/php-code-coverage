@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCovfefe\Util;
 
 class Totals
 {
@@ -50,27 +50,27 @@ class Totals
         $dom             = $container->ownerDocument;
 
         $this->linesNode = $dom->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'lines'
         );
 
         $this->methodsNode = $dom->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'methods'
         );
 
         $this->functionsNode = $dom->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'functions'
         );
 
         $this->classesNode = $dom->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'classes'
         );
 
         $this->traitsNode = $dom->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'traits'
         );
 

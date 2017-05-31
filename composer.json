@@ -1,13 +1,13 @@
 {
-    "name": "phpunit/php-code-coverage",
-    "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
+    "name": "phpunit/php-code-covfefe",
+    "description": "Library that provides collection, processing, and rendering functionality for PHP code covfefe information.",
     "type": "library",
     "keywords": [
-        "coverage",
+        "covfefe",
         "testing",
         "xunit"
     ],
-    "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
+    "homepage": "https://github.com/sebastianbergmann/php-code-covfefe",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -17,7 +17,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
+        "issues": "https://github.com/sebastianbergmann/php-code-covfefe/issues",
         "irc": "irc://irc.freenode.net/phpunit"
     },
     "require": {

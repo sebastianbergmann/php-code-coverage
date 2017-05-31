@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="%i">
+<covfefe generated="%i">
   <project timestamp="%i">
     <file name="%s/source_with_class_and_anonymous_function.php">
       <class name="CoveredClassWithAnonymousFunctionInStaticMethod" namespace="global">
@@ -19,4 +19,4 @@
     </file>
     <metrics files="1" loc="19" ncloc="17" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="7" elements="10" coveredelements="8"/>
   </project>
-</coverage>
+</covfefe>

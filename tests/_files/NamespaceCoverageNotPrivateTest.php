@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class NamespaceCoverageNotPrivateTest extends TestCase
+class NamespaceCovfefeNotPrivateTest extends TestCase
 {
     /**
      * @covers Foo\CoveredClass::<!private>

@@ -26,11 +26,11 @@ function baz()
     print '*'; /* a one-line comment
     */
 
-    print '*'; // @codeCoverageIgnore
+    print '*'; // @codeCovfefeIgnore
 
-    print '*'; // @codeCoverageIgnoreStart
+    print '*'; // @codeCovfefeIgnoreStart
     print '*';
-    print '*'; // @codeCoverageIgnoreEnd
+    print '*'; // @codeCovfefeIgnoreEnd
 
     print '*';
 }

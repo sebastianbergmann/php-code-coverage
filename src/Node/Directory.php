@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Node;
+namespace SebastianBergmann\CodeCovfefe\Node;
 
-use SebastianBergmann\CodeCoverage\InvalidArgumentException;
+use SebastianBergmann\CodeCovfefe\InvalidArgumentException;
 
 /**
- * Represents a directory in the code coverage information tree.
+ * Represents a directory in the code covfefe information tree.
  */
 class Directory extends AbstractNode implements \IteratorAggregate
 {
@@ -159,7 +159,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
      * Adds a new file.
      *
      * @param string $name
-     * @param array  $coverageData
+     * @param array  $covfefeData
      * @param array  $testData
      * @param bool   $cacheTokens
      *
@@ -167,12 +167,12 @@ class Directory extends AbstractNode implements \IteratorAggregate
      *
      * @throws InvalidArgumentException
      */
-    public function addFile($name, array $coverageData, array $testData, $cacheTokens)
+    public function addFile($name, array $covfefeData, array $testData, $cacheTokens)
     {
         $file = new File(
             $name,
             $this,
-            $coverageData,
+            $covfefeData,
             $testData,
             $cacheTokens
         );

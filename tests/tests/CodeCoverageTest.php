@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,24 +8,24 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCovfefe\Driver\PHPDBG;
+use SebastianBergmann\CodeCovfefe\Driver\Xdebug;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\CodeCoverage
+ * @covers SebastianBergmann\CodeCovfefe\CodeCovfefe
  */
-class CodeCoverageTest extends TestCase
+class CodeCovfefeTest extends TestCase
 {
     /**
-     * @var CodeCoverage
+     * @var CodeCovfefe
      */
-    private $coverage;
+    private $covfefe;
 
     protected function setUp()
     {
-        $this->coverage = new CodeCoverage;
+        $this->covfefe = new CodeCovfefe;
     }
 
     public function testCanBeConstructedForXdebugWithoutGivenFilterObject()
@@ -37,13 +37,13 @@ class CodeCoverageTest extends TestCase
         $this->assertAttributeInstanceOf(
             Xdebug::class,
             'driver',
-            $this->coverage
+            $this->covfefe
         );
 
         $this->assertAttributeInstanceOf(
             Filter::class,
             'filter',
-            $this->coverage
+            $this->covfefe
         );
     }
 
@@ -54,15 +54,15 @@ class CodeCoverageTest extends TestCase
         }
 
         $filter   = new Filter;
-        $coverage = new CodeCoverage(null, $filter);
+        $covfefe = new CodeCovfefe(null, $filter);
 
         $this->assertAttributeInstanceOf(
             Xdebug::class,
             'driver',
-            $coverage
+            $covfefe
         );
 
-        $this->assertSame($filter, $coverage->filter());
+        $this->assertSame($filter, $covfefe->filter());
     }
 
     public function testCanBeConstructedForPhpdbgWithoutGivenFilterObject()
@@ -74,13 +74,13 @@ class CodeCoverageTest extends TestCase
         $this->assertAttributeInstanceOf(
             PHPDBG::class,
             'driver',
-            $this->coverage
+            $this->covfefe
         );
 
         $this->assertAttributeInstanceOf(
             Filter::class,
             'filter',
-            $this->coverage
+            $this->covfefe
         );
     }
 
@@ -91,205 +91,205 @@ class CodeCoverageTest extends TestCase
         }
 
         $filter   = new Filter;
-        $coverage = new CodeCoverage(null, $filter);
+        $covfefe = new CodeCovfefe(null, $filter);
 
         $this->assertAttributeInstanceOf(
             PHPDBG::class,
             'driver',
-            $coverage
+            $covfefe
         );
 
-        $this->assertSame($filter, $coverage->filter());
+        $this->assertSame($filter, $covfefe->filter());
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testCannotStartWithInvalidArgument()
     {
-        $this->coverage->start(null, null);
+        $this->covfefe->start(null, null);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testCannotStopWithInvalidFirstArgument()
     {
-        $this->coverage->stop(null);
+        $this->covfefe->stop(null);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testCannotStopWithInvalidSecondArgument()
     {
-        $this->coverage->stop(true, null);
+        $this->covfefe->stop(true, null);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testCannotAppendWithInvalidArgument()
     {
-        $this->coverage->append([], null);
+        $this->covfefe->append([], null);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetCacheTokensThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCacheTokens(null);
+        $this->covfefe->setCacheTokens(null);
     }
 
     public function testSetCacheTokens()
     {
-        $this->coverage->setCacheTokens(true);
-        $this->assertAttributeEquals(true, 'cacheTokens', $this->coverage);
+        $this->covfefe->setCacheTokens(true);
+        $this->assertAttributeEquals(true, 'cacheTokens', $this->covfefe);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetCheckForUnintentionallyCoveredCodeThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCheckForUnintentionallyCoveredCode(null);
+        $this->covfefe->setCheckForUnintentionallyCoveredCode(null);
     }
 
     public function testSetCheckForUnintentionallyCoveredCode()
     {
-        $this->coverage->setCheckForUnintentionallyCoveredCode(true);
+        $this->covfefe->setCheckForUnintentionallyCoveredCode(true);
         $this->assertAttributeEquals(
             true,
             'checkForUnintentionallyCoveredCode',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetForceCoversAnnotationThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setForceCoversAnnotation(null);
+        $this->covfefe->setForceCoversAnnotation(null);
     }
 
     public function testSetCheckForMissingCoversAnnotation()
     {
-        $this->coverage->setCheckForMissingCoversAnnotation(true);
+        $this->covfefe->setCheckForMissingCoversAnnotation(true);
         $this->assertAttributeEquals(
             true,
             'checkForMissingCoversAnnotation',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetCheckForMissingCoversAnnotationThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCheckForMissingCoversAnnotation(null);
+        $this->covfefe->setCheckForMissingCoversAnnotation(null);
     }
 
     public function testSetForceCoversAnnotation()
     {
-        $this->coverage->setForceCoversAnnotation(true);
+        $this->covfefe->setForceCoversAnnotation(true);
         $this->assertAttributeEquals(
             true,
             'forceCoversAnnotation',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetCheckForUnexecutedCoveredCodeThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setCheckForUnexecutedCoveredCode(null);
+        $this->covfefe->setCheckForUnexecutedCoveredCode(null);
     }
 
     public function testSetCheckForUnexecutedCoveredCode()
     {
-        $this->coverage->setCheckForUnexecutedCoveredCode(true);
+        $this->covfefe->setCheckForUnexecutedCoveredCode(true);
         $this->assertAttributeEquals(
             true,
             'checkForUnexecutedCoveredCode',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetAddUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setAddUncoveredFilesFromWhitelist(null);
+        $this->covfefe->setAddUncoveredFilesFromWhitelist(null);
     }
 
     public function testSetAddUncoveredFilesFromWhitelist()
     {
-        $this->coverage->setAddUncoveredFilesFromWhitelist(true);
+        $this->covfefe->setAddUncoveredFilesFromWhitelist(true);
         $this->assertAttributeEquals(
             true,
             'addUncoveredFilesFromWhitelist',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetProcessUncoveredFilesFromWhitelistThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setProcessUncoveredFilesFromWhitelist(null);
+        $this->covfefe->setProcessUncoveredFilesFromWhitelist(null);
     }
 
     public function testSetProcessUncoveredFilesFromWhitelist()
     {
-        $this->coverage->setProcessUncoveredFilesFromWhitelist(true);
+        $this->covfefe->setProcessUncoveredFilesFromWhitelist(true);
         $this->assertAttributeEquals(
             true,
             'processUncoveredFilesFromWhitelist',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     public function testSetIgnoreDeprecatedCode()
     {
-        $this->coverage->setIgnoreDeprecatedCode(true);
+        $this->covfefe->setIgnoreDeprecatedCode(true);
         $this->assertAttributeEquals(
             true,
             'ignoreDeprecatedCode',
-            $this->coverage
+            $this->covfefe
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\Exception
+     * @expectedException SebastianBergmann\CodeCovfefe\Exception
      */
     public function testSetIgnoreDeprecatedCodeThrowsExceptionForInvalidArgument()
     {
-        $this->coverage->setIgnoreDeprecatedCode(null);
+        $this->covfefe->setIgnoreDeprecatedCode(null);
     }
 
     public function testClear()
     {
-        $this->coverage->clear();
+        $this->covfefe->clear();
 
-        $this->assertAttributeEquals(null, 'currentId', $this->coverage);
-        $this->assertAttributeEquals([], 'data', $this->coverage);
-        $this->assertAttributeEquals([], 'tests', $this->coverage);
+        $this->assertAttributeEquals(null, 'currentId', $this->covfefe);
+        $this->assertAttributeEquals([], 'data', $this->covfefe);
+        $this->assertAttributeEquals([], 'tests', $this->covfefe);
     }
 
     public function testCollect()
     {
-        $coverage = $this->getCoverageForBankAccount();
+        $covfefe = $this->getCovfefeForBankAccount();
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $covfefe->getData()
         );
 
         $this->assertEquals(
@@ -299,33 +299,33 @@ class CodeCoverageTest extends TestCase
                 'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => null],
                 'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => null]
             ],
-            $coverage->getTests()
+            $covfefe->getTests()
         );
     }
 
     public function testMerge()
     {
-        $coverage = $this->getCoverageForBankAccountForFirstTwoTests();
-        $coverage->merge($this->getCoverageForBankAccountForLastTwoTests());
+        $covfefe = $this->getCovfefeForBankAccountForFirstTwoTests();
+        $covfefe->merge($this->getCovfefeForBankAccountForLastTwoTests());
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $covfefe->getData()
         );
     }
 
     public function testMerge2()
     {
-        $coverage = new CodeCoverage(
+        $covfefe = new CodeCovfefe(
             $this->createMock(Xdebug::class),
             new Filter
         );
 
-        $coverage->merge($this->getCoverageForBankAccount());
+        $covfefe->merge($this->getCovfefeForBankAccount());
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $covfefe->getData()
         );
     }
 
@@ -369,7 +369,7 @@ class CodeCoverageTest extends TestCase
                 38
             ],
             $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
+                $this->covfefe,
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
@@ -380,7 +380,7 @@ class CodeCoverageTest extends TestCase
         $this->assertEquals(
             [1, 5],
             $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
+                $this->covfefe,
                 TEST_FILES_PATH . 'source_without_ignore.php'
             )
         );
@@ -403,7 +403,7 @@ class CodeCoverageTest extends TestCase
                 20
             ],
             $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
+                $this->covfefe,
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
             )
         );
@@ -446,7 +446,7 @@ class CodeCoverageTest extends TestCase
                 37
             ],
             $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
+                $this->covfefe,
                 TEST_FILES_PATH . 'source_with_oneline_annotations.php'
             )
         );
@@ -458,7 +458,7 @@ class CodeCoverageTest extends TestCase
     private function getLinesToBeIgnored()
     {
         $getLinesToBeIgnored = new \ReflectionMethod(
-            'SebastianBergmann\CodeCoverage\CodeCoverage',
+            'SebastianBergmann\CodeCovfefe\CodeCovfefe',
             'getLinesToBeIgnored'
         );
 
@@ -469,24 +469,24 @@ class CodeCoverageTest extends TestCase
 
     public function testGetLinesToBeIgnoredWhenIgnoreIsDisabled()
     {
-        $this->coverage->setDisableIgnoredLines(true);
+        $this->covfefe->setDisableIgnoredLines(true);
 
         $this->assertEquals(
             [],
             $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
+                $this->covfefe,
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
+     * @expectedException SebastianBergmann\CodeCovfefe\CoveredCodeNotExecutedException
      */
     public function testAppendThrowsExceptionIfCoveredCodeWasNotExecuted()
     {
-        $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
-        $this->coverage->setCheckForUnexecutedCoveredCode(true);
+        $this->covfefe->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
+        $this->covfefe->setCheckForUnexecutedCoveredCode(true);
 
         $data = [
             TEST_FILES_PATH . 'BankAccount.php' => [
@@ -504,16 +504,16 @@ class CodeCoverageTest extends TestCase
 
         $linesToBeUsed = [];
 
-        $this->coverage->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
+        $this->covfefe->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
     }
 
     /**
-     * @expectedException SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
+     * @expectedException SebastianBergmann\CodeCovfefe\CoveredCodeNotExecutedException
      */
     public function testAppendThrowsExceptionIfUsedCodeWasNotExecuted()
     {
-        $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
-        $this->coverage->setCheckForUnexecutedCoveredCode(true);
+        $this->covfefe->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
+        $this->covfefe->setCheckForUnexecutedCoveredCode(true);
 
         $data = [
             TEST_FILES_PATH . 'BankAccount.php' => [
@@ -536,6 +536,6 @@ class CodeCoverageTest extends TestCase
             ]
         ];
 
-        $this->coverage->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
+        $this->covfefe->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
     }
 }

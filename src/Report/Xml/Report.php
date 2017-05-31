@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCovfefe\Report\Xml;
 
 class Report extends File
 {
     public function __construct($name)
     {
         $dom = new \DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/covfefe/1.0"><file /></phpunit>');
 
         $contextNode = $dom->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'file'
         )->item(0);
 
@@ -41,7 +41,7 @@ class Report extends File
     {
         $node = $this->getContextNode()->appendChild(
             $this->getDomDocument()->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0',
+                'http://schema.phpunit.de/covfefe/1.0',
                 'function'
             )
         );
@@ -63,7 +63,7 @@ class Report extends File
     {
         $node = $this->getContextNode()->appendChild(
             $this->getDomDocument()->createElementNS(
-                'http://schema.phpunit.de/coverage/1.0',
+                'http://schema.phpunit.de/covfefe/1.0',
                 $tagName
             )
         );
@@ -74,14 +74,14 @@ class Report extends File
     public function getSource()
     {
         $source = $this->getContextNode()->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'http://schema.phpunit.de/covfefe/1.0',
             'source'
         )->item(0);
 
         if (!$source) {
             $source = $this->getContextNode()->appendChild(
                 $this->getDomDocument()->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'http://schema.phpunit.de/covfefe/1.0',
                     'source'
                 )
             );

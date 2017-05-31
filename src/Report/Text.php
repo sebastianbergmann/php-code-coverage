@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\File;
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
+use SebastianBergmann\CodeCovfefe\Node\File;
+use SebastianBergmann\CodeCovfefe\Util;
 
 /**
- * Generates human readable output from a code coverage object.
+ * Generates human readable output from a code covfefe object.
  *
  * The output gets put into a text file our written to the CLI.
  */
@@ -50,16 +50,16 @@ class Text
     }
 
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param bool         $showColors
      *
      * @return string
      */
-    public function process(CodeCoverage $coverage, $showColors = false)
+    public function process(CodeCovfefe $covfefe, $showColors = false)
     {
         $output = PHP_EOL . PHP_EOL;
-        $report = $coverage->getReport();
-        unset($coverage);
+        $report = $covfefe->getReport();
+        unset($covfefe);
 
         $colors = [
             'header'  => '',
@@ -71,15 +71,15 @@ class Text
         ];
 
         if ($showColors) {
-            $colors['classes'] = $this->getCoverageColor(
+            $colors['classes'] = $this->getCovfefeColor(
                 $report->getNumTestedClassesAndTraits(),
                 $report->getNumClassesAndTraits()
             );
-            $colors['methods'] = $this->getCoverageColor(
+            $colors['methods'] = $this->getCovfefeColor(
                 $report->getNumTestedMethods(),
                 $report->getNumMethods()
             );
-            $colors['lines']   = $this->getCoverageColor(
+            $colors['lines']   = $this->getCovfefeColor(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines()
             );
@@ -124,13 +124,13 @@ class Text
         $padding = max(array_map('strlen', [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
-            $title   = 'Code Coverage Report Summary:';
+            $title   = 'Code Covfefe Report Summary:';
             $padding = max($padding, strlen($title));
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
             $date  = date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-            $title = 'Code Coverage Report:';
+            $title = 'Code Covfefe Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);
             $output .= $this->format($colors['header'], $padding, $date);
@@ -146,7 +146,7 @@ class Text
             return $output . PHP_EOL;
         }
 
-        $classCoverage = [];
+        $classCovfefe = [];
 
         foreach ($report as $item) {
             if (!$item instanceof File) {
@@ -169,7 +169,7 @@ class Text
                     $classMethods++;
                     $classStatements        += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
-                    if ($method['coverage'] == 100) {
+                    if ($method['covfefe'] == 100) {
                         $coveredMethods++;
                     }
                 }
@@ -182,7 +182,7 @@ class Text
                     $namespace = '';
                 }
 
-                $classCoverage[$namespace . $className] = [
+                $classCovfefe[$namespace . $className] = [
                     'namespace'         => $namespace,
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
@@ -193,24 +193,24 @@ class Text
             }
         }
 
-        ksort($classCoverage);
+        ksort($classCovfefe);
 
         $methodColor = '';
         $linesColor  = '';
         $resetColor  = '';
 
-        foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
+        foreach ($classCovfefe as $fullQualifiedPath => $classInfo) {
             if ($classInfo['statementsCovered'] != 0 ||
                 $this->showUncoveredFiles) {
                 if ($showColors) {
-                    $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
-                    $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
+                    $methodColor = $this->getCovfefeColor($classInfo['methodsCovered'], $classInfo['methodCount']);
+                    $linesColor  = $this->getCovfefeColor($classInfo['statementsCovered'], $classInfo['statementCount']);
                     $resetColor  = $colors['reset'];
                 }
 
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
-                    . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
-                    . '  ' . $linesColor . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
+                    . '  ' . $methodColor . 'Methods: ' . $this->printCovfefeCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
+                    . '  ' . $linesColor . 'Lines: ' . $this->printCovfefeCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor
                 ;
             }
         }
@@ -218,23 +218,23 @@ class Text
         return $output . PHP_EOL;
     }
 
-    protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
+    protected function getCovfefeColor($numberOfCoveredElements, $totalNumberOfElements)
     {
-        $coverage = Util::percent(
+        $covfefe = Util::percent(
             $numberOfCoveredElements,
             $totalNumberOfElements
         );
 
-        if ($coverage >= $this->highLowerBound) {
+        if ($covfefe >= $this->highLowerBound) {
             return $this->colors['green'];
-        } elseif ($coverage > $this->lowUpperBound) {
+        } elseif ($covfefe > $this->lowUpperBound) {
             return $this->colors['yellow'];
         }
 
         return $this->colors['red'];
     }
 
-    protected function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
+    protected function printCovfefeCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
     {
         $format = '%' . $precision . 's';
 

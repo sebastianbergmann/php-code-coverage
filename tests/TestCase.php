@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCovfefe;
 
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCovfefe\Driver\Xdebug;
 
 /**
  * Abstract base class for test case classes.
@@ -78,7 +78,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function getCoverageForBankAccount()
+    protected function getCovfefeForBankAccount()
     {
         $data = $this->getXdebugDataForBankAccount();
         require_once TEST_FILES_PATH . '/BankAccountTest.php';
@@ -97,41 +97,41 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = new CodeCoverage($stub, $filter);
+        $covfefe = new CodeCovfefe($stub, $filter);
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testDepositWithdrawMoney')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [
                 TEST_FILES_PATH . 'BankAccount.php' => array_merge(
@@ -142,10 +142,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        return $coverage;
+        return $covfefe;
     }
 
-    protected function getCoverageForBankAccountForFirstTwoTests()
+    protected function getCovfefeForBankAccountForFirstTwoTests()
     {
         $data = $this->getXdebugDataForBankAccount();
 
@@ -161,31 +161,31 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = new CodeCoverage($stub, $filter);
+        $covfefe = new CodeCovfefe($stub, $filter);
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
-        return $coverage;
+        return $covfefe;
     }
 
-    protected function getCoverageForBankAccountForLastTwoTests()
+    protected function getCovfefeForBankAccountForLastTwoTests()
     {
         $data = $this->getXdebugDataForBankAccount();
 
@@ -201,22 +201,22 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = new CodeCoverage($stub, $filter);
+        $covfefe = new CodeCovfefe($stub, $filter);
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
-        $coverage->start(
+        $covfefe->start(
             new \BankAccountTest('testDepositWithdrawMoney')
         );
 
-        $coverage->stop(
+        $covfefe->stop(
             true,
             [
                 TEST_FILES_PATH . 'BankAccount.php' => array_merge(
@@ -227,7 +227,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        return $coverage;
+        return $covfefe;
     }
 
     protected function getExpectedDataArrayForBankAccount()
@@ -264,20 +264,20 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function getCoverageForFileWithIgnoredLines()
+    protected function getCovfefeForFileWithIgnoredLines()
     {
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_ignore.php');
 
-        $coverage = new CodeCoverage(
+        $covfefe = new CodeCovfefe(
             $this->setUpXdebugStubForFileWithIgnoredLines(),
             $filter
         );
 
-        $coverage->start('FileWithIgnoredLines', true);
-        $coverage->stop();
+        $covfefe->start('FileWithIgnoredLines', true);
+        $covfefe->stop();
 
-        return $coverage;
+        return $covfefe;
     }
 
     protected function setUpXdebugStubForFileWithIgnoredLines()
@@ -300,20 +300,20 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $stub;
     }
 
-    protected function getCoverageForClassWithAnonymousFunction()
+    protected function getCovfefeForClassWithAnonymousFunction()
     {
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
 
-        $coverage = new CodeCoverage(
+        $covfefe = new CodeCovfefe(
             $this->setUpXdebugStubForClassWithAnonymousFunction(),
             $filter
         );
 
-        $coverage->start('ClassWithAnonymousFunction', true);
-        $coverage->stop();
+        $covfefe->start('ClassWithAnonymousFunction', true);
+        $covfefe->stop();
 
-        return $coverage;
+        return $covfefe;
     }
 
     protected function setUpXdebugStubForClassWithAnonymousFunction()

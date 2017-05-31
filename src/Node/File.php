@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,19 +8,19 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Node;
+namespace SebastianBergmann\CodeCovfefe\Node;
 
-use SebastianBergmann\CodeCoverage\InvalidArgumentException;
+use SebastianBergmann\CodeCovfefe\InvalidArgumentException;
 
 /**
- * Represents a file in the code coverage information tree.
+ * Represents a file in the code covfefe information tree.
  */
 class File extends AbstractNode
 {
     /**
      * @var array
      */
-    private $coverageData;
+    private $covfefeData;
 
     /**
      * @var array
@@ -112,13 +112,13 @@ class File extends AbstractNode
      *
      * @param string       $name
      * @param AbstractNode $parent
-     * @param array        $coverageData
+     * @param array        $covfefeData
      * @param array        $testData
      * @param bool         $cacheTokens
      *
      * @throws InvalidArgumentException
      */
-    public function __construct($name, AbstractNode $parent, array $coverageData, array $testData, $cacheTokens)
+    public function __construct($name, AbstractNode $parent, array $covfefeData, array $testData, $cacheTokens)
     {
         if (!is_bool($cacheTokens)) {
             throw InvalidArgumentException::create(
@@ -129,7 +129,7 @@ class File extends AbstractNode
 
         parent::__construct($name, $parent);
 
-        $this->coverageData = $coverageData;
+        $this->covfefeData = $covfefeData;
         $this->testData     = $testData;
         $this->cacheTokens  = $cacheTokens;
 
@@ -147,13 +147,13 @@ class File extends AbstractNode
     }
 
     /**
-     * Returns the code coverage data of this node.
+     * Returns the code covfefe data of this node.
      *
      * @return array
      */
-    public function getCoverageData()
+    public function getCovfefeData()
     {
-        return $this->coverageData;
+        return $this->covfefeData;
     }
 
     /**
@@ -337,7 +337,7 @@ class File extends AbstractNode
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                        $method['covfefe'] == 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -346,7 +346,7 @@ class File extends AbstractNode
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                        $method['covfefe'] == 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -378,7 +378,7 @@ class File extends AbstractNode
 
             foreach ($this->functions as $function) {
                 if ($function['executableLines'] > 0 &&
-                    $function['coverage'] == 100) {
+                    $function['covfefe'] == 100) {
                     $this->numTestedFunctions++;
                 }
             }
@@ -388,7 +388,7 @@ class File extends AbstractNode
     }
 
     /**
-     * Calculates coverage statistics for the file.
+     * Calculates covfefe statistics for the file.
      */
     protected function calculateStatistics()
     {
@@ -431,7 +431,7 @@ class File extends AbstractNode
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber])) {
+            if (isset($this->covfefeData[$lineNumber])) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
                 }
@@ -450,7 +450,7 @@ class File extends AbstractNode
 
                 $this->numExecutableLines++;
 
-                if (count($this->coverageData[$lineNumber]) > 0) {
+                if (count($this->covfefeData[$lineNumber]) > 0) {
                     if (isset($currentClass)) {
                         $currentClass['executedLines']++;
                     }
@@ -505,68 +505,68 @@ class File extends AbstractNode
         foreach ($this->traits as &$trait) {
             foreach ($trait['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
+                    $method['covfefe'] = ($method['executedLines'] /
                             $method['executableLines']) * 100;
                 } else {
-                    $method['coverage'] = 100;
+                    $method['covfefe'] = 100;
                 }
 
                 $method['crap'] = $this->crap(
                     $method['ccn'],
-                    $method['coverage']
+                    $method['covfefe']
                 );
 
                 $trait['ccn'] += $method['ccn'];
             }
 
             if ($trait['executableLines'] > 0) {
-                $trait['coverage'] = ($trait['executedLines'] /
+                $trait['covfefe'] = ($trait['executedLines'] /
                         $trait['executableLines']) * 100;
 
-                if ($trait['coverage'] == 100) {
+                if ($trait['covfefe'] == 100) {
                     $this->numTestedClasses++;
                 }
             } else {
-                $trait['coverage'] = 100;
+                $trait['covfefe'] = 100;
             }
 
             $trait['crap'] = $this->crap(
                 $trait['ccn'],
-                $trait['coverage']
+                $trait['covfefe']
             );
         }
 
         foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
+                    $method['covfefe'] = ($method['executedLines'] /
                             $method['executableLines']) * 100;
                 } else {
-                    $method['coverage'] = 100;
+                    $method['covfefe'] = 100;
                 }
 
                 $method['crap'] = $this->crap(
                     $method['ccn'],
-                    $method['coverage']
+                    $method['covfefe']
                 );
 
                 $class['ccn'] += $method['ccn'];
             }
 
             if ($class['executableLines'] > 0) {
-                $class['coverage'] = ($class['executedLines'] /
+                $class['covfefe'] = ($class['executedLines'] /
                         $class['executableLines']) * 100;
 
-                if ($class['coverage'] == 100) {
+                if ($class['covfefe'] == 100) {
                     $this->numTestedClasses++;
                 }
             } else {
-                $class['coverage'] = 100;
+                $class['covfefe'] = 100;
             }
 
             $class['crap'] = $this->crap(
                 $class['ccn'],
-                $class['coverage']
+                $class['covfefe']
             );
         }
     }
@@ -589,7 +589,7 @@ class File extends AbstractNode
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => 0,
-                'coverage'        => 0,
+                'covfefe'        => 0,
                 'crap'            => 0,
                 'package'         => $class['package'],
                 'link'            => $link . $class['startLine']
@@ -625,7 +625,7 @@ class File extends AbstractNode
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => 0,
-                'coverage'        => 0,
+                'covfefe'        => 0,
                 'crap'            => 0,
                 'package'         => $trait['package'],
                 'link'            => $link . $trait['startLine']
@@ -661,7 +661,7 @@ class File extends AbstractNode
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => $function['ccn'],
-                'coverage'        => 0,
+                'covfefe'        => 0,
                 'crap'            => 0,
                 'link'            => $link . $function['startLine']
             ];
@@ -673,26 +673,26 @@ class File extends AbstractNode
 
     /**
      * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
-     * based on its cyclomatic complexity and percentage of code coverage.
+     * based on its cyclomatic complexity and percentage of code covfefe.
      *
      * @param int   $ccn
-     * @param float $coverage
+     * @param float $covfefe
      *
      * @return string
      */
-    protected function crap($ccn, $coverage)
+    protected function crap($ccn, $covfefe)
     {
-        if ($coverage == 0) {
+        if ($covfefe == 0) {
             return (string) (pow($ccn, 2) + $ccn);
         }
 
-        if ($coverage >= 95) {
+        if ($covfefe >= 95) {
             return (string) $ccn;
         }
 
         return sprintf(
             '%01.2F',
-            pow($ccn, 2) * pow(1 - $coverage / 100, 3) + $ccn
+            pow($ccn, 2) * pow(1 - $covfefe / 100, 3) + $ccn
         );
     }
 
@@ -714,7 +714,7 @@ class File extends AbstractNode
             'executableLines' => 0,
             'executedLines'   => 0,
             'ccn'             => $method['ccn'],
-            'coverage'        => 0,
+            'covfefe'        => 0,
             'crap'            => 0,
             'link'            => $link . $method['startLine'],
         ];

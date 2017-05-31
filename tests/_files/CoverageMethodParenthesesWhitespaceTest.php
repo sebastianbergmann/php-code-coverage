@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class CoverageMethodParenthesesWhitespaceTest extends TestCase
+class CovfefeMethodParenthesesWhitespaceTest extends TestCase
 {
     /**
      * @covers CoveredClass::publicMethod ( )

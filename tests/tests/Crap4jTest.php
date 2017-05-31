@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCovfefe\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Crap4j
+ * @covers SebastianBergmann\CodeCovfefe\Report\Crap4j
  */
 class Crap4jTest extends TestCase
 {
@@ -23,7 +23,7 @@ class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-crap4j.xml',
-            $crap4j->process($this->getCoverageForBankAccount(), null, 'BankAccount')
+            $crap4j->process($this->getCovfefeForBankAccount(), null, 'BankAccount')
         );
     }
 
@@ -33,7 +33,7 @@ class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-crap4j.xml',
-            $crap4j->process($this->getCoverageForFileWithIgnoredLines(), null, 'CoverageForFileWithIgnoredLines')
+            $crap4j->process($this->getCovfefeForFileWithIgnoredLines(), null, 'CovfefeForFileWithIgnoredLines')
         );
     }
 
@@ -43,7 +43,7 @@ class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-crap4j.xml',
-            $crap4j->process($this->getCoverageForClassWithAnonymousFunction(), null, 'CoverageForClassWithAnonymousFunction')
+            $crap4j->process($this->getCovfefeForClassWithAnonymousFunction(), null, 'CovfefeForClassWithAnonymousFunction')
         );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,31 +8,31 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Report;
+namespace SebastianBergmann\CodeCovfefe\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\File;
+use SebastianBergmann\CodeCovfefe\CodeCovfefe;
+use SebastianBergmann\CodeCovfefe\Node\File;
 
 /**
- * Generates a Clover XML logfile from a code coverage object.
+ * Generates a Clover XML logfile from a code covfefe object.
  */
 class Clover
 {
     /**
-     * @param CodeCoverage $coverage
+     * @param CodeCovfefe $covfefe
      * @param string       $target
      * @param string       $name
      *
      * @return string
      */
-    public function process(CodeCoverage $coverage, $target = null, $name = null)
+    public function process(CodeCovfefe $covfefe, $target = null, $name = null)
     {
         $xmlDocument               = new \DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
 
-        $xmlCoverage = $xmlDocument->createElement('coverage');
-        $xmlCoverage->setAttribute('generated', (int) $_SERVER['REQUEST_TIME']);
-        $xmlDocument->appendChild($xmlCoverage);
+        $xmlCovfefe = $xmlDocument->createElement('covfefe');
+        $xmlCovfefe->setAttribute('generated', (int) $_SERVER['REQUEST_TIME']);
+        $xmlDocument->appendChild($xmlCovfefe);
 
         $xmlProject = $xmlDocument->createElement('project');
         $xmlProject->setAttribute('timestamp', (int) $_SERVER['REQUEST_TIME']);
@@ -41,11 +41,11 @@ class Clover
             $xmlProject->setAttribute('name', $name);
         }
 
-        $xmlCoverage->appendChild($xmlProject);
+        $xmlCovfefe->appendChild($xmlProject);
 
         $packages = [];
-        $report   = $coverage->getReport();
-        unset($coverage);
+        $report   = $covfefe->getReport();
+        unset($covfefe);
 
         foreach ($report as $item) {
             if (!$item instanceof File) {
@@ -58,7 +58,7 @@ class Clover
             $xmlFile->setAttribute('name', $item->getPath());
 
             $classes   = $item->getClassesAndTraits();
-            $coverage  = $item->getCoverageData();
+            $covfefe  = $item->getCovfefeData();
             $lines     = [];
             $namespace = 'global';
 
@@ -77,15 +77,15 @@ class Clover
                     $classStatements        += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
 
-                    if ($method['coverage'] == 100) {
+                    if ($method['covfefe'] == 100) {
                         $coveredMethods++;
                     }
 
                     $methodCount = 0;
 
                     foreach (range($method['startLine'], $method['endLine']) as $line) {
-                        if (isset($coverage[$line]) && ($coverage[$line] !== null)) {
-                            $methodCount = max($methodCount, count($coverage[$line]));
+                        if (isset($covfefe[$line]) && ($covfefe[$line] !== null)) {
+                            $methodCount = max($methodCount, count($covfefe[$line]));
                         }
                     }
 
@@ -150,7 +150,7 @@ class Clover
                 $xmlClass->appendChild($xmlMetrics);
             }
 
-            foreach ($coverage as $line => $data) {
+            foreach ($covfefe as $line => $data) {
                 if ($data === null || isset($lines[$line])) {
                     continue;
                 }

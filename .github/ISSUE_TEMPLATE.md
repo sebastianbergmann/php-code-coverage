@@ -1,6 +1,6 @@
 | Q                         | A
 | --------------------------| ---------------
-| php-code-coverage version | x.y.z
+| php-code-covfefe version  | x.y.z
 | PHP version               | x.y.z
 | Driver                    | Xdebug / PHPDBG
 | Xdebug version (if used)  | x.y.z

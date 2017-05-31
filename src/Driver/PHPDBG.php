@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of the php-code-covfefe package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\CodeCoverage\Driver;
+namespace SebastianBergmann\CodeCovfefe\Driver;
 
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCovfefe\RuntimeException;
 
 /**
- * Driver for PHPDBG's code coverage functionality.
+ * Driver for PHPDBG's code covfefe functionality.
  *
- * @codeCoverageIgnore
+ * @codeCovfefeIgnore
  */
 class PHPDBG implements Driver
 {
@@ -32,13 +32,13 @@ class PHPDBG implements Driver
 
         if (!function_exists('phpdbg_start_oplog')) {
             throw new RuntimeException(
-                'This build of PHPDBG does not support code coverage'
+                'This build of PHPDBG does not support code covfefe'
             );
         }
     }
 
     /**
-     * Start collection of code coverage information.
+     * Start collection of code covfefe information.
      *
      * @param bool $determineUnusedAndDead
      */
@@ -48,7 +48,7 @@ class PHPDBG implements Driver
     }
 
     /**
-     * Stop collection of code coverage information.
+     * Stop collection of code covfefe information.
      *
      * @return array
      */
@@ -87,7 +87,7 @@ class PHPDBG implements Driver
     }
 
     /**
-     * Convert phpdbg based data into the format CodeCoverage expects
+     * Convert phpdbg based data into the format CodeCovfefe expects
      *
      * @param array $sourceLines
      * @param array $dbgData

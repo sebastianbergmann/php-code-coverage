@@ -37,7 +37,7 @@
         "ext-xdebug": "^2.5"
     },
     "suggest": {
-        "ext-xdebug": "^2.5.3"
+        "ext-xdebug": "^2.5.5"
     },
     "autoload": {
         "classmap": [

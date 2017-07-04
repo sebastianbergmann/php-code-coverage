@@ -250,7 +250,8 @@ abstract class Renderer
             '}}'
         );
 
-        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent)]);
+        // Intentionally floor the percent so 99.5 doesn't look wrong
+        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent), 'percent-round' => floor($percent)]);
 
         return $template->render();
     }

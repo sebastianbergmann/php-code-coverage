@@ -9,12 +9,9 @@
       <line num="7" type="stmt" count="1"/>
       <line num="9" type="stmt" count="1"/>
       <line num="10" type="stmt" count="0"/>
-      <line num="11" type="method" name="anonymous function" complexity="1" crap="1" count="1"/>
+      <line num="11" type="method" name="anonymousFunction:11#41" complexity="1" crap="1" count="1"/>
       <line num="12" type="stmt" count="1"/>
       <line num="13" type="stmt" count="1"/>
-      <line num="14" type="stmt" count="1"/>
-      <line num="17" type="stmt" count="1"/>
-      <line num="18" type="stmt" count="1"/>
       <metrics loc="19" ncloc="17" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="7" elements="10" coveredelements="8"/>
     </file>
     <metrics files="1" loc="19" ncloc="17" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="7" elements="10" coveredelements="8"/>

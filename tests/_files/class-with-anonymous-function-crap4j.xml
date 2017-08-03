@@ -25,9 +25,9 @@
     <method>
       <package>global</package>
       <className>CoveredClassWithAnonymousFunctionInStaticMethod</className>
-      <methodName>anonymous function</methodName>
-      <methodSignature>anonymous function (&amp;$val, $key)</methodSignature>
-      <fullMethod>anonymous function (&amp;$val, $key)</fullMethod>
+      <methodName>anonymousFunction:11#41</methodName>
+      <methodSignature>anonymousFunction (&amp;$val, $key)</methodSignature>
+      <fullMethod>anonymousFunction (&amp;$val, $key)</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
       <coverage>100</coverage>

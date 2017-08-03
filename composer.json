@@ -25,7 +25,7 @@
         "ext-dom": "*",
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^1.4.2",
-        "phpunit/php-token-stream": "^1.4.11 || ^2.0",
+        "phpunit/php-token-stream": "^2.0",
         "phpunit/php-text-template": "^1.2.1",
         "sebastian/code-unit-reverse-lookup": "^1.0.1",
         "sebastian/environment": "^3.0",

@@ -22,7 +22,7 @@ class Version
     public static function id()
     {
         if (self::$version === null) {
-            $version       = new VersionId('5.2.1', dirname(__DIR__));
+            $version       = new VersionId('5.2.2', dirname(__DIR__));
             self::$version = $version->getVersion();
         }
 

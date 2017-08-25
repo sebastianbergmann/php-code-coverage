@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Code Coverage for {{full_path}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="{{path_to_root}}.css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{path_to_root}}.css/style.css" rel="stylesheet">
+  <link href="{{path_to_root}}.css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="{{path_to_root}}.css/style.css" rel="stylesheet" type="text/css">
   <!--[if lt IE 9]>
   <script src="{{path_to_root}}.js/html5shiv.min.js"></script>
   <script src="{{path_to_root}}.js/respond.min.js"></script>

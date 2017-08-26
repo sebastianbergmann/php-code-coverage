@@ -80,6 +80,7 @@ class FilterTest extends TestCase
     public function testAddingAFileToTheWhitelistWorks()
     {
         $this->filter->addFileToWhitelist($this->files[0]);
+        $this->filter->addFileToWhitelist('file_does_not_exists');
 
         $this->assertEquals(
             [$this->files[0]],

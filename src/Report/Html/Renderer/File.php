@@ -304,7 +304,7 @@ class File extends Renderer
             $popoverTitle   = '';
 
             if (array_key_exists($i, $coverageData)) {
-                if(is_array($coverageData[$i])
+                if(is_array($coverageData[$i]))
                 {
                     $numTests = count($coverageData[$i]);
                 } else {

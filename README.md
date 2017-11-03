@@ -19,7 +19,12 @@ If you only need this library during development, for instance to run your proje
 
 ```php
 <?php
-$coverage = new \SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
+
+$coverage = new CodeCoverage;
+
+$coverage->filter()->addDirectoryToWhitelist('/path/to/src');
+
 $coverage->start('<name of test>');
 
 // ...

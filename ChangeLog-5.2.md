@@ -7,6 +7,7 @@ All notable changes of the PHP_CodeCoverage 5.2 release series are documented in
 ### Fixed
 
 * Fixed [#540](https://github.com/sebastianbergmann/php-code-coverage/issues/540): Missing attribute `type` in the CSS `<link>` elements
+* Fixed [#554](https://github.com/sebastianbergmann/php-code-coverage/pull/554): `Parameter must be an array or an object that implements Countable`
 
 ## [5.2.2] - 2017-08-03
 

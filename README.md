@@ -1,9 +1,9 @@
 [![Latest Stable Version](https://poser.pugx.org/phpunit/php-code-coverage/v/stable.png)](https://packagist.org/packages/phpunit/php-code-coverage)
 [![Build Status](https://travis-ci.org/sebastianbergmann/php-code-coverage.svg?branch=master)](https://travis-ci.org/sebastianbergmann/php-code-coverage)
 
-# PHP_CodeCoverage
+# SebastianBergmann\CodeCoverage
 
-**PHP_CodeCoverage** is a library that provides collection, processing, and rendering functionality for PHP code coverage information.
+**SebastianBergmann\CodeCoverage** is a library that provides collection, processing, and rendering functionality for PHP code coverage information.
 
 ## Installation
 
@@ -15,7 +15,7 @@ If you only need this library during development, for instance to run your proje
 
     composer require --dev phpunit/php-code-coverage
 
-## Using the PHP_CodeCoverage API
+## Using the SebastianBergmann\CodeCoverage API
 
 ```php
 <?php

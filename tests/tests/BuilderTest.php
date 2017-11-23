@@ -10,6 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 
@@ -25,8 +26,9 @@ class BuilderTest extends TestCase
     public function testSomething()
     {
         $root = $this->getCoverageForBankAccount()->getReport();
+        $filter = new Filter();
 
-        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
+        $expectedPath = $filter->unifyFilename(rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR));
         $this->assertEquals($expectedPath, $root->getName());
         $this->assertEquals($expectedPath, $root->getPath());
         $this->assertEquals(10, $root->getNumExecutableLines());

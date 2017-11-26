@@ -810,7 +810,7 @@ class CodeCoverage
 
                 do {
                     $lastMethod = \array_pop($classOrTrait['methods']);
-                } while ($lastMethod !== null && 0 === \strpos($lastMethod['signature'], 'anonymous function'));
+                } while ($lastMethod !== null && 0 === \strpos($lastMethod['signature'], 'anonymousFunction'));
 
                 if ($lastMethod !== null) {
                     $lastMethodEndLine = $lastMethod['endLine'];

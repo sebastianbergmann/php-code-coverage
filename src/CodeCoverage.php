@@ -782,10 +782,50 @@ class CodeCoverage
                 $tokens = new \PHP_Token_Stream($filename);
             }
 
-            $classes = \array_merge($tokens->getClasses(), $tokens->getTraits());
-            $tokens  = $tokens->tokens();
+            foreach ($tokens->getInterfaces() as $interface) {
+                $interfaceStartLine = $interface['startLine'];
+                $interfaceEndLine   = $interface['endLine'];
 
-            foreach ($tokens as $token) {
+                foreach (range($interfaceStartLine, $interfaceEndLine) as $line) {
+                    $this->ignoredLines[$filename][] = $line;
+                }
+            }
+
+            foreach (\array_merge($tokens->getClasses(), $tokens->getTraits()) as $classOrTrait) {
+                $classOrTraitStartLine = $classOrTrait['startLine'];
+                $classOrTraitEndLine   = $classOrTrait['endLine'];
+
+                if (empty($classOrTrait['methods'])) {
+                    foreach (range($classOrTraitStartLine, $classOrTraitEndLine) as $line) {
+                        $this->ignoredLines[$filename][] = $line;
+                    }
+
+                    continue;
+                }
+
+                $firstMethod          = \array_shift($classOrTrait['methods']);
+                $firstMethodStartLine = $firstMethod['startLine'];
+                $firstMethodEndLine   = $firstMethod['endLine'];
+                $lastMethodEndLine    = $firstMethodEndLine;
+
+                do {
+                    $lastMethod = \array_pop($classOrTrait['methods']);
+                } while ($lastMethod !== null && 0 === \strpos($lastMethod['signature'], 'anonymous function'));
+
+                if ($lastMethod !== null) {
+                    $lastMethodEndLine = $lastMethod['endLine'];
+                }
+
+                foreach (range($classOrTraitStartLine, $firstMethodStartLine) as $line) {
+                    $this->ignoredLines[$filename][] = $line;
+                }
+
+                foreach (range($lastMethodEndLine + 1, $classOrTraitEndLine) as $line) {
+                    $this->ignoredLines[$filename][] = $line;
+                }
+            }
+
+            foreach ($tokens->tokens() as $token) {
                 switch (\get_class($token)) {
                     case \PHP_Token_COMMENT::class:
                     case \PHP_Token_DOC_COMMENT::class:
@@ -842,36 +882,6 @@ class CodeCoverage
 
                             for ($i = $token->getLine(); $i <= $endLine; $i++) {
                                 $this->ignoredLines[$filename][] = $i;
-                            }
-                        } elseif ($token instanceof \PHP_Token_INTERFACE ||
-                            $token instanceof \PHP_Token_TRAIT ||
-                            $token instanceof \PHP_Token_CLASS) {
-                            if (empty($classes[$token->getName()]['methods'])) {
-                                for ($i = $token->getLine(); $i <= $token->getEndLine(); $i++) {
-                                    $this->ignoredLines[$filename][] = $i;
-                                }
-                            } else {
-                                $firstMethod = \array_shift(
-                                    $classes[$token->getName()]['methods']
-                                );
-
-                                do {
-                                    $lastMethod = \array_pop(
-                                        $classes[$token->getName()]['methods']
-                                    );
-                                } while ($lastMethod !== null && 0 === \strpos($lastMethod['signature'], 'anonymous function'));
-
-                                if ($lastMethod === null) {
-                                    $lastMethod = $firstMethod;
-                                }
-
-                                for ($i = $token->getLine(); $i < $firstMethod['startLine']; $i++) {
-                                    $this->ignoredLines[$filename][] = $i;
-                                }
-
-                                for ($i = $token->getEndLine(); $i > $lastMethod['endLine']; $i--) {
-                                    $this->ignoredLines[$filename][] = $i;
-                                }
                             }
                         }
 

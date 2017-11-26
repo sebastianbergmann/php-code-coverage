@@ -48,7 +48,7 @@ class Iterator implements \RecursiveIterator
      */
     public function valid()
     {
-        return $this->position < count($this->nodes);
+        return $this->position < \count($this->nodes);
     }
 
     /**

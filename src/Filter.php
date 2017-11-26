@@ -46,7 +46,7 @@ class Filter
      */
     public function addFileToWhitelist($filename)
     {
-        $this->whitelistedFiles[realpath($filename)] = true;
+        $this->whitelistedFiles[\realpath($filename)] = true;
     }
 
     /**
@@ -85,7 +85,7 @@ class Filter
      */
     public function removeFileFromWhitelist($filename)
     {
-        $filename = realpath($filename);
+        $filename = \realpath($filename);
 
         unset($this->whitelistedFiles[$filename]);
     }
@@ -100,17 +100,17 @@ class Filter
     public function isFile($filename)
     {
         if ($filename == '-' ||
-            strpos($filename, 'vfs://') === 0 ||
-            strpos($filename, 'xdebug://debug-eval') !== false ||
-            strpos($filename, 'eval()\'d code') !== false ||
-            strpos($filename, 'runtime-created function') !== false ||
-            strpos($filename, 'runkit created function') !== false ||
-            strpos($filename, 'assert code') !== false ||
-            strpos($filename, 'regexp code') !== false) {
+            \strpos($filename, 'vfs://') === 0 ||
+            \strpos($filename, 'xdebug://debug-eval') !== false ||
+            \strpos($filename, 'eval()\'d code') !== false ||
+            \strpos($filename, 'runtime-created function') !== false ||
+            \strpos($filename, 'runkit created function') !== false ||
+            \strpos($filename, 'assert code') !== false ||
+            \strpos($filename, 'regexp code') !== false) {
             return false;
         }
 
-        return file_exists($filename);
+        return \file_exists($filename);
     }
 
     /**
@@ -126,7 +126,7 @@ class Filter
             return true;
         }
 
-        $filename = realpath($filename);
+        $filename = \realpath($filename);
 
         return !isset($this->whitelistedFiles[$filename]);
     }
@@ -138,7 +138,7 @@ class Filter
      */
     public function getWhitelist()
     {
-        return array_keys($this->whitelistedFiles);
+        return \array_keys($this->whitelistedFiles);
     }
 
     /**

@@ -27,7 +27,7 @@ class PHP
     {
         $filter = $coverage->filter();
 
-        $output = sprintf(
+        $output = \sprintf(
             '<?php
 $coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
 $coverage->setData(%s);
@@ -37,13 +37,13 @@ $filter = $coverage->filter();
 $filter->setWhitelistedFiles(%s);
 
 return $coverage;',
-            var_export($coverage->getData(true), 1),
-            var_export($coverage->getTests(), 1),
-            var_export($filter->getWhitelistedFiles(), 1)
+            \var_export($coverage->getData(true), 1),
+            \var_export($coverage->getTests(), 1),
+            \var_export($filter->getWhitelistedFiles(), 1)
         );
 
         if ($target !== null) {
-            return file_put_contents($target, $output);
+            return \file_put_contents($target, $output);
         } else {
             return $output;
         }

@@ -30,7 +30,7 @@ class PHPDBG implements Driver
             );
         }
 
-        if (!function_exists('phpdbg_start_oplog')) {
+        if (!\function_exists('phpdbg_start_oplog')) {
             throw new RuntimeException(
                 'This build of PHPDBG does not support code coverage'
             );
@@ -61,9 +61,9 @@ class PHPDBG implements Driver
         if ($fetchedLines == []) {
             $sourceLines = phpdbg_get_executable();
         } else {
-            $newFiles = array_diff(
-                get_included_files(),
-                array_keys($fetchedLines)
+            $newFiles = \array_diff(
+                \get_included_files(),
+                \array_keys($fetchedLines)
             );
 
             if ($newFiles) {
@@ -81,7 +81,7 @@ class PHPDBG implements Driver
             }
         }
 
-        $fetchedLines = array_merge($fetchedLines, $sourceLines);
+        $fetchedLines = \array_merge($fetchedLines, $sourceLines);
 
         return $this->detectExecutedLines($fetchedLines, $dbgData);
     }

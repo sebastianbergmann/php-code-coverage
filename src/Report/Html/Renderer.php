@@ -11,8 +11,8 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
-use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 
@@ -178,21 +178,21 @@ abstract class Renderer
         $breadcrumbs = '';
         $path        = $node->getPathAsArray();
         $pathToRoot  = [];
-        $max         = count($path);
+        $max         = \count($path);
 
         if ($node instanceof FileNode) {
             $max--;
         }
 
         for ($i = 0; $i < $max; $i++) {
-            $pathToRoot[] = str_repeat('../', $i);
+            $pathToRoot[] = \str_repeat('../', $i);
         }
 
         foreach ($path as $step) {
             if ($step !== $node) {
                 $breadcrumbs .= $this->getInactiveBreadcrumb(
                     $step,
-                    array_pop($pathToRoot)
+                    \array_pop($pathToRoot)
                 );
             } else {
                 $breadcrumbs .= $this->getActiveBreadcrumb($step);
@@ -204,7 +204,7 @@ abstract class Renderer
 
     protected function getActiveBreadcrumb(AbstractNode $node)
     {
-        $buffer = sprintf(
+        $buffer = \sprintf(
             '        <li class="active">%s</li>' . "\n",
             $node->getName()
         );
@@ -218,7 +218,7 @@ abstract class Renderer
 
     protected function getInactiveBreadcrumb(AbstractNode $node, $pathToRoot)
     {
-        return sprintf(
+        return \sprintf(
             '        <li><a href="%sindex.html">%s</a></li>' . "\n",
             $pathToRoot,
             $node->getName()
@@ -228,14 +228,14 @@ abstract class Renderer
     protected function getPathToRoot(AbstractNode $node)
     {
         $id    = $node->getId();
-        $depth = substr_count($id, '/');
+        $depth = \substr_count($id, '/');
 
         if ($id != 'index' &&
             $node instanceof DirectoryNode) {
             $depth++;
         }
 
-        return str_repeat('../', $depth);
+        return \str_repeat('../', $depth);
     }
 
     protected function getCoverageBar($percent)
@@ -248,7 +248,7 @@ abstract class Renderer
             '}}'
         );
 
-        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent)]);
+        $template->setVar(['level' => $level, 'percent' => \sprintf('%.2F', $percent)]);
 
         return $template->render();
     }
@@ -277,7 +277,7 @@ abstract class Renderer
     {
         $runtime = new Runtime;
 
-        $buffer = sprintf(
+        $buffer = \sprintf(
             '<a href="%s" target="_top">%s %s</a>',
             $runtime->getVendorUrl(),
             $runtime->getName(),
@@ -285,9 +285,9 @@ abstract class Renderer
         );
 
         if ($runtime->hasXdebug() && !$runtime->hasPHPDBGCodeCoverage()) {
-            $buffer .= sprintf(
+            $buffer .= \sprintf(
                 ' with <a href="https://xdebug.org/">Xdebug %s</a>',
-                phpversion('xdebug')
+                \phpversion('xdebug')
             );
         }
 

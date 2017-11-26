@@ -118,7 +118,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
             $this->numFiles = 0;
 
             foreach ($this->children as $child) {
-                $this->numFiles += count($child);
+                $this->numFiles += \count($child);
             }
         }
 
@@ -150,7 +150,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
         $directory = new self($name, $this);
 
         $this->children[]    = $directory;
-        $this->directories[] = &$this->children[count($this->children) - 1];
+        $this->directories[] = &$this->children[\count($this->children) - 1];
 
         return $directory;
     }
@@ -178,7 +178,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
         );
 
         $this->children[] = $file;
-        $this->files[]    = &$this->children[count($this->children) - 1];
+        $this->files[]    = &$this->children[\count($this->children) - 1];
 
         $this->numExecutableLines = -1;
         $this->numExecutedLines   = -1;
@@ -227,7 +227,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
             $this->classes = [];
 
             foreach ($this->children as $child) {
-                $this->classes = array_merge(
+                $this->classes = \array_merge(
                     $this->classes,
                     $child->getClasses()
                 );
@@ -248,7 +248,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
             $this->traits = [];
 
             foreach ($this->children as $child) {
-                $this->traits = array_merge(
+                $this->traits = \array_merge(
                     $this->traits,
                     $child->getTraits()
                 );
@@ -269,7 +269,7 @@ class Directory extends AbstractNode implements \IteratorAggregate
             $this->functions = [];
 
             foreach ($this->children as $child) {
-                $this->functions = array_merge(
+                $this->functions = \array_merge(
                     $this->functions,
                     $child->getFunctions()
                 );
@@ -292,8 +292,8 @@ class Directory extends AbstractNode implements \IteratorAggregate
             foreach ($this->children as $child) {
                 $linesOfCode = $child->getLinesOfCode();
 
-                $this->linesOfCode['loc']   += $linesOfCode['loc'];
-                $this->linesOfCode['cloc']  += $linesOfCode['cloc'];
+                $this->linesOfCode['loc'] += $linesOfCode['loc'];
+                $this->linesOfCode['cloc'] += $linesOfCode['cloc'];
                 $this->linesOfCode['ncloc'] += $linesOfCode['ncloc'];
             }
         }

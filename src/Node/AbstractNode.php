@@ -48,10 +48,10 @@ abstract class AbstractNode implements \Countable
      * @param string       $name
      * @param AbstractNode $parent
      */
-    public function __construct($name, AbstractNode $parent = null)
+    public function __construct($name, self $parent = null)
     {
-        if (substr($name, -1) == '/') {
-            $name = substr($name, 0, -1);
+        if (\substr($name, -1) == '/') {
+            $name = \substr($name, 0, -1);
         }
 
         $this->name   = $name;
@@ -80,7 +80,7 @@ abstract class AbstractNode implements \Countable
                 $parentId = $parent->getId();
 
                 if ($parentId == 'index') {
-                    $this->id = str_replace(':', '_', $this->name);
+                    $this->id = \str_replace(':', '_', $this->name);
                 } else {
                     $this->id = $parentId . '/' . $this->name;
                 }
@@ -239,7 +239,7 @@ abstract class AbstractNode implements \Countable
      */
     public function getClassesAndTraits()
     {
-        return array_merge($this->getClasses(), $this->getTraits());
+        return \array_merge($this->getClasses(), $this->getTraits());
     }
 
     /**

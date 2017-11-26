@@ -51,7 +51,7 @@ class Facade
      */
     public function process(CodeCoverage $coverage, $target)
     {
-        if (substr($target, -1, 1) != DIRECTORY_SEPARATOR) {
+        if (\substr($target, -1, 1) != DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
         }
 
@@ -84,19 +84,19 @@ class Facade
      */
     protected function initTargetDirectory($directory)
     {
-        if (file_exists($directory)) {
-            if (!is_dir($directory)) {
+        if (\file_exists($directory)) {
+            if (!\is_dir($directory)) {
                 throw new RuntimeException(
                     "'$directory' exists but is not a directory."
                 );
             }
 
-            if (!is_writable($directory)) {
+            if (!\is_writable($directory)) {
                 throw new RuntimeException(
                     "'$directory' exists but is not writable."
                 );
             }
-        } elseif (!@mkdir($directory, 0777, true)) {
+        } elseif (!@\mkdir($directory, 0777, true)) {
             throw new RuntimeException(
                 "'$directory' could not be created."
             );
@@ -131,9 +131,9 @@ class Facade
 
         $this->setTotals($file, $fileObject->getTotals());
 
-        $path = substr(
+        $path = \substr(
             $file->getPath(),
-            strlen($this->project->getProjectSourceDirectory())
+            \strlen($this->project->getProjectSourceDirectory())
         );
         $fileReport = new Report($path);
 
@@ -148,7 +148,7 @@ class Facade
         }
 
         foreach ($file->getCoverageData() as $line => $tests) {
-            if (!is_array($tests) || count($tests) === 0) {
+            if (!\is_array($tests) || \count($tests) === 0) {
                 continue;
             }
 
@@ -162,7 +162,7 @@ class Facade
         }
 
         $fileReport->getSource()->setSourceCode(
-            file_get_contents($file->getPath())
+            \file_get_contents($file->getPath())
         );
 
         $this->saveDocument($fileReport->asDom(), $file->getId());
@@ -272,11 +272,11 @@ class Facade
 
     protected function saveDocument(\DOMDocument $document, $name)
     {
-        $filename = sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
+        $filename = \sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
 
         $document->formatOutput       = true;
         $document->preserveWhiteSpace = false;
-        $this->initTargetDirectory(dirname($filename));
+        $this->initTargetDirectory(\dirname($filename));
 
         $document->save($filename);
     }

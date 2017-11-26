@@ -37,7 +37,7 @@ class Clover
         $xmlProject = $xmlDocument->createElement('project');
         $xmlProject->setAttribute('timestamp', (int) $_SERVER['REQUEST_TIME']);
 
-        if (is_string($name)) {
+        if (\is_string($name)) {
             $xmlProject->setAttribute('name', $name);
         }
 
@@ -74,7 +74,7 @@ class Clover
                     }
 
                     $classMethods++;
-                    $classStatements        += $method['executableLines'];
+                    $classStatements += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
 
                     if ($method['coverage'] == 100) {
@@ -83,9 +83,9 @@ class Clover
 
                     $methodCount = 0;
 
-                    foreach (range($method['startLine'], $method['endLine']) as $line) {
+                    foreach (\range($method['startLine'], $method['endLine']) as $line) {
                         if (isset($coverage[$line]) && ($coverage[$line] !== null)) {
-                            $methodCount = max($methodCount, count($coverage[$line]));
+                            $methodCount = \max($methodCount, \count($coverage[$line]));
                         }
                     }
 
@@ -156,11 +156,11 @@ class Clover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data), 'type' => 'stmt'
+                    'count' => \count($data), 'type' => 'stmt'
                 ];
             }
 
-            ksort($lines);
+            \ksort($lines);
 
             foreach ($lines as $line => $data) {
                 $xmlLine = $xmlDocument->createElement('line');
@@ -222,7 +222,7 @@ class Clover
         $linesOfCode = $report->getLinesOfCode();
 
         $xmlMetrics = $xmlDocument->createElement('metrics');
-        $xmlMetrics->setAttribute('files', count($report));
+        $xmlMetrics->setAttribute('files', \count($report));
         $xmlMetrics->setAttribute('loc', $linesOfCode['loc']);
         $xmlMetrics->setAttribute('ncloc', $linesOfCode['ncloc']);
         $xmlMetrics->setAttribute('classes', $report->getNumClassesAndTraits());
@@ -239,11 +239,11 @@ class Clover
         $buffer = $xmlDocument->saveXML();
 
         if ($target !== null) {
-            if (!is_dir(dirname($target))) {
-                mkdir(dirname($target), 0777, true);
+            if (!\is_dir(\dirname($target))) {
+                \mkdir(\dirname($target), 0777, true);
             }
 
-            file_put_contents($target, $buffer);
+            \file_put_contents($target, $buffer);
         }
 
         return $buffer;

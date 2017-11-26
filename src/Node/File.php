@@ -120,7 +120,7 @@ class File extends AbstractNode
      */
     public function __construct($name, AbstractNode $parent, array $coverageData, array $testData, $cacheTokens)
     {
-        if (!is_bool($cacheTokens)) {
+        if (!\is_bool($cacheTokens)) {
             throw InvalidArgumentException::create(
                 1,
                 'boolean'
@@ -363,7 +363,7 @@ class File extends AbstractNode
      */
     public function getNumFunctions()
     {
-        return count($this->functions);
+        return \count($this->functions);
     }
 
     /**
@@ -450,7 +450,7 @@ class File extends AbstractNode
 
                 $this->numExecutableLines++;
 
-                if (count($this->coverageData[$lineNumber]) > 0) {
+                if (\count($this->coverageData[$lineNumber]) > 0) {
                     if (isset($currentClass)) {
                         $currentClass['executedLines']++;
                     }
@@ -477,8 +477,8 @@ class File extends AbstractNode
                     unset($currentClass);
 
                     if ($classStack) {
-                        end($classStack);
-                        $key          = key($classStack);
+                        \end($classStack);
+                        $key          = \key($classStack);
                         $currentClass = &$classStack[$key];
                         unset($classStack[$key]);
                     }
@@ -493,8 +493,8 @@ class File extends AbstractNode
                     unset($currentFunction);
 
                     if ($functionStack) {
-                        end($functionStack);
-                        $key             = key($functionStack);
+                        \end($functionStack);
+                        $key             = \key($functionStack);
                         $currentFunction = &$functionStack[$key];
                         unset($functionStack[$key]);
                     }
@@ -683,16 +683,16 @@ class File extends AbstractNode
     protected function crap($ccn, $coverage)
     {
         if ($coverage == 0) {
-            return (string) (pow($ccn, 2) + $ccn);
+            return (string) (\pow($ccn, 2) + $ccn);
         }
 
         if ($coverage >= 95) {
             return (string) $ccn;
         }
 
-        return sprintf(
+        return \sprintf(
             '%01.2F',
-            pow($ccn, 2) * pow(1 - $coverage / 100, 3) + $ccn
+            \pow($ccn, 2) * \pow(1 - $coverage / 100, 3) + $ccn
         );
     }
 

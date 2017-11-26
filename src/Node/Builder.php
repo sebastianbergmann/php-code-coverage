@@ -47,10 +47,10 @@ class Builder
     private function addItems(Directory $root, array $items, array $tests, $cacheTokens)
     {
         foreach ($items as $key => $value) {
-            if (substr($key, -2) == '/f') {
-                $key = substr($key, 0, -2);
+            if (\substr($key, -2) == '/f') {
+                $key = \substr($key, 0, -2);
 
-                if (file_exists($root->getPath() . DIRECTORY_SEPARATOR . $key)) {
+                if (\file_exists($root->getPath() . DIRECTORY_SEPARATOR . $key)) {
                     $root->addFile($key, $value, $tests, $cacheTokens);
                 }
             } else {
@@ -109,9 +109,9 @@ class Builder
         $result = [];
 
         foreach ($files as $path => $file) {
-            $path    = explode('/', $path);
+            $path    = \explode('/', $path);
             $pointer = &$result;
-            $max     = count($path);
+            $max     = \count($path);
 
             for ($i = 0; $i < $max; $i++) {
                 if ($i == ($max - 1)) {
@@ -177,26 +177,26 @@ class Builder
         }
 
         $commonPath = '';
-        $paths      = array_keys($files);
+        $paths      = \array_keys($files);
 
-        if (count($files) == 1) {
-            $commonPath                 = dirname($paths[0]) . '/';
-            $files[basename($paths[0])] = $files[$paths[0]];
+        if (\count($files) == 1) {
+            $commonPath                  = \dirname($paths[0]) . '/';
+            $files[\basename($paths[0])] = $files[$paths[0]];
 
             unset($files[$paths[0]]);
 
             return $commonPath;
         }
 
-        $max = count($paths);
+        $max = \count($paths);
 
         for ($i = 0; $i < $max; $i++) {
             // strip phar:// prefixes
-            if (strpos($paths[$i], 'phar://') === 0) {
-                $paths[$i] = substr($paths[$i], 7);
-                $paths[$i] = strtr($paths[$i], '/', DIRECTORY_SEPARATOR);
+            if (\strpos($paths[$i], 'phar://') === 0) {
+                $paths[$i] = \substr($paths[$i], 7);
+                $paths[$i] = \strtr($paths[$i], '/', DIRECTORY_SEPARATOR);
             }
-            $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
+            $paths[$i] = \explode(DIRECTORY_SEPARATOR, $paths[$i]);
 
             if (empty($paths[$i][0])) {
                 $paths[$i][0] = DIRECTORY_SEPARATOR;
@@ -204,7 +204,7 @@ class Builder
         }
 
         $done = false;
-        $max  = count($paths);
+        $max  = \count($paths);
 
         while (!$done) {
             for ($i = 0; $i < $max - 1; $i++) {
@@ -212,6 +212,7 @@ class Builder
                     !isset($paths[$i + 1][0]) ||
                     $paths[$i][0] != $paths[$i + 1][0]) {
                     $done = true;
+
                     break;
                 }
             }
@@ -224,21 +225,21 @@ class Builder
                 }
 
                 for ($i = 0; $i < $max; $i++) {
-                    array_shift($paths[$i]);
+                    \array_shift($paths[$i]);
                 }
             }
         }
 
-        $original = array_keys($files);
-        $max      = count($original);
+        $original = \array_keys($files);
+        $max      = \count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $files[implode('/', $paths[$i])] = $files[$original[$i]];
+            $files[\implode('/', $paths[$i])] = $files[$original[$i]];
             unset($files[$original[$i]]);
         }
 
-        ksort($files);
+        \ksort($files);
 
-        return substr($commonPath, 0, -1);
+        return \substr($commonPath, 0, -1);
     }
 }

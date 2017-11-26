@@ -88,7 +88,7 @@ class Text
             $colors['eol']     = $this->colors['eol'];
         }
 
-        $classes = sprintf(
+        $classes = \sprintf(
             '  Classes: %6s (%d/%d)',
             Util::percent(
                 $report->getNumTestedClassesAndTraits(),
@@ -99,7 +99,7 @@ class Text
             $report->getNumClassesAndTraits()
         );
 
-        $methods = sprintf(
+        $methods = \sprintf(
             '  Methods: %6s (%d/%d)',
             Util::percent(
                 $report->getNumTestedMethods(),
@@ -110,7 +110,7 @@ class Text
             $report->getNumMethods()
         );
 
-        $lines = sprintf(
+        $lines = \sprintf(
             '  Lines:   %6s (%d/%d)',
             Util::percent(
                 $report->getNumExecutedLines(),
@@ -121,15 +121,15 @@ class Text
             $report->getNumExecutableLines()
         );
 
-        $padding = max(array_map('strlen', [$classes, $methods, $lines]));
+        $padding = \max(\array_map('strlen', [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
             $title   = 'Code Coverage Report Summary:';
-            $padding = max($padding, strlen($title));
+            $padding = \max($padding, \strlen($title));
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date  = date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $date  = \date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);
@@ -167,7 +167,7 @@ class Text
                     }
 
                     $classMethods++;
-                    $classStatements        += $method['executableLines'];
+                    $classStatements += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
                     if ($method['coverage'] == 100) {
                         $coveredMethods++;
@@ -193,7 +193,7 @@ class Text
             }
         }
 
-        ksort($classCoverage);
+        \ksort($classCoverage);
 
         $methodColor = '';
         $linesColor  = '';
@@ -244,14 +244,14 @@ class Text
             true,
             true
         ) .
-        ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
-        sprintf($format, $totalNumberOfElements) . ')';
+        ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
+        \sprintf($format, $totalNumberOfElements) . ')';
     }
 
     private function format($color, $padding, $string)
     {
         $reset = $color ? $this->colors['reset'] : '';
 
-        return $color . str_pad($string, $padding) . $reset . PHP_EOL;
+        return $color . \str_pad($string, $padding) . $reset . PHP_EOL;
     }
 }

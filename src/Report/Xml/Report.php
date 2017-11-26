@@ -28,8 +28,8 @@ class Report extends File
 
     private function setName($name)
     {
-        $this->getContextNode()->setAttribute('name', basename($name));
-        $this->getContextNode()->setAttribute('path', dirname($name));
+        $this->getContextNode()->setAttribute('name', \basename($name));
+        $this->getContextNode()->setAttribute('path', \dirname($name));
     }
 
     public function asDom()

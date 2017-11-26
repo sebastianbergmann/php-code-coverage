@@ -38,7 +38,7 @@ class Util
         if ($asString) {
             $format = $fixedWidth ? '%6.2F%%' : '%01.2F%%';
 
-            return sprintf($format, $percent);
+            return \sprintf($format, $percent);
         }
 
         return $percent;

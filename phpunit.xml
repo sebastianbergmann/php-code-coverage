@@ -4,7 +4,7 @@
          bootstrap="tests/bootstrap.php"
          backupGlobals="false"
          verbose="true">
-    <testsuite>
+    <testsuite name="default">
         <directory suffix="Test.php">tests/tests</directory>
     </testsuite>
 

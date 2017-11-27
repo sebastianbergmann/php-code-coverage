@@ -4,7 +4,7 @@
     <totals>
       <lines total="37" comments="12" code="25" executable="2" executed="1" percent="50.00"/>
       <methods count="0" tested="0" percent="0"/>
-      <functions count="1" tested="0" percent="0.00"/>
+      <functions count="1" tested="1" percent="100.00"/>
       <classes count="0" tested="0" percent="0"/>
       <traits count="0" tested="0" percent="0"/>
     </totals>
@@ -18,7 +18,7 @@
       <namespace name=""/>
       <method name="foo" signature="foo()" start="23" end="25" crap="1" executable="0" executed="0" coverage="100"/>
     </class>
-    <function name="baz" signature="baz()" start="28" crap="0" executable="0" executed="0" coverage="0"/>
+    <function name="baz" signature="baz()" start="28" crap="1" executable="0" executed="0" coverage="100"/>
     <coverage>
       <line nr="2">
         <covered by="FileWithIgnoredLines"/>

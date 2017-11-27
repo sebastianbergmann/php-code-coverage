@@ -490,17 +490,12 @@ class CodeCoverageTest extends TestCase
                 34,
                 35,
                 36,
-                36,
                 37
             ],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
                 TEST_FILES_PATH . 'source_with_ignore.php'
-            ),
-            '',
-            0.0,
-            10,
-            true
+            )
         );
     }
 

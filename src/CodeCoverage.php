@@ -820,6 +820,9 @@ class CodeCoverage
         }
 
         if ($this->disableIgnoredLines) {
+            $this->ignoredLines[$filename] = array_unique($this->ignoredLines[$filename]);
+            \sort($this->ignoredLines[$filename]);
+
             return $this->ignoredLines[$filename];
         }
 
@@ -922,6 +925,7 @@ class CodeCoverage
             $this->ignoredLines[$filename]
         );
 
+        $this->ignoredLines[$filename] = array_unique($this->ignoredLines[$filename]);
         \sort($this->ignoredLines[$filename]);
 
         return $this->ignoredLines[$filename];

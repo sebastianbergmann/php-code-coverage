@@ -21,6 +21,8 @@ class Dashboard extends Renderer
     /**
      * @param DirectoryNode $node
      * @param string        $file
+     *
+     * @throws \InvalidArgumentException
      */
     public function render(DirectoryNode $node, $file)
     {
@@ -69,7 +71,7 @@ class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($className != '*') {
+                if ($className !== '*') {
                     $methodName = $className . '::' . $methodName;
                 }
 
@@ -143,9 +145,9 @@ class Dashboard extends Renderer
 
         foreach ($classes as $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] == 0) {
+                if ($method['coverage'] === 0) {
                     $result['method']['0%']++;
-                } elseif ($method['coverage'] == 100) {
+                } elseif ($method['coverage'] === 100) {
                     $result['method']['100%']++;
                 } else {
                     $key = \floor($method['coverage'] / 10) * 10;
@@ -154,9 +156,9 @@ class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] == 0) {
+            if ($class['coverage'] === 0) {
                 $result['class']['0%']++;
-            } elseif ($class['coverage'] == 100) {
+            } elseif ($class['coverage'] === 100) {
                 $result['class']['100%']++;
             } else {
                 $key = \floor($class['coverage'] / 10) * 10;
@@ -188,10 +190,10 @@ class Dashboard extends Renderer
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
                 if ($method['coverage'] < $this->highLowerBound) {
-                    if ($className != '*') {
+                    $key = $methodName;
+
+                    if ($className !== '*') {
                         $key = $className . '::' . $methodName;
-                    } else {
-                        $key = $methodName;
                     }
 
                     $leastTestedMethods[$key] = $method['coverage'];
@@ -248,7 +250,7 @@ class Dashboard extends Renderer
             foreach ($class['methods'] as $methodName => $method) {
                 if ($method['coverage'] < $this->highLowerBound &&
                     $method['ccn'] > 1) {
-                    if ($className != '*') {
+                    if ($className !== '*') {
                         $key = $className . '::' . $methodName;
                     } else {
                         $key = $methodName;

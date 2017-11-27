@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 5.2 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [5.2.5] - 2017-MM-DD
+
+### Fixed
+
+* Fixed [#564](https://github.com/sebastianbergmann/php-code-coverage/issues/564): `setDisableIgnoredLines(true)` disables more than it should
+
 ## [5.2.4] - 2017-11-27
 
 ### Fixed
@@ -36,6 +42,7 @@ All notable changes of the PHP_CodeCoverage 5.2 release series are documented in
 
 * Implemented [#518](https://github.com/sebastianbergmann/php-code-coverage/pull/518): Add more information to XML code coverage report
 
+[5.2.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.2.4...5.2.5
 [5.2.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.2.3...5.2.4
 [5.2.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.2.2...5.2.3
 [5.2.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.2.1...5.2.2

@@ -762,10 +762,6 @@ class CodeCoverage
 
         $this->ignoredLines[$filename] = [];
 
-        if ($this->disableIgnoredLines) {
-            return $this->ignoredLines[$filename];
-        }
-
         $lines = \file($filename);
 
         foreach ($lines as $index => $line) {
@@ -821,6 +817,10 @@ class CodeCoverage
             foreach (\range($lastMethodEndLine + 1, $classOrTraitEndLine) as $line) {
                 $this->ignoredLines[$filename][] = $line;
             }
+        }
+
+        if ($this->disableIgnoredLines) {
+            return $this->ignoredLines[$filename];
         }
 
         $ignore = false;

@@ -786,7 +786,7 @@ class CodeCoverage
                 $interfaceStartLine = $interface['startLine'];
                 $interfaceEndLine   = $interface['endLine'];
 
-                foreach (range($interfaceStartLine, $interfaceEndLine) as $line) {
+                foreach (\range($interfaceStartLine, $interfaceEndLine) as $line) {
                     $this->ignoredLines[$filename][] = $line;
                 }
             }
@@ -796,7 +796,7 @@ class CodeCoverage
                 $classOrTraitEndLine   = $classOrTrait['endLine'];
 
                 if (empty($classOrTrait['methods'])) {
-                    foreach (range($classOrTraitStartLine, $classOrTraitEndLine) as $line) {
+                    foreach (\range($classOrTraitStartLine, $classOrTraitEndLine) as $line) {
                         $this->ignoredLines[$filename][] = $line;
                     }
 
@@ -816,11 +816,11 @@ class CodeCoverage
                     $lastMethodEndLine = $lastMethod['endLine'];
                 }
 
-                foreach (range($classOrTraitStartLine, $firstMethodStartLine) as $line) {
+                foreach (\range($classOrTraitStartLine, $firstMethodStartLine) as $line) {
                     $this->ignoredLines[$filename][] = $line;
                 }
 
-                foreach (range($lastMethodEndLine + 1, $classOrTraitEndLine) as $line) {
+                foreach (\range($lastMethodEndLine + 1, $classOrTraitEndLine) as $line) {
                     $this->ignoredLines[$filename][] = $line;
                 }
             }

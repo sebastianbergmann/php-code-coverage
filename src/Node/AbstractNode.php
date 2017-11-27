@@ -301,7 +301,7 @@ abstract class AbstractNode implements \Countable
      */
     public function getFunctionsAndMethods()
     {
-        return array_merge($this->getFunctions(), $this->getMethods());
+        return \array_merge($this->getFunctions(), $this->getMethods());
     }
 
     /**

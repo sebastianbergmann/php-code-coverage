@@ -305,6 +305,36 @@ abstract class AbstractNode implements \Countable
     }
 
     /**
+     * Returns the number of functions and methods.
+     *
+     * @return int
+     */
+    public function getNumFunctionsAndMethods()
+    {
+        return $this->getNumFunctions() + $this->getNumMethods();
+    }
+
+    /**
+     * Returns the number of tested functions and methods.
+     *
+     * @return int
+     */
+    public function getNumTestedFunctionsAndMethods()
+    {
+        return $this->getNumTestedFunctions() + $this->getNumTestedMethods();
+    }
+
+    /**
+     * Returns the functions and methods of this node.
+     *
+     * @return array
+     */
+    public function getFunctionsAndMethods()
+    {
+        return array_merge($this->getFunctions(), $this->getMethods());
+    }
+
+    /**
      * Returns the classes of this node.
      *
      * @return array

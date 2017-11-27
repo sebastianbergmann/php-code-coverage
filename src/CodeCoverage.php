@@ -726,14 +726,12 @@ class CodeCoverage
                 continue;
             }
 
-            if (!$this->processUncoveredFilesFromWhitelist) {
-                $data[$uncoveredFile] = [];
+            $data[$uncoveredFile] = [];
 
-                $lines = \count(\file($uncoveredFile));
+            $lines = \count(\file($uncoveredFile));
 
-                for ($i = 1; $i <= $lines; $i++) {
-                    $data[$uncoveredFile][$i] = Driver::LINE_NOT_EXECUTED;
-                }
+            for ($i = 1; $i <= $lines; $i++) {
+                $data[$uncoveredFile][$i] = Driver::LINE_NOT_EXECUTED;
             }
         }
 

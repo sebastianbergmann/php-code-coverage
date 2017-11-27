@@ -600,6 +600,10 @@ class File extends AbstractNode
         $link = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
+            if (!empty($class['package']['namespace'])) {
+                $className = $class['package']['namespace'] . '\\' . $className;
+            }
+
             $this->classes[$className] = [
                 'className'       => $className,
                 'methods'         => [],

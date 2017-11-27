@@ -7,6 +7,7 @@ All notable changes of the PHP_CodeCoverage 5.2 release series are documented in
 ### Fixed
 
 * Fixed [#424](https://github.com/sebastianbergmann/php-code-coverage/issues/424): Rest of a function or method is ignored after an anonymous function
+* Fixed [#455](https://github.com/sebastianbergmann/php-code-coverage/issues/455): Dashboard does not handle namespaced classes properly
 * Fixed [#468](https://github.com/sebastianbergmann/php-code-coverage/issues/468): Global functions are not properly counted
 * Fixed [#560](https://github.com/sebastianbergmann/php-code-coverage/issues/560): Uncovered whitelisted files are missing from the report
 

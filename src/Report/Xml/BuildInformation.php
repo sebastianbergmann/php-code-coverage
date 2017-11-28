@@ -39,12 +39,6 @@ class BuildInformation
         $runtimeNode->setAttribute('url', $runtime->getVendorUrl());
 
         $driverNode = $this->getNodeByName('driver');
-        if ($runtime->isHHVM()) {
-            $driverNode->setAttribute('name', 'hhvm');
-            $driverNode->setAttribute('version', \constant('HHVM_VERSION'));
-
-            return;
-        }
 
         if ($runtime->hasPHPDBGCodeCoverage()) {
             $driverNode->setAttribute('name', 'phpdbg');

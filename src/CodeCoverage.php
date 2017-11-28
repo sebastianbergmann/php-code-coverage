@@ -13,7 +13,6 @@ namespace SebastianBergmann\CodeCoverage;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\HHVM;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 use SebastianBergmann\CodeCoverage\Node\Builder;
@@ -1054,15 +1053,15 @@ class CodeCoverage
             throw new RuntimeException('No code coverage driver available');
         }
 
-        if ($runtime->isHHVM()) {
-            return new HHVM;
-        }
-
         if ($runtime->isPHPDBG()) {
             return new PHPDBG;
         }
 
-        return new Xdebug;
+        if ($runtime->hasXdebug()) {
+            return new Xdebug;
+        }
+
+        throw new RuntimeException('No code coverage driver available');
     }
 
     /**

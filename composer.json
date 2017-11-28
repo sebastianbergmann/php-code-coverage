@@ -12,13 +12,12 @@
     "authors": [
         {
             "name": "Sebastian Bergmann",
-            "email": "sb@sebastian-bergmann.de",
+            "email": "sebastian@phpunit.de",
             "role": "lead"
         }
     ],
     "support": {
-        "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-        "irc": "irc://irc.freenode.net/phpunit"
+        "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues"
     },
     "config": {
         "optimize-autoloader": true,

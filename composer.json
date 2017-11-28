@@ -24,6 +24,7 @@
         "sort-packages": true
     },
     "prefer-stable": true,
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.0",
         "ext-dom": "*",
@@ -37,7 +38,7 @@
         "theseer/tokenizer": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^7.0"
     },
     "suggest": {
         "ext-xdebug": "^2.5.5"
@@ -49,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.2.x-dev"
+            "dev-master": "6.0-dev"
         }
     }
 }

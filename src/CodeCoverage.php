@@ -280,13 +280,14 @@ class CodeCoverage
      * @param bool  $append
      * @param mixed $linesToBeCovered
      * @param array $linesToBeUsed
+     * @param bool  $ignoreForceCoversAnnotation
      *
      * @return array
      *
      * @throws \SebastianBergmann\CodeCoverage\RuntimeException
      * @throws InvalidArgumentException
      */
-    public function stop($append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
+    public function stop($append = true, $linesToBeCovered = [], array $linesToBeUsed = [], $ignoreForceCoversAnnotation = false)
     {
         if (!\is_bool($append)) {
             throw InvalidArgumentException::create(
@@ -303,7 +304,7 @@ class CodeCoverage
         }
 
         $data = $this->driver->stop();
-        $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed);
+        $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed, $ignoreForceCoversAnnotation);
 
         $this->currentId = null;
 
@@ -318,6 +319,7 @@ class CodeCoverage
      * @param bool  $append
      * @param mixed $linesToBeCovered
      * @param array $linesToBeUsed
+     * @param bool  $ignoreForceCoversAnnotation
      *
      * @throws \SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException
      * @throws \SebastianBergmann\CodeCoverage\MissingCoversAnnotationException
@@ -326,7 +328,7 @@ class CodeCoverage
      * @throws \SebastianBergmann\CodeCoverage\InvalidArgumentException
      * @throws RuntimeException
      */
-    public function append(array $data, $id = null, $append = true, $linesToBeCovered = [], array $linesToBeUsed = [])
+    public function append(array $data, $id = null, $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], $ignoreForceCoversAnnotation = false)
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -348,7 +350,8 @@ class CodeCoverage
             $this->applyCoversAnnotationFilter(
                 $data,
                 $linesToBeCovered,
-                $linesToBeUsed
+                $linesToBeUsed,
+                $ignoreForceCoversAnnotation
             );
         }
 
@@ -619,16 +622,17 @@ class CodeCoverage
      * @param array $data
      * @param mixed $linesToBeCovered
      * @param array $linesToBeUsed
+     * @param bool  $ignoreForceCoversAnnotation
      *
      * @throws \SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
      * @throws \ReflectionException
      * @throws MissingCoversAnnotationException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed)
+    private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed, $ignoreForceCoversAnnotation)
     {
         if ($linesToBeCovered === false ||
-            ($this->forceCoversAnnotation && empty($linesToBeCovered))) {
+            ($this->forceCoversAnnotation && empty($linesToBeCovered) && !$ignoreForceCoversAnnotation)) {
             if ($this->checkForMissingCoversAnnotation) {
                 throw new MissingCoversAnnotationException;
             }

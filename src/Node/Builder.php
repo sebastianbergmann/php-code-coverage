@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 
-class Builder
+final class Builder
 {
     /**
      * @param CodeCoverage $coverage

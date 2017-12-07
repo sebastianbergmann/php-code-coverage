@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\Version as VersionId;
 
-class Version
+final class Version
 {
     private static $version;
 

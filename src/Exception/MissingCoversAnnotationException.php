@@ -13,6 +13,6 @@ namespace SebastianBergmann\CodeCoverage;
 /**
  * Exception that is raised when @covers must be used but is not.
  */
-class MissingCoversAnnotationException extends RuntimeException
+final class MissingCoversAnnotationException extends RuntimeException
 {
 }

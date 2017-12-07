@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\Node\File;
 /**
  * Generates a Clover XML logfile from a code coverage object.
  */
-class Clover
+final class Clover
 {
     /**
      * @param CodeCoverage $coverage

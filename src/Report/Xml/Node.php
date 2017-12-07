@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Node
+abstract class Node
 {
     /**
      * @var \DOMDocument

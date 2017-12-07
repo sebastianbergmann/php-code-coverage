@@ -13,7 +13,7 @@ namespace SebastianBergmann\CodeCoverage;
 /**
  * Exception that is raised when code is unintentionally covered.
  */
-class UnintentionallyCoveredCodeException extends RuntimeException
+final class UnintentionallyCoveredCodeException extends RuntimeException
 {
     /**
      * @var array

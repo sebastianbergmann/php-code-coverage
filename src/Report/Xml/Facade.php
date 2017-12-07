@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 
-class Facade
+final class Facade
 {
     /**
      * @var string

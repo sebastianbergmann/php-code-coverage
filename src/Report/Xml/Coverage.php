@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
-class Coverage
+final class Coverage
 {
     /**
      * @var \XMLWriter

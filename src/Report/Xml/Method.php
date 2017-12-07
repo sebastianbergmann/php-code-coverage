@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Method
+final class Method
 {
     /**
      * @var \DOMElement

@@ -10,6 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage;
 
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 
@@ -317,7 +318,7 @@ class CodeCoverageTest extends TestCase
     public function testMerge2()
     {
         $coverage = new CodeCoverage(
-            $this->createMock(Xdebug::class),
+            $this->createMock(Driver::class),
             new Filter
         );
 

@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 /**
  * Represents a file in the code coverage information tree.
  */
-class File extends AbstractNode
+final class File extends AbstractNode
 {
     /**
      * @var array

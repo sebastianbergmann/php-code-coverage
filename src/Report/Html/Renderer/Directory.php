@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 /**
  * Renders a directory node.
  */
-class Directory extends Renderer
+final class Directory extends Renderer
 {
     /**
      * @param DirectoryNode $node

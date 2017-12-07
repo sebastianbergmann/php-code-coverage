@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Unit
+final class Unit
 {
     /**
      * @var \DOMElement

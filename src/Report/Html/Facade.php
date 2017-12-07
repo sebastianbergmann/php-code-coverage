@@ -17,7 +17,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 /**
  * Generates an HTML report from a code coverage object.
  */
-class Facade
+final class Facade
 {
     /**
      * @var string

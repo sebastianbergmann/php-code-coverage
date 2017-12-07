@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Report extends File
+final class Report extends File
 {
     public function __construct($name)
     {

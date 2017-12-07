@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\Environment\Runtime;
 
-class BuildInformation
+final class BuildInformation
 {
     /**
      * @var \DOMElement

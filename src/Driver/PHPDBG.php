@@ -17,7 +17,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
  *
  * @codeCoverageIgnore
  */
-class PHPDBG implements Driver
+final class PHPDBG implements Driver
 {
     /**
      * Constructor.

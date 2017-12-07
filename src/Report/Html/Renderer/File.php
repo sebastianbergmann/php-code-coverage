@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\Util;
 /**
  * Renders a file node.
  */
-class File extends Renderer
+final class File extends Renderer
 {
     /**
      * @var int

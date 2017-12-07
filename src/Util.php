@@ -13,7 +13,7 @@ namespace SebastianBergmann\CodeCoverage;
 /**
  * Utility methods.
  */
-class Util
+final class Util
 {
     /**
      * @param float $a

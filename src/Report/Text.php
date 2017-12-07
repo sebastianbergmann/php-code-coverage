@@ -19,7 +19,7 @@ use SebastianBergmann\CodeCoverage\Util;
  *
  * The output gets put into a text file our written to the CLI.
  */
-class Text
+final class Text
 {
     private $lowUpperBound;
     private $highLowerBound;

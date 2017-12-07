@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 /**
  * Represents a directory in the code coverage information tree.
  */
-class Directory extends AbstractNode implements \IteratorAggregate
+final class Directory extends AbstractNode implements \IteratorAggregate
 {
     /**
      * @var AbstractNode[]

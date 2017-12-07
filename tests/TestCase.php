@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 /**
  * Abstract base class for test case classes.
@@ -83,7 +83,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $data = $this->getXdebugDataForBankAccount();
         require_once TEST_FILES_PATH . '/BankAccountTest.php';
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -149,7 +149,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -189,7 +189,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -282,7 +282,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUpXdebugStubForFileWithIgnoredLines()
     {
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -318,7 +318,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUpXdebugStubForClassWithAnonymousFunction()
     {
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')

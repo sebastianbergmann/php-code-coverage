@@ -17,7 +17,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
  *
  * @codeCoverageIgnore
  */
-class Xdebug implements Driver
+final class Xdebug implements Driver
 {
     /**
      * Cache the number of lines for each file

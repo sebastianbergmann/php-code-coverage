@@ -14,7 +14,7 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\File;
 
-class Crap4j
+final class Crap4j
 {
     /**
      * @var int

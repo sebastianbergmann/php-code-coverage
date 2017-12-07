@@ -13,7 +13,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 /**
  * Recursive iterator for node object graphs.
  */
-class Iterator implements \RecursiveIterator
+final class Iterator implements \RecursiveIterator
 {
     /**
      * @var int

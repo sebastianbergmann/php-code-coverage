@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Project extends Node
+final class Project extends Node
 {
     /**
      * @param string $directory

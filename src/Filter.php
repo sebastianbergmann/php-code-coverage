@@ -13,7 +13,7 @@ namespace SebastianBergmann\CodeCoverage;
 /**
  * Filter for whitelisting of code coverage information.
  */
-class Filter
+final class Filter
 {
     /**
      * Source files that are whitelisted.

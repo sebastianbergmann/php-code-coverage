@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Tests
+final class Tests
 {
     private $contextNode;
 

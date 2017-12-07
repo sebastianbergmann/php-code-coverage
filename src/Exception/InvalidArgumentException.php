@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\CodeCoverage;
 
-class InvalidArgumentException extends \InvalidArgumentException implements Exception
+final class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {
     /**
      * @param int    $argument

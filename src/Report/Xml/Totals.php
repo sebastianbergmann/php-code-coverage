@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\CodeCoverage\Util;
 
-class Totals
+final class Totals
 {
     /**
      * @var \DOMNode

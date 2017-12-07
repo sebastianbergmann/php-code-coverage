@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 /**
  * Renders the dashboard for a directory node.
  */
-class Dashboard extends Renderer
+final class Dashboard extends Renderer
 {
     /**
      * @param DirectoryNode $node

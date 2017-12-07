@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 /**
  * Uses var_export() to write a SebastianBergmann\CodeCoverage\CodeCoverage object to a file.
  */
-class PHP
+final class PHP
 {
     /**
      * @param CodeCoverage $coverage

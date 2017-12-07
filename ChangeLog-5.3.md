@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 5.3 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [5.3.1] - 2017-MM-DD
+
+### Fixed
+
+* Fixed [#559](https://github.com/sebastianbergmann/php-code-coverage/issues/559): Ignored classes and methods are reported as 100% covered
+
 ## [5.3.0] - 2017-12-06
 
 ### Added
@@ -12,5 +18,6 @@ All notable changes of the PHP_CodeCoverage 5.3 release series are documented in
 
 * Fixed [#564](https://github.com/sebastianbergmann/php-code-coverage/issues/564): `setDisableIgnoredLines(true)` disables more than it should
 
+[5.3.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.3.0...5.3.1
 [5.3.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/5.2...5.3.0
 

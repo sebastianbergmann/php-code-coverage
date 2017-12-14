@@ -130,8 +130,8 @@ abstract class Renderer
 
         $template->setVar(
             [
-                'icon'                   => isset($data['icon']) ? $data['icon'] : '',
-                'crap'                   => isset($data['crap']) ? $data['crap'] : '',
+                'icon'                   => $data['icon'] ?? '',
+                'crap'                   => $data['crap'] ?? '',
                 'name'                   => $data['name'],
                 'lines_bar'              => $linesBar,
                 'lines_executed_percent' => $data['linesExecutedPercentAsString'],
@@ -142,7 +142,7 @@ abstract class Renderer
                 'methods_level'          => $methodsLevel,
                 'methods_number'         => $methodsNumber,
                 'classes_bar'            => $classesBar,
-                'classes_tested_percent' => isset($data['testedClassesPercentAsString']) ? $data['testedClassesPercentAsString'] : '',
+                'classes_tested_percent' => $data['testedClassesPercentAsString'] ?? '',
                 'classes_level'          => $classesLevel,
                 'classes_number'         => $classesNumber
             ]

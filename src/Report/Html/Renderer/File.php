@@ -267,7 +267,7 @@ final class File extends Renderer
                     $indent,
                     $item['startLine'],
                     \htmlspecialchars($item['signature']),
-                    isset($item['functionName']) ? $item['functionName'] : $item['methodName']
+                    $item['functionName'] ?? $item['methodName']
                 ),
                 'numMethods'                   => $numMethods,
                 'numTestedMethods'             => $numTestedMethods,

@@ -24,11 +24,6 @@ final class Unit
         $this->setName($name);
     }
 
-    private function setName($name)
-    {
-        $this->contextNode->setAttribute('name', $name);
-    }
-
     public function setLines($start, $executable, $executed)
     {
         $this->contextNode->setAttribute('start', $start);
@@ -92,5 +87,10 @@ final class Unit
         );
 
         return new Method($node, $name);
+    }
+
+    private function setName($name)
+    {
+        $this->contextNode->setAttribute('name', $name);
     }
 }

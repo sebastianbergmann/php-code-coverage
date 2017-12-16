@@ -281,10 +281,10 @@ final class CodeCoverage
      * @param array $linesToBeUsed
      * @param bool  $ignoreForceCoversAnnotation
      *
-     * @return array
-     *
      * @throws \SebastianBergmann\CodeCoverage\RuntimeException
      * @throws InvalidArgumentException
+     *
+     * @return array
      */
     public function stop($append = true, $linesToBeCovered = [], array $linesToBeUsed = [], $ignoreForceCoversAnnotation = false)
     {
@@ -746,9 +746,9 @@ final class CodeCoverage
      *
      * @param string $filename
      *
-     * @return array
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array
      */
     private function getLinesToBeIgnored($filename)
     {
@@ -823,7 +823,7 @@ final class CodeCoverage
         }
 
         if ($this->disableIgnoredLines) {
-            $this->ignoredLines[$filename] = array_unique($this->ignoredLines[$filename]);
+            $this->ignoredLines[$filename] = \array_unique($this->ignoredLines[$filename]);
             \sort($this->ignoredLines[$filename]);
 
             return $this->ignoredLines[$filename];
@@ -923,7 +923,7 @@ final class CodeCoverage
             $this->ignoredLines[$filename]
         );
 
-        $this->ignoredLines[$filename] = array_unique($this->ignoredLines[$filename]);
+        $this->ignoredLines[$filename] = \array_unique($this->ignoredLines[$filename]);
         \sort($this->ignoredLines[$filename]);
 
         return $this->ignoredLines[$filename];
@@ -1040,9 +1040,9 @@ final class CodeCoverage
     }
 
     /**
-     * @return Driver
-     *
      * @throws RuntimeException
+     *
+     * @return Driver
      */
     private function selectDriver()
     {
@@ -1066,9 +1066,9 @@ final class CodeCoverage
     /**
      * @param array $unintentionallyCoveredUnits
      *
-     * @return array
-     *
      * @throws \ReflectionException
+     *
+     * @return array
      */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits)
     {
@@ -1102,7 +1102,7 @@ final class CodeCoverage
      *
      * @throws \SebastianBergmann\CodeCoverage\RuntimeException
      */
-    protected function initializeData()
+    private function initializeData()
     {
         $this->isInitialized = true;
 

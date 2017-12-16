@@ -21,24 +21,6 @@ final class Project extends Node
         $this->setProjectSourceDirectory($directory);
     }
 
-    private function init()
-    {
-        $dom = new \DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
-
-        $this->setContextNode(
-            $dom->getElementsByTagNameNS(
-                'http://schema.phpunit.de/coverage/1.0',
-                'project'
-            )->item(0)
-        );
-    }
-
-    private function setProjectSourceDirectory($name)
-    {
-        $this->getContextNode()->setAttribute('source', $name);
-    }
-
     /**
      * @return string
      */
@@ -91,5 +73,23 @@ final class Project extends Node
     public function asDom()
     {
         return $this->getDom();
+    }
+
+    private function init()
+    {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
+
+        $this->setContextNode(
+            $dom->getElementsByTagNameNS(
+                'http://schema.phpunit.de/coverage/1.0',
+                'project'
+            )->item(0)
+        );
+    }
+
+    private function setProjectSourceDirectory($name)
+    {
+        $this->getContextNode()->setAttribute('source', $name);
     }
 }

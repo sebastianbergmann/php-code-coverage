@@ -218,7 +218,7 @@ final class Dashboard extends Renderer
         }
 
         foreach ($leastTestedMethods as $methodName => $coverage) {
-            list($class, $method) = \explode('::', $methodName);
+            [$class, $method] = \explode('::', $methodName);
 
             $result['method'] .= \sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d%%</td></tr>' . "\n",
@@ -279,7 +279,7 @@ final class Dashboard extends Renderer
         }
 
         foreach ($methodRisks as $methodName => $crap) {
-            list($class, $method) = \explode('::', $methodName);
+            [$class, $method] = \explode('::', $methodName);
 
             $result['method'] .= \sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d</td></tr>' . "\n",

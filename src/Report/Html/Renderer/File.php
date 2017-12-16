@@ -243,6 +243,7 @@ final class File extends Renderer
 
     /**
      * @param \Text_Template $template
+     * @param mixed          $indent
      *
      * @return string
      */
@@ -454,7 +455,7 @@ final class File extends Renderer
                 continue;
             }
 
-            list($token, $value) = $token;
+            [$token, $value] = $token;
 
             $value = \str_replace(
                 ["\t", ' '],

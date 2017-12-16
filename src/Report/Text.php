@@ -218,7 +218,7 @@ final class Text
         return $output . PHP_EOL;
     }
 
-    protected function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
+    private function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
     {
         $coverage = Util::percent(
             $numberOfCoveredElements,
@@ -227,14 +227,15 @@ final class Text
 
         if ($coverage >= $this->highLowerBound) {
             return $this->colors['green'];
-        } elseif ($coverage > $this->lowUpperBound) {
+        }
+        if ($coverage > $this->lowUpperBound) {
             return $this->colors['yellow'];
         }
 
         return $this->colors['red'];
     }
 
-    protected function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
+    private function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
     {
         $format = '%' . $precision . 's';
 

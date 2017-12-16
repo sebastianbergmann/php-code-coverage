@@ -52,6 +52,24 @@ final class BuildInformation
     }
 
     /**
+     * @param \DateTime $date
+     */
+    public function setBuildTime(\DateTime $date)
+    {
+        $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
+    }
+
+    /**
+     * @param string $phpUnitVersion
+     * @param string $coverageVersion
+     */
+    public function setGeneratorVersions($phpUnitVersion, $coverageVersion)
+    {
+        $this->contextNode->setAttribute('phpunit', $phpUnitVersion);
+        $this->contextNode->setAttribute('coverage', $coverageVersion);
+    }
+
+    /**
      * @param $name
      *
      * @return \DOMElement
@@ -73,23 +91,5 @@ final class BuildInformation
         }
 
         return $node;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setBuildTime(\DateTime $date)
-    {
-        $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
-    }
-
-    /**
-     * @param string $phpUnitVersion
-     * @param string $coverageVersion
-     */
-    public function setGeneratorVersions($phpUnitVersion, $coverageVersion)
-    {
-        $this->contextNode->setAttribute('phpunit', $phpUnitVersion);
-        $this->contextNode->setAttribute('coverage', $coverageVersion);
     }
 }

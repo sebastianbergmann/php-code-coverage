@@ -60,7 +60,7 @@ final class File extends AbstractNode
     /**
      * @var int
      */
-    private $numClasses = null;
+    private $numClasses;
 
     /**
      * @var int
@@ -70,7 +70,7 @@ final class File extends AbstractNode
     /**
      * @var int
      */
-    private $numTraits = null;
+    private $numTraits;
 
     /**
      * @var int
@@ -80,17 +80,17 @@ final class File extends AbstractNode
     /**
      * @var int
      */
-    private $numMethods = null;
+    private $numMethods;
 
     /**
      * @var int
      */
-    private $numTestedMethods = null;
+    private $numTestedMethods;
 
     /**
      * @var int
      */
-    private $numTestedFunctions = null;
+    private $numTestedFunctions;
 
     /**
      * @var array
@@ -705,7 +705,7 @@ final class File extends AbstractNode
     protected function crap($ccn, $coverage)
     {
         if ($coverage == 0) {
-            return (string) (\pow($ccn, 2) + $ccn);
+            return (string) ($ccn ** 2 + $ccn);
         }
 
         if ($coverage >= 95) {
@@ -714,7 +714,7 @@ final class File extends AbstractNode
 
         return \sprintf(
             '%01.2F',
-            \pow($ccn, 2) * \pow(1 - $coverage / 100, 3) + $ccn
+            $ccn ** 2 * (1 - $coverage / 100) ** 3 + $ccn
         );
     }
 

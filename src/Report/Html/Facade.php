@@ -162,9 +162,9 @@ final class Facade
     /**
      * @param string $directory
      *
-     * @return string
-     *
      * @throws RuntimeException
+     *
+     * @return string
      */
     private function getDirectory($directory)
     {

@@ -27,20 +27,9 @@ abstract class Node
         $this->setContextNode($context);
     }
 
-    protected function setContextNode(\DOMElement $context)
-    {
-        $this->dom         = $context->ownerDocument;
-        $this->contextNode = $context;
-    }
-
     public function getDom()
     {
         return $this->dom;
-    }
-
-    protected function getContextNode()
-    {
-        return $this->contextNode;
     }
 
     public function getTotals()
@@ -84,5 +73,16 @@ abstract class Node
         $this->getContextNode()->appendChild($fileNode);
 
         return new File($fileNode);
+    }
+
+    protected function setContextNode(\DOMElement $context)
+    {
+        $this->dom         = $context->ownerDocument;
+        $this->contextNode = $context;
+    }
+
+    protected function getContextNode()
+    {
+        return $this->contextNode;
     }
 }

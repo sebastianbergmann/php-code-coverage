@@ -44,8 +44,8 @@ return $coverage;',
 
         if ($target !== null) {
             return \file_put_contents($target, $output);
-        } else {
-            return $output;
         }
+
+        return $output;
     }
 }

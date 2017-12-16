@@ -50,7 +50,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
     /**
      * @var array
      */
-    private $linesOfCode = null;
+    private $linesOfCode;
 
     /**
      * @var int
@@ -163,9 +163,9 @@ final class Directory extends AbstractNode implements \IteratorAggregate
      * @param array  $testData
      * @param bool   $cacheTokens
      *
-     * @return File
-     *
      * @throws InvalidArgumentException
+     *
+     * @return File
      */
     public function addFile($name, array $coverageData, array $testData, $cacheTokens)
     {

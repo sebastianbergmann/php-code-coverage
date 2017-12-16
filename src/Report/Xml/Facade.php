@@ -82,7 +82,7 @@ final class Facade
     /**
      * @param string $directory
      */
-    protected function initTargetDirectory($directory)
+    private function initTargetDirectory($directory)
     {
         if (\file_exists($directory)) {
             if (!\is_dir($directory)) {
@@ -265,12 +265,12 @@ final class Facade
     /**
      * @return string
      */
-    protected function getTargetDirectory()
+    private function getTargetDirectory()
     {
         return $this->target;
     }
 
-    protected function saveDocument(\DOMDocument $document, $name)
+    private function saveDocument(\DOMDocument $document, $name)
     {
         $filename = \sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
 

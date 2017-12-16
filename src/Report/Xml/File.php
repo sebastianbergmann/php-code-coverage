@@ -28,22 +28,6 @@ class File
         $this->contextNode = $context;
     }
 
-    /**
-     * @return \DOMElement
-     */
-    protected function getContextNode()
-    {
-        return $this->contextNode;
-    }
-
-    /**
-     * @return \DOMDocument
-     */
-    protected function getDomDocument()
-    {
-        return $this->dom;
-    }
-
     public function getTotals()
     {
         $totalsContainer = $this->contextNode->firstChild;
@@ -84,5 +68,21 @@ class File
         );
 
         return new Coverage($lineNode, $line);
+    }
+
+    /**
+     * @return \DOMElement
+     */
+    protected function getContextNode()
+    {
+        return $this->contextNode;
+    }
+
+    /**
+     * @return \DOMDocument
+     */
+    protected function getDomDocument()
+    {
+        return $this->dom;
     }
 }

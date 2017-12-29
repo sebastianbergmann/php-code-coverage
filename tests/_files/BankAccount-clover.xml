@@ -7,7 +7,7 @@
       </class>
       <line num="6" type="method" name="getBalance" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="8" type="stmt" count="2"/>
-      <line num="11" type="method" name="setBalance" visibility="protected" complexity="2" crap="6" count="0"/>
+      <line num="11" type="method" name="setBalance" visibility="protected" complexity="2" crap="6.00" count="0"/>
       <line num="13" type="stmt" count="0"/>
       <line num="14" type="stmt" count="0"/>
       <line num="15" type="stmt" count="0"/>

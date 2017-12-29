@@ -20,7 +20,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class PHPDBG implements Driver
 {
     /**
-     * Constructor.
+     * @throws RuntimeException
      */
     public function __construct()
     {
@@ -39,39 +39,30 @@ final class PHPDBG implements Driver
 
     /**
      * Start collection of code coverage information.
-     *
-     * @param bool $determineUnusedAndDead
      */
-    public function start($determineUnusedAndDead = true)
+    public function start(bool $determineUnusedAndDead = true): void
     {
-        phpdbg_start_oplog();
+        \phpdbg_start_oplog();
     }
 
     /**
      * Stop collection of code coverage information.
-     *
-     * @return array
      */
-    public function stop()
+    public function stop(): array
     {
         static $fetchedLines = [];
 
-        $dbgData = phpdbg_end_oplog();
+        $dbgData = \phpdbg_end_oplog();
 
         if ($fetchedLines == []) {
-            $sourceLines = phpdbg_get_executable();
+            $sourceLines = \phpdbg_get_executable();
         } else {
-            $newFiles = \array_diff(
-                \get_included_files(),
-                \array_keys($fetchedLines)
-            );
+            $newFiles = \array_diff(\get_included_files(), \array_keys($fetchedLines));
 
             $sourceLines = [];
 
             if ($newFiles) {
-                $sourceLines = phpdbg_get_executable(
-                    ['files' => $newFiles]
-                );
+                $sourceLines = phpdbg_get_executable(['files' => $newFiles]);
             }
         }
 
@@ -88,13 +79,8 @@ final class PHPDBG implements Driver
 
     /**
      * Convert phpdbg based data into the format CodeCoverage expects
-     *
-     * @param array $sourceLines
-     * @param array $dbgData
-     *
-     * @return array
      */
-    private function detectExecutedLines(array $sourceLines, array $dbgData)
+    private function detectExecutedLines(array $sourceLines, array $dbgData): array
     {
         foreach ($dbgData as $file => $coveredLines) {
             foreach ($coveredLines as $lineNo => $numExecuted) {

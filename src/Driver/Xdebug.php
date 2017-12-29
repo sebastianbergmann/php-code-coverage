@@ -20,8 +20,6 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class Xdebug implements Driver
 {
     /**
-     * Cache the number of lines for each file
-     *
      * @var array
      */
     private $cacheNumLines = [];
@@ -42,10 +40,8 @@ final class Xdebug implements Driver
 
     /**
      * Start collection of code coverage information.
-     *
-     * @param bool $determineUnusedAndDead
      */
-    public function start($determineUnusedAndDead = true)
+    public function start(bool $determineUnusedAndDead = true): void
     {
         if ($determineUnusedAndDead) {
             \xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
@@ -56,10 +52,8 @@ final class Xdebug implements Driver
 
     /**
      * Stop collection of code coverage information.
-     *
-     * @return array
      */
-    public function stop()
+    public function stop(): array
     {
         $data = \xdebug_get_code_coverage();
 
@@ -68,12 +62,7 @@ final class Xdebug implements Driver
         return $this->cleanup($data);
     }
 
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    private function cleanup(array $data)
+    private function cleanup(array $data): array
     {
         foreach (\array_keys($data) as $file) {
             unset($data[$file][0]);
@@ -92,24 +81,19 @@ final class Xdebug implements Driver
         return $data;
     }
 
-    /**
-     * @param string $file
-     *
-     * @return int
-     */
-    private function getNumberOfLinesInFile($file)
+    private function getNumberOfLinesInFile(string $fileName): int
     {
-        if (!isset($this->cacheNumLines[$file])) {
-            $buffer = \file_get_contents($file);
+        if (!isset($this->cacheNumLines[$fileName])) {
+            $buffer = \file_get_contents($fileName);
             $lines  = \substr_count($buffer, "\n");
 
             if (\substr($buffer, -1) !== "\n") {
                 $lines++;
             }
 
-            $this->cacheNumLines[$file] = $lines;
+            $this->cacheNumLines[$fileName] = $lines;
         }
 
-        return $this->cacheNumLines[$file];
+        return $this->cacheNumLines[$fileName];
     }
 }

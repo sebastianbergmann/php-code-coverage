@@ -17,19 +17,19 @@ final class Method
      */
     private $contextNode;
 
-    public function __construct(\DOMElement $context, $name)
+    public function __construct(\DOMElement $context, string $name)
     {
         $this->contextNode = $context;
 
         $this->setName($name);
     }
 
-    public function setSignature($signature)
+    public function setSignature(string $signature): void
     {
         $this->contextNode->setAttribute('signature', $signature);
     }
 
-    public function setLines($start, $end = null)
+    public function setLines(string $start, ?string $end = null): void
     {
         $this->contextNode->setAttribute('start', $start);
 
@@ -38,19 +38,19 @@ final class Method
         }
     }
 
-    public function setTotals($executable, $executed, $coverage)
+    public function setTotals(string $executable, string $executed, string $coverage): void
     {
         $this->contextNode->setAttribute('executable', $executable);
         $this->contextNode->setAttribute('executed', $executed);
         $this->contextNode->setAttribute('coverage', $coverage);
     }
 
-    public function setCrap($crap)
+    public function setCrap(string $crap): void
     {
         $this->contextNode->setAttribute('crap', $crap);
     }
 
-    private function setName($name)
+    private function setName(string $name): void
     {
         $this->contextNode->setAttribute('name', $name);
     }

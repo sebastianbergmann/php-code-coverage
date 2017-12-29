@@ -17,13 +17,7 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
  */
 final class PHP
 {
-    /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
-     *
-     * @return string
-     */
-    public function process(CodeCoverage $coverage, $target = null)
+    public function process(CodeCoverage $coverage, ?string $target = null): string
     {
         $filter = $coverage->filter();
 

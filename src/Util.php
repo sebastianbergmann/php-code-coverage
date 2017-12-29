@@ -16,14 +16,9 @@ namespace SebastianBergmann\CodeCoverage;
 final class Util
 {
     /**
-     * @param float $a
-     * @param float $b
-     * @param bool  $asString
-     * @param bool  $fixedWidth
-     *
      * @return float|int|string
      */
-    public static function percent($a, $b, $asString = false, $fixedWidth = false)
+    public static function percent(float $a, float $b, bool $asString = false, bool $fixedWidth = false)
     {
         if ($asString && $b == 0) {
             return '';

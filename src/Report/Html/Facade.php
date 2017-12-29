@@ -39,14 +39,7 @@ final class Facade
      */
     private $highLowerBound;
 
-    /**
-     * Constructor.
-     *
-     * @param int    $lowUpperBound
-     * @param int    $highLowerBound
-     * @param string $generator
-     */
-    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $generator = '')
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
     {
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
@@ -55,14 +48,14 @@ final class Facade
     }
 
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
+     * @throws RuntimeException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(CodeCoverage $coverage, string $target): void
     {
         $target = $this->getDirectory($target);
         $report = $coverage->getReport();
-        unset($coverage);
 
         if (!isset($_SERVER['REQUEST_TIME'])) {
             $_SERVER['REQUEST_TIME'] = \time();
@@ -122,9 +115,9 @@ final class Facade
     }
 
     /**
-     * @param string $target
+     * @throws RuntimeException
      */
-    private function copyFiles($target)
+    private function copyFiles(string $target): void
     {
         $dir = $this->getDirectory($target . '.css');
 
@@ -160,31 +153,23 @@ final class Facade
     }
 
     /**
-     * @param string $directory
-     *
      * @throws RuntimeException
-     *
-     * @return string
      */
-    private function getDirectory($directory)
+    private function getDirectory(string $directory): string
     {
         if (\substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
             $directory .= DIRECTORY_SEPARATOR;
         }
 
-        if (\is_dir($directory)) {
-            return $directory;
+        if (!@\mkdir($directory) && !\is_dir($directory)) {
+            throw new RuntimeException(
+                \sprintf(
+                    'Directory "%s" does not exist.',
+                    $directory
+                )
+            );
         }
 
-        if (@\mkdir($directory, 0777, true)) {
-            return $directory;
-        }
-
-        throw new RuntimeException(
-            \sprintf(
-                'Directory "%s" does not exist.',
-                $directory
-            )
-        );
+        return $directory;
     }
 }

@@ -19,12 +19,10 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 final class Dashboard extends Renderer
 {
     /**
-     * @param DirectoryNode $node
-     * @param string        $file
-     *
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
-    public function render(DirectoryNode $node, $file)
+    public function render(DirectoryNode $node, string $file)
     {
         $classes  = $node->getClassesAndTraits();
         $template = new \Text_Template(
@@ -59,13 +57,8 @@ final class Dashboard extends Renderer
 
     /**
      * Returns the data for the Class/Method Complexity charts.
-     *
-     * @param array  $classes
-     * @param string $baseLink
-     *
-     * @return array
      */
-    protected function complexity(array $classes, $baseLink)
+    protected function complexity(array $classes, string $baseLink): array
     {
         $result = ['class' => [], 'method' => []];
 
@@ -105,12 +98,8 @@ final class Dashboard extends Renderer
 
     /**
      * Returns the data for the Class / Method Coverage Distribution chart.
-     *
-     * @param array $classes
-     *
-     * @return array
      */
-    protected function coverageDistribution(array $classes)
+    protected function coverageDistribution(array $classes): array
     {
         $result = [
             'class' => [
@@ -175,13 +164,8 @@ final class Dashboard extends Renderer
 
     /**
      * Returns the classes / methods with insufficient coverage.
-     *
-     * @param array  $classes
-     * @param string $baseLink
-     *
-     * @return array
      */
-    protected function insufficientCoverage(array $classes, $baseLink)
+    protected function insufficientCoverage(array $classes, string $baseLink): array
     {
         $leastTestedClasses = [];
         $leastTestedMethods = [];
@@ -234,13 +218,8 @@ final class Dashboard extends Renderer
 
     /**
      * Returns the project risks according to the CRAP index.
-     *
-     * @param array  $classes
-     * @param string $baseLink
-     *
-     * @return array
      */
-    protected function projectRisks(array $classes, $baseLink)
+    protected function projectRisks(array $classes, string $baseLink): array
     {
         $classRisks  = [];
         $methodRisks = [];
@@ -292,7 +271,7 @@ final class Dashboard extends Renderer
         return $result;
     }
 
-    protected function getActiveBreadcrumb(AbstractNode $node)
+    protected function getActiveBreadcrumb(AbstractNode $node): string
     {
         return \sprintf(
             '        <li><a href="index.html">%s</a></li>' . "\n" .

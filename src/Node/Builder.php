@@ -14,12 +14,7 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 
 final class Builder
 {
-    /**
-     * @param CodeCoverage $coverage
-     *
-     * @return Directory
-     */
-    public function build(CodeCoverage $coverage)
+    public function build(CodeCoverage $coverage): Directory
     {
         $files      = $coverage->getData();
         $commonPath = $this->reducePaths($files);
@@ -38,13 +33,7 @@ final class Builder
         return $root;
     }
 
-    /**
-     * @param Directory $root
-     * @param array     $items
-     * @param array     $tests
-     * @param bool      $cacheTokens
-     */
-    private function addItems(Directory $root, array $items, array $tests, $cacheTokens)
+    private function addItems(Directory $root, array $items, array $tests, bool $cacheTokens): void
     {
         foreach ($items as $key => $value) {
             if (\substr($key, -2) == '/f') {
@@ -99,12 +88,8 @@ final class Builder
      *         )
      * )
      * </code>
-     *
-     * @param array $files
-     *
-     * @return array
      */
-    private function buildDirectoryStructure($files)
+    private function buildDirectoryStructure(array $files): array
     {
         $result = [];
 
@@ -165,12 +150,8 @@ final class Builder
      *         )
      * )
      * </code>
-     *
-     * @param array $files
-     *
-     * @return string
      */
-    private function reducePaths(&$files)
+    private function reducePaths(array &$files): string
     {
         if (empty($files)) {
             return '.';
@@ -179,7 +160,7 @@ final class Builder
         $commonPath = '';
         $paths      = \array_keys($files);
 
-        if (\count($files) == 1) {
+        if (\count($files) === 1) {
             $commonPath                  = \dirname($paths[0]) . '/';
             $files[\basename($paths[0])] = $files[$paths[0]];
 

@@ -19,13 +19,9 @@ use SebastianBergmann\CodeCoverage\Node\File;
 final class Clover
 {
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
-     * @param string       $name
-     *
-     * @return string
+     * @throws \RuntimeException
      */
-    public function process(CodeCoverage $coverage, $target = null, $name = null)
+    public function process(CodeCoverage $coverage, ?string $target = null, ?string $name = null): string
     {
         $xmlDocument               = new \DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
@@ -202,7 +198,7 @@ final class Clover
             $xmlMetrics->setAttribute('coveredelements', $item->getNumTestedMethods() + $item->getNumExecutedLines() /* + coveredconditionals */);
             $xmlFile->appendChild($xmlMetrics);
 
-            if ($namespace == 'global') {
+            if ($namespace === 'global') {
                 $xmlProject->appendChild($xmlFile);
             } else {
                 if (!isset($packages[$namespace])) {
@@ -238,8 +234,8 @@ final class Clover
         $buffer = $xmlDocument->saveXML();
 
         if ($target !== null) {
-            if (!\is_dir(\dirname($target))) {
-                \mkdir(\dirname($target), 0777, true);
+            if (!\mkdir(\dirname($target)) && !\is_dir(\dirname($target))) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 
             \file_put_contents($target, $buffer);

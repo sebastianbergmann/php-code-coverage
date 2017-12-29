@@ -38,15 +38,11 @@ interface Driver
 
     /**
      * Start collection of code coverage information.
-     *
-     * @param bool $determineUnusedAndDead
      */
-    public function start($determineUnusedAndDead = true);
+    public function start(bool $determineUnusedAndDead = true);
 
     /**
      * Stop collection of code coverage information.
-     *
-     * @return array
      */
-    public function stop();
+    public function stop(): array;
 }

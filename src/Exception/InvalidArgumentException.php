@@ -19,7 +19,7 @@ final class InvalidArgumentException extends \InvalidArgumentException implement
      *
      * @return InvalidArgumentException
      */
-    public static function create($argument, $type, $value = null)
+    public static function create($argument, $type, $value = null): self
     {
         $stack = \debug_backtrace(0);
 

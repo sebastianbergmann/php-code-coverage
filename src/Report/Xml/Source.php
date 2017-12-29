@@ -27,10 +27,7 @@ final class Source
         $this->context = $context;
     }
 
-    /**
-     * @param string $source
-     */
-    public function setSourceCode(string $source)
+    public function setSourceCode(string $source): void
     {
         $context = $this->context;
 

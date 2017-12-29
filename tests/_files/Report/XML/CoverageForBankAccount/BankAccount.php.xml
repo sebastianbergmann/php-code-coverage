@@ -12,7 +12,7 @@
       <package full="" name="" sub="" category=""/>
       <namespace name=""/>
       <method name="getBalance" signature="getBalance()" start="6" end="9" crap="1" executable="1" executed="1" coverage="100"/>
-      <method name="setBalance" signature="setBalance($balance)" start="11" end="18" crap="6" executable="5" executed="0" coverage="0"/>
+      <method name="setBalance" signature="setBalance($balance)" start="11" end="18" crap="6.00" executable="5" executed="0" coverage="0"/>
       <method name="depositMoney" signature="depositMoney($balance)" start="20" end="25" crap="1" executable="2" executed="2" coverage="100"/>
       <method name="withdrawMoney" signature="withdrawMoney($balance)" start="27" end="32" crap="1" executable="2" executed="2" coverage="100"/>
     </class>

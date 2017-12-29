@@ -71,13 +71,7 @@ final class Text
      */
     private $showOnlySummary;
 
-    /**
-     * @param int  $lowUpperBound
-     * @param int  $highLowerBound
-     * @param bool $showUncoveredFiles
-     * @param bool $showOnlySummary
-     */
-    public function __construct($lowUpperBound = 50, $highLowerBound = 90, $showUncoveredFiles = false, $showOnlySummary = false)
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, bool $showUncoveredFiles = false, bool $showOnlySummary = false)
     {
         $this->lowUpperBound      = $lowUpperBound;
         $this->highLowerBound     = $highLowerBound;
@@ -85,13 +79,7 @@ final class Text
         $this->showOnlySummary    = $showOnlySummary;
     }
 
-    /**
-     * @param CodeCoverage $coverage
-     * @param bool         $showColors
-     *
-     * @return string
-     */
-    public function process(CodeCoverage $coverage, $showColors = false)
+    public function process(CodeCoverage $coverage, bool $showColors = false): string
     {
         $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();
@@ -256,7 +244,7 @@ final class Text
         return $output . PHP_EOL;
     }
 
-    private function getCoverageColor($numberOfCoveredElements, $totalNumberOfElements)
+    private function getCoverageColor(int $numberOfCoveredElements, int $totalNumberOfElements): string
     {
         $coverage = Util::percent(
             $numberOfCoveredElements,
@@ -274,7 +262,7 @@ final class Text
         return self::COLOR_RED;
     }
 
-    private function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
+    private function printCoverageCounts(int $numberOfCoveredElements, int $totalNumberOfElements, int $precision): string
     {
         $format = '%' . $precision . 's';
 
@@ -288,7 +276,7 @@ final class Text
         \sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    private function format($color, $padding, $string)
+    private function format($color, $padding, $string): string
     {
         $reset = $color ? self::COLOR_RESET : '';
 

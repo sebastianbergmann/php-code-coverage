@@ -33,7 +33,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException
     /**
      * @return array
      */
-    public function getUnintentionallyCoveredUnits()
+    public function getUnintentionallyCoveredUnits(): array
     {
         return $this->unintentionallyCoveredUnits;
     }
@@ -41,7 +41,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException
     /**
      * @return string
      */
-    private function toString()
+    private function toString(): string
     {
         $message = '';
 

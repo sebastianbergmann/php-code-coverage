@@ -35,23 +35,17 @@ final class Facade
      */
     private $phpUnitVersion;
 
-    /**
-     * @param string $version
-     */
-    public function __construct($version)
+    public function __construct(string $version)
     {
         $this->phpUnitVersion = $version;
     }
 
     /**
-     * @param CodeCoverage $coverage
-     * @param string       $target
-     *
      * @throws RuntimeException
      */
-    public function process(CodeCoverage $coverage, $target)
+    public function process(CodeCoverage $coverage, string $target): void
     {
-        if (\substr($target, -1, 1) != DIRECTORY_SEPARATOR) {
+        if (\substr($target, -1, 1) !== DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
         }
 
@@ -71,7 +65,7 @@ final class Facade
         $this->saveDocument($this->project->asDom(), 'index');
     }
 
-    private function setBuildInformation()
+    private function setBuildInformation(): void
     {
         $buildNode = $this->project->getBuildInformation();
         $buildNode->setRuntimeInformation(new Runtime());
@@ -80,9 +74,9 @@ final class Facade
     }
 
     /**
-     * @param string $directory
+     * @throws RuntimeException
      */
-    private function initTargetDirectory($directory)
+    private function initTargetDirectory(string $directory): void
     {
         if (\file_exists($directory)) {
             if (!\is_dir($directory)) {
@@ -103,26 +97,31 @@ final class Facade
         }
     }
 
-    private function processDirectory(DirectoryNode $directory, Node $context)
+    private function processDirectory(DirectoryNode $directory, Node $context): void
     {
-        $dirname = $directory->getName();
-        if ($this->project->getProjectSourceDirectory() === $dirname) {
-            $dirname = '/';
-        }
-        $dirObject = $context->addDirectory($dirname);
+        $directoryName = $directory->getName();
 
-        $this->setTotals($directory, $dirObject->getTotals());
+        if ($this->project->getProjectSourceDirectory() === $directoryName) {
+            $directoryName = '/';
+        }
+
+        $directoryObject = $context->addDirectory($directoryName);
+
+        $this->setTotals($directory, $directoryObject->getTotals());
 
         foreach ($directory->getDirectories() as $node) {
-            $this->processDirectory($node, $dirObject);
+            $this->processDirectory($node, $directoryObject);
         }
 
         foreach ($directory->getFiles() as $node) {
-            $this->processFile($node, $dirObject);
+            $this->processFile($node, $directoryObject);
         }
     }
 
-    private function processFile(FileNode $file, Directory $context)
+    /**
+     * @throws RuntimeException
+     */
+    private function processFile(FileNode $file, Directory $context): void
     {
         $fileObject = $context->addFile(
             $file->getName(),
@@ -135,6 +134,7 @@ final class Facade
             $file->getPath(),
             \strlen($this->project->getProjectSourceDirectory())
         );
+
         $fileReport = new Report($path);
 
         $this->setTotals($file, $fileReport->getTotals());
@@ -168,7 +168,7 @@ final class Facade
         $this->saveDocument($fileReport->asDom(), $file->getId());
     }
 
-    private function processUnit($unit, Report $report)
+    private function processUnit(array $unit, Report $report): void
     {
         if (isset($unit['className'])) {
             $unitObject = $report->getClassObject($unit['className']);
@@ -206,7 +206,7 @@ final class Facade
         }
     }
 
-    private function processFunction($function, Report $report)
+    private function processFunction(array $function, Report $report): void
     {
         $functionObject = $report->getFunctionObject($function['functionName']);
 
@@ -216,12 +216,12 @@ final class Facade
         $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['coverage']);
     }
 
-    private function processTests(array $tests)
+    private function processTests(array $tests): void
     {
         $testsObject = $this->project->getTests();
 
         foreach ($tests as $test => $result) {
-            if ($test == 'UNCOVERED_FILES_FROM_WHITELIST') {
+            if ($test === 'UNCOVERED_FILES_FROM_WHITELIST') {
                 continue;
             }
 
@@ -229,7 +229,7 @@ final class Facade
         }
     }
 
-    private function setTotals(AbstractNode $node, Totals $totals)
+    private function setTotals(AbstractNode $node, Totals $totals): void
     {
         $loc = $node->getLinesOfCode();
 
@@ -262,15 +262,15 @@ final class Facade
         );
     }
 
-    /**
-     * @return string
-     */
-    private function getTargetDirectory()
+    private function getTargetDirectory(): string
     {
         return $this->target;
     }
 
-    private function saveDocument(\DOMDocument $document, $name)
+    /**
+     * @throws RuntimeException
+     */
+    private function saveDocument(\DOMDocument $document, string $name): void
     {
         $filename = \sprintf('%s/%s.xml', $this->getTargetDirectory(), $name);
 

@@ -29,7 +29,7 @@ final class Tests
         $this->contextNode = $context;
     }
 
-    public function addTest($test, array $result)
+    public function addTest(string $test, array $result): void
     {
         $node = $this->contextNode->appendChild(
             $this->contextNode->ownerDocument->createElementNS(

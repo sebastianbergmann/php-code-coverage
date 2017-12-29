@@ -27,12 +27,12 @@ abstract class Node
         $this->setContextNode($context);
     }
 
-    public function getDom()
+    public function getDom(): \DOMDocument
     {
         return $this->dom;
     }
 
-    public function getTotals()
+    public function getTotals(): Totals
     {
         $totalsContainer = $this->getContextNode()->firstChild;
 
@@ -48,7 +48,7 @@ abstract class Node
         return new Totals($totalsContainer);
     }
 
-    public function addDirectory($name)
+    public function addDirectory(string $name): Directory
     {
         $dirNode = $this->getDom()->createElementNS(
             'http://schema.phpunit.de/coverage/1.0',
@@ -61,7 +61,7 @@ abstract class Node
         return new Directory($dirNode);
     }
 
-    public function addFile($name, $href)
+    public function addFile(string $name, string $href): File
     {
         $fileNode = $this->getDom()->createElementNS(
             'http://schema.phpunit.de/coverage/1.0',
@@ -75,13 +75,13 @@ abstract class Node
         return new File($fileNode);
     }
 
-    protected function setContextNode(\DOMElement $context)
+    protected function setContextNode(\DOMElement $context): void
     {
         $this->dom         = $context->ownerDocument;
         $this->contextNode = $context;
     }
 
-    protected function getContextNode()
+    protected function getContextNode(): \DOMElement
     {
         return $this->contextNode;
     }

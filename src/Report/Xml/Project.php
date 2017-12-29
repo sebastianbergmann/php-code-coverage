@@ -12,27 +12,18 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 final class Project extends Node
 {
-    /**
-     * @param string $directory
-     */
-    public function __construct($directory)
+    public function __construct(string $directory)
     {
         $this->init();
         $this->setProjectSourceDirectory($directory);
     }
 
-    /**
-     * @return string
-     */
-    public function getProjectSourceDirectory()
+    public function getProjectSourceDirectory(): string
     {
         return $this->getContextNode()->getAttribute('source');
     }
 
-    /**
-     * @return BuildInformation
-     */
-    public function getBuildInformation()
+    public function getBuildInformation(): BuildInformation
     {
         $buildNode = $this->getDom()->getElementsByTagNameNS(
             'http://schema.phpunit.de/coverage/1.0',
@@ -51,7 +42,7 @@ final class Project extends Node
         return new BuildInformation($buildNode);
     }
 
-    public function getTests()
+    public function getTests(): Tests
     {
         $testsNode = $this->getContextNode()->getElementsByTagNameNS(
             'http://schema.phpunit.de/coverage/1.0',
@@ -70,14 +61,14 @@ final class Project extends Node
         return new Tests($testsNode);
     }
 
-    public function asDom()
+    public function asDom(): \DOMDocument
     {
         return $this->getDom();
     }
 
-    private function init()
+    private function init(): void
     {
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
 
         $this->setContextNode(
@@ -88,7 +79,7 @@ final class Project extends Node
         );
     }
 
-    private function setProjectSourceDirectory($name)
+    private function setProjectSourceDirectory(string $name): void
     {
         $this->getContextNode()->setAttribute('source', $name);
     }

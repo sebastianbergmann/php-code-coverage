@@ -45,7 +45,6 @@ final class Clover
 
         $packages = [];
         $report   = $coverage->getReport();
-        unset($coverage);
 
         foreach ($report as $item) {
             if (!$item instanceof File) {
@@ -57,10 +56,10 @@ final class Clover
             $xmlFile = $xmlDocument->createElement('file');
             $xmlFile->setAttribute('name', $item->getPath());
 
-            $classes   = $item->getClassesAndTraits();
-            $coverage  = $item->getCoverageData();
-            $lines     = [];
-            $namespace = 'global';
+            $classes      = $item->getClassesAndTraits();
+            $coverageData = $item->getCoverageData();
+            $lines        = [];
+            $namespace    = 'global';
 
             foreach ($classes as $className => $class) {
                 $classStatements        = 0;
@@ -84,8 +83,8 @@ final class Clover
                     $methodCount = 0;
 
                     foreach (\range($method['startLine'], $method['endLine']) as $line) {
-                        if (isset($coverage[$line]) && ($coverage[$line] !== null)) {
-                            $methodCount = \max($methodCount, \count($coverage[$line]));
+                        if (isset($coverageData[$line]) && ($coverageData[$line] !== null)) {
+                            $methodCount = \max($methodCount, \count($coverageData[$line]));
                         }
                     }
 
@@ -150,7 +149,7 @@ final class Clover
                 $xmlClass->appendChild($xmlMetrics);
             }
 
-            foreach ($coverage as $line => $data) {
+            foreach ($coverageData as $line => $data) {
                 if ($data === null || isset($lines[$line])) {
                     continue;
                 }

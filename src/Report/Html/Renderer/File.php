@@ -394,14 +394,14 @@ final class File extends Renderer
                 }
             }
 
+            $popover = '';
+
             if (!empty($popoverTitle)) {
                 $popover = \sprintf(
                     ' data-title="%s" data-content="%s" data-placement="bottom" data-html="true"',
                     $popoverTitle,
                     \htmlspecialchars($popoverContent)
                 );
-            } else {
-                $popover = '';
             }
 
             $lines .= \sprintf(

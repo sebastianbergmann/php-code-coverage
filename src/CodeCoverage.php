@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
+use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
@@ -364,11 +365,11 @@ final class CodeCoverage
         if ($id instanceof TestCase) {
             $_size = $id->getSize();
 
-            if ($_size === \PHPUnit\Util\Test::SMALL) {
+            if ($_size === Test::SMALL) {
                 $size = 'small';
-            } elseif ($_size === \PHPUnit\Util\Test::MEDIUM) {
+            } elseif ($_size === Test::MEDIUM) {
                 $size = 'medium';
-            } elseif ($_size === \PHPUnit\Util\Test::LARGE) {
+            } elseif ($_size === Test::LARGE) {
                 $size = 'large';
             }
 
@@ -1113,7 +1114,7 @@ final class CodeCoverage
 
             foreach ($this->filter->getWhitelist() as $file) {
                 if ($this->filter->isFile($file)) {
-                    include_once($file);
+                    include_once $file;
                 }
             }
 

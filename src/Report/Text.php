@@ -21,19 +21,55 @@ use SebastianBergmann\CodeCoverage\Util;
  */
 final class Text
 {
-    private $lowUpperBound;
-    private $highLowerBound;
-    private $showUncoveredFiles;
-    private $showOnlySummary;
+    /**
+     * @var string
+     */
+    private const COLOR_GREEN = "\x1b[30;42m";
 
-    private $colors = [
-        'green'  => "\x1b[30;42m",
-        'yellow' => "\x1b[30;43m",
-        'red'    => "\x1b[37;41m",
-        'header' => "\x1b[1;37;40m",
-        'reset'  => "\x1b[0m",
-        'eol'    => "\x1b[2K",
-    ];
+    /**
+     * @var string
+     */
+    private const COLOR_YELLOW = "\x1b[30;43m";
+
+    /**
+     * @var string
+     */
+    private const COLOR_RED = "\x1b[37;41m";
+
+    /**
+     * @var string
+     */
+    private const COLOR_HEADER = "\x1b[1;37;40m";
+
+    /**
+     * @var string
+     */
+    private const COLOR_RESET = "\x1b[0m";
+
+    /**
+     * @var string
+     */
+    private const COLOR_EOL = "\x1b[2K";
+
+    /**
+     * @var int
+     */
+    private $lowUpperBound;
+
+    /**
+     * @var int
+     */
+    private $highLowerBound;
+
+    /**
+     * @var bool
+     */
+    private $showUncoveredFiles;
+
+    /**
+     * @var bool
+     */
+    private $showOnlySummary;
 
     /**
      * @param int  $lowUpperBound
@@ -59,7 +95,6 @@ final class Text
     {
         $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();
-        unset($coverage);
 
         $colors = [
             'header'  => '',
@@ -75,17 +110,20 @@ final class Text
                 $report->getNumTestedClassesAndTraits(),
                 $report->getNumClassesAndTraits()
             );
+
             $colors['methods'] = $this->getCoverageColor(
                 $report->getNumTestedMethods(),
                 $report->getNumMethods()
             );
+
             $colors['lines']   = $this->getCoverageColor(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines()
             );
-            $colors['reset']   = $this->colors['reset'];
-            $colors['header']  = $this->colors['header'];
-            $colors['eol']     = $this->colors['eol'];
+
+            $colors['reset']  = self::COLOR_RESET;
+            $colors['header'] = self::COLOR_HEADER;
+            $colors['eol']    = self::COLOR_EOL;
         }
 
         $classes = \sprintf(
@@ -169,17 +207,18 @@ final class Text
                     $classMethods++;
                     $classStatements += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
+
                     if ($method['coverage'] == 100) {
                         $coveredMethods++;
                     }
                 }
 
+                $namespace = '';
+
                 if (!empty($class['package']['namespace'])) {
                     $namespace = '\\' . $class['package']['namespace'] . '::';
                 } elseif (!empty($class['package']['fullPackage'])) {
                     $namespace = '@' . $class['package']['fullPackage'] . '::';
-                } else {
-                    $namespace = '';
                 }
 
                 $classCoverage[$namespace . $className] = [
@@ -200,8 +239,7 @@ final class Text
         $resetColor  = '';
 
         foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
-            if ($classInfo['statementsCovered'] != 0 ||
-                $this->showUncoveredFiles) {
+            if ($this->showUncoveredFiles || $classInfo['statementsCovered'] != 0) {
                 if ($showColors) {
                     $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
                     $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
@@ -226,13 +264,14 @@ final class Text
         );
 
         if ($coverage >= $this->highLowerBound) {
-            return $this->colors['green'];
-        }
-        if ($coverage > $this->lowUpperBound) {
-            return $this->colors['yellow'];
+            return self::COLOR_GREEN;
         }
 
-        return $this->colors['red'];
+        if ($coverage > $this->lowUpperBound) {
+            return self::COLOR_YELLOW;
+        }
+
+        return self::COLOR_RED;
     }
 
     private function printCoverageCounts($numberOfCoveredElements, $totalNumberOfElements, $precision)
@@ -251,7 +290,7 @@ final class Text
 
     private function format($color, $padding, $string)
     {
-        $reset = $color ? $this->colors['reset'] : '';
+        $reset = $color ? self::COLOR_RESET : '';
 
         return $color . \str_pad($string, $padding) . $reset . PHP_EOL;
     }

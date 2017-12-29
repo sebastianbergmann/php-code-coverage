@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\CodeCoverage\TestCase;
 
-class XMLTest extends TestCase
+class XmlTest extends TestCase
 {
     private static $TEST_REPORT_PATH_SOURCE;
 

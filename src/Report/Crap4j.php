@@ -117,10 +117,10 @@ final class Crap4j
         $stats->appendChild($document->createElement('crapLoad', \round($fullCrapLoad)));
         $stats->appendChild($document->createElement('totalCrap', $fullCrap));
 
+        $crapMethodPercent = 0;
+
         if ($fullMethodCount > 0) {
             $crapMethodPercent = $this->roundValue((100 * $fullCrapMethodCount) / $fullMethodCount);
-        } else {
-            $crapMethodPercent = 0;
         }
 
         $stats->appendChild($document->createElement('crapMethodPercent', $crapMethodPercent));
@@ -131,8 +131,8 @@ final class Crap4j
         $buffer = $document->saveXML();
 
         if ($target !== null) {
-            if (!\is_dir(\dirname($target))) {
-                \mkdir(\dirname($target), 0777, true);
+            if (!\mkdir(\dirname($target)) && !\is_dir(\dirname($target))) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 
             \file_put_contents($target, $buffer);

@@ -41,7 +41,7 @@
         "phpunit/phpunit": "^7.0"
     },
     "suggest": {
-        "ext-xdebug": "^2.5.5"
+        "ext-xdebug": "^2.6.0"
     },
     "autoload": {
         "classmap": [

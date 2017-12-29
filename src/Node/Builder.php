@@ -114,10 +114,10 @@ final class Builder
             $max     = \count($path);
 
             for ($i = 0; $i < $max; $i++) {
+                $type = '';
+
                 if ($i == ($max - 1)) {
                     $type = '/f';
-                } else {
-                    $type = '';
                 }
 
                 $pointer = &$pointer[$path[$i] . $type];
@@ -194,7 +194,7 @@ final class Builder
             // strip phar:// prefixes
             if (\strpos($paths[$i], 'phar://') === 0) {
                 $paths[$i] = \substr($paths[$i], 7);
-                $paths[$i] = \strtr($paths[$i], '/', DIRECTORY_SEPARATOR);
+                $paths[$i] = \str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
             }
             $paths[$i] = \explode(DIRECTORY_SEPARATOR, $paths[$i]);
 

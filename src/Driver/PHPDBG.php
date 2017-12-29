@@ -66,12 +66,12 @@ final class PHPDBG implements Driver
                 \array_keys($fetchedLines)
             );
 
+            $sourceLines = [];
+
             if ($newFiles) {
                 $sourceLines = phpdbg_get_executable(
                     ['files' => $newFiles]
                 );
-            } else {
-                $sourceLines = [];
             }
         }
 

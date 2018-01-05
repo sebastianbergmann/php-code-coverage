@@ -157,6 +157,17 @@ class CodeCoverageTest extends TestCase
         );
     }
 
+    public function testIgnoreCoversAnnotation()
+    {
+        $this->coverage->setIgnoreCoversAnnotation(true);
+
+        $this->assertAttributeEquals(
+            true,
+            'ignoreCoversAnnotation',
+            $this->coverage
+        );
+    }
+
     public function testSetCheckForUnexecutedCoveredCode()
     {
         $this->coverage->setCheckForUnexecutedCoveredCode(true);

@@ -94,8 +94,8 @@ final class Facade
             $id = $node->getId();
 
             if ($node instanceof DirectoryNode) {
-                if (!\file_exists($target . $id)) {
-                    \mkdir($target . $id, 0777, true);
+                if (!@\mkdir($target . $id) && !\is_dir($target . $id)) {
+                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
                 }
 
                 $directory->render($node, $target . $id . '/index.html');
@@ -103,8 +103,8 @@ final class Facade
             } else {
                 $dir = \dirname($target . $id);
 
-                if (!\file_exists($dir)) {
-                    \mkdir($dir, 0777, true);
+                if (!@\mkdir($dir) && !\is_dir($dir)) {
+                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
                 }
 
                 $file->render($node, $target . $id . '.html');

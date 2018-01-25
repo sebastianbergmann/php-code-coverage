@@ -380,6 +380,31 @@ final class CodeCoverage
                 continue;
             }
 
+            if ((count($lines) > 0)
+                && (count($this->data[$file]) > 0)
+                && (count($lines) != count($this->data[$file]))
+            ) {
+                if (count($lines) > count($ours = $this->data[$file])) {
+                    // More lines in the one being added in
+                    $lines = array_filter(
+                        $lines,
+                        function ($value, $key) use ($ours) {
+                            return array_key_exists($key, $ours);
+                        },
+                        ARRAY_FILTER_USE_BOTH
+                    );
+                } else {
+                    // More lines in the one we currently have
+                    $this->data[$file] = array_filter(
+                        $this->data[$file],
+                        function ($value, $key) use ($lines) {
+                            return array_key_exists($key, $lines);
+                        },
+                        ARRAY_FILTER_USE_BOTH
+                    );
+                }
+            }
+
             foreach ($lines as $line => $data) {
                 if ($data !== null) {
                     if (!isset($this->data[$file][$line])) {

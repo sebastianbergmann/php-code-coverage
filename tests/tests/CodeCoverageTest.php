@@ -215,7 +215,7 @@ class CodeCoverageTest extends TestCase
         $coverage = $this->getCoverageForBankAccount();
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedDataArrayForBankAccount2(),
             $coverage->getData()
         );
 
@@ -251,7 +251,7 @@ class CodeCoverageTest extends TestCase
         $coverage->merge($this->getCoverageForBankAccount());
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedDataArrayForBankAccount2(),
             $coverage->getData()
         );
     }

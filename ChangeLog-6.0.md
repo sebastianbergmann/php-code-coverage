@@ -8,6 +8,10 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 
 * Almost all classes are now final
 
+### Fixed
+
+* Fixed [##409](https://github.com/sebastianbergmann/php-code-coverage/issues/#409): Merging of code coverage information does not work correctly
+
 ### Removed
 
 * Implemented [#561](https://github.com/sebastianbergmann/php-code-coverage/issues/561): Remove HHVM driver

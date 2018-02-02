@@ -14,7 +14,7 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 
 ### Fixed
 
-* Fixed [##409](https://github.com/sebastianbergmann/php-code-coverage/issues/#409): Merging of code coverage information does not work correctly
+* Fixed [#409](https://github.com/sebastianbergmann/php-code-coverage/issues/409): Merging of code coverage information does not work correctly
 
 ### Removed
 

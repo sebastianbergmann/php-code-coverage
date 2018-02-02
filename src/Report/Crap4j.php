@@ -116,7 +116,7 @@ final class Crap4j
         $buffer = $document->saveXML();
 
         if ($target !== null) {
-            if (!@\mkdir(\dirname($target)) && !\is_dir(\dirname($target))) {
+            if (!@\mkdir(\dirname($target), 0777, true) && !\is_dir(\dirname($target))) {
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 

@@ -59,6 +59,11 @@ final class CodeCoverage
     /**
      * @var bool
      */
+    private $ignoreCoversAnnotation = false;
+
+    /**
+     * @var bool
+     */
     private $checkForUnexecutedCoveredCode = false;
 
     /**
@@ -439,6 +444,11 @@ final class CodeCoverage
         $this->forceCoversAnnotation = $flag;
     }
 
+    public function setIgnoreCoversAnnotation(bool $flag): void
+    {
+        $this->ignoreCoversAnnotation = $flag;
+    }
+
     public function setCheckForMissingCoversAnnotation(bool $flag): void
     {
         $this->checkForMissingCoversAnnotation = $flag;
@@ -486,6 +496,10 @@ final class CodeCoverage
      */
     private function applyCoversAnnotationFilter(array &$data, $linesToBeCovered, array $linesToBeUsed, bool $ignoreForceCoversAnnotation): void
     {
+        if ($this->ignoreCoversAnnotation) {
+            return;
+        }
+
         if ($linesToBeCovered === false ||
             ($this->forceCoversAnnotation && empty($linesToBeCovered) && !$ignoreForceCoversAnnotation)) {
             if ($this->checkForMissingCoversAnnotation) {

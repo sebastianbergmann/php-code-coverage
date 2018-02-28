@@ -94,7 +94,7 @@ final class Facade
             $id = $node->getId();
 
             if ($node instanceof DirectoryNode) {
-                if (!@\mkdir($target . $id, 0777, true) && !\is_dir($target . $id)) {
+                if (!self::mkdir($target . $id, 0777, true) && !\is_dir($target . $id)) {
                     throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
                 }
 
@@ -103,7 +103,7 @@ final class Facade
             } else {
                 $dir = \dirname($target . $id);
 
-                if (!@\mkdir($dir, 0777, true) && !\is_dir($dir)) {
+                if (!self::mkdir($dir, 0777, true) && !\is_dir($dir)) {
                     throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
                 }
 
@@ -161,7 +161,7 @@ final class Facade
             $directory .= DIRECTORY_SEPARATOR;
         }
 
-        if (!@\mkdir($directory, 0777, true) && !\is_dir($directory)) {
+        if (!self::mkdir($directory, 0777, true) && !\is_dir($directory)) {
             throw new RuntimeException(
                 \sprintf(
                     'Directory "%s" does not exist.',
@@ -171,5 +171,17 @@ final class Facade
         }
 
         return $directory;
+    }
+
+    private function mkdir(string $directory, int $mode, bool $recursive): bool
+    {
+        \set_error_handler(function () {
+        });
+
+        $result = \mkdir($directory, $mode, $recursive);
+
+        \restore_error_handler();
+
+        return $result;
     }
 }

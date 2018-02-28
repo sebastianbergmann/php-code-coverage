@@ -234,7 +234,7 @@ final class Clover
         $buffer = $xmlDocument->saveXML();
 
         if ($target !== null) {
-            if (!@\mkdir(\dirname($target), 0777, true) && !\is_dir(\dirname($target))) {
+            if (!\is_dir(\dirname($target)) && !\mkdir(\dirname($target), 0777, true)) {
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 

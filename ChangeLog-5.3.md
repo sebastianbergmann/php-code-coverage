@@ -4,6 +4,10 @@ All notable changes of the PHP_CodeCoverage 5.3 release series are documented in
 
 ## [5.3.1] - 2017-MM-DD
 
+### Changed
+
+* `Clover`, `Crap4j`, and `PHP` report writers now raise an exception when their call to `file_put_contents()` fails
+
 ### Fixed
 
 * Fixed [#559](https://github.com/sebastianbergmann/php-code-coverage/issues/559): Ignored classes and methods are reported as 100% covered

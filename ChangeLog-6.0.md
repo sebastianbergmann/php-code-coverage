@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 6.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [6.0.2] - 2018-MM-DD
+## [6.0.2] - 2018-04-06
 
 ### Changed
 

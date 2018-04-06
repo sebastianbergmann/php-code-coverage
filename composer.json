@@ -32,7 +32,7 @@
         "phpunit/php-token-stream": "^3.0",
         "phpunit/php-text-template": "^1.2.1",
         "sebastian/code-unit-reverse-lookup": "^1.0.1",
-        "sebastian/environment": "^3.0",
+        "sebastian/environment": "^3.1",
         "sebastian/version": "^2.0.1",
         "theseer/tokenizer": "^1.1"
     },

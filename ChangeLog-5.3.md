@@ -2,7 +2,7 @@
 
 All notable changes of the PHP_CodeCoverage 5.3 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [5.3.1] - 2017-MM-DD
+## [5.3.1] - 2018-04-06
 
 ### Changed
 

@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
+use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * Generates a Clover XML logfile from a code coverage object.
@@ -238,7 +239,14 @@ final class Clover
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 
-            \file_put_contents($target, $buffer);
+            if (@\file_put_contents($target, $buffer) === false) {
+                throw new RuntimeException(
+                    \sprintf(
+                        'Could not write to "%s',
+                        $target
+                    )
+                );
+            }
         }
 
         return $buffer;

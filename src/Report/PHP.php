@@ -21,7 +21,7 @@ final class PHP
     {
         $filter = $coverage->filter();
 
-        $output = \sprintf(
+        $buffer = \sprintf(
             '<?php
 $coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
 $coverage->setData(%s);
@@ -37,9 +37,16 @@ return $coverage;',
         );
 
         if ($target !== null) {
-            return \file_put_contents($target, $output);
+            if (@\file_put_contents($target, $buffer) === false) {
+                throw new RuntimeException(
+                    \sprintf(
+                        'Could not write to "%s',
+                        $target
+                    )
+                );
+            }
         }
 
-        return $output;
+        return $buffer;
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="BankAccount.php" path="/">
     <totals>
       <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00"/>

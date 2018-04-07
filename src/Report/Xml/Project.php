@@ -26,14 +26,14 @@ final class Project extends Node
     public function getBuildInformation(): BuildInformation
     {
         $buildNode = $this->getDom()->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'https://schema.phpunit.de/coverage/1.0',
             'build'
         )->item(0);
 
         if (!$buildNode) {
             $buildNode = $this->getDom()->documentElement->appendChild(
                 $this->getDom()->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'https://schema.phpunit.de/coverage/1.0',
                     'build'
                 )
             );
@@ -45,14 +45,14 @@ final class Project extends Node
     public function getTests(): Tests
     {
         $testsNode = $this->getContextNode()->getElementsByTagNameNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'https://schema.phpunit.de/coverage/1.0',
             'tests'
         )->item(0);
 
         if (!$testsNode) {
             $testsNode = $this->getContextNode()->appendChild(
                 $this->getDom()->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'https://schema.phpunit.de/coverage/1.0',
                     'tests'
                 )
             );
@@ -69,11 +69,11 @@ final class Project extends Node
     private function init(): void
     {
         $dom = new \DOMDocument;
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
 
         $this->setContextNode(
             $dom->getElementsByTagNameNS(
-                'http://schema.phpunit.de/coverage/1.0',
+                'https://schema.phpunit.de/coverage/1.0',
                 'project'
             )->item(0)
         );

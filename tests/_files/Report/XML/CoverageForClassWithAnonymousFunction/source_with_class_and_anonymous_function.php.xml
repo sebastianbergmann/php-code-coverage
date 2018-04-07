@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="source_with_class_and_anonymous_function.php" path="/">
     <totals>
       <lines total="19" comments="2" code="17" executable="8" executed="7" percent="87.50"/>

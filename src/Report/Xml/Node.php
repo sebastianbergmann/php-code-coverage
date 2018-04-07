@@ -50,7 +50,7 @@ class Node
         if (!$totalsContainer) {
             $totalsContainer = $this->getContextNode()->appendChild(
                 $this->dom->createElementNS(
-                    'http://schema.phpunit.de/coverage/1.0',
+                    'https://schema.phpunit.de/coverage/1.0',
                     'totals'
                 )
             );
@@ -62,7 +62,7 @@ class Node
     public function addDirectory($name)
     {
         $dirNode = $this->getDom()->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'https://schema.phpunit.de/coverage/1.0',
             'directory'
         );
 
@@ -75,7 +75,7 @@ class Node
     public function addFile($name, $href)
     {
         $fileNode = $this->getDom()->createElementNS(
-            'http://schema.phpunit.de/coverage/1.0',
+            'https://schema.phpunit.de/coverage/1.0',
             'file'
         );
 

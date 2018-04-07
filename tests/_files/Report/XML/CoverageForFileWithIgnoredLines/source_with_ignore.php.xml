@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="source_with_ignore.php" path="/">
     <totals>
       <lines total="37" comments="12" code="25" executable="2" executed="1" percent="50.00"/>

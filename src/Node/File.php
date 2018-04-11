@@ -350,28 +350,22 @@ final class File extends AbstractNode
         unset($tokens);
 
         for ($lineNumber = 1; $lineNumber <= $this->linesOfCode['loc']; $lineNumber++) {
-            if (isset($this->startLines[$lineNumber])) {
-                // Start line of a class.
-                if (isset($this->startLines[$lineNumber]['className'])) {
-                    if (isset($currentClass)) {
-                        $classStack[] = &$currentClass;
-                    }
-
-                    $currentClass = &$this->startLines[$lineNumber];
-                } // Start line of a trait.
-                elseif (isset($this->startLines[$lineNumber]['traitName'])) {
-                    $currentTrait = &$this->startLines[$lineNumber];
-                } // Start line of a method.
-                elseif (isset($this->startLines[$lineNumber]['methodName'])) {
-                    $currentMethod = &$this->startLines[$lineNumber];
-                } // Start line of a function.
-                elseif (isset($this->startLines[$lineNumber]['functionName'])) {
-                    if (isset($currentFunction)) {
-                        $functionStack[] = &$currentFunction;
-                    }
-
-                    $currentFunction = &$this->startLines[$lineNumber];
+            if (isset($this->startLines[$lineNumber]['className'])) {
+                if (isset($currentClass)) {
+                    $classStack[] = &$currentClass;
                 }
+
+                $currentClass = &$this->startLines[$lineNumber];
+            }  elseif (isset($this->startLines[$lineNumber]['traitName'])) {
+                $currentTrait = &$this->startLines[$lineNumber];
+            } elseif (isset($this->startLines[$lineNumber]['methodName'])) {
+                $currentMethod = &$this->startLines[$lineNumber];
+            }  elseif (isset($this->startLines[$lineNumber]['functionName'])) {
+                if (isset($currentFunction)) {
+                    $functionStack[] = &$currentFunction;
+                }
+
+                $currentFunction = &$this->startLines[$lineNumber];
             }
 
             if (isset($this->coverageData[$lineNumber])) {

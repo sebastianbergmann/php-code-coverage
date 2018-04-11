@@ -91,19 +91,14 @@ final class File extends AbstractNode
     private $numTestedFunctions;
 
     /**
-     * @var array
-     */
-    private $startLines = [];
-
-    /**
-     * @var array
-     */
-    private $endLines = [];
-
-    /**
      * @var bool
      */
     private $cacheTokens;
+
+    /**
+     * @var array
+     */
+    private $codeUnitsByLine = [];
 
     public function __construct(string $name, AbstractNode $parent, array $coverageData, array $testData, bool $cacheTokens)
     {
@@ -335,113 +330,41 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        $classStack    = [];
-        $methodStack   = [];
-        $functionStack = [];
-
         if ($this->cacheTokens) {
             $tokens = \PHP_Token_Stream_CachingFactory::get($this->getPath());
         } else {
             $tokens = new \PHP_Token_Stream($this->getPath());
         }
 
+        $this->linesOfCode = $tokens->getLinesOfCode();
+
+        foreach (\range(1, $this->linesOfCode['loc']) as $lineNumber) {
+            $this->codeUnitsByLine[$lineNumber] = [];
+        }
+
         $this->processClasses($tokens);
         $this->processTraits($tokens);
         $this->processFunctions($tokens);
-        $this->linesOfCode = $tokens->getLinesOfCode();
         unset($tokens);
 
-        for ($lineNumber = 1; $lineNumber <= $this->linesOfCode['loc']; $lineNumber++) {
-            if (isset($this->startLines[$lineNumber]['className'])) {
-                if (isset($currentClass)) {
-                    $classStack[] = &$currentClass;
-                }
-
-                $currentClass = &$this->startLines[$lineNumber];
-            } elseif (isset($this->startLines[$lineNumber]['traitName'])) {
-                $currentTrait = &$this->startLines[$lineNumber];
-            } elseif (isset($this->startLines[$lineNumber]['methodName'])) {
-                if (isset($currentMethod)) {
-                    $methodStack[] = &$currentMethod;
-                }
-
-                $currentMethod = &$this->startLines[$lineNumber];
-            } elseif (isset($this->startLines[$lineNumber]['functionName'])) {
-                if (isset($currentFunction)) {
-                    $functionStack[] = &$currentFunction;
-                }
-
-                $currentFunction = &$this->startLines[$lineNumber];
-            }
-
+        foreach (\range(1, $this->linesOfCode['loc']) as $lineNumber) {
             if (isset($this->coverageData[$lineNumber])) {
-                if (isset($currentClass)) {
-                    $currentClass['executableLines']++;
+                foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                    $codeUnit['executableLines']++;
                 }
 
-                if (isset($currentTrait)) {
-                    $currentTrait['executableLines']++;
-                }
-
-                if (isset($currentMethod)) {
-                    $currentMethod['executableLines']++;
-                }
-
-                if (isset($currentFunction)) {
-                    $currentFunction['executableLines']++;
-                }
+                unset($codeUnit);
 
                 $this->numExecutableLines++;
 
                 if (\count($this->coverageData[$lineNumber]) > 0) {
-                    if (isset($currentClass)) {
-                        $currentClass['executedLines']++;
+                    foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                        $codeUnit['executedLines']++;
                     }
 
-                    if (isset($currentTrait)) {
-                        $currentTrait['executedLines']++;
-                    }
-
-                    if (isset($currentMethod)) {
-                        $currentMethod['executedLines']++;
-                    }
-
-                    if (isset($currentFunction)) {
-                        $currentFunction['executedLines']++;
-                    }
+                    unset($codeUnit);
 
                     $this->numExecutedLines++;
-                }
-            }
-
-            if (isset($this->endLines[$lineNumber]['className'])) {
-                unset($currentClass);
-
-                if ($classStack) {
-                    \end($classStack);
-                    $key          = \key($classStack);
-                    $currentClass = &$classStack[$key];
-                    unset($classStack[$key]);
-                }
-            } elseif (isset($this->endLines[$lineNumber]['traitName'])) {
-                unset($currentTrait);
-            } elseif (isset($this->endLines[$lineNumber]['methodName'])) {
-                unset($currentMethod);
-
-                if ($methodStack) {
-                    \end($methodStack);
-                    $key           = \key($methodStack);
-                    $currentMethod = &$methodStack[$key];
-                    unset($methodStack[$key]);
-                }
-            } elseif (isset($this->endLines[$lineNumber]['functionName'])) {
-                unset($currentFunction);
-
-                if ($functionStack) {
-                    \end($functionStack);
-                    $key             = \key($functionStack);
-                    $currentFunction = &$functionStack[$key];
-                    unset($functionStack[$key]);
                 }
             }
         }
@@ -463,6 +386,8 @@ final class File extends AbstractNode
                 $trait['ccn'] += $method['ccn'];
             }
 
+            unset($method);
+
             if ($trait['executableLines'] > 0) {
                 $trait['coverage'] = ($trait['executedLines'] /
                         $trait['executableLines']) * 100;
@@ -479,6 +404,8 @@ final class File extends AbstractNode
                 $trait['coverage']
             );
         }
+
+        unset($trait);
 
         foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
@@ -497,6 +424,8 @@ final class File extends AbstractNode
                 $class['ccn'] += $method['ccn'];
             }
 
+            unset($method);
+
             if ($class['executableLines'] > 0) {
                 $class['coverage'] = ($class['executedLines'] /
                         $class['executableLines']) * 100;
@@ -513,6 +442,8 @@ final class File extends AbstractNode
                 $class['coverage']
             );
         }
+
+        unset($class);
 
         foreach ($this->functions as &$function) {
             if ($function['executableLines'] > 0) {
@@ -557,14 +488,15 @@ final class File extends AbstractNode
                 'link'            => $link . $class['startLine']
             ];
 
-            $this->startLines[$class['startLine']] = &$this->classes[$className];
-            $this->endLines[$class['endLine']]     = &$this->classes[$className];
-
             foreach ($class['methods'] as $methodName => $method) {
                 $this->classes[$className]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
-                $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
-                $this->endLines[$method['endLine']]     = &$this->classes[$className]['methods'][$methodName];
+                foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
+                    $this->codeUnitsByLine[$lineNumber] = [
+                        &$this->classes[$className],
+                        &$this->classes[$className]['methods'][$methodName]
+                    ];
+                }
             }
         }
     }
@@ -589,14 +521,15 @@ final class File extends AbstractNode
                 'link'            => $link . $trait['startLine']
             ];
 
-            $this->startLines[$trait['startLine']] = &$this->traits[$traitName];
-            $this->endLines[$trait['endLine']]     = &$this->traits[$traitName];
-
             foreach ($trait['methods'] as $methodName => $method) {
                 $this->traits[$traitName]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
-                $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
-                $this->endLines[$method['endLine']]     = &$this->traits[$traitName]['methods'][$methodName];
+                foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
+                    $this->codeUnitsByLine[$lineNumber] = [
+                        &$this->traits[$traitName],
+                        &$this->traits[$traitName]['methods'][$methodName]
+                    ];
+                }
             }
         }
     }
@@ -620,8 +553,9 @@ final class File extends AbstractNode
                 'link'            => $link . $function['startLine']
             ];
 
-            $this->startLines[$function['startLine']] = &$this->functions[$functionName];
-            $this->endLines[$function['endLine']]     = &$this->functions[$functionName];
+            foreach (\range($function['startLine'], $function['endLine']) as $lineNumber) {
+                $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
+            }
         }
     }
 

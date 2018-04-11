@@ -408,33 +408,27 @@ final class File extends AbstractNode
                 }
             }
 
-            if (isset($this->endLines[$lineNumber])) {
-                // End line of a class.
-                if (isset($this->endLines[$lineNumber]['className'])) {
-                    unset($currentClass);
+            if (isset($this->endLines[$lineNumber]['className'])) {
+                unset($currentClass);
 
-                    if ($classStack) {
-                        \end($classStack);
-                        $key          = \key($classStack);
-                        $currentClass = &$classStack[$key];
-                        unset($classStack[$key]);
-                    }
-                } // End line of a trait.
-                elseif (isset($this->endLines[$lineNumber]['traitName'])) {
-                    unset($currentTrait);
-                } // End line of a method.
-                elseif (isset($this->endLines[$lineNumber]['methodName'])) {
-                    unset($currentMethod);
-                } // End line of a function.
-                elseif (isset($this->endLines[$lineNumber]['functionName'])) {
-                    unset($currentFunction);
+                if ($classStack) {
+                    \end($classStack);
+                    $key          = \key($classStack);
+                    $currentClass = &$classStack[$key];
+                    unset($classStack[$key]);
+                }
+            } elseif (isset($this->endLines[$lineNumber]['traitName'])) {
+                unset($currentTrait);
+            } elseif (isset($this->endLines[$lineNumber]['methodName'])) {
+                unset($currentMethod);
+            } elseif (isset($this->endLines[$lineNumber]['functionName'])) {
+                unset($currentFunction);
 
-                    if ($functionStack) {
-                        \end($functionStack);
-                        $key             = \key($functionStack);
-                        $currentFunction = &$functionStack[$key];
-                        unset($functionStack[$key]);
-                    }
+                if ($functionStack) {
+                    \end($functionStack);
+                    $key             = \key($functionStack);
+                    $currentFunction = &$functionStack[$key];
+                    unset($functionStack[$key]);
                 }
             }
         }

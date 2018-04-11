@@ -9,4 +9,4 @@ Code Coverage Report:
   Lines:   87.50% (7/8)
 
 CoveredClassWithAnonymousFunctionInStaticMethod
-  Methods:  50.00% ( 1/ 2)   Lines:  80.00% (  4/  5)
+  Methods:  50.00% ( 1/ 2)   Lines:  87.50% (  7/  8)

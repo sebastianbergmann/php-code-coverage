@@ -7,7 +7,7 @@
     <methodCount>2</methodCount>
     <crapMethodCount>0</crapMethodCount>
     <crapLoad>0</crapLoad>
-    <totalCrap>2.04</totalCrap>
+    <totalCrap>2</totalCrap>
     <crapMethodPercent>0</crapMethodPercent>
   </stats>
   <methods>
@@ -17,9 +17,9 @@
       <methodName>runAnonymous</methodName>
       <methodSignature>runAnonymous()</methodSignature>
       <fullMethod>runAnonymous()</fullMethod>
-      <crap>1.04</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>66.67</coverage>
+      <coverage>83.33</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>

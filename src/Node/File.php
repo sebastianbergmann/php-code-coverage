@@ -335,7 +335,9 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        $classStack = $functionStack = [];
+        $classStack    = [];
+        $methodStack   = [];
+        $functionStack = [];
 
         if ($this->cacheTokens) {
             $tokens = \PHP_Token_Stream_CachingFactory::get($this->getPath());
@@ -356,11 +358,15 @@ final class File extends AbstractNode
                 }
 
                 $currentClass = &$this->startLines[$lineNumber];
-            }  elseif (isset($this->startLines[$lineNumber]['traitName'])) {
+            } elseif (isset($this->startLines[$lineNumber]['traitName'])) {
                 $currentTrait = &$this->startLines[$lineNumber];
             } elseif (isset($this->startLines[$lineNumber]['methodName'])) {
+                if (isset($currentMethod)) {
+                    $methodStack[] = &$currentMethod;
+                }
+
                 $currentMethod = &$this->startLines[$lineNumber];
-            }  elseif (isset($this->startLines[$lineNumber]['functionName'])) {
+            } elseif (isset($this->startLines[$lineNumber]['functionName'])) {
                 if (isset($currentFunction)) {
                     $functionStack[] = &$currentFunction;
                 }
@@ -421,6 +427,13 @@ final class File extends AbstractNode
                 unset($currentTrait);
             } elseif (isset($this->endLines[$lineNumber]['methodName'])) {
                 unset($currentMethod);
+
+                if ($methodStack) {
+                    \end($methodStack);
+                    $key           = \key($methodStack);
+                    $currentMethod = &$methodStack[$key];
+                    unset($methodStack[$key]);
+                }
             } elseif (isset($this->endLines[$lineNumber]['functionName'])) {
                 unset($currentFunction);
 

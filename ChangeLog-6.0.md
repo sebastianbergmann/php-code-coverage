@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 6.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [6.0.4] - 2018-MM-DD
+
+### Fixed
+
+* Fixed [#605](https://github.com/sebastianbergmann/php-code-coverage/issues/605): Method name missing from coverage report
+
 ## [6.0.3] - 2018-04-06
 
 ### Fixed
@@ -34,6 +40,7 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 * Implemented [#562](https://github.com/sebastianbergmann/php-code-coverage/issues/562): Remove code specific to Hack language constructs
 * Implemented [#563](https://github.com/sebastianbergmann/php-code-coverage/issues/563): Drop support for PHP 7.0
 
+[6.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.3...6.0.4
 [6.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.2...6.0.3
 [6.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.1...6.0.2
 [6.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.0...6.0.1

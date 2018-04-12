@@ -467,8 +467,7 @@ final class File extends AbstractNode
     private function processClasses(\PHP_Token_Stream $tokens): void
     {
         $classes = $tokens->getClasses();
-
-        $link = $this->getId() . '.html#';
+        $link    = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
             if (\strpos($className, 'anonymous') === 0) {
@@ -512,8 +511,7 @@ final class File extends AbstractNode
     private function processTraits(\PHP_Token_Stream $tokens): void
     {
         $traits = $tokens->getTraits();
-
-        $link = $this->getId() . '.html#';
+        $link   = $this->getId() . '.html#';
 
         foreach ($traits as $traitName => $trait) {
             $this->traits[$traitName] = [
@@ -549,8 +547,7 @@ final class File extends AbstractNode
     private function processFunctions(\PHP_Token_Stream $tokens): void
     {
         $functions = $tokens->getFunctions();
-
-        $link = $this->getId() . '.html#';
+        $link      = $this->getId() . '.html#';
 
         foreach ($functions as $functionName => $function) {
             if (\strpos($functionName, 'anonymous') === 0) {

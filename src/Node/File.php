@@ -282,7 +282,7 @@ final class File extends AbstractNode
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                        $method['coverage'] === 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -291,7 +291,7 @@ final class File extends AbstractNode
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
                     if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                        $method['coverage'] === 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -319,7 +319,7 @@ final class File extends AbstractNode
 
             foreach ($this->functions as $function) {
                 if ($function['executableLines'] > 0 &&
-                    $function['coverage'] == 100) {
+                    $function['coverage'] === 100) {
                     $this->numTestedFunctions++;
                 }
             }
@@ -392,7 +392,7 @@ final class File extends AbstractNode
                 $trait['coverage'] = ($trait['executedLines'] /
                         $trait['executableLines']) * 100;
 
-                if ($trait['coverage'] == 100) {
+                if ($trait['coverage'] === 100) {
                     $this->numTestedClasses++;
                 }
             } else {
@@ -430,7 +430,7 @@ final class File extends AbstractNode
                 $class['coverage'] = ($class['executedLines'] /
                         $class['executableLines']) * 100;
 
-                if ($class['coverage'] == 100) {
+                if ($class['coverage'] === 100) {
                     $this->numTestedClasses++;
                 }
             } else {
@@ -453,7 +453,7 @@ final class File extends AbstractNode
                 $function['coverage'] = 100;
             }
 
-            if ($function['coverage'] == 100) {
+            if ($function['coverage'] === 100) {
                 $this->numTestedFunctions++;
             }
 

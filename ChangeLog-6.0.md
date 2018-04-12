@@ -4,6 +4,10 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 
 ## [6.0.4] - 2018-MM-DD
 
+### Changed
+
+* Implemented [#606](https://github.com/sebastianbergmann/php-code-coverage/issues/606): Do not report details for anonymous classes and functions
+
 ### Fixed
 
 * Fixed [#605](https://github.com/sebastianbergmann/php-code-coverage/issues/605): Method name missing from coverage report

@@ -471,6 +471,10 @@ final class File extends AbstractNode
         $link = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
+            if (\strpos($className, 'anonymous') === 0) {
+                continue;
+            }
+
             if (!empty($class['package']['namespace'])) {
                 $className = $class['package']['namespace'] . '\\' . $className;
             }
@@ -489,6 +493,10 @@ final class File extends AbstractNode
             ];
 
             foreach ($class['methods'] as $methodName => $method) {
+                if (\strpos($methodName, 'anonymous') === 0) {
+                    continue;
+                }
+
                 $this->classes[$className]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
                 foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
@@ -522,6 +530,10 @@ final class File extends AbstractNode
             ];
 
             foreach ($trait['methods'] as $methodName => $method) {
+                if (\strpos($methodName, 'anonymous') === 0) {
+                    continue;
+                }
+
                 $this->traits[$traitName]['methods'][$methodName] = $this->newMethod($methodName, $method, $link);
 
                 foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
@@ -541,6 +553,10 @@ final class File extends AbstractNode
         $link = $this->getId() . '.html#';
 
         foreach ($functions as $functionName => $function) {
+            if (\strpos($functionName, 'anonymous') === 0) {
+                continue;
+            }
+
             $this->functions[$functionName] = [
                 'functionName'    => $functionName,
                 'signature'       => $function['signature'],

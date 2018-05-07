@@ -90,7 +90,7 @@ final class Facade
                     "'$directory' exists but is not writable."
                 );
             }
-        } elseif (!@\mkdir($directory, 0777, true)) {
+        } elseif (!$this->createDirectory($directory)) {
             throw new RuntimeException(
                 "'$directory' could not be created."
             );
@@ -279,5 +279,10 @@ final class Facade
         $this->initTargetDirectory(\dirname($filename));
 
         $document->save($filename);
+    }
+
+    private function createDirectory(string $directory): bool
+    {
+        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
     }
 }

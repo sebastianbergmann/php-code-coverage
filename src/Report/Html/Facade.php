@@ -176,7 +176,7 @@ final class Facade
     private function createDirectory(string $directory): bool
     {
         if (!\is_dir($directory)) {
-            if (!@\mkdir($directory)) {
+            if (!@\mkdir($directory, 0777, true)) {
                 return false;
             }
         }

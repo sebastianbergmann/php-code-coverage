@@ -403,14 +403,17 @@ final class CodeCoverage
             }
 
             foreach ($lines as $line => $data) {
-                if ($data !== null) {
-                    if (!isset($this->data[$file][$line])) {
-                        $this->data[$file][$line] = $data;
-                    } else {
-                        $this->data[$file][$line] = \array_unique(
-                            \array_merge($this->data[$file][$line], $data)
-                        );
-                    }
+                if ($data === null || $this->data[$file][$line] === null) {
+                    // if the line is marked as "dead code" in either, mark it as dead code in the merged result
+                    $this->data[$file][$line] = null;
+                } else if (!isset($this->data[$file][$line])) {
+                    // if no data has been set in the current data, overwrite all
+                    $this->data[$file][$line] = $data;
+                } else {
+                    // otherwise merge data from both coverage files
+                    $this->data[$file][$line] = \array_unique(
+                        \array_merge($this->data[$file][$line], $data)
+                    );
                 }
             }
         }

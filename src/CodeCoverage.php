@@ -403,7 +403,7 @@ final class CodeCoverage
             }
 
             foreach ($lines as $line => $data) {
-                if ($data === null || $this->data[$file][$line] === null) {
+                if ($data === null || (array_key_exists($line, $this->data[$file]) && $this->data[$file][$line] === null)) {
                     // if the line is marked as "dead code" in either, mark it as dead code in the merged result
                     $this->data[$file][$line] = null;
                 } elseif (!isset($this->data[$file][$line])) {

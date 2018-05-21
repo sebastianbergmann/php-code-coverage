@@ -406,7 +406,7 @@ final class CodeCoverage
                 if ($data === null || (array_key_exists($line, $this->data[$file]) && $this->data[$file][$line] === null)) {
                     // if the line is marked as "dead code" in either, mark it as dead code in the merged result
                     $this->data[$file][$line] = null;
-                } else if (!isset($this->data[$file][$line])) {
+                } elseif (!isset($this->data[$file][$line])) {
                     // if no data has been set in the current data, overwrite all
                     $this->data[$file][$line] = $data;
                 } else {

@@ -406,33 +406,6 @@ final class CodeCoverage
         $this->report = null;
     }
 
-    /**
-     * Determine the priority for a line
-     *
-     * 1 = the line is not set
-     * 2 = the line has not been tested
-     * 3 = the line is dead code
-     * 4 = the line has been tested
-     *
-     * During a merge, a higher number is better.
-     *
-     * @param array $data
-     * @param int $line
-     * @return int
-     */
-    protected function getLinePriority($data, $line)
-    {
-        if (!\array_key_exists($line, $data)) {
-            return 1;
-        } elseif (\is_array($data[$line]) && \count($data[$line]) === 0) {
-            return 2;
-        } elseif ($data[$line] === null) {
-            return 3;
-        }
-
-        return 4;
-    }
-
     public function setCacheTokens(bool $flag): void
     {
         $this->cacheTokens = $flag;
@@ -486,6 +459,38 @@ final class CodeCoverage
     public function setUnintentionallyCoveredSubclassesWhitelist(array $whitelist): void
     {
         $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
+    }
+
+    /**
+     * Determine the priority for a line
+     *
+     * 1 = the line is not set
+     * 2 = the line has not been tested
+     * 3 = the line is dead code
+     * 4 = the line has been tested
+     *
+     * During a merge, a higher number is better.
+     *
+     * @param array $data
+     * @param int   $line
+     *
+     * @return int
+     */
+    private function getLinePriority($data, $line)
+    {
+        if (!\array_key_exists($line, $data)) {
+            return 1;
+        }
+
+        if (\is_array($data[$line]) && \count($data[$line]) === 0) {
+            return 2;
+        }
+
+        if ($data[$line] === null) {
+            return 3;
+        }
+
+        return 4;
     }
 
     /**

@@ -380,17 +380,23 @@ final class CodeCoverage
                 continue;
             }
 
-            foreach ($lines as $line => $data) {
-                if ($data === null || (array_key_exists($line, $this->data[$file]) && $this->data[$file][$line] === null)) {
-                    // if the line is marked as "dead code" in either, mark it as dead code in the merged result
-                    $this->data[$file][$line] = null;
-                } elseif (!isset($this->data[$file][$line])) {
-                    // if no data has been set in the current data, overwrite all
-                    $this->data[$file][$line] = $data;
-                } else {
-                    // otherwise merge data from both coverage files
+            // we should compare the lines if any of two contains data
+            $compareLineNumbers = \array_unique(
+                \array_merge(
+                    \array_keys($this->data[$file]),
+                    \array_keys($that->data[$file])
+                )
+            );
+
+            foreach ($compareLineNumbers as $line) {
+                $thatPriority = $this->getLinePriority($that->data[$file], $line);
+                $thisPriority = $this->getLinePriority($this->data[$file], $line);
+
+                if ($thatPriority > $thisPriority) {
+                    $this->data[$file][$line] = $that->data[$file][$line];
+                } elseif ($thatPriority === $thisPriority && \is_array($this->data[$file][$line])) {
                     $this->data[$file][$line] = \array_unique(
-                        \array_merge($this->data[$file][$line], $data)
+                        \array_merge($this->data[$file][$line], $that->data[$file][$line])
                     );
                 }
             }
@@ -398,6 +404,33 @@ final class CodeCoverage
 
         $this->tests  = \array_merge($this->tests, $that->getTests());
         $this->report = null;
+    }
+
+    /**
+     * Determine the priority for a line
+     *
+     * 1 = the line is not set
+     * 2 = the line has not been tested
+     * 3 = the line is dead code
+     * 4 = the line has been tested
+     *
+     * During a merge, a higher number is better.
+     *
+     * @param array $data
+     * @param int $line
+     * @return int
+     */
+    protected function getLinePriority($data, $line)
+    {
+        if (!\array_key_exists($line, $data)) {
+            return 1;
+        } elseif (\is_array($data[$line]) && \count($data[$line]) === 0) {
+            return 2;
+        } elseif ($data[$line] === null) {
+            return 3;
+        }
+
+        return 4;
     }
 
     public function setCacheTokens(bool $flag): void

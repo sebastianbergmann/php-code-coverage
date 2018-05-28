@@ -4,6 +4,10 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 
 ## [6.0.5] - 2018-MM-DD
 
+### Added
+
+* Empty `.css/custom.css` to HTML report that is included by all generated HTML files (after `.css/styles.css`)
+
 ### Fixed
 
 * Fixed [#614](https://github.com/sebastianbergmann/php-code-coverage/issues/614): Merging code coverage files does not handle dead code correctly

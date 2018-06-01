@@ -6,10 +6,10 @@
   </build>
   <project source="%s">
     <tests>
-      <test name="BankAccountTest::testBalanceIsInitiallyZero" size="unknown" result="0" status="PASSED"/>
-      <test name="BankAccountTest::testBalanceCannotBecomeNegative" size="unknown" result="0" status="PASSED"/>
-      <test name="BankAccountTest::testBalanceCannotBecomeNegative2" size="unknown" result="0" status="PASSED"/>
-      <test name="BankAccountTest::testDepositWithdrawMoney" size="unknown" result="0" status="PASSED"/>
+      <test name="BankAccountTest::testBalanceIsInitiallyZero" size="unknown" result="-1" status="UNKNOWN"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative" size="unknown" result="-1" status="UNKNOWN"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative2" size="unknown" result="-1" status="UNKNOWN"/>
+      <test name="BankAccountTest::testDepositWithdrawMoney" size="unknown" result="-1" status="UNKNOWN"/>
     </tests>
     <directory name="%s">
       <totals>

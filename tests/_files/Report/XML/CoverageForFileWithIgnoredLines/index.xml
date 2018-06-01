@@ -6,7 +6,7 @@
   </build>
   <project source="%s">
     <tests>
-      <test name="FileWithIgnoredLines" size="unknown" result="0" status="PASSED"/>
+      <test name="FileWithIgnoredLines" size="unknown" result="-1" status="UNKNOWN"/>
     </tests>
     <directory name="%s">
       <totals>

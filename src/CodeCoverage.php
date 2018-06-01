@@ -321,7 +321,7 @@ final class CodeCoverage
         }
 
         $size   = 'unknown';
-        $status = null;
+        $status = -1;
 
         if ($id instanceof TestCase) {
             $_size = $id->getSize();

@@ -15,13 +15,14 @@ final class Tests
     private $contextNode;
 
     private $codeMap = [
-        0 => 'PASSED',     // PHPUnit_Runner_BaseTestRunner::STATUS_PASSED
-        1 => 'SKIPPED',    // PHPUnit_Runner_BaseTestRunner::STATUS_SKIPPED
-        2 => 'INCOMPLETE', // PHPUnit_Runner_BaseTestRunner::STATUS_INCOMPLETE
-        3 => 'FAILURE',    // PHPUnit_Runner_BaseTestRunner::STATUS_FAILURE
-        4 => 'ERROR',      // PHPUnit_Runner_BaseTestRunner::STATUS_ERROR
-        5 => 'RISKY',      // PHPUnit_Runner_BaseTestRunner::STATUS_RISKY
-        6 => 'WARNING'     // PHPUnit_Runner_BaseTestRunner::STATUS_WARNING
+        -1 => 'UNKNOWN',    // PHPUnit_Runner_BaseTestRunner::STATUS_UNKNOWN
+         0 => 'PASSED',     // PHPUnit_Runner_BaseTestRunner::STATUS_PASSED
+         1 => 'SKIPPED',    // PHPUnit_Runner_BaseTestRunner::STATUS_SKIPPED
+         2 => 'INCOMPLETE', // PHPUnit_Runner_BaseTestRunner::STATUS_INCOMPLETE
+         3 => 'FAILURE',    // PHPUnit_Runner_BaseTestRunner::STATUS_FAILURE
+         4 => 'ERROR',      // PHPUnit_Runner_BaseTestRunner::STATUS_ERROR
+         5 => 'RISKY',      // PHPUnit_Runner_BaseTestRunner::STATUS_RISKY
+         6 => 'WARNING'     // PHPUnit_Runner_BaseTestRunner::STATUS_WARNING
     ];
 
     public function __construct(\DOMElement $context)

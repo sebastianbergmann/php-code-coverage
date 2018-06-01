@@ -2,6 +2,12 @@
 
 All notable changes of the PHP_CodeCoverage 6.0 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [6.0.6] - 2018-06-01
+
+### Changed
+
+* This component now uses `phpunit/php-file-iterator` in version `^2.0`
+
 ## [6.0.5] - 2018-05-28
 
 ### Added
@@ -54,6 +60,7 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 * Implemented [#562](https://github.com/sebastianbergmann/php-code-coverage/issues/562): Remove code specific to Hack language constructs
 * Implemented [#563](https://github.com/sebastianbergmann/php-code-coverage/issues/563): Drop support for PHP 7.0
 
+[6.0.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.5...6.0.6
 [6.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.4...6.0.5
 [6.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.3...6.0.4
 [6.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.0.2...6.0.3

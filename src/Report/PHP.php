@@ -46,6 +46,10 @@ return $coverage;',
         );
 
         if ($target !== null) {
+            if (!$this->createDirectory(\dirname($target))) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
+            }
+
             if (@\file_put_contents($target, $buffer) === false) {
                 throw new RuntimeException(
                     \sprintf(
@@ -57,5 +61,10 @@ return $coverage;',
         }
 
         return $buffer;
+    }
+
+    private function createDirectory(string $directory): bool
+    {
+        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
     }
 }

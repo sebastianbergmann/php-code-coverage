@@ -304,7 +304,10 @@ class File extends Renderer
             $popoverTitle   = '';
 
             if (array_key_exists($i, $coverageData)) {
-                $numTests = count($coverageData[$i]);
+                $numTests = 0;
+                if (is_array($coverageData[$i])) {
+                    $numTests = count($coverageData[$i]);
+                }
 
                 if ($coverageData[$i] === null) {
                     $trClass = ' class="warning"';

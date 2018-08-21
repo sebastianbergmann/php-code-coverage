@@ -108,8 +108,6 @@ final class Filter
             return true;
         }
 
-        $filename = \realpath($filename);
-
         return !isset($this->whitelistedFiles[$filename]);
     }
 

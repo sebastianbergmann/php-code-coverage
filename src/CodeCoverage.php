@@ -189,7 +189,6 @@ final class CodeCoverage
 
     /**
      * Returns the collected code coverage data.
-     * Set $raw = true to bypass all filters.
      */
     public function getData(bool $raw = false): array
     {

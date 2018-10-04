@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
@@ -138,8 +137,6 @@ final class Crap4j
      * @param float $crapValue
      * @param int   $cyclomaticComplexity
      * @param float $coveragePercent
-     *
-     * @return float
      */
     private function getCrapLoad($crapValue, $cyclomaticComplexity, $coveragePercent): float
     {
@@ -155,8 +152,6 @@ final class Crap4j
 
     /**
      * @param float $value
-     *
-     * @return float
      */
     private function roundValue($value): float
     {

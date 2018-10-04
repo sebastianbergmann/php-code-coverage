@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
@@ -158,8 +157,8 @@ final class Facade
      */
     private function getDirectory(string $directory): string
     {
-        if (\substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
-            $directory .= DIRECTORY_SEPARATOR;
+        if (\substr($directory, -1, 1) != \DIRECTORY_SEPARATOR) {
+            $directory .= \DIRECTORY_SEPARATOR;
         }
 
         if (!$this->createDirectory($directory)) {

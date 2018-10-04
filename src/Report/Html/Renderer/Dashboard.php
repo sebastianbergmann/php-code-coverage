@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
@@ -48,7 +47,7 @@ final class Dashboard extends Renderer
                 'complexity_class'              => $complexity['class'],
                 'complexity_method'             => $complexity['method'],
                 'class_coverage_distribution'   => $coverageDistribution['class'],
-                'method_coverage_distribution'  => $coverageDistribution['method']
+                'method_coverage_distribution'  => $coverageDistribution['method'],
             ]
         );
 
@@ -75,7 +74,7 @@ final class Dashboard extends Renderer
                         '<a href="%s">%s</a>',
                         \str_replace($baseLink, '', $method['link']),
                         $methodName
-                    )
+                    ),
                 ];
             }
 
@@ -86,13 +85,13 @@ final class Dashboard extends Renderer
                     '<a href="%s">%s</a>',
                     \str_replace($baseLink, '', $class['link']),
                     $className
-                )
+                ),
             ];
         }
 
         return [
             'class'  => \json_encode($result['class']),
-            'method' => \json_encode($result['method'])
+            'method' => \json_encode($result['method']),
         ];
     }
 
@@ -114,7 +113,7 @@ final class Dashboard extends Renderer
                 '70-80%'  => 0,
                 '80-90%'  => 0,
                 '90-100%' => 0,
-                '100%'    => 0
+                '100%'    => 0,
             ],
             'method' => [
                 '0%'      => 0,
@@ -128,8 +127,8 @@ final class Dashboard extends Renderer
                 '70-80%'  => 0,
                 '80-90%'  => 0,
                 '90-100%' => 0,
-                '100%'    => 0
-            ]
+                '100%'    => 0,
+            ],
         ];
 
         foreach ($classes as $class) {
@@ -158,7 +157,7 @@ final class Dashboard extends Renderer
 
         return [
             'class'  => \json_encode(\array_values($result['class'])),
-            'method' => \json_encode(\array_values($result['method']))
+            'method' => \json_encode(\array_values($result['method'])),
         ];
     }
 

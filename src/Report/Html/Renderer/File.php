@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
@@ -21,7 +20,7 @@ final class File extends Renderer
     /**
      * @var int
      */
-    private $htmlSpecialCharsFlags = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+    private $htmlSpecialCharsFlags = \ENT_COMPAT | \ENT_HTML401 | \ENT_SUBSTITUTE;
 
     /**
      * @throws \RuntimeException
@@ -33,7 +32,7 @@ final class File extends Renderer
         $template->setVar(
             [
                 'items' => $this->renderItems($node),
-                'lines' => $this->renderSource($node)
+                'lines' => $this->renderSource($node),
             ]
         );
 
@@ -68,7 +67,7 @@ final class File extends Renderer
                 'testedMethodsPercentAsString' => $node->getTestedFunctionsAndMethodsPercent(),
                 'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
                 'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
-                'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>'
+                'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
             ]
         );
 
@@ -162,7 +161,7 @@ final class File extends Renderer
                         1,
                         true
                     ),
-                    'crap'                         => $item['crap']
+                    'crap'                         => $item['crap'],
                 ]
             );
 
@@ -241,16 +240,11 @@ final class File extends Renderer
                     1,
                     true
                 ),
-                'crap'                         => $item['crap']
+                'crap'                         => $item['crap'],
             ]
         );
     }
 
-    /**
-     * @param FileNode $node
-     *
-     * @return string
-     */
     protected function renderSource(FileNode $node): string
     {
         $coverageData = $node->getCoverageData();
@@ -369,8 +363,6 @@ final class File extends Renderer
 
     /**
      * @param string $file
-     *
-     * @return array
      */
     protected function loadFile($file): array
     {
@@ -423,73 +415,73 @@ final class File extends Renderer
                             $colour = 'string';
                         } else {
                             switch ($token) {
-                                case T_INLINE_HTML:
+                                case \T_INLINE_HTML:
                                     $colour = 'html';
 
                                     break;
 
-                                case T_COMMENT:
-                                case T_DOC_COMMENT:
+                                case \T_COMMENT:
+                                case \T_DOC_COMMENT:
                                     $colour = 'comment';
 
                                     break;
 
-                                case T_ABSTRACT:
-                                case T_ARRAY:
-                                case T_AS:
-                                case T_BREAK:
-                                case T_CALLABLE:
-                                case T_CASE:
-                                case T_CATCH:
-                                case T_CLASS:
-                                case T_CLONE:
-                                case T_CONTINUE:
-                                case T_DEFAULT:
-                                case T_ECHO:
-                                case T_ELSE:
-                                case T_ELSEIF:
-                                case T_EMPTY:
-                                case T_ENDDECLARE:
-                                case T_ENDFOR:
-                                case T_ENDFOREACH:
-                                case T_ENDIF:
-                                case T_ENDSWITCH:
-                                case T_ENDWHILE:
-                                case T_EXIT:
-                                case T_EXTENDS:
-                                case T_FINAL:
-                                case T_FINALLY:
-                                case T_FOREACH:
-                                case T_FUNCTION:
-                                case T_GLOBAL:
-                                case T_IF:
-                                case T_IMPLEMENTS:
-                                case T_INCLUDE:
-                                case T_INCLUDE_ONCE:
-                                case T_INSTANCEOF:
-                                case T_INSTEADOF:
-                                case T_INTERFACE:
-                                case T_ISSET:
-                                case T_LOGICAL_AND:
-                                case T_LOGICAL_OR:
-                                case T_LOGICAL_XOR:
-                                case T_NAMESPACE:
-                                case T_NEW:
-                                case T_PRIVATE:
-                                case T_PROTECTED:
-                                case T_PUBLIC:
-                                case T_REQUIRE:
-                                case T_REQUIRE_ONCE:
-                                case T_RETURN:
-                                case T_STATIC:
-                                case T_THROW:
-                                case T_TRAIT:
-                                case T_TRY:
-                                case T_UNSET:
-                                case T_USE:
-                                case T_VAR:
-                                case T_WHILE:
-                                case T_YIELD:
+                                case \T_ABSTRACT:
+                                case \T_ARRAY:
+                                case \T_AS:
+                                case \T_BREAK:
+                                case \T_CALLABLE:
+                                case \T_CASE:
+                                case \T_CATCH:
+                                case \T_CLASS:
+                                case \T_CLONE:
+                                case \T_CONTINUE:
+                                case \T_DEFAULT:
+                                case \T_ECHO:
+                                case \T_ELSE:
+                                case \T_ELSEIF:
+                                case \T_EMPTY:
+                                case \T_ENDDECLARE:
+                                case \T_ENDFOR:
+                                case \T_ENDFOREACH:
+                                case \T_ENDIF:
+                                case \T_ENDSWITCH:
+                                case \T_ENDWHILE:
+                                case \T_EXIT:
+                                case \T_EXTENDS:
+                                case \T_FINAL:
+                                case \T_FINALLY:
+                                case \T_FOREACH:
+                                case \T_FUNCTION:
+                                case \T_GLOBAL:
+                                case \T_IF:
+                                case \T_IMPLEMENTS:
+                                case \T_INCLUDE:
+                                case \T_INCLUDE_ONCE:
+                                case \T_INSTANCEOF:
+                                case \T_INSTEADOF:
+                                case \T_INTERFACE:
+                                case \T_ISSET:
+                                case \T_LOGICAL_AND:
+                                case \T_LOGICAL_OR:
+                                case \T_LOGICAL_XOR:
+                                case \T_NAMESPACE:
+                                case \T_NEW:
+                                case \T_PRIVATE:
+                                case \T_PROTECTED:
+                                case \T_PUBLIC:
+                                case \T_REQUIRE:
+                                case \T_REQUIRE_ONCE:
+                                case \T_RETURN:
+                                case \T_STATIC:
+                                case \T_THROW:
+                                case \T_TRAIT:
+                                case \T_TRY:
+                                case \T_UNSET:
+                                case \T_USE:
+                                case \T_VAR:
+                                case \T_WHILE:
+                                case \T_YIELD:
                                     $colour = 'keyword';
 
                                     break;

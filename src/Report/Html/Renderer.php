@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
@@ -129,7 +128,7 @@ abstract class Renderer
                 'classes_bar'            => $classesBar,
                 'classes_tested_percent' => $data['testedClassesPercentAsString'] ?? '',
                 'classes_level'          => $classesLevel,
-                'classes_number'         => $classesNumber
+                'classes_number'         => $classesNumber,
             ]
         );
 
@@ -149,7 +148,7 @@ abstract class Renderer
                 'runtime'          => $this->getRuntimeString(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
-                'high_lower_bound' => $this->highLowerBound
+                'high_lower_bound' => $this->highLowerBound,
             ]
         );
     }

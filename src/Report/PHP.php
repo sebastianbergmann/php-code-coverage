@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
@@ -19,12 +18,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class PHP
 {
     /**
-     * @param CodeCoverage $coverage
-     * @param null|string  $target
-     *
      * @throws \SebastianBergmann\CodeCoverage\RuntimeException
-     *
-     * @return string
      */
     public function process(CodeCoverage $coverage, ?string $target = null): string
     {

@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
@@ -41,7 +40,7 @@ final class Directory extends Renderer
         $template->setVar(
             [
                 'id'    => $node->getId(),
-                'items' => $items
+                'items' => $items,
             ]
         );
 
@@ -62,7 +61,7 @@ final class Directory extends Renderer
             'testedMethodsPercent'         => $node->getTestedFunctionsAndMethodsPercent(false),
             'testedMethodsPercentAsString' => $node->getTestedFunctionsAndMethodsPercent(),
             'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
-            'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent()
+            'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
         ];
 
         if ($total) {

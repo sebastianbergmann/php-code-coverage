@@ -6,6 +6,7 @@ All notable changes of the PHP_CodeCoverage 6.0 release series are documented in
 
 ### Changed
 
+* The result of `SebastianBergmann\CodeCoverage\Filter::isFile()` is now cached
 * Removed superfluous `realpath()` call in `SebastianBergmann\CodeCoverage\Filter::isFiltered()`
 
 ## [6.0.7] - 2018-06-01

@@ -12,8 +12,9 @@ namespace SebastianBergmann\CodeCoverage;
 final class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {
     /**
-     * @param int    $argument
-     * @param string $type
+     * @param int        $argument
+     * @param string     $type
+     * @param null|mixed $value
      *
      * @return InvalidArgumentException
      */

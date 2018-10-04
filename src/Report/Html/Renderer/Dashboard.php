@@ -21,7 +21,7 @@ final class Dashboard extends Renderer
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function render(DirectoryNode $node, string $file)
+    public function render(DirectoryNode $node, string $file): void
     {
         $classes  = $node->getClassesAndTraits();
         $template = new \Text_Template(

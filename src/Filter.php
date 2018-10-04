@@ -91,23 +91,26 @@ final class Filter
      */
     public function isFile(string $filename): bool
     {
-        if (!isset($this->isFileCallsCache[$filename])) {
-            if ($filename === '-' ||
-                \strpos($filename, 'vfs://') === 0 ||
-                \strpos($filename, 'xdebug://debug-eval') !== false ||
-                \strpos($filename, 'eval()\'d code') !== false ||
-                \strpos($filename, 'runtime-created function') !== false ||
-                \strpos($filename, 'runkit created function') !== false ||
-                \strpos($filename, 'assert code') !== false ||
-                \strpos($filename, 'regexp code') !== false) {
-                $isFile = false;
-            } else {
-                $isFile = \file_exists($filename);
-            }
-            $this->isFileCallsCache[$filename] = $isFile;
+        if (isset($this->isFileCallsCache[$filename])) {
+            return $this->isFileCallsCache[$filename];
         }
 
-        return $this->isFileCallsCache[$filename];
+        if ($filename === '-' ||
+            \strpos($filename, 'vfs://') === 0 ||
+            \strpos($filename, 'xdebug://debug-eval') !== false ||
+            \strpos($filename, 'eval()\'d code') !== false ||
+            \strpos($filename, 'runtime-created function') !== false ||
+            \strpos($filename, 'runkit created function') !== false ||
+            \strpos($filename, 'assert code') !== false ||
+            \strpos($filename, 'regexp code') !== false) {
+            $isFile = false;
+        } else {
+            $isFile = \file_exists($filename);
+        }
+
+        $this->isFileCallsCache[$filename] = $isFile;
+
+        return $isFile;
     }
 
     /**

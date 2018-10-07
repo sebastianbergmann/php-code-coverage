@@ -145,6 +145,8 @@ class BuilderTest extends TestCase
 
     public function testBuildDirectoryStructure()
     {
+        $s = \DIRECTORY_SEPARATOR;
+
         $method = new \ReflectionMethod(
             Builder::class,
             'buildDirectoryStructure'
@@ -156,12 +158,23 @@ class BuilderTest extends TestCase
             [
                 'src' => [
                     'Money.php/f'    => [],
-                    'MoneyBag.php/f' => []
+                    'MoneyBag.php/f' => [],
+                    'Foo' => [
+                        'Bar' => [
+                            'Baz' => [
+                                'Foo.php/f' => [],
+                            ],
+                        ],
+                    ],
                 ]
             ],
             $method->invoke(
                 $this->factory,
-                ['src/Money.php' => [], 'src/MoneyBag.php' => []]
+                [
+                    "src{$s}Money.php" => [],
+                    "src{$s}MoneyBag.php" => [],
+                    "src{$s}Foo{$s}Bar{$s}Baz{$s}Foo.php" => [],
+                ]
             )
         );
     }
@@ -186,45 +199,52 @@ class BuilderTest extends TestCase
 
     public function reducePathsProvider()
     {
-        return [
-            [
-                [
-                    'Money.php'    => [],
-                    'MoneyBag.php' => []
-                ],
-                '/home/sb/Money',
-                [
-                    '/home/sb/Money/Money.php'    => [],
-                    '/home/sb/Money/MoneyBag.php' => []
-                ]
-            ],
-            [
-                [
-                    'Money.php' => []
-                ],
-                '/home/sb/Money/',
-                [
-                    '/home/sb/Money/Money.php' => []
-                ]
-            ],
-            [
-                [],
-                '.',
-                []
-            ],
-            [
-                [
-                    'Money.php'          => [],
-                    'MoneyBag.php'       => [],
-                    'Cash.phar/Cash.php' => [],
-                ],
-                '/home/sb/Money',
-                [
-                    '/home/sb/Money/Money.php'                 => [],
-                    '/home/sb/Money/MoneyBag.php'              => [],
-                    'phar:///home/sb/Money/Cash.phar/Cash.php' => [],
-                ],
-            ],
+        $s = \DIRECTORY_SEPARATOR;
+
+        yield [
+            [],
+            ".",
+            []
         ];
+
+        $prefixes = ["C:$s", "$s"];
+
+        foreach($prefixes as $p){
+            yield [
+                [
+                    "Money.php" => []
+                ],
+                "{$p}home{$s}sb{$s}Money{$s}",
+                [
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php" => []
+                ]
+            ];
+
+            yield [
+                [
+                    "Money.php"    => [],
+                    "MoneyBag.php" => []
+                ],
+                "{$p}home{$s}sb{$s}Money",
+                [
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php"    => [],
+                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php" => []
+                ]
+            ];
+
+            yield [
+                [
+                    "Money.php"          => [],
+                    "MoneyBag.php"       => [],
+                    "Cash.phar{$s}Cash.php" => [],
+                ],
+                "{$p}home{$s}sb{$s}Money",
+                [
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php"                 => [],
+                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php"              => [],
+                    "phar://{$p}home{$s}sb{$s}Money{$s}Cash.phar{$s}Cash.php" => [],
+                ],
+            ];
+        }
     }
 }

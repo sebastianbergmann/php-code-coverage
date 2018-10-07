@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="%i">
   <project timestamp="%i">
-    <file name="%s/source_with_class_and_anonymous_function.php">
+    <file name="%s%esource_with_class_and_anonymous_function.php">
       <class name="CoveredClassWithAnonymousFunctionInStaticMethod" namespace="global">
         <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="7" elements="9" coveredelements="7"/>
       </class>

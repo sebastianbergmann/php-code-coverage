@@ -93,7 +93,7 @@ final class Builder
         $result = [];
 
         foreach ($files as $path => $file) {
-            $path    = \explode('/', $path);
+            $path    = \explode(\DIRECTORY_SEPARATOR, $path);
             $pointer = &$result;
             $max     = \count($path);
 
@@ -160,7 +160,7 @@ final class Builder
         $paths      = \array_keys($files);
 
         if (\count($files) === 1) {
-            $commonPath                  = \dirname($paths[0]) . '/';
+            $commonPath                  = \dirname($paths[0]) . \DIRECTORY_SEPARATOR;
             $files[\basename($paths[0])] = $files[$paths[0]];
 
             unset($files[$paths[0]]);
@@ -214,7 +214,7 @@ final class Builder
         $max      = \count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $files[\implode('/', $paths[$i])] = $files[$original[$i]];
+            $files[\implode(\DIRECTORY_SEPARATOR, $paths[$i])] = $files[$original[$i]];
             unset($files[$original[$i]]);
         }
 

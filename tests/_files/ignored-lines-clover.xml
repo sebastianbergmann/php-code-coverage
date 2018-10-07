@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="%i">
   <project timestamp="%i">
-    <file name="%s/source_with_ignore.php">
+    <file name="%s%esource_with_ignore.php">
       <class name="Foo" namespace="global">
         <metrics complexity="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </class>

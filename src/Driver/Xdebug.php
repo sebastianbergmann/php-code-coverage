@@ -66,7 +66,7 @@ final class Xdebug implements Driver
         foreach (\array_keys($data) as $file) {
             unset($data[$file][0]);
 
-            if (\strpos($file, 'xdebug://debug-eval') !== 0 && \file_exists($file)) {
+            if (\strpos($file, 'xdebug://debug-eval') !== 0 && $file !== 'Standard input code' && \file_exists($file)) {
                 $numLines = $this->getNumberOfLinesInFile($file);
 
                 foreach (\array_keys($data[$file]) as $line) {

@@ -130,7 +130,7 @@ final class File extends Renderer
             $buffer .= $this->renderItemTemplate(
                 $template,
                 [
-                    'name'                         => $name,
+                    'name'                         => $this->abbreviateClassName($name),
                     'numClasses'                   => $numClasses,
                     'numTestedClasses'             => $numTestedClasses,
                     'numMethods'                   => $numMethods,
@@ -510,5 +510,20 @@ final class File extends Renderer
         }
 
         return $result;
+    }
+
+    private function abbreviateClassName(string $className): string
+    {
+        $tmp = \explode('\\', $className);
+
+        if (\count($tmp) > 1) {
+            $className = \sprintf(
+                '<abbr title="%s">%s</abbr>',
+                $className,
+                \array_pop($tmp)
+            );
+        }
+
+        return $className;
     }
 }

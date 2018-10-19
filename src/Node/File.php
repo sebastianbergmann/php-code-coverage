@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
-use OutOfBoundsException;
-
 /**
  * Represents a file in the code coverage information tree.
  */
@@ -347,7 +345,7 @@ final class File extends AbstractNode
             $this->processClasses($tokens);
             $this->processTraits($tokens);
             $this->processFunctions($tokens);
-        } catch (OutOfBoundsException $e) {
+        } catch (\OutOfBoundsException $e) {
             // This can happen with PHP_Token_Stream if the file is syntactically invalid,
             // and probably affects a file that wasn't executed.
         }

@@ -10,6 +10,9 @@
 
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 
@@ -123,6 +126,21 @@ class BuilderTest extends TestCase
         );
 
         $this->assertEquals([], $root->getFunctions());
+    }
+
+    public function testNotCrashParsing()
+    {
+        $coverage = $this->getCoverageForCrashParsing();
+        $root = $coverage->getReport();
+
+        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
+        $this->assertEquals($expectedPath, $root->getName());
+        $this->assertEquals($expectedPath, $root->getPath());
+        $this->assertEquals(2, $root->getNumExecutableLines());
+        $this->assertEquals(0, $root->getNumExecutedLines());
+        $data = $coverage->getData();
+        $expectedFile = $expectedPath . DIRECTORY_SEPARATOR . 'Crash.php';
+        $this->assertSame([$expectedFile => [1 => [], 2 => []]], $data);
     }
 
     public function testBuildDirectoryStructure()

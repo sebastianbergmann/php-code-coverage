@@ -52,6 +52,7 @@ class FilterTest extends TestCase
             TEST_FILES_PATH . 'CoverageTwoDefaultClassAnnotations.php',
             TEST_FILES_PATH . 'CoveredClass.php',
             TEST_FILES_PATH . 'CoveredFunction.php',
+            TEST_FILES_PATH . 'Crash.php',
             TEST_FILES_PATH . 'NamespaceCoverageClassExtendedTest.php',
             TEST_FILES_PATH . 'NamespaceCoverageClassTest.php',
             TEST_FILES_PATH . 'NamespaceCoverageCoversClassPublicTest.php',

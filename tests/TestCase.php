@@ -374,4 +374,27 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         return $stub;
     }
+
+    protected function getCoverageForCrashParsing()
+    {
+        $filter = new Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'Crash.php');
+
+        // This is a file with invalid syntax, so it isn't executed.
+        return new CodeCoverage(
+            $this->setUpXdebugStubForCrashParsing(),
+            $filter
+        );
+    }
+
+    protected function setUpXdebugStubForCrashParsing()
+    {
+        $stub = $this->createMock(Driver::class);
+
+        $stub->expects($this->any())
+            ->method('stop')
+            ->will($this->returnValue([]));
+        return $stub;
+    }
+
 }

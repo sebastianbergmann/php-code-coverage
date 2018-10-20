@@ -567,8 +567,9 @@ final class CodeCoverage
             if (!isset($this->data[$file]) && $this->filter->isFile($file)) {
                 $this->data[$file] = [];
 
-                foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
+                foreach ($lines as $line => $lineExecutedState) {
+                    $this->data[$file][$line] =
+                        $lineExecutedState === Driver::LINE_NOT_EXECUTABLE ? null : [];
                 }
             }
         }
@@ -599,8 +600,8 @@ final class CodeCoverage
 
             $lines = \count(\file($uncoveredFile));
 
-            for ($i = 1; $i <= $lines; $i++) {
-                $data[$uncoveredFile][$i] = Driver::LINE_NOT_EXECUTED;
+            for ($line = 1; $line <= $lines; $line++) {
+                $data[$uncoveredFile][$line] = Driver::LINE_NOT_EXECUTED;
             }
         }
 
@@ -804,9 +805,12 @@ final class CodeCoverage
 
         $unintentionallyCoveredUnits = [];
 
-        foreach ($data as $file => $_data) {
-            foreach ($_data as $line => $flag) {
-                if ($flag === 1 && !isset($allowedLines[$file][$line])) {
+        foreach ($data as $file => $lines) {
+            foreach ($lines as $line => $lineExecutedState) {
+                if (
+                    $lineExecutedState === Driver::LINE_EXECUTED &&
+                    !isset($allowedLines[$file][$line])
+                ) {
                     $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
                 }
             }
@@ -856,7 +860,7 @@ final class CodeCoverage
     {
         $allowedLines = [];
 
-        foreach (\array_keys($linesToBeCovered) as $file) {
+        foreach ((array)$linesToBeCovered as $file => $void) {
             if (!isset($allowedLines[$file])) {
                 $allowedLines[$file] = [];
             }
@@ -867,7 +871,7 @@ final class CodeCoverage
             );
         }
 
-        foreach (\array_keys($linesToBeUsed) as $file) {
+        foreach ((array)$linesToBeUsed as $file => $void) {
             if (!isset($allowedLines[$file])) {
                 $allowedLines[$file] = [];
             }
@@ -878,7 +882,7 @@ final class CodeCoverage
             );
         }
 
-        foreach (\array_keys($allowedLines) as $file) {
+        foreach ((array)$allowedLines as $file => $void) {
             $allowedLines[$file] = \array_flip(
                 \array_unique($allowedLines[$file])
             );
@@ -914,18 +918,18 @@ final class CodeCoverage
         $unintentionallyCoveredUnits = \array_unique($unintentionallyCoveredUnits);
         \sort($unintentionallyCoveredUnits);
 
-        foreach (\array_keys($unintentionallyCoveredUnits) as $k => $v) {
-            $unit = \explode('::', $unintentionallyCoveredUnits[$k]);
+        foreach ((array)$unintentionallyCoveredUnits as $index => $FQNMethod) {
+            $className = \explode('::', $FQNMethod);
 
-            if (\count($unit) !== 2) {
+            if (\count($className) !== 2) {
                 continue;
             }
 
-            $class = new \ReflectionClass($unit[0]);
+            $class = new \ReflectionClass($className[0]);
 
             foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
                 if ($class->isSubclassOf($whitelisted)) {
-                    unset($unintentionallyCoveredUnits[$k]);
+                    unset($unintentionallyCoveredUnits[$index]);
 
                     break;
                 }
@@ -966,9 +970,9 @@ final class CodeCoverage
                     continue;
                 }
 
-                foreach ($lines as $line => $lineExecutedState) {
+                foreach ((array)$lines as $line => $lineExecutedState) {
                     if ($lineExecutedState === Driver::LINE_EXECUTED) {
-                        $fileCoverage[$line] = Driver::LINE_NOT_EXECUTED;
+                        $lines[$line] = Driver::LINE_NOT_EXECUTED;
                     }
                 }
 

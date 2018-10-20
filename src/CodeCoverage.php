@@ -530,7 +530,7 @@ final class CodeCoverage
 
         $data = \array_intersect_key($data, $linesToBeCovered);
 
-        foreach (\array_keys($data) as $filename) {
+        foreach ((array)$data as $filename => $void) {
             $_linesToBeCovered = \array_flip($linesToBeCovered[$filename]);
             $data[$filename]   = \array_intersect_key($data[$filename], $_linesToBeCovered);
         }
@@ -538,7 +538,7 @@ final class CodeCoverage
 
     private function applyWhitelistFilter(array &$data): void
     {
-        foreach (\array_keys($data) as $filename) {
+        foreach ((array)$data as $filename => $void) {
             if ($this->filter->isFiltered($filename)) {
                 unset($data[$filename]);
             }
@@ -550,7 +550,7 @@ final class CodeCoverage
      */
     private function applyIgnoredLinesFilter(array &$data): void
     {
-        foreach (\array_keys($data) as $filename) {
+        foreach ((array)$data as $filename => $void) {
             if (!$this->filter->isFile($filename)) {
                 continue;
             }

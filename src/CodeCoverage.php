@@ -919,13 +919,13 @@ final class CodeCoverage
         \sort($unintentionallyCoveredUnits);
 
         foreach ((array)$unintentionallyCoveredUnits as $index => $FQNMethod) {
-            $className = \explode('::', $FQNMethod);
+            $unit = \explode('::', $FQNMethod);
 
-            if (\count($className) !== 2) {
+            if (\count($unit) !== 2) {
                 continue;
             }
 
-            $class = new \ReflectionClass($className[0]);
+            $class = new \ReflectionClass($unit[0]);
 
             foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
                 if ($class->isSubclassOf($whitelisted)) {

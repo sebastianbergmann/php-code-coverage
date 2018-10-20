@@ -447,8 +447,8 @@ class CodeCoverageTest extends TestCase
 
         $data = [
             TEST_FILES_PATH . 'BankAccount.php' => [
-                29 => -1,
-                31 => -1
+                29 => Driver::LINE_NOT_EXECUTED,
+                31 => Driver::LINE_NOT_EXECUTED
             ]
         ];
 
@@ -473,8 +473,8 @@ class CodeCoverageTest extends TestCase
 
         $data = [
             TEST_FILES_PATH . 'BankAccount.php' => [
-                29 => -1,
-                31 => -1
+                29 => Driver::LINE_NOT_EXECUTED,
+                31 => Driver::LINE_NOT_EXECUTED
             ]
         ];
 

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Runner\BaseTestRunner;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -318,7 +319,7 @@ final class CodeCoverage
         }
 
         $size   = 'unknown';
-        $status = -1;
+        $status = BaseTestRunner::STATUS_UNKNOWN;
 
         if ($id instanceof TestCase) {
             $_size = $id->getSize();
@@ -345,10 +346,10 @@ final class CodeCoverage
                 continue;
             }
 
-            foreach ($lines as $k => $v) {
-                if ($v === Driver::LINE_EXECUTED) {
-                    if (empty($this->data[$file][$k]) || !\in_array($id, $this->data[$file][$k])) {
-                        $this->data[$file][$k][] = $id;
+            foreach ($lines as $line => $lineExecutedState) {
+                if ($lineExecutedState === Driver::LINE_EXECUTED) {
+                    if (empty($this->data[$file][$line]) || !\in_array($id, $this->data[$file][$line])) {
+                        $this->data[$file][$line][] = $id;
                     }
                 }
             }
@@ -567,7 +568,7 @@ final class CodeCoverage
                 $this->data[$file] = [];
 
                 foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = $v === -2 ? null : [];
+                    $this->data[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
                 }
             }
         }
@@ -960,18 +961,18 @@ final class CodeCoverage
             $data     = [];
             $coverage = $this->driver->stop();
 
-            foreach ($coverage as $file => $fileCoverage) {
+            foreach ($coverage as $file => $lines) {
                 if ($this->filter->isFiltered($file)) {
                     continue;
                 }
 
-                foreach (\array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] === Driver::LINE_EXECUTED) {
-                        $fileCoverage[$key] = Driver::LINE_NOT_EXECUTED;
+                foreach ($lines as $line => $lineExecutedState) {
+                    if ($lineExecutedState === Driver::LINE_EXECUTED) {
+                        $fileCoverage[$line] = Driver::LINE_NOT_EXECUTED;
                     }
                 }
 
-                $data[$file] = $fileCoverage;
+                $data[$file] = $lines;
             }
 
             $this->append($data, 'UNCOVERED_FILES_FROM_WHITELIST');
@@ -983,8 +984,8 @@ final class CodeCoverage
         $codeUnits = [];
 
         foreach ($data as $filename => $lines) {
-            foreach ($lines as $line => $flag) {
-                if ($flag === 1) {
+            foreach ($lines as $line => $lineExecutedState) {
+                if ($lineExecutedState === Driver::LINE_EXECUTED) {
                     $codeUnits[] = $this->wizard->lookup($filename, $line);
                 }
             }

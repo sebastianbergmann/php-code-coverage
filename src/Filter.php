@@ -14,7 +14,7 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 /**
  * Filter for whitelisting of code coverage information.
  */
-final class Filter
+final class Filter implements Sieve
 {
     /**
      * Source files that are whitelisted.
@@ -30,9 +30,7 @@ final class Filter
      */
     private $isFileCallsCache = [];
 
-    /**
-     * Adds a directory to the whitelist (recursively).
-     */
+    /** @inheritDoc */
     public function addDirectoryToWhitelist(string $directory, string $suffix = '.php', string $prefix = ''): void
     {
         $facade = new FileIteratorFacade;
@@ -43,19 +41,13 @@ final class Filter
         }
     }
 
-    /**
-     * Adds a file to the whitelist.
-     */
+    /** @inheritDoc */
     public function addFileToWhitelist(string $filename): void
     {
         $this->whitelistedFiles[\realpath($filename)] = true;
     }
 
-    /**
-     * Adds files to the whitelist.
-     *
-     * @param string[] $files
-     */
+    /** @inheritDoc */
     public function addFilesToWhitelist(array $files): void
     {
         foreach ($files as $file) {
@@ -63,9 +55,7 @@ final class Filter
         }
     }
 
-    /**
-     * Removes a directory from the whitelist (recursively).
-     */
+    /** @inheritDoc */
     public function removeDirectoryFromWhitelist(string $directory, string $suffix = '.php', string $prefix = ''): void
     {
         $facade = new FileIteratorFacade;
@@ -76,9 +66,7 @@ final class Filter
         }
     }
 
-    /**
-     * Removes a file from the whitelist.
-     */
+    /** @inheritDoc */
     public function removeFileFromWhitelist(string $filename): void
     {
         $filename = \realpath($filename);
@@ -86,9 +74,7 @@ final class Filter
         unset($this->whitelistedFiles[$filename]);
     }
 
-    /**
-     * Checks whether a filename is a real filename.
-     */
+    /** @inheritDoc */
     public function isFile(string $filename): bool
     {
         if (isset($this->isFileCallsCache[$filename])) {
@@ -114,9 +100,7 @@ final class Filter
         return $isFile;
     }
 
-    /**
-     * Checks whether or not a file is filtered.
-     */
+    /** @inheritDoc */
     public function isFiltered(string $filename): bool
     {
         if (!$this->isFile($filename)) {
@@ -126,37 +110,25 @@ final class Filter
         return !isset($this->whitelistedFiles[$filename]);
     }
 
-    /**
-     * Returns the list of whitelisted files.
-     *
-     * @return string[]
-     */
+    /** @inheritDoc */
     public function getWhitelist(): array
     {
         return \array_keys($this->whitelistedFiles);
     }
 
-    /**
-     * Returns whether this filter has a whitelist.
-     */
+    /** @inheritDoc */
     public function hasWhitelist(): bool
     {
         return !empty($this->whitelistedFiles);
     }
 
-    /**
-     * Returns the whitelisted files.
-     *
-     * @return string[]
-     */
+    /** @inheritDoc */
     public function getWhitelistedFiles(): array
     {
         return $this->whitelistedFiles;
     }
 
-    /**
-     * Sets the whitelisted files.
-     */
+    /** @inheritDoc */
     public function setWhitelistedFiles(array $whitelistedFiles): void
     {
         $this->whitelistedFiles = $whitelistedFiles;

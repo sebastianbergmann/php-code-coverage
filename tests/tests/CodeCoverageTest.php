@@ -120,11 +120,19 @@ class CodeCoverageTest extends TestCase
         $this->coverage->append([], null);
     }
 
+
     public function testSetCacheTokens()
     {
-        $this->coverage->setCacheTokens(true);
+        $lineFilter = new LineFilter();
+        $coverage = new CodeCoverage(null, null, null, $lineFilter);
 
-        $this->assertAttributeEquals(true, 'cacheTokens', $this->coverage);
+        $coverage->setCacheTokens(true);
+        self::assertSame(true, $coverage->getCacheTokens());
+        self::assertSame(true, $lineFilter->getCacheTokens());
+
+        $coverage->setCacheTokens(false);
+        self::assertSame(false, $coverage->getCacheTokens());
+        self::assertSame(false, $lineFilter->getCacheTokens());
     }
 
     public function testSetCheckForUnintentionallyCoveredCode()
@@ -195,13 +203,26 @@ class CodeCoverageTest extends TestCase
 
     public function testSetIgnoreDeprecatedCode()
     {
-        $this->coverage->setIgnoreDeprecatedCode(true);
+        $lineFilter = new LineFilter();
+        $coverage = new CodeCoverage(null, null, null, $lineFilter);
 
-        $this->assertAttributeEquals(
-            true,
-            'ignoreDeprecatedCode',
-            $this->coverage
-        );
+        $coverage->setIgnoreDeprecatedCode(true);
+        self::assertSame(true, $lineFilter->getIgnoreDeprecatedCode());
+
+        $coverage->setIgnoreDeprecatedCode(false);
+        self::assertSame(false, $lineFilter->getIgnoreDeprecatedCode());
+    }
+
+    public function testSetDisableIgnoredLines()
+    {
+        $lineFilter = new LineFilter();
+        $coverage = new CodeCoverage(null, null, null, $lineFilter);
+
+        $coverage->setDisableIgnoredLines(true);
+        self::assertSame(true, $lineFilter->getDisableIgnoredLines());
+
+        $coverage->setDisableIgnoredLines(false);
+        self::assertSame(false, $lineFilter->getDisableIgnoredLines());
     }
 
     public function testClear()
@@ -267,176 +288,6 @@ class CodeCoverageTest extends TestCase
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
             $coverage->getData()
-        );
-    }
-
-    public function testGetLinesToBeIgnored()
-    {
-        $this->assertEquals(
-            [
-                1,
-                3,
-                4,
-                5,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                24,
-                25,
-                26,
-                27,
-                28,
-                30,
-                32,
-                33,
-                34,
-                35,
-                36,
-                37,
-                38
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnored2()
-    {
-        $this->assertEquals(
-            [1, 5],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_without_ignore.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnored3()
-    {
-        $this->assertEquals(
-            [
-                1,
-                2,
-                3,
-                4,
-                5,
-                8,
-                11,
-                15,
-                16,
-                19,
-                20
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnoredOneLineAnnotations()
-    {
-        $this->assertEquals(
-            [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                14,
-                15,
-                16,
-                18,
-                20,
-                21,
-                23,
-                24,
-                25,
-                27,
-                28,
-                29,
-                30,
-                31,
-                32,
-                33,
-                34,
-                37
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_oneline_annotations.php'
-            )
-        );
-    }
-
-    /**
-     * @return \ReflectionMethod
-     */
-    private function getLinesToBeIgnored()
-    {
-        $getLinesToBeIgnored = new \ReflectionMethod(
-            'SebastianBergmann\CodeCoverage\CodeCoverage',
-            'getLinesToBeIgnored'
-        );
-
-        $getLinesToBeIgnored->setAccessible(true);
-
-        return $getLinesToBeIgnored;
-    }
-
-    public function testGetLinesToBeIgnoredWhenIgnoreIsDisabled()
-    {
-        $this->coverage->setDisableIgnoredLines(true);
-
-        $this->assertEquals(
-            [
-                7,
-                11,
-                12,
-                13,
-                16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                26,
-                27,
-                32,
-                33,
-                34,
-                35,
-                36,
-                37
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
         );
     }
 

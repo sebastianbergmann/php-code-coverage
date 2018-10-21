@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCoverage\Sieve;
 
 /**
  * Driver for Xdebug's code coverage functionality.
@@ -25,14 +26,14 @@ final class Xdebug implements Driver
     private $cacheNumLines = [];
 
     /**
-     * @var Filter
+     * @var Sieve
      */
     private $filter;
 
     /**
      * @throws RuntimeException
      */
-    public function __construct(Filter $filter = null)
+    public function __construct(Sieve $filter = null)
     {
         if (!\extension_loaded('xdebug')) {
             throw new RuntimeException('This driver requires Xdebug');

@@ -64,7 +64,7 @@ td.small {
 }
 
 td.codeLine {
- font-family: monospace;
+ font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
  white-space: pre;
 }
 

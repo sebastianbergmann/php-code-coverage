@@ -11,7 +11,7 @@
  </head>
  <body>
   <header>
-   <div class="container">
+   <div class="container-fluid">
     <div class="row">
      <div class="col-md-12">
       <nav aria-label="breadcrumb">
@@ -23,7 +23,7 @@
     </div>
    </div>
   </header>
-  <div class="container">
+  <div class="container-fluid">
    <div class="row">
     <div class="col-md-12">
      <h2>Classes</h2>

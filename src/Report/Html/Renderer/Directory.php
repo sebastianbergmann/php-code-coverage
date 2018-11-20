@@ -76,7 +76,7 @@ final class Directory extends Renderer
 
                 $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
 
-                $data['icon'] = \sprintf('<img src="%s.icons/file-directory.svg" class="octicon" />', $up);
+                $data['icon'] = \sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
             } else {
                 $data['name'] = \sprintf(
                     '<a href="%s.html">%s</a>',
@@ -86,7 +86,7 @@ final class Directory extends Renderer
 
                 $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
 
-                $data['icon'] = \sprintf('<img src="%s.icons/file-code.svg" class="octicon" />', $up);
+                $data['icon'] = \sprintf('<img src="%s_icons/file-code.svg" class="octicon" />', $up);
             }
         }
 

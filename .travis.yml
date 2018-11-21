@@ -15,8 +15,10 @@ matrix:
 
 env:
   matrix:
-    - DEPENDENCIES="high"
-    - DEPENDENCIES="low"
+    - DRIVER="xdebug" DEPENDENCIES="high"
+    - DRIVER="phpdbg" DEPENDENCIES="high"
+    - DRIVER="xdebug" DEPENDENCIES="low"
+    - DRIVER="phpdbg" DEPENDENCIES="low"
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 

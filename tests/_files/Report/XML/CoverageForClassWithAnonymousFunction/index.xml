@@ -2,7 +2,7 @@
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <build time="%s" phpunit="%s" coverage="%s">
     <runtime name="%s" version="%s" url="%s"/>
-    <driver name="%s" version="%s"/>
+    <driver%S/>
   </build>
   <project source="%s">
     <tests>

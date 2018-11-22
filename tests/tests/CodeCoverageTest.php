@@ -16,6 +16,7 @@ require __DIR__ . '/../_files/BankAccountTest.php';
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * @covers SebastianBergmann\CodeCoverage\CodeCoverage
@@ -29,17 +30,27 @@ class CodeCoverageTest extends TestCase
 
     protected function setUp()
     {
+        $runtime = new Runtime;
+
+        if (!$runtime->canCollectCodeCoverage()) {
+            $this->markTestSkipped('No code coverage driver available');
+        }
+
         $this->coverage = new CodeCoverage;
     }
 
-    public function testCanBeConstructedForXdebugWithoutGivenFilterObject()
+    public function testCanBeConstructedWithoutGivenFilterObject()
     {
-        if (PHP_SAPI == 'phpdbg') {
-            $this->markTestSkipped('Requires PHP CLI and Xdebug');
+        if (extension_loaded('xdebug')) {
+            $expectedClass = Xdebug::class;
+        }
+
+        if (PHP_SAPI === 'phpdbg') {
+            $expectedClass = PHPDBG::class;
         }
 
         $this->assertAttributeInstanceOf(
-            Xdebug::class,
+            $expectedClass,
             'driver',
             $this->coverage
         );
@@ -51,54 +62,13 @@ class CodeCoverageTest extends TestCase
         );
     }
 
-    public function testCanBeConstructedForXdebugWithGivenFilterObject()
+    public function testCanBeConstructedWithGivenFilterObject()
     {
-        if (PHP_SAPI == 'phpdbg') {
-            $this->markTestSkipped('Requires PHP CLI and Xdebug');
-        }
-
         $filter   = new Filter;
         $coverage = new CodeCoverage(null, $filter);
 
         $this->assertAttributeInstanceOf(
             Xdebug::class,
-            'driver',
-            $coverage
-        );
-
-        $this->assertSame($filter, $coverage->filter());
-    }
-
-    public function testCanBeConstructedForPhpdbgWithoutGivenFilterObject()
-    {
-        if (PHP_SAPI != 'phpdbg') {
-            $this->markTestSkipped('Requires PHPDBG');
-        }
-
-        $this->assertAttributeInstanceOf(
-            PHPDBG::class,
-            'driver',
-            $this->coverage
-        );
-
-        $this->assertAttributeInstanceOf(
-            Filter::class,
-            'filter',
-            $this->coverage
-        );
-    }
-
-    public function testCanBeConstructedForPhpdbgWithGivenFilterObject()
-    {
-        if (PHP_SAPI != 'phpdbg') {
-            $this->markTestSkipped('Requires PHPDBG');
-        }
-
-        $filter   = new Filter;
-        $coverage = new CodeCoverage(null, $filter);
-
-        $this->assertAttributeInstanceOf(
-            PHPDBG::class,
             'driver',
             $coverage
         );

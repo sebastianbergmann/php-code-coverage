@@ -156,7 +156,7 @@ return PhpCsFixer\Config::create()
             'phpdoc_to_comment' => true,
             'phpdoc_trim' => true,
             'phpdoc_trim_consecutive_blank_line_separation' => true,
-            'phpdoc_types' => true,
+            'phpdoc_types' => ['groups' => ['simple', 'meta']],
             'phpdoc_types_order' => true,
             'phpdoc_var_without_name' => true,
             'pow_to_exponentiation' => true,
@@ -177,7 +177,13 @@ return PhpCsFixer\Config::create()
             'trailing_comma_in_multiline_array' => true,
             'trim_array_spaces' => true,
             'unary_operator_spaces' => true,
-            'visibility_required' => true,
+            'visibility_required' => [
+                'elements' => [
+                    'const',
+                    'method',
+                    'property',
+                ],
+            ],
             'void_return' => true,
             'whitespace_after_comma_in_array' => true,
         ]
@@ -186,4 +192,5 @@ return PhpCsFixer\Config::create()
         PhpCsFixer\Finder::create()
         ->files()
         ->in(__DIR__ . '/src')
+        ->in(__DIR__ . '/tests/tests')
     );

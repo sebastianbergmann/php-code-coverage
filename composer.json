@@ -28,8 +28,8 @@
         "php": "^7.1",
         "ext-dom": "*",
         "ext-xmlwriter": "*",
-        "phpunit/php-file-iterator": "^2.0",
-        "phpunit/php-token-stream": "^3.0",
+        "phpunit/php-file-iterator": "^2.0.2",
+        "phpunit/php-token-stream": "^3.0.1",
         "phpunit/php-text-template": "^1.2.1",
         "sebastian/code-unit-reverse-lookup": "^1.0.1",
         "sebastian/environment": "^3.1 || ^4.0",
@@ -37,10 +37,10 @@
         "theseer/tokenizer": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.4.4"
     },
     "suggest": {
-        "ext-xdebug": "^2.6.0"
+        "ext-xdebug": "^2.6.1"
     },
     "autoload": {
         "classmap": [

@@ -9,10 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-require __DIR__ . '/../_files/BankAccount.php';
-
-require __DIR__ . '/../_files/BankAccountTest.php';
-
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;

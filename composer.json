@@ -47,6 +47,12 @@
             "src/"
         ]
     },
+    "autoload-dev": {
+        "files": [
+            "tests/TestCase.php",
+            "tests/_files/BankAccountTest.php"
+        ]
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "6.1-dev"

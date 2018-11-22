@@ -1,6 +1,4 @@
 <?php
-require_once 'BankAccount.php';
-
 use PHPUnit\Framework\TestCase;
 
 class BankAccountTest extends TestCase

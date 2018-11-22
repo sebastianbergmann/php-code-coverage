@@ -12,11 +12,6 @@ namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 
-/**
- * Abstract base class for test case classes.
- *
- * @since Class available since Release 1.0.0
- */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected static $TEST_TMP_PATH;
@@ -81,7 +76,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getCoverageForBankAccount()
     {
         $data = $this->getXdebugDataForBankAccount();
-        require_once TEST_FILES_PATH . '/BankAccountTest.php';
 
         $stub = $this->createMock(Driver::class);
 

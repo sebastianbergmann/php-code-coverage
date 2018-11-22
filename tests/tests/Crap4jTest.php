@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\TestCase;
@@ -17,7 +16,7 @@ use SebastianBergmann\CodeCoverage\TestCase;
  */
 class Crap4jTest extends TestCase
 {
-    public function testForBankAccountTest()
+    public function testForBankAccountTest(): void
     {
         $crap4j = new Crap4j;
 
@@ -27,7 +26,7 @@ class Crap4jTest extends TestCase
         );
     }
 
-    public function testForFileWithIgnoredLines()
+    public function testForFileWithIgnoredLines(): void
     {
         $crap4j = new Crap4j;
 
@@ -37,7 +36,7 @@ class Crap4jTest extends TestCase
         );
     }
 
-    public function testForClassWithAnonymousFunction()
+    public function testForClassWithAnonymousFunction(): void
     {
         $crap4j = new Crap4j;
 

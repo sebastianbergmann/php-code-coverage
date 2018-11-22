@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\TestCase;
@@ -17,7 +16,7 @@ use SebastianBergmann\CodeCoverage\TestCase;
  */
 class CloverTest extends TestCase
 {
-    public function testCloverForBankAccountTest()
+    public function testCloverForBankAccountTest(): void
     {
         $clover = new Clover;
 
@@ -27,7 +26,7 @@ class CloverTest extends TestCase
         );
     }
 
-    public function testCloverForFileWithIgnoredLines()
+    public function testCloverForFileWithIgnoredLines(): void
     {
         $clover = new Clover;
 
@@ -37,7 +36,7 @@ class CloverTest extends TestCase
         );
     }
 
-    public function testCloverForClassWithAnonymousFunction()
+    public function testCloverForClassWithAnonymousFunction(): void
     {
         $clover = new Clover;
 

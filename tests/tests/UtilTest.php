@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage;
 
 use PHPUnit\Framework\TestCase;
@@ -17,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UtilTest extends TestCase
 {
-    public function testPercent()
+    public function testPercent(): void
     {
         $this->assertEquals(100, Util::percent(100, 0));
         $this->assertEquals(100, Util::percent(100, 100));

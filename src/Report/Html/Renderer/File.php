@@ -339,7 +339,7 @@ final class File extends Renderer
 
             if (!empty($popoverTitle)) {
                 $popover = \sprintf(
-                    ' data-title="%s" data-content="%s" data-placement="bottom" data-html="true"',
+                    ' data-title="%s" data-content="%s" data-placement="bottom" data-html="true" data-boundary="viewport"',
                     $popoverTitle,
                     \htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
                 );

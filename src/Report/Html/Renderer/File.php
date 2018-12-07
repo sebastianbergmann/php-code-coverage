@@ -339,14 +339,14 @@ final class File extends Renderer
 
             if (!empty($popoverTitle)) {
                 $popover = \sprintf(
-                    ' data-title="%s" data-content="%s" data-placement="bottom" data-html="true"',
+                    ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
                     $popoverTitle,
                     \htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
                 );
             }
 
             $lines .= \sprintf(
-                '     <tr%s%s><td><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>' . "\n",
+                '     <tr%s><td%s><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>' . "\n",
                 $trClass,
                 $popover,
                 $i,

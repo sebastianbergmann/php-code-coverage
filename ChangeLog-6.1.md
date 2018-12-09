@@ -7,6 +7,7 @@ All notable changes of the php-code-coverage 6.1 release series are documented i
 ### Fixed
 
 * Fixed [#654](https://github.com/sebastianbergmann/php-code-coverage/issues/654): HTML report fails to load assets
+* Fixed [#655](https://github.com/sebastianbergmann/php-code-coverage/issues/655): Popin pops in outside of screen
 
 ## [6.1.4] - 2018-10-31
 

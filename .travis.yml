@@ -17,8 +17,10 @@ env:
   matrix:
     - DRIVER="xdebug" DEPENDENCIES="high"
     - DRIVER="phpdbg" DEPENDENCIES="high"
+    - DRIVER="pcov"   DEPENDENCIES="high"
     - DRIVER="xdebug" DEPENDENCIES="low"
     - DRIVER="phpdbg" DEPENDENCIES="low"
+    - DRIVER="pcov"   DEPENDENCIES="low"
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
@@ -30,9 +32,14 @@ install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
+before_script:
+  - if [[ "$DRIVER" = 'pcov' ]]; then pecl install channel://pecl.php.net/pcov-0.9.0; fi
+  - if [[ "$DRIVER" = 'pcov' ]]; then echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini; fi
+
 script:
   - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
   - if [[ "$DRIVER" = 'xdebug' ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+  - if [[ "$DRIVER" = 'pcov' ]];   then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

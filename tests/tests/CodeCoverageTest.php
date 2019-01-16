@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
+use SebastianBergmann\CodeCoverage\Driver\PCOV;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 use SebastianBergmann\Environment\Runtime;
 

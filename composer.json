@@ -67,5 +67,10 @@
             "tests/_files/BankAccountTest.php"
         ]
     },
+    "extra": {
+        "branch-alias": {
+            "dev-pcov": "6.1.4"
+        }
+    },
     "minimum-stability": "dev"
 }

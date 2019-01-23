@@ -22,7 +22,7 @@ env:
     - DRIVER="phpdbg" DEPENDENCIES="low"
     - DRIVER="pcov"   DEPENDENCIES="low"
   global:
-    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-source"
 
 before_install:
   - composer self-update

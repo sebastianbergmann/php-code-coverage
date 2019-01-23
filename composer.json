@@ -24,14 +24,6 @@
         "sort-packages": true
     },
     "repositories": {
-        "phpunit": {
-            "type": "vcs",
-            "url": "https://github.com/krakjoe/phpunit"
-        },
-        "php-code-coverage": {
-            "type": "vcs",
-            "url": "https://github.com/krakjoe/php-code-coverage"
-        },
         "environment": {
             "type": "vcs",
             "url": "https://github.com/krakjoe/environment"

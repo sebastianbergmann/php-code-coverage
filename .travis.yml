@@ -25,9 +25,9 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-source"
 
 before_install:
-  - composer self-update
-  - composer clear-cache
   - composer config github-oauth.github.com ${GH_TOKEN}
+  - COMPOSER_ROOT_VERSION=6.1.99 composer self-update
+  - composer clear-cache
 
 install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi

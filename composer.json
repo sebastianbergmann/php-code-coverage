@@ -43,7 +43,7 @@
         "theseer/tokenizer": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "dev-pcov"
+        "phpunit/phpunit": "^7.4.4"
     },
     "suggest": {
         "ext-xdebug": "^2.6.1"

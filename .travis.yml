@@ -27,6 +27,7 @@ env:
 before_install:
   - composer self-update
   - composer clear-cache
+  - composer config github-oauth.github.com ${GH_TOKEN}
 
 install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi

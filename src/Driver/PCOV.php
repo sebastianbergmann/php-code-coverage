@@ -40,28 +40,17 @@ final class PCOV implements Driver
      */
     public function stop(): array
     {
-	static $collected = [];
-
 	\pcov\stop();
 
 	$includes = \pcov\includes();
 	$collect  = [];
 
-	if ($collected == []) {
-		$collect  = \pcov\collect(
-			\pcov\inclusive, $includes);
-	} else {
-		if ($includes) {
-			$collect = \pcov\collect(
-				\pcov\inclusive,
-				\array_merge($collected, $includes));
+	if ($includes) {
+		$collect = \pcov\collect(\pcov\inclusive, $includes);
+
+		if ($collect) {
+			\pcov\clear();
 		}
-	}
-
-	if ($collect != []) {
-		$collected = \array_keys($collect);
-
-		\pcov\clear();
 	}
 
 	return $collect;

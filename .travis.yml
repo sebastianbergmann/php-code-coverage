@@ -35,8 +35,17 @@ install:
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
 before_script:
-  - if [[ "$DRIVER" = 'pcov' ]]; then pecl install channel://pecl.php.net/pcov-0.9.0; fi
-  - if [[ "$DRIVER" = 'pcov' ]]; then echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini; fi
+  - |
+     if [[ "$DRIVER" = 'pcov' ]]; then
+       echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+       git clone https://github.com/krakjoe/pcov
+       cd pcov
+       phpize
+       ./configure
+       make clean install
+       echo "extension=pcov.so" > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
+       cd $TRAVIS_BUILD_DIR
+     fi
 
 script:
   - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi

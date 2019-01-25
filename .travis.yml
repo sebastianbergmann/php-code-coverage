@@ -17,22 +17,40 @@ env:
   matrix:
     - DRIVER="xdebug" DEPENDENCIES="high"
     - DRIVER="phpdbg" DEPENDENCIES="high"
+    - DRIVER="pcov"   DEPENDENCIES="high"
     - DRIVER="xdebug" DEPENDENCIES="low"
     - DRIVER="phpdbg" DEPENDENCIES="low"
+    - DRIVER="pcov"   DEPENDENCIES="low"
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
 before_install:
+  - composer config github-oauth.github.com ${GH_TOKEN}
   - composer self-update
   - composer clear-cache
+  - export COMPOSER_ROOT_VERSION=6.1.99
 
 install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
+before_script:
+  - |
+     if [[ "$DRIVER" = 'pcov' ]]; then
+       echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+       git clone https://github.com/krakjoe/pcov
+       cd pcov
+       phpize
+       ./configure
+       make clean install
+       echo "extension=pcov.so" > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
+       cd $TRAVIS_BUILD_DIR
+     fi
+
 script:
   - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
   - if [[ "$DRIVER" = 'xdebug' ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+  - if [[ "$DRIVER" = 'pcov' ]];   then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

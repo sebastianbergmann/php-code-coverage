@@ -19,9 +19,6 @@ use SebastianBergmann\CodeCoverage\Filter;
  */
 final class PCOV implements Driver
 {
-    /**
-     * @throws RuntimeException
-     */
     public function __construct(Filter $filter = null)
     {
 	

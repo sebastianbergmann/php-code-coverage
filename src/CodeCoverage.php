@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\PCOV;
+use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
 use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
@@ -906,9 +906,9 @@ final class CodeCoverage
             return new Xdebug($filter);
         }
 
-	if ($runtime->hasPCOV()) {
+        if ($runtime->hasPCOV()) {
             return new PCOV($filter);
-	}
+        }
 
         throw new RuntimeException('No code coverage driver available');
     }

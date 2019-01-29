@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\Filter;
 
 /**
@@ -21,7 +20,6 @@ final class PCOV implements Driver
 {
     public function __construct(Filter $filter = null)
     {
-	
     }
 
     /**
@@ -37,19 +35,19 @@ final class PCOV implements Driver
      */
     public function stop(): array
     {
-	\pcov\stop();
+        \pcov\stop();
 
-	$waiting = \pcov\waiting();
-	$collect  = [];
+        $waiting  = \pcov\waiting();
+        $collect  = [];
 
-	if ($waiting) {
-		$collect = \pcov\collect(\pcov\inclusive, $waiting);
+        if ($waiting) {
+            $collect = \pcov\collect(\pcov\inclusive, $waiting);
 
-		if ($collect) {
-			\pcov\clear();
-		}
-	}
+            if ($collect) {
+                \pcov\clear();
+            }
+        }
 
-	return $collect;
+        return $collect;
     }
 }

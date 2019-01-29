@@ -27,7 +27,6 @@ env:
 before_install:
   - composer self-update
   - composer clear-cache
-  - export COMPOSER_ROOT_VERSION=6.1.99
 
 install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi

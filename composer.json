@@ -26,7 +26,7 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-dom": "*",
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^2.0.2",
@@ -38,7 +38,7 @@
         "theseer/tokenizer": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.4.4"
+        "phpunit/phpunit": "^8.0"
     },
     "suggest": {
         "ext-xdebug": "^2.6.1"

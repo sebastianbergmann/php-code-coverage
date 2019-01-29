@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -68,7 +68,7 @@ final class Facade
     {
         $buildNode = $this->project->getBuildInformation();
         $buildNode->setRuntimeInformation(new Runtime());
-        $buildNode->setBuildTime(\DateTime::createFromFormat('U', $_SERVER['REQUEST_TIME']));
+        $buildNode->setBuildTime(\DateTime::createFromFormat('U', (string) $_SERVER['REQUEST_TIME']));
         $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
     }
 
@@ -151,7 +151,7 @@ final class Facade
                 continue;
             }
 
-            $coverage = $fileReport->getLineCoverage($line);
+            $coverage = $fileReport->getLineCoverage((string) $line);
 
             foreach ($tests as $test) {
                 $coverage->addTest($test);
@@ -181,7 +181,7 @@ final class Facade
             $unit['executedLines']
         );
 
-        $unitObject->setCrap($unit['crap']);
+        $unitObject->setCrap((float) $unit['crap']);
 
         $unitObject->setPackage(
             $unit['package']['fullPackage'],
@@ -195,12 +195,12 @@ final class Facade
         foreach ($unit['methods'] as $method) {
             $methodObject = $unitObject->addMethod($method['methodName']);
             $methodObject->setSignature($method['signature']);
-            $methodObject->setLines($method['startLine'], $method['endLine']);
+            $methodObject->setLines((string) $method['startLine'], (string) $method['endLine']);
             $methodObject->setCrap($method['crap']);
             $methodObject->setTotals(
-                $method['executableLines'],
-                $method['executedLines'],
-                $method['coverage']
+                (string) $method['executableLines'],
+                (string) $method['executedLines'],
+                (string) $method['coverage']
             );
         }
     }
@@ -210,9 +210,9 @@ final class Facade
         $functionObject = $report->getFunctionObject($function['functionName']);
 
         $functionObject->setSignature($function['signature']);
-        $functionObject->setLines($function['startLine']);
+        $functionObject->setLines((string) $function['startLine']);
         $functionObject->setCrap($function['crap']);
-        $functionObject->setTotals($function['executableLines'], $function['executedLines'], $function['coverage']);
+        $functionObject->setTotals((string) $function['executableLines'], (string) $function['executedLines'], (string) $function['coverage']);
     }
 
     private function processTests(array $tests): void

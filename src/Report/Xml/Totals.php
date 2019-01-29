@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -87,54 +87,54 @@ final class Totals
 
     public function setNumLines(int $loc, int $cloc, int $ncloc, int $executable, int $executed): void
     {
-        $this->linesNode->setAttribute('total', $loc);
-        $this->linesNode->setAttribute('comments', $cloc);
-        $this->linesNode->setAttribute('code', $ncloc);
-        $this->linesNode->setAttribute('executable', $executable);
-        $this->linesNode->setAttribute('executed', $executed);
+        $this->linesNode->setAttribute('total', (string) $loc);
+        $this->linesNode->setAttribute('comments', (string) $cloc);
+        $this->linesNode->setAttribute('code', (string) $ncloc);
+        $this->linesNode->setAttribute('executable', (string) $executable);
+        $this->linesNode->setAttribute('executed', (string) $executed);
         $this->linesNode->setAttribute(
             'percent',
-            $executable === 0 ? 0 : \sprintf('%01.2F', Util::percent($executed, $executable))
+            $executable === 0 ? '0' : \sprintf('%01.2F', Util::percent($executed, $executable))
         );
     }
 
     public function setNumClasses(int $count, int $tested): void
     {
-        $this->classesNode->setAttribute('count', $count);
-        $this->classesNode->setAttribute('tested', $tested);
+        $this->classesNode->setAttribute('count', (string) $count);
+        $this->classesNode->setAttribute('tested', (string) $tested);
         $this->classesNode->setAttribute(
             'percent',
-            $count === 0 ? 0 : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
         );
     }
 
     public function setNumTraits(int $count, int $tested): void
     {
-        $this->traitsNode->setAttribute('count', $count);
-        $this->traitsNode->setAttribute('tested', $tested);
+        $this->traitsNode->setAttribute('count', (string) $count);
+        $this->traitsNode->setAttribute('tested', (string) $tested);
         $this->traitsNode->setAttribute(
             'percent',
-            $count === 0 ? 0 : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
         );
     }
 
     public function setNumMethods(int $count, int $tested): void
     {
-        $this->methodsNode->setAttribute('count', $count);
-        $this->methodsNode->setAttribute('tested', $tested);
+        $this->methodsNode->setAttribute('count', (string) $count);
+        $this->methodsNode->setAttribute('tested', (string) $tested);
         $this->methodsNode->setAttribute(
             'percent',
-            $count === 0 ? 0 : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
         );
     }
 
     public function setNumFunctions(int $count, int $tested): void
     {
-        $this->functionsNode->setAttribute('count', $count);
-        $this->functionsNode->setAttribute('tested', $tested);
+        $this->functionsNode->setAttribute('count', (string) $count);
+        $this->functionsNode->setAttribute('tested', (string) $tested);
         $this->functionsNode->setAttribute(
             'percent',
-            $count === 0 ? 0 : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
         );
     }
 }

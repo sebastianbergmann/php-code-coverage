@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -40,7 +40,7 @@ final class Tests
 
         $node->setAttribute('name', $test);
         $node->setAttribute('size', $result['size']);
-        $node->setAttribute('result', (int) $result['status']);
+        $node->setAttribute('result', (string) $result['status']);
         $node->setAttribute('status', $this->codeMap[(int) $result['status']]);
     }
 }

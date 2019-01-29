@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -10,8 +10,6 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
 use SebastianBergmann\Environment\Runtime;
 
 /**

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -25,14 +25,14 @@ final class Unit
 
     public function setLines(int $start, int $executable, int $executed): void
     {
-        $this->contextNode->setAttribute('start', $start);
-        $this->contextNode->setAttribute('executable', $executable);
-        $this->contextNode->setAttribute('executed', $executed);
+        $this->contextNode->setAttribute('start', (string) $start);
+        $this->contextNode->setAttribute('executable', (string) $executable);
+        $this->contextNode->setAttribute('executed', (string) $executed);
     }
 
     public function setCrap(float $crap): void
     {
-        $this->contextNode->setAttribute('crap', $crap);
+        $this->contextNode->setAttribute('crap', (string) $crap);
     }
 
     public function setPackage(string $full, string $package, string $sub, string $category): void

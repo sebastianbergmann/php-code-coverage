@@ -265,6 +265,13 @@ abstract class Renderer
             );
         }
 
+        if ($runtime->hasPCOV() && !$runtime->hasPHPDBGCodeCoverage()) {
+            $buffer .= \sprintf(
+                ' with <a href="https://github.com/krakjoe/pcov">PCOV %s</a>',
+                \phpversion('pcov')
+            );
+        }
+
         return $buffer;
     }
 }

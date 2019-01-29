@@ -42,6 +42,11 @@ final class BuildInformation
             $driverNode->setAttribute('name', 'xdebug');
             $driverNode->setAttribute('version', \phpversion('xdebug'));
         }
+
+        if ($runtime->hasPCOV()) {
+            $driverNode->setAttribute('name', 'pcov');
+            $driverNode->setAttribute('version', \phpversion('pcov'));
+        }
     }
 
     public function setBuildTime(\DateTime $date): void

@@ -24,6 +24,7 @@
         "sort-packages": true
     },
     "prefer-stable": true,
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.1",
         "ext-dom": "*",
@@ -55,8 +56,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.1-dev"
+            "dev-master": "7.0-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

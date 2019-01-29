@@ -2,7 +2,11 @@
 
 All notable changes of the php-code-coverage 6.1 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [6.1.5] - 2018-MM-DD
+## [7.0.0] - 2019-02-01
+
+### Added
+
+* Implemented [#663](https://github.com/sebastianbergmann/php-code-coverage/pull/663): Support for PCOV
 
 ### Fixed
 
@@ -40,7 +44,7 @@ All notable changes of the php-code-coverage 6.1 release series are documented i
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
-[6.1.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.4...6.1.5
+[7.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.4...7.0.0
 [6.1.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.3...6.1.4
 [6.1.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.2...6.1.3
 [6.1.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.1...6.1.2

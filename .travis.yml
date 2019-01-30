@@ -37,6 +37,7 @@ before_script:
        echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
        git clone https://github.com/krakjoe/pcov
        cd pcov
+       git checkout v1.0.0
        phpize
        ./configure
        make clean install

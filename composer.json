@@ -40,6 +40,7 @@
         "phpunit/phpunit": "^8.0"
     },
     "suggest": {
+        "ext-pcov": "^1.0",
         "ext-xdebug": "^2.6.1"
     },
     "autoload": {

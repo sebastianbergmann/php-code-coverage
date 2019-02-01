@@ -24,7 +24,6 @@
         "sort-packages": true
     },
     "prefer-stable": true,
-    "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
         "ext-dom": "*",

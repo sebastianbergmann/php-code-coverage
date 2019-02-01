@@ -40,7 +40,8 @@
         "phpunit/phpunit": "^8.0"
     },
     "suggest": {
-        "ext-xdebug": "^2.6.1"
+        "ext-xdebug": "^2.6.1",
+        "ext-pcov": "^1.0"
     },
     "autoload": {
         "classmap": [

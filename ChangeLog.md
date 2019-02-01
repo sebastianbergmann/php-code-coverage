@@ -2,6 +2,12 @@
 
 All notable changes of the php-code-coverage 6.1 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [7.0.1] - 2019-MM-DD
+
+### Fixed
+
+* Fixed [#664](https://github.com/sebastianbergmann/php-code-coverage/issues/664): `TypeError` when whitelisted file does not exist
+
 ## [7.0.0] - 2019-02-01
 
 ### Added
@@ -48,6 +54,7 @@ All notable changes of the php-code-coverage 6.1 release series are documented i
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[7.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.0...7.0.1
 [7.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.4...7.0.0
 [6.1.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.3...6.1.4
 [6.1.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/6.1.2...6.1.3

@@ -194,4 +194,19 @@ class FilterTest extends TestCase
         $this->assertTrue($this->filter->isFiltered('assert code'));
         $this->assertTrue($this->filter->isFiltered('regexp code'));
     }
+
+    /**
+     * @covers SebastianBergmann\CodeCoverage\Filter::addFileToWhitelist
+     * @covers SebastianBergmann\CodeCoverage\Filter::getWhitelist
+     *
+     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/664
+     */
+    public function testTryingToAddFileThatDoesNotExistDoesNotChangeFilter(): void
+    {
+        $filter = new Filter;
+
+        $filter->addFileToWhitelist('does_not_exist');
+
+        $this->assertEmpty($filter->getWhitelistedFiles());
+    }
 }

@@ -48,7 +48,13 @@ final class Filter
      */
     public function addFileToWhitelist(string $filename): void
     {
-        $this->whitelistedFiles[\realpath($filename)] = true;
+        $filename = \realpath($filename);
+
+        if (!$filename) {
+            return;
+        }
+
+        $this->whitelistedFiles[$filename] = true;
     }
 
     /**
@@ -82,6 +88,10 @@ final class Filter
     public function removeFileFromWhitelist(string $filename): void
     {
         $filename = \realpath($filename);
+
+        if (!$filename || !isset($this->whitelistedFiles[$filename])) {
+            return;
+        }
 
         unset($this->whitelistedFiles[$filename]);
     }

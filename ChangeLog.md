@@ -2,7 +2,7 @@
 
 All notable changes of the php-code-coverage 6.1 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [7.0.3] - 2019-MM-DD
+## [7.0.3] - 2019-02-26
 
 ### Fixed
 

@@ -35,6 +35,8 @@ final class Builder
     private function addItems(Directory $root, array $items, array $tests, bool $cacheTokens): void
     {
         foreach ($items as $key => $value) {
+            $key = (string) $key;
+
             if (\substr($key, -2) === '/f') {
                 $key = \substr($key, 0, -2);
 

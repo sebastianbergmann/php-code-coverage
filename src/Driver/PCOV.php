@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use SebastianBergmann\CodeCoverage\Filter;
-
 /**
  * Driver for PCOV code coverage functionality.
  *

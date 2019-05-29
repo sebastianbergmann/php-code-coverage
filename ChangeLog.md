@@ -1,6 +1,6 @@
-# Changes in php-code-coverage 6.1
+# ChangeLog
 
-All notable changes of the php-code-coverage 6.1 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [7.0.4] - 2019-MM-DD
 

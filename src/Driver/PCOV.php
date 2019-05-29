@@ -43,9 +43,7 @@ final class PCOV implements Driver
         if ($waiting) {
             $collect = \pcov\collect(\pcov\inclusive, $waiting);
 
-            if ($collect) {
-                \pcov\clear();
-            }
+            \pcov\clear();
         }
 
         return $collect;

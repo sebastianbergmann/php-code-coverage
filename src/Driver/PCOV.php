@@ -18,10 +18,6 @@ use SebastianBergmann\CodeCoverage\Filter;
  */
 final class PCOV implements Driver
 {
-    public function __construct(Filter $filter = null)
-    {
-    }
-
     /**
      * Start collection of code coverage information.
      */

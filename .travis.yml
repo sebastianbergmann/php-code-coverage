@@ -30,7 +30,7 @@ before_script:
   - |
      if [[ "$DRIVER" = 'pcov' ]]; then
        echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
-       git clone --single-branch --branch=v1.0.3 --depth=1 https://github.com/krakjoe/pcov
+       git clone --single-branch --branch=v1.0.4 --depth=1 https://github.com/krakjoe/pcov
        cd pcov
        phpize
        ./configure

@@ -159,9 +159,7 @@ final class CodeCoverage
     public function getReport(): Directory
     {
         if ($this->report === null) {
-            $builder = new Builder;
-
-            $this->report = $builder->build($this);
+            $this->report = (new Builder)->build($this);
         }
 
         return $this->report;
@@ -907,7 +905,7 @@ final class CodeCoverage
         }
 
         if ($runtime->hasPCOV()) {
-            return new PCOV($filter);
+            return new PCOV;
         }
 
         throw new RuntimeException('No code coverage driver available');
@@ -962,10 +960,9 @@ final class CodeCoverage
                 }
             }
 
-            $data     = [];
-            $coverage = $this->driver->stop();
+            $data = [];
 
-            foreach ($coverage as $file => $fileCoverage) {
+            foreach ($this->driver->stop() as $file => $fileCoverage) {
                 if ($this->filter->isFiltered($file)) {
                     continue;
                 }

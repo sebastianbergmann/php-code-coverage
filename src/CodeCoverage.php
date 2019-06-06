@@ -761,6 +761,7 @@ final class CodeCoverage
                 case \PHP_Token_OPEN_TAG::class:
                 case \PHP_Token_CLOSE_TAG::class:
                 case \PHP_Token_USE::class:
+                case \PHP_Token_USE_FUNCTION::class:
                     $this->ignoredLines[$fileName][] = $token->getLine();
 
                     break;

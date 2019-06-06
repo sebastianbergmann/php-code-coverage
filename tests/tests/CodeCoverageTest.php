@@ -259,6 +259,32 @@ class CodeCoverageTest extends TestCase
         );
     }
 
+    public function testUseStatementsAreIgnored(): void
+    {
+        $this->assertEquals(
+            [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                13,
+                16,
+                23,
+                24,
+            ],
+            $this->getLinesToBeIgnored()->invoke(
+                $this->coverage,
+                TEST_FILES_PATH . 'source_with_use_statements.php'
+            )
+        );
+    }
+
     public function testAppendThrowsExceptionIfCoveredCodeWasNotExecuted(): void
     {
         $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);

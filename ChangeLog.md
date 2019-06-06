@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [7.0.5] - 2019-MM-DD
+
+### Fixed
+
+* Fixed [#681](https://github.com/sebastianbergmann/php-code-coverage/pull/681): `use function` statements are not ignored
+
 ## [7.0.4] - 2019-05-29
 
 ### Fixed

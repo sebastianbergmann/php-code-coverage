@@ -661,8 +661,7 @@ final class CodeCoverage
 
             $firstMethod          = \array_shift($classOrTrait['methods']);
             $firstMethodStartLine = $firstMethod['startLine'];
-            $firstMethodEndLine   = $firstMethod['endLine'];
-            $lastMethodEndLine    = $firstMethodEndLine;
+            $lastMethodEndLine    = $firstMethod['endLine'];
 
             do {
                 $lastMethod = \array_pop($classOrTrait['methods']);

@@ -32,15 +32,15 @@
         "phpunit/php-token-stream": "^3.0.1",
         "phpunit/php-text-template": "^1.2.1",
         "sebastian/code-unit-reverse-lookup": "^1.0.1",
-        "sebastian/environment": "^4.1",
+        "sebastian/environment": "^4.2.2",
         "sebastian/version": "^2.0.1",
-        "theseer/tokenizer": "^1.1"
+        "theseer/tokenizer": "^1.1.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.2.2"
     },
     "suggest": {
-        "ext-xdebug": "^2.6.1"
+        "ext-xdebug": "^2.7.2"
     },
     "autoload": {
         "classmap": [

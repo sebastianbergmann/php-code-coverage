@@ -74,7 +74,7 @@ class HTMLTest extends TestCase
         $expectedFilesPath =
             self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithRootPath';
 
-        $report = new Facade(50, 90, '', 'rootPath');
+        $report = new Facade(50, 90, '', 'rootPath/');
         $report->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);

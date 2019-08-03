@@ -147,7 +147,7 @@ abstract class Renderer
             [
                 'id'               => $node->getId(),
                 'full_path'        => $node->getPath(),
-                'path_to_root'     => $this->basePath ? $this->basePath . DIRECTORY_SEPARATOR : $this->getPathToRoot($node),
+                'path_to_root'     => $this->basePath ?? $this->getPathToRoot($node),
                 'breadcrumbs'      => $this->getBreadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,

@@ -69,6 +69,17 @@ class HTMLTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
+    public function testForBasePath(): void
+    {
+        $expectedFilesPath =
+            self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithRootPath';
+
+        $report = new Facade(50, 90, '', 'rootPath');
+        $report->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
+
+        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+    }
+
     /**
      * @param string $expectedFilesPath
      * @param string $actualFilesPath

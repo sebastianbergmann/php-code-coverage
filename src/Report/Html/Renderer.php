@@ -46,17 +46,23 @@ abstract class Renderer
     protected $highLowerBound;
 
     /**
-     * @var string
+     * @var string|null
+     */
+    protected $basePath;
+
+    /**
+     * @var string|null
      */
     protected $version;
 
-    public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound)
+    public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound, ?string $basePath)
     {
         $this->templatePath   = $templatePath;
         $this->generator      = $generator;
         $this->date           = $date;
         $this->lowUpperBound  = $lowUpperBound;
         $this->highLowerBound = $highLowerBound;
+        $this->basePath       = $basePath;
         $this->version        = Version::id();
     }
 
@@ -141,7 +147,7 @@ abstract class Renderer
             [
                 'id'               => $node->getId(),
                 'full_path'        => $node->getPath(),
-                'path_to_root'     => $this->getPathToRoot($node),
+                'path_to_root'     => $this->basePath ? $this->basePath . DIRECTORY_SEPARATOR : $this->getPathToRoot($node),
                 'breadcrumbs'      => $this->getBreadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,

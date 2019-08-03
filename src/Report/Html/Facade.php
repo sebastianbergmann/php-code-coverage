@@ -38,11 +38,17 @@ final class Facade
      */
     private $highLowerBound;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
+    /**
+     * @var string|null
+     */
+    private $basePath;
+
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', string $basePath = null)
     {
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->lowUpperBound  = $lowUpperBound;
+        $this->basePath       = $basePath;
         $this->templatePath   = __DIR__ . '/Renderer/Template/';
     }
 
@@ -67,7 +73,8 @@ final class Facade
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->basePath
         );
 
         $directory = new Directory(
@@ -75,7 +82,8 @@ final class Facade
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->basePath
         );
 
         $file = new File(
@@ -83,7 +91,8 @@ final class Facade
             $this->generator,
             $date,
             $this->lowUpperBound,
-            $this->highLowerBound
+            $this->highLowerBound,
+            $this->basePath
         );
 
         $directory->render($report, $target . 'index.html');

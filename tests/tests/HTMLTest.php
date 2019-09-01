@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 class HTMLTest extends TestCase
@@ -67,6 +68,15 @@ class HTMLTest extends TestCase
         $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+    }
+
+    public function testThrowsRuntimeExceptionWhenTargetDirDoesNotExist(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Directory "/foo/bar/baz/" does not exist.');
+
+        $report = new Facade();
+        $report->process($this->getCoverageForBankAccount(), '/foo/bar/baz');
     }
 
     /**

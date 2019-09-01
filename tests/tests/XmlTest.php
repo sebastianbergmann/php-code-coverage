@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 class XmlTest extends TestCase
@@ -30,7 +31,11 @@ class XmlTest extends TestCase
 
         foreach ($tmpFilesIterator as $path => $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
-            \unlink($fileInfo->getPathname());
+            if (!\is_dir($fileInfo->getPathname())) {
+                \unlink($fileInfo->getPathname());
+            } else {
+                \rmdir($fileInfo->getPathname());
+            }
         }
     }
 
@@ -62,6 +67,27 @@ class XmlTest extends TestCase
         $xml->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+    }
+
+    public function testReportThrowsRuntimeExceptionWhenUnableToCreateTargetDir(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("'/foo/bar/baz/' could not be created.");
+
+        $xml = new Facade('1.0.0');
+        $xml->process($this->getCoverageForBankAccount(), '/foo/bar/baz');
+    }
+
+    public function testReportThrowsRuntimeExceptionWhenUnableToWriteToTargetDir(): void
+    {
+        $target = self::$TEST_TMP_PATH . '/non-writable-dir';
+        @\mkdir($target, 0555);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("'$target/' exists but is not writable");
+
+        $xml = new Facade('1.0.0');
+        $xml->process($this->getCoverageForBankAccount(), $target);
     }
 
     /**

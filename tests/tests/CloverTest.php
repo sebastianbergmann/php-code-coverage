@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
@@ -44,5 +45,23 @@ class CloverTest extends TestCase
             TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
             $clover->process($this->getCoverageForClassWithAnonymousFunction())
         );
+    }
+
+    public function testCloverThrowsRuntimeExceptionWhenUnableToWriteToTarget(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not write to "stdout://"');
+
+        $clover = new Clover;
+        $clover->process($this->getCoverageForBankAccount(), 'stdout://');
+    }
+
+    public function testCloverThrowsRuntimeExceptionWhenTargetDirCouldNotBeCreated(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Directory "/foo/bar" was not created');
+
+        $clover = new Clover;
+        $clover->process($this->getCoverageForBankAccount(), '/foo/bar/baz');
     }
 }

@@ -49,7 +49,6 @@ final class Facade
     /**
      * @throws RuntimeException
      * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      */
     public function process(CodeCoverage $coverage, string $target): void
     {
@@ -94,7 +93,7 @@ final class Facade
 
             if ($node instanceof DirectoryNode) {
                 if (!$this->createDirectory($target . $id)) {
-                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
+                    throw new RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
                 }
 
                 $directory->render($node, $target . $id . '/index.html');
@@ -103,7 +102,7 @@ final class Facade
                 $dir = \dirname($target . $id);
 
                 if (!$this->createDirectory($dir)) {
-                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
+                    throw new RuntimeException(\sprintf('Directory "%s" was not created', $dir));
                 }
 
                 $file->render($node, $target . $id . '.html');

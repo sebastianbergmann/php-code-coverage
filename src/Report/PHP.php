@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class PHP
 {
     /**
-     * @throws \SebastianBergmann\CodeCoverage\RuntimeException
+     * @throws RuntimeException
      */
     public function process(CodeCoverage $coverage, ?string $target = null): string
     {
@@ -41,13 +41,13 @@ return $coverage;',
 
         if ($target !== null) {
             if (!$this->createDirectory(\dirname($target))) {
-                throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
+                throw new RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 
             if (@\file_put_contents($target, $buffer) === false) {
                 throw new RuntimeException(
                     \sprintf(
-                        'Could not write to "%s',
+                        'Could not write to "%s"',
                         $target
                     )
                 );

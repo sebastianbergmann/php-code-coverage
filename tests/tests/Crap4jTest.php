@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
@@ -44,5 +45,23 @@ class Crap4jTest extends TestCase
             TEST_FILES_PATH . 'class-with-anonymous-function-crap4j.xml',
             $crap4j->process($this->getCoverageForClassWithAnonymousFunction(), null, 'CoverageForClassWithAnonymousFunction')
         );
+    }
+
+    public function testCrap4jThrowsRuntimeExceptionWhenUnableToWriteToTarget(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not write to "stdout://"');
+
+        $Crap4j = new Crap4j;
+        $Crap4j->process($this->getCoverageForBankAccount(), 'stdout://');
+    }
+
+    public function testCrap4jThrowsRuntimeExceptionWhenTargetDirWasNotCreated(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Directory "/foo/bar" was not created');
+
+        $Crap4j = new Crap4j;
+        $Crap4j->process($this->getCoverageForBankAccount(), '/foo/bar/baz');
     }
 }

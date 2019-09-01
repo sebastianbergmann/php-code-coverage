@@ -1,0 +1,77 @@
+<?php
+$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
+$coverage->setData(array (
+  '%s%etests/_files/BankAccount.php' => 
+  array (
+    8 => 
+    array (
+      0 => 'BankAccountTest::testBalanceIsInitiallyZero',
+      1 => 'BankAccountTest::testDepositWithdrawMoney',
+    ),
+    9 => NULL,
+    13 => 
+    array (
+    ),
+    14 => 
+    array (
+    ),
+    15 => 
+    array (
+    ),
+    16 => 
+    array (
+    ),
+    18 => 
+    array (
+    ),
+    22 => 
+    array (
+      0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+      1 => 'BankAccountTest::testDepositWithdrawMoney',
+    ),
+    24 => 
+    array (
+      0 => 'BankAccountTest::testDepositWithdrawMoney',
+    ),
+    25 => NULL,
+    29 => 
+    array (
+      0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+      1 => 'BankAccountTest::testDepositWithdrawMoney',
+    ),
+    31 => 
+    array (
+      0 => 'BankAccountTest::testDepositWithdrawMoney',
+    ),
+    32 => NULL,
+  ),
+));
+$coverage->setTests(array (
+  'BankAccountTest::testBalanceIsInitiallyZero' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+  'BankAccountTest::testBalanceCannotBecomeNegative' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+  'BankAccountTest::testBalanceCannotBecomeNegative2' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+  'BankAccountTest::testDepositWithdrawMoney' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+));
+
+$filter = $coverage->filter();
+$filter->setWhitelistedFiles(array (
+  '%s%etests/_files/BankAccount.php' => true,
+));
+
+return $coverage;

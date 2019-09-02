@@ -23,6 +23,7 @@ use SebastianBergmann\Environment\Runtime;
 
 /**
  * Provides collection functionality for PHP code coverage information.
+ * 
  */
 final class CodeCoverage
 {

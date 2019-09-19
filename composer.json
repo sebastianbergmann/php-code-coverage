@@ -31,6 +31,7 @@
     "require": {
         "php": "^7.3 || ^8.0",
         "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-xmlwriter": "*",
         "nikic/php-parser": "^4.7",
         "phpunit/php-file-iterator": "^3.0.3",

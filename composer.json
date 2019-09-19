@@ -30,6 +30,7 @@
     "require": {
         "php": "^7.3",
         "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^3.0",
         "phpunit/php-token-stream": "^4.0",

@@ -276,7 +276,24 @@ final class Facade
         $document->preserveWhiteSpace = false;
         $this->initTargetDirectory(\dirname($filename));
 
+        $original = \libxml_use_internal_errors(true);
+
         /* @see https://bugs.php.net/bug.php?id=79191 */
-        \file_put_contents($filename, $document->saveXML());
+        $xml = $document->saveXML();
+
+        if ($xml === false) {
+            $message = 'Unable to generate the XML';
+
+            foreach (\libxml_get_errors() as $error) {
+                $message .= "\n" . $error->message;
+            }
+
+            throw new RuntimeException($message);
+        }
+
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($original);
+
+        \file_put_contents($filename, $xml);
     }
 }

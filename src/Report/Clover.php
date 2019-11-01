@@ -165,6 +165,7 @@ final class Clover
 
                 if (isset($data['name'])) {
                     $xmlLine->setAttribute('name', $data['name']);
+                    $xmlLine->setAttribute('signature', $data['name']);
                 }
 
                 if (isset($data['visibility'])) {

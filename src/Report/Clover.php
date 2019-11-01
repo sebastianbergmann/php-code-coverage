@@ -50,7 +50,8 @@ final class Clover
             /* @var File $item */
 
             $xmlFile = $xmlDocument->createElement('file');
-            $xmlFile->setAttribute('name', $item->getPath());
+            $xmlFile->setAttribute('path', $item->getPath());
+            $xmlFile->setAttribute('name', $item->getName());
 
             $classes      = $item->getClassesAndTraits();
             $coverageData = $item->getCoverageData();

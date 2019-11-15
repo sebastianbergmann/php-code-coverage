@@ -896,12 +896,12 @@ final class CodeCoverage
             return new PHPDBG;
         }
 
-        if ($runtime->hasXdebug()) {
-            return new Xdebug($filter);
-        }
-
         if ($runtime->hasPCOV()) {
             return new PCOV;
+        }
+
+        if ($runtime->hasXdebug()) {
+            return new Xdebug($filter);
         }
 
         throw new RuntimeException('No code coverage driver available');

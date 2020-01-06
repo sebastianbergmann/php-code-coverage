@@ -31,14 +31,8 @@ install:
 before_script:
   - |
      if [[ "$DRIVER" = 'pcov' ]]; then
-       echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
-       git clone --single-branch --branch=v1.0.6 --depth=1 https://github.com/krakjoe/pcov
-       cd pcov
-       phpize
-       ./configure
-       make clean install
-       echo "extension=pcov.so" > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
-       cd $TRAVIS_BUILD_DIR
+       phpenv config-rm xdebug.ini
+       pecl install pcov
      fi
 
 script:

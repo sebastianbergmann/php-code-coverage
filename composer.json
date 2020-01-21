@@ -20,13 +20,16 @@
         "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues"
     },
     "config": {
+        "platform": {
+            "php": "7.3.0"
+        },
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "ext-dom": "*",
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^3.0",
@@ -56,7 +59,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "7.0-dev"
+            "dev-master": "8.0-dev"
         }
     }
 }

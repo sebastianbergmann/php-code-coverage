@@ -24,6 +24,7 @@
         "sort-packages": true
     },
     "prefer-stable": true,
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
         "ext-dom": "*",
@@ -33,11 +34,11 @@
         "phpunit/php-text-template": "^1.2.1",
         "sebastian/code-unit-reverse-lookup": "^1.0.1",
         "sebastian/environment": "^4.2.2",
-        "sebastian/version": "^2.0.1",
+        "sebastian/version": "^3.0",
         "theseer/tokenizer": "^1.1.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.2.2"
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "ext-xdebug": "^2.7.2"

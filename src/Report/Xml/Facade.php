@@ -277,7 +277,7 @@ final class Facade
         $document->preserveWhiteSpace = false;
         $this->initTargetDirectory(\dirname($filename));
 
-        $document->save($filename);
+        \file_put_contents($filename, $document->saveXML());
     }
 
     private function createDirectory(string $directory): bool

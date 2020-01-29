@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [8.0.0] - 2020-02-07
 
+### Fixed
+
+* Implemented [#721](https://github.com/sebastianbergmann/php-code-coverage/pull/721): Workaround for PHP bug [#79191](https://bugs.php.net/bug.php?id=79191)
+
 ### Removed
 
 * This component is no longer supported on PHP 7.2

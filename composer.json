@@ -34,7 +34,7 @@
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^3.0",
         "phpunit/php-token-stream": "^4.0",
-        "phpunit/php-text-template": "^1.2.1",
+        "phpunit/php-text-template": "^2.0",
         "sebastian/code-unit-reverse-lookup": "^2.0",
         "sebastian/environment": "^5.0",
         "sebastian/version": "^3.0",

@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\Template\Template;
 
 /**
  * Renders a file node.
@@ -27,7 +28,7 @@ final class File extends Renderer
      */
     public function render(FileNode $node, string $file): void
     {
-        $template = new \Text_Template($this->templatePath . 'file.html', '{{', '}}');
+        $template = new Template($this->templatePath . 'file.html', '{{', '}}');
 
         $template->setVar(
             [
@@ -43,9 +44,9 @@ final class File extends Renderer
 
     protected function renderItems(FileNode $node): string
     {
-        $template = new \Text_Template($this->templatePath . 'file_item.html', '{{', '}}');
+        $template = new Template($this->templatePath . 'file_item.html', '{{', '}}');
 
-        $methodItemTemplate = new \Text_Template(
+        $methodItemTemplate = new Template(
             $this->templatePath . 'method_item.html',
             '{{',
             '}}'
@@ -91,7 +92,7 @@ final class File extends Renderer
         return $items;
     }
 
-    protected function renderTraitOrClassItems(array $items, \Text_Template $template, \Text_Template $methodItemTemplate): string
+    protected function renderTraitOrClassItems(array $items, Template $template, Template $methodItemTemplate): string
     {
         $buffer = '';
 
@@ -177,7 +178,7 @@ final class File extends Renderer
         return $buffer;
     }
 
-    protected function renderFunctionItems(array $functions, \Text_Template $template): string
+    protected function renderFunctionItems(array $functions, Template $template): string
     {
         if (empty($functions)) {
             return '';
@@ -195,7 +196,7 @@ final class File extends Renderer
         return $buffer;
     }
 
-    protected function renderFunctionOrMethodItem(\Text_Template $template, array $item, string $indent = ''): string
+    protected function renderFunctionOrMethodItem(Template $template, array $item, string $indent = ''): string
     {
         $numMethods       = 0;
         $numTestedMethods = 0;

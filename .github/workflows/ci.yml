@@ -28,14 +28,27 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v2"
 
+      - name: "Install PHP with extensions"
+        uses: "shivammathur/setup-php@v1"
+        with:
+          php-version: "7.3"
+          coverage: "pcov"
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v1"
+        with:
+          path: "~/.composer/cache"
+          key: "php7.3-composer-highest-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "php7.3-composer-highest-"
+
       - name: "Set COMPOSER_ROOT_VERSION environment variable"
         uses: "docker://ergebnis/composer-root-version-action:0.1.3"
 
       - name: "Update dependencies with composer"
-        run: "php7.3 ./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest"
+        run: "./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest"
 
       - name: "Run vimeo/psalm"
-        run: "php7.3 ./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
+        run: "./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
 
   tests:
     name: "Tests"

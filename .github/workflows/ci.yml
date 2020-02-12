@@ -35,7 +35,7 @@ jobs:
         run: "php7.3 ./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest"
 
       - name: "Run vimeo/psalm"
-        run: "php7.3 ./tools/psalm --config=psalm.xml --no-progress --shepherd --show-info=false --stats"
+        run: "php7.3 ./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
 
   tests:
     name: "Tests"

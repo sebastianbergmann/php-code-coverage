@@ -259,17 +259,19 @@ abstract class Renderer
             $runtime->getVersion()
         );
 
-        if ($runtime->hasXdebug() && !$runtime->hasPHPDBGCodeCoverage()) {
-            $buffer .= \sprintf(
-                ' with <a href="https://xdebug.org/">Xdebug %s</a>',
-                \phpversion('xdebug')
-            );
+        if ($runtime->hasPHPDBGCodeCoverage()) {
+            return $buffer;
         }
 
-        if ($runtime->hasPCOV() && !$runtime->hasPHPDBGCodeCoverage()) {
+        if ($runtime->hasPCOV()) {
             $buffer .= \sprintf(
                 ' with <a href="https://github.com/krakjoe/pcov">PCOV %s</a>',
                 \phpversion('pcov')
+            );
+        } elseif ($runtime->hasXdebug()) {
+            $buffer .= \sprintf(
+                ' with <a href="https://xdebug.org/">Xdebug %s</a>',
+                \phpversion('xdebug')
             );
         }
 

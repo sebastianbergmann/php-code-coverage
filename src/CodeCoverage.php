@@ -364,9 +364,11 @@ final class CodeCoverage
      */
     public function merge(self $that): void
     {
-        self::$filter->setWhitelistedFiles(
-            \array_merge(self::$filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
-        );
+        if (empty(self::$filter) || empty(self::$filter->getWhitelistedFiles())) {
+            self::$filter->setWhitelistedFiles(
+                \array_merge(self::$filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
+            );
+        }
 
         foreach ($that->data as $file => $lines) {
             if (!isset($this->data[$file])) {

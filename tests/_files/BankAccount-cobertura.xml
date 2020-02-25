@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage lines-valid="10" lines-covered="5" line-rate="0.5" branches-valid="0" branches-covered="0" branch-rate="0" timestamp="%s" complexity="0" version="0.1">
+    <sources>
+        <source>%s</source>
+    </sources>
+    <packages>
+        <package name="BankAccount" line-rate="1" branch-rate="1" >
+            <classes>
+                <class name="BankAccount" filename="%sBankAccount.php" line-rate="1" branch-rate="1" >
+                    <methods>
+                        <method name="getBalance" hits="1" signature="()V">
+                            <lines>
+                                <line number="8"  hits="1"/>
+                            </lines>
+                        </method>
+                        <method name="setBalance" hits="0" signature="()V">
+                            <lines>
+                                <line number="13" hits="0"/>
+                                <line number="14" hits="0"/>
+                                <line number="15" hits="0"/>
+                                <line number="16" hits="0"/>
+                                <line number="17" hits="0"/>
+                            </lines>
+                        </method>
+                        <method name="depositMoney" hits="2" signature="()V">
+                            <lines>
+                                <line number="22" hits="1"/>
+                                <line number="24" hits="1"/>
+                            </lines>
+                        </method>
+                        <method name="withdrawMoney" hits="2" signature="()V">
+                            <lines>
+                                <line number="29" hits="1"/>
+                                <line number="31" hits="1"/>
+                            </lines>
+                        </method>
+                    </methods>
+                </class>
+            </classes>
+        </package>
+    </packages>
+</coverage>

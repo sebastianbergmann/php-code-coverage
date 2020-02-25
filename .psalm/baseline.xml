@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.8.3@389af1bfc739bfdff3f9e3dc7bd6499aee51a831">
+<files psalm-version="3.9.3@2e4154d76e24d1b4e59e6cc2bebef7790cb9e550">
   <file src="src/CodeCoverage.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion occurrences="2">
       <code>$unit[0]</code>
+      <code>$whitelisted</code>
     </ArgumentTypeCoercion>
     <PossiblyNullPropertyAssignmentValue occurrences="6">
       <code>null</code>
@@ -104,6 +105,9 @@
     <NullArgument occurrences="1">
       <code>null</code>
     </NullArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>replaceChild</code>
+    </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/File.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -115,17 +119,12 @@
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
   </file>
-  <file src="src/Report/Xml/Project.php">
-    <PossiblyNullArgument occurrences="1"/>
-  </file>
-  <file src="src/Report/Xml/Report.php">
-    <PossiblyNullArgument occurrences="1">
-      <code>$contextNode</code>
-    </PossiblyNullArgument>
-  </file>
   <file src="src/Report/Xml/Source.php">
     <PossiblyNullArgument occurrences="1">
       <code>$context-&gt;namespaceURI</code>
     </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>replaceChild</code>
+    </PossiblyNullReference>
   </file>
 </files>

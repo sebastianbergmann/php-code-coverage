@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
@@ -34,7 +33,7 @@ class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'ignored-lines-clover.xml',
+            TEST_FILES_PATH . 'ignored-lines-cobertura.xml',
             $cobertura->process($this->getCoverageForFileWithIgnoredLines(), 'BankAccount')
         );
     }
@@ -46,7 +45,7 @@ class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
+            TEST_FILES_PATH . 'class-with-anonymous-function-cobertura.xml',
             $cobertura->process($this->getCoverageForClassWithAnonymousFunction(), 'BankAccount')
         );
     }

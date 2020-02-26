@@ -9,9 +9,9 @@
             <classes>
                 <class name="BankAccount" filename="%sBankAccount.php" line-rate="1" branch-rate="1" >
                     <methods>
-                        <method name="getBalance" hits="1" signature="()V">
+                        <method name="getBalance" hits="2" signature="()V">
                             <lines>
-                                <line number="8"  hits="1"/>
+                                <line number="8" hits="2"/>
                             </lines>
                         </method>
                         <method name="setBalance" hits="0" signature="()V">
@@ -23,19 +23,31 @@
                                 <line number="17" hits="0"/>
                             </lines>
                         </method>
-                        <method name="depositMoney" hits="2" signature="()V">
+                        <method name="depositMoney" hits="3" signature="()V">
                             <lines>
-                                <line number="22" hits="1"/>
+                                <line number="22" hits="2"/>
                                 <line number="24" hits="1"/>
                             </lines>
                         </method>
-                        <method name="withdrawMoney" hits="2" signature="()V">
+                        <method name="withdrawMoney" hits="3" signature="()V">
                             <lines>
-                                <line number="29" hits="1"/>
+                                <line number="29" hits="2"/>
                                 <line number="31" hits="1"/>
                             </lines>
                         </method>
                     </methods>
+                    <lines>
+                        <line number="8" hits="1"/>
+                        <line number="13" hits="0"/>
+                        <line number="14" hits="0"/>
+                        <line number="15" hits="0"/>
+                        <line number="16" hits="0"/>
+                        <line number="17" hits="0"/>
+                        <line number="22" hits="1"/>
+                        <line number="24" hits="1"/>
+                        <line number="29" hits="1"/>
+                        <line number="31" hits="1"/>
+                    </lines>
                 </class>
             </classes>
         </package>

@@ -28,25 +28,21 @@ class CoberturaTest extends TestCase
 
     public function testCloverForFileWithIgnoredLines(): void
     {
-        $this->markTestIncomplete();
-
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-cobertura.xml',
-            $cobertura->process($this->getCoverageForFileWithIgnoredLines(), 'BankAccount')
+            $cobertura->process($this->getCoverageForFileWithIgnoredLines(), 'ignored')
         );
     }
 
     public function testCloverForClassWithAnonymousFunction(): void
     {
-        $this->markTestIncomplete();
-
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-cobertura.xml',
-            $cobertura->process($this->getCoverageForClassWithAnonymousFunction(), 'BankAccount')
+            $cobertura->process($this->getCoverageForClassWithAnonymousFunction(), 'anonymous')
         );
     }
 }

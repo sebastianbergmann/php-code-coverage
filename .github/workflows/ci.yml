@@ -45,7 +45,7 @@ jobs:
         uses: "docker://ergebnis/composer-root-version-action:0.1.3"
 
       - name: "Update dependencies with composer"
-        run: "./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest"
+        run: "./tools/composer update --no-ansi --no-interaction --no-progress"
 
       - name: "Run vimeo/psalm"
         run: "./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
@@ -88,11 +88,11 @@ jobs:
 
       - name: "Install lowest dependencies with composer"
         if: "matrix.dependencies == 'lowest'"
-        run: "./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest --prefer-lowest"
+        run: "./tools/composer update --no-ansi --no-interaction --no-progress --prefer-lowest"
 
       - name: "Install highest dependencies with composer"
         if: "matrix.dependencies == 'highest'"
-        run: "./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest"
+        run: "./tools/composer update --no-ansi --no-interaction --no-progress"
 
       - name: "Run tests with phpunit/phpunit"
         run: "vendor/bin/phpunit --coverage-clover=coverage.xml"

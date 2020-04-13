@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.9.3@2e4154d76e24d1b4e59e6cc2bebef7790cb9e550">
+<files psalm-version="3.11.1@8533b866ab1a46e5a69a4692ff57f10529dbfbeb">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="2">
       <code>$unit[0]</code>
@@ -51,18 +51,14 @@
     <EmptyArrayAccess occurrences="1">
       <code>$pointer[$path[$i] . $type]</code>
     </EmptyArrayAccess>
-    <InvalidArgument occurrences="3">
+    <PossiblyInvalidArgument occurrences="5">
       <code>$paths[$i]</code>
       <code>$paths[$i]</code>
       <code>$paths[$i]</code>
-    </InvalidArgument>
-    <PossiblyInvalidArgument occurrences="2">
       <code>$paths[$i]</code>
       <code>$paths[$i]</code>
     </PossiblyInvalidArgument>
-    <PossiblyInvalidArrayAccess occurrences="4">
-      <code>$paths[$i][0]</code>
-      <code>$paths[$i + 1][0]</code>
+    <PossiblyInvalidArrayAccess occurrences="2">
       <code>$paths[$i + 1][0]</code>
       <code>$paths[0][0]</code>
     </PossiblyInvalidArrayAccess>
@@ -80,9 +76,6 @@
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
     </InvalidPropertyAssignmentValue>
-    <PossiblyInvalidArrayOffset occurrences="1">
-      <code>$this-&gt;coverageData[$lineNumber]</code>
-    </PossiblyInvalidArrayOffset>
   </file>
   <file src="src/Node/Iterator.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -95,17 +88,17 @@
       <code>$this-&gt;valid() ? $this-&gt;nodes[$this-&gt;position] : null</code>
     </NullableReturnStatement>
   </file>
-  <file src="src/Report/Clover.php">
-    <PossiblyInvalidArrayOffset occurrences="2">
-      <code>$coverageData[$line]</code>
-      <code>$coverageData[$line]</code>
-    </PossiblyInvalidArrayOffset>
+  <file src="src/Report/Xml/BuildInformation.php">
+    <PossiblyNullReference occurrences="1">
+      <code>createElementNS</code>
+    </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Coverage.php">
     <NullArgument occurrences="1">
       <code>null</code>
     </NullArgument>
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference occurrences="2">
+      <code>createDocumentFragment</code>
       <code>replaceChild</code>
     </PossiblyNullReference>
   </file>
@@ -113,18 +106,42 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$context-&gt;ownerDocument</code>
+    </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Report/Xml/Node.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$context-&gt;ownerDocument</code>
+    </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Report/Xml/Source.php">
     <PossiblyNullArgument occurrences="1">
       <code>$context-&gt;namespaceURI</code>
     </PossiblyNullArgument>
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference occurrences="2">
       <code>replaceChild</code>
+      <code>importNode</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="src/Report/Xml/Tests.php">
+    <PossiblyNullReference occurrences="1">
+      <code>createElementNS</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="src/Report/Xml/Totals.php">
+    <PossiblyNullReference occurrences="1">
+      <code>createElementNS</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="src/Report/Xml/Unit.php">
+    <PossiblyNullReference occurrences="3">
+      <code>createElementNS</code>
+      <code>createElementNS</code>
+      <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
 </files>

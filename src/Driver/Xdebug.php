@@ -18,11 +18,6 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class Xdebug implements Driver
 {
     /**
-     * @var array
-     */
-    private $cacheNumLines = [];
-
-    /**
      * @var Filter
      */
     private $filter;
@@ -68,43 +63,6 @@ final class Xdebug implements Driver
 
         \xdebug_stop_code_coverage();
 
-        return $this->cleanup($data);
-    }
-
-    private function cleanup(array $data): array
-    {
-        foreach (\array_keys($data) as $file) {
-            unset($data[$file][0]);
-
-            if (!$this->filter->isFile($file)) {
-                continue;
-            }
-
-            $numLines = $this->getNumberOfLinesInFile($file);
-
-            foreach (\array_keys($data[$file]) as $line) {
-                if ($line > $numLines) {
-                    unset($data[$file][$line]);
-                }
-            }
-        }
-
         return $data;
-    }
-
-    private function getNumberOfLinesInFile(string $fileName): int
-    {
-        if (!isset($this->cacheNumLines[$fileName])) {
-            $buffer = \file_get_contents($fileName);
-            $lines  = \substr_count($buffer, "\n");
-
-            if (\substr($buffer, -1) !== "\n") {
-                $lines++;
-            }
-
-            $this->cacheNumLines[$fileName] = $lines;
-        }
-
-        return $this->cacheNumLines[$fileName];
     }
 }

@@ -1,4 +1,10 @@
-/tools      export-ignore
-/tools/*    binary
+/.php_cs.dist   export-ignore
+/.psalm         export-ignore
+/build.xml      export-ignore
+/phive.xml      export-ignore
+/phpunit.xml    export-ignore
+/tests          export-ignore
+/tools          export-ignore
+/tools/*        binary
 
 *.php diff=php

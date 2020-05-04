@@ -1,3 +1,4 @@
+/.github        export-ignore
 /.php_cs.dist   export-ignore
 /.psalm         export-ignore
 /build.xml      export-ignore

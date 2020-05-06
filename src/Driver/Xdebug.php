@@ -14,8 +14,6 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * Driver for Xdebug's code coverage functionality.
- *
- * @codeCoverageIgnore
  */
 final class Xdebug implements Driver
 {

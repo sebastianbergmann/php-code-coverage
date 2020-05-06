@@ -13,8 +13,6 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * Driver for PHPDBG's code coverage functionality.
- *
- * @codeCoverageIgnore
  */
 final class PHPDBG implements Driver
 {

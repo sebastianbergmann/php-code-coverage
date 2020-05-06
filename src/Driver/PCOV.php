@@ -11,8 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 /**
  * Driver for PCOV code coverage functionality.
- *
- * @codeCoverageIgnore
  */
 final class PCOV implements Driver
 {

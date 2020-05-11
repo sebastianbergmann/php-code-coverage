@@ -78,16 +78,20 @@ final class Text
 
     public function process(CodeCoverage $coverage, bool $showColors = false): string
     {
+        $hasBranchCoverage = !empty($coverage->getData(true)->getFunctionCoverage());
+
         $output = \PHP_EOL . \PHP_EOL;
         $report = $coverage->getReport();
 
         $colors = [
-            'header'  => '',
-            'classes' => '',
-            'methods' => '',
-            'lines'   => '',
-            'reset'   => '',
-            'eol'     => '',
+            'header'     => '',
+            'classes'    => '',
+            'methods'    => '',
+            'lines'      => '',
+            'branches'   => '',
+            'paths'      => '',
+            'reset'      => '',
+            'eol'        => '',
         ];
 
         if ($showColors) {
@@ -104,6 +108,16 @@ final class Text
             $colors['lines']   = $this->getCoverageColor(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines()
+            );
+
+            $colors['branches']   = $this->getCoverageColor(
+                $report->getNumExecutedBranches(),
+                $report->getNumExecutableBranches()
+            );
+
+            $colors['paths']   = $this->getCoverageColor(
+                $report->getNumExecutedPaths(),
+                $report->getNumExecutablePaths()
             );
 
             $colors['reset']  = self::COLOR_RESET;
@@ -130,6 +144,31 @@ final class Text
             $report->getNumTestedMethods(),
             $report->getNumMethods()
         );
+
+        $paths    = '';
+        $branches = '';
+
+        if ($hasBranchCoverage) {
+            $paths = \sprintf(
+                '  Paths:   %6s (%d/%d)',
+                Percentage::fromFractionAndTotal(
+                    $report->getNumExecutedPaths(),
+                    $report->getNumExecutablePaths(),
+                )->asString(),
+                $report->getNumExecutedPaths(),
+                $report->getNumExecutablePaths()
+            );
+
+            $branches = \sprintf(
+                '  Branches:   %6s (%d/%d)',
+                Percentage::fromFractionAndTotal(
+                    $report->getNumExecutedBranches(),
+                    $report->getNumExecutableBranches(),
+                )->asString(),
+                $report->getNumExecutedBranches(),
+                $report->getNumExecutableBranches()
+            );
+        }
 
         $lines = \sprintf(
             '  Lines:   %6s (%d/%d)',
@@ -160,6 +199,11 @@ final class Text
 
         $output .= $this->format($colors['classes'], $padding, $classes);
         $output .= $this->format($colors['methods'], $padding, $methods);
+
+        if ($hasBranchCoverage) {
+            $output .= $this->format($colors['paths'], $padding, $paths);
+            $output .= $this->format($colors['branches'], $padding, $branches);
+        }
         $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
@@ -176,10 +220,14 @@ final class Text
             $classes = $item->getClassesAndTraits();
 
             foreach ($classes as $className => $class) {
-                $classStatements        = 0;
-                $coveredClassStatements = 0;
-                $coveredMethods         = 0;
-                $classMethods           = 0;
+                $classExecutableLines           = 0;
+                $classExecutedLines             = 0;
+                $classExecutableBranches        = 0;
+                $classExecutedBranches          = 0;
+                $classExecutablePaths           = 0;
+                $classExecutedPaths             = 0;
+                $coveredMethods                 = 0;
+                $classMethods                   = 0;
 
                 foreach ($class['methods'] as $method) {
                     if ($method['executableLines'] == 0) {
@@ -187,8 +235,12 @@ final class Text
                     }
 
                     $classMethods++;
-                    $classStatements += $method['executableLines'];
-                    $coveredClassStatements += $method['executedLines'];
+                    $classExecutableLines += $method['executableLines'];
+                    $classExecutedLines += $method['executedLines'];
+                    $classExecutableBranches += $method['executableBranches'];
+                    $classExecutedBranches += $method['executedBranches'];
+                    $classExecutablePaths += $method['executablePaths'];
+                    $classExecutedPaths += $method['executedPaths'];
 
                     if ($method['coverage'] == 100) {
                         $coveredMethods++;
@@ -206,29 +258,42 @@ final class Text
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,
-                    'statementsCovered' => $coveredClassStatements,
-                    'statementCount'    => $classStatements,
+                    'statementsCovered' => $classExecutedLines,
+                    'statementCount'    => $classExecutableLines,
+                    'branchesCovered'   => $classExecutedBranches,
+                    'branchesCount'     => $classExecutableBranches,
+                    'pathsCovered'      => $classExecutedPaths,
+                    'pathsCount'        => $classExecutablePaths,
                 ];
             }
         }
 
         \ksort($classCoverage);
 
-        $methodColor = '';
-        $linesColor  = '';
-        $resetColor  = '';
+        $methodColor    = '';
+        $pathsColor     = '';
+        $branchesColor  = '';
+        $linesColor     = '';
+        $resetColor     = '';
 
         foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
             if ($this->showUncoveredFiles || $classInfo['statementsCovered'] != 0) {
                 if ($showColors) {
-                    $methodColor = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
-                    $linesColor  = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
-                    $resetColor  = $colors['reset'];
+                    $methodColor    = $this->getCoverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
+                    $pathsColor     = $this->getCoverageColor($classInfo['pathsCovered'], $classInfo['pathsCount']);
+                    $branchesColor  = $this->getCoverageColor($classInfo['branchesCovered'], $classInfo['branchesCount']);
+                    $linesColor     = $this->getCoverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
+                    $resetColor     = $colors['reset'];
                 }
 
                 $output .= \PHP_EOL . $fullQualifiedPath . \PHP_EOL
-                    . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' '
-                    . '  ' . $linesColor . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor;
+                    . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' ';
+
+                if ($hasBranchCoverage) {
+                    $output .= '  ' . $pathsColor . 'Paths: ' . $this->printCoverageCounts($classInfo['pathsCovered'], $classInfo['pathsCount'], 3) . $resetColor . ' '
+                    . '  ' . $branchesColor . 'Branches: ' . $this->printCoverageCounts($classInfo['branchesCovered'], $classInfo['branchesCount'], 3) . $resetColor . ' ';
+                }
+                $output .= '  ' . $linesColor . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor;
             }
         }
 

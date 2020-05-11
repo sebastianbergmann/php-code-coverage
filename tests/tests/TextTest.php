@@ -16,13 +16,23 @@ use SebastianBergmann\CodeCoverage\TestCase;
  */
 final class TextTest extends TestCase
 {
-    public function testTextForBankAccountTest(): void
+    public function testLineCoverageForBankAccountTest(): void
     {
         $text = new Text(50, 90, false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-text.txt',
+            TEST_FILES_PATH . 'BankAccount-text-line.txt',
             \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
+        );
+    }
+
+    public function testPathCoverageForBankAccountTest(): void
+    {
+        $text = new Text(50, 90, false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccount-text-path.txt',
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getPathCoverageForBankAccount()))
         );
     }
 

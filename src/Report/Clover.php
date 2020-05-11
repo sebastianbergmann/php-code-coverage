@@ -139,12 +139,12 @@ final class Clover
                 $xmlMetrics->setAttribute('complexity', (string) $class['ccn']);
                 $xmlMetrics->setAttribute('methods', (string) $classMethods);
                 $xmlMetrics->setAttribute('coveredmethods', (string) $coveredMethods);
-                $xmlMetrics->setAttribute('conditionals', '0');
-                $xmlMetrics->setAttribute('coveredconditionals', '0');
+                $xmlMetrics->setAttribute('conditionals', (string) $class['executableBranches']);
+                $xmlMetrics->setAttribute('coveredconditionals', (string) $class['executedBranches']);
                 $xmlMetrics->setAttribute('statements', (string) $classStatements);
                 $xmlMetrics->setAttribute('coveredstatements', (string) $coveredClassStatements);
-                $xmlMetrics->setAttribute('elements', (string) ($classMethods + $classStatements /* + conditionals */));
-                $xmlMetrics->setAttribute('coveredelements', (string) ($coveredMethods + $coveredClassStatements /* + coveredconditionals */));
+                $xmlMetrics->setAttribute('elements', (string) ($classMethods + $classStatements + $class['executableBranches']));
+                $xmlMetrics->setAttribute('coveredelements', (string) ($coveredMethods + $coveredClassStatements + $class['executedBranches']));
                 $xmlClass->appendChild($xmlMetrics);
             }
 
@@ -193,12 +193,12 @@ final class Clover
             $xmlMetrics->setAttribute('classes', (string) $item->getNumClassesAndTraits());
             $xmlMetrics->setAttribute('methods', (string) $item->getNumMethods());
             $xmlMetrics->setAttribute('coveredmethods', (string) $item->getNumTestedMethods());
-            $xmlMetrics->setAttribute('conditionals', '0');
-            $xmlMetrics->setAttribute('coveredconditionals', '0');
+            $xmlMetrics->setAttribute('conditionals', (string) $item->getNumExecutableBranches());
+            $xmlMetrics->setAttribute('coveredconditionals', (string) $item->getNumExecutedBranches());
             $xmlMetrics->setAttribute('statements', (string) $item->getNumExecutableLines());
             $xmlMetrics->setAttribute('coveredstatements', (string) $item->getNumExecutedLines());
-            $xmlMetrics->setAttribute('elements', (string) ($item->getNumMethods() + $item->getNumExecutableLines() /* + conditionals */));
-            $xmlMetrics->setAttribute('coveredelements', (string) ($item->getNumTestedMethods() + $item->getNumExecutedLines() /* + coveredconditionals */));
+            $xmlMetrics->setAttribute('elements', (string) ($item->getNumMethods() + $item->getNumExecutableLines() + $item->getNumExecutableBranches()));
+            $xmlMetrics->setAttribute('coveredelements', (string) ($item->getNumTestedMethods() + $item->getNumExecutedLines() + $item->getNumExecutedBranches()));
             $xmlFile->appendChild($xmlMetrics);
 
             if ($namespace === 'global') {
@@ -226,12 +226,12 @@ final class Clover
         $xmlMetrics->setAttribute('classes', (string) $report->getNumClassesAndTraits());
         $xmlMetrics->setAttribute('methods', (string) $report->getNumMethods());
         $xmlMetrics->setAttribute('coveredmethods', (string) $report->getNumTestedMethods());
-        $xmlMetrics->setAttribute('conditionals', '0');
-        $xmlMetrics->setAttribute('coveredconditionals', '0');
+        $xmlMetrics->setAttribute('conditionals', (string) $report->getNumExecutableBranches());
+        $xmlMetrics->setAttribute('coveredconditionals', (string) $report->getNumExecutedBranches());
         $xmlMetrics->setAttribute('statements', (string) $report->getNumExecutableLines());
         $xmlMetrics->setAttribute('coveredstatements', (string) $report->getNumExecutedLines());
-        $xmlMetrics->setAttribute('elements', (string) ($report->getNumMethods() + $report->getNumExecutableLines() /* + conditionals */));
-        $xmlMetrics->setAttribute('coveredelements', (string) ($report->getNumTestedMethods() + $report->getNumExecutedLines() /* + coveredconditionals */));
+        $xmlMetrics->setAttribute('elements', (string) ($report->getNumMethods() + $report->getNumExecutableLines() + $report->getNumExecutableBranches()));
+        $xmlMetrics->setAttribute('coveredelements', (string) ($report->getNumTestedMethods() + $report->getNumExecutedLines() + $report->getNumExecutedBranches()));
         $xmlProject->appendChild($xmlMetrics);
 
         $buffer = $xmlDocument->saveXML();

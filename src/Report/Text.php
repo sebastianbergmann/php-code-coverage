@@ -200,16 +200,14 @@ final class Text
                     }
                 }
 
-                $namespace = '';
+                $package = '';
 
-                if (!empty($class['package']['namespace'])) {
-                    $namespace = '\\' . $class['package']['namespace'] . '::';
-                } elseif (!empty($class['package']['fullPackage'])) {
-                    $namespace = '@' . $class['package']['fullPackage'] . '::';
+                if (!empty($class['package']['fullPackage'])) {
+                    $package = '@' . $class['package']['fullPackage'] . '::';
                 }
 
-                $classCoverage[$namespace . $className] = [
-                    'namespace'         => $namespace,
+                $classCoverage[$package . $className] = [
+                    'namespace'         => $class['package']['namespace'],
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,

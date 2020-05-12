@@ -274,10 +274,13 @@ final class Text
         \sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    private function format($color, $padding, $string): string
+    /**
+     * @param false|string $string
+     */
+    private function format(string $color, int $padding, $string): string
     {
         $reset = $color ? self::COLOR_RESET : '';
 
-        return $color . \str_pad($string, $padding) . $reset . \PHP_EOL;
+        return $color . \str_pad((string) $string, $padding) . $reset . \PHP_EOL;
     }
 }

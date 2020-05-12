@@ -56,7 +56,7 @@ final class Iterator implements \RecursiveIterator
     /**
      * Returns the current element.
      */
-    public function current(): AbstractNode
+    public function current(): ?AbstractNode
     {
         return $this->valid() ? $this->nodes[$this->position] : null;
     }

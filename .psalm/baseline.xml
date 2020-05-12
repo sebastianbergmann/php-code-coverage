@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.11.1@8533b866ab1a46e5a69a4692ff57f10529dbfbeb">
+<files psalm-version="3.11.4@58e1d8e68e5098bf4fbfdfb420c38d563f882549">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="2">
       <code>$unit[0]</code>
@@ -81,12 +81,6 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$this-&gt;nodes[$this-&gt;position]</code>
     </ArgumentTypeCoercion>
-    <InvalidNullableReturnType occurrences="1">
-      <code>AbstractNode</code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;valid() ? $this-&gt;nodes[$this-&gt;position] : null</code>
-    </NullableReturnStatement>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

@@ -518,6 +518,10 @@ final class File extends AbstractNode
         $link   = $this->getId() . '.html#';
 
         foreach ($traits as $traitName => $trait) {
+            if (!empty($trait['package']['namespace'])) {
+                $traitName = $trait['package']['namespace'] . '\\' . $traitName;
+            }
+
             $this->traits[$traitName] = [
                 'traitName'       => $traitName,
                 'methods'         => [],

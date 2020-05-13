@@ -18,11 +18,6 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class Xdebug implements Driver
 {
     /**
-     * @var Filter
-     */
-    private $filter;
-
-    /**
      * @throws RuntimeException
      */
     public function __construct(Filter $filter)
@@ -35,8 +30,7 @@ final class Xdebug implements Driver
             throw new RuntimeException('xdebug.coverage_enable=On has to be set in php.ini');
         }
 
-        $this->filter = $filter;
-        \xdebug_set_filter(XDEBUG_FILTER_CODE_COVERAGE, XDEBUG_PATH_WHITELIST, $this->filter->getWhitelist());
+        \xdebug_set_filter(XDEBUG_FILTER_CODE_COVERAGE, XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
     }
 
     /**

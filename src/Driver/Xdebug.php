@@ -30,7 +30,7 @@ final class Xdebug implements Driver
     /**
      * @throws RuntimeException
      */
-    public function __construct(Filter $filter = null)
+    public function __construct(Filter $filter)
     {
         if (!\extension_loaded('xdebug')) {
             throw new RuntimeException('This driver requires Xdebug');
@@ -40,11 +40,8 @@ final class Xdebug implements Driver
             throw new RuntimeException('xdebug.coverage_enable=On has to be set in php.ini');
         }
 
-        if ($filter === null) {
-            $filter = new Filter;
-        }
-
         $this->filter = $filter;
+        \xdebug_set_filter(XDEBUG_FILTER_CODE_COVERAGE, XDEBUG_PATH_WHITELIST, $this->filter->getWhitelist());
     }
 
     /**

@@ -23,7 +23,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getXdebugDataForBankAccount()
     {
         return [
-            [
+            new RawCodeCoverageData([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
@@ -39,24 +39,24 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     31 => -1,
                     32 => -2,
                 ],
-            ],
-            [
+            ]),
+            new RawCodeCoverageData([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
                     16 => 1,
                     29 => 1,
                 ],
-            ],
-            [
+            ]),
+            new RawCodeCoverageData([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
                     16 => 1,
                     22 => 1,
                 ],
-            ],
-            [
+            ]),
+            new RawCodeCoverageData([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     13 => 1,
@@ -68,7 +68,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     29 => 1,
                     31 => 1,
                 ],
-            ],
+            ]),
         ];
     }
 
@@ -314,14 +314,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(
-                [
-                    TEST_FILES_PATH . 'source_with_ignore.php' => [
-                        2 => 1,
-                        4 => -1,
-                        6 => -1,
-                        7 => 1,
-                    ],
-                ]
+                new RawCodeCoverageData(
+                    [
+                        TEST_FILES_PATH . 'source_with_ignore.php' => [
+                            2 => 1,
+                            4 => -1,
+                            6 => -1,
+                            7 => 1,
+                        ],
+                    ]
+                )
             ));
 
         return $stub;
@@ -350,19 +352,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->returnValue(
-                [
-                    TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
-                        7  => 1,
-                        9  => 1,
-                        10 => -1,
-                        11 => 1,
-                        12 => 1,
-                        13 => 1,
-                        14 => 1,
-                        17 => 1,
-                        18 => 1,
-                    ],
-                ]
+                new RawCodeCoverageData(
+                    [
+                        TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
+                            7  => 1,
+                            9  => 1,
+                            10 => -1,
+                            11 => 1,
+                            12 => 1,
+                            13 => 1,
+                            14 => 1,
+                            17 => 1,
+                            18 => 1,
+                        ],
+                    ]
+                )
             ));
 
         return $stub;
@@ -386,7 +390,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub->expects($this->any())
             ->method('stop')
-            ->will($this->returnValue([]));
+            ->will($this->returnValue(new RawCodeCoverageData([])));
 
         return $stub;
     }

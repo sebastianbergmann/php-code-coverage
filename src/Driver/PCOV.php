@@ -9,11 +9,23 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use SebastianBergmann\CodeCoverage\Filter;
+
 /**
  * Driver for PCOV code coverage functionality.
  */
 final class PCOV implements Driver
 {
+    /**
+     * @var Filter
+     */
+    private $filter;
+
+    public function __construct(Filter $filter)
+    {
+        $this->filter = $filter;
+    }
+
     /**
      * Start collection of code coverage information.
      */
@@ -29,14 +41,9 @@ final class PCOV implements Driver
     {
         \pcov\stop();
 
-        $waiting = \pcov\waiting();
-        $collect = [];
+        $collect = \pcov\collect(\pcov\inclusive, $this->filter->getWhitelist());
 
-        if ($waiting) {
-            $collect = \pcov\collect(\pcov\inclusive, $waiting);
-
-            \pcov\clear();
-        }
+        \pcov\clear();
 
         return $collect;
     }

@@ -30,7 +30,7 @@ final class Xdebug implements Driver
             throw new RuntimeException('xdebug.coverage_enable=On has to be set in php.ini');
         }
 
-        \xdebug_set_filter(XDEBUG_FILTER_CODE_COVERAGE, XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
+        \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
     }
 
     /**
@@ -39,7 +39,7 @@ final class Xdebug implements Driver
     public function start(bool $determineUnusedAndDead = true): void
     {
         if ($determineUnusedAndDead) {
-            \xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+            \xdebug_start_code_coverage(\XDEBUG_CC_UNUSED | \XDEBUG_CC_DEAD_CODE);
         } else {
             \xdebug_start_code_coverage();
         }

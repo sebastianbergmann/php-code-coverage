@@ -897,7 +897,7 @@ final class CodeCoverage
         }
 
         if ($runtime->hasPCOV()) {
-            return new PCOV;
+            return new PCOV($filter);
         }
 
         if ($runtime->hasXdebug()) {

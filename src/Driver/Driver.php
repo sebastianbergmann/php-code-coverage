@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
+
 /**
  * Interface for code coverage drivers.
  */
@@ -43,5 +45,5 @@ interface Driver
     /**
      * Stop collection of code coverage information.
      */
-    public function stop(): array;
+    public function stop(): RawCodeCoverageData;
 }

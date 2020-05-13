@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
  * Driver for PCOV code coverage functionality.
@@ -37,7 +38,7 @@ final class PCOV implements Driver
     /**
      * Stop collection of code coverage information.
      */
-    public function stop(): array
+    public function stop(): RawCodeCoverageData
     {
         \pcov\stop();
 
@@ -45,6 +46,6 @@ final class PCOV implements Driver
 
         \pcov\clear();
 
-        return $collect;
+        return new RawCodeCoverageData($collect);
     }
 }

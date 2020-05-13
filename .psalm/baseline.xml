@@ -19,10 +19,10 @@
   </file>
   <file src="src/Driver/Xdebug.php">
     <UndefinedConstant occurrences="4">
-      <code>XDEBUG_FILTER_CODE_COVERAGE</code>
-      <code>XDEBUG_PATH_WHITELIST</code>
-      <code>XDEBUG_CC_UNUSED</code>
-      <code>XDEBUG_CC_DEAD_CODE</code>
+      <code>\XDEBUG_FILTER_CODE_COVERAGE</code>
+      <code>\XDEBUG_PATH_WHITELIST</code>
+      <code>\XDEBUG_CC_UNUSED</code>
+      <code>\XDEBUG_CC_DEAD_CODE</code>
     </UndefinedConstant>
   </file>
   <file src="src/Node/AbstractNode.php">

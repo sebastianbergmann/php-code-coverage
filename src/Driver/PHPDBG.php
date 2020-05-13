@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
@@ -45,7 +46,7 @@ final class PHPDBG implements Driver
     /**
      * Stop collection of code coverage information.
      */
-    public function stop(): array
+    public function stop(): RawCodeCoverageData
     {
         static $fetchedLines = [];
 
@@ -71,7 +72,7 @@ final class PHPDBG implements Driver
 
         $fetchedLines = \array_merge($fetchedLines, $sourceLines);
 
-        return $this->detectExecutedLines($fetchedLines, $dbgData);
+        return new RawCodeCoverageData($this->detectExecutedLines($fetchedLines, $dbgData));
     }
 
     /**

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
@@ -48,12 +49,12 @@ final class Xdebug implements Driver
     /**
      * Stop collection of code coverage information.
      */
-    public function stop(): array
+    public function stop(): RawCodeCoverageData
     {
         $data = \xdebug_get_code_coverage();
 
         \xdebug_stop_code_coverage();
 
-        return $data;
+        return new RawCodeCoverageData($data);
     }
 }

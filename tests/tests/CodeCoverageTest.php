@@ -44,7 +44,7 @@ class CodeCoverageTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $this->coverage->append(new RawCodeCoverageData([]), null);
+        $this->coverage->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage([]), null);
     }
 
     public function testCollect(): void
@@ -71,7 +71,7 @@ class CodeCoverageTest extends TestCase
     {
         $this->coverage->filter()->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = new RawCodeCoverageData([
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 29 => -1,
                 31 => -1,
@@ -310,7 +310,7 @@ class CodeCoverageTest extends TestCase
         $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
         $this->coverage->setCheckForUnexecutedCoveredCode(true);
 
-        $data = new RawCodeCoverageData([
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 29 => -1,
                 31 => -1,
@@ -336,7 +336,7 @@ class CodeCoverageTest extends TestCase
         $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
         $this->coverage->setCheckForUnexecutedCoveredCode(true);
 
-        $data = new RawCodeCoverageData([
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 29 => -1,
                 31 => -1,

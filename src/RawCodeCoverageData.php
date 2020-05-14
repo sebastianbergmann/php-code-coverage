@@ -21,19 +21,25 @@ final class RawCodeCoverageData
      */
     private $lineCoverage = [];
 
-    public function __construct(array $rawCoverage = [])
+    public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {
-        foreach ($rawCoverage as $file => $fileCoverageData) {
-            $hasOnlyIntegerKeys = \count(\array_filter(\array_keys($fileCoverageData), 'is_int')) === \count($fileCoverageData);
+        return new self($rawCoverage);
+    }
 
-            if ($hasOnlyIntegerKeys) {
-                $this->lineCoverage[$file] = $fileCoverageData;
-            } elseif (\count($fileCoverageData) === 2 && isset($fileCoverageData['lines'], $fileCoverageData['functions'])) {
-                $this->lineCoverage[$file] = $fileCoverageData['lines'];
-            } else {
-                throw UnknownCoverageDataFormatException::create($file);
-            }
+    public static function fromXdebugWithPathCoverage(array $rawCoverage): self
+    {
+        $lineCoverage = [];
+
+        foreach ($rawCoverage as $file => $fileCoverageData) {
+            $lineCoverage[$file] = $fileCoverageData['lines'];
         }
+
+        return new self($lineCoverage);
+    }
+
+    private function __construct(array $lineCoverage)
+    {
+        $this->lineCoverage = $lineCoverage;
     }
 
     public function clear(): void

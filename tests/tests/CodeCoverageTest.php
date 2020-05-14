@@ -53,7 +53,7 @@ class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $coverage->getData()->getLineCoverage()
         );
 
         $this->assertEquals(
@@ -67,6 +67,26 @@ class CodeCoverageTest extends TestCase
         );
     }
 
+    public function testWhitelistFiltering(): void
+    {
+        $this->coverage->filter()->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+
+        $data = new RawCodeCoverageData([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                29 => -1,
+                31 => -1,
+            ],
+            TEST_FILES_PATH . 'CoverageClassTest.php' => [
+                29 => -1,
+                31 => -1,
+            ],
+        ]);
+
+        $this->coverage->append($data, 'A test', true);
+        $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $this->coverage->getData()->getCoveredFiles());
+        $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->getData()->getCoveredFiles());
+    }
+
     public function testMerge(): void
     {
         $coverage = $this->getCoverageForBankAccountForFirstTwoTests();
@@ -74,7 +94,7 @@ class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $coverage->getData()->getLineCoverage()
         );
     }
 
@@ -85,7 +105,7 @@ class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccountInReverseOrder(),
-            $coverage->getData()
+            $coverage->getData()->getLineCoverage()
         );
     }
 
@@ -100,7 +120,7 @@ class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedDataArrayForBankAccount(),
-            $coverage->getData()
+            $coverage->getData()->getLineCoverage()
         );
     }
 

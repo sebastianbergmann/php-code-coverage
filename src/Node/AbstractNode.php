@@ -113,7 +113,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of classes that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedClassesPercent(bool $asString = true)
     {
@@ -127,7 +127,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of traits that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedTraitsPercent(bool $asString = true)
     {
@@ -141,7 +141,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of classes and traits that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedClassesAndTraitsPercent(bool $asString = true)
     {
@@ -155,7 +155,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of functions that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedFunctionsPercent(bool $asString = true)
     {
@@ -169,7 +169,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of methods that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedMethodsPercent(bool $asString = true)
     {
@@ -183,7 +183,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of functions and methods that has been tested.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getTestedFunctionsAndMethodsPercent(bool $asString = true)
     {
@@ -197,7 +197,7 @@ abstract class AbstractNode implements \Countable
     /**
      * Returns the percentage of executed lines.
      *
-     * @return int|string
+     * @return float|int|string
      */
     public function getLineExecutedPercent(bool $asString = true)
     {

@@ -26,16 +26,6 @@
     </UndefinedConstant>
   </file>
   <file src="src/Node/AbstractNode.php">
-    <InvalidReturnStatement occurrences="7"/>
-    <InvalidReturnType occurrences="7">
-      <code>int|string</code>
-      <code>int|string</code>
-      <code>int|string</code>
-      <code>int|string</code>
-      <code>int|string</code>
-      <code>int|string</code>
-      <code>int|string</code>
-    </InvalidReturnType>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>$parent</code>
     </PossiblyNullPropertyAssignmentValue>

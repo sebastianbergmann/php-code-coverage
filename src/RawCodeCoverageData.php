@@ -15,13 +15,11 @@ namespace SebastianBergmann\CodeCoverage;
 final class RawCodeCoverageData
 {
     /**
-     * Line coverage data.
+     * @var array
      *
      * @see https://xdebug.org/docs/code_coverage for format
-     *
-     * @var array
      */
-    private $lineData = [];
+    private $lineCoverage = [];
 
     public function __construct(array $rawCoverage = [])
     {
@@ -29,9 +27,9 @@ final class RawCodeCoverageData
             $hasOnlyIntegerKeys = \count(\array_filter(\array_keys($fileCoverageData), 'is_int')) === \count($fileCoverageData);
 
             if ($hasOnlyIntegerKeys) {
-                $this->lineData[$file] = $fileCoverageData;
+                $this->lineCoverage[$file] = $fileCoverageData;
             } elseif (\count($fileCoverageData) === 2 && isset($fileCoverageData['lines'], $fileCoverageData['functions'])) {
-                $this->lineData[$file] = $fileCoverageData['lines'];
+                $this->lineCoverage[$file] = $fileCoverageData['lines'];
             } else {
                 throw UnknownCoverageDataFormatException::create($file);
             }
@@ -40,17 +38,17 @@ final class RawCodeCoverageData
 
     public function clear(): void
     {
-        $this->lineData = [];
+        $this->lineCoverage = [];
     }
 
-    public function getLineData(): array
+    public function getLineCoverage(): array
     {
-        return $this->lineData;
+        return $this->lineCoverage;
     }
 
     public function removeCoverageDataForFile(string $filename): void
     {
-        unset($this->lineData[$filename]);
+        unset($this->lineCoverage[$filename]);
     }
 
     /**
@@ -58,7 +56,10 @@ final class RawCodeCoverageData
      */
     public function keepCoverageDataOnlyForLines(string $filename, array $lines): void
     {
-        $this->lineData[$filename] = \array_intersect_key($this->lineData[$filename], \array_flip($lines));
+        $this->lineCoverage[$filename] = \array_intersect_key(
+            $this->lineCoverage[$filename],
+            \array_flip($lines)
+        );
     }
 
     /**
@@ -66,6 +67,9 @@ final class RawCodeCoverageData
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
-        $this->lineData[$filename] = \array_diff_key($this->lineData[$filename], \array_flip($lines));
+        $this->lineCoverage[$filename] = \array_diff_key(
+            $this->lineCoverage[$filename],
+            \array_flip($lines)
+        );
     }
 }

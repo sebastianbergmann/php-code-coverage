@@ -517,7 +517,7 @@ final class CodeCoverage
             }
         }
 
-        $this->append(new RawCodeCoverageData($data), 'UNCOVERED_FILES_FROM_WHITELIST');
+        $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), 'UNCOVERED_FILES_FROM_WHITELIST');
     }
 
     private function getLinesToBeIgnored(string $fileName): array
@@ -887,7 +887,7 @@ final class CodeCoverage
                 $data[$file] = $fileCoverage;
             }
 
-            $this->append(new RawCodeCoverageData($data), 'UNCOVERED_FILES_FROM_WHITELIST');
+            $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), 'UNCOVERED_FILES_FROM_WHITELIST');
         }
     }
 

@@ -46,6 +46,6 @@ final class PCOV implements Driver
 
         \pcov\clear();
 
-        return new RawCodeCoverageData($collect);
+        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($collect);
     }
 }

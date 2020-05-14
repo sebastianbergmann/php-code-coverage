@@ -72,7 +72,7 @@ final class PHPDBG implements Driver
 
         $fetchedLines = \array_merge($fetchedLines, $sourceLines);
 
-        return new RawCodeCoverageData($this->detectExecutedLines($fetchedLines, $dbgData));
+        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($this->detectExecutedLines($fetchedLines, $dbgData));
     }
 
     /**

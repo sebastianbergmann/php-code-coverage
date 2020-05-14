@@ -55,6 +55,6 @@ final class Xdebug implements Driver
 
         \xdebug_stop_code_coverage();
 
-        return new RawCodeCoverageData($data);
+        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
     }
 }

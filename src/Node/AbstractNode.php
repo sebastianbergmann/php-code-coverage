@@ -43,7 +43,7 @@ abstract class AbstractNode implements \Countable
 
     public function __construct(string $name, self $parent = null)
     {
-        if (\substr($name, -1) == \DIRECTORY_SEPARATOR) {
+        if (\substr($name, -1) === \DIRECTORY_SEPARATOR) {
             $name = \substr($name, 0, -1);
         }
 

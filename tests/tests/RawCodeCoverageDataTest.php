@@ -25,7 +25,7 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = new RawCodeCoverageData($lineDataFromDriver);
-        $this->assertEquals($lineDataFromDriver, $dataObject->getLineData());
+        $this->assertEquals($lineDataFromDriver, $dataObject->getLineCoverage());
     }
 
     /**
@@ -55,7 +55,7 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = new RawCodeCoverageData($rawDataFromDriver);
-        $this->assertEquals($lineData, $dataObject->getLineData());
+        $this->assertEquals($lineData, $dataObject->getLineCoverage());
     }
 
     /**
@@ -94,7 +94,7 @@ class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = new RawCodeCoverageData($lineDataFromDriver);
         $dataObject->clear();
-        $this->assertEmpty($dataObject->getLineData());
+        $this->assertEmpty($dataObject->getLineCoverage());
     }
 
     public function testRemoveCoverageDataForFile(): void
@@ -132,7 +132,7 @@ class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = new RawCodeCoverageData($lineDataFromDriver);
         $dataObject->removeCoverageDataForFile('/some/path/SomeOtherClass.php');
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineData());
+        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 
     public function testKeepCoverageDataOnlyForLines(): void
@@ -171,7 +171,7 @@ class RawCodeCoverageDataTest extends TestCase
         $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
         $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->keepCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineData());
+        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 
     public function testRemoveCoverageDataForLines(): void
@@ -213,6 +213,6 @@ class RawCodeCoverageDataTest extends TestCase
         $dataObject->removeCoverageDataForLines('/some/path/SomeClass.php', [9, 13]);
         $dataObject->removeCoverageDataForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->removeCoverageDataForLines('/some/path/AnotherClass.php', [28]);
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineData());
+        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 }

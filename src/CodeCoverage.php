@@ -312,7 +312,7 @@ final class CodeCoverage
             );
         }
 
-        if (empty($rawData->getLineData())) {
+        if (empty($rawData->getLineCoverage())) {
             return;
         }
 
@@ -339,7 +339,7 @@ final class CodeCoverage
 
         $this->tests[$id] = ['size' => $size, 'status' => $status];
 
-        foreach ($rawData->getLineData() as $file => $lines) {
+        foreach ($rawData->getLineCoverage() as $file => $lines) {
             if (!$this->filter->isFile($file)) {
                 continue;
             }
@@ -526,7 +526,7 @@ final class CodeCoverage
             $this->performUnexecutedCoveredCodeCheck($rawData, $linesToBeCovered, $linesToBeUsed);
         }
 
-        $rawLineData         = $rawData->getLineData();
+        $rawLineData         = $rawData->getLineCoverage();
         $filesWithNoCoverage = \array_diff_key($rawLineData, $linesToBeCovered);
 
         foreach (\array_keys($filesWithNoCoverage) as $fileWithNoCoverage) {
@@ -542,7 +542,7 @@ final class CodeCoverage
 
     private function applyWhitelistFilter(RawCodeCoverageData $data): void
     {
-        foreach (\array_keys($data->getLineData()) as $filename) {
+        foreach (\array_keys($data->getLineCoverage()) as $filename) {
             if ($this->filter->isFiltered($filename)) {
                 $data->removeCoverageDataForFile($filename);
             }
@@ -554,14 +554,14 @@ final class CodeCoverage
      */
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
-        foreach (\array_keys($data->getLineData()) as $filename) {
+        foreach (\array_keys($data->getLineCoverage()) as $filename) {
             $data->removeCoverageDataForLines($filename, $this->getLinesToBeIgnored($filename));
         }
     }
 
     private function initializeFilesThatAreSeenTheFirstTime(RawCodeCoverageData $data): void
     {
-        foreach ($data->getLineData() as $file => $lines) {
+        foreach ($data->getLineCoverage() as $file => $lines) {
             if (!isset($this->data[$file]) && $this->filter->isFile($file)) {
                 $this->data[$file] = [];
 
@@ -802,7 +802,7 @@ final class CodeCoverage
 
         $unintentionallyCoveredUnits = [];
 
-        foreach ($data->getLineData() as $file => $_data) {
+        foreach ($data->getLineCoverage() as $file => $_data) {
             foreach ($_data as $line => $flag) {
                 if ($flag === 1 && !isset($allowedLines[$file][$line])) {
                     $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
@@ -958,7 +958,7 @@ final class CodeCoverage
 
             $data = [];
 
-            foreach ($this->driver->stop()->getLineData() as $file => $fileCoverage) {
+            foreach ($this->driver->stop()->getLineCoverage() as $file => $fileCoverage) {
                 if ($this->filter->isFiltered($file)) {
                     continue;
                 }
@@ -980,7 +980,7 @@ final class CodeCoverage
     {
         $codeUnits = [];
 
-        foreach ($rawData->getLineData() as $filename => $lines) {
+        foreach ($rawData->getLineCoverage() as $filename => $lines) {
             foreach ($lines as $line => $flag) {
                 if ($flag === 1) {
                     $codeUnits[] = $this->wizard->lookup($filename, $line);

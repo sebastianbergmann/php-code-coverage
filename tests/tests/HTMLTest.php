@@ -26,16 +26,7 @@ class HTMLTest extends TestCase
     {
         parent::tearDown();
 
-        $tmpFilesIterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(self::$TEST_TMP_PATH, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($tmpFilesIterator as $path => $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
-            $pathname = $fileInfo->getPathname();
-            $fileInfo->isDir() ? \rmdir($pathname) : \unlink($pathname);
-        }
+        $this->removeTemporaryFiles();
     }
 
     public function testForBankAccountTest(): void

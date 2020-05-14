@@ -89,9 +89,9 @@ final class CodeCoverage
     /**
      * Code coverage data.
      *
-     * @var array
+     * @var ProcessedCodeCoverageData
      */
-    private $data = [];
+    private $data;
 
     /**
      * @var array
@@ -151,6 +151,7 @@ final class CodeCoverage
         $this->filter = $filter;
 
         $this->wizard = new Wizard;
+        $this->data   = new ProcessedCodeCoverageData();
     }
 
     /**
@@ -172,7 +173,7 @@ final class CodeCoverage
     {
         $this->isInitialized = false;
         $this->currentId     = null;
-        $this->data          = [];
+        $this->data          = new ProcessedCodeCoverageData();
         $this->tests         = [];
         $this->report        = null;
     }
@@ -188,7 +189,7 @@ final class CodeCoverage
     /**
      * Returns the collected code coverage data.
      */
-    public function getData(bool $raw = false): array
+    public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
         if (!$raw && $this->addUncoveredFilesFromWhitelist) {
             $this->addUncoveredFilesFromWhitelist();
@@ -200,7 +201,7 @@ final class CodeCoverage
     /**
      * Sets the coverage data.
      */
-    public function setData(array $data): void
+    public function setData(ProcessedCodeCoverageData $data): void
     {
         $this->data   = $data;
         $this->report = null;
@@ -297,7 +298,7 @@ final class CodeCoverage
 
         $this->applyWhitelistFilter($rawData);
         $this->applyIgnoredLinesFilter($rawData);
-        $this->initializeFilesThatAreSeenTheFirstTime($rawData);
+        $this->data->initializeFilesThatAreSeenTheFirstTime($rawData);
 
         if (!$append) {
             return;
@@ -339,19 +340,7 @@ final class CodeCoverage
 
         $this->tests[$id] = ['size' => $size, 'status' => $status];
 
-        foreach ($rawData->getLineCoverage() as $file => $lines) {
-            if (!$this->filter->isFile($file)) {
-                continue;
-            }
-
-            foreach ($lines as $k => $v) {
-                if ($v === Driver::LINE_EXECUTED) {
-                    if (empty($this->data[$file][$k]) || !\in_array($id, $this->data[$file][$k])) {
-                        $this->data[$file][$k][] = $id;
-                    }
-                }
-            }
-        }
+        $this->data->markCodeAsExecutedByTestCase($id, $rawData);
 
         $this->report = null;
     }
@@ -367,36 +356,7 @@ final class CodeCoverage
             \array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
         );
 
-        foreach ($that->data as $file => $lines) {
-            if (!isset($this->data[$file])) {
-                if (!$this->filter->isFiltered($file)) {
-                    $this->data[$file] = $lines;
-                }
-
-                continue;
-            }
-
-            // we should compare the lines if any of two contains data
-            $compareLineNumbers = \array_unique(
-                \array_merge(
-                    \array_keys($this->data[$file]),
-                    \array_keys($that->data[$file])
-                )
-            );
-
-            foreach ($compareLineNumbers as $line) {
-                $thatPriority = $this->getLinePriority($that->data[$file], $line);
-                $thisPriority = $this->getLinePriority($this->data[$file], $line);
-
-                if ($thatPriority > $thisPriority) {
-                    $this->data[$file][$line] = $that->data[$file][$line];
-                } elseif ($thatPriority === $thisPriority && \is_array($this->data[$file][$line])) {
-                    $this->data[$file][$line] = \array_unique(
-                        \array_merge($this->data[$file][$line], $that->data[$file][$line])
-                    );
-                }
-            }
-        }
+        $this->data->merge($that->data);
 
         $this->tests  = \array_merge($this->tests, $that->getTests());
         $this->report = null;
@@ -455,38 +415,6 @@ final class CodeCoverage
     public function setUnintentionallyCoveredSubclassesWhitelist(array $whitelist): void
     {
         $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
-    }
-
-    /**
-     * Determine the priority for a line
-     *
-     * 1 = the line is not set
-     * 2 = the line has not been tested
-     * 3 = the line is dead code
-     * 4 = the line has been tested
-     *
-     * During a merge, a higher number is better.
-     *
-     * @param array $data
-     * @param int   $line
-     *
-     * @return int
-     */
-    private function getLinePriority($data, $line)
-    {
-        if (!\array_key_exists($line, $data)) {
-            return 1;
-        }
-
-        if (\is_array($data[$line]) && \count($data[$line]) === 0) {
-            return 2;
-        }
-
-        if ($data[$line] === null) {
-            return 3;
-        }
-
-        return 4;
     }
 
     /**
@@ -559,19 +487,6 @@ final class CodeCoverage
         }
     }
 
-    private function initializeFilesThatAreSeenTheFirstTime(RawCodeCoverageData $data): void
-    {
-        foreach ($data->getLineCoverage() as $file => $lines) {
-            if (!isset($this->data[$file]) && $this->filter->isFile($file)) {
-                $this->data[$file] = [];
-
-                foreach ($lines as $k => $v) {
-                    $this->data[$file][$k] = $v === -2 ? null : [];
-                }
-            }
-        }
-    }
-
     /**
      * @throws CoveredCodeNotExecutedException
      * @throws InvalidArgumentException
@@ -585,7 +500,7 @@ final class CodeCoverage
         $data           = [];
         $uncoveredFiles = \array_diff(
             $this->filter->getWhitelist(),
-            \array_keys($this->data)
+            \array_keys($this->data->getLineCoverage())
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 class BuilderTest extends TestCase
@@ -134,7 +135,7 @@ class BuilderTest extends TestCase
         $this->assertEquals($expectedPath, $root->getPath());
         $this->assertEquals(2, $root->getNumExecutableLines());
         $this->assertEquals(0, $root->getNumExecutedLines());
-        $data         = $coverage->getData();
+        $data         = $coverage->getData()->getLineCoverage();
         $expectedFile = $expectedPath . \DIRECTORY_SEPARATOR . 'Crash.php';
         $this->assertSame([$expectedFile => [1 => [], 2 => []]], $data);
     }
@@ -166,11 +167,11 @@ class BuilderTest extends TestCase
             ],
             $method->invoke(
                 $this->factory,
-                [
+                $this->pathsToProcessedDataObjectHelper([
                     "src{$s}Money.php"                    => [],
                     "src{$s}MoneyBag.php"                 => [],
                     "src{$s}Foo{$s}Bar{$s}Baz{$s}Foo.php" => [],
-                ]
+                ])
             )
         );
     }
@@ -178,7 +179,7 @@ class BuilderTest extends TestCase
     /**
      * @dataProvider reducePathsProvider
      */
-    public function testReducePaths($reducedPaths, $commonPath, $paths): void
+    public function testReducePaths(array $reducedPaths, string $commonPath, ProcessedCodeCoverageData $paths): void
     {
         $method = new \ReflectionMethod(
             Builder::class,
@@ -187,9 +188,9 @@ class BuilderTest extends TestCase
 
         $method->setAccessible(true);
 
-        $_commonPath = $method->invokeArgs($this->factory, [&$paths]);
+        $_commonPath = $method->invokeArgs($this->factory, [$paths]);
 
-        $this->assertEquals($reducedPaths, $paths);
+        $this->assertEquals($reducedPaths, $paths->getLineCoverage());
         $this->assertEquals($commonPath, $_commonPath);
     }
 
@@ -200,7 +201,7 @@ class BuilderTest extends TestCase
         yield [
             [],
             '.',
-            [],
+            $this->pathsToProcessedDataObjectHelper([]),
         ];
 
         $prefixes = ["C:$s", "$s"];
@@ -211,9 +212,9 @@ class BuilderTest extends TestCase
                     'Money.php' => [],
                 ],
                 "{$p}home{$s}sb{$s}Money{$s}",
-                [
+                $this->pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php" => [],
-                ],
+                ]),
             ];
 
             yield [
@@ -222,10 +223,10 @@ class BuilderTest extends TestCase
                     'MoneyBag.php' => [],
                 ],
                 "{$p}home{$s}sb{$s}Money",
-                [
+                $this->pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php"    => [],
                     "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php" => [],
-                ],
+                ]),
             ];
 
             yield [
@@ -235,12 +236,20 @@ class BuilderTest extends TestCase
                     "Cash.phar{$s}Cash.php" => [],
                 ],
                 "{$p}home{$s}sb{$s}Money",
-                [
+                $this->pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php"                    => [],
                     "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php"                 => [],
                     "phar://{$p}home{$s}sb{$s}Money{$s}Cash.phar{$s}Cash.php" => [],
-                ],
+                ]),
             ];
         }
+    }
+
+    private function pathsToProcessedDataObjectHelper(array $paths): ProcessedCodeCoverageData
+    {
+        $coverage = new ProcessedCodeCoverageData();
+        $coverage->setLineCoverage($paths);
+
+        return $coverage;
     }
 }

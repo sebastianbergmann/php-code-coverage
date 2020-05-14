@@ -10,13 +10,14 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 
 final class Builder
 {
     public function build(CodeCoverage $coverage): Directory
     {
-        $files      = $coverage->getData();
-        $commonPath = $this->reducePaths($files);
+        $data       = clone $coverage->getData(); // clone because path munging is destructive to the original data
+        $commonPath = $this->reducePaths($data);
         $root       = new Directory(
             $commonPath,
             null
@@ -24,7 +25,7 @@ final class Builder
 
         $this->addItems(
             $root,
-            $this->buildDirectoryStructure($files),
+            $this->buildDirectoryStructure($data),
             $coverage->getTests(),
             $coverage->getCacheTokens()
         );
@@ -90,8 +91,9 @@ final class Builder
      * )
      * </code>
      */
-    private function buildDirectoryStructure(array $files): array
+    private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {
+        $files  = $data->getLineCoverage();
         $result = [];
 
         foreach ($files as $path => $file) {
@@ -152,20 +154,18 @@ final class Builder
      * )
      * </code>
      */
-    private function reducePaths(array &$files): string
+    private function reducePaths(ProcessedCodeCoverageData $coverage): string
     {
-        if (empty($files)) {
+        if (empty($coverage->getCoveredFiles())) {
             return '.';
         }
 
         $commonPath = '';
-        $paths      = \array_keys($files);
+        $paths      = $coverage->getCoveredFiles();
 
-        if (\count($files) === 1) {
+        if (\count($paths) === 1) {
             $commonPath                  = \dirname($paths[0]) . \DIRECTORY_SEPARATOR;
-            $files[\basename($paths[0])] = $files[$paths[0]];
-
-            unset($files[$paths[0]]);
+            $coverage->renameFile($paths[0], \basename($paths[0]));
 
             return $commonPath;
         }
@@ -212,15 +212,12 @@ final class Builder
             }
         }
 
-        $original = \array_keys($files);
+        $original = $coverage->getCoveredFiles();
         $max      = \count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $files[\implode(\DIRECTORY_SEPARATOR, $paths[$i])] = $files[$original[$i]];
-            unset($files[$original[$i]]);
+            $coverage->renameFile($original[$i], \implode(\DIRECTORY_SEPARATOR, $paths[$i]));
         }
-
-        \ksort($files);
 
         return \substr($commonPath, 0, -1);
     }

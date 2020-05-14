@@ -178,7 +178,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $coverage;
     }
 
-    protected function getCoverageForBankAccountForLastTwoTests()
+    protected function getCoverageForBankAccountForLastTwoTests(): CodeCoverage
     {
         $data = $this->getXdebugDataForBankAccount();
 
@@ -393,5 +393,19 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue(new RawCodeCoverageData([])));
 
         return $stub;
+    }
+
+    protected function removeTemporaryFiles(): void
+    {
+        $tmpFilesIterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(self::$TEST_TMP_PATH, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($tmpFilesIterator as $path => $fileInfo) {
+            /* @var \SplFileInfo $fileInfo */
+            $pathname = $fileInfo->getPathname();
+            $fileInfo->isDir() ? \rmdir($pathname) : \unlink($pathname);
+        }
     }
 }

@@ -17,7 +17,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException
     /**
      * @var array
      */
-    private $unintentionallyCoveredUnits = [];
+    private $unintentionallyCoveredUnits;
 
     public function __construct(array $unintentionallyCoveredUnits)
     {

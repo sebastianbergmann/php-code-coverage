@@ -22,21 +22,10 @@ final class PHP
      */
     public function process(CodeCoverage $coverage, ?string $target = null): string
     {
-        $filter = $coverage->filter();
-
         $buffer = \sprintf(
             '<?php
-$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
-$coverage->setData(%s);
-$coverage->setTests(%s);
-
-$filter = $coverage->filter();
-$filter->setWhitelistedFiles(%s);
-
-return $coverage;',
-            \var_export($coverage->getData(true), true),
-            \var_export($coverage->getTests(), true),
-            \var_export($filter->getWhitelistedFiles(), true)
+return \unserialize(\'%s\');',
+            \serialize($coverage)
         );
 
         if ($target !== null) {

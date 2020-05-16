@@ -21,30 +21,43 @@ final class RawCodeCoverageData
      */
     private $lineCoverage = [];
 
+    /**
+     * @var array
+     *
+     * @see https://xdebug.org/docs/code_coverage for format
+     */
+    private $functionCoverage = [];
+
     public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {
-        return new self($rawCoverage);
+        return new self($rawCoverage, []);
     }
 
     public static function fromXdebugWithPathCoverage(array $rawCoverage): self
     {
-        $lineCoverage = [];
+        $lineCoverage = $functionCoverage = [];
 
         foreach ($rawCoverage as $file => $fileCoverageData) {
-            $lineCoverage[$file] = $fileCoverageData['lines'];
+            if (isset($fileCoverageData['functions'])) {
+                $lineCoverage[$file]     = $fileCoverageData['lines'];
+                $functionCoverage[$file] = $fileCoverageData['functions'];
+            } else { // not every file has functions, Xdebug outputs just line data for these
+                $lineCoverage[$file] = $fileCoverageData;
+            }
         }
 
-        return new self($lineCoverage);
+        return new self($lineCoverage, $functionCoverage);
     }
 
-    private function __construct(array $lineCoverage)
+    private function __construct(array $lineCoverage, array $functionCoverage)
     {
-        $this->lineCoverage = $lineCoverage;
+        $this->lineCoverage     = $lineCoverage;
+        $this->functionCoverage = $functionCoverage;
     }
 
     public function clear(): void
     {
-        $this->lineCoverage = [];
+        $this->lineCoverage = $this->functionCoverage = [];
     }
 
     public function getLineCoverage(): array
@@ -54,7 +67,7 @@ final class RawCodeCoverageData
 
     public function removeCoverageDataForFile(string $filename): void
     {
-        unset($this->lineCoverage[$filename]);
+        unset($this->lineCoverage[$filename], $this->functionCoverage[$filename]);
     }
 
     /**

@@ -151,7 +151,7 @@ final class CodeCoverage
         $this->filter = $filter;
 
         $this->wizard = new Wizard;
-        $this->data   = new ProcessedCodeCoverageData();
+        $this->data   = new ProcessedCodeCoverageData;
     }
 
     /**

@@ -247,7 +247,7 @@ class BuilderTest extends TestCase
 
     private function pathsToProcessedDataObjectHelper(array $paths): ProcessedCodeCoverageData
     {
-        $coverage = new ProcessedCodeCoverageData();
+        $coverage = new ProcessedCodeCoverageData;
         $coverage->setLineCoverage($paths);
 
         return $coverage;

@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\TestCase;
 
-class PHPTest extends TestCase
+final class PHPTest extends TestCase
 {
     protected function tearDown(): void
     {

@@ -24,10 +24,10 @@ final class PHPTest extends TestCase
     {
         $coverage = $this->getCoverageForBankAccount();
 
-        (new PHP())->process($coverage, self::$TEST_TMP_PATH . '/serialised.php');
+        (new PHP())->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
 
-        $unserialised = require self::$TEST_TMP_PATH . '/serialised.php';
+        $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';
 
-        $this->assertEquals($coverage, $unserialised);
+        $this->assertEquals($coverage, $unserialized);
     }
 }

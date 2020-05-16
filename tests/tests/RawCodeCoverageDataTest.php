@@ -30,7 +30,8 @@ final class RawCodeCoverageDataTest extends TestCase
     }
 
     /**
-     * In the path-coverage XDebug format, the line data exists inside a "lines" array key.
+     * In the path-coverage XDebug format, the line data exists inside a "lines" array key where the file has
+     * classes or functions. For files without them, the data is stored in the line-only format.
      */
     public function testLineDataFromPathCoverageXDebugFormat(): void
     {
@@ -45,6 +46,11 @@ final class RawCodeCoverageDataTest extends TestCase
 
                 ],
             ],
+            '/some/path/justAScript.php' => [
+                18  => 1,
+                19  => -2,
+                113 => -1,
+            ],
         ];
 
         $lineData = [
@@ -52,6 +58,11 @@ final class RawCodeCoverageDataTest extends TestCase
                 8  => 1,
                 9  => -2,
                 13 => -1,
+            ],
+            '/some/path/justAScript.php' => [
+                18  => 1,
+                19  => -2,
+                113 => -1,
             ],
         ];
 

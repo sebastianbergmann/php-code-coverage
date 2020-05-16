@@ -24,6 +24,7 @@ final class PHPTest extends TestCase
     {
         $coverage = $this->getCoverageForBankAccount();
 
+        /** @noinspection UnusedFunctionResultInspection */
         (new PHP())->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
 
         $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';

@@ -26,6 +26,26 @@ class TextTest extends TestCase
         );
     }
 
+    public function testTextOnlySummaryForBankAccountTest(): void
+    {
+        $text = new Text(50, 90, false, true);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccount-text-summary.txt',
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()))
+        );
+    }
+
+    public function testTextForNamespacedBankAccountTest(): void
+    {
+        $text = new Text(50, 90, true, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForNamespacedBankAccount()))
+        );
+    }
+
     public function testTextForFileWithIgnoredLines(): void
     {
         $text = new Text(50, 90, false, false);

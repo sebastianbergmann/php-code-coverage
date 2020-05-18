@@ -138,6 +138,124 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $coverage;
     }
 
+    protected function getXdebugDataForNamespacedBankAccount()
+    {
+        return [
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    14  => 1,
+                    15  => -2,
+                    19  => -1,
+                    20  => -1,
+                    21  => -1,
+                    22  => -1,
+                    24  => -1,
+                    28  => -1,
+                    30  => -1,
+                    31  => -2,
+                    35  => -1,
+                    37  => -1,
+                    38  => -2,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    14  => 1,
+                    19  => 1,
+                    22  => 1,
+                    35  => 1,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    14  => 1,
+                    19  => 1,
+                    22  => 1,
+                    28  => 1,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    14  => 1,
+                    19  => 1,
+                    20  => 1,
+                    21  => 1,
+                    24  => 1,
+                    28  => 1,
+                    30  => 1,
+                    35  => 1,
+                    37  => 1,
+                ],
+            ]),
+        ];
+    }
+
+    protected function getCoverageForNamespacedBankAccount(): CodeCoverage
+    {
+        $data = $this->getXdebugDataForNamespacedBankAccount();
+
+        $stub = $this->createMock(Driver::class);
+
+        $stub->expects($this->any())
+            ->method('stop')
+            ->will($this->onConsecutiveCalls(
+                $data[0],
+                $data[1],
+                $data[2],
+                $data[3]
+            ));
+
+        $filter = new Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->start(
+            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            true
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(12, 15)]
+        );
+
+        $coverage->start(
+            new \BankAccountTest('testBalanceCannotBecomeNegative')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(33, 38)]
+        );
+
+        $coverage->start(
+            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(26, 31)]
+        );
+
+        $coverage->start(
+            new \BankAccountTest('testDepositWithdrawMoney')
+        );
+
+        $coverage->stop(
+            true,
+            [
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => \array_merge(
+                    \range(12, 15),
+                    \range(26, 31),
+                    \range(33, 38)
+                ),
+            ]
+        );
+
+        return $coverage;
+    }
+
     protected function getCoverageForBankAccountForFirstTwoTests(): CodeCoverage
     {
         $data = $this->getXdebugDataForBankAccount();

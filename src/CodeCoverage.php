@@ -123,13 +123,6 @@ final class CodeCoverage
     private $isInitialized = false;
 
     /**
-     * Determine whether we need to check for dead and unused code on each test
-     *
-     * @var bool
-     */
-    private $shouldCheckForDeadAndUnused = true;
-
-    /**
      * @var Directory
      */
     private $report;
@@ -242,7 +235,7 @@ final class CodeCoverage
 
         $this->currentId = $id;
 
-        $this->driver->start($this->shouldCheckForDeadAndUnused);
+        $this->driver->start();
     }
 
     /**
@@ -415,6 +408,11 @@ final class CodeCoverage
     public function setUnintentionallyCoveredSubclassesWhitelist(array $whitelist): void
     {
         $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
+    }
+
+    public function setBranchAndPathCollection(bool $flag): void
+    {
+        $this->driver->collectBranchAndPathCoverage($flag);
     }
 
     /**
@@ -861,7 +859,11 @@ final class CodeCoverage
         $this->isInitialized = true;
 
         if ($this->processUncoveredFilesFromWhitelist) {
-            $this->shouldCheckForDeadAndUnused = false;
+
+            // by collecting dead code data here on an initial pass, future runs with test data do not need to
+            if ($this->driver->canDetectDeadCode()) {
+                $this->driver->detectDeadCode(true);
+            }
 
             $this->driver->start();
 
@@ -888,6 +890,11 @@ final class CodeCoverage
             }
 
             $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), 'UNCOVERED_FILES_FROM_WHITELIST');
+
+            // having now collected dead code for the entire whitelist, we can safely skip this data on subsequent runs
+            if ($this->driver->canDetectDeadCode()) {
+                $this->driver->detectDeadCode(false);
+            }
         }
     }
 

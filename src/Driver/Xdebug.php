@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 /**
  * Driver for Xdebug's code coverage functionality.
  */
-final class Xdebug implements Driver
+final class Xdebug extends Driver
 {
     /**
      * @throws RuntimeException
@@ -32,18 +32,41 @@ final class Xdebug implements Driver
         }
 
         \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
+        $this->detectDeadCode = true;
+    }
+
+    /**
+     * Does this driver support detecting dead code?
+     */
+    public function canDetectDeadCode(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Does this driver support collecting path coverage?
+     */
+    public function canCollectBranchAndPathCoverage(): bool
+    {
+        return true;
     }
 
     /**
      * Start collection of code coverage information.
      */
-    public function start(bool $determineUnusedAndDead = true): void
+    public function start(): void
     {
-        if ($determineUnusedAndDead) {
-            \xdebug_start_code_coverage(\XDEBUG_CC_UNUSED | \XDEBUG_CC_DEAD_CODE);
-        } else {
-            \xdebug_start_code_coverage();
+        $flags = \XDEBUG_CC_UNUSED;
+
+        if ($this->detectDeadCode || $this->collectBranchAndPathCoverage) { // branch/path collection requires enabling dead code checks
+            $flags |= \XDEBUG_CC_DEAD_CODE;
         }
+
+        if ($this->collectBranchAndPathCoverage) {
+            $flags |= \XDEBUG_CC_BRANCH_CHECK;
+        }
+
+        \xdebug_start_code_coverage($flags);
     }
 
     /**
@@ -54,6 +77,10 @@ final class Xdebug implements Driver
         $data = \xdebug_get_code_coverage();
 
         \xdebug_stop_code_coverage();
+
+        if ($this->collectBranchAndPathCoverage) {
+            return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
+        }
 
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
     }

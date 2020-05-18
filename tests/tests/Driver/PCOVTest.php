@@ -9,50 +9,39 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCoverage\Driver\PCOV;
 use SebastianBergmann\Environment\Runtime;
 
-class XdebugTest extends TestCase
+class PCOVTest extends TestCase
 {
     protected function setUp(): void
     {
         $runtime = new Runtime;
 
-        if (!$runtime->hasXdebug()) {
-            $this->markTestSkipped('This test is only applicable to Xdebug');
+        if (!$runtime->hasPCOV()) {
+            $this->markTestSkipped('This test is only applicable to PCOV');
         }
-
-        if (!xdebug_code_coverage_started()) {
-            $this->markTestSkipped('This test requires code coverage to be running');
-        }
-    }
-
-    public function testFilterWorks(): void
-    {
-        $bankAccount = TEST_FILES_PATH . 'BankAccount.php';
-
-        require $bankAccount;
-        $this->assertArrayNotHasKey($bankAccount, \xdebug_get_code_coverage());
     }
 
     public function testDefaultValueOfDeadCodeDetection(): void
     {
-        $driver = new Xdebug(new Filter());
+        $driver = new PCOV(new Filter());
 
-        $this->assertTrue($driver->detectingDeadCode());
+        $this->assertFalse($driver->detectingDeadCode());
     }
 
     public function testEnablingDeadCodeDetection(): void
     {
-        $driver = new Xdebug(new Filter());
+        $this->expectException(DeadCodeDetectionNotSupportedException::class);
+
+        $driver = new PCOV(new Filter());
 
         $driver->detectDeadCode(true);
-        $this->assertTrue($driver->detectingDeadCode());
     }
 
     public function testDisablingDeadCodeDetection(): void
     {
-        $driver = new Xdebug(new Filter());
+        $driver = new PCOV(new Filter());
 
         $driver->detectDeadCode(false);
         $this->assertFalse($driver->detectingDeadCode());
@@ -60,7 +49,9 @@ class XdebugTest extends TestCase
 
     public function testEnablingBranchAndPathCoverage(): void
     {
-        $driver = new Xdebug(new Filter());
+        $this->expectException(BranchAndPathCoverageNotSupportedException::class);
+
+        $driver = new PCOV(new Filter());
 
         $driver->collectBranchAndPathCoverage(true);
         $this->assertTrue($driver->collectingBranchAndPathCoverage());
@@ -68,7 +59,7 @@ class XdebugTest extends TestCase
 
     public function testDisablingBranchAndPathCoverage(): void
     {
-        $driver = new Xdebug(new Filter());
+        $driver = new PCOV(new Filter());
 
         $driver->collectBranchAndPathCoverage(false);
         $this->assertFalse($driver->collectingBranchAndPathCoverage());

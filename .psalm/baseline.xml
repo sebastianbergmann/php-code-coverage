@@ -18,7 +18,7 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="src/Driver/Xdebug.php">
-    <UndefinedConstant occurrences="4">
+    <UndefinedConstant occurrences="5">
       <code>\XDEBUG_FILTER_CODE_COVERAGE</code>
       <code>\XDEBUG_PATH_WHITELIST</code>
       <code>\XDEBUG_CC_UNUSED</code>

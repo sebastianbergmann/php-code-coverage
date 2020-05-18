@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 /**
  * Driver for PCOV code coverage functionality.
  */
-final class PCOV implements Driver
+final class PCOV extends Driver
 {
     /**
      * @var Filter
@@ -28,9 +28,25 @@ final class PCOV implements Driver
     }
 
     /**
+     * Does this driver support detecting dead code?
+     */
+    public function canDetectDeadCode(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Does this driver support collecting path coverage?
+     */
+    public function canCollectBranchAndPathCoverage(): bool
+    {
+        return false;
+    }
+
+    /**
      * Start collection of code coverage information.
      */
-    public function start(bool $determineUnusedAndDead = true): void
+    public function start(): void
     {
         \pcov\start();
     }

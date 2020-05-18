@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 /**
  * Driver for PHPDBG's code coverage functionality.
  */
-final class PHPDBG implements Driver
+final class PHPDBG extends Driver
 {
     /**
      * @throws RuntimeException
@@ -36,9 +36,25 @@ final class PHPDBG implements Driver
     }
 
     /**
+     * Does this driver support detecting dead code?
+     */
+    public function canDetectDeadCode(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Does this driver support collecting path coverage?
+     */
+    public function canCollectBranchAndPathCoverage(): bool
+    {
+        return false;
+    }
+
+    /**
      * Start collection of code coverage information.
      */
-    public function start(bool $determineUnusedAndDead = true): void
+    public function start(): void
     {
         \phpdbg_start_oplog();
     }

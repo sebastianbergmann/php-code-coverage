@@ -48,7 +48,7 @@ body {
  background-color: #f2dede;
 }
 
-.table tbody td.warning, li.warning, span.warning {
+.table tbody tr.warning, .table tbody td.warning, li.warning, span.warning {
  background-color: #fcf8e3;
 }
 

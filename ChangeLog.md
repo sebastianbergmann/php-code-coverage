@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#750](https://github.com/sebastianbergmann/php-code-coverage/pull/750): Inconsistent handling of namespaces
+* [#751](https://github.com/sebastianbergmann/php-code-coverage/pull/751): Dead code is not highlighted correctly
 
 ## [8.0.1] - 2020-02-19
 

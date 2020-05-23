@@ -90,18 +90,14 @@ final class Facade
             $id = $node->getId();
 
             if ($node instanceof DirectoryNode) {
-                if (!DirectoryUtil::create($target . $id)) {
-                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
-                }
+                DirectoryUtil::create($target . $id);
 
                 $directory->render($node, $target . $id . '/index.html');
                 $dashboard->render($node, $target . $id . '/dashboard.html');
             } else {
                 $dir = \dirname($target . $id);
 
-                if (!DirectoryUtil::create($dir)) {
-                    throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
-                }
+                DirectoryUtil::create($dir);
 
                 $file->render($node, $target . $id . '.html');
             }
@@ -145,14 +141,7 @@ final class Facade
             $directory .= \DIRECTORY_SEPARATOR;
         }
 
-        if (!DirectoryUtil::create($directory)) {
-            throw new RuntimeException(
-                \sprintf(
-                    'Directory "%s" does not exist.',
-                    $directory
-                )
-            );
-        }
+        DirectoryUtil::create($directory);
 
         return $directory;
     }

@@ -11,8 +11,20 @@ namespace SebastianBergmann\CodeCoverage;
 
 final class Directory
 {
-    public static function create(string $directory): bool
+    /**
+     * @throws DirectoryCouldNotBeCreatedException
+     */
+    public static function create(string $directory): void
     {
-        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
+        $success = !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
+
+        if (!$success) {
+            throw new DirectoryCouldNotBeCreatedException(
+                \sprintf(
+                    'Directory "%s" could not be created',
+                    $directory
+                )
+            );
+        }
     }
 }

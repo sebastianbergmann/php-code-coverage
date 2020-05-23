@@ -90,11 +90,9 @@ final class Facade
                     "'$directory' exists but is not writable."
                 );
             }
-        } elseif (!DirectoryUtil::create($directory)) {
-            throw new RuntimeException(
-                "'$directory' could not be created."
-            );
         }
+
+        DirectoryUtil::create($directory);
     }
 
     private function processDirectory(DirectoryNode $directory, Node $context): void

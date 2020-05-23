@@ -24,7 +24,7 @@ final class BuilderTest extends TestCase
 
     public function testSomething(): void
     {
-        $root = $this->getCoverageForBankAccount()->getReport();
+        $root = $this->getLineCoverageForBankAccount()->getReport();
 
         $expectedPath = \rtrim(TEST_FILES_PATH, \DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->getName());

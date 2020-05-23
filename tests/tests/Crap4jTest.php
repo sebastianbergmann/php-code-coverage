@@ -22,7 +22,7 @@ final class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-crap4j.xml',
-            $crap4j->process($this->getCoverageForBankAccount(), null, 'BankAccount')
+            $crap4j->process($this->getLineCoverageForBankAccount(), null, 'BankAccount')
         );
     }
 

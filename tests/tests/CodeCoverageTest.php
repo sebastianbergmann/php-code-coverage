@@ -49,10 +49,10 @@ final class CodeCoverageTest extends TestCase
 
     public function testCollect(): void
     {
-        $coverage = $this->getCoverageForBankAccount();
+        $coverage = $this->getLineCoverageForBankAccount();
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getData()->getLineCoverage()
         );
 
@@ -89,22 +89,22 @@ final class CodeCoverageTest extends TestCase
 
     public function testMerge(): void
     {
-        $coverage = $this->getCoverageForBankAccountForFirstTwoTests();
-        $coverage->merge($this->getCoverageForBankAccountForLastTwoTests());
+        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests();
+        $coverage->merge($this->getLineCoverageForBankAccountForLastTwoTests());
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getData()->getLineCoverage()
         );
     }
 
     public function testMergeReverseOrder(): void
     {
-        $coverage = $this->getCoverageForBankAccountForLastTwoTests();
-        $coverage->merge($this->getCoverageForBankAccountForFirstTwoTests());
+        $coverage = $this->getLineCoverageForBankAccountForLastTwoTests();
+        $coverage->merge($this->getLineCoverageForBankAccountForFirstTwoTests());
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccountInReverseOrder(),
+            $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
             $coverage->getData()->getLineCoverage()
         );
     }
@@ -116,10 +116,10 @@ final class CodeCoverageTest extends TestCase
             new Filter
         );
 
-        $coverage->merge($this->getCoverageForBankAccount());
+        $coverage->merge($this->getLineCoverageForBankAccount());
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getData()->getLineCoverage()
         );
     }

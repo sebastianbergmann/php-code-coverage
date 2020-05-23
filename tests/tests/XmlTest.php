@@ -37,7 +37,7 @@ final class XmlTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $xml->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }

@@ -22,7 +22,7 @@ final class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-clover.xml',
-            $clover->process($this->getCoverageForBankAccount(), null, 'BankAccount')
+            $clover->process($this->getLineCoverageForBankAccount(), null, 'BankAccount')
         );
     }
 

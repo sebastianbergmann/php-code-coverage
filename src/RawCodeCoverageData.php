@@ -70,6 +70,11 @@ final class RawCodeCoverageData
         return $this->lineCoverage;
     }
 
+    public function getFunctionCoverage(): array
+    {
+        return $this->functionCoverage;
+    }
+
     public function removeCoverageDataForFile(string $filename): void
     {
         unset($this->lineCoverage[$filename], $this->functionCoverage[$filename]);

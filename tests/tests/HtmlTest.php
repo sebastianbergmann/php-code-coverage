@@ -29,12 +29,12 @@ final class HtmlTest extends TestCase
         $this->removeTemporaryFiles();
     }
 
-    public function testForBankAccountTest(): void
+    public function testLineCoverageForBankAccountTest(): void
     {
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $report->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }

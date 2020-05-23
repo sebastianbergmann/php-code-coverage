@@ -22,7 +22,7 @@ final class PhpTest extends TestCase
 
     public function testPHPSerialisationProducesValidCode(): void
     {
-        $coverage = $this->getCoverageForBankAccount();
+        $coverage = $this->getLineCoverageForBankAccount();
 
         /* @noinspection UnusedFunctionResultInspection */
         (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');

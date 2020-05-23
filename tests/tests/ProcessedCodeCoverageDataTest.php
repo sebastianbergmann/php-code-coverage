@@ -11,15 +11,39 @@ namespace SebastianBergmann\CodeCoverage;
 
 final class ProcessedCodeCoverageDataTest extends TestCase
 {
-    public function testMerge(): void
+    public function testMergeWithLineCoverage(): void
     {
-        $coverage = $this->getCoverageForBankAccountForFirstTwoTests()->getData();
+        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();
 
-        $coverage->merge($this->getCoverageForBankAccountForLastTwoTests()->getData());
+        $coverage->merge($this->getLineCoverageForBankAccountForLastTwoTests()->getData());
 
         $this->assertEquals(
-            $this->getExpectedDataArrayForBankAccount(),
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getLineCoverage()
+        );
+    }
+
+    public function testMergeWithPathCoverage(): void
+    {
+        $coverage = $this->getPathCoverageForBankAccountForFirstTwoTests()->getData();
+
+        $coverage->merge($this->getPathCoverageForBankAccountForLastTwoTests()->getData());
+
+        $this->assertEquals(
+            $this->getExpectedPathCoverageDataArrayForBankAccount(),
+            $coverage->getFunctionCoverage()
+        );
+    }
+
+    public function testMergeWithPathCoverageIntoEmpty(): void
+    {
+        $coverage = new ProcessedCodeCoverageData();
+
+        $coverage->merge($this->getPathCoverageForBankAccount()->getData());
+
+        $this->assertEquals(
+            $this->getExpectedPathCoverageDataArrayForBankAccount(),
+            $coverage->getFunctionCoverage()
         );
     }
 

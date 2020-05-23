@@ -22,7 +22,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()))
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
         );
     }
 
@@ -32,7 +32,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-summary.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForBankAccount()))
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
         );
     }
 
@@ -42,7 +42,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForNamespacedBankAccount()))
+            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount()))
         );
     }
 

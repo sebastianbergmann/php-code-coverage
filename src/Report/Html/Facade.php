@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
@@ -89,7 +90,7 @@ final class Facade
             $id = $node->getId();
 
             if ($node instanceof DirectoryNode) {
-                if (!$this->createDirectory($target . $id)) {
+                if (!DirectoryUtil::create($target . $id)) {
                     throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target . $id));
                 }
 
@@ -98,7 +99,7 @@ final class Facade
             } else {
                 $dir = \dirname($target . $id);
 
-                if (!$this->createDirectory($dir)) {
+                if (!DirectoryUtil::create($dir)) {
                     throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
                 }
 
@@ -144,7 +145,7 @@ final class Facade
             $directory .= \DIRECTORY_SEPARATOR;
         }
 
-        if (!$this->createDirectory($directory)) {
+        if (!DirectoryUtil::create($directory)) {
             throw new RuntimeException(
                 \sprintf(
                     'Directory "%s" does not exist.',
@@ -154,10 +155,5 @@ final class Facade
         }
 
         return $directory;
-    }
-
-    private function createDirectory(string $directory): bool
-    {
-        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
     }
 }

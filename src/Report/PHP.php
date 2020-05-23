@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
@@ -40,7 +41,7 @@ return $coverage;',
         );
 
         if ($target !== null) {
-            if (!$this->createDirectory(\dirname($target))) {
+            if (!Directory::create(\dirname($target))) {
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
             }
 
@@ -55,10 +56,5 @@ return $coverage;',
         }
 
         return $buffer;
-    }
-
-    private function createDirectory(string $directory): bool
-    {
-        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
     }
 }

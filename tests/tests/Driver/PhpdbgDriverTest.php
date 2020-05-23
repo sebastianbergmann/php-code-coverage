@@ -7,61 +7,64 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Driver;
 
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
+use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
+use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
+use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
 
-class PHPDBGTest extends TestCase
+final class PhpdbgDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        $runtime = new Runtime;
-
-        if (!$runtime->hasPHPDBGCodeCoverage()) {
+        if (!(new Runtime)->hasPHPDBGCodeCoverage()) {
             $this->markTestSkipped('This test is only applicable to PHPDBG');
         }
     }
 
     public function testDefaultValueOfDeadCodeDetection(): void
     {
-        $driver = new PHPDBG();
+        $driver = new PhpdbgDriver;
 
-        $this->assertFalse($driver->detectingDeadCode());
+        $this->assertFalse($driver->detectsDeadCode());
     }
 
     public function testEnablingDeadCodeDetection(): void
     {
         $this->expectException(DeadCodeDetectionNotSupportedException::class);
 
-        $driver = new PHPDBG();
+        $driver = new PhpdbgDriver;
 
-        $driver->detectDeadCode(true);
+        $driver->enableDeadCodeDetection();
     }
 
     public function testDisablingDeadCodeDetection(): void
     {
-        $driver = new PHPDBG();
+        $driver = new PhpdbgDriver;
 
-        $driver->detectDeadCode(false);
-        $this->assertFalse($driver->detectingDeadCode());
+        $driver->disableDeadCodeDetection();
+
+        $this->assertFalse($driver->detectsDeadCode());
     }
 
     public function testEnablingBranchAndPathCoverage(): void
     {
         $this->expectException(BranchAndPathCoverageNotSupportedException::class);
 
-        $driver = new PHPDBG();
+        $driver = new PhpdbgDriver;
 
-        $driver->collectBranchAndPathCoverage(true);
-        $this->assertTrue($driver->collectingBranchAndPathCoverage());
+        $driver->enableBranchAndPathCoverage();
+
+        $this->assertTrue($driver->collectsBranchAndPathCoverage());
     }
 
     public function testDisablingBranchAndPathCoverage(): void
     {
-        $driver = new PHPDBG();
+        $driver = new PhpdbgDriver;
 
-        $driver->collectBranchAndPathCoverage(false);
-        $this->assertFalse($driver->collectingBranchAndPathCoverage());
+        $driver->disableBranchAndPathCoverage();
+
+        $this->assertFalse($driver->collectsBranchAndPathCoverage());
     }
 }

@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\TestCase;
 
-final class PHPTest extends TestCase
+final class PhpTest extends TestCase
 {
     protected function tearDown(): void
     {
@@ -25,7 +25,7 @@ final class PHPTest extends TestCase
         $coverage = $this->getCoverageForBankAccount();
 
         /* @noinspection UnusedFunctionResultInspection */
-        (new PHP())->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
+        (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
 
         $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';
 

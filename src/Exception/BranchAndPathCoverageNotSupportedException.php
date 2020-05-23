@@ -9,9 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-/**
- * Exception that is raised when branch and path coverage is not supported by the driver but is attempted to be used.
- */
 final class BranchAndPathCoverageNotSupportedException extends RuntimeException
 {
 }

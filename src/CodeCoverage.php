@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\PCOV;
-use SebastianBergmann\CodeCoverage\Driver\PHPDBG;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCoverage\Driver\PcovDriver;
+use SebastianBergmann\CodeCoverage\Driver\PhpdbgDriver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
@@ -410,9 +410,14 @@ final class CodeCoverage
         $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
     }
 
-    public function setBranchAndPathCollection(bool $flag): void
+    public function enableBranchAndPathCoverage(): void
     {
-        $this->driver->collectBranchAndPathCoverage($flag);
+        $this->driver->enableBranchAndPathCoverage();
+    }
+
+    public function disableBranchAndPathCoverage(): void
+    {
+        $this->driver->disableBranchAndPathCoverage();
     }
 
     /**
@@ -806,15 +811,15 @@ final class CodeCoverage
         $runtime = new Runtime;
 
         if ($runtime->hasPHPDBGCodeCoverage()) {
-            return new PHPDBG;
+            return new PhpdbgDriver;
         }
 
         if ($runtime->hasPCOV()) {
-            return new PCOV($filter);
+            return new PcovDriver($filter);
         }
 
         if ($runtime->hasXdebug()) {
-            return new Xdebug($filter);
+            return new XdebugDriver($filter);
         }
 
         throw new RuntimeException('No code coverage driver available');
@@ -859,10 +864,9 @@ final class CodeCoverage
         $this->isInitialized = true;
 
         if ($this->processUncoveredFilesFromWhitelist) {
-
             // by collecting dead code data here on an initial pass, future runs with test data do not need to
             if ($this->driver->canDetectDeadCode()) {
-                $this->driver->detectDeadCode(true);
+                $this->driver->enableDeadCodeDetection();
             }
 
             $this->driver->start();
@@ -893,7 +897,7 @@ final class CodeCoverage
 
             // having now collected dead code for the entire whitelist, we can safely skip this data on subsequent runs
             if ($this->driver->canDetectDeadCode()) {
-                $this->driver->detectDeadCode(false);
+                $this->driver->disableDeadCodeDetection();
             }
         }
     }

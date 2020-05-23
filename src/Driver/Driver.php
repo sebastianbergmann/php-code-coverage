@@ -13,9 +13,6 @@ use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
-/**
- * Interface for code coverage drivers.
- */
 abstract class Driver
 {
     /**
@@ -39,67 +36,65 @@ abstract class Driver
      */
     public const LINE_NOT_EXECUTABLE = -2;
 
-    protected $detectDeadCode = false;
-
-    protected $collectBranchAndPathCoverage = false;
+    /**
+     * @var bool
+     */
+    private $collectBranchAndPathCoverage = false;
 
     /**
-     * Does this driver support detecting dead code?
+     * @var bool
      */
-    abstract public function canDetectDeadCode(): bool;
+    private $detectDeadCode = false;
 
-    /**
-     * Does this driver support collecting branch and path coverage?
-     */
-    abstract public function canCollectBranchAndPathCoverage(): bool;
-
-    /**
-     * Detect dead code
-     */
-    public function detectDeadCode(bool $flag): void
+    public function canCollectBranchAndPathCoverage(): bool
     {
-        if ($flag && !$this->canDetectDeadCode()) {
-            throw new DeadCodeDetectionNotSupportedException;
-        }
-
-        $this->detectDeadCode = $flag;
+        return false;
     }
 
-    /**
-     * Collecting path coverage
-     */
-    public function collectBranchAndPathCoverage(bool $flag): void
-    {
-        if ($flag && !$this->canCollectBranchAndPathCoverage()) {
-            throw new BranchAndPathCoverageNotSupportedException;
-        }
-
-        $this->collectBranchAndPathCoverage = $flag;
-    }
-
-    /**
-     * Is this driver detecting dead code?
-     */
-    public function detectingDeadCode(): bool
-    {
-        return $this->detectDeadCode;
-    }
-
-    /**
-     * Is this driver collecting branch and path coverage?
-     */
-    public function collectingBranchAndPathCoverage(): bool
+    public function collectsBranchAndPathCoverage(): bool
     {
         return $this->collectBranchAndPathCoverage;
     }
 
-    /**
-     * Start collection of code coverage information.
-     */
+    public function enableBranchAndPathCoverage(): void
+    {
+        if (!$this->canCollectBranchAndPathCoverage()) {
+            throw new BranchAndPathCoverageNotSupportedException;
+        }
+
+        $this->collectBranchAndPathCoverage = true;
+    }
+
+    public function disableBranchAndPathCoverage(): void
+    {
+        $this->collectBranchAndPathCoverage = false;
+    }
+
+    public function canDetectDeadCode(): bool
+    {
+        return false;
+    }
+
+    public function detectsDeadCode(): bool
+    {
+        return $this->detectDeadCode;
+    }
+
+    public function enableDeadCodeDetection(): void
+    {
+        if (!$this->canDetectDeadCode()) {
+            throw new DeadCodeDetectionNotSupportedException;
+        }
+
+        $this->detectDeadCode = true;
+    }
+
+    public function disableDeadCodeDetection(): void
+    {
+        $this->detectDeadCode = false;
+    }
+
     abstract public function start(): void;
 
-    /**
-     * Stop collection of code coverage information.
-     */
     abstract public function stop(): RawCodeCoverageData;
 }

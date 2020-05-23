@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\TestCase;
 
-class HTMLTest extends TestCase
+final class HtmlTest extends TestCase
 {
     private static $TEST_REPORT_PATH_SOURCE;
 
@@ -60,11 +60,7 @@ class HTMLTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
-    /**
-     * @param string $expectedFilesPath
-     * @param string $actualFilesPath
-     */
-    private function assertFilesEquals($expectedFilesPath, $actualFilesPath): void
+    private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
         $expectedFilesIterator = new \FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new \RegexIterator(new \FilesystemIterator($actualFilesPath), '/.html/');

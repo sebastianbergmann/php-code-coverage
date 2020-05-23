@@ -12,10 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
-/**
- * Driver for PCOV code coverage functionality.
- */
-final class PCOV extends Driver
+final class PcovDriver extends Driver
 {
     /**
      * @var Filter
@@ -27,33 +24,11 @@ final class PCOV extends Driver
         $this->filter = $filter;
     }
 
-    /**
-     * Does this driver support detecting dead code?
-     */
-    public function canDetectDeadCode(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Does this driver support collecting path coverage?
-     */
-    public function canCollectBranchAndPathCoverage(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Start collection of code coverage information.
-     */
     public function start(): void
     {
         \pcov\start();
     }
 
-    /**
-     * Stop collection of code coverage information.
-     */
     public function stop(): RawCodeCoverageData
     {
         \pcov\stop();

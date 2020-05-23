@@ -12,10 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
-/**
- * Driver for PHPDBG's code coverage functionality.
- */
-final class PHPDBG extends Driver
+final class PhpdbgDriver extends Driver
 {
     /**
      * @throws RuntimeException
@@ -35,40 +32,18 @@ final class PHPDBG extends Driver
         }
     }
 
-    /**
-     * Does this driver support detecting dead code?
-     */
-    public function canDetectDeadCode(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Does this driver support collecting path coverage?
-     */
-    public function canCollectBranchAndPathCoverage(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Start collection of code coverage information.
-     */
     public function start(): void
     {
         \phpdbg_start_oplog();
     }
 
-    /**
-     * Stop collection of code coverage information.
-     */
     public function stop(): RawCodeCoverageData
     {
         static $fetchedLines = [];
 
         $dbgData = \phpdbg_end_oplog();
 
-        if ($fetchedLines == []) {
+        if ($fetchedLines === []) {
             $sourceLines = \phpdbg_get_executable();
         } else {
             $newFiles = \array_diff(\get_included_files(), \array_keys($fetchedLines));
@@ -76,7 +51,7 @@ final class PHPDBG extends Driver
             $sourceLines = [];
 
             if ($newFiles) {
-                $sourceLines = phpdbg_get_executable(['files' => $newFiles]);
+                $sourceLines = \phpdbg_get_executable(['files' => $newFiles]);
             }
         }
 
@@ -91,9 +66,6 @@ final class PHPDBG extends Driver
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($this->detectExecutedLines($fetchedLines, $dbgData));
     }
 
-    /**
-     * Convert phpdbg based data into the format CodeCoverage expects
-     */
     private function detectExecutedLines(array $sourceLines, array $dbgData): array
     {
         foreach ($dbgData as $file => $coveredLines) {

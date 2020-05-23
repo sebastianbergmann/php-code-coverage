@@ -9,9 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-/**
- * Exception that is raised when covered code is not executed.
- */
 final class CoveredCodeNotExecutedException extends RuntimeException
 {
 }

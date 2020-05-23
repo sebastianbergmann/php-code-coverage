@@ -12,7 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#749](https://github.com/sebastianbergmann/php-code-coverage/pull/749): Store processes code coverage in value objects instead of arrays
 * [#752](https://github.com/sebastianbergmann/php-code-coverage/pull/752): Rework how code coverage settings are propagated to the driver
 
-## [8.0.2] - 2020-MM-DD
+## [8.0.2] - 2020-05-23
 
 ### Fixed
 
@@ -147,7 +147,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Update HTML report to Bootstrap 4
 
 [9.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0...9.0.0
-[8.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.1...8.0
+[8.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.10...8.0.0
 [7.0.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.9...7.0.10

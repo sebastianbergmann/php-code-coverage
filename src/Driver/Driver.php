@@ -56,6 +56,9 @@ abstract class Driver
         return $this->collectBranchAndPathCoverage;
     }
 
+    /**
+     * @throws BranchAndPathCoverageNotSupportedException
+     */
     public function enableBranchAndPathCoverage(): void
     {
         if (!$this->canCollectBranchAndPathCoverage()) {
@@ -80,6 +83,9 @@ abstract class Driver
         return $this->detectDeadCode;
     }
 
+    /**
+     * @throws DeadCodeDetectionNotSupportedException
+     */
     public function enableDeadCodeDetection(): void
     {
         if (!$this->canDetectDeadCode()) {

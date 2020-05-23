@@ -49,7 +49,7 @@ final class BuildInformation
         }
     }
 
-    public function setBuildTime(\DateTime $date): void
+    public function setBuildTime(\DateTimeImmutable $date): void
     {
         $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
     }

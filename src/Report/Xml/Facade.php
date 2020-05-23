@@ -68,7 +68,7 @@ final class Facade
     {
         $buildNode = $this->project->getBuildInformation();
         $buildNode->setRuntimeInformation(new Runtime());
-        $buildNode->setBuildTime(\DateTime::createFromFormat('U', (string) $_SERVER['REQUEST_TIME']));
+        $buildNode->setBuildTime(new \DateTimeImmutable);
         $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
     }
 

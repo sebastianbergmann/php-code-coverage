@@ -56,11 +56,7 @@ final class Facade
         $target = $this->getDirectory($target);
         $report = $coverage->getReport();
 
-        if (!isset($_SERVER['REQUEST_TIME'])) {
-            $_SERVER['REQUEST_TIME'] = \time();
-        }
-
-        $date = (string) \date('D M j G:i:s T Y', $_SERVER['REQUEST_TIME']);
+        $date = (string) \date('D M j G:i:s T Y');
 
         $dashboard = new Dashboard(
             $this->templatePath,

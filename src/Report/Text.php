@@ -154,7 +154,7 @@ final class Text
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date  = \date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $date  = \date('  Y-m-d H:i:s');
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);

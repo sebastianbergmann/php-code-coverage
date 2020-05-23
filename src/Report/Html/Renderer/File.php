@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCoverage\Percentage;
 use SebastianBergmann\Template\Template;
 
 /**
@@ -117,16 +117,25 @@ final class File extends Renderer
             if ($item['executableLines'] > 0) {
                 $numClasses                   = 1;
                 $numTestedClasses             = $numTestedMethods == $numMethods ? 1 : 0;
-                $linesExecutedPercentAsString = Util::percent(
+                $linesExecutedPercentAsString = Percentage::fromFractionAndTotal(
                     $item['executedLines'],
-                    $item['executableLines'],
-                    true
-                );
+                    $item['executableLines']
+                )->asString();
             } else {
                 $numClasses                   = 'n/a';
                 $numTestedClasses             = 'n/a';
                 $linesExecutedPercentAsString = 'n/a';
             }
+
+            $testedMethodsPercentage = Percentage::fromFractionAndTotal(
+                $numTestedMethods,
+                $numMethods
+            );
+
+            $testedClassesPercentage = Percentage::fromFractionAndTotal(
+                $numTestedMethods === $numMethods ? 1 : 0,
+                1
+            );
 
             $buffer .= $this->renderItemTemplate(
                 $template,
@@ -136,32 +145,17 @@ final class File extends Renderer
                     'numTestedClasses'             => $numTestedClasses,
                     'numMethods'                   => $numMethods,
                     'numTestedMethods'             => $numTestedMethods,
-                    'linesExecutedPercent'         => Util::percent(
+                    'linesExecutedPercent'         => Percentage::fromFractionAndTotal(
                         $item['executedLines'],
                         $item['executableLines'],
-                        false
-                    ),
+                    )->asFloat(),
                     'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
                     'numExecutedLines'             => $item['executedLines'],
                     'numExecutableLines'           => $item['executableLines'],
-                    'testedMethodsPercent'         => Util::percent(
-                        $numTestedMethods,
-                        $numMethods
-                    ),
-                    'testedMethodsPercentAsString' => Util::percent(
-                        $numTestedMethods,
-                        $numMethods,
-                        true
-                    ),
-                    'testedClassesPercent'         => Util::percent(
-                        $numTestedMethods == $numMethods ? 1 : 0,
-                        1
-                    ),
-                    'testedClassesPercentAsString' => Util::percent(
-                        $numTestedMethods == $numMethods ? 1 : 0,
-                        1,
-                        true
-                    ),
+                    'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
+                    'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
+                    'testedClassesPercent'         => $testedClassesPercentage->asFloat(),
+                    'testedClassesPercentAsString' => $testedClassesPercentage->asString(),
                     'crap'                         => $item['crap'],
                 ]
             );
@@ -209,6 +203,16 @@ final class File extends Renderer
             }
         }
 
+        $executedLinesPercentage = Percentage::fromFractionAndTotal(
+            $item['executedLines'],
+            $item['executableLines']
+        );
+
+        $testedMethodsPercentage = Percentage::fromFractionAndTotal(
+            $numTestedMethods,
+            1
+        );
+
         return $this->renderItemTemplate(
             $template,
             [
@@ -221,26 +225,12 @@ final class File extends Renderer
                 ),
                 'numMethods'                   => $numMethods,
                 'numTestedMethods'             => $numTestedMethods,
-                'linesExecutedPercent'         => Util::percent(
-                    $item['executedLines'],
-                    $item['executableLines']
-                ),
-                'linesExecutedPercentAsString' => Util::percent(
-                    $item['executedLines'],
-                    $item['executableLines'],
-                    true
-                ),
+                'linesExecutedPercent'         => $executedLinesPercentage->asFloat(),
+                'linesExecutedPercentAsString' => $executedLinesPercentage->asString(),
                 'numExecutedLines'             => $item['executedLines'],
                 'numExecutableLines'           => $item['executableLines'],
-                'testedMethodsPercent'         => Util::percent(
-                    $numTestedMethods,
-                    1
-                ),
-                'testedMethodsPercentAsString' => Util::percent(
-                    $numTestedMethods,
-                    1,
-                    true
-                ),
+                'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
+                'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
                 'crap'                         => $item['crap'],
             ]
         );

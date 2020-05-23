@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCoverage\Percentage;
 
 /**
  * Generates human readable output from a code coverage object.
@@ -115,33 +115,30 @@ final class Text
 
         $classes = \sprintf(
             '  Classes: %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumTestedClassesAndTraits(),
-                $report->getNumClassesAndTraits(),
-                true
-            ),
+                $report->getNumClassesAndTraits()
+            )->asString(),
             $report->getNumTestedClassesAndTraits(),
             $report->getNumClassesAndTraits()
         );
 
         $methods = \sprintf(
             '  Methods: %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumTestedMethods(),
                 $report->getNumMethods(),
-                true
-            ),
+            )->asString(),
             $report->getNumTestedMethods(),
             $report->getNumMethods()
         );
 
         $lines = \sprintf(
             '  Lines:   %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines(),
-                true
-            ),
+            )->asString(),
             $report->getNumExecutedLines(),
             $report->getNumExecutableLines()
         );
@@ -242,16 +239,16 @@ final class Text
 
     private function getCoverageColor(int $numberOfCoveredElements, int $totalNumberOfElements): string
     {
-        $coverage = Util::percent(
+        $coverage = Percentage::fromFractionAndTotal(
             $numberOfCoveredElements,
             $totalNumberOfElements
         );
 
-        if ($coverage >= $this->highLowerBound) {
+        if ($coverage->asFloat() >= $this->highLowerBound) {
             return self::COLOR_GREEN;
         }
 
-        if ($coverage > $this->lowUpperBound) {
+        if ($coverage->asFloat() > $this->lowUpperBound) {
             return self::COLOR_YELLOW;
         }
 
@@ -262,13 +259,11 @@ final class Text
     {
         $format = '%' . $precision . 's';
 
-        return Util::percent(
+        return Percentage::fromFractionAndTotal(
             $numberOfCoveredElements,
-            $totalNumberOfElements,
-            true,
-            true
-        ) .
-        ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
+            $totalNumberOfElements
+        )->asFixedWidthString() .
+            ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
         \sprintf($format, $totalNumberOfElements) . ')';
     }
 

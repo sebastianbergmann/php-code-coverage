@@ -9,7 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCoverage\Percentage;
 
 final class Totals
 {
@@ -94,7 +94,7 @@ final class Totals
         $this->linesNode->setAttribute('executed', (string) $executed);
         $this->linesNode->setAttribute(
             'percent',
-            $executable === 0 ? '0' : \sprintf('%01.2F', Util::percent($executed, $executable))
+            $executable === 0 ? '0' : \sprintf('%01.2F', Percentage::fromFractionAndTotal($executed, $executable)->asFloat())
         );
     }
 
@@ -104,7 +104,7 @@ final class Totals
         $this->classesNode->setAttribute('tested', (string) $tested);
         $this->classesNode->setAttribute(
             'percent',
-            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat())
         );
     }
 
@@ -114,7 +114,7 @@ final class Totals
         $this->traitsNode->setAttribute('tested', (string) $tested);
         $this->traitsNode->setAttribute(
             'percent',
-            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat())
         );
     }
 
@@ -124,7 +124,7 @@ final class Totals
         $this->methodsNode->setAttribute('tested', (string) $tested);
         $this->methodsNode->setAttribute(
             'percent',
-            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat())
         );
     }
 
@@ -134,7 +134,7 @@ final class Totals
         $this->functionsNode->setAttribute('tested', (string) $tested);
         $this->functionsNode->setAttribute(
             'percent',
-            $count === 0 ? '0' : \sprintf('%01.2F', Util::percent($tested, $count))
+            $count === 0 ? '0' : \sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat())
         );
     }
 }

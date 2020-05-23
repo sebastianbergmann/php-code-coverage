@@ -13,9 +13,9 @@ use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-class BuilderTest extends TestCase
+final class BuilderTest extends TestCase
 {
-    protected $factory;
+    private $factory;
 
     protected function setUp(): void
     {
@@ -204,9 +204,7 @@ class BuilderTest extends TestCase
             $this->pathsToProcessedDataObjectHelper([]),
         ];
 
-        $prefixes = ["C:$s", "$s"];
-
-        foreach ($prefixes as $p) {
+        foreach (["C:$s", "$s"] as $p) {
             yield [
                 [
                     'Money.php' => [],

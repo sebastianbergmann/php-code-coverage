@@ -9,11 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-class ProcessedCodeCoverageDataTest extends TestCase
+final class ProcessedCodeCoverageDataTest extends TestCase
 {
     public function testMerge(): void
     {
         $coverage = $this->getCoverageForBankAccountForFirstTwoTests()->getData();
+
         $coverage->merge($this->getCoverageForBankAccountForLastTwoTests()->getData());
 
         $this->assertEquals(
@@ -24,7 +25,8 @@ class ProcessedCodeCoverageDataTest extends TestCase
 
     public function testMergeOfAPreviouslyUnseenLine(): void
     {
-        $newCoverage = new ProcessedCodeCoverageData();
+        $newCoverage = new ProcessedCodeCoverageData;
+
         $newCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
@@ -34,8 +36,10 @@ class ProcessedCodeCoverageDataTest extends TestCase
             ]
         );
 
-        $existingCoverage = new ProcessedCodeCoverageData();
+        $existingCoverage = new ProcessedCodeCoverageData;
+
         $existingCoverage->merge($newCoverage);
+
         $this->assertArrayHasKey(12, $existingCoverage->getLineCoverage()['/some/path/SomeClass.php']);
     }
 }

@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\CodeCoverage\TestCase;
 
-class XmlTest extends TestCase
+final class XmlTest extends TestCase
 {
     private static $TEST_REPORT_PATH_SOURCE;
 
@@ -26,9 +26,7 @@ class XmlTest extends TestCase
     {
         parent::tearDown();
 
-        $tmpFilesIterator = new \FilesystemIterator(self::$TEST_TMP_PATH);
-
-        foreach ($tmpFilesIterator as $path => $fileInfo) {
+        foreach (new \FilesystemIterator(self::$TEST_TMP_PATH) as $path => $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             \unlink($fileInfo->getPathname());
         }

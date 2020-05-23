@@ -9,7 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-class RawCodeCoverageDataTest extends TestCase
+final class RawCodeCoverageDataTest extends TestCase
 {
     /**
      * In the standard XDebug format, there is only line data. Therefore output should match input.
@@ -25,6 +25,7 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
         $this->assertEquals($lineDataFromDriver, $dataObject->getLineCoverage());
     }
 
@@ -55,6 +56,7 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+
         $this->assertEquals($lineData, $dataObject->getLineCoverage());
     }
 
@@ -69,7 +71,9 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
         $dataObject->clear();
+
         $this->assertEmpty($dataObject->getLineCoverage());
     }
 
@@ -107,7 +111,9 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
         $dataObject->removeCoverageDataForFile('/some/path/SomeOtherClass.php');
+
         $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 
@@ -144,9 +150,11 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
         $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
         $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->keepCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
+
         $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 
@@ -186,9 +194,11 @@ class RawCodeCoverageDataTest extends TestCase
         ];
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
         $dataObject->removeCoverageDataForLines('/some/path/SomeClass.php', [9, 13]);
         $dataObject->removeCoverageDataForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->removeCoverageDataForLines('/some/path/AnotherClass.php', [28]);
+
         $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
 }

@@ -13,9 +13,9 @@ use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\Environment\Runtime;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\CodeCoverage
+ * @covers \SebastianBergmann\CodeCoverage\CodeCoverage
  */
-class CodeCoverageTest extends TestCase
+final class CodeCoverageTest extends TestCase
 {
     /**
      * @var CodeCoverage

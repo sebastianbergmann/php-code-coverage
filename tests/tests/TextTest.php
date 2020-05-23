@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Text
+ * @covers \SebastianBergmann\CodeCoverage\Report\Text
  */
-class TextTest extends TestCase
+final class TextTest extends TestCase
 {
     public function testTextForBankAccountTest(): void
     {

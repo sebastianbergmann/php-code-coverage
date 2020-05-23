@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Clover
+ * @covers \SebastianBergmann\CodeCoverage\Report\Clover
  */
-class CloverTest extends TestCase
+final class CloverTest extends TestCase
 {
     public function testCloverForBankAccountTest(): void
     {

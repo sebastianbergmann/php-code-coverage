@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
- * @covers SebastianBergmann\CodeCoverage\Report\Crap4j
+ * @covers \SebastianBergmann\CodeCoverage\Report\Crap4j
  */
-class Crap4jTest extends TestCase
+final class Crap4jTest extends TestCase
 {
     public function testForBankAccountTest(): void
     {

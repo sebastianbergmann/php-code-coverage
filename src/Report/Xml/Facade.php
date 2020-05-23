@@ -222,10 +222,6 @@ final class Facade
         $testsObject = $this->project->getTests();
 
         foreach ($tests as $test => $result) {
-            if ($test === 'UNCOVERED_FILES_FROM_WHITELIST') {
-                continue;
-            }
-
             $testsObject->addTest($test, $result);
         }
     }

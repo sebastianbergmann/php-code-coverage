@@ -2,6 +2,15 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.0.0] - 2020-MM-DD
+
+### Changed
+
+* [#746](https://github.com/sebastianbergmann/php-code-coverage/pull/746): Remove some ancient workarounds for very old Xdebug versions
+* [#747](https://github.com/sebastianbergmann/php-code-coverage/pull/747): Use native filtering in PCOV and Xdebug drivers
+* [#748](https://github.com/sebastianbergmann/php-code-coverage/pull/748): Store raw code coverage in value objects instead of arrays
+* [#749](https://github.com/sebastianbergmann/php-code-coverage/pull/749): Store processes code coverage in value objects instead of arrays
+
 ## [8.0.2] - 2020-MM-DD
 
 ### Fixed
@@ -136,6 +145,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0...9.0.0
 [8.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.1...8.0
 [8.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.10...8.0.0

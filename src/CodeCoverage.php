@@ -26,6 +26,8 @@ use SebastianBergmann\Environment\Runtime;
  */
 final class CodeCoverage
 {
+    private const UNCOVERED_FILES_FROM_WHITELIST = 'UNCOVERED_FILES_FROM_WHITELIST';
+
     /**
      * @var Driver
      */
@@ -288,49 +290,50 @@ final class CodeCoverage
 
         $this->applyWhitelistFilter($rawData);
         $this->applyIgnoredLinesFilter($rawData);
+
         $this->data->initializeFilesThatAreSeenTheFirstTime($rawData);
 
         if (!$append) {
             return;
         }
 
-        if ($id !== 'UNCOVERED_FILES_FROM_WHITELIST') {
+        if ($id !== self::UNCOVERED_FILES_FROM_WHITELIST) {
             $this->applyCoversAnnotationFilter(
                 $rawData,
                 $linesToBeCovered,
                 $linesToBeUsed,
                 $ignoreForceCoversAnnotation
             );
-        }
 
-        if (empty($rawData->getLineCoverage())) {
-            return;
-        }
-
-        $size   = 'unknown';
-        $status = -1;
-
-        if ($id instanceof TestCase) {
-            $_size = $id->getSize();
-
-            if ($_size === Test::SMALL) {
-                $size = 'small';
-            } elseif ($_size === Test::MEDIUM) {
-                $size = 'medium';
-            } elseif ($_size === Test::LARGE) {
-                $size = 'large';
+            if (empty($rawData->getLineCoverage())) {
+                return;
             }
 
-            $status = $id->getStatus();
-            $id     = \get_class($id) . '::' . $id->getName();
-        } elseif ($id instanceof PhptTestCase) {
-            $size = 'large';
-            $id   = $id->getName();
+            $size   = 'unknown';
+            $status = -1;
+
+            if ($id instanceof TestCase) {
+                $_size = $id->getSize();
+
+                if ($_size === Test::SMALL) {
+                    $size = 'small';
+                } elseif ($_size === Test::MEDIUM) {
+                    $size = 'medium';
+                } elseif ($_size === Test::LARGE) {
+                    $size = 'large';
+                }
+
+                $status = $id->getStatus();
+                $id     = \get_class($id) . '::' . $id->getName();
+            } elseif ($id instanceof PhptTestCase) {
+                $size = 'large';
+                $id   = $id->getName();
+            }
+
+            $this->tests[$id] = ['size' => $size, 'status' => $status];
+
+            $this->data->markCodeAsExecutedByTestCase($id, $rawData);
         }
-
-        $this->tests[$id] = ['size' => $size, 'status' => $status];
-
-        $this->data->markCodeAsExecutedByTestCase($id, $rawData);
 
         $this->report = null;
     }
@@ -513,7 +516,7 @@ final class CodeCoverage
             }
         }
 
-        $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), 'UNCOVERED_FILES_FROM_WHITELIST');
+        $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), self::UNCOVERED_FILES_FROM_WHITELIST);
     }
 
     private function getLinesToBeIgnored(string $fileName): array
@@ -869,28 +872,12 @@ final class CodeCoverage
                 }
             }
 
-            $data = [];
-
-            foreach ($this->driver->stop()->getLineCoverage() as $file => $fileCoverage) {
-                if ($this->filter->isFiltered($file)) {
-                    continue;
-                }
-
-                foreach (\array_keys($fileCoverage) as $key) {
-                    if ($fileCoverage[$key] === Driver::LINE_EXECUTED) {
-                        $fileCoverage[$key] = Driver::LINE_NOT_EXECUTED;
-                    }
-                }
-
-                $data[$file] = $fileCoverage;
-            }
-
-            $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), 'UNCOVERED_FILES_FROM_WHITELIST');
-
             // having now collected dead code for the entire whitelist, we can safely skip this data on subsequent runs
             if ($this->driver->canDetectDeadCode()) {
                 $this->driver->disableDeadCodeDetection();
             }
+
+            $this->append($this->driver->stop(), self::UNCOVERED_FILES_FROM_WHITELIST);
         }
     }
 

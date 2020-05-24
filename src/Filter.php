@@ -28,7 +28,7 @@ final class Filter
      *
      * @var bool[]
      */
-    private $isFileCallsCache = [];
+    private $isFileCache = [];
 
     /**
      * Adds a directory to the whitelist (recursively).
@@ -95,8 +95,8 @@ final class Filter
      */
     public function isFile(string $filename): bool
     {
-        if (isset($this->isFileCallsCache[$filename])) {
-            return $this->isFileCallsCache[$filename];
+        if (isset($this->isFileCache[$filename])) {
+            return $this->isFileCache[$filename];
         }
 
         if ($filename === '-' ||
@@ -113,7 +113,7 @@ final class Filter
             $isFile = \file_exists($filename);
         }
 
-        $this->isFileCallsCache[$filename] = $isFile;
+        $this->isFileCache[$filename] = $isFile;
 
         return $isFile;
     }

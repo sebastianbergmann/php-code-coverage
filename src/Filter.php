@@ -57,7 +57,7 @@ final class Filter
     /**
      * Adds files to the whitelist.
      *
-     * @param string[] $files
+     * @psalm-param list<string> $files
      */
     public function addFilesToWhitelist(array $files): void
     {

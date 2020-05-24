@@ -19,7 +19,7 @@ final class Filter
     /**
      * Source files that are whitelisted.
      *
-     * @var array
+     * @psalm-var array<string,true>
      */
     private $whitelistedFiles = [];
 

@@ -12,14 +12,13 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\TestCase;
-use SebastianBergmann\Environment\Runtime;
 
 final class PhpdbgDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!(new Runtime)->hasPHPDBGCodeCoverage()) {
-            $this->markTestSkipped('This test is only applicable to PHPDBG');
+        if (\PHP_SAPI !== 'phpdbg') {
+            $this->markTestSkipped('This test requires the PHPDBG commandline interpreter');
         }
     }
 

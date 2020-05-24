@@ -11,18 +11,25 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
-use SebastianBergmann\Environment\Runtime;
 
 final class XdebugDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!(new Runtime)->hasXdebug()) {
-            $this->markTestSkipped('This test is only applicable to Xdebug');
+        if (\PHP_SAPI !== 'cli') {
+            $this->markTestSkipped('This test requires the PHP commandline interpreter');
+        }
+
+        if (!\extension_loaded('xdebug')) {
+            $this->markTestSkipped('This test requires the Xdebug extension to be loaded');
+        }
+
+        if (!\ini_get('xdebug.coverage_enable')) {
+            $this->markTestSkipped('This test requires the Xdebug extension\'s code coverage functionality to be enabled');
         }
 
         if (!\xdebug_code_coverage_started()) {
-            $this->markTestSkipped('This test requires code coverage using Xdebug to be running');
+            $this->markTestSkipped('This test requires code coverage data collection using Xdebug to be active');
         }
     }
 

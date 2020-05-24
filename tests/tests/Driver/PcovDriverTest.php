@@ -13,14 +13,21 @@ use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
-use SebastianBergmann\Environment\Runtime;
 
 final class PcovDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!(new Runtime)->hasPCOV()) {
-            $this->markTestSkipped('This test is only applicable to PCOV');
+        if (\PHP_SAPI !== 'cli') {
+            $this->markTestSkipped('This test requires the PHP commandline interpreter');
+        }
+
+        if (!\extension_loaded('pcov')) {
+            $this->markTestSkipped('This test requires the PCOV extension to be loaded');
+        }
+
+        if (!\ini_get('pcov.enabled')) {
+            $this->markTestSkipped('This test requires the PCOV extension to be enabled');
         }
     }
 

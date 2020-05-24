@@ -160,6 +160,8 @@ final class Filter
 
     /**
      * Sets the whitelisted files.
+     *
+     * @psalm-param array<string,true> $whitelistedFiles
      */
     public function setWhitelistedFiles(array $whitelistedFiles): void
     {

@@ -39,12 +39,16 @@ final class RawCodeCoverageData
         $functionCoverage = [];
 
         foreach ($rawCoverage as $file => $fileCoverageData) {
-            if (isset($fileCoverageData['functions'])) {
-                $lineCoverage[$file]     = $fileCoverageData['lines'];
-                $functionCoverage[$file] = $fileCoverageData['functions'];
-            } else { // not every file has functions, Xdebug outputs just line data for these
+            if (!isset($fileCoverageData['functions'])) {
+                // Current file does not have functions, so line coverage
+                // is stored in $fileCoverageData, not in $fileCoverageData['lines']
                 $lineCoverage[$file] = $fileCoverageData;
+
+                continue;
             }
+
+            $lineCoverage[$file]     = $fileCoverageData['lines'];
+            $functionCoverage[$file] = $fileCoverageData['functions'];
         }
 
         return new self($lineCoverage, $functionCoverage);

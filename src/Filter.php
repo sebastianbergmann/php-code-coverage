@@ -26,7 +26,7 @@ final class Filter
     /**
      * Remembers the result of the `is_file()` calls.
      *
-     * @var bool[]
+     * @psalm-var array<string,bool>
      */
     private $isFileCache = [];
 

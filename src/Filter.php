@@ -133,7 +133,7 @@ final class Filter
     /**
      * Returns the list of whitelisted files.
      *
-     * @return string[]
+     * @psalm-return list<string>
      */
     public function getWhitelist(): array
     {
@@ -151,7 +151,7 @@ final class Filter
     /**
      * Returns the whitelisted files.
      *
-     * @return string[]
+     * @psalm-return array<string,true>
      */
     public function getWhitelistedFiles(): array
     {

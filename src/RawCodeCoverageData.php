@@ -35,7 +35,8 @@ final class RawCodeCoverageData
 
     public static function fromXdebugWithPathCoverage(array $rawCoverage): self
     {
-        $lineCoverage = $functionCoverage = [];
+        $lineCoverage     = [];
+        $functionCoverage = [];
 
         foreach ($rawCoverage as $file => $fileCoverageData) {
             if (isset($fileCoverageData['functions'])) {

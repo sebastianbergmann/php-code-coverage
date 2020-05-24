@@ -246,15 +246,13 @@ final class CodeCoverage
      * @throws MissingCoversAnnotationException
      * @throws CoveredCodeNotExecutedException
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      * @throws \ReflectionException
      */
     public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): RawCodeCoverageData
     {
         if (!\is_array($linesToBeCovered) && $linesToBeCovered !== false) {
-            throw InvalidArgumentException::create(
-                2,
-                'array or false'
+            throw new InvalidArgumentException(
+                '$linesToBeCovered must be an array or false'
             );
         }
 
@@ -276,7 +274,6 @@ final class CodeCoverage
      * @throws \SebastianBergmann\CodeCoverage\MissingCoversAnnotationException
      * @throws \SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
      * @throws \ReflectionException
-     * @throws \SebastianBergmann\CodeCoverage\InvalidArgumentException
      * @throws RuntimeException
      */
     public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): void
@@ -480,9 +477,6 @@ final class CodeCoverage
         }
     }
 
-    /**
-     * @throws \SebastianBergmann\CodeCoverage\InvalidArgumentException
-     */
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
         foreach (\array_keys($data->getLineCoverage()) as $filename) {
@@ -492,7 +486,6 @@ final class CodeCoverage
 
     /**
      * @throws CoveredCodeNotExecutedException
-     * @throws InvalidArgumentException
      * @throws MissingCoversAnnotationException
      * @throws RuntimeException
      * @throws UnintentionallyCoveredCodeException
@@ -853,7 +846,6 @@ final class CodeCoverage
 
     /**
      * @throws CoveredCodeNotExecutedException
-     * @throws InvalidArgumentException
      * @throws MissingCoversAnnotationException
      * @throws RuntimeException
      * @throws UnintentionallyCoveredCodeException

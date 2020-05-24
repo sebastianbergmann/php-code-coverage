@@ -49,7 +49,6 @@ final class Facade
 
     /**
      * @throws RuntimeException
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function process(CodeCoverage $coverage, string $target): void

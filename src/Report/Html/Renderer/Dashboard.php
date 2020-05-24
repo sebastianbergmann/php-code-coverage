@@ -19,7 +19,6 @@ use SebastianBergmann\Template\Template;
 final class Dashboard extends Renderer
 {
     /**
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function render(DirectoryNode $node, string $file): void

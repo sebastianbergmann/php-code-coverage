@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
-use SebastianBergmann\CodeCoverage\InvalidArgumentException;
-
 /**
  * Represents a directory in the code coverage information tree.
  */
@@ -148,8 +146,6 @@ final class Directory extends AbstractNode implements \IteratorAggregate
 
     /**
      * Adds a new file.
-     *
-     * @throws InvalidArgumentException
      */
     public function addFile(string $name, array $coverageData, array $testData, bool $cacheTokens): File
     {

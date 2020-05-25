@@ -45,7 +45,7 @@ final class Builder
                 $key = \substr($key, 0, -2);
 
                 if (\file_exists($root->getPath() . \DIRECTORY_SEPARATOR . $key)) {
-                    $root->addFile($key, $value, $tests, $cacheTokens);
+                    $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests, $cacheTokens);
                 }
             } else {
                 $child = $root->addDirectory($key);
@@ -96,11 +96,10 @@ final class Builder
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {
-        $files  = $data->getLineCoverage();
         $result = [];
 
-        foreach ($files as $path => $file) {
-            $path    = \explode(\DIRECTORY_SEPARATOR, $path);
+        foreach ($data->getCoveredFiles() as $originalPath) {
+            $path    = \explode(\DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
             $max     = \count($path);
 
@@ -114,7 +113,10 @@ final class Builder
                 $pointer = &$pointer[$path[$i] . $type];
             }
 
-            $pointer = $file;
+            $pointer = [
+                'lineCoverage'     => $data->getLineCoverage()[$originalPath] ?? [],
+                'functionCoverage' => $data->getFunctionCoverage()[$originalPath] ?? [],
+            ];
         }
 
         return $result;

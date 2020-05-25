@@ -67,6 +67,26 @@ final class Directory extends AbstractNode implements \IteratorAggregate
     /**
      * @var int
      */
+    private $numExecutableBranches = -1;
+
+    /**
+     * @var int
+     */
+    private $numExecutedBranches = -1;
+
+    /**
+     * @var int
+     */
+    private $numExecutablePaths = -1;
+
+    /**
+     * @var int
+     */
+    private $numExecutedPaths = -1;
+
+    /**
+     * @var int
+     */
     private $numClasses = -1;
 
     /**
@@ -147,9 +167,9 @@ final class Directory extends AbstractNode implements \IteratorAggregate
     /**
      * Adds a new file.
      */
-    public function addFile(string $name, array $coverageData, array $testData, bool $cacheTokens): File
+    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens): File
     {
-        $file = new File($name, $this, $coverageData, $testData, $cacheTokens);
+        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData, $cacheTokens);
 
         $this->children[] = $file;
         $this->files[]    = &$this->children[\count($this->children) - 1];
@@ -291,6 +311,70 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         }
 
         return $this->numExecutedLines;
+    }
+
+    /**
+     * Returns the number of executable branches.
+     */
+    public function getNumExecutableBranches(): int
+    {
+        if ($this->numExecutableBranches === -1) {
+            $this->numExecutableBranches = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutableBranches += $child->getNumExecutableBranches();
+            }
+        }
+
+        return $this->numExecutableBranches;
+    }
+
+    /**
+     * Returns the number of executed branches.
+     */
+    public function getNumExecutedBranches(): int
+    {
+        if ($this->numExecutedBranches === -1) {
+            $this->numExecutedBranches = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutedBranches += $child->getNumExecutedBranches();
+            }
+        }
+
+        return $this->numExecutedBranches;
+    }
+
+    /**
+     * Returns the number of executable paths.
+     */
+    public function getNumExecutablePaths(): int
+    {
+        if ($this->numExecutablePaths === -1) {
+            $this->numExecutablePaths = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutablePaths += $child->getNumExecutablePaths();
+            }
+        }
+
+        return $this->numExecutablePaths;
+    }
+
+    /**
+     * Returns the number of executed paths.
+     */
+    public function getNumExecutedPaths(): int
+    {
+        if ($this->numExecutedPaths === -1) {
+            $this->numExecutedPaths = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutedPaths += $child->getNumExecutedPaths();
+            }
+        }
+
+        return $this->numExecutedPaths;
     }
 
     /**

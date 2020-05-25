@@ -47,18 +47,24 @@ abstract class Renderer
     protected $highLowerBound;
 
     /**
+     * @var bool
+     */
+    protected $hasBranchCoverage;
+
+    /**
      * @var string
      */
     protected $version;
 
-    public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound)
+    public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound, bool $hasBranchCoverage)
     {
-        $this->templatePath   = $templatePath;
-        $this->generator      = $generator;
-        $this->date           = $date;
-        $this->lowUpperBound  = $lowUpperBound;
-        $this->highLowerBound = $highLowerBound;
-        $this->version        = Version::id();
+        $this->templatePath      = $templatePath;
+        $this->generator         = $generator;
+        $this->date              = $date;
+        $this->lowUpperBound     = $lowUpperBound;
+        $this->highLowerBound    = $highLowerBound;
+        $this->version           = Version::id();
+        $this->hasBranchCoverage = $hasBranchCoverage;
     }
 
     protected function renderItemTemplate(Template $template, array $data): string
@@ -113,23 +119,63 @@ abstract class Renderer
             $data['linesExecutedPercentAsString'] = 'n/a';
         }
 
+        if ($data['numExecutablePaths'] > 0) {
+            $pathsLevel = $this->getColorLevel($data['pathsExecutedPercent']);
+
+            $pathsNumber = $data['numExecutedPaths'] . $numSeparator .
+                $data['numExecutablePaths'];
+
+            $pathsBar = $this->getCoverageBar(
+                $data['pathsExecutedPercent']
+            );
+        } else {
+            $pathsLevel                           = '';
+            $pathsNumber                          = '0' . $numSeparator . '0';
+            $pathsBar                             = '';
+            $data['pathsExecutedPercentAsString'] = 'n/a';
+        }
+
+        if ($data['numExecutableBranches'] > 0) {
+            $branchesLevel = $this->getColorLevel($data['branchesExecutedPercent']);
+
+            $branchesNumber = $data['numExecutedBranches'] . $numSeparator .
+                $data['numExecutableBranches'];
+
+            $branchesBar = $this->getCoverageBar(
+                $data['branchesExecutedPercent']
+            );
+        } else {
+            $branchesLevel                           = '';
+            $branchesNumber                          = '0' . $numSeparator . '0';
+            $branchesBar                             = '';
+            $data['branchesExecutedPercentAsString'] = 'n/a';
+        }
+
         $template->setVar(
             [
-                'icon'                   => $data['icon'] ?? '',
-                'crap'                   => $data['crap'] ?? '',
-                'name'                   => $data['name'],
-                'lines_bar'              => $linesBar,
-                'lines_executed_percent' => $data['linesExecutedPercentAsString'],
-                'lines_level'            => $linesLevel,
-                'lines_number'           => $linesNumber,
-                'methods_bar'            => $methodsBar,
-                'methods_tested_percent' => $data['testedMethodsPercentAsString'],
-                'methods_level'          => $methodsLevel,
-                'methods_number'         => $methodsNumber,
-                'classes_bar'            => $classesBar,
-                'classes_tested_percent' => $data['testedClassesPercentAsString'] ?? '',
-                'classes_level'          => $classesLevel,
-                'classes_number'         => $classesNumber,
+                'icon'                      => $data['icon'] ?? '',
+                'crap'                      => $data['crap'] ?? '',
+                'name'                      => $data['name'],
+                'lines_bar'                 => $linesBar,
+                'lines_executed_percent'    => $data['linesExecutedPercentAsString'],
+                'lines_level'               => $linesLevel,
+                'lines_number'              => $linesNumber,
+                'paths_bar'                 => $pathsBar,
+                'paths_executed_percent'    => $data['pathsExecutedPercentAsString'],
+                'paths_level'               => $pathsLevel,
+                'paths_number'              => $pathsNumber,
+                'branches_bar'              => $branchesBar,
+                'branches_executed_percent' => $data['branchesExecutedPercentAsString'],
+                'branches_level'            => $branchesLevel,
+                'branches_number'           => $branchesNumber,
+                'methods_bar'               => $methodsBar,
+                'methods_tested_percent'    => $data['testedMethodsPercentAsString'],
+                'methods_level'             => $methodsLevel,
+                'methods_number'            => $methodsNumber,
+                'classes_bar'               => $classesBar,
+                'classes_tested_percent'    => $data['testedClassesPercentAsString'] ?? '',
+                'classes_level'             => $classesLevel,
+                'classes_number'            => $classesNumber,
             ]
         );
 
@@ -223,8 +269,9 @@ abstract class Renderer
     {
         $level = $this->getColorLevel($percent);
 
-        $template = new Template(
-            $this->templatePath . 'coverage_bar.html',
+        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'coverage_bar_branch.html' : 'coverage_bar.html');
+        $template     = new Template(
+            $templateName,
             '{{',
             '}}'
         );

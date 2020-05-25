@@ -39,6 +39,16 @@ final class HtmlTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
+    public function testPathCoverageForBankAccountTest(): void
+    {
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
+
+        $report = new Facade;
+        $report->process($this->getPathCoverageForBankAccount(), self::$TEST_TMP_PATH);
+
+        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+    }
+
     public function testForFileWithIgnoredLines(): void
     {
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';

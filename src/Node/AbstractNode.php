@@ -244,6 +244,44 @@ abstract class AbstractNode implements \Countable
     }
 
     /**
+     * Returns the percentage of executed branches.
+     *
+     * @return float|int|string
+     */
+    public function getBranchExecutedPercent(bool $asString = true)
+    {
+        $percentage = Percentage::fromFractionAndTotal(
+            $this->getNumExecutedBranches(),
+            $this->getNumExecutableBranches()
+        );
+
+        if ($asString) {
+            return $percentage->asString();
+        }
+
+        return $percentage->asFloat();
+    }
+
+    /**
+     * Returns the percentage of executed paths.
+     *
+     * @return float|int|string
+     */
+    public function getPathExecutedPercent(bool $asString = true)
+    {
+        $percentage = Percentage::fromFractionAndTotal(
+            $this->getNumExecutedPaths(),
+            $this->getNumExecutablePaths()
+        );
+
+        if ($asString) {
+            return $percentage->asString();
+        }
+
+        return $percentage->asFloat();
+    }
+
+    /**
      * Returns the number of classes and traits.
      */
     public function getNumClassesAndTraits(): int
@@ -320,6 +358,26 @@ abstract class AbstractNode implements \Countable
      * Returns the number of executed lines.
      */
     abstract public function getNumExecutedLines(): int;
+
+    /**
+     * Returns the number of executable branches.
+     */
+    abstract public function getNumExecutableBranches(): int;
+
+    /**
+     * Returns the number of executed branches.
+     */
+    abstract public function getNumExecutedBranches(): int;
+
+    /**
+     * Returns the number of executable paths.
+     */
+    abstract public function getNumExecutablePaths(): int;
+
+    /**
+     * Returns the number of executed paths.
+     */
+    abstract public function getNumExecutedPaths(): int;
 
     /**
      * Returns the number of classes.

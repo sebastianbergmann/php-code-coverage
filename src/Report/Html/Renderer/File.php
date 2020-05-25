@@ -28,7 +28,8 @@ final class File extends Renderer
      */
     public function render(FileNode $node, string $file): void
     {
-        $template = new Template($this->templatePath . 'file.html', '{{', '}}');
+        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_branch.html' : 'file.html');
+        $template     = new Template($templateName, '{{', '}}');
 
         $template->setVar(
             [
@@ -44,10 +45,12 @@ final class File extends Renderer
 
     protected function renderItems(FileNode $node): string
     {
-        $template = new Template($this->templatePath . 'file_item.html', '{{', '}}');
+        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_item_branch.html' : 'file_item.html');
+        $template     = new Template($templateName, '{{', '}}');
 
+        $methodTemplateName = $this->templatePath . ($this->hasBranchCoverage ? 'method_item_branch.html' : 'method_item.html');
         $methodItemTemplate = new Template(
-            $this->templatePath . 'method_item.html',
+            $methodTemplateName,
             '{{',
             '}}'
         );
@@ -55,20 +58,28 @@ final class File extends Renderer
         $items = $this->renderItemTemplate(
             $template,
             [
-                'name'                         => 'Total',
-                'numClasses'                   => $node->getNumClassesAndTraits(),
-                'numTestedClasses'             => $node->getNumTestedClassesAndTraits(),
-                'numMethods'                   => $node->getNumFunctionsAndMethods(),
-                'numTestedMethods'             => $node->getNumTestedFunctionsAndMethods(),
-                'linesExecutedPercent'         => $node->getLineExecutedPercent(false),
-                'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
-                'numExecutedLines'             => $node->getNumExecutedLines(),
-                'numExecutableLines'           => $node->getNumExecutableLines(),
-                'testedMethodsPercent'         => $node->getTestedFunctionsAndMethodsPercent(false),
-                'testedMethodsPercentAsString' => $node->getTestedFunctionsAndMethodsPercent(),
-                'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
-                'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
-                'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
+                'name'                            => 'Total',
+                'numClasses'                      => $node->getNumClassesAndTraits(),
+                'numTestedClasses'                => $node->getNumTestedClassesAndTraits(),
+                'numMethods'                      => $node->getNumFunctionsAndMethods(),
+                'numTestedMethods'                => $node->getNumTestedFunctionsAndMethods(),
+                'linesExecutedPercent'            => $node->getLineExecutedPercent(false),
+                'linesExecutedPercentAsString'    => $node->getLineExecutedPercent(),
+                'numExecutedLines'                => $node->getNumExecutedLines(),
+                'numExecutableLines'              => $node->getNumExecutableLines(),
+                'branchesExecutedPercent'         => $node->getBranchExecutedPercent(false),
+                'branchesExecutedPercentAsString' => $node->getBranchExecutedPercent(),
+                'numExecutedBranches'             => $node->getNumExecutedBranches(),
+                'numExecutableBranches'           => $node->getNumExecutableBranches(),
+                'pathsExecutedPercent'            => $node->getPathExecutedPercent(false),
+                'pathsExecutedPercentAsString'    => $node->getPathExecutedPercent(),
+                'numExecutedPaths'                => $node->getNumExecutedPaths(),
+                'numExecutablePaths'              => $node->getNumExecutablePaths(),
+                'testedMethodsPercent'            => $node->getTestedFunctionsAndMethodsPercent(false),
+                'testedMethodsPercentAsString'    => $node->getTestedFunctionsAndMethodsPercent(),
+                'testedClassesPercent'            => $node->getTestedClassesAndTraitsPercent(false),
+                'testedClassesPercentAsString'    => $node->getTestedClassesAndTraitsPercent(),
+                'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
             ]
         );
 
@@ -121,10 +132,20 @@ final class File extends Renderer
                     $item['executedLines'],
                     $item['executableLines']
                 )->asString();
+                $branchesExecutedPercentAsString = Percentage::fromFractionAndTotal(
+                    $item['executedBranches'],
+                    $item['executableBranches']
+                )->asString();
+                $pathsExecutedPercentAsString = Percentage::fromFractionAndTotal(
+                    $item['executedPaths'],
+                    $item['executablePaths']
+                )->asString();
             } else {
-                $numClasses                   = 'n/a';
-                $numTestedClasses             = 'n/a';
-                $linesExecutedPercentAsString = 'n/a';
+                $numClasses                      = 'n/a';
+                $numTestedClasses                = 'n/a';
+                $linesExecutedPercentAsString    = 'n/a';
+                $branchesExecutedPercentAsString = 'n/a';
+                $pathsExecutedPercentAsString    = 'n/a';
             }
 
             $testedMethodsPercentage = Percentage::fromFractionAndTotal(
@@ -149,9 +170,23 @@ final class File extends Renderer
                         $item['executedLines'],
                         $item['executableLines'],
                     )->asFloat(),
-                    'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
-                    'numExecutedLines'             => $item['executedLines'],
-                    'numExecutableLines'           => $item['executableLines'],
+                    'linesExecutedPercentAsString'    => $linesExecutedPercentAsString,
+                    'numExecutedLines'                => $item['executedLines'],
+                    'numExecutableLines'              => $item['executableLines'],
+                    'branchesExecutedPercent'         => Percentage::fromFractionAndTotal(
+                        $item['executedBranches'],
+                        $item['executableBranches'],
+                    )->asFloat(),
+                    'branchesExecutedPercentAsString' => $branchesExecutedPercentAsString,
+                    'numExecutedBranches'             => $item['executedBranches'],
+                    'numExecutableBranches'           => $item['executableBranches'],
+                    'pathsExecutedPercent'            => Percentage::fromFractionAndTotal(
+                        $item['executedPaths'],
+                        $item['executablePaths']
+                    )->asFloat(),
+                    'pathsExecutedPercentAsString' => $pathsExecutedPercentAsString,
+                    'numExecutedPaths'             => $item['executedPaths'],
+                    'numExecutablePaths'           => $item['executablePaths'],
                     'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
                     'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
                     'testedClassesPercent'         => $testedClassesPercentage->asFloat(),
@@ -208,6 +243,16 @@ final class File extends Renderer
             $item['executableLines']
         );
 
+        $executedBranchesPercentage = Percentage::fromFractionAndTotal(
+            $item['executedBranches'],
+            $item['executableBranches']
+        );
+
+        $executedPathsPercentage = Percentage::fromFractionAndTotal(
+            $item['executedPaths'],
+            $item['executablePaths']
+        );
+
         $testedMethodsPercentage = Percentage::fromFractionAndTotal(
             $numTestedMethods,
             1
@@ -223,22 +268,30 @@ final class File extends Renderer
                     \htmlspecialchars($item['signature'], $this->htmlSpecialCharsFlags),
                     $item['functionName'] ?? $item['methodName']
                 ),
-                'numMethods'                   => $numMethods,
-                'numTestedMethods'             => $numTestedMethods,
-                'linesExecutedPercent'         => $executedLinesPercentage->asFloat(),
-                'linesExecutedPercentAsString' => $executedLinesPercentage->asString(),
-                'numExecutedLines'             => $item['executedLines'],
-                'numExecutableLines'           => $item['executableLines'],
-                'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
-                'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
-                'crap'                         => $item['crap'],
+                'numMethods'                      => $numMethods,
+                'numTestedMethods'                => $numTestedMethods,
+                'linesExecutedPercent'            => $executedLinesPercentage->asFloat(),
+                'linesExecutedPercentAsString'    => $executedLinesPercentage->asString(),
+                'numExecutedLines'                => $item['executedLines'],
+                'numExecutableLines'              => $item['executableLines'],
+                'branchesExecutedPercent'         => $executedBranchesPercentage->asFloat(),
+                'branchesExecutedPercentAsString' => $executedBranchesPercentage->asString(),
+                'numExecutedBranches'             => $item['executedBranches'],
+                'numExecutableBranches'           => $item['executableBranches'],
+                'pathsExecutedPercent'            => $executedPathsPercentage->asFloat(),
+                'pathsExecutedPercentAsString'    => $executedPathsPercentage->asString(),
+                'numExecutedPaths'                => $item['executedPaths'],
+                'numExecutablePaths'              => $item['executablePaths'],
+                'testedMethodsPercent'            => $testedMethodsPercentage->asFloat(),
+                'testedMethodsPercentAsString'    => $testedMethodsPercentage->asString(),
+                'crap'                            => $item['crap'],
             ]
         );
     }
 
     protected function renderSource(FileNode $node): string
     {
-        $coverageData = $node->getCoverageData();
+        $coverageData = $node->getLineCoverageData();
         $testData     = $node->getTestData();
         $codeLines    = $this->loadFile($node->getPath());
         $lines        = '';

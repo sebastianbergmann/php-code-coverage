@@ -148,7 +148,7 @@ final class Facade
             $this->processFunction($function, $fileReport);
         }
 
-        foreach ($file->getCoverageData() as $line => $tests) {
+        foreach ($file->getLineCoverageData() as $line => $tests) {
             if (!\is_array($tests) || \count($tests) === 0) {
                 continue;
             }

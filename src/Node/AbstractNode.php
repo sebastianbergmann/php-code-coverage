@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use SebastianBergmann\CodeCoverage\Percentage;
 
 /**
- * Base class for nodes in the code coverage information tree.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class AbstractNode implements \Countable
 {

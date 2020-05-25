@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage;
 
 /**
- * Raw context-less code coverage data for SUT.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class RawCodeCoverageData
 {

@@ -14,7 +14,7 @@ use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
- * Uses var_export() to write a SebastianBergmann\CodeCoverage\CodeCoverage object to a file.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class PHP
 {

@@ -12,6 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class Builder
 {
     public function build(CodeCoverage $coverage): Directory

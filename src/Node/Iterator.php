@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 /**
- * Recursive iterator for node object graphs.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Iterator implements \RecursiveIterator
 {

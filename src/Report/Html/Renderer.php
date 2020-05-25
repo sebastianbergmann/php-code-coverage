@@ -17,7 +17,7 @@ use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\Template\Template;
 
 /**
- * Base class for node renderers.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class Renderer
 {

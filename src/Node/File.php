@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 /**
- * Represents a file in the code coverage information tree.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class File extends AbstractNode
 {

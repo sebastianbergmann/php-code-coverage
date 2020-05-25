@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 /**
- * Processed/context-added code coverage data for SUT.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class ProcessedCodeCoverageData
 {

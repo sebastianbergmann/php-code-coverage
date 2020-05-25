@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class Directory
 {
     /**

@@ -14,9 +14,7 @@ use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Percentage;
 
 /**
- * Generates human readable output from a code coverage object.
- *
- * The output gets put into a text file our written to the CLI.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Text
 {

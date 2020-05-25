@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
- * Generates an HTML report from a code coverage object.
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Facade
 {

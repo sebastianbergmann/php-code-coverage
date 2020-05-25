@@ -9,7 +9,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#746](https://github.com/sebastianbergmann/php-code-coverage/pull/746): Remove some ancient workarounds for very old Xdebug versions
 * [#747](https://github.com/sebastianbergmann/php-code-coverage/pull/747): Use native filtering in PCOV and Xdebug drivers
 * [#748](https://github.com/sebastianbergmann/php-code-coverage/pull/748): Store raw code coverage in value objects instead of arrays
-* [#749](https://github.com/sebastianbergmann/php-code-coverage/pull/749): Store processes code coverage in value objects instead of arrays
+* [#749](https://github.com/sebastianbergmann/php-code-coverage/pull/749): Store processed code coverage in value objects instead of arrays
 * [#752](https://github.com/sebastianbergmann/php-code-coverage/pull/752): Rework how code coverage settings are propagated to the driver
 
 ## [8.0.2] - 2020-05-23

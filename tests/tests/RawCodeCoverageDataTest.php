@@ -212,4 +212,86 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
     }
+
+    public function testUseStatementsAreUncovered(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_with_use_statements.php';
+        $tokens = new \PHP_Token_Stream($file);
+
+        $this->assertEquals(
+            [
+                11,
+                12,
+                14,
+                15,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+            ],
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+        );
+    }
+
+    public function testEmptyClassesAreUncovered(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_with_empty_class.php';
+        $tokens = new \PHP_Token_Stream($file);
+
+        $this->assertEquals(
+            [
+                12,
+                14,
+            ],
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+        );
+    }
+
+    public function testInterfacesAreUncovered(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_with_interface.php';
+        $tokens = new \PHP_Token_Stream($file);
+
+        $this->assertEquals(
+            [
+                6,
+                7,
+                9,
+                10,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+            ],
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+        );
+    }
+
+    public function testInlineCommentsKeepTheLine(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_with_oneline_annotations.php';
+        $tokens = new \PHP_Token_Stream($file);
+
+        $this->assertEquals(
+            [
+                12,
+                13,
+                17,
+                19,
+                22,
+                26,
+                29,
+                31,
+                32,
+                33,
+                35,
+                36,
+            ],
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+        );
+    }
 }

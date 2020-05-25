@@ -6,7 +6,7 @@ Code Coverage Report:
  Summary:              
   Classes:  0.00% (0/1)
   Methods:  0.00% (0/1)
-  Lines:   87.50% (7/8)
+  Lines:   88.89% (8/9)
 
 CoveredClassWithAnonymousFunctionInStaticMethod
-  Methods:   0.00% ( 0/ 1)   Lines:  87.50% (  7/  8)
+  Methods:   0.00% ( 0/ 1)   Lines:  88.89% (  8/  9)

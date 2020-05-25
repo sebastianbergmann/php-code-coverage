@@ -496,27 +496,22 @@ final class CodeCoverage
      */
     private function addUncoveredFilesFromWhitelist(): void
     {
-        $data           = [];
         $uncoveredFiles = \array_diff(
             $this->filter->getWhitelist(),
             \array_keys($this->data->getLineCoverage())
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            if (!\file_exists($uncoveredFile)) {
-                continue;
-            }
+            if (\file_exists($uncoveredFile)) {
+                if ($this->cacheTokens) {
+                    $tokens = \PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+                } else {
+                    $tokens = new \PHP_Token_Stream($uncoveredFile);
+                }
 
-            $data[$uncoveredFile] = [];
-
-            $lines = \count(\file($uncoveredFile));
-
-            for ($i = 1; $i <= $lines; $i++) {
-                $data[$uncoveredFile][$i] = Driver::LINE_NOT_EXECUTED;
+                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile, $tokens), self::UNCOVERED_FILES_FROM_WHITELIST);
             }
         }
-
-        $this->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage($data), self::UNCOVERED_FILES_FROM_WHITELIST);
     }
 
     private function getLinesToBeIgnored(string $fileName): array
@@ -540,58 +535,10 @@ final class CodeCoverage
 
         $lines = \file($fileName);
 
-        foreach ($lines as $index => $line) {
-            if (!\trim($line)) {
-                $this->ignoredLines[$fileName][] = $index + 1;
-            }
-        }
-
         if ($this->cacheTokens) {
             $tokens = \PHP_Token_Stream_CachingFactory::get($fileName);
         } else {
             $tokens = new \PHP_Token_Stream($fileName);
-        }
-
-        foreach ($tokens->getInterfaces() as $interface) {
-            $interfaceStartLine = $interface['startLine'];
-            $interfaceEndLine   = $interface['endLine'];
-
-            foreach (\range($interfaceStartLine, $interfaceEndLine) as $line) {
-                $this->ignoredLines[$fileName][] = $line;
-            }
-        }
-
-        foreach (\array_merge($tokens->getClasses(), $tokens->getTraits()) as $classOrTrait) {
-            $classOrTraitStartLine = $classOrTrait['startLine'];
-            $classOrTraitEndLine   = $classOrTrait['endLine'];
-
-            if (empty($classOrTrait['methods'])) {
-                foreach (\range($classOrTraitStartLine, $classOrTraitEndLine) as $line) {
-                    $this->ignoredLines[$fileName][] = $line;
-                }
-
-                continue;
-            }
-
-            $firstMethod          = \array_shift($classOrTrait['methods']);
-            $firstMethodStartLine = $firstMethod['startLine'];
-            $lastMethodEndLine    = $firstMethod['endLine'];
-
-            do {
-                $lastMethod = \array_pop($classOrTrait['methods']);
-            } while ($lastMethod !== null && 0 === \strpos($lastMethod['signature'], 'anonymousFunction'));
-
-            if ($lastMethod !== null) {
-                $lastMethodEndLine = $lastMethod['endLine'];
-            }
-
-            foreach (\range($classOrTraitStartLine, $firstMethodStartLine) as $line) {
-                $this->ignoredLines[$fileName][] = $line;
-            }
-
-            foreach (\range($lastMethodEndLine + 1, $classOrTraitEndLine) as $line) {
-                $this->ignoredLines[$fileName][] = $line;
-            }
         }
 
         if ($this->disableIgnoredLines) {
@@ -623,28 +570,9 @@ final class CodeCoverage
                         $stop = true;
                     }
 
-                    if (!$ignore) {
-                        $start = $token->getLine();
-                        $end   = $start + \substr_count((string) $token, "\n");
-
-                        // Do not ignore the first line when there is a token
-                        // before the comment
-                        if (0 !== \strpos($_token, $_line)) {
-                            $start++;
-                        }
-
-                        for ($i = $start; $i < $end; $i++) {
-                            $this->ignoredLines[$fileName][] = $i;
-                        }
-
-                        // A DOC_COMMENT token or a COMMENT token starting with "/*"
-                        // does not contain the final \n character in its text
-                        if (isset($lines[$i - 1]) && 0 === \strpos($_token, '/*') && '*/' === \substr(\trim($lines[$i - 1]), -2)) {
-                            $this->ignoredLines[$fileName][] = $i;
-                        }
-                    }
-
                     break;
+
+                 // Intentional fallthrough
 
                 case \PHP_Token_INTERFACE::class:
                 case \PHP_Token_TRAIT::class:
@@ -654,8 +582,6 @@ final class CodeCoverage
 
                     $docblock = (string) $token->getDocblock();
 
-                    $this->ignoredLines[$fileName][] = $token->getLine();
-
                     if (\strpos($docblock, '@codeCoverageIgnore') || ($this->ignoreDeprecatedCode && \strpos($docblock, '@deprecated'))) {
                         $endLine = $token->getEndLine();
 
@@ -663,20 +589,6 @@ final class CodeCoverage
                             $this->ignoredLines[$fileName][] = $i;
                         }
                     }
-
-                    break;
-
-                /* @noinspection PhpMissingBreakStatementInspection */
-                case \PHP_Token_NAMESPACE::class:
-                    $this->ignoredLines[$fileName][] = $token->getEndLine();
-
-                // Intentional fallthrough
-                case \PHP_Token_DECLARE::class:
-                case \PHP_Token_OPEN_TAG::class:
-                case \PHP_Token_CLOSE_TAG::class:
-                case \PHP_Token_USE::class:
-                case \PHP_Token_USE_FUNCTION::class:
-                    $this->ignoredLines[$fileName][] = $token->getLine();
 
                     break;
             }
@@ -690,8 +602,6 @@ final class CodeCoverage
                 }
             }
         }
-
-        $this->ignoredLines[$fileName][] = \count($lines) + 1;
 
         $this->ignoredLines[$fileName] = \array_unique(
             $this->ignoredLines[$fileName]

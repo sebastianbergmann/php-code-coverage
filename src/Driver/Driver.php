@@ -20,7 +20,7 @@ abstract class Driver
      *
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const LINE_EXECUTED = 1;
+    public const LINE_NOT_EXECUTABLE = -2;
 
     /**
      * @var int
@@ -34,14 +34,7 @@ abstract class Driver
      *
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const LINE_NOT_EXECUTABLE = -2;
-
-    /**
-     * @var int
-     *
-     * @see http://xdebug.org/docs/code_coverage
-     */
-    public const BRANCH_HIT = 1;
+    public const LINE_EXECUTED = 1;
 
     /**
      * @var int
@@ -49,6 +42,13 @@ abstract class Driver
      * @see http://xdebug.org/docs/code_coverage
      */
     public const BRANCH_NOT_HIT = 0;
+
+    /**
+     * @var int
+     *
+     * @see http://xdebug.org/docs/code_coverage
+     */
+    public const BRANCH_HIT = 1;
 
     /**
      * @var bool

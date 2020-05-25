@@ -69,6 +69,11 @@ final class PhpdbgDriver extends Driver
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($this->detectExecutedLines($fetchedLines, $dbgData));
     }
 
+    public function name(): string
+    {
+        return 'PHPDBG';
+    }
+
     private function detectExecutedLines(array $sourceLines, array $dbgData): array
     {
         foreach ($dbgData as $file => $coveredLines) {
@@ -82,10 +87,5 @@ final class PhpdbgDriver extends Driver
         }
 
         return $sourceLines;
-    }
-
-    public function name(): string
-    {
-        return 'PHPDBG';
     }
 }

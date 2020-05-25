@@ -80,4 +80,9 @@ final class PhpdbgDriver extends Driver
 
         return $sourceLines;
     }
+
+    public function name(): string
+    {
+        return 'PHPDBG';
+    }
 }

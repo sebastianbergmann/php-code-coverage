@@ -114,6 +114,8 @@ abstract class Driver
         $this->detectDeadCode = false;
     }
 
+    abstract public function name(): string;
+
     abstract public function start(): void;
 
     abstract public function stop(): RawCodeCoverageData;

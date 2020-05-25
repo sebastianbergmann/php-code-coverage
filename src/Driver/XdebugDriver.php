@@ -70,4 +70,9 @@ final class XdebugDriver extends Driver
 
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
     }
+
+    public function name(): string
+    {
+        return 'Xdebug';
+    }
 }

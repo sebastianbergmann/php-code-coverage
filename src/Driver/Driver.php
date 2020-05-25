@@ -76,7 +76,12 @@ abstract class Driver
     public function enableBranchAndPathCoverage(): void
     {
         if (!$this->canCollectBranchAndPathCoverage()) {
-            throw new BranchAndPathCoverageNotSupportedException;
+            throw new BranchAndPathCoverageNotSupportedException(
+                \sprintf(
+                    'The %s driver does not support branch and path coverage',
+                    $this->name()
+                )
+            );
         }
 
         $this->collectBranchAndPathCoverage = true;
@@ -103,7 +108,12 @@ abstract class Driver
     public function enableDeadCodeDetection(): void
     {
         if (!$this->canDetectDeadCode()) {
-            throw new DeadCodeDetectionNotSupportedException;
+            throw new DeadCodeDetectionNotSupportedException(
+                \sprintf(
+                    'The %s driver does not support dead code detection',
+                    $this->name()
+                )
+            );
         }
 
         $this->detectDeadCode = true;

@@ -126,6 +126,7 @@ final class ProcessedCodeCoverageData
         if (isset($this->functionCoverage[$oldFile])) {
             $this->functionCoverage[$newFile] = $this->functionCoverage[$oldFile];
         }
+
         unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile]);
     }
 

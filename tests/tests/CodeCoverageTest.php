@@ -128,40 +128,19 @@ final class CodeCoverageTest extends TestCase
     {
         $this->assertEquals(
             [
-                1,
                 3,
                 4,
                 5,
-                7,
-                8,
-                9,
-                10,
                 11,
                 12,
                 13,
                 14,
                 15,
                 16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
                 23,
                 24,
                 25,
-                26,
-                27,
-                28,
                 30,
-                32,
-                33,
-                34,
-                35,
-                36,
-                37,
-                38,
             ],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
@@ -173,7 +152,7 @@ final class CodeCoverageTest extends TestCase
     public function testGetLinesToBeIgnored2(): void
     {
         $this->assertEquals(
-            [1, 5],
+            [],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
                 TEST_FILES_PATH . 'source_without_ignore.php'
@@ -184,19 +163,7 @@ final class CodeCoverageTest extends TestCase
     public function testGetLinesToBeIgnored3(): void
     {
         $this->assertEquals(
-            [
-                1,
-                2,
-                3,
-                4,
-                5,
-                8,
-                11,
-                15,
-                16,
-                19,
-                20,
-            ],
+            [],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
@@ -208,35 +175,10 @@ final class CodeCoverageTest extends TestCase
     {
         $this->assertEquals(
             [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                14,
-                15,
-                16,
-                18,
-                20,
-                21,
-                23,
-                24,
-                25,
-                27,
-                28,
                 29,
-                30,
                 31,
                 32,
                 33,
-                34,
-                37,
             ],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
@@ -250,57 +192,10 @@ final class CodeCoverageTest extends TestCase
         $this->coverage->setDisableIgnoredLines(true);
 
         $this->assertEquals(
-            [
-                7,
-                11,
-                12,
-                13,
-                16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                26,
-                27,
-                32,
-                33,
-                34,
-                35,
-                36,
-                37,
-            ],
+            [],
             $this->getLinesToBeIgnored()->invoke(
                 $this->coverage,
                 TEST_FILES_PATH . 'source_with_ignore.php'
-            )
-        );
-    }
-
-    public function testUseStatementsAreIgnored(): void
-    {
-        $this->assertEquals(
-            [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                13,
-                16,
-                23,
-                24,
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_use_statements.php'
             )
         );
     }

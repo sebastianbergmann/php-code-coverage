@@ -216,9 +216,29 @@ final class RawCodeCoverageData
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
+        if (empty($lines)) {
+            return;
+        }
+
         $this->lineCoverage[$filename] = \array_diff_key(
             $this->lineCoverage[$filename],
             \array_flip($lines)
         );
+
+        if (isset($this->functionCoverage[$filename])) {
+            foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
+                foreach ($functionData['branches'] as $branchId => $branch) {
+                    if (\count(\array_intersect($lines, \range($branch['line_start'], $branch['line_end']))) > 0) {
+                        unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+
+                        foreach ($functionData['paths'] as $pathId => $path) {
+                            if (\in_array($branchId, $path['path'], true)) {
+                                unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

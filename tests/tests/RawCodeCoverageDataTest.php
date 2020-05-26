@@ -294,4 +294,190 @@ final class RawCodeCoverageDataTest extends TestCase
             \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
         );
     }
+
+    public function testCoverageForFileWithInlineAnnotations(): void
+    {
+        $filename = TEST_FILES_PATH . 'source_with_oneline_annotations.php';
+        $coverage = RawCodeCoverageData::fromXdebugWithPathCoverage(
+            [
+                $filename => [
+                    'lines' => [
+                        13 => -1,
+                        19 => -1,
+                        22 => -1,
+                        26 => -1,
+                        29 => -1,
+                        31 => -1,
+                        32 => -1,
+                        33 => -1,
+                        35 => -1,
+                        36 => -1,
+                        37 => -1,
+                    ],
+                    'functions' => [
+                        '{main}' => [
+                            'branches' => [
+                                0 => [
+                                    'op_start'   => 0,
+                                    'op_end'     => 0,
+                                    'line_start' => 37,
+                                    'line_end'   => 37,
+                                    'hit'        => 0,
+                                    'out'        => [
+                                        0 => 2147483645,
+                                    ],
+                                    'out_hit' => [
+                                        0 => 0,
+                                    ],
+                                ],
+                            ],
+                            'paths' => [
+                                0 => [
+                                    'path' => [
+                                        0 => 0,
+                                    ],
+                                    'hit' => 0,
+                                ],
+                            ],
+                        ],
+                        'Foo->bar' => [
+                            'branches' => [
+                                0 => [
+                                    'op_start'   => 0,
+                                    'op_end'     => 2,
+                                    'line_start' => 11,
+                                    'line_end'   => 13,
+                                    'hit'        => 0,
+                                    'out'        => [
+                                        0 => 2147483645,
+                                    ],
+                                    'out_hit' => [
+                                        0 => 0,
+                                    ],
+                                ],
+                            ],
+                            'paths' => [
+                                0 => [
+                                    'path' => [
+                                        0 => 0,
+                                    ],
+                                    'hit' => 0,
+                                ],
+                            ],
+                        ],
+                        'baz' => [
+                            'branches' => [
+                                0 => [
+                                    'op_start'   => 0,
+                                    'op_end'     => 18,
+                                    'line_start' => 16,
+                                    'line_end'   => 36,
+                                    'hit'        => 0,
+                                    'out'        => [
+                                        0 => 2147483645,
+                                    ],
+                                    'out_hit' => [
+                                        0 => 0,
+                                    ],
+                                ],
+                            ],
+                            'paths' => [
+                                0 => [
+                                    'path' => [
+                                        0 => 0,
+                                    ],
+                                    'hit' => 0,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $coverage->removeCoverageDataForLines(
+            $filename,
+            [
+                29,
+                31,
+                32,
+                33,
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                13 => -1,
+                19 => -1,
+                22 => -1,
+                26 => -1,
+                35 => -1,
+                36 => -1,
+                37 => -1,
+            ],
+            $coverage->getLineCoverage()[$filename]
+        );
+
+        $this->assertEquals(
+            [
+                '{main}' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 0,
+                            'line_start' => 37,
+                            'line_end'   => 37,
+                            'hit'        => 0,
+                            'out'        => [
+                                0 => 2147483645,
+                            ],
+                            'out_hit' => [
+                                0 => 0,
+                            ],
+                        ],
+                    ],
+                    'paths' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'hit' => 0,
+                        ],
+                    ],
+                ],
+                'Foo->bar' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 2,
+                            'line_start' => 11,
+                            'line_end'   => 13,
+                            'hit'        => 0,
+                            'out'        => [
+                                0 => 2147483645,
+                            ],
+                            'out_hit' => [
+                                0 => 0,
+                            ],
+                        ],
+                    ],
+                    'paths' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'hit' => 0,
+                        ],
+                    ],
+                ],
+                'baz' => [
+                    'branches' => [
+                    ],
+                    'paths' => [
+                    ],
+                ],
+            ],
+            $coverage->getFunctionCoverage()[$filename]
+        );
+    }
 }

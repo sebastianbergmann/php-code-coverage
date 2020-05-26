@@ -11,6 +11,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#748](https://github.com/sebastianbergmann/php-code-coverage/pull/748): Store raw code coverage in value objects instead of arrays
 * [#749](https://github.com/sebastianbergmann/php-code-coverage/pull/749): Store processed code coverage in value objects instead of arrays
 * [#752](https://github.com/sebastianbergmann/php-code-coverage/pull/752): Rework how code coverage settings are propagated to the driver
+* [#754](https://github.com/sebastianbergmann/php-code-coverage/pull/754): Implement collection of raw branch and path coverage
+* [#755](https://github.com/sebastianbergmann/php-code-coverage/pull/755): Implement processing of raw branch and path coverage
+* [#756](https://github.com/sebastianbergmann/php-code-coverage/pull/756): Improve handling of uncovered files
 
 ## [8.0.2] - 2020-05-23
 

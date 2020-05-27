@@ -13,9 +13,6 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyUndefinedMethod occurrences="1">
-      <code>getEndLine</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="src/Driver/XdebugDriver.php">
     <UndefinedConstant occurrences="5">
@@ -23,6 +20,7 @@
       <code>\XDEBUG_PATH_WHITELIST</code>
       <code>\XDEBUG_CC_UNUSED</code>
       <code>\XDEBUG_CC_DEAD_CODE</code>
+      <code>\XDEBUG_CC_BRANCH_CHECK</code>
     </UndefinedConstant>
   </file>
   <file src="src/Node/AbstractNode.php">
@@ -47,8 +45,6 @@
       <code>$paths[$i]</code>
       <code>$paths[$i]</code>
       <code>$paths[$i]</code>
-      <code>$paths[$i]</code>
-      <code>$paths[$i]</code>
     </PossiblyInvalidArgument>
   </file>
   <file src="src/Node/Directory.php">
@@ -69,6 +65,11 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$this-&gt;nodes[$this-&gt;position]</code>
     </ArgumentTypeCoercion>
+  </file>
+  <file src="src/RawCodeCoverageData.php">
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>getEndLine</code>
+    </PossiblyUndefinedMethod>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

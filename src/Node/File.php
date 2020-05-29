@@ -441,16 +441,15 @@ final class File extends AbstractNode
 
         foreach ($this->traits as &$trait) {
             foreach ($trait['methods'] as &$method) {
-                if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
-                } else {
-                    $method['coverage'] = 100;
-                }
+                $methodLineCoverage   = $method['executableLines'] ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
+                $methodBranchCoverage = $method['executableBranches'] ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
+                $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+
+                $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
 
                 $method['crap'] = $this->crap(
                     $method['ccn'],
-                    $method['coverage']
+                    $methodPathCoverage ?: $methodLineCoverage
                 );
 
                 $trait['ccn'] += $method['ccn'];
@@ -458,20 +457,19 @@ final class File extends AbstractNode
 
             unset($method);
 
-            if ($trait['executableLines'] > 0) {
-                $trait['coverage'] = ($trait['executedLines'] /
-                        $trait['executableLines']) * 100;
+            $traitLineCoverage   = $trait['executableLines'] ? ($trait['executedLines'] / $trait['executableLines']) * 100 : 100;
+            $traitBranchCoverage = $trait['executableBranches'] ? ($trait['executedBranches'] / $trait['executableBranches']) * 100 : 0;
+            $traitPathCoverage   = $trait['executablePaths'] ? ($trait['executedPaths'] / $trait['executablePaths']) * 100 : 0;
 
-                if ($trait['coverage'] === 100) {
-                    $this->numTestedClasses++;
-                }
-            } else {
-                $trait['coverage'] = 100;
+            $trait['coverage'] = $traitBranchCoverage ?: $traitLineCoverage;
+
+            if ($trait['executableLines'] > 0 && $trait['coverage'] === 100) {
+                $this->numTestedClasses++;
             }
 
             $trait['crap'] = $this->crap(
                 $trait['ccn'],
-                $trait['coverage']
+                $traitPathCoverage ?: $traitLineCoverage
             );
         }
 
@@ -479,16 +477,15 @@ final class File extends AbstractNode
 
         foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
-                if ($method['executableLines'] > 0) {
-                    $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
-                } else {
-                    $method['coverage'] = 100;
-                }
+                $methodLineCoverage   = $method['executableLines'] ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
+                $methodBranchCoverage = $method['executableBranches'] ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
+                $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+
+                $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
 
                 $method['crap'] = $this->crap(
                     $method['ccn'],
-                    $method['coverage']
+                    $methodPathCoverage ?: $methodLineCoverage
                 );
 
                 $class['ccn'] += $method['ccn'];
@@ -496,32 +493,30 @@ final class File extends AbstractNode
 
             unset($method);
 
-            if ($class['executableLines'] > 0) {
-                $class['coverage'] = ($class['executedLines'] /
-                        $class['executableLines']) * 100;
+            $classLineCoverage   = $class['executableLines'] ? ($class['executedLines'] / $class['executableLines']) * 100 : 100;
+            $classBranchCoverage = $class['executableBranches'] ? ($class['executedBranches'] / $class['executableBranches']) * 100 : 0;
+            $classPathCoverage   = $class['executablePaths'] ? ($class['executedPaths'] / $class['executablePaths']) * 100 : 0;
 
-                if ($class['coverage'] === 100) {
-                    $this->numTestedClasses++;
-                }
-            } else {
-                $class['coverage'] = 100;
+            $class['coverage'] = $classBranchCoverage ?: $classLineCoverage;
+
+            if ($class['executableLines'] > 0 && $class['coverage'] === 100) {
+                $this->numTestedClasses++;
             }
 
             $class['crap'] = $this->crap(
                 $class['ccn'],
-                $class['coverage']
+                $classPathCoverage ?: $classLineCoverage
             );
         }
 
         unset($class);
 
         foreach ($this->functions as &$function) {
-            if ($function['executableLines'] > 0) {
-                $function['coverage'] = ($function['executedLines'] /
-                        $function['executableLines']) * 100;
-            } else {
-                $function['coverage'] = 100;
-            }
+            $functionLineCoverage   = $function['executableLines'] ? ($function['executedLines'] / $function['executableLines']) * 100 : 100;
+            $functionBranchCoverage = $function['executableBranches'] ? ($function['executedBranches'] / $function['executableBranches']) * 100 : 0;
+            $functionPathCoverage   = $function['executablePaths'] ? ($function['executedPaths'] / $function['executablePaths']) * 100 : 0;
+
+            $function['coverage'] = $functionBranchCoverage ?: $functionLineCoverage;
 
             if ($function['coverage'] === 100) {
                 $this->numTestedFunctions++;
@@ -529,7 +524,7 @@ final class File extends AbstractNode
 
             $function['crap'] = $this->crap(
                 $function['ccn'],
-                $function['coverage']
+                $functionPathCoverage ?: $functionLineCoverage
             );
         }
     }

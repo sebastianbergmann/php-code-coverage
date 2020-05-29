@@ -57,7 +57,7 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">42%</td></tr>
 
        </tbody>
       </table>
@@ -74,7 +74,7 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">8</td></tr>
+       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">6</td></tr>
 
        </tbody>
       </table>
@@ -158,7 +158,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,1,0,0,0,0,0], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,1,0,0,0,0,0,0], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -226,7 +226,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([[50,5,"<a href=\"BankAccount.php.html#2\">BankAccount<\/a>"]], 'Class Complexity'))
+      .datum(getComplexityData([[42.857142857143,5,"<a href=\"BankAccount.php.html#2\">BankAccount<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);

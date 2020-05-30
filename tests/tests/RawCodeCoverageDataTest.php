@@ -30,10 +30,56 @@ final class RawCodeCoverageDataTest extends TestCase
     }
 
     /**
-     * In the path-coverage XDebug format, the line data exists inside a "lines" array key where the file has
-     * classes or functions. For files without them, the data is stored in the line-only format.
+     * In the path-coverage XDebug format, the line data exists inside a "lines" array key.
      */
     public function testLineDataFromPathCoverageXDebugFormat(): void
+    {
+        $rawDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                'lines' => [
+                    8  => 1,
+                    9  => -2,
+                    13 => -1,
+                ],
+                'functions' => [
+
+                ],
+            ],
+            '/some/path/justAScript.php' => [
+                'lines' => [
+                    18  => 1,
+                    19  => -2,
+                    113 => -1,
+                ],
+                'functions' => [
+
+                ],
+            ],
+        ];
+
+        $lineData = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -2,
+                13 => -1,
+            ],
+            '/some/path/justAScript.php' => [
+                18  => 1,
+                19  => -2,
+                113 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+
+        $this->assertEquals($lineData, $dataObject->lineCoverage());
+    }
+
+    /**
+     * In the path-coverage XDebug format for Xdebug < 2.9.6, the line data exists inside a "lines" array key where the
+     * file has classes or functions. For files without them, the data is stored in the line-only format.
+     */
+    public function testLineDataFromMixedCoverageXDebugFormat(): void
     {
         $rawDataFromDriver = [
             '/some/path/SomeClass.php' => [
@@ -66,7 +112,7 @@ final class RawCodeCoverageDataTest extends TestCase
             ],
         ];
 
-        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+        $dataObject = RawCodeCoverageData::fromXdebugWithMixedCoverage($rawDataFromDriver);
 
         $this->assertEquals($lineData, $dataObject->lineCoverage());
     }

@@ -822,9 +822,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[0],
                 $data[1],
                 $data[2],
@@ -890,9 +889,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[0],
                 $data[1],
                 $data[2],
@@ -1008,9 +1006,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[0],
                 $data[1],
                 $data[2],
@@ -1074,9 +1071,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[0],
                 $data[1]
             ));
@@ -1114,9 +1110,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[2],
                 $data[3]
             ));
@@ -1227,9 +1222,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[0],
                 $data[1]
             ));
@@ -1267,9 +1261,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->onConsecutiveCalls(
+        $stub->method('stop')
+             ->will($this->onConsecutiveCalls(
                 $data[2],
                 $data[3]
             ));
@@ -1529,18 +1522,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->returnValue(
-                RawCodeCoverageData::fromXdebugWithoutPathCoverage(
-                    [
-                        TEST_FILES_PATH . 'source_with_ignore.php' => [
-                            2 => 1,
-                            4 => -1,
-                            6 => -1,
-                        ],
-                    ]
-                )
+        $stub->method('stop')
+             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+                [
+                    TEST_FILES_PATH . 'source_with_ignore.php' => [
+                        2 => 1,
+                        4 => -1,
+                        6 => -1,
+                    ],
+                ]
             ));
 
         return $stub;
@@ -1566,24 +1556,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->returnValue(
-                RawCodeCoverageData::fromXdebugWithoutPathCoverage(
-                    [
-                        TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
-                            7  => 1,
-                            9  => 1,
-                            10 => -1,
-                            11 => 1,
-                            12 => 1,
-                            13 => 1,
-                            14 => 1,
-                            17 => 1,
-                            18 => 1,
-                        ],
-                    ]
-                )
+        $stub->method('stop')
+             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+                [
+                    TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
+                        7 => 1,
+                        9 => 1,
+                        10 => -1,
+                        11 => 1,
+                        12 => 1,
+                        13 => 1,
+                        14 => 1,
+                        17 => 1,
+                        18 => 1,
+                    ],
+                ]
             ));
 
         return $stub;
@@ -1605,9 +1592,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->expects($this->any())
-            ->method('stop')
-            ->will($this->returnValue(RawCodeCoverageData::fromXdebugWithoutPathCoverage([])));
+        $stub->method('stop')
+             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage([]));
 
         return $stub;
     }

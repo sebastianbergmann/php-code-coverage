@@ -888,6 +888,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createMock(Driver::class);
 
+        $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
+
         $stub->expects($this->any())
             ->method('stop')
             ->will($this->onConsecutiveCalls(

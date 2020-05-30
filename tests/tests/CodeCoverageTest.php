@@ -112,7 +112,7 @@ final class CodeCoverageTest extends TestCase
     public function testMerge2(): void
     {
         $coverage = new CodeCoverage(
-            $this->createMock(Driver::class),
+            $this->createStub(Driver::class),
             new Filter
         );
 

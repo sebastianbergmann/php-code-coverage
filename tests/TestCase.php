@@ -820,7 +820,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getLineCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -886,7 +886,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getPathCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
 
@@ -1006,7 +1006,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getXdebugDataForNamespacedBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1072,7 +1072,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getLineCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1112,7 +1112,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getLineCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1225,7 +1225,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getPathCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1265,7 +1265,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $data = $this->getPathCoverageXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1527,7 +1527,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUpXdebugStubForFileWithIgnoredLines(): Driver
     {
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1564,7 +1564,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUpXdebugStubForClassWithAnonymousFunction(): Driver
     {
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -1603,7 +1603,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUpXdebugStubForCrashParsing(): Driver
     {
-        $stub = $this->createMock(Driver::class);
+        $stub = $this->createStub(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')

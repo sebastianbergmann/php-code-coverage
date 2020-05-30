@@ -28,13 +28,13 @@ final class BuildInformation
 
     public function setRuntimeInformation(Runtime $runtime): void
     {
-        $runtimeNode = $this->getNodeByName('runtime');
+        $runtimeNode = $this->nodeByName('runtime');
 
         $runtimeNode->setAttribute('name', $runtime->getName());
         $runtimeNode->setAttribute('version', $runtime->getVersion());
         $runtimeNode->setAttribute('url', $runtime->getVendorUrl());
 
-        $driverNode = $this->getNodeByName('driver');
+        $driverNode = $this->nodeByName('driver');
 
         if ($runtime->hasPHPDBGCodeCoverage()) {
             $driverNode->setAttribute('name', 'phpdbg');
@@ -63,7 +63,7 @@ final class BuildInformation
         $this->contextNode->setAttribute('coverage', $coverageVersion);
     }
 
-    private function getNodeByName(string $name): \DOMElement
+    private function nodeByName(string $name): \DOMElement
     {
         $node = $this->contextNode->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',

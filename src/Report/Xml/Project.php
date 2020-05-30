@@ -20,21 +20,21 @@ final class Project extends Node
         $this->setProjectSourceDirectory($directory);
     }
 
-    public function getProjectSourceDirectory(): string
+    public function projectSourceDirectory(): string
     {
-        return $this->getContextNode()->getAttribute('source');
+        return $this->contextNode()->getAttribute('source');
     }
 
-    public function getBuildInformation(): BuildInformation
+    public function buildInformation(): BuildInformation
     {
-        $buildNode = $this->getDom()->getElementsByTagNameNS(
+        $buildNode = $this->dom()->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
             'build'
         )->item(0);
 
         if (!$buildNode) {
-            $buildNode = $this->getDom()->documentElement->appendChild(
-                $this->getDom()->createElementNS(
+            $buildNode = $this->dom()->documentElement->appendChild(
+                $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
                     'build'
                 )
@@ -44,16 +44,16 @@ final class Project extends Node
         return new BuildInformation($buildNode);
     }
 
-    public function getTests(): Tests
+    public function tests(): Tests
     {
-        $testsNode = $this->getContextNode()->getElementsByTagNameNS(
+        $testsNode = $this->contextNode()->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
             'tests'
         )->item(0);
 
         if (!$testsNode) {
-            $testsNode = $this->getContextNode()->appendChild(
-                $this->getDom()->createElementNS(
+            $testsNode = $this->contextNode()->appendChild(
+                $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
                     'tests'
                 )
@@ -65,7 +65,7 @@ final class Project extends Node
 
     public function asDom(): \DOMDocument
     {
-        return $this->getDom();
+        return $this->dom();
     }
 
     private function init(): void
@@ -83,6 +83,6 @@ final class Project extends Node
 
     private function setProjectSourceDirectory(string $name): void
     {
-        $this->getContextNode()->setAttribute('source', $name);
+        $this->contextNode()->setAttribute('source', $name);
     }
 }

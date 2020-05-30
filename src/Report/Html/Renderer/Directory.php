@@ -30,17 +30,17 @@ final class Directory extends Renderer
 
         $items = $this->renderItem($node, true);
 
-        foreach ($node->getDirectories() as $item) {
+        foreach ($node->directories() as $item) {
             $items .= $this->renderItem($item);
         }
 
-        foreach ($node->getFiles() as $item) {
+        foreach ($node->files() as $item) {
             $items .= $this->renderItem($item);
         }
 
         $template->setVar(
             [
-                'id'    => $node->getId(),
+                'id'    => $node->id(),
                 'items' => $items,
             ]
         );
@@ -51,26 +51,26 @@ final class Directory extends Renderer
     protected function renderItem(Node $node, bool $total = false): string
     {
         $data = [
-            'numClasses'                      => $node->getNumClassesAndTraits(),
-            'numTestedClasses'                => $node->getNumTestedClassesAndTraits(),
-            'numMethods'                      => $node->getNumFunctionsAndMethods(),
-            'numTestedMethods'                => $node->getNumTestedFunctionsAndMethods(),
-            'linesExecutedPercent'            => $node->getLineExecutedPercent()->asFloat(),
-            'linesExecutedPercentAsString'    => $node->getLineExecutedPercent()->asString(),
-            'numExecutedLines'                => $node->getNumExecutedLines(),
-            'numExecutableLines'              => $node->getNumExecutableLines(),
-            'branchesExecutedPercent'         => $node->getBranchExecutedPercent()->asFloat(),
-            'branchesExecutedPercentAsString' => $node->getBranchExecutedPercent()->asString(),
-            'numExecutedBranches'             => $node->getNumExecutedBranches(),
-            'numExecutableBranches'           => $node->getNumExecutableBranches(),
-            'pathsExecutedPercent'            => $node->getPathExecutedPercent()->asFloat(),
-            'pathsExecutedPercentAsString'    => $node->getPathExecutedPercent()->asString(),
-            'numExecutedPaths'                => $node->getNumExecutedPaths(),
-            'numExecutablePaths'              => $node->getNumExecutablePaths(),
-            'testedMethodsPercent'            => $node->getTestedFunctionsAndMethodsPercent()->asFloat(),
-            'testedMethodsPercentAsString'    => $node->getTestedFunctionsAndMethodsPercent()->asString(),
-            'testedClassesPercent'            => $node->getTestedClassesAndTraitsPercent()->asFloat(),
-            'testedClassesPercentAsString'    => $node->getTestedClassesAndTraitsPercent()->asString(),
+            'numClasses'                      => $node->numberOfClassesAndTraits(),
+            'numTestedClasses'                => $node->numberOfTestedClassesAndTraits(),
+            'numMethods'                      => $node->numberOfFunctionsAndMethods(),
+            'numTestedMethods'                => $node->numberOfTestedFunctionsAndMethods(),
+            'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
+            'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
+            'numExecutedLines'                => $node->numberOfExecutedLines(),
+            'numExecutableLines'              => $node->numberOfExecutableLines(),
+            'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
+            'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
+            'numExecutedBranches'             => $node->numberOfExecutedBranches(),
+            'numExecutableBranches'           => $node->numberOfExecutableBranches(),
+            'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
+            'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
+            'numExecutedPaths'                => $node->numberOfExecutedPaths(),
+            'numExecutablePaths'              => $node->numberOfExecutablePaths(),
+            'testedMethodsPercent'            => $node->percentageOfTestedFunctionsAndMethods()->asFloat(),
+            'testedMethodsPercentAsString'    => $node->percentageOfTestedFunctionsAndMethods()->asString(),
+            'testedClassesPercent'            => $node->percentageOfTestedClassesAndTraits()->asFloat(),
+            'testedClassesPercentAsString'    => $node->percentageOfTestedClassesAndTraits()->asString(),
         ];
 
         if ($total) {
@@ -79,21 +79,21 @@ final class Directory extends Renderer
             if ($node instanceof DirectoryNode) {
                 $data['name'] = \sprintf(
                     '<a href="%s/index.html">%s</a>',
-                    $node->getName(),
-                    $node->getName()
+                    $node->name(),
+                    $node->name()
                 );
 
-                $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
+                $up = \str_repeat('../', \count($node->pathAsArray()) - 2);
 
                 $data['icon'] = \sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
             } else {
                 $data['name'] = \sprintf(
                     '<a href="%s.html">%s</a>',
-                    $node->getName(),
-                    $node->getName()
+                    $node->name(),
+                    $node->name()
                 );
 
-                $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
+                $up = \str_repeat('../', \count($node->pathAsArray()) - 2);
 
                 $data['icon'] = \sprintf('<img src="%s_icons/file-code.svg" class="octicon" />', $up);
             }

@@ -35,7 +35,7 @@ final class ProcessedCodeCoverageData
 
     public function initializeFilesThatAreSeenTheFirstTime(RawCodeCoverageData $rawData): void
     {
-        foreach ($rawData->getLineCoverage() as $file => $lines) {
+        foreach ($rawData->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
 
@@ -45,7 +45,7 @@ final class ProcessedCodeCoverageData
             }
         }
 
-        foreach ($rawData->getFunctionCoverage() as $file => $functions) {
+        foreach ($rawData->functionCoverage() as $file => $functions) {
             if (!isset($this->functionCoverage[$file])) {
                 $this->functionCoverage[$file] = $functions;
 
@@ -64,7 +64,7 @@ final class ProcessedCodeCoverageData
 
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
     {
-        foreach ($executedCode->getLineCoverage() as $file => $lines) {
+        foreach ($executedCode->lineCoverage() as $file => $lines) {
             foreach ($lines as $k => $v) {
                 if ($v === Driver::LINE_EXECUTED) {
                     if (empty($this->lineCoverage[$file][$k]) || !\in_array($testCaseId, $this->lineCoverage[$file][$k], true)) {
@@ -74,7 +74,7 @@ final class ProcessedCodeCoverageData
             }
         }
 
-        foreach ($executedCode->getFunctionCoverage() as $file => $functions) {
+        foreach ($executedCode->functionCoverage() as $file => $functions) {
             foreach ($functions as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] === Driver::BRANCH_HIT) {
@@ -100,21 +100,21 @@ final class ProcessedCodeCoverageData
         $this->lineCoverage = $lineCoverage;
     }
 
-    public function getLineCoverage(): array
+    public function lineCoverage(): array
     {
         \ksort($this->lineCoverage);
 
         return $this->lineCoverage;
     }
 
-    public function getFunctionCoverage(): array
+    public function functionCoverage(): array
     {
         \ksort($this->functionCoverage);
 
         return $this->functionCoverage;
     }
 
-    public function getCoveredFiles(): array
+    public function coveredFiles(): array
     {
         return \array_keys($this->lineCoverage);
     }
@@ -148,8 +148,8 @@ final class ProcessedCodeCoverageData
             );
 
             foreach ($compareLineNumbers as $line) {
-                $thatPriority = $this->getLinePriority($newData->lineCoverage[$file], $line);
-                $thisPriority = $this->getLinePriority($this->lineCoverage[$file], $line);
+                $thatPriority = $this->priorityForLine($newData->lineCoverage[$file], $line);
+                $thisPriority = $this->priorityForLine($this->lineCoverage[$file], $line);
 
                 if ($thatPriority > $thisPriority) {
                     $this->lineCoverage[$file][$line] = $newData->lineCoverage[$file][$line];
@@ -190,7 +190,7 @@ final class ProcessedCodeCoverageData
      *
      * During a merge, a higher number is better.
      */
-    private function getLinePriority(array $data, int $line): int
+    private function priorityForLine(array $data, int $line): int
     {
         if (!\array_key_exists($line, $data)) {
             return 1;

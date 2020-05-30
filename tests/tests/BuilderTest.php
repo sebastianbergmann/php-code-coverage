@@ -27,21 +27,21 @@ final class BuilderTest extends TestCase
         $root = $this->getLineCoverageForBankAccount()->getReport();
 
         $expectedPath = \rtrim(TEST_FILES_PATH, \DIRECTORY_SEPARATOR);
-        $this->assertEquals($expectedPath, $root->getName());
-        $this->assertEquals($expectedPath, $root->getPath());
-        $this->assertEquals(10, $root->getNumExecutableLines());
-        $this->assertEquals(5, $root->getNumExecutedLines());
-        $this->assertEquals(1, $root->getNumClasses());
-        $this->assertEquals(0, $root->getNumTestedClasses());
-        $this->assertEquals(4, $root->getNumMethods());
-        $this->assertEquals(3, $root->getNumTestedMethods());
-        $this->assertEquals('0.00%', $root->getTestedClassesPercent()->asString());
-        $this->assertEquals('75.00%', $root->getTestedMethodsPercent()->asString());
-        $this->assertEquals('50.00%', $root->getLineExecutedPercent()->asString());
-        $this->assertEquals(0, $root->getNumFunctions());
-        $this->assertEquals(0, $root->getNumTestedFunctions());
-        $this->assertNull($root->getParent());
-        $this->assertEquals([], $root->getDirectories());
+        $this->assertEquals($expectedPath, $root->name());
+        $this->assertEquals($expectedPath, $root->pathAsString());
+        $this->assertEquals(10, $root->numberOfExecutableLines());
+        $this->assertEquals(5, $root->numberOfExecutedLines());
+        $this->assertEquals(1, $root->numberOfClasses());
+        $this->assertEquals(0, $root->numberOfTestedClasses());
+        $this->assertEquals(4, $root->numberOfMethods());
+        $this->assertEquals(3, $root->numberOfTestedMethods());
+        $this->assertEquals('0.00%', $root->percentageOfTestedClasses()->asString());
+        $this->assertEquals('75.00%', $root->percentageOfTestedMethods()->asString());
+        $this->assertEquals('50.00%', $root->percentageOfExecutedLines()->asString());
+        $this->assertEquals(0, $root->numberOfFunctions());
+        $this->assertEquals(0, $root->numberOfTestedFunctions());
+        $this->assertNull($root->parent());
+        $this->assertEquals([], $root->directories());
         #$this->assertEquals(array(), $root->getFiles());
         #$this->assertEquals(array(), $root->getChildNodes());
 
@@ -139,10 +139,10 @@ final class BuilderTest extends TestCase
                     'className' => 'BankAccount',
                 ],
             ],
-            $root->getClasses()
+            $root->classes()
         );
 
-        $this->assertEquals([], $root->getFunctions());
+        $this->assertEquals([], $root->functions());
     }
 
     public function testNotCrashParsing(): void
@@ -151,11 +151,11 @@ final class BuilderTest extends TestCase
         $root     = $coverage->getReport();
 
         $expectedPath = \rtrim(TEST_FILES_PATH, \DIRECTORY_SEPARATOR);
-        $this->assertEquals($expectedPath, $root->getName());
-        $this->assertEquals($expectedPath, $root->getPath());
-        $this->assertEquals(2, $root->getNumExecutableLines());
-        $this->assertEquals(0, $root->getNumExecutedLines());
-        $data         = $coverage->getData()->getLineCoverage();
+        $this->assertEquals($expectedPath, $root->name());
+        $this->assertEquals($expectedPath, $root->pathAsString());
+        $this->assertEquals(2, $root->numberOfExecutableLines());
+        $this->assertEquals(0, $root->numberOfExecutedLines());
+        $data         = $coverage->getData()->lineCoverage();
         $expectedFile = $expectedPath . \DIRECTORY_SEPARATOR . 'Crash.php';
         $this->assertSame([$expectedFile => [1 => [], 2 => []]], $data);
     }
@@ -219,7 +219,7 @@ final class BuilderTest extends TestCase
 
         $_commonPath = $method->invokeArgs($this->factory, [$paths]);
 
-        $this->assertEquals($reducedPaths, $paths->getLineCoverage());
+        $this->assertEquals($reducedPaths, $paths->lineCoverage());
         $this->assertEquals($commonPath, $_commonPath);
     }
 

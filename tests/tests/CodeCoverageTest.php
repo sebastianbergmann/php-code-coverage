@@ -53,7 +53,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->getLineCoverage()
+            $coverage->getData()->lineCoverage()
         );
 
         $this->assertEquals(
@@ -83,8 +83,8 @@ final class CodeCoverageTest extends TestCase
         ]);
 
         $this->coverage->append($data, 'A test', true);
-        $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $this->coverage->getData()->getCoveredFiles());
-        $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->getData()->getCoveredFiles());
+        $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $this->coverage->getData()->coveredFiles());
+        $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->getData()->coveredFiles());
     }
 
     public function testMerge(): void
@@ -94,7 +94,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->getLineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 
@@ -105,7 +105,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
-            $coverage->getData()->getLineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 
@@ -120,7 +120,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->getLineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 

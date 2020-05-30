@@ -19,7 +19,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getLineCoverage()
+            $coverage->lineCoverage()
         );
     }
 
@@ -31,7 +31,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedPathCoverageDataArrayForBankAccount(),
-            $coverage->getFunctionCoverage()
+            $coverage->functionCoverage()
         );
     }
 
@@ -43,7 +43,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedPathCoverageDataArrayForBankAccount(),
-            $coverage->getFunctionCoverage()
+            $coverage->functionCoverage()
         );
     }
 
@@ -64,6 +64,6 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $existingCoverage->merge($newCoverage);
 
-        $this->assertArrayHasKey(12, $existingCoverage->getLineCoverage()['/some/path/SomeClass.php']);
+        $this->assertArrayHasKey(12, $existingCoverage->lineCoverage()['/some/path/SomeClass.php']);
     }
 }

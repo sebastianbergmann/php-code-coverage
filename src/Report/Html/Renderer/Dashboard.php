@@ -23,7 +23,7 @@ final class Dashboard extends Renderer
      */
     public function render(DirectoryNode $node, string $file): void
     {
-        $classes      = $node->getClassesAndTraits();
+        $classes      = $node->classesAndTraits();
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'dashboard_branch.html' : 'dashboard.html');
         $template     = new Template(
             $templateName,
@@ -33,7 +33,7 @@ final class Dashboard extends Renderer
 
         $this->setCommonTemplateVariables($template, $node);
 
-        $baseLink             = $node->getId() . '/';
+        $baseLink             = $node->id() . '/';
         $complexity           = $this->complexity($classes, $baseLink);
         $coverageDistribution = $this->coverageDistribution($classes);
         $insufficientCoverage = $this->insufficientCoverage($classes, $baseLink);
@@ -271,12 +271,12 @@ final class Dashboard extends Renderer
         return $result;
     }
 
-    protected function getActiveBreadcrumb(AbstractNode $node): string
+    protected function activeBreadcrumb(AbstractNode $node): string
     {
         return \sprintf(
             '         <li class="breadcrumb-item"><a href="index.html">%s</a></li>' . "\n" .
             '         <li class="breadcrumb-item active">(Dashboard)</li>' . "\n",
-            $node->getName()
+            $node->name()
         );
     }
 }

@@ -26,7 +26,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $this->assertEquals($lineDataFromDriver, $dataObject->getLineCoverage());
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }
 
     /**
@@ -68,7 +68,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
 
-        $this->assertEquals($lineData, $dataObject->getLineCoverage());
+        $this->assertEquals($lineData, $dataObject->lineCoverage());
     }
 
     public function testClear(): void
@@ -85,7 +85,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject->clear();
 
-        $this->assertEmpty($dataObject->getLineCoverage());
+        $this->assertEmpty($dataObject->lineCoverage());
     }
 
     public function testRemoveCoverageDataForFile(): void
@@ -125,7 +125,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject->removeCoverageDataForFile('/some/path/SomeOtherClass.php');
 
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
+        $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
 
     public function testKeepCoverageDataOnlyForLines(): void
@@ -166,7 +166,7 @@ final class RawCodeCoverageDataTest extends TestCase
         $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->keepCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
 
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
+        $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
 
     public function testRemoveCoverageDataForLines(): void
@@ -210,7 +210,7 @@ final class RawCodeCoverageDataTest extends TestCase
         $dataObject->removeCoverageDataForLines('/some/path/SomeOtherClass.php', [999]);
         $dataObject->removeCoverageDataForLines('/some/path/AnotherClass.php', [28]);
 
-        $this->assertEquals($expectedFilterResult, $dataObject->getLineCoverage());
+        $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
 
     public function testUseStatementsAreUncovered(): void
@@ -231,7 +231,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 21,
                 22,
             ],
-            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
         );
     }
 
@@ -245,7 +245,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 12,
                 14,
             ],
-            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
         );
     }
 
@@ -267,7 +267,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 16,
                 17,
             ],
-            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
         );
     }
 
@@ -291,7 +291,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 35,
                 36,
             ],
-            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->getLineCoverage()[$file])
+            \array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
         );
     }
 
@@ -415,7 +415,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 36 => -1,
                 37 => -1,
             ],
-            $coverage->getLineCoverage()[$filename]
+            $coverage->lineCoverage()[$filename]
         );
 
         $this->assertEquals(
@@ -477,7 +477,7 @@ final class RawCodeCoverageDataTest extends TestCase
                     ],
                 ],
             ],
-            $coverage->getFunctionCoverage()[$filename]
+            $coverage->functionCoverage()[$filename]
         );
     }
 }

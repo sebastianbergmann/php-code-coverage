@@ -44,7 +44,7 @@ final class Builder
             if (\substr($key, -2) === '/f') {
                 $key = \substr($key, 0, -2);
 
-                if (\file_exists($root->getPath() . \DIRECTORY_SEPARATOR . $key)) {
+                if (\file_exists($root->pathAsString() . \DIRECTORY_SEPARATOR . $key)) {
                     $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests, $cacheTokens);
                 }
             } else {
@@ -98,7 +98,7 @@ final class Builder
     {
         $result = [];
 
-        foreach ($data->getCoveredFiles() as $originalPath) {
+        foreach ($data->coveredFiles() as $originalPath) {
             $path    = \explode(\DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
             $max     = \count($path);
@@ -114,8 +114,8 @@ final class Builder
             }
 
             $pointer = [
-                'lineCoverage'     => $data->getLineCoverage()[$originalPath] ?? [],
-                'functionCoverage' => $data->getFunctionCoverage()[$originalPath] ?? [],
+                'lineCoverage'     => $data->lineCoverage()[$originalPath] ?? [],
+                'functionCoverage' => $data->functionCoverage()[$originalPath] ?? [],
             ];
         }
 
@@ -161,12 +161,12 @@ final class Builder
      */
     private function reducePaths(ProcessedCodeCoverageData $coverage): string
     {
-        if (empty($coverage->getCoveredFiles())) {
+        if (empty($coverage->coveredFiles())) {
             return '.';
         }
 
         $commonPath = '';
-        $paths      = $coverage->getCoveredFiles();
+        $paths      = $coverage->coveredFiles();
 
         if (\count($paths) === 1) {
             $commonPath                  = \dirname($paths[0]) . \DIRECTORY_SEPARATOR;
@@ -217,7 +217,7 @@ final class Builder
             }
         }
 
-        $original = $coverage->getCoveredFiles();
+        $original = $coverage->coveredFiles();
         $max      = \count($original);
 
         for ($i = 0; $i < $max; $i++) {

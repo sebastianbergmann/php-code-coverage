@@ -124,9 +124,6 @@ final class Directory extends AbstractNode implements \IteratorAggregate
      */
     private $numTestedFunctions = -1;
 
-    /**
-     * Returns the number of files in/under this node.
-     */
     public function count(): int
     {
         if ($this->numFiles === -1) {
@@ -140,9 +137,6 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $this->numFiles;
     }
 
-    /**
-     * Returns an iterator for this node.
-     */
     public function getIterator(): \RecursiveIteratorIterator
     {
         return new \RecursiveIteratorIterator(
@@ -151,9 +145,6 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         );
     }
 
-    /**
-     * Adds a new directory.
-     */
     public function addDirectory(string $name): self
     {
         $directory = new self($name, $this);
@@ -164,9 +155,6 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $directory;
     }
 
-    /**
-     * Adds a new file.
-     */
     public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens): File
     {
         $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData, $cacheTokens);
@@ -180,34 +168,22 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $file;
     }
 
-    /**
-     * Returns the directories in this directory.
-     */
-    public function getDirectories(): array
+    public function directories(): array
     {
         return $this->directories;
     }
 
-    /**
-     * Returns the files in this directory.
-     */
-    public function getFiles(): array
+    public function files(): array
     {
         return $this->files;
     }
 
-    /**
-     * Returns the child nodes of this node.
-     */
-    public function getChildNodes(): array
+    public function children(): array
     {
         return $this->children;
     }
 
-    /**
-     * Returns the classes of this node.
-     */
-    public function getClasses(): array
+    public function classes(): array
     {
         if ($this->classes === null) {
             $this->classes = [];
@@ -215,7 +191,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
             foreach ($this->children as $child) {
                 $this->classes = \array_merge(
                     $this->classes,
-                    $child->getClasses()
+                    $child->classes()
                 );
             }
         }
@@ -223,10 +199,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $this->classes;
     }
 
-    /**
-     * Returns the traits of this node.
-     */
-    public function getTraits(): array
+    public function traits(): array
     {
         if ($this->traits === null) {
             $this->traits = [];
@@ -234,7 +207,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
             foreach ($this->children as $child) {
                 $this->traits = \array_merge(
                     $this->traits,
-                    $child->getTraits()
+                    $child->traits()
                 );
             }
         }
@@ -242,10 +215,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $this->traits;
     }
 
-    /**
-     * Returns the functions of this node.
-     */
-    public function getFunctions(): array
+    public function functions(): array
     {
         if ($this->functions === null) {
             $this->functions = [];
@@ -253,7 +223,7 @@ final class Directory extends AbstractNode implements \IteratorAggregate
             foreach ($this->children as $child) {
                 $this->functions = \array_merge(
                     $this->functions,
-                    $child->getFunctions()
+                    $child->functions()
                 );
             }
         }
@@ -261,16 +231,13 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $this->functions;
     }
 
-    /**
-     * Returns the LOC/CLOC/NCLOC of this node.
-     */
-    public function getLinesOfCode(): array
+    public function linesOfCode(): array
     {
         if ($this->linesOfCode === null) {
             $this->linesOfCode = ['loc' => 0, 'cloc' => 0, 'ncloc' => 0];
 
             foreach ($this->children as $child) {
-                $linesOfCode = $child->getLinesOfCode();
+                $linesOfCode = $child->linesOfCode();
 
                 $this->linesOfCode['loc'] += $linesOfCode['loc'];
                 $this->linesOfCode['cloc'] += $linesOfCode['cloc'];
@@ -281,224 +248,182 @@ final class Directory extends AbstractNode implements \IteratorAggregate
         return $this->linesOfCode;
     }
 
-    /**
-     * Returns the number of executable lines.
-     */
-    public function getNumExecutableLines(): int
+    public function numberOfExecutableLines(): int
     {
         if ($this->numExecutableLines === -1) {
             $this->numExecutableLines = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutableLines += $child->getNumExecutableLines();
+                $this->numExecutableLines += $child->numberOfExecutableLines();
             }
         }
 
         return $this->numExecutableLines;
     }
 
-    /**
-     * Returns the number of executed lines.
-     */
-    public function getNumExecutedLines(): int
+    public function numberOfExecutedLines(): int
     {
         if ($this->numExecutedLines === -1) {
             $this->numExecutedLines = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutedLines += $child->getNumExecutedLines();
+                $this->numExecutedLines += $child->numberOfExecutedLines();
             }
         }
 
         return $this->numExecutedLines;
     }
 
-    /**
-     * Returns the number of executable branches.
-     */
-    public function getNumExecutableBranches(): int
+    public function numberOfExecutableBranches(): int
     {
         if ($this->numExecutableBranches === -1) {
             $this->numExecutableBranches = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutableBranches += $child->getNumExecutableBranches();
+                $this->numExecutableBranches += $child->numberOfExecutableBranches();
             }
         }
 
         return $this->numExecutableBranches;
     }
 
-    /**
-     * Returns the number of executed branches.
-     */
-    public function getNumExecutedBranches(): int
+    public function numberOfExecutedBranches(): int
     {
         if ($this->numExecutedBranches === -1) {
             $this->numExecutedBranches = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutedBranches += $child->getNumExecutedBranches();
+                $this->numExecutedBranches += $child->numberOfExecutedBranches();
             }
         }
 
         return $this->numExecutedBranches;
     }
 
-    /**
-     * Returns the number of executable paths.
-     */
-    public function getNumExecutablePaths(): int
+    public function numberOfExecutablePaths(): int
     {
         if ($this->numExecutablePaths === -1) {
             $this->numExecutablePaths = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutablePaths += $child->getNumExecutablePaths();
+                $this->numExecutablePaths += $child->numberOfExecutablePaths();
             }
         }
 
         return $this->numExecutablePaths;
     }
 
-    /**
-     * Returns the number of executed paths.
-     */
-    public function getNumExecutedPaths(): int
+    public function numberOfExecutedPaths(): int
     {
         if ($this->numExecutedPaths === -1) {
             $this->numExecutedPaths = 0;
 
             foreach ($this->children as $child) {
-                $this->numExecutedPaths += $child->getNumExecutedPaths();
+                $this->numExecutedPaths += $child->numberOfExecutedPaths();
             }
         }
 
         return $this->numExecutedPaths;
     }
 
-    /**
-     * Returns the number of classes.
-     */
-    public function getNumClasses(): int
+    public function numberOfClasses(): int
     {
         if ($this->numClasses === -1) {
             $this->numClasses = 0;
 
             foreach ($this->children as $child) {
-                $this->numClasses += $child->getNumClasses();
+                $this->numClasses += $child->numberOfClasses();
             }
         }
 
         return $this->numClasses;
     }
 
-    /**
-     * Returns the number of tested classes.
-     */
-    public function getNumTestedClasses(): int
+    public function numberOfTestedClasses(): int
     {
         if ($this->numTestedClasses === -1) {
             $this->numTestedClasses = 0;
 
             foreach ($this->children as $child) {
-                $this->numTestedClasses += $child->getNumTestedClasses();
+                $this->numTestedClasses += $child->numberOfTestedClasses();
             }
         }
 
         return $this->numTestedClasses;
     }
 
-    /**
-     * Returns the number of traits.
-     */
-    public function getNumTraits(): int
+    public function numberOfTraits(): int
     {
         if ($this->numTraits === -1) {
             $this->numTraits = 0;
 
             foreach ($this->children as $child) {
-                $this->numTraits += $child->getNumTraits();
+                $this->numTraits += $child->numberOfTraits();
             }
         }
 
         return $this->numTraits;
     }
 
-    /**
-     * Returns the number of tested traits.
-     */
-    public function getNumTestedTraits(): int
+    public function numberOfTestedTraits(): int
     {
         if ($this->numTestedTraits === -1) {
             $this->numTestedTraits = 0;
 
             foreach ($this->children as $child) {
-                $this->numTestedTraits += $child->getNumTestedTraits();
+                $this->numTestedTraits += $child->numberOfTestedTraits();
             }
         }
 
         return $this->numTestedTraits;
     }
 
-    /**
-     * Returns the number of methods.
-     */
-    public function getNumMethods(): int
+    public function numberOfMethods(): int
     {
         if ($this->numMethods === -1) {
             $this->numMethods = 0;
 
             foreach ($this->children as $child) {
-                $this->numMethods += $child->getNumMethods();
+                $this->numMethods += $child->numberOfMethods();
             }
         }
 
         return $this->numMethods;
     }
 
-    /**
-     * Returns the number of tested methods.
-     */
-    public function getNumTestedMethods(): int
+    public function numberOfTestedMethods(): int
     {
         if ($this->numTestedMethods === -1) {
             $this->numTestedMethods = 0;
 
             foreach ($this->children as $child) {
-                $this->numTestedMethods += $child->getNumTestedMethods();
+                $this->numTestedMethods += $child->numberOfTestedMethods();
             }
         }
 
         return $this->numTestedMethods;
     }
 
-    /**
-     * Returns the number of functions.
-     */
-    public function getNumFunctions(): int
+    public function numberOfFunctions(): int
     {
         if ($this->numFunctions === -1) {
             $this->numFunctions = 0;
 
             foreach ($this->children as $child) {
-                $this->numFunctions += $child->getNumFunctions();
+                $this->numFunctions += $child->numberOfFunctions();
             }
         }
 
         return $this->numFunctions;
     }
 
-    /**
-     * Returns the number of tested functions.
-     */
-    public function getNumTestedFunctions(): int
+    public function numberOfTestedFunctions(): int
     {
         if ($this->numTestedFunctions === -1) {
             $this->numTestedFunctions = 0;
 
             foreach ($this->children as $child) {
-                $this->numTestedFunctions += $child->getNumTestedFunctions();
+                $this->numTestedFunctions += $child->numberOfTestedFunctions();
             }
         }
 

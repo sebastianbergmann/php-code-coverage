@@ -26,7 +26,7 @@ final class Iterator implements \RecursiveIterator
 
     public function __construct(Directory $node)
     {
-        $this->nodes = $node->getChildNodes();
+        $this->nodes = $node->children();
     }
 
     /**

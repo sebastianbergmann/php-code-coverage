@@ -63,13 +63,13 @@ final class Crap4j
             }
 
             $file = $document->createElement('file');
-            $file->setAttribute('name', $item->getPath());
+            $file->setAttribute('name', $item->pathAsString());
 
-            $classes = $item->getClassesAndTraits();
+            $classes = $item->classesAndTraits();
 
             foreach ($classes as $className => $class) {
                 foreach ($class['methods'] as $methodName => $method) {
-                    $crapLoad = $this->getCrapLoad((float) $method['crap'], $method['ccn'], $method['coverage']);
+                    $crapLoad = $this->crapLoad((float) $method['crap'], $method['ccn'], $method['coverage']);
 
                     $fullCrap += $method['crap'];
                     $fullCrapLoad += $crapLoad;
@@ -135,7 +135,7 @@ final class Crap4j
         return $buffer;
     }
 
-    private function getCrapLoad(float $crapValue, int $cyclomaticComplexity, float $coveragePercent): float
+    private function crapLoad(float $crapValue, int $cyclomaticComplexity, float $coveragePercent): float
     {
         $crapLoad = 0;
 

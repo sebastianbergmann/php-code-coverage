@@ -185,12 +185,12 @@ final class RawCodeCoverageData
         $this->lineCoverage = $this->functionCoverage = [];
     }
 
-    public function getLineCoverage(): array
+    public function lineCoverage(): array
     {
         return $this->lineCoverage;
     }
 
-    public function getFunctionCoverage(): array
+    public function functionCoverage(): array
     {
         return $this->functionCoverage;
     }

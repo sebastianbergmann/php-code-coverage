@@ -31,13 +31,13 @@ final class Report extends File
 
     public function asDom(): \DOMDocument
     {
-        return $this->getDomDocument();
+        return $this->dom();
     }
 
-    public function getFunctionObject($name): Method
+    public function functionObject($name): Method
     {
-        $node = $this->getContextNode()->appendChild(
-            $this->getDomDocument()->createElementNS(
+        $node = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
                 'https://schema.phpunit.de/coverage/1.0',
                 'function'
             )
@@ -46,26 +46,26 @@ final class Report extends File
         return new Method($node, $name);
     }
 
-    public function getClassObject($name): Unit
+    public function classObject($name): Unit
     {
-        return $this->getUnitObject('class', $name);
+        return $this->unitObject('class', $name);
     }
 
-    public function getTraitObject($name): Unit
+    public function traitObject($name): Unit
     {
-        return $this->getUnitObject('trait', $name);
+        return $this->unitObject('trait', $name);
     }
 
-    public function getSource(): Source
+    public function source(): Source
     {
-        $source = $this->getContextNode()->getElementsByTagNameNS(
+        $source = $this->contextNode()->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
             'source'
         )->item(0);
 
         if (!$source) {
-            $source = $this->getContextNode()->appendChild(
-                $this->getDomDocument()->createElementNS(
+            $source = $this->contextNode()->appendChild(
+                $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
                     'source'
                 )
@@ -77,14 +77,14 @@ final class Report extends File
 
     private function setName(string $name): void
     {
-        $this->getContextNode()->setAttribute('name', \basename($name));
-        $this->getContextNode()->setAttribute('path', \dirname($name));
+        $this->contextNode()->setAttribute('name', \basename($name));
+        $this->contextNode()->setAttribute('path', \dirname($name));
     }
 
-    private function getUnitObject(string $tagName, $name): Unit
+    private function unitObject(string $tagName, $name): Unit
     {
-        $node = $this->getContextNode()->appendChild(
-            $this->getDomDocument()->createElementNS(
+        $node = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
                 'https://schema.phpunit.de/coverage/1.0',
                 $tagName
             )

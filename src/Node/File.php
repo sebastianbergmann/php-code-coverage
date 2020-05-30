@@ -136,122 +136,77 @@ final class File extends AbstractNode
         $this->calculateStatistics();
     }
 
-    /**
-     * Returns the number of files in/under this node.
-     */
     public function count(): int
     {
         return 1;
     }
 
-    /**
-     * Returns the code coverage data of this node.
-     */
-    public function getLineCoverageData(): array
+    public function lineCoverageData(): array
     {
         return $this->lineCoverageData;
     }
 
-    /**
-     * Returns the code coverage data of this node.
-     */
-    public function getFunctionCoverageData(): array
+    public function functionCoverageData(): array
     {
         return $this->functionCoverageData;
     }
 
-    /**
-     * Returns the test data of this node.
-     */
-    public function getTestData(): array
+    public function testData(): array
     {
         return $this->testData;
     }
 
-    /**
-     * Returns the classes of this node.
-     */
-    public function getClasses(): array
+    public function classes(): array
     {
         return $this->classes;
     }
 
-    /**
-     * Returns the traits of this node.
-     */
-    public function getTraits(): array
+    public function traits(): array
     {
         return $this->traits;
     }
 
-    /**
-     * Returns the functions of this node.
-     */
-    public function getFunctions(): array
+    public function functions(): array
     {
         return $this->functions;
     }
 
-    /**
-     * Returns the LOC/CLOC/NCLOC of this node.
-     */
-    public function getLinesOfCode(): array
+    public function linesOfCode(): array
     {
         return $this->linesOfCode;
     }
 
-    /**
-     * Returns the number of executable lines.
-     */
-    public function getNumExecutableLines(): int
+    public function numberOfExecutableLines(): int
     {
         return $this->numExecutableLines;
     }
 
-    /**
-     * Returns the number of executed lines.
-     */
-    public function getNumExecutedLines(): int
+    public function numberOfExecutedLines(): int
     {
         return $this->numExecutedLines;
     }
 
-    /**
-     * Returns the number of executable branches.
-     */
-    public function getNumExecutableBranches(): int
+    public function numberOfExecutableBranches(): int
     {
         return $this->numExecutableBranches;
     }
 
-    /**
-     * Returns the number of executed branches.
-     */
-    public function getNumExecutedBranches(): int
+    public function numberOfExecutedBranches(): int
     {
         return $this->numExecutedBranches;
     }
 
-    /**
-     * Returns the number of executable branches.
-     */
-    public function getNumExecutablePaths(): int
+    public function numberOfExecutablePaths(): int
     {
         return $this->numExecutablePaths;
     }
 
-    /**
-     * Returns the number of executed branches.
-     */
-    public function getNumExecutedPaths(): int
+    public function numberOfExecutedPaths(): int
     {
         return $this->numExecutedPaths;
     }
 
-    /**
-     * Returns the number of classes.
-     */
-    public function getNumClasses(): int
+    public function numberOfClasses(): int
     {
         if ($this->numClasses === null) {
             $this->numClasses = 0;
@@ -270,18 +225,12 @@ final class File extends AbstractNode
         return $this->numClasses;
     }
 
-    /**
-     * Returns the number of tested classes.
-     */
-    public function getNumTestedClasses(): int
+    public function numberOfTestedClasses(): int
     {
         return $this->numTestedClasses;
     }
 
-    /**
-     * Returns the number of traits.
-     */
-    public function getNumTraits(): int
+    public function numberOfTraits(): int
     {
         if ($this->numTraits === null) {
             $this->numTraits = 0;
@@ -300,18 +249,12 @@ final class File extends AbstractNode
         return $this->numTraits;
     }
 
-    /**
-     * Returns the number of tested traits.
-     */
-    public function getNumTestedTraits(): int
+    public function numberOfTestedTraits(): int
     {
         return $this->numTestedTraits;
     }
 
-    /**
-     * Returns the number of methods.
-     */
-    public function getNumMethods(): int
+    public function numberOfMethods(): int
     {
         if ($this->numMethods === null) {
             $this->numMethods = 0;
@@ -336,10 +279,7 @@ final class File extends AbstractNode
         return $this->numMethods;
     }
 
-    /**
-     * Returns the number of tested methods.
-     */
-    public function getNumTestedMethods(): int
+    public function numberOfTestedMethods(): int
     {
         if ($this->numTestedMethods === null) {
             $this->numTestedMethods = 0;
@@ -366,18 +306,12 @@ final class File extends AbstractNode
         return $this->numTestedMethods;
     }
 
-    /**
-     * Returns the number of functions.
-     */
-    public function getNumFunctions(): int
+    public function numberOfFunctions(): int
     {
         return \count($this->functions);
     }
 
-    /**
-     * Returns the number of tested functions.
-     */
-    public function getNumTestedFunctions(): int
+    public function numberOfTestedFunctions(): int
     {
         if ($this->numTestedFunctions === null) {
             $this->numTestedFunctions = 0;
@@ -396,9 +330,9 @@ final class File extends AbstractNode
     private function calculateStatistics(): void
     {
         if ($this->cacheTokens) {
-            $tokens = \PHP_Token_Stream_CachingFactory::get($this->getPath());
+            $tokens = \PHP_Token_Stream_CachingFactory::get($this->pathAsString());
         } else {
-            $tokens = new \PHP_Token_Stream($this->getPath());
+            $tokens = new \PHP_Token_Stream($this->pathAsString());
         }
 
         $this->linesOfCode = $tokens->getLinesOfCode();
@@ -415,6 +349,7 @@ final class File extends AbstractNode
             // This can happen with PHP_Token_Stream if the file is syntactically invalid,
             // and probably affects a file that wasn't executed.
         }
+
         unset($tokens);
 
         foreach (\range(1, $this->linesOfCode['loc']) as $lineNumber) {
@@ -532,7 +467,7 @@ final class File extends AbstractNode
     private function processClasses(\PHP_Token_Stream $tokens): void
     {
         $classes = $tokens->getClasses();
-        $link    = $this->getId() . '.html#';
+        $link    = $this->id() . '.html#';
 
         foreach ($classes as $className => $class) {
             if (\strpos($className, 'anonymous') === 0) {
@@ -591,7 +526,7 @@ final class File extends AbstractNode
     private function processTraits(\PHP_Token_Stream $tokens): void
     {
         $traits = $tokens->getTraits();
-        $link   = $this->getId() . '.html#';
+        $link   = $this->id() . '.html#';
 
         foreach ($traits as $traitName => $trait) {
             if (!empty($trait['package']['namespace'])) {
@@ -641,7 +576,7 @@ final class File extends AbstractNode
     private function processFunctions(\PHP_Token_Stream $tokens): void
     {
         $functions = $tokens->getFunctions();
-        $link      = $this->getId() . '.html#';
+        $link      = $this->id() . '.html#';
 
         foreach ($functions as $functionName => $function) {
             if (\strpos($functionName, 'anonymous') === 0) {

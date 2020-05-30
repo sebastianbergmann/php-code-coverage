@@ -59,43 +59,43 @@ final class File extends Renderer
             $template,
             [
                 'name'                            => 'Total',
-                'numClasses'                      => $node->getNumClassesAndTraits(),
-                'numTestedClasses'                => $node->getNumTestedClassesAndTraits(),
-                'numMethods'                      => $node->getNumFunctionsAndMethods(),
-                'numTestedMethods'                => $node->getNumTestedFunctionsAndMethods(),
-                'linesExecutedPercent'            => $node->getLineExecutedPercent()->asFloat(),
-                'linesExecutedPercentAsString'    => $node->getLineExecutedPercent()->asString(),
-                'numExecutedLines'                => $node->getNumExecutedLines(),
-                'numExecutableLines'              => $node->getNumExecutableLines(),
-                'branchesExecutedPercent'         => $node->getBranchExecutedPercent()->asFloat(),
-                'branchesExecutedPercentAsString' => $node->getBranchExecutedPercent()->asString(),
-                'numExecutedBranches'             => $node->getNumExecutedBranches(),
-                'numExecutableBranches'           => $node->getNumExecutableBranches(),
-                'pathsExecutedPercent'            => $node->getPathExecutedPercent()->asFloat(),
-                'pathsExecutedPercentAsString'    => $node->getPathExecutedPercent()->asString(),
-                'numExecutedPaths'                => $node->getNumExecutedPaths(),
-                'numExecutablePaths'              => $node->getNumExecutablePaths(),
-                'testedMethodsPercent'            => $node->getTestedFunctionsAndMethodsPercent()->asFloat(),
-                'testedMethodsPercentAsString'    => $node->getTestedFunctionsAndMethodsPercent()->asString(),
-                'testedClassesPercent'            => $node->getTestedClassesAndTraitsPercent()->asFloat(),
-                'testedClassesPercentAsString'    => $node->getTestedClassesAndTraitsPercent()->asString(),
+                'numClasses'                      => $node->numberOfClassesAndTraits(),
+                'numTestedClasses'                => $node->numberOfTestedClassesAndTraits(),
+                'numMethods'                      => $node->numberOfFunctionsAndMethods(),
+                'numTestedMethods'                => $node->numberOfTestedFunctionsAndMethods(),
+                'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
+                'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
+                'numExecutedLines'                => $node->numberOfExecutedLines(),
+                'numExecutableLines'              => $node->numberOfExecutableLines(),
+                'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
+                'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
+                'numExecutedBranches'             => $node->numberOfExecutedBranches(),
+                'numExecutableBranches'           => $node->numberOfExecutableBranches(),
+                'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
+                'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
+                'numExecutedPaths'                => $node->numberOfExecutedPaths(),
+                'numExecutablePaths'              => $node->numberOfExecutablePaths(),
+                'testedMethodsPercent'            => $node->percentageOfTestedFunctionsAndMethods()->asFloat(),
+                'testedMethodsPercentAsString'    => $node->percentageOfTestedFunctionsAndMethods()->asString(),
+                'testedClassesPercent'            => $node->percentageOfTestedClassesAndTraits()->asFloat(),
+                'testedClassesPercentAsString'    => $node->percentageOfTestedClassesAndTraits()->asString(),
                 'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
             ]
         );
 
         $items .= $this->renderFunctionItems(
-            $node->getFunctions(),
+            $node->functions(),
             $methodItemTemplate
         );
 
         $items .= $this->renderTraitOrClassItems(
-            $node->getTraits(),
+            $node->traits(),
             $template,
             $methodItemTemplate
         );
 
         $items .= $this->renderTraitOrClassItems(
-            $node->getClasses(),
+            $node->classes(),
             $template,
             $methodItemTemplate
         );
@@ -291,9 +291,9 @@ final class File extends Renderer
 
     protected function renderSource(FileNode $node): string
     {
-        $coverageData = $node->getLineCoverageData();
-        $testData     = $node->getTestData();
-        $codeLines    = $this->loadFile($node->getPath());
+        $coverageData = $node->lineCoverageData();
+        $testData     = $node->testData();
+        $codeLines    = $this->loadFile($node->pathAsString());
         $lines        = '';
         $i            = 1;
 

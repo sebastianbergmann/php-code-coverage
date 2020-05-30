@@ -53,7 +53,7 @@ final class Facade
      */
     public function process(CodeCoverage $coverage, string $target): void
     {
-        $target = $this->getDirectory($target);
+        $target = $this->directory($target);
         $report = $coverage->getReport();
         $date   = (string) \date('D M j G:i:s T Y');
 
@@ -88,7 +88,7 @@ final class Facade
         $dashboard->render($report, $target . 'dashboard.html');
 
         foreach ($report as $node) {
-            $id = $node->getId();
+            $id = $node->id();
 
             if ($node instanceof DirectoryNode) {
                 DirectoryUtil::create($target . $id);
@@ -112,7 +112,7 @@ final class Facade
      */
     private function copyFiles(string $target): void
     {
-        $dir = $this->getDirectory($target . '_css');
+        $dir = $this->directory($target . '_css');
 
         \copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
         \copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
@@ -120,11 +120,11 @@ final class Facade
         \copy($this->templatePath . 'css/custom.css', $dir . 'custom.css');
         \copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
 
-        $dir = $this->getDirectory($target . '_icons');
+        $dir = $this->directory($target . '_icons');
         \copy($this->templatePath . 'icons/file-code.svg', $dir . 'file-code.svg');
         \copy($this->templatePath . 'icons/file-directory.svg', $dir . 'file-directory.svg');
 
-        $dir = $this->getDirectory($target . '_js');
+        $dir = $this->directory($target . '_js');
         \copy($this->templatePath . 'js/bootstrap.min.js', $dir . 'bootstrap.min.js');
         \copy($this->templatePath . 'js/popper.min.js', $dir . 'popper.min.js');
         \copy($this->templatePath . 'js/d3.min.js', $dir . 'd3.min.js');
@@ -136,7 +136,7 @@ final class Facade
     /**
      * @throws RuntimeException
      */
-    private function getDirectory(string $directory): string
+    private function directory(string $directory): string
     {
         if (\substr($directory, -1, 1) != \DIRECTORY_SEPARATOR) {
             $directory .= \DIRECTORY_SEPARATOR;

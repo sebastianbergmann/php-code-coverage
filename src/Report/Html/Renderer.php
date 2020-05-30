@@ -72,12 +72,12 @@ abstract class Renderer
         $numSeparator  = '&nbsp;/&nbsp;';
 
         if (isset($data['numClasses']) && $data['numClasses'] > 0) {
-            $classesLevel = $this->getColorLevel($data['testedClassesPercent']);
+            $classesLevel = $this->colorLevel($data['testedClassesPercent']);
 
             $classesNumber = $data['numTestedClasses'] . $numSeparator .
                 $data['numClasses'];
 
-            $classesBar = $this->getCoverageBar(
+            $classesBar = $this->coverageBar(
                 $data['testedClassesPercent']
             );
         } else {
@@ -88,12 +88,12 @@ abstract class Renderer
         }
 
         if ($data['numMethods'] > 0) {
-            $methodsLevel = $this->getColorLevel($data['testedMethodsPercent']);
+            $methodsLevel = $this->colorLevel($data['testedMethodsPercent']);
 
             $methodsNumber = $data['numTestedMethods'] . $numSeparator .
                 $data['numMethods'];
 
-            $methodsBar = $this->getCoverageBar(
+            $methodsBar = $this->coverageBar(
                 $data['testedMethodsPercent']
             );
         } else {
@@ -104,12 +104,12 @@ abstract class Renderer
         }
 
         if ($data['numExecutableLines'] > 0) {
-            $linesLevel = $this->getColorLevel($data['linesExecutedPercent']);
+            $linesLevel = $this->colorLevel($data['linesExecutedPercent']);
 
             $linesNumber = $data['numExecutedLines'] . $numSeparator .
                 $data['numExecutableLines'];
 
-            $linesBar = $this->getCoverageBar(
+            $linesBar = $this->coverageBar(
                 $data['linesExecutedPercent']
             );
         } else {
@@ -120,12 +120,12 @@ abstract class Renderer
         }
 
         if ($data['numExecutablePaths'] > 0) {
-            $pathsLevel = $this->getColorLevel($data['pathsExecutedPercent']);
+            $pathsLevel = $this->colorLevel($data['pathsExecutedPercent']);
 
             $pathsNumber = $data['numExecutedPaths'] . $numSeparator .
                 $data['numExecutablePaths'];
 
-            $pathsBar = $this->getCoverageBar(
+            $pathsBar = $this->coverageBar(
                 $data['pathsExecutedPercent']
             );
         } else {
@@ -136,12 +136,12 @@ abstract class Renderer
         }
 
         if ($data['numExecutableBranches'] > 0) {
-            $branchesLevel = $this->getColorLevel($data['branchesExecutedPercent']);
+            $branchesLevel = $this->colorLevel($data['branchesExecutedPercent']);
 
             $branchesNumber = $data['numExecutedBranches'] . $numSeparator .
                 $data['numExecutableBranches'];
 
-            $branchesBar = $this->getCoverageBar(
+            $branchesBar = $this->coverageBar(
                 $data['branchesExecutedPercent']
             );
         } else {
@@ -186,13 +186,13 @@ abstract class Renderer
     {
         $template->setVar(
             [
-                'id'               => $node->getId(),
-                'full_path'        => $node->getPath(),
-                'path_to_root'     => $this->getPathToRoot($node),
-                'breadcrumbs'      => $this->getBreadcrumbs($node),
+                'id'               => $node->id(),
+                'full_path'        => $node->pathAsString(),
+                'path_to_root'     => $this->pathToRoot($node),
+                'breadcrumbs'      => $this->breadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,
-                'runtime'          => $this->getRuntimeString(),
+                'runtime'          => $this->runtimeString(),
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->lowUpperBound,
                 'high_lower_bound' => $this->highLowerBound,
@@ -200,10 +200,10 @@ abstract class Renderer
         );
     }
 
-    protected function getBreadcrumbs(AbstractNode $node): string
+    protected function breadcrumbs(AbstractNode $node): string
     {
         $breadcrumbs = '';
-        $path        = $node->getPathAsArray();
+        $path        = $node->pathAsArray();
         $pathToRoot  = [];
         $max         = \count($path);
 
@@ -217,23 +217,23 @@ abstract class Renderer
 
         foreach ($path as $step) {
             if ($step !== $node) {
-                $breadcrumbs .= $this->getInactiveBreadcrumb(
+                $breadcrumbs .= $this->inactiveBreadcrumb(
                     $step,
                     \array_pop($pathToRoot)
                 );
             } else {
-                $breadcrumbs .= $this->getActiveBreadcrumb($step);
+                $breadcrumbs .= $this->activeBreadcrumb($step);
             }
         }
 
         return $breadcrumbs;
     }
 
-    protected function getActiveBreadcrumb(AbstractNode $node): string
+    protected function activeBreadcrumb(AbstractNode $node): string
     {
         $buffer = \sprintf(
             '         <li class="breadcrumb-item active">%s</li>' . "\n",
-            $node->getName()
+            $node->name()
         );
 
         if ($node instanceof DirectoryNode) {
@@ -243,18 +243,18 @@ abstract class Renderer
         return $buffer;
     }
 
-    protected function getInactiveBreadcrumb(AbstractNode $node, string $pathToRoot): string
+    protected function inactiveBreadcrumb(AbstractNode $node, string $pathToRoot): string
     {
         return \sprintf(
             '         <li class="breadcrumb-item"><a href="%sindex.html">%s</a></li>' . "\n",
             $pathToRoot,
-            $node->getName()
+            $node->name()
         );
     }
 
-    protected function getPathToRoot(AbstractNode $node): string
+    protected function pathToRoot(AbstractNode $node): string
     {
-        $id    = $node->getId();
+        $id    = $node->id();
         $depth = \substr_count($id, '/');
 
         if ($id !== 'index' &&
@@ -265,9 +265,9 @@ abstract class Renderer
         return \str_repeat('../', $depth);
     }
 
-    protected function getCoverageBar(float $percent): string
+    protected function coverageBar(float $percent): string
     {
-        $level = $this->getColorLevel($percent);
+        $level = $this->colorLevel($percent);
 
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'coverage_bar_branch.html' : 'coverage_bar.html');
         $template     = new Template(
@@ -281,7 +281,7 @@ abstract class Renderer
         return $template->render();
     }
 
-    protected function getColorLevel(float $percent): string
+    protected function colorLevel(float $percent): string
     {
         if ($percent <= $this->lowUpperBound) {
             return 'danger';
@@ -295,7 +295,7 @@ abstract class Renderer
         return 'success';
     }
 
-    private function getRuntimeString(): string
+    private function runtimeString(): string
     {
         $runtime = new Runtime;
 

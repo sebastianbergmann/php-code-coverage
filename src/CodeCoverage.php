@@ -420,6 +420,16 @@ final class CodeCoverage
         $this->driver->disableBranchAndPathCoverage();
     }
 
+    public function collectsBranchAndPathCoverage(): bool
+    {
+        return $this->driver->collectsBranchAndPathCoverage();
+    }
+
+    public function detectsDeadCode(): bool
+    {
+        return $this->driver->detectsDeadCode();
+    }
+
     /**
      * Applies the @covers annotation filtering.
      *

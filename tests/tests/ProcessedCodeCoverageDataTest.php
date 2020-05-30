@@ -66,4 +66,113 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertArrayHasKey(12, $existingCoverage->lineCoverage()['/some/path/SomeClass.php']);
     }
+
+    public function testMergeDoesNotCrashWhenFileContentsHaveChanged(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+        $coverage->setFunctionCoverage(
+            [
+                '/some/path/SomeClass.php' => [
+                    'SomeClass->firstFunction' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 14,
+                                'line_start' => 20,
+                                'line_end'   => 25,
+                                'hit'        => [],
+                                'out'        => [
+                                ],
+                                'out_hit' => [
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                ],
+                                'hit' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $newCoverage = new ProcessedCodeCoverageData;
+        $newCoverage->setFunctionCoverage(
+            [
+                '/some/path/SomeClass.php' => [
+                    'SomeClass->firstFunction' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 14,
+                                'line_start' => 20,
+                                'line_end'   => 25,
+                                'hit'        => [],
+                                'out'        => [
+                                ],
+                                'out_hit' => [
+                                ],
+                            ],
+                            1 => [
+                                'op_start'   => 15,
+                                'op_end'     => 16,
+                                'line_start' => 26,
+                                'line_end'   => 27,
+                                'hit'        => [],
+                                'out'        => [
+                                ],
+                                'out_hit' => [
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                ],
+                                'hit' => [],
+                            ],
+                            1 => [
+                                'path' => [
+                                    0 => 1,
+                                ],
+                                'hit' => [],
+                            ],
+                        ],
+                    ],
+                    'SomeClass->secondFunction' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 24,
+                                'line_start' => 30,
+                                'line_end'   => 35,
+                                'hit'        => [],
+                                'out'        => [
+                                ],
+                                'out_hit' => [
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                ],
+                                'hit' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $coverage->merge($newCoverage);
+
+        $this->assertArrayHasKey('SomeClass->secondFunction', $newCoverage->functionCoverage()['/some/path/SomeClass.php']);
+    }
 }

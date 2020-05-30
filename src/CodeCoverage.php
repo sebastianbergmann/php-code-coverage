@@ -291,7 +291,7 @@ final class CodeCoverage
         $this->applyWhitelistFilter($rawData);
         $this->applyIgnoredLinesFilter($rawData);
 
-        $this->data->initializeFilesThatAreSeenTheFirstTime($rawData);
+        $this->data->initializeUnseenData($rawData);
 
         if (!$append) {
             return;

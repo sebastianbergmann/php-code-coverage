@@ -33,7 +33,7 @@ final class ProcessedCodeCoverageData
      */
     private $functionCoverage = [];
 
-    public function initializeFilesThatAreSeenTheFirstTime(RawCodeCoverageData $rawData): void
+    public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
         foreach ($rawData->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
@@ -46,17 +46,11 @@ final class ProcessedCodeCoverageData
         }
 
         foreach ($rawData->functionCoverage() as $file => $functions) {
-            if (!isset($this->functionCoverage[$file])) {
-                $this->functionCoverage[$file] = $functions;
-
-                foreach ($this->functionCoverage[$file] as $functionName => $functionData) {
-                    foreach (\array_keys($this->functionCoverage[$file][$functionName]['branches']) as $branchId) {
-                        $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
-                    }
-
-                    foreach (\array_keys($this->functionCoverage[$file][$functionName]['paths']) as $pathId) {
-                        $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
-                    }
+            foreach ($functions as $functionName => $functionData) {
+                if (isset($this->functionCoverage[$file][$functionName])) {
+                    $this->initPreviouslySeenFunction($file, $functionName, $functionData);
+                } else {
+                    $this->initPreviouslyUnseenFunction($file, $functionName, $functionData);
                 }
             }
         }
@@ -105,6 +99,11 @@ final class ProcessedCodeCoverageData
         \ksort($this->lineCoverage);
 
         return $this->lineCoverage;
+    }
+
+    public function setFunctionCoverage(array $functionCoverage): void
+    {
+        $this->functionCoverage = $functionCoverage;
     }
 
     public function functionCoverage(): array
@@ -169,6 +168,12 @@ final class ProcessedCodeCoverageData
             }
 
             foreach ($functions as $functionName => $functionData) {
+                if (isset($this->functionCoverage[$file][$functionName])) {
+                    $this->initPreviouslySeenFunction($file, $functionName, $functionData);
+                } else {
+                    $this->initPreviouslyUnseenFunction($file, $functionName, $functionData);
+                }
+
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = \array_unique(\array_merge($this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], $branchData['hit']));
                 }
@@ -205,5 +210,43 @@ final class ProcessedCodeCoverageData
         }
 
         return 4;
+    }
+
+    /**
+     * For a function we have never seen before, copy all data over and simply init the 'hit' array
+     */
+    private function initPreviouslyUnseenFunction(string $file, string $functionName, array $functionData): void
+    {
+        $this->functionCoverage[$file][$functionName] = $functionData;
+
+        foreach (\array_keys($functionData['branches']) as $branchId) {
+            $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
+        }
+
+        foreach (\array_keys($functionData['paths']) as $pathId) {
+            $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
+        }
+    }
+
+    /**
+     * For a function we have seen before, only copy over and init the 'hit' array for any unseen branches and paths.
+     * Techniques such as mocking and where the contents of a file are different vary during tests (e.g. compiling
+     * containers) mean that the functions inside a file cannot be relied upon to be static.
+     */
+    private function initPreviouslySeenFunction(string $file, string $functionName, array $functionData): void
+    {
+        foreach ($functionData['branches'] as $branchId => $branchData) {
+            if (!isset($this->functionCoverage[$file][$functionName]['branches'][$branchId])) {
+                $this->functionCoverage[$file][$functionName]['branches'][$branchId]        = $branchData;
+                $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
+            }
+        }
+
+        foreach ($functionData['paths'] as $pathId => $pathData) {
+            if (!isset($this->functionCoverage[$file][$functionName]['paths'][$pathId])) {
+                $this->functionCoverage[$file][$functionName]['paths'][$pathId]        = $pathData;
+                $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
+            }
+        }
     }
 }

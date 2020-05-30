@@ -43,7 +43,7 @@ final class File extends Renderer
         $template->renderTo($file);
     }
 
-    protected function renderItems(FileNode $node): string
+    private function renderItems(FileNode $node): string
     {
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_item_branch.html' : 'file_item.html');
         $template     = new Template($templateName, '{{', '}}');
@@ -103,7 +103,7 @@ final class File extends Renderer
         return $items;
     }
 
-    protected function renderTraitOrClassItems(array $items, Template $template, Template $methodItemTemplate): string
+    private function renderTraitOrClassItems(array $items, Template $template, Template $methodItemTemplate): string
     {
         $buffer = '';
 
@@ -207,7 +207,7 @@ final class File extends Renderer
         return $buffer;
     }
 
-    protected function renderFunctionItems(array $functions, Template $template): string
+    private function renderFunctionItems(array $functions, Template $template): string
     {
         if (empty($functions)) {
             return '';
@@ -225,7 +225,7 @@ final class File extends Renderer
         return $buffer;
     }
 
-    protected function renderFunctionOrMethodItem(Template $template, array $item, string $indent = ''): string
+    private function renderFunctionOrMethodItem(Template $template, array $item, string $indent = ''): string
     {
         $numMethods       = 0;
         $numTestedMethods = 0;
@@ -289,7 +289,7 @@ final class File extends Renderer
         );
     }
 
-    protected function renderSource(FileNode $node): string
+    private function renderSource(FileNode $node): string
     {
         $coverageData = $node->lineCoverageData();
         $testData     = $node->testData();
@@ -408,7 +408,7 @@ final class File extends Renderer
     /**
      * @param string $file
      */
-    protected function loadFile($file): array
+    private function loadFile($file): array
     {
         $buffer              = \file_get_contents($file);
         $tokens              = \token_get_all($buffer);

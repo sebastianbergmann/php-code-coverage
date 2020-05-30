@@ -55,10 +55,19 @@ final class Dashboard extends Renderer
         $template->renderTo($file);
     }
 
+    protected function activeBreadcrumb(AbstractNode $node): string
+    {
+        return \sprintf(
+            '         <li class="breadcrumb-item"><a href="index.html">%s</a></li>' . "\n" .
+            '         <li class="breadcrumb-item active">(Dashboard)</li>' . "\n",
+            $node->name()
+        );
+    }
+
     /**
      * Returns the data for the Class/Method Complexity charts.
      */
-    protected function complexity(array $classes, string $baseLink): array
+    private function complexity(array $classes, string $baseLink): array
     {
         $result = ['class' => [], 'method' => []];
 
@@ -99,7 +108,7 @@ final class Dashboard extends Renderer
     /**
      * Returns the data for the Class / Method Coverage Distribution chart.
      */
-    protected function coverageDistribution(array $classes): array
+    private function coverageDistribution(array $classes): array
     {
         $result = [
             'class' => [
@@ -165,7 +174,7 @@ final class Dashboard extends Renderer
     /**
      * Returns the classes / methods with insufficient coverage.
      */
-    protected function insufficientCoverage(array $classes, string $baseLink): array
+    private function insufficientCoverage(array $classes, string $baseLink): array
     {
         $leastTestedClasses = [];
         $leastTestedMethods = [];
@@ -219,7 +228,7 @@ final class Dashboard extends Renderer
     /**
      * Returns the project risks according to the CRAP index.
      */
-    protected function projectRisks(array $classes, string $baseLink): array
+    private function projectRisks(array $classes, string $baseLink): array
     {
         $classRisks  = [];
         $methodRisks = [];
@@ -269,14 +278,5 @@ final class Dashboard extends Renderer
         }
 
         return $result;
-    }
-
-    protected function activeBreadcrumb(AbstractNode $node): string
-    {
-        return \sprintf(
-            '         <li class="breadcrumb-item"><a href="index.html">%s</a></li>' . "\n" .
-            '         <li class="breadcrumb-item active">(Dashboard)</li>' . "\n",
-            $node->name()
-        );
     }
 }

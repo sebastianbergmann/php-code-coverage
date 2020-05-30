@@ -19,6 +19,11 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class XdebugDriver extends Driver
 {
     /**
+     * @var bool
+     */
+    private $pathCoverageIsMixedCoverage;
+
+    /**
      * @throws RuntimeException
      */
     public function __construct(Filter $filter)
@@ -34,6 +39,8 @@ final class XdebugDriver extends Driver
         if ($filter->hasWhitelist()) {
             \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
         }
+
+        $this->pathCoverageIsMixedCoverage = \version_compare(\phpversion('xdebug'), '2.9.6', '<');
 
         $this->enableDeadCodeDetection();
     }
@@ -70,6 +77,10 @@ final class XdebugDriver extends Driver
         \xdebug_stop_code_coverage();
 
         if ($this->collectsBranchAndPathCoverage()) {
+            if ($this->pathCoverageIsMixedCoverage) {
+                return RawCodeCoverageData::fromXdebugWithMixedCoverage($data);
+            }
+
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
 

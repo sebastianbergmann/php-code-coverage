@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.0.0] - 2020-MM-DD
 
+### Added
+
+* [#761](https://github.com/sebastianbergmann/php-code-coverage/pull/761): Support for Branch Coverage and Path Coverage
+
 ### Changed
 
 * [#746](https://github.com/sebastianbergmann/php-code-coverage/pull/746): Remove some ancient workarounds for very old Xdebug versions

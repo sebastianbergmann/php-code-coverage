@@ -35,9 +35,9 @@ final class BuilderTest extends TestCase
         $this->assertEquals(0, $root->getNumTestedClasses());
         $this->assertEquals(4, $root->getNumMethods());
         $this->assertEquals(3, $root->getNumTestedMethods());
-        $this->assertEquals('0.00%', $root->getTestedClassesPercent());
-        $this->assertEquals('75.00%', $root->getTestedMethodsPercent());
-        $this->assertEquals('50.00%', $root->getLineExecutedPercent());
+        $this->assertEquals('0.00%', $root->getTestedClassesPercent()->asString());
+        $this->assertEquals('75.00%', $root->getTestedMethodsPercent()->asString());
+        $this->assertEquals('50.00%', $root->getLineExecutedPercent()->asString());
         $this->assertEquals(0, $root->getNumFunctions());
         $this->assertEquals(0, $root->getNumTestedFunctions());
         $this->assertNull($root->getParent());

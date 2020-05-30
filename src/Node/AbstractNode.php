@@ -110,175 +110,76 @@ abstract class AbstractNode implements \Countable
         return $this->parent;
     }
 
-    /**
-     * Returns the percentage of classes that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedClassesPercent(bool $asString = true)
+    public function getTestedClassesPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedClasses(),
             $this->getNumClasses(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of traits that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedTraitsPercent(bool $asString = true)
+    public function getTestedTraitsPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedTraits(),
             $this->getNumTraits(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of classes and traits that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedClassesAndTraitsPercent(bool $asString = true)
+    public function getTestedClassesAndTraitsPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedClassesAndTraits(),
             $this->getNumClassesAndTraits(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of functions that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedFunctionsPercent(bool $asString = true)
+    public function getTestedFunctionsPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedFunctions(),
             $this->getNumFunctions(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of methods that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedMethodsPercent(bool $asString = true)
+    public function getTestedMethodsPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedMethods(),
             $this->getNumMethods(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of functions and methods that has been tested.
-     *
-     * @return float|string
-     */
-    public function getTestedFunctionsAndMethodsPercent(bool $asString = true)
+    public function getTestedFunctionsAndMethodsPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumTestedFunctionsAndMethods(),
             $this->getNumFunctionsAndMethods(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of executed lines.
-     *
-     * @return float|string
-     */
-    public function getLineExecutedPercent(bool $asString = true)
+    public function getLineExecutedPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumExecutedLines(),
             $this->getNumExecutableLines(),
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of executed branches.
-     *
-     * @return float|string
-     */
-    public function getBranchExecutedPercent(bool $asString = true)
+    public function getBranchExecutedPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumExecutedBranches(),
             $this->getNumExecutableBranches()
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
-    /**
-     * Returns the percentage of executed paths.
-     *
-     * @return float|string
-     */
-    public function getPathExecutedPercent(bool $asString = true)
+    public function getPathExecutedPercent(): Percentage
     {
-        $percentage = Percentage::fromFractionAndTotal(
+        return Percentage::fromFractionAndTotal(
             $this->getNumExecutedPaths(),
             $this->getNumExecutablePaths()
         );
-
-        if ($asString) {
-            return $percentage->asString();
-        }
-
-        return $percentage->asFloat();
     }
 
     /**

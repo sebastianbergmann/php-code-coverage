@@ -80,7 +80,7 @@ abstract class AbstractNode implements \Countable
     public function pathAsString(): string
     {
         if ($this->path === null) {
-            if ($this->parent === null || $this->parent->pathAsString() === null || $this->parent->pathAsString() === false) {
+            if ($this->parent === null) {
                 $this->path = $this->name;
             } else {
                 $this->path = $this->parent->pathAsString() . \DIRECTORY_SEPARATOR . $this->name;

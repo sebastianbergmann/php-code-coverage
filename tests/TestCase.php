@@ -823,12 +823,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[0],
-                $data[1],
-                $data[2],
-                $data[3]
-            ));
+             ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
@@ -890,12 +885,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[0],
-                $data[1],
-                $data[2],
-                $data[3]
-            ));
+             ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
@@ -1007,12 +997,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[0],
-                $data[1],
-                $data[2],
-                $data[3]
-            ));
+             ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'NamespacedBankAccount.php');
@@ -1072,10 +1057,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[0],
-                $data[1]
-            ));
+             ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
@@ -1111,10 +1093,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[2],
-                $data[3]
-            ));
+             ->will($this->onConsecutiveCalls($data[2], $data[3]));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
@@ -1223,10 +1202,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[0],
-                $data[1]
-            ));
+             ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
@@ -1262,10 +1238,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(
-                $data[2],
-                $data[3]
-            ));
+             ->will($this->onConsecutiveCalls($data[2], $data[3]));
 
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');

@@ -483,6 +483,10 @@ final class CodeCoverage
 
     private function applyWhitelistFilter(RawCodeCoverageData $data): void
     {
+        if (!$this->filter->hasWhitelist()) {
+            return;
+        }
+
         foreach (\array_keys($data->lineCoverage()) as $filename) {
             if ($this->filter->isFiltered($filename)) {
                 $data->removeCoverageDataForFile($filename);

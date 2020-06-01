@@ -27,6 +27,7 @@
         "sort-packages": true
     },
     "prefer-stable": true,
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.3",
         "ext-dom": "*",
@@ -40,7 +41,7 @@
         "theseer/tokenizer": "^1.1.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.3"
     },
     "suggest": {
         "ext-pcov": "*",
@@ -59,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "8.9-dev"
+            "dev-master": "9.0-dev"
         }
     }
 }

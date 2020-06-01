@@ -205,6 +205,10 @@ final class RawCodeCoverageData
      */
     public function keepCoverageDataOnlyForLines(string $filename, array $lines): void
     {
+        if (!isset($this->lineCoverage[$filename])) {
+            return;
+        }
+
         $this->lineCoverage[$filename] = \array_intersect_key(
             $this->lineCoverage[$filename],
             \array_flip($lines)
@@ -233,6 +237,10 @@ final class RawCodeCoverageData
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
         if (empty($lines)) {
+            return;
+        }
+
+        if (!isset($this->lineCoverage[$filename])) {
             return;
         }
 

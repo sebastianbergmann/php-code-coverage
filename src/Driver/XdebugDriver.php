@@ -31,7 +31,9 @@ final class XdebugDriver extends Driver
             throw new RuntimeException('xdebug.coverage_enable=On has to be set in php.ini');
         }
 
-        \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
+        if ($filter->hasWhitelist()) {
+            \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
+        }
 
         $this->enableDeadCodeDetection();
     }

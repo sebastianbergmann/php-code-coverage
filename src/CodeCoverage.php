@@ -497,6 +497,10 @@ final class CodeCoverage
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
         foreach (\array_keys($data->lineCoverage()) as $filename) {
+            if (!$this->filter->isFile($filename)) {
+                continue;
+            }
+
             $data->removeCoverageDataForLines($filename, $this->getLinesToBeIgnored($filename));
         }
     }

@@ -49,9 +49,6 @@ final class RawCodeCoverageData
         return new self($lineCoverage, $functionCoverage);
     }
 
-    /**
-     * @deprecated
-     */
     public static function fromXdebugWithMixedCoverage(array $rawCoverage): self
     {
         $lineCoverage     = [];

@@ -21,7 +21,6 @@ final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 
         $exception = new UnintentionallyCoveredCodeException($unintentionallyCoveredUnits);
 
-        $this->assertInstanceOf(RuntimeException::class, $exception);
         $this->assertSame($unintentionallyCoveredUnits, $exception->getUnintentionallyCoveredUnits());
         $this->assertSame('', $exception->getMessage());
     }
@@ -36,7 +35,6 @@ final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 
         $exception = new UnintentionallyCoveredCodeException($unintentionallyCoveredUnits);
 
-        $this->assertInstanceOf(RuntimeException::class, $exception);
         $this->assertSame($unintentionallyCoveredUnits, $exception->getUnintentionallyCoveredUnits());
 
         $expected = <<<TXT

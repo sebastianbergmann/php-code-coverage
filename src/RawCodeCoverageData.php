@@ -22,14 +22,14 @@ final class RawCodeCoverageData
      *
      * @see https://xdebug.org/docs/code_coverage for format
      */
-    private $lineCoverage = [];
+    private $lineCoverage;
 
     /**
      * @var array
      *
      * @see https://xdebug.org/docs/code_coverage for format
      */
-    private $functionCoverage = [];
+    private $functionCoverage;
 
     public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {

@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -18,20 +17,12 @@ use SebastianBergmann\CodeCoverage\RuntimeException;
 final class PhpdbgDriver extends Driver
 {
     /**
-     * @throws RuntimeException
+     * @throws PhpdbgNotAvailableException
      */
     public function __construct()
     {
         if (\PHP_SAPI !== 'phpdbg') {
-            throw new RuntimeException(
-                'This driver requires the PHPDBG SAPI'
-            );
-        }
-
-        if (!\function_exists('phpdbg_start_oplog')) {
-            throw new RuntimeException(
-                'This build of PHPDBG does not support code coverage'
-            );
+            throw new PhpdbgNotAvailableException;
         }
     }
 

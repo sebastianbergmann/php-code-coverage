@@ -11,16 +11,13 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory;
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class PHP
 {
-    /**
-     * @throws \SebastianBergmann\CodeCoverage\RuntimeException
-     */
     public function process(CodeCoverage $coverage, ?string $target = null): string
     {
         $buffer = \sprintf(
@@ -33,12 +30,7 @@ return \unserialize(\'%s\');',
             Directory::create(\dirname($target));
 
             if (@\file_put_contents($target, $buffer) === false) {
-                throw new RuntimeException(
-                    \sprintf(
-                        'Could not write to "%s',
-                        $target
-                    )
-                );
+                throw new WriteOperationFailedException($target);
             }
         }
 

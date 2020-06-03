@@ -9,6 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class DirectoryCouldNotBeCreatedException extends RuntimeException
+final class DirectoryCouldNotBeCreatedException extends \RuntimeException implements Exception
 {
 }

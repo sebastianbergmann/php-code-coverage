@@ -18,9 +18,6 @@ use SebastianBergmann\Template\Template;
  */
 final class Directory extends Renderer
 {
-    /**
-     * @throws \RuntimeException
-     */
     public function render(DirectoryNode $node, string $file): void
     {
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'directory_branch.html' : 'directory.html');

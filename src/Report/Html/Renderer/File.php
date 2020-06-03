@@ -23,9 +23,6 @@ final class File extends Renderer
      */
     private $htmlSpecialCharsFlags = \ENT_COMPAT | \ENT_HTML401 | \ENT_SUBSTITUTE;
 
-    /**
-     * @throws \RuntimeException
-     */
     public function render(FileNode $node, string $file): void
     {
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_branch.html' : 'file.html');

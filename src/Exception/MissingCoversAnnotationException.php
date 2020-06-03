@@ -9,6 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class MissingCoversAnnotationException extends RuntimeException
+final class MissingCoversAnnotationException extends \RuntimeException implements Exception
 {
 }

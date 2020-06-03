@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -24,16 +23,17 @@ final class XdebugDriver extends Driver
     private $pathCoverageIsMixedCoverage;
 
     /**
-     * @throws RuntimeException
+     * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     public function __construct(Filter $filter)
     {
         if (!\extension_loaded('xdebug')) {
-            throw new RuntimeException('This driver requires Xdebug');
+            throw new XdebugNotAvailableException;
         }
 
         if (!\ini_get('xdebug.coverage_enable')) {
-            throw new RuntimeException('xdebug.coverage_enable=On has to be set in php.ini');
+            throw new XdebugNotEnabledException;
         }
 
         if ($filter->hasWhitelist()) {

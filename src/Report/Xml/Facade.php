@@ -11,10 +11,11 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
+use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
+use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 
@@ -43,9 +44,6 @@ final class Facade
         $this->phpUnitVersion = $version;
     }
 
-    /**
-     * @throws RuntimeException
-     */
     public function process(CodeCoverage $coverage, string $target): void
     {
         if (\substr($target, -1, 1) !== \DIRECTORY_SEPARATOR) {
@@ -77,21 +75,18 @@ final class Facade
     }
 
     /**
-     * @throws RuntimeException
+     * @throws PathExistsButIsNotDirectoryException
+     * @throws WriteOperationFailedException
      */
     private function initTargetDirectory(string $directory): void
     {
         if (\file_exists($directory)) {
             if (!\is_dir($directory)) {
-                throw new RuntimeException(
-                    "'$directory' exists but is not a directory."
-                );
+                throw new PathExistsButIsNotDirectoryException($directory);
             }
 
             if (!\is_writable($directory)) {
-                throw new RuntimeException(
-                    "'$directory' exists but is not writable."
-                );
+                throw new WriteOperationFailedException($directory);
             }
         }
 
@@ -119,9 +114,6 @@ final class Facade
         }
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function processFile(FileNode $file, Directory $context): void
     {
         $fileObject = $context->addFile(
@@ -264,9 +256,6 @@ final class Facade
         return $this->target;
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function saveDocument(\DOMDocument $document, string $name): void
     {
         $filename = \sprintf('%s/%s.xml', $this->targetDirectory(), $name);

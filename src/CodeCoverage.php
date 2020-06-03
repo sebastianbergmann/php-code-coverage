@@ -14,8 +14,12 @@ use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\PcovDriver;
+use SebastianBergmann\CodeCoverage\Driver\PcovNotAvailableException;
 use SebastianBergmann\CodeCoverage\Driver\PhpdbgDriver;
+use SebastianBergmann\CodeCoverage\Driver\PhpdbgNotAvailableException;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugNotAvailableException;
+use SebastianBergmann\CodeCoverage\Driver\XdebugNotEnabledException;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
@@ -129,9 +133,6 @@ final class CodeCoverage
      */
     private $report;
 
-    /**
-     * @throws RuntimeException
-     */
     public function __construct(Driver $driver = null, Filter $filter = null)
     {
         if ($filter === null) {
@@ -221,8 +222,6 @@ final class CodeCoverage
      * Start collection of code coverage information.
      *
      * @param PhptTestCase|string|TestCase $id
-     *
-     * @throws RuntimeException
      */
     public function start($id, bool $clear = false): void
     {
@@ -246,8 +245,6 @@ final class CodeCoverage
      *
      * @throws MissingCoversAnnotationException
      * @throws CoveredCodeNotExecutedException
-     * @throws RuntimeException
-     * @throws \ReflectionException
      */
     public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): RawCodeCoverageData
     {
@@ -271,11 +268,11 @@ final class CodeCoverage
      * @param PhptTestCase|string|TestCase $id
      * @param array|false                  $linesToBeCovered
      *
-     * @throws \SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException
-     * @throws \SebastianBergmann\CodeCoverage\MissingCoversAnnotationException
-     * @throws \SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
-     * @throws \ReflectionException
-     * @throws RuntimeException
+     * @throws UnintentionallyCoveredCodeException
+     * @throws MissingCoversAnnotationException
+     * @throws CoveredCodeNotExecutedException
+     * @throws TestIdMissingException
+     * @throws ReflectionException
      */
     public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): void
     {
@@ -284,7 +281,7 @@ final class CodeCoverage
         }
 
         if ($id === null) {
-            throw new RuntimeException;
+            throw new TestIdMissingException;
         }
 
         $this->applyWhitelistFilter($rawData);
@@ -434,10 +431,10 @@ final class CodeCoverage
      *
      * @param array|false $linesToBeCovered
      *
-     * @throws \SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException
-     * @throws \ReflectionException
+     * @throws CoveredCodeNotExecutedException
      * @throws MissingCoversAnnotationException
      * @throws UnintentionallyCoveredCodeException
+     * @throws ReflectionException
      */
     private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed, bool $ignoreForceCoversAnnotation): void
     {
@@ -507,9 +504,7 @@ final class CodeCoverage
     /**
      * @throws CoveredCodeNotExecutedException
      * @throws MissingCoversAnnotationException
-     * @throws RuntimeException
      * @throws UnintentionallyCoveredCodeException
-     * @throws \ReflectionException
      */
     private function addUncoveredFilesFromWhitelist(): void
     {
@@ -631,8 +626,8 @@ final class CodeCoverage
     }
 
     /**
-     * @throws \ReflectionException
      * @throws UnintentionallyCoveredCodeException
+     * @throws ReflectionException
      */
     private function performUnintentionallyCoveredCodeCheck(RawCodeCoverageData $data, array $linesToBeCovered, array $linesToBeUsed): void
     {
@@ -727,7 +722,11 @@ final class CodeCoverage
     }
 
     /**
-     * @throws RuntimeException
+     * @throws NoCodeCoverageDriverAvailableException
+     * @throws PcovNotAvailableException
+     * @throws PhpdbgNotAvailableException
+     * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     private function selectDriver(Filter $filter): Driver
     {
@@ -745,9 +744,12 @@ final class CodeCoverage
             return new XdebugDriver($filter);
         }
 
-        throw new RuntimeException('No code coverage driver available');
+        throw new NoCodeCoverageDriverAvailableException;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
     {
         $unintentionallyCoveredUnits = \array_unique($unintentionallyCoveredUnits);
@@ -760,14 +762,22 @@ final class CodeCoverage
                 continue;
             }
 
-            $class = new \ReflectionClass($unit[0]);
+            try {
+                $class = new \ReflectionClass($unit[0]);
 
-            foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
-                if ($class->isSubclassOf($whitelisted)) {
-                    unset($unintentionallyCoveredUnits[$k]);
+                foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
+                    if ($class->isSubclassOf($whitelisted)) {
+                        unset($unintentionallyCoveredUnits[$k]);
 
-                    break;
+                        break;
+                    }
                 }
+            } catch (\ReflectionException $e) {
+                throw new ReflectionException(
+                    $e->getMessage(),
+                    (int) $e->getCode(),
+                    $e
+                );
             }
         }
 
@@ -777,9 +787,7 @@ final class CodeCoverage
     /**
      * @throws CoveredCodeNotExecutedException
      * @throws MissingCoversAnnotationException
-     * @throws RuntimeException
      * @throws UnintentionallyCoveredCodeException
-     * @throws \ReflectionException
      */
     private function initializeData(): void
     {

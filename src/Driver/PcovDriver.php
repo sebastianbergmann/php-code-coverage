@@ -22,8 +22,15 @@ final class PcovDriver extends Driver
      */
     private $filter;
 
+    /**
+     * @throws PcovNotAvailableException
+     */
     public function __construct(Filter $filter)
     {
+        if (!\extension_loaded('pcov')) {
+            throw new PcovNotAvailableException;
+        }
+
         $this->filter = $filter;
     }
 

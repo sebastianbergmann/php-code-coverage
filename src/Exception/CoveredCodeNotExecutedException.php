@@ -9,6 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class CoveredCodeNotExecutedException extends RuntimeException
+final class CoveredCodeNotExecutedException extends \RuntimeException implements Exception
 {
 }

@@ -9,7 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use SebastianBergmann\CodeCoverage\RuntimeException;
+use SebastianBergmann\CodeCoverage\ReportAlreadyFinalizedException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -42,12 +42,12 @@ final class Coverage
     }
 
     /**
-     * @throws RuntimeException
+     * @throws ReportAlreadyFinalizedException
      */
     public function addTest(string $test): void
     {
         if ($this->finalized) {
-            throw new RuntimeException('Coverage Report already finalized');
+            throw new ReportAlreadyFinalizedException;
         }
 
         $this->writer->startElement('covered');

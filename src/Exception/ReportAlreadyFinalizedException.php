@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class BranchAndPathCoverageNotSupportedException extends \RuntimeException implements Exception
+final class ReportAlreadyFinalizedException extends \RuntimeException implements Exception
 {
+    public function __construct()
+    {
+        parent::__construct('The code coverage report has already been finalized');
+    }
 }

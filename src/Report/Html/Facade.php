@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -47,10 +46,6 @@ final class Facade
         $this->templatePath   = __DIR__ . '/Renderer/Template/';
     }
 
-    /**
-     * @throws RuntimeException
-     * @throws \RuntimeException
-     */
     public function process(CodeCoverage $coverage, string $target): void
     {
         $target = $this->directory($target);
@@ -107,9 +102,6 @@ final class Facade
         $this->copyFiles($target);
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function copyFiles(string $target): void
     {
         $dir = $this->directory($target . '_css');
@@ -133,9 +125,6 @@ final class Facade
         \copy($this->templatePath . 'js/file.js', $dir . 'file.js');
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function directory(string $directory): string
     {
         if (\substr($directory, -1, 1) != \DIRECTORY_SEPARATOR) {

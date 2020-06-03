@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\tests\Exception;
 
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\CodeCoverage\RuntimeException;
 use SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException;
 
 final class UnintentionallyCoveredCodeExceptionTest extends TestCase

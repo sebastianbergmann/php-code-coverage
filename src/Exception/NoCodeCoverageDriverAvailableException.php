@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-class RuntimeException extends \RuntimeException implements Exception
+final class NoCodeCoverageDriverAvailableException extends \RuntimeException implements Exception
 {
+    public function __construct()
+    {
+        parent::__construct('No code coverage driver available');
+    }
 }

@@ -351,10 +351,6 @@ final class File extends Renderer
                                 break;
 
                             case 3:
-                                $testCSS = ' class="danger"';
-
-                                break;
-
                             case 4:
                                 $testCSS = ' class="danger"';
 

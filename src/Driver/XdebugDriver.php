@@ -37,7 +37,11 @@ final class XdebugDriver extends Driver
         }
 
         if ($filter->hasWhitelist()) {
-            \xdebug_set_filter(\XDEBUG_FILTER_CODE_COVERAGE, \XDEBUG_PATH_WHITELIST, $filter->getWhitelist());
+            \xdebug_set_filter(
+                \XDEBUG_FILTER_CODE_COVERAGE,
+                \XDEBUG_PATH_WHITELIST,
+                $filter->getWhitelist()
+            );
         }
 
         $this->pathCoverageIsMixedCoverage = \version_compare(\phpversion('xdebug'), '2.9.6', '<');

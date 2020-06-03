@@ -66,7 +66,9 @@ final class PhpdbgDriver extends Driver
 
         $fetchedLines = \array_merge($fetchedLines, $sourceLines);
 
-        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($this->detectExecutedLines($fetchedLines, $dbgData));
+        return RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            $this->detectExecutedLines($fetchedLines, $dbgData)
+        );
     }
 
     public function name(): string

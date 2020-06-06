@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * [#761](https://github.com/sebastianbergmann/php-code-coverage/pull/761): Support for Branch Coverage and Path Coverage
+* Named constructors `CodeCoverage::create()`, `CodeCoverage::createWithDriver()`, `CodeCoverage::createWithFilter()`, and `CodeCoverage::createWithDriverAndFilter()`
 
 ### Changed
 
@@ -18,6 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#754](https://github.com/sebastianbergmann/php-code-coverage/pull/754): Implement collection of raw branch and path coverage
 * [#755](https://github.com/sebastianbergmann/php-code-coverage/pull/755): Implement processing of raw branch and path coverage
 * [#756](https://github.com/sebastianbergmann/php-code-coverage/pull/756): Improve handling of uncovered files
+* `CodeCoverage::__construct()` is now private, use named constructors instead
 
 ## [8.0.2] - 2020-05-23
 

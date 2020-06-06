@@ -133,20 +133,33 @@ final class CodeCoverage
      */
     private $report;
 
-    public function __construct(Driver $driver = null, Filter $filter = null)
+    public static function create(): self
     {
-        if ($filter === null) {
-            $filter = new Filter;
-        }
+        $filter = new Filter;
 
-        if ($driver === null) {
-            $driver = $this->selectDriver($filter);
-        }
+        return new self(self::selectDriver($filter), $filter);
+    }
 
+    public static function createWithDriver(Driver $driver): self
+    {
+        return new self($driver, new Filter);
+    }
+
+    public static function createWithFilter(Filter $filter): self
+    {
+        return new self(self::selectDriver($filter), $filter);
+    }
+
+    public static function createWithDriverAndFilter(Driver $driver, Filter $filter): self
+    {
+        return new self($driver, $filter);
+    }
+
+    private function __construct(Driver $driver, Filter $filter)
+    {
         $this->driver = $driver;
         $this->filter = $filter;
-
-        $this->data = new ProcessedCodeCoverageData;
+        $this->data   = new ProcessedCodeCoverageData;
     }
 
     /**
@@ -722,32 +735,6 @@ final class CodeCoverage
     }
 
     /**
-     * @throws NoCodeCoverageDriverAvailableException
-     * @throws PcovNotAvailableException
-     * @throws PhpdbgNotAvailableException
-     * @throws XdebugNotAvailableException
-     * @throws XdebugNotEnabledException
-     */
-    private function selectDriver(Filter $filter): Driver
-    {
-        $runtime = new Runtime;
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            return new PhpdbgDriver;
-        }
-
-        if ($runtime->hasPCOV()) {
-            return new PcovDriver($filter);
-        }
-
-        if ($runtime->hasXdebug()) {
-            return new XdebugDriver($filter);
-        }
-
-        throw new NoCodeCoverageDriverAvailableException;
-    }
-
-    /**
      * @throws ReflectionException
      */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
@@ -851,5 +838,31 @@ final class CodeCoverage
         }
 
         return $this->wizard;
+    }
+
+    /**
+     * @throws NoCodeCoverageDriverAvailableException
+     * @throws PcovNotAvailableException
+     * @throws PhpdbgNotAvailableException
+     * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
+     */
+    private static function selectDriver(Filter $filter): Driver
+    {
+        $runtime = new Runtime;
+
+        if ($runtime->hasPHPDBGCodeCoverage()) {
+            return new PhpdbgDriver;
+        }
+
+        if ($runtime->hasPCOV()) {
+            return new PcovDriver($filter);
+        }
+
+        if ($runtime->hasXdebug()) {
+            return new XdebugDriver($filter);
+        }
+
+        throw new NoCodeCoverageDriverAvailableException;
     }
 }

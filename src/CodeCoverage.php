@@ -181,7 +181,7 @@ final class CodeCoverage
     {
         $this->isInitialized = false;
         $this->currentId     = null;
-        $this->data          = new ProcessedCodeCoverageData();
+        $this->data          = new ProcessedCodeCoverageData;
         $this->tests         = [];
         $this->report        = null;
     }

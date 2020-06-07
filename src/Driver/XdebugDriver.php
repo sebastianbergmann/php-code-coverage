@@ -37,9 +37,15 @@ final class XdebugDriver extends Driver
         }
 
         if ($filter->hasWhitelist()) {
+            if (\defined('XDEBUG_PATH_WHITELIST')) {
+                $listType = \XDEBUG_PATH_WHITELIST;
+            } else {
+                $listType = \XDEBUG_PATH_INCLUDE;
+            }
+
             \xdebug_set_filter(
                 \XDEBUG_FILTER_CODE_COVERAGE,
-                \XDEBUG_PATH_WHITELIST,
+                $listType,
                 $filter->getWhitelist()
             );
         }

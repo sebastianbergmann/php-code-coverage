@@ -19,7 +19,31 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#754](https://github.com/sebastianbergmann/php-code-coverage/pull/754): Implement collection of raw branch and path coverage
 * [#755](https://github.com/sebastianbergmann/php-code-coverage/pull/755): Implement processing of raw branch and path coverage
 * [#756](https://github.com/sebastianbergmann/php-code-coverage/pull/756): Improve handling of uncovered files
+* `SebastianBergmann\CodeCoverage\CodeCoverage::getCacheTokens()` has been renamed to `SebastianBergmann\CodeCoverage\CodeCoverage::cachesTokens()`
+* `SebastianBergmann\CodeCoverage\Filter::addDirectoryToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`
+* `SebastianBergmann\CodeCoverage\Filter::addFilesToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeFiles()`
+* `SebastianBergmann\CodeCoverage\Filter::addFileToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeFile()`
+* `SebastianBergmann\CodeCoverage\Filter::removeDirectoryFromWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`
+* `SebastianBergmann\CodeCoverage\Filter::removeFileFromWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::excludeFile()`
+* `SebastianBergmann\CodeCoverage\Filter::isFiltered()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::isExcluded()`
+* `SebastianBergmann\CodeCoverage\Filter::getWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::files()`
 * `CodeCoverage::__construct()` is now private, use named constructors instead
+
+### Removed
+
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setCacheTokens()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::enableTokenCaching()` or `SebastianBergmann\CodeCoverage\CodeCoverage::disableTokenCaching()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setCheckForUnintentionallyCoveredCode()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::enableCheckForUnintentionallyCoveredCode()` or `SebastianBergmann\CodeCoverage\CodeCoverage::disableCheckForUnintentionallyCoveredCode()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setSubclassesExcludedFromUnintentionallyCoveredCodeCheck()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setAddUncoveredFilesFromWhitelist()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::includeUncoveredFiles()` or `SebastianBergmann\CodeCoverage\CodeCoverage::excludeUncoveredFiles()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setProcessUncoveredFiles()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::processUncoveredFiles()` or `SebastianBergmann\CodeCoverage\CodeCoverage::doNotProcessUncoveredFiles()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setIgnoreDeprecatedCode()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::ignoreDeprecatedCode()` or `SebastianBergmann\CodeCoverage\CodeCoverage::doNotIgnoreDeprecatedCode()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setDisableIgnoredLines()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::enableAnnotationsForIgnoringCode()` or `SebastianBergmann\CodeCoverage\CodeCoverage::disableAnnotationsForIgnoringCode()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setCheckForMissingCoversAnnotation()` has been removed
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setCheckForUnexecutedCoveredCode()` has been removed
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setForceCoversAnnotation()` has been removed
+* `SebastianBergmann\CodeCoverage\Filter::hasWhitelist()` has been removed, please use `SebastianBergmann\CodeCoverage\Filter::isEmpty()` instead
+* `SebastianBergmann\CodeCoverage\Filter::getWhitelistedFiles()` has been removed
+* `SebastianBergmann\CodeCoverage\Filter::setWhitelistedFiles()` has been removed
 
 ## [8.0.2] - 2020-05-23
 

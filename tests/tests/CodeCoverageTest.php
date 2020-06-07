@@ -69,7 +69,7 @@ final class CodeCoverageTest extends TestCase
 
     public function testWhitelistFiltering(): void
     {
-        $this->coverage->filter()->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $this->coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
@@ -188,7 +188,7 @@ final class CodeCoverageTest extends TestCase
 
     public function testGetLinesToBeIgnoredWhenIgnoreIsDisabled(): void
     {
-        $this->coverage->setDisableIgnoredLines(true);
+        $this->coverage->disableAnnotationsForIgnoringCode();
 
         $this->assertEquals(
             [],
@@ -197,63 +197,6 @@ final class CodeCoverageTest extends TestCase
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
-    }
-
-    public function testAppendThrowsExceptionIfCoveredCodeWasNotExecuted(): void
-    {
-        $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
-        $this->coverage->setCheckForUnexecutedCoveredCode(true);
-
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
-            TEST_FILES_PATH . 'BankAccount.php' => [
-                29 => -1,
-                31 => -1,
-            ],
-        ]);
-
-        $linesToBeCovered = [
-            TEST_FILES_PATH . 'BankAccount.php' => [
-                22,
-                24,
-            ],
-        ];
-
-        $linesToBeUsed = [];
-
-        $this->expectException(CoveredCodeNotExecutedException::class);
-
-        $this->coverage->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
-    }
-
-    public function testAppendThrowsExceptionIfUsedCodeWasNotExecuted(): void
-    {
-        $this->coverage->filter()->addDirectoryToWhitelist(TEST_FILES_PATH);
-        $this->coverage->setCheckForUnexecutedCoveredCode(true);
-
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
-            TEST_FILES_PATH . 'BankAccount.php' => [
-                29 => -1,
-                31 => -1,
-            ],
-        ]);
-
-        $linesToBeCovered = [
-            TEST_FILES_PATH . 'BankAccount.php' => [
-                29,
-                31,
-            ],
-        ];
-
-        $linesToBeUsed = [
-            TEST_FILES_PATH . 'BankAccount.php' => [
-                22,
-                24,
-            ],
-        ];
-
-        $this->expectException(CoveredCodeNotExecutedException::class);
-
-        $this->coverage->append($data, 'File1.php', true, $linesToBeCovered, $linesToBeUsed);
     }
 
     /**

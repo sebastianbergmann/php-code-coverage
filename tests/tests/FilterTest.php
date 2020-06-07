@@ -83,20 +83,20 @@ final class FilterTest extends TestCase
 
     public function testAddingAFileToTheWhitelistWorks(): void
     {
-        $this->filter->addFileToWhitelist($this->files[0]);
+        $this->filter->includeFile($this->files[0]);
 
         $this->assertEquals(
             [$this->files[0]],
-            $this->filter->getWhitelist()
+            $this->filter->files()
         );
     }
 
     public function testRemovingAFileFromTheWhitelistWorks(): void
     {
-        $this->filter->addFileToWhitelist($this->files[0]);
-        $this->filter->removeFileFromWhitelist($this->files[0]);
+        $this->filter->includeFile($this->files[0]);
+        $this->filter->excludeFile($this->files[0]);
 
-        $this->assertEquals([], $this->filter->getWhitelist());
+        $this->assertEquals([], $this->filter->files());
     }
 
     /**
@@ -104,9 +104,9 @@ final class FilterTest extends TestCase
      */
     public function testAddingADirectoryToTheWhitelistWorks(): void
     {
-        $this->filter->addDirectoryToWhitelist(TEST_FILES_PATH);
+        $this->filter->includeDirectory(TEST_FILES_PATH);
 
-        $whitelist = $this->filter->getWhitelist();
+        $whitelist = $this->filter->files();
         \sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
@@ -119,9 +119,9 @@ final class FilterTest extends TestCase
             $suffixes = '.php'
         );
 
-        $this->filter->addFilesToWhitelist($files);
+        $this->filter->includeFiles($files);
 
-        $whitelist = $this->filter->getWhitelist();
+        $whitelist = $this->filter->files();
         \sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
@@ -132,10 +132,10 @@ final class FilterTest extends TestCase
      */
     public function testRemovingADirectoryFromTheWhitelistWorks(): void
     {
-        $this->filter->addDirectoryToWhitelist(TEST_FILES_PATH);
-        $this->filter->removeDirectoryFromWhitelist(TEST_FILES_PATH);
+        $this->filter->includeDirectory(TEST_FILES_PATH);
+        $this->filter->excludeDirectory(TEST_FILES_PATH);
 
-        $this->assertEquals([], $this->filter->getWhitelist());
+        $this->assertEquals([], $this->filter->files());
     }
 
     public function testIsFile(): void
@@ -151,24 +151,24 @@ final class FilterTest extends TestCase
 
     public function testWhitelistedFileIsNotFiltered(): void
     {
-        $this->filter->addFileToWhitelist($this->files[0]);
-        $this->assertFalse($this->filter->isFiltered($this->files[0]));
+        $this->filter->includeFile($this->files[0]);
+        $this->assertFalse($this->filter->isExcluded($this->files[0]));
     }
 
     public function testNotWhitelistedFileIsFiltered(): void
     {
-        $this->filter->addFileToWhitelist($this->files[0]);
-        $this->assertTrue($this->filter->isFiltered($this->files[1]));
+        $this->filter->includeFile($this->files[0]);
+        $this->assertTrue($this->filter->isExcluded($this->files[1]));
     }
 
     public function testNonFilesAreFiltered(): void
     {
-        $this->assertTrue($this->filter->isFiltered('vfs://root/a/path'));
-        $this->assertTrue($this->filter->isFiltered('xdebug://debug-eval'));
-        $this->assertTrue($this->filter->isFiltered('eval()\'d code'));
-        $this->assertTrue($this->filter->isFiltered('runtime-created function'));
-        $this->assertTrue($this->filter->isFiltered('assert code'));
-        $this->assertTrue($this->filter->isFiltered('regexp code'));
+        $this->assertTrue($this->filter->isExcluded('vfs://root/a/path'));
+        $this->assertTrue($this->filter->isExcluded('xdebug://debug-eval'));
+        $this->assertTrue($this->filter->isExcluded('eval()\'d code'));
+        $this->assertTrue($this->filter->isExcluded('runtime-created function'));
+        $this->assertTrue($this->filter->isExcluded('assert code'));
+        $this->assertTrue($this->filter->isExcluded('regexp code'));
     }
 
     /**
@@ -178,8 +178,8 @@ final class FilterTest extends TestCase
     {
         $filter = new Filter;
 
-        $filter->addFileToWhitelist('does_not_exist');
+        $filter->includeFile('does_not_exist');
 
-        $this->assertEmpty($filter->getWhitelistedFiles());
+        $this->assertEmpty($filter->files());
     }
 }

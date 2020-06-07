@@ -36,7 +36,7 @@ final class XdebugDriver extends Driver
             throw new XdebugNotEnabledException;
         }
 
-        if ($filter->hasWhitelist()) {
+        if (!$filter->isEmpty()) {
             if (\defined('XDEBUG_PATH_WHITELIST')) {
                 $listType = \XDEBUG_PATH_WHITELIST;
             } else {
@@ -46,7 +46,7 @@ final class XdebugDriver extends Driver
             \xdebug_set_filter(
                 \XDEBUG_FILTER_CODE_COVERAGE,
                 $listType,
-                $filter->getWhitelist()
+                $filter->files()
             );
         }
 

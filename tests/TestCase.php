@@ -826,7 +826,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -888,7 +888,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1000,7 +1000,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1060,7 +1060,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1096,7 +1096,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls($data[2], $data[3]));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1205,7 +1205,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls(...$data));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1241,7 +1241,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
              ->will($this->onConsecutiveCalls($data[2], $data[3]));
 
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
 
@@ -1478,7 +1478,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getCoverageForFileWithIgnoredLines(): CodeCoverage
     {
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_ignore.php');
+        $filter->includeFile(TEST_FILES_PATH . 'source_with_ignore.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter(
             $this->setUpXdebugStubForFileWithIgnoredLines(),
@@ -1512,7 +1512,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getCoverageForClassWithAnonymousFunction(): CodeCoverage
     {
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
+        $filter->includeFile(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
 
         $coverage = CodeCoverage::createWithDriverAndFilter(
             $this->setUpXdebugStubForClassWithAnonymousFunction(),
@@ -1552,7 +1552,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getCoverageForCrashParsing(): CodeCoverage
     {
         $filter = new Filter;
-        $filter->addFileToWhitelist(TEST_FILES_PATH . 'Crash.php');
+        $filter->includeFile(TEST_FILES_PATH . 'Crash.php');
 
         // This is a file with invalid syntax, so it isn't executed.
         return CodeCoverage::createWithDriverAndFilter(

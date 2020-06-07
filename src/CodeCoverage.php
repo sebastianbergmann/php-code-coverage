@@ -30,7 +30,7 @@ use SebastianBergmann\Environment\Runtime;
  */
 final class CodeCoverage
 {
-    private const UNCOVERED_FILES_FROM_WHITELIST = 'UNCOVERED_FILES_FROM_WHITELIST';
+    private const UNCOVERED_FILES = 'UNCOVERED_FILES';
 
     /**
      * @var Driver
@@ -60,27 +60,12 @@ final class CodeCoverage
     /**
      * @var bool
      */
-    private $forceCoversAnnotation = false;
+    private $includeUncoveredFiles = true;
 
     /**
      * @var bool
      */
-    private $checkForUnexecutedCoveredCode = false;
-
-    /**
-     * @var bool
-     */
-    private $checkForMissingCoversAnnotation = false;
-
-    /**
-     * @var bool
-     */
-    private $addUncoveredFilesFromWhitelist = true;
-
-    /**
-     * @var bool
-     */
-    private $processUncoveredFilesFromWhitelist = false;
+    private $processUncoveredFiles = false;
 
     /**
      * @var bool
@@ -117,9 +102,9 @@ final class CodeCoverage
     private $tests = [];
 
     /**
-     * @var string[]
+     * @psalm-var list<class-string>
      */
-    private $unintentionallyCoveredSubclassesWhitelist = [];
+    private $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
 
     /**
      * Determine if the data has been initialized or not
@@ -199,8 +184,8 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
-        if (!$raw && $this->addUncoveredFilesFromWhitelist) {
-            $this->addUncoveredFilesFromWhitelist();
+        if (!$raw && $this->includeUncoveredFiles) {
+            $this->addUncoveredFilesFromFilter();
         }
 
         return $this->data;
@@ -255,11 +240,8 @@ final class CodeCoverage
      * Stop collection of code coverage information.
      *
      * @param array|false $linesToBeCovered
-     *
-     * @throws MissingCoversAnnotationException
-     * @throws CoveredCodeNotExecutedException
      */
-    public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): RawCodeCoverageData
+    public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
         if (!\is_array($linesToBeCovered) && $linesToBeCovered !== false) {
             throw new InvalidArgumentException(
@@ -268,7 +250,7 @@ final class CodeCoverage
         }
 
         $data = $this->driver->stop();
-        $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed, $ignoreForceCoversAnnotation);
+        $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed);
 
         $this->currentId = null;
 
@@ -282,12 +264,10 @@ final class CodeCoverage
      * @param array|false                  $linesToBeCovered
      *
      * @throws UnintentionallyCoveredCodeException
-     * @throws MissingCoversAnnotationException
-     * @throws CoveredCodeNotExecutedException
      * @throws TestIdMissingException
      * @throws ReflectionException
      */
-    public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = [], bool $ignoreForceCoversAnnotation = false): void
+    public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -297,7 +277,7 @@ final class CodeCoverage
             throw new TestIdMissingException;
         }
 
-        $this->applyWhitelistFilter($rawData);
+        $this->applyFilter($rawData);
         $this->applyIgnoredLinesFilter($rawData);
 
         $this->data->initializeUnseenData($rawData);
@@ -306,12 +286,11 @@ final class CodeCoverage
             return;
         }
 
-        if ($id !== self::UNCOVERED_FILES_FROM_WHITELIST) {
+        if ($id !== self::UNCOVERED_FILES) {
             $this->applyCoversAnnotationFilter(
                 $rawData,
                 $linesToBeCovered,
-                $linesToBeUsed,
-                $ignoreForceCoversAnnotation
+                $linesToBeUsed
             );
 
             if (empty($rawData->lineCoverage())) {
@@ -354,8 +333,8 @@ final class CodeCoverage
      */
     public function merge(self $that): void
     {
-        $this->filter->setWhitelistedFiles(
-            \array_merge($this->filter->getWhitelistedFiles(), $that->filter()->getWhitelistedFiles())
+        $this->filter->includeFiles(
+            $that->filter()->files()
         );
 
         $this->data->merge($that->data);
@@ -364,59 +343,77 @@ final class CodeCoverage
         $this->report = null;
     }
 
-    public function setCacheTokens(bool $flag): void
+    public function enableTokenCaching(): void
     {
-        $this->cacheTokens = $flag;
+        $this->cacheTokens = true;
     }
 
-    public function getCacheTokens(): bool
+    public function disableTokenCaching(): void
+    {
+        $this->cacheTokens = false;
+    }
+
+    public function cachesTokens(): bool
     {
         return $this->cacheTokens;
     }
 
-    public function setCheckForUnintentionallyCoveredCode(bool $flag): void
+    public function enableCheckForUnintentionallyCoveredCode(): void
     {
-        $this->checkForUnintentionallyCoveredCode = $flag;
+        $this->checkForUnintentionallyCoveredCode = true;
     }
 
-    public function setForceCoversAnnotation(bool $flag): void
+    public function disableCheckForUnintentionallyCoveredCode(): void
     {
-        $this->forceCoversAnnotation = $flag;
+        $this->checkForUnintentionallyCoveredCode = false;
     }
 
-    public function setCheckForMissingCoversAnnotation(bool $flag): void
+    public function includeUncoveredFiles(): void
     {
-        $this->checkForMissingCoversAnnotation = $flag;
+        $this->includeUncoveredFiles = true;
     }
 
-    public function setCheckForUnexecutedCoveredCode(bool $flag): void
+    public function excludeUncoveredFiles(): void
     {
-        $this->checkForUnexecutedCoveredCode = $flag;
+        $this->includeUncoveredFiles = false;
     }
 
-    public function setAddUncoveredFilesFromWhitelist(bool $flag): void
+    public function processUncoveredFiles(): void
     {
-        $this->addUncoveredFilesFromWhitelist = $flag;
+        $this->processUncoveredFiles = true;
     }
 
-    public function setProcessUncoveredFilesFromWhitelist(bool $flag): void
+    public function doNotProcessUncoveredFiles(): void
     {
-        $this->processUncoveredFilesFromWhitelist = $flag;
+        $this->processUncoveredFiles = false;
     }
 
-    public function setDisableIgnoredLines(bool $flag): void
+    public function enableAnnotationsForIgnoringCode(): void
     {
-        $this->disableIgnoredLines = $flag;
+        $this->disableIgnoredLines = false;
     }
 
-    public function setIgnoreDeprecatedCode(bool $flag): void
+    public function disableAnnotationsForIgnoringCode(): void
     {
-        $this->ignoreDeprecatedCode = $flag;
+        $this->disableIgnoredLines = true;
     }
 
-    public function setUnintentionallyCoveredSubclassesWhitelist(array $whitelist): void
+    public function ignoreDeprecatedCode(): void
     {
-        $this->unintentionallyCoveredSubclassesWhitelist = $whitelist;
+        $this->ignoreDeprecatedCode = true;
+    }
+
+    public function doNotIgnoreDeprecatedCode(): void
+    {
+        $this->ignoreDeprecatedCode = false;
+    }
+
+    /**
+     * @psalm-param class-string $className
+     */
+    public function excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck(string $className): void
+    {
+        $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck[] = $className;
     }
 
     public function enableBranchAndPathCoverage(): void
@@ -444,19 +441,12 @@ final class CodeCoverage
      *
      * @param array|false $linesToBeCovered
      *
-     * @throws CoveredCodeNotExecutedException
-     * @throws MissingCoversAnnotationException
      * @throws UnintentionallyCoveredCodeException
      * @throws ReflectionException
      */
-    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed, bool $ignoreForceCoversAnnotation): void
+    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed): void
     {
-        if ($linesToBeCovered === false ||
-            ($this->forceCoversAnnotation && empty($linesToBeCovered) && !$ignoreForceCoversAnnotation)) {
-            if ($this->checkForMissingCoversAnnotation) {
-                throw new MissingCoversAnnotationException;
-            }
-
+        if ($linesToBeCovered === false) {
             $rawData->clear();
 
             return;
@@ -470,10 +460,6 @@ final class CodeCoverage
             (!$this->currentId instanceof TestCase ||
             (!$this->currentId->isMedium() && !$this->currentId->isLarge()))) {
             $this->performUnintentionallyCoveredCodeCheck($rawData, $linesToBeCovered, $linesToBeUsed);
-        }
-
-        if ($this->checkForUnexecutedCoveredCode) {
-            $this->performUnexecutedCoveredCodeCheck($rawData, $linesToBeCovered, $linesToBeUsed);
         }
 
         $rawLineData         = $rawData->lineCoverage();
@@ -490,14 +476,14 @@ final class CodeCoverage
         }
     }
 
-    private function applyWhitelistFilter(RawCodeCoverageData $data): void
+    private function applyFilter(RawCodeCoverageData $data): void
     {
-        if (!$this->filter->hasWhitelist()) {
+        if ($this->filter->isEmpty()) {
             return;
         }
 
         foreach (\array_keys($data->lineCoverage()) as $filename) {
-            if ($this->filter->isFiltered($filename)) {
+            if ($this->filter->isExcluded($filename)) {
                 $data->removeCoverageDataForFile($filename);
             }
         }
@@ -515,14 +501,12 @@ final class CodeCoverage
     }
 
     /**
-     * @throws CoveredCodeNotExecutedException
-     * @throws MissingCoversAnnotationException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function addUncoveredFilesFromWhitelist(): void
+    private function addUncoveredFilesFromFilter(): void
     {
         $uncoveredFiles = \array_diff(
-            $this->filter->getWhitelist(),
+            $this->filter->files(),
             \array_keys($this->data->lineCoverage())
         );
 
@@ -534,7 +518,7 @@ final class CodeCoverage
                     $tokens = new \PHP_Token_Stream($uncoveredFile);
                 }
 
-                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile, $tokens), self::UNCOVERED_FILES_FROM_WHITELIST);
+                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile, $tokens), self::UNCOVERED_FILES);
             }
         }
     }
@@ -668,37 +652,6 @@ final class CodeCoverage
         }
     }
 
-    /**
-     * @throws CoveredCodeNotExecutedException
-     */
-    private function performUnexecutedCoveredCodeCheck(RawCodeCoverageData $rawData, array $linesToBeCovered, array $linesToBeUsed): void
-    {
-        $executedCodeUnits = $this->coverageToCodeUnits($rawData);
-        $message           = '';
-
-        foreach ($this->linesToCodeUnits($linesToBeCovered) as $codeUnit) {
-            if (!\in_array($codeUnit, $executedCodeUnits)) {
-                $message .= \sprintf(
-                    '- %s is expected to be executed (@covers) but was not executed' . "\n",
-                    $codeUnit
-                );
-            }
-        }
-
-        foreach ($this->linesToCodeUnits($linesToBeUsed) as $codeUnit) {
-            if (!\in_array($codeUnit, $executedCodeUnits)) {
-                $message .= \sprintf(
-                    '- %s is expected to be executed (@uses) but was not executed' . "\n",
-                    $codeUnit
-                );
-            }
-        }
-
-        if (!empty($message)) {
-            throw new CoveredCodeNotExecutedException($message);
-        }
-    }
-
     private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed): array
     {
         $allowedLines = [];
@@ -752,8 +705,8 @@ final class CodeCoverage
             try {
                 $class = new \ReflectionClass($unit[0]);
 
-                foreach ($this->unintentionallyCoveredSubclassesWhitelist as $whitelisted) {
-                    if ($class->isSubclassOf($whitelisted)) {
+                foreach ($this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck as $parentClass) {
+                    if ($class->isSubclassOf($parentClass)) {
                         unset($unintentionallyCoveredUnits[$k]);
 
                         break;
@@ -772,15 +725,13 @@ final class CodeCoverage
     }
 
     /**
-     * @throws CoveredCodeNotExecutedException
-     * @throws MissingCoversAnnotationException
      * @throws UnintentionallyCoveredCodeException
      */
     private function initializeData(): void
     {
         $this->isInitialized = true;
 
-        if ($this->processUncoveredFilesFromWhitelist) {
+        if ($this->processUncoveredFiles) {
             // by collecting dead code data here on an initial pass, future runs with test data do not need to
             if ($this->driver->canDetectDeadCode()) {
                 $this->driver->enableDeadCodeDetection();
@@ -788,18 +739,18 @@ final class CodeCoverage
 
             $this->driver->start();
 
-            foreach ($this->filter->getWhitelist() as $file) {
+            foreach ($this->filter->files() as $file) {
                 if ($this->filter->isFile($file)) {
                     include_once $file;
                 }
             }
 
-            // having now collected dead code for the entire whitelist, we can safely skip this data on subsequent runs
+            // having now collected dead code for the entire list of files, we can safely skip this data on subsequent runs
             if ($this->driver->canDetectDeadCode()) {
                 $this->driver->disableDeadCodeDetection();
             }
 
-            $this->append($this->driver->stop(), self::UNCOVERED_FILES_FROM_WHITELIST);
+            $this->append($this->driver->stop(), self::UNCOVERED_FILES);
         }
     }
 

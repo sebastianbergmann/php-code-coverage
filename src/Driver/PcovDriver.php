@@ -45,7 +45,7 @@ final class PcovDriver extends Driver
 
         $collect = \pcov\collect(
             \pcov\inclusive,
-            $this->filter->hasWhitelist() ? $this->filter->getWhitelist() : \pcov\waiting()
+            !$this->filter->isEmpty() ? $this->filter->files() : \pcov\waiting()
         );
 
         \pcov\clear();

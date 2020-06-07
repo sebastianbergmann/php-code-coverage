@@ -30,7 +30,7 @@ final class Builder
             $root,
             $this->buildDirectoryStructure($data),
             $coverage->getTests(),
-            $coverage->getCacheTokens()
+            $coverage->cachesTokens()
         );
 
         return $root;

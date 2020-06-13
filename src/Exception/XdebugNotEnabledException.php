@@ -13,8 +13,12 @@ use SebastianBergmann\CodeCoverage\Exception;
 
 final class XdebugNotEnabledException extends \RuntimeException implements Exception
 {
-    public function __construct()
+    public function __construct($mode_error = false)
     {
-        parent::__construct('xdebug.coverage_enable=On has to be set in php.ini');
+        if ($mode_error) {
+            parent::__construct('xdebug.mode=coverage has to be set in php.ini');
+        } else {
+            parent::__construct('xdebug.coverage_enable=On has to be set in php.ini');
+        }
     }
 }

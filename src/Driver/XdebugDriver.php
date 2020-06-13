@@ -32,7 +32,11 @@ final class XdebugDriver extends Driver
             throw new XdebugNotAvailableException;
         }
 
-        if (!\ini_get('xdebug.coverage_enable')) {
+        if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+            if (!\ini_get('xdebug.mode') || \ini_get('xdebug.mode') !== 'coverage') {
+                throw new XdebugNotEnabledException(true);
+            }
+        } elseif (!\ini_get('xdebug.coverage_enable')) {
             throw new XdebugNotEnabledException;
         }
 

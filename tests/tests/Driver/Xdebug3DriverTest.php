@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class Xdebug3DriverTest extends TestCase
@@ -44,48 +43,5 @@ final class Xdebug3DriverTest extends TestCase
         require $bankAccount;
 
         $this->assertArrayNotHasKey($bankAccount, \xdebug_get_code_coverage());
-    }
-
-    public function testDefaultValueOfDeadCodeDetection(): void
-    {
-        $driver = new Xdebug3Driver(new Filter);
-
-        $this->assertTrue($driver->detectsDeadCode());
-    }
-
-    public function testEnablingDeadCodeDetection(): void
-    {
-        $driver = new Xdebug3Driver(new Filter);
-
-        $driver->enableDeadCodeDetection();
-
-        $this->assertTrue($driver->detectsDeadCode());
-    }
-
-    public function testDisablingDeadCodeDetection(): void
-    {
-        $driver = new Xdebug3Driver(new Filter);
-
-        $driver->disableDeadCodeDetection();
-
-        $this->assertFalse($driver->detectsDeadCode());
-    }
-
-    public function testEnablingBranchAndPathCoverage(): void
-    {
-        $driver = new Xdebug3Driver(new Filter);
-
-        $driver->enableBranchAndPathCoverage();
-
-        $this->assertTrue($driver->collectsBranchAndPathCoverage());
-    }
-
-    public function testDisablingBranchAndPathCoverage(): void
-    {
-        $driver = new Xdebug3Driver(new Filter);
-
-        $driver->disableBranchAndPathCoverage();
-
-        $this->assertFalse($driver->collectsBranchAndPathCoverage());
     }
 }

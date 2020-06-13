@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
-use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class PhpdbgDriverTest extends TestCase
@@ -20,50 +18,5 @@ final class PhpdbgDriverTest extends TestCase
         if (\PHP_SAPI !== 'phpdbg') {
             $this->markTestSkipped('This test requires the PHPDBG commandline interpreter');
         }
-    }
-
-    public function testDefaultValueOfDeadCodeDetection(): void
-    {
-        $driver = new PhpdbgDriver;
-
-        $this->assertFalse($driver->detectsDeadCode());
-    }
-
-    public function testEnablingDeadCodeDetection(): void
-    {
-        $this->expectException(DeadCodeDetectionNotSupportedException::class);
-
-        $driver = new PhpdbgDriver;
-
-        $driver->enableDeadCodeDetection();
-    }
-
-    public function testDisablingDeadCodeDetection(): void
-    {
-        $driver = new PhpdbgDriver;
-
-        $driver->disableDeadCodeDetection();
-
-        $this->assertFalse($driver->detectsDeadCode());
-    }
-
-    public function testEnablingBranchAndPathCoverage(): void
-    {
-        $this->expectException(BranchAndPathCoverageNotSupportedException::class);
-
-        $driver = new PhpdbgDriver;
-
-        $driver->enableBranchAndPathCoverage();
-
-        $this->assertTrue($driver->collectsBranchAndPathCoverage());
-    }
-
-    public function testDisablingBranchAndPathCoverage(): void
-    {
-        $driver = new PhpdbgDriver;
-
-        $driver->disableBranchAndPathCoverage();
-
-        $this->assertFalse($driver->collectsBranchAndPathCoverage());
     }
 }

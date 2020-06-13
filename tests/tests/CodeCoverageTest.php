@@ -30,7 +30,12 @@ final class CodeCoverageTest extends TestCase
             $this->markTestSkipped('No code coverage driver available');
         }
 
-        $this->coverage = CodeCoverage::create();
+        $filter = new Filter;
+
+        $this->coverage = new CodeCoverage(
+            Driver::forLineCoverage($filter),
+            $filter
+        );
     }
 
     public function testCannotStopWithInvalidSecondArgument(): void
@@ -111,8 +116,9 @@ final class CodeCoverageTest extends TestCase
 
     public function testMerge2(): void
     {
-        $coverage = CodeCoverage::createWithDriver(
-            $this->createStub(Driver::class)
+        $coverage = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter
         );
 
         $coverage->merge($this->getLineCoverageForBankAccount());

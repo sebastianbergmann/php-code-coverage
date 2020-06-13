@@ -61,8 +61,6 @@ final class Xdebug2Driver extends Driver
         }
 
         $this->pathCoverageIsMixedCoverage = \version_compare(\phpversion('xdebug'), '2.9.6', '<');
-
-        $this->enableDeadCodeDetection();
     }
 
     public function canCollectBranchAndPathCoverage(): bool

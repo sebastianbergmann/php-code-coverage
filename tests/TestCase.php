@@ -828,7 +828,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
@@ -890,7 +890,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
@@ -1002,7 +1002,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
@@ -1062,7 +1062,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
@@ -1098,7 +1098,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative2')
@@ -1207,7 +1207,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceIsInitiallyZero'),
@@ -1243,7 +1243,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter($stub, $filter);
+        $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
             new \BankAccountTest('testBalanceCannotBecomeNegative2')
@@ -1480,7 +1480,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'source_with_ignore.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter(
+        $coverage = new CodeCoverage(
             $this->setUpXdebugStubForFileWithIgnoredLines(),
             $filter
         );
@@ -1514,7 +1514,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
 
-        $coverage = CodeCoverage::createWithDriverAndFilter(
+        $coverage = new CodeCoverage(
             $this->setUpXdebugStubForClassWithAnonymousFunction(),
             $filter
         );
@@ -1555,7 +1555,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter->includeFile(TEST_FILES_PATH . 'Crash.php');
 
         // This is a file with invalid syntax, so it isn't executed.
-        return CodeCoverage::createWithDriverAndFilter(
+        return new CodeCoverage(
             $this->setUpXdebugStubForCrashParsing(),
             $filter
         );

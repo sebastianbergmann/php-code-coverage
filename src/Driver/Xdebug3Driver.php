@@ -48,8 +48,6 @@ final class Xdebug3Driver extends Driver
                 $filter->files()
             );
         }
-
-        $this->enableDeadCodeDetection();
     }
 
     public function canCollectBranchAndPathCoverage(): bool

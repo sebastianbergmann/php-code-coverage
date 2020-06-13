@@ -7,7 +7,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * [#761](https://github.com/sebastianbergmann/php-code-coverage/pull/761): Support for Branch Coverage and Path Coverage
-* Named constructors `CodeCoverage::create()`, `CodeCoverage::createWithDriver()`, `CodeCoverage::createWithFilter()`, and `CodeCoverage::createWithDriverAndFilter()`
+* Added `SebastianBergmann\CodeCoverage\Driver\Driver::forLineCoverage()` for selecting the best available driver for line coverage
+* Added `SebastianBergmann\CodeCoverage\Driver\Driver::forLineAndPathCoverage()` for selecting the best available driver for path coverage
 
 ### Changed
 
@@ -27,7 +28,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * `SebastianBergmann\CodeCoverage\Filter::removeFileFromWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::excludeFile()`
 * `SebastianBergmann\CodeCoverage\Filter::isFiltered()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::isExcluded()`
 * `SebastianBergmann\CodeCoverage\Filter::getWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::files()`
-* `CodeCoverage::__construct()` is now private, use named constructors instead
+* The arguments for `CodeCoverage::__construct()` are no longer optional
 
 ### Removed
 

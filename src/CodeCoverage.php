@@ -13,19 +13,9 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\PcovDriver;
-use SebastianBergmann\CodeCoverage\Driver\PcovNotAvailableException;
-use SebastianBergmann\CodeCoverage\Driver\PhpdbgDriver;
-use SebastianBergmann\CodeCoverage\Driver\PhpdbgNotAvailableException;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug2Driver;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug2NotEnabledException;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug3Driver;
-use SebastianBergmann\CodeCoverage\Driver\Xdebug3NotEnabledException;
-use SebastianBergmann\CodeCoverage\Driver\XdebugNotAvailableException;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
-use SebastianBergmann\Environment\Runtime;
 
 /**
  * Provides collection functionality for PHP code coverage information.
@@ -120,29 +110,7 @@ final class CodeCoverage
      */
     private $report;
 
-    public static function create(): self
-    {
-        $filter = new Filter;
-
-        return new self(self::selectDriver($filter), $filter);
-    }
-
-    public static function createWithDriver(Driver $driver): self
-    {
-        return new self($driver, new Filter);
-    }
-
-    public static function createWithFilter(Filter $filter): self
-    {
-        return new self(self::selectDriver($filter), $filter);
-    }
-
-    public static function createWithDriverAndFilter(Driver $driver, Filter $filter): self
-    {
-        return new self($driver, $filter);
-    }
-
-    private function __construct(Driver $driver, Filter $filter)
+    public function __construct(Driver $driver, Filter $filter)
     {
         $this->driver = $driver;
         $this->filter = $filter;
@@ -791,36 +759,5 @@ final class CodeCoverage
         }
 
         return $this->wizard;
-    }
-
-    /**
-     * @throws NoCodeCoverageDriverAvailableException
-     * @throws PcovNotAvailableException
-     * @throws PhpdbgNotAvailableException
-     * @throws XdebugNotAvailableException
-     * @throws Xdebug2NotEnabledException
-     * @throws Xdebug3NotEnabledException
-     */
-    private static function selectDriver(Filter $filter): Driver
-    {
-        $runtime = new Runtime;
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            return new PhpdbgDriver;
-        }
-
-        if ($runtime->hasPCOV()) {
-            return new PcovDriver($filter);
-        }
-
-        if ($runtime->hasXdebug()) {
-            if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
-                return new Xdebug3Driver($filter);
-            }
-
-            return new Xdebug2Driver($filter);
-        }
-
-        throw new NoCodeCoverageDriverAvailableException;
     }
 }

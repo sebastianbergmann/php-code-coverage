@@ -62,9 +62,9 @@ final class PhpdbgDriver extends Driver
         );
     }
 
-    public function name(): string
+    public function nameAndVersion(): string
     {
-        return 'PHPDBG';
+        return 'PHPDBG ' . \phpversion();
     }
 
     private function detectExecutedLines(array $sourceLines, array $dbgData): array

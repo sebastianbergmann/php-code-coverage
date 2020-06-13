@@ -53,8 +53,8 @@ final class PcovDriver extends Driver
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($collect);
     }
 
-    public function name(): string
+    public function nameAndVersion(): string
     {
-        return 'PCOV';
+        return 'PCOV ' . \phpversion('pcov');
     }
 }

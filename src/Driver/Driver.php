@@ -146,8 +146,8 @@ abstract class Driver
         if (!$this->canCollectBranchAndPathCoverage()) {
             throw new BranchAndPathCoverageNotSupportedException(
                 \sprintf(
-                    'The %s driver does not support branch and path coverage',
-                    $this->name()
+                    '%s does not support branch and path coverage',
+                    $this->nameAndVersion()
                 )
             );
         }
@@ -178,8 +178,8 @@ abstract class Driver
         if (!$this->canDetectDeadCode()) {
             throw new DeadCodeDetectionNotSupportedException(
                 \sprintf(
-                    'The %s driver does not support dead code detection',
-                    $this->name()
+                    '%s does not support dead code detection',
+                    $this->nameAndVersion()
                 )
             );
         }
@@ -192,7 +192,7 @@ abstract class Driver
         $this->detectDeadCode = false;
     }
 
-    abstract public function name(): string;
+    abstract public function nameAndVersion(): string;
 
     abstract public function start(): void;
 

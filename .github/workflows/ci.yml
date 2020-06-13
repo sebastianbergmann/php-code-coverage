@@ -62,6 +62,10 @@ jobs:
           - "7.4"
           - "8.0"
 
+        coverage-driver:
+          - "pcov"
+          - "xdebug"
+
         dependencies:
           - "lowest"
           - "highest"
@@ -74,7 +78,7 @@ jobs:
         uses: "shivammathur/setup-php@v1"
         with:
           php-version: "${{ matrix.php-version }}"
-          coverage: "pcov"
+          coverage: "${{ matrix.coverage-driver }}"
 
       - name: "Cache dependencies installed with composer"
         uses: "actions/cache@v1"

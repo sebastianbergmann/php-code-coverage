@@ -121,6 +121,8 @@ abstract class Driver
 
             $driver->enableDeadCodeDetection();
             $driver->enableBranchAndPathCoverage();
+
+            return $driver;
         }
 
         throw new NoCodeCoverageDriverWithPathCoverageSupportAvailableException;

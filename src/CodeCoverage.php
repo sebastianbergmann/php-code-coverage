@@ -17,9 +17,11 @@ use SebastianBergmann\CodeCoverage\Driver\PcovDriver;
 use SebastianBergmann\CodeCoverage\Driver\PcovNotAvailableException;
 use SebastianBergmann\CodeCoverage\Driver\PhpdbgDriver;
 use SebastianBergmann\CodeCoverage\Driver\PhpdbgNotAvailableException;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
+use SebastianBergmann\CodeCoverage\Driver\Xdebug2Driver;
+use SebastianBergmann\CodeCoverage\Driver\Xdebug2NotEnabledException;
+use SebastianBergmann\CodeCoverage\Driver\Xdebug3Driver;
+use SebastianBergmann\CodeCoverage\Driver\Xdebug3NotEnabledException;
 use SebastianBergmann\CodeCoverage\Driver\XdebugNotAvailableException;
-use SebastianBergmann\CodeCoverage\Driver\XdebugNotEnabledException;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
@@ -796,7 +798,8 @@ final class CodeCoverage
      * @throws PcovNotAvailableException
      * @throws PhpdbgNotAvailableException
      * @throws XdebugNotAvailableException
-     * @throws XdebugNotEnabledException
+     * @throws Xdebug2NotEnabledException
+     * @throws Xdebug3NotEnabledException
      */
     private static function selectDriver(Filter $filter): Driver
     {
@@ -811,7 +814,11 @@ final class CodeCoverage
         }
 
         if ($runtime->hasXdebug()) {
-            return new XdebugDriver($filter);
+            if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+                return new Xdebug3Driver($filter);
+            }
+
+            return new Xdebug2Driver($filter);
         }
 
         throw new NoCodeCoverageDriverAvailableException;

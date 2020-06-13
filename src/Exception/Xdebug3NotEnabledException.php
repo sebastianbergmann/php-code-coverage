@@ -11,10 +11,10 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Exception;
 
-final class XdebugNotEnabledException extends \RuntimeException implements Exception
+final class Xdebug3NotEnabledException extends \RuntimeException implements Exception
 {
     public function __construct()
     {
-        parent::__construct('xdebug.coverage_enable=On has to be set in php.ini');
+        parent::__construct('xdebug.mode=coverage has to be set in php.ini');
     }
 }

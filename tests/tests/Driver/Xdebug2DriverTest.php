@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-final class XdebugDriverTest extends TestCase
+final class Xdebug2DriverTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -22,6 +22,10 @@ final class XdebugDriverTest extends TestCase
 
         if (!\extension_loaded('xdebug')) {
             $this->markTestSkipped('This test requires the Xdebug extension to be loaded');
+        }
+
+        if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+            $this->markTestSkipped('This test requires version 2 of the Xdebug extension to be loaded');
         }
 
         if (!\ini_get('xdebug.coverage_enable')) {
@@ -44,14 +48,14 @@ final class XdebugDriverTest extends TestCase
 
     public function testDefaultValueOfDeadCodeDetection(): void
     {
-        $driver = new XdebugDriver(new Filter);
+        $driver = new Xdebug2Driver(new Filter);
 
         $this->assertTrue($driver->detectsDeadCode());
     }
 
     public function testEnablingDeadCodeDetection(): void
     {
-        $driver = new XdebugDriver(new Filter);
+        $driver = new Xdebug2Driver(new Filter);
 
         $driver->enableDeadCodeDetection();
 
@@ -60,7 +64,7 @@ final class XdebugDriverTest extends TestCase
 
     public function testDisablingDeadCodeDetection(): void
     {
-        $driver = new XdebugDriver(new Filter);
+        $driver = new Xdebug2Driver(new Filter);
 
         $driver->disableDeadCodeDetection();
 
@@ -69,7 +73,7 @@ final class XdebugDriverTest extends TestCase
 
     public function testEnablingBranchAndPathCoverage(): void
     {
-        $driver = new XdebugDriver(new Filter);
+        $driver = new Xdebug2Driver(new Filter);
 
         $driver->enableBranchAndPathCoverage();
 
@@ -78,7 +82,7 @@ final class XdebugDriverTest extends TestCase
 
     public function testDisablingBranchAndPathCoverage(): void
     {
-        $driver = new XdebugDriver(new Filter);
+        $driver = new Xdebug2Driver(new Filter);
 
         $driver->disableBranchAndPathCoverage();
 

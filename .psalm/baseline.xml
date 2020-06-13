@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="3.11.5@3c60609c218d4d4b3b257728b8089094e5c6c6c2">
   <file src="src/CodeCoverage.php">
-    <ArgumentTypeCoercion occurrences="2">
+    <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
-      <code>$whitelisted</code>
     </ArgumentTypeCoercion>
     <PossiblyNullPropertyAssignmentValue occurrences="6">
       <code>null</code>
@@ -14,10 +13,17 @@
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
   </file>
-  <file src="src/Driver/XdebugDriver.php">
+  <file src="src/Driver/Xdebug2Driver.php">
+    <UndefinedConstant occurrences="3">
+      <code>\XDEBUG_CC_UNUSED</code>
+      <code>\XDEBUG_CC_DEAD_CODE</code>
+      <code>\XDEBUG_CC_BRANCH_CHECK</code>
+    </UndefinedConstant>
+  </file>
+  <file src="src/Driver/Xdebug3Driver.php">
     <UndefinedConstant occurrences="5">
       <code>\XDEBUG_FILTER_CODE_COVERAGE</code>
-      <code>\XDEBUG_PATH_WHITELIST</code>
+      <code>\XDEBUG_PATH_INCLUDE</code>
       <code>\XDEBUG_CC_UNUSED</code>
       <code>\XDEBUG_CC_DEAD_CODE</code>
       <code>\XDEBUG_CC_BRANCH_CHECK</code>

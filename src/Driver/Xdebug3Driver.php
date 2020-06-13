@@ -15,16 +15,12 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class XdebugDriver extends Driver
+final class Xdebug3Driver extends Driver
 {
     /**
-     * @var bool
-     */
-    private $pathCoverageIsMixedCoverage;
-
-    /**
      * @throws XdebugNotAvailableException
-     * @throws XdebugNotEnabledException
+     * @throws WrongXdebugVersionException
+     * @throws Xdebug3NotEnabledException
      */
     public function __construct(Filter $filter)
     {
@@ -32,25 +28,26 @@ final class XdebugDriver extends Driver
             throw new XdebugNotAvailableException;
         }
 
-        if (!\ini_get('xdebug.coverage_enable')) {
-            throw new XdebugNotEnabledException;
-        }
-
-        if (!$filter->isEmpty()) {
-            if (\defined('XDEBUG_PATH_WHITELIST')) {
-                $listType = \XDEBUG_PATH_WHITELIST;
-            } else {
-                $listType = \XDEBUG_PATH_INCLUDE;
-            }
-
-            \xdebug_set_filter(
-                \XDEBUG_FILTER_CODE_COVERAGE,
-                $listType,
-                $filter->files()
+        if (\version_compare(\phpversion('xdebug'), '3', '<')) {
+            throw new WrongXdebugVersionException(
+                \sprintf(
+                    'This driver requires Xdebug 3 but version %s is loaded',
+                    \phpversion('xdebug')
+                )
             );
         }
 
-        $this->pathCoverageIsMixedCoverage = \version_compare(\phpversion('xdebug'), '2.9.6', '<');
+        if (!\ini_get('xdebug.mode') || \ini_get('xdebug.mode') !== 'coverage') {
+            throw new Xdebug3NotEnabledException;
+        }
+
+        if (!$filter->isEmpty()) {
+            \xdebug_set_filter(
+                \XDEBUG_FILTER_CODE_COVERAGE,
+                \XDEBUG_PATH_INCLUDE,
+                $filter->files()
+            );
+        }
 
         $this->enableDeadCodeDetection();
     }
@@ -87,10 +84,6 @@ final class XdebugDriver extends Driver
         \xdebug_stop_code_coverage();
 
         if ($this->collectsBranchAndPathCoverage()) {
-            if ($this->pathCoverageIsMixedCoverage) {
-                return RawCodeCoverageData::fromXdebugWithMixedCoverage($data);
-            }
-
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
 

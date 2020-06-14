@@ -13,6 +13,17 @@
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
   </file>
+  <file src="src/Driver/PcovDriver.php">
+    <UndefinedConstant occurrences="1">
+      <code>\pcov\inclusive</code>
+    </UndefinedConstant>
+    <UndefinedFunction occurrences="5">
+      <code>\pcov\start()</code>
+      <code>\pcov\stop()</code>
+      <code>\pcov\waiting()</code>
+      <code>\pcov\clear()</code>
+    </UndefinedFunction>
+  </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
       <code>\XDEBUG_CC_UNUSED</code>

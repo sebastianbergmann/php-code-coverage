@@ -24,12 +24,12 @@ abstract class AbstractNode implements \Countable
     /**
      * @var string
      */
-    private $path;
+    private $pathAsString;
 
     /**
      * @var array
      */
-    private $pathArray;
+    private $pathAsArray;
 
     /**
      * @var AbstractNode
@@ -79,30 +79,30 @@ abstract class AbstractNode implements \Countable
 
     public function pathAsString(): string
     {
-        if ($this->path === null) {
+        if ($this->pathAsString === null) {
             if ($this->parent === null) {
-                $this->path = $this->name;
+                $this->pathAsString = $this->name;
             } else {
-                $this->path = $this->parent->pathAsString() . \DIRECTORY_SEPARATOR . $this->name;
+                $this->pathAsString = $this->parent->pathAsString() . \DIRECTORY_SEPARATOR . $this->name;
             }
         }
 
-        return $this->path;
+        return $this->pathAsString;
     }
 
     public function pathAsArray(): array
     {
-        if ($this->pathArray === null) {
+        if ($this->pathAsArray === null) {
             if ($this->parent === null) {
-                $this->pathArray = [];
+                $this->pathAsArray = [];
             } else {
-                $this->pathArray = $this->parent->pathAsArray();
+                $this->pathAsArray = $this->parent->pathAsArray();
             }
 
-            $this->pathArray[] = $this;
+            $this->pathAsArray[] = $this;
         }
 
-        return $this->pathArray;
+        return $this->pathAsArray;
     }
 
     public function parent(): ?self

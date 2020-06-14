@@ -105,16 +105,12 @@ final class CodeCoverage
      */
     private $isInitialized = false;
 
-    /**
-     * @var Directory
-     */
-    private $report;
-
     public function __construct(Driver $driver, Filter $filter)
     {
         $this->driver = $driver;
         $this->filter = $filter;
         $this->data   = new ProcessedCodeCoverageData;
+        $this->wizard = new Wizard;
     }
 
     /**
@@ -122,11 +118,7 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        if ($this->report === null) {
-            $this->report = (new Builder)->build($this);
-        }
-
-        return $this->report;
+        return (new Builder)->build($this);
     }
 
     /**
@@ -138,7 +130,6 @@ final class CodeCoverage
         $this->currentId     = null;
         $this->data          = new ProcessedCodeCoverageData;
         $this->tests         = [];
-        $this->report        = null;
     }
 
     /**
@@ -166,8 +157,7 @@ final class CodeCoverage
      */
     public function setData(ProcessedCodeCoverageData $data): void
     {
-        $this->data   = $data;
-        $this->report = null;
+        $this->data = $data;
     }
 
     /**
@@ -292,8 +282,6 @@ final class CodeCoverage
 
             $this->data->markCodeAsExecutedByTestCase($id, $rawData);
         }
-
-        $this->report = null;
     }
 
     /**
@@ -309,8 +297,7 @@ final class CodeCoverage
 
         $this->data->merge($that->data);
 
-        $this->tests  = \array_merge($this->tests, $that->getTests());
-        $this->report = null;
+        $this->tests = \array_merge($this->tests, $that->getTests());
     }
 
     public function enableTokenCaching(): void
@@ -608,7 +595,7 @@ final class CodeCoverage
         foreach ($data->lineCoverage() as $file => $_data) {
             foreach ($_data as $line => $flag) {
                 if ($flag === 1 && !isset($allowedLines[$file][$line])) {
-                    $unintentionallyCoveredUnits[] = $this->wizard()->lookup($file, $line);
+                    $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
                 }
             }
         }
@@ -731,7 +718,7 @@ final class CodeCoverage
         foreach ($rawData->lineCoverage() as $filename => $lines) {
             foreach ($lines as $line => $flag) {
                 if ($flag === 1) {
-                    $codeUnits[] = $this->wizard()->lookup($filename, $line);
+                    $codeUnits[] = $this->wizard->lookup($filename, $line);
                 }
             }
         }
@@ -745,19 +732,10 @@ final class CodeCoverage
 
         foreach ($data as $filename => $lines) {
             foreach ($lines as $line) {
-                $codeUnits[] = $this->wizard()->lookup($filename, $line);
+                $codeUnits[] = $this->wizard->lookup($filename, $line);
             }
         }
 
         return \array_unique($codeUnits);
-    }
-
-    private function wizard(): Wizard
-    {
-        if ($this->wizard === null) {
-            $this->wizard = new Wizard;
-        }
-
-        return $this->wizard;
     }
 }

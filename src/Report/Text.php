@@ -255,7 +255,7 @@ final class Text
 
                 $classCoverage[$package . $className] = [
                     'namespace'         => $class['package']['namespace'],
-                    'className '        => $className,
+                    'className'         => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,
                     'statementsCovered' => $classExecutedLines,

@@ -4,11 +4,7 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <PossiblyNullPropertyAssignmentValue occurrences="6">
-      <code>null</code>
-      <code>null</code>
-      <code>null</code>
-      <code>null</code>
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>

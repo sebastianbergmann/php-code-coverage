@@ -4,10 +4,30 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
+    <DocblockTypeContradiction occurrences="2">
+      <code>!\is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
+      <code>$id === null</code>
+    </DocblockTypeContradiction>
+    <InternalMethod occurrences="5">
+      <code>getSize</code>
+      <code>getName</code>
+      <code>getName</code>
+      <code>isMedium</code>
+      <code>isLarge</code>
+    </InternalMethod>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
+    <PropertyNotSetInConstructor occurrences="1">
+      <code>$currentId</code>
+    </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>\is_array($linesToBeCovered)</code>
+    </RedundantConditionGivenDocblockType>
+    <UnresolvableInclude occurrences="1">
+      <code>include_once $file</code>
+    </UnresolvableInclude>
   </file>
   <file src="src/Driver/PcovDriver.php">
     <UndefinedConstant occurrences="1">
@@ -36,10 +56,27 @@
       <code>\XDEBUG_CC_BRANCH_CHECK</code>
     </UndefinedConstant>
   </file>
+  <file src="src/Filter.php">
+    <InvalidDocblockParamName occurrences="1">
+      <code>$files</code>
+    </InvalidDocblockParamName>
+  </file>
   <file src="src/Node/AbstractNode.php">
+    <DocblockTypeContradiction occurrences="5">
+      <code>$this-&gt;id === null</code>
+      <code>$this-&gt;pathAsString === null</code>
+      <code>$this-&gt;parent === null</code>
+      <code>$this-&gt;pathAsArray === null</code>
+      <code>$this-&gt;parent === null</code>
+    </DocblockTypeContradiction>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>$parent</code>
     </PossiblyNullPropertyAssignmentValue>
+    <PropertyNotSetInConstructor occurrences="3">
+      <code>$pathAsString</code>
+      <code>$pathAsArray</code>
+      <code>$id</code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Builder.php">
     <EmptyArrayAccess occurrences="1">
@@ -52,23 +89,56 @@
     </PossiblyInvalidArgument>
   </file>
   <file src="src/Node/Directory.php">
+    <DocblockTypeContradiction occurrences="4">
+      <code>$this-&gt;classes === null</code>
+      <code>$this-&gt;traits === null</code>
+      <code>$this-&gt;functions === null</code>
+      <code>$this-&gt;linesOfCode === null</code>
+    </DocblockTypeContradiction>
+    <PropertyNotSetInConstructor occurrences="4">
+      <code>$classes</code>
+      <code>$traits</code>
+      <code>$functions</code>
+      <code>$linesOfCode</code>
+    </PropertyNotSetInConstructor>
     <PropertyTypeCoercion occurrences="2">
       <code>$this-&gt;directories</code>
       <code>$this-&gt;files</code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/Node/File.php">
+    <DocblockTypeContradiction occurrences="5">
+      <code>$this-&gt;numClasses === null</code>
+      <code>$this-&gt;numTraits === null</code>
+      <code>$this-&gt;numMethods === null</code>
+      <code>$this-&gt;numTestedMethods === null</code>
+      <code>$this-&gt;numTestedFunctions === null</code>
+    </DocblockTypeContradiction>
     <InvalidPropertyAssignmentValue occurrences="4">
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
     </InvalidPropertyAssignmentValue>
+    <MissingClosureParamType occurrences="2">
+      <code>$branch</code>
+      <code>$path</code>
+    </MissingClosureParamType>
+    <PropertyNotSetInConstructor occurrences="5">
+      <code>$numClasses</code>
+      <code>$numTraits</code>
+      <code>$numMethods</code>
+      <code>$numTestedMethods</code>
+      <code>$numTestedFunctions</code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Iterator.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$this-&gt;nodes[$this-&gt;position]</code>
     </ArgumentTypeCoercion>
+    <PropertyNotSetInConstructor occurrences="1">
+      <code>$position</code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/RawCodeCoverageData.php">
     <PossiblyUndefinedMethod occurrences="1">
@@ -89,6 +159,12 @@
       <code>replaceChild</code>
     </PossiblyNullReference>
   </file>
+  <file src="src/Report/Xml/Facade.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>$target</code>
+      <code>$project</code>
+    </PropertyNotSetInConstructor>
+  </file>
   <file src="src/Report/Xml/File.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$totalsContainer</code>
@@ -104,6 +180,18 @@
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>$context-&gt;ownerDocument</code>
     </PossiblyNullPropertyAssignmentValue>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>$dom</code>
+      <code>$contextNode</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Report/Xml/Report.php">
+    <MissingParamType occurrences="4">
+      <code>$name</code>
+      <code>$name</code>
+      <code>$name</code>
+      <code>$name</code>
+    </MissingParamType>
   </file>
   <file src="src/Report/Xml/Source.php">
     <PossiblyNullArgument occurrences="1">
@@ -115,6 +203,9 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Tests.php">
+    <MissingPropertyType occurrences="1">
+      <code>$codeMap</code>
+    </MissingPropertyType>
     <PossiblyNullReference occurrences="1">
       <code>createElementNS</code>
     </PossiblyNullReference>
@@ -130,5 +221,10 @@
       <code>createElementNS</code>
       <code>createElementNS</code>
     </PossiblyNullReference>
+  </file>
+  <file src="src/Version.php">
+    <DocblockTypeContradiction occurrences="1">
+      <code>self::$version === null</code>
+    </DocblockTypeContradiction>
   </file>
 </files>

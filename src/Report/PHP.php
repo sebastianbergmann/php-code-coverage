@@ -23,7 +23,7 @@ final class PHP
         $buffer = \sprintf(
             '<?php
 return \unserialize(\'%s\');',
-            \serialize($coverage)
+            \addcslashes(\serialize($coverage), "'")
         );
 
         if ($target !== null) {

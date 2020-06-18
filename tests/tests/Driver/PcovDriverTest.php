@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
+use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
+use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class PcovDriverTest extends TestCase
@@ -26,5 +29,67 @@ final class PcovDriverTest extends TestCase
         if (!\ini_get('pcov.enabled')) {
             $this->markTestSkipped('This test requires the PCOV extension to be enabled');
         }
+    }
+
+    public function testDoesNotSupportBranchAndPathCoverage(): void
+    {
+        $this->assertFalse($this->driver()->canCollectBranchAndPathCoverage());
+    }
+
+    public function testBranchAndPathCoverageCanBeDisabled(): void
+    {
+        $driver = $this->driver();
+
+        $driver->disableBranchAndPathCoverage();
+
+        $this->assertFalse($driver->collectsBranchAndPathCoverage());
+    }
+
+    public function testBranchAndPathCoverageCannotBeEnabled(): void
+    {
+        $this->expectException(BranchAndPathCoverageNotSupportedException::class);
+
+        $this->driver()->enableBranchAndPathCoverage();
+    }
+
+    public function testBranchAndPathCoverageIsNotCollected(): void
+    {
+        $this->assertFalse($this->driver()->collectsBranchAndPathCoverage());
+    }
+
+    public function testDoesNotSupportDeadCodeDetection(): void
+    {
+        $this->assertFalse($this->driver()->canDetectDeadCode());
+    }
+
+    public function testDeadCodeDetectionCanBeDisabled(): void
+    {
+        $driver = $this->driver();
+
+        $driver->disableDeadCodeDetection();
+
+        $this->assertFalse($driver->detectsDeadCode());
+    }
+
+    public function testDeadCodeDetectionCannotBeEnabled(): void
+    {
+        $this->expectException(DeadCodeDetectionNotSupportedException::class);
+
+        $this->driver()->enableDeadCodeDetection();
+    }
+
+    public function testDeadCodeIsNotDetected(): void
+    {
+        $this->assertFalse($this->driver()->detectsDeadCode());
+    }
+
+    public function testHasNameAndVersion(): void
+    {
+        $this->assertStringMatchesFormat('PCOV %s', $this->driver()->nameAndVersion());
+    }
+
+    private function driver(): PcovDriver
+    {
+        return new PcovDriver(new Filter);
     }
 }

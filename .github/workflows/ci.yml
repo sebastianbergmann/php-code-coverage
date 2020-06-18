@@ -65,17 +65,27 @@ jobs:
         coverage-driver:
           - "pcov"
           - "xdebug"
+          - "xdebug3"
 
         dependencies:
           - "lowest"
           - "highest"
 
+        exclude:
+          - php-version: "8.0"
+            coverage-driver: "xdebug"
+            dependencies: "lowest"
+
+          - php-version: "8.0"
+            coverage-driver: "xdebug"
+            dependencies: "highest"
+
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
 
-      - name: "Install PHP with extensions"
-        uses: "shivammathur/setup-php@v1"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
           coverage: "${{ matrix.coverage-driver }}"

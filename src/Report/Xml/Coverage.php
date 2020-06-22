@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMElement;
 use SebastianBergmann\CodeCoverage\ReportAlreadyFinalizedException;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -17,12 +19,12 @@ use SebastianBergmann\CodeCoverage\ReportAlreadyFinalizedException;
 final class Coverage
 {
     /**
-     * @var \XMLWriter
+     * @var XMLWriter
      */
     private $writer;
 
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $contextNode;
 
@@ -31,11 +33,11 @@ final class Coverage
      */
     private $finalized = false;
 
-    public function __construct(\DOMElement $context, string $line)
+    public function __construct(DOMElement $context, string $line)
     {
         $this->contextNode = $context;
 
-        $this->writer = new \XMLWriter();
+        $this->writer = new XMLWriter();
         $this->writer->openMemory();
         $this->writer->startElementNS(null, $context->nodeName, 'https://schema.phpunit.de/coverage/1.0');
         $this->writer->writeAttribute('nr', $line);

@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class ReportAlreadyFinalizedException extends \RuntimeException implements Exception
+use RuntimeException;
+
+final class ReportAlreadyFinalizedException extends RuntimeException implements Exception
 {
     public function __construct()
     {

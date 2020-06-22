@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function basename;
+use function dirname;
+use DOMDocument;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -16,7 +20,7 @@ final class Report extends File
 {
     public function __construct(string $name)
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
 
         $contextNode = $dom->getElementsByTagNameNS(
@@ -29,7 +33,7 @@ final class Report extends File
         $this->setName($name);
     }
 
-    public function asDom(): \DOMDocument
+    public function asDom(): DOMDocument
     {
         return $this->dom();
     }
@@ -77,8 +81,8 @@ final class Report extends File
 
     private function setName(string $name): void
     {
-        $this->contextNode()->setAttribute('name', \basename($name));
-        $this->contextNode()->setAttribute('path', \dirname($name));
+        $this->contextNode()->setAttribute('name', basename($name));
+        $this->contextNode()->setAttribute('path', dirname($name));
     }
 
     private function unitObject(string $tagName, $name): Unit

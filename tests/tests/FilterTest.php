@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function sort;
+use function unserialize;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
@@ -29,7 +31,7 @@ final class FilterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->filter = \unserialize('O:37:"SebastianBergmann\CodeCoverage\Filter":0:{}');
+        $this->filter = unserialize('O:37:"SebastianBergmann\CodeCoverage\Filter":0:{}');
 
         $this->files = [
             TEST_FILES_PATH . 'BankAccount.php',
@@ -107,7 +109,7 @@ final class FilterTest extends TestCase
         $this->filter->includeDirectory(TEST_FILES_PATH);
 
         $whitelist = $this->filter->files();
-        \sort($whitelist);
+        sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
     }
@@ -122,7 +124,7 @@ final class FilterTest extends TestCase
         $this->filter->includeFiles($files);
 
         $whitelist = $this->filter->files();
-        \sort($whitelist);
+        sort($whitelist);
 
         $this->assertEquals($this->files, $whitelist);
     }

@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function sprintf;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -47,7 +49,7 @@ final class Percentage
     public function asString(): string
     {
         if ($this->total > 0) {
-            return \sprintf('%01.2F%%', $this->asFloat());
+            return sprintf('%01.2F%%', $this->asFloat());
         }
 
         return '';
@@ -56,7 +58,7 @@ final class Percentage
     public function asFixedWidthString(): string
     {
         if ($this->total > 0) {
-            return \sprintf('%6.2F%%', $this->asFloat());
+            return sprintf('%6.2F%%', $this->asFloat());
         }
 
         return '';

@@ -9,6 +9,14 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use const PHP_EOL;
+use function array_map;
+use function date;
+use function ksort;
+use function max;
+use function sprintf;
+use function str_pad;
+use function strlen;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Percentage;
@@ -80,7 +88,7 @@ final class Text
     {
         $hasBranchCoverage = !empty($coverage->getData(true)->functionCoverage());
 
-        $output = \PHP_EOL . \PHP_EOL;
+        $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();
 
         $colors = [
@@ -125,7 +133,7 @@ final class Text
             $colors['eol']    = self::COLOR_EOL;
         }
 
-        $classes = \sprintf(
+        $classes = sprintf(
             '  Classes: %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedClassesAndTraits(),
@@ -135,7 +143,7 @@ final class Text
             $report->numberOfClassesAndTraits()
         );
 
-        $methods = \sprintf(
+        $methods = sprintf(
             '  Methods: %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedMethods(),
@@ -149,7 +157,7 @@ final class Text
         $branches = '';
 
         if ($hasBranchCoverage) {
-            $paths = \sprintf(
+            $paths = sprintf(
                 '  Paths:   %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedPaths(),
@@ -159,7 +167,7 @@ final class Text
                 $report->numberOfExecutablePaths()
             );
 
-            $branches = \sprintf(
+            $branches = sprintf(
                 '  Branches:   %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedBranches(),
@@ -170,7 +178,7 @@ final class Text
             );
         }
 
-        $lines = \sprintf(
+        $lines = sprintf(
             '  Lines:   %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfExecutedLines(),
@@ -180,15 +188,15 @@ final class Text
             $report->numberOfExecutableLines()
         );
 
-        $padding = \max(\array_map('strlen', [$classes, $methods, $lines]));
+        $padding = max(array_map('strlen', [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
             $title   = 'Code Coverage Report Summary:';
-            $padding = \max($padding, \strlen($title));
+            $padding = max($padding, strlen($title));
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date  = \date('  Y-m-d H:i:s');
+            $date  = date('  Y-m-d H:i:s');
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);
@@ -207,7 +215,7 @@ final class Text
         $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
-            return $output . \PHP_EOL;
+            return $output . PHP_EOL;
         }
 
         $classCoverage = [];
@@ -268,7 +276,7 @@ final class Text
             }
         }
 
-        \ksort($classCoverage);
+        ksort($classCoverage);
 
         $methodColor    = '';
         $pathsColor     = '';
@@ -286,7 +294,7 @@ final class Text
                     $resetColor     = $colors['reset'];
                 }
 
-                $output .= \PHP_EOL . $fullQualifiedPath . \PHP_EOL
+                $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
                     . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' ';
 
                 if ($hasBranchCoverage) {
@@ -297,7 +305,7 @@ final class Text
             }
         }
 
-        return $output . \PHP_EOL;
+        return $output . PHP_EOL;
     }
 
     private function coverageColor(int $numberOfCoveredElements, int $totalNumberOfElements): string
@@ -326,8 +334,8 @@ final class Text
             $numberOfCoveredElements,
             $totalNumberOfElements
         )->asFixedWidthString() .
-            ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
-        \sprintf($format, $totalNumberOfElements) . ')';
+            ' (' . sprintf($format, $numberOfCoveredElements) . '/' .
+        sprintf($format, $totalNumberOfElements) . ')';
     }
 
     /**
@@ -337,6 +345,6 @@ final class Text
     {
         $reset = $color ? self::COLOR_RESET : '';
 
-        return $color . \str_pad((string) $string, $padding) . $reset . \PHP_EOL;
+        return $color . str_pad((string) $string, $padding) . $reset . PHP_EOL;
     }
 }

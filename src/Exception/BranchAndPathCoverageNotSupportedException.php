@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class BranchAndPathCoverageNotSupportedException extends \RuntimeException implements Exception
+use RuntimeException;
+
+final class BranchAndPathCoverageNotSupportedException extends RuntimeException implements Exception
 {
 }

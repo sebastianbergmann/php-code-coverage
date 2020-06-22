@@ -9,6 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use const PHP_SAPI;
+use const PHP_VERSION;
+use function array_diff;
+use function array_keys;
+use function array_merge;
+use function get_included_files;
+use function phpdbg_end_oplog;
+use function phpdbg_get_executable;
+use function phpdbg_start_oplog;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
@@ -21,31 +30,31 @@ final class PhpdbgDriver extends Driver
      */
     public function __construct()
     {
-        if (\PHP_SAPI !== 'phpdbg') {
+        if (PHP_SAPI !== 'phpdbg') {
             throw new PhpdbgNotAvailableException;
         }
     }
 
     public function start(): void
     {
-        \phpdbg_start_oplog();
+        phpdbg_start_oplog();
     }
 
     public function stop(): RawCodeCoverageData
     {
         static $fetchedLines = [];
 
-        $dbgData = \phpdbg_end_oplog();
+        $dbgData = phpdbg_end_oplog();
 
         if ($fetchedLines === []) {
-            $sourceLines = \phpdbg_get_executable();
+            $sourceLines = phpdbg_get_executable();
         } else {
-            $newFiles = \array_diff(\get_included_files(), \array_keys($fetchedLines));
+            $newFiles = array_diff(get_included_files(), array_keys($fetchedLines));
 
             $sourceLines = [];
 
             if ($newFiles) {
-                $sourceLines = \phpdbg_get_executable(['files' => $newFiles]);
+                $sourceLines = phpdbg_get_executable(['files' => $newFiles]);
             }
         }
 
@@ -55,7 +64,7 @@ final class PhpdbgDriver extends Driver
             }
         }
 
-        $fetchedLines = \array_merge($fetchedLines, $sourceLines);
+        $fetchedLines = array_merge($fetchedLines, $sourceLines);
 
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage(
             $this->detectExecutedLines($fetchedLines, $dbgData)
@@ -64,7 +73,7 @@ final class PhpdbgDriver extends Driver
 
     public function nameAndVersion(): string
     {
-        return 'PHPDBG ' . \PHP_VERSION;
+        return 'PHPDBG ' . PHP_VERSION;
     }
 
     private function detectExecutedLines(array $sourceLines, array $dbgData): array

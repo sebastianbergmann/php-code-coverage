@@ -9,6 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function date;
+use function dirname;
+use function file_put_contents;
+use function htmlspecialchars;
+use function is_string;
+use function round;
+use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
@@ -34,15 +41,15 @@ final class Crap4j
      */
     public function process(CodeCoverage $coverage, ?string $target = null, ?string $name = null): string
     {
-        $document               = new \DOMDocument('1.0', 'UTF-8');
+        $document               = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
 
         $root = $document->createElement('crap_result');
         $document->appendChild($root);
 
-        $project = $document->createElement('project', \is_string($name) ? $name : '');
+        $project = $document->createElement('project', is_string($name) ? $name : '');
         $root->appendChild($project);
-        $root->appendChild($document->createElement('timestamp', \date('Y-m-d H:i:s')));
+        $root->appendChild($document->createElement('timestamp', date('Y-m-d H:i:s')));
 
         $stats       = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
@@ -88,12 +95,12 @@ final class Crap4j
                     $methodNode->appendChild($document->createElement('package', $namespace));
                     $methodNode->appendChild($document->createElement('className', $className));
                     $methodNode->appendChild($document->createElement('methodName', $methodName));
-                    $methodNode->appendChild($document->createElement('methodSignature', \htmlspecialchars($method['signature'])));
-                    $methodNode->appendChild($document->createElement('fullMethod', \htmlspecialchars($method['signature'])));
+                    $methodNode->appendChild($document->createElement('methodSignature', htmlspecialchars($method['signature'])));
+                    $methodNode->appendChild($document->createElement('fullMethod', htmlspecialchars($method['signature'])));
                     $methodNode->appendChild($document->createElement('crap', (string) $this->roundValue((float) $method['crap'])));
                     $methodNode->appendChild($document->createElement('complexity', (string) $method['ccn']));
                     $methodNode->appendChild($document->createElement('coverage', (string) $this->roundValue($method['coverage'])));
-                    $methodNode->appendChild($document->createElement('crapLoad', (string) \round($crapLoad)));
+                    $methodNode->appendChild($document->createElement('crapLoad', (string) round($crapLoad)));
 
                     $methodsNode->appendChild($methodNode);
                 }
@@ -103,7 +110,7 @@ final class Crap4j
         $stats->appendChild($document->createElement('name', 'Method Crap Stats'));
         $stats->appendChild($document->createElement('methodCount', (string) $fullMethodCount));
         $stats->appendChild($document->createElement('crapMethodCount', (string) $fullCrapMethodCount));
-        $stats->appendChild($document->createElement('crapLoad', (string) \round($fullCrapLoad)));
+        $stats->appendChild($document->createElement('crapLoad', (string) round($fullCrapLoad)));
         $stats->appendChild($document->createElement('totalCrap', (string) $fullCrap));
 
         $crapMethodPercent = 0;
@@ -120,9 +127,9 @@ final class Crap4j
         $buffer = $document->saveXML();
 
         if ($target !== null) {
-            Directory::create(\dirname($target));
+            Directory::create(dirname($target));
 
-            if (@\file_put_contents($target, $buffer) === false) {
+            if (@file_put_contents($target, $buffer) === false) {
                 throw new WriteOperationFailedException($target);
             }
         }
@@ -144,6 +151,6 @@ final class Crap4j
 
     private function roundValue(float $value): float
     {
-        return \round($value, 2);
+        return round($value, 2);
     }
 }

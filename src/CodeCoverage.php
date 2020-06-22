@@ -9,9 +9,35 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_diff;
+use function array_diff_key;
+use function array_flip;
+use function array_keys;
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function count;
+use function explode;
+use function file;
+use function file_exists;
+use function get_class;
+use function is_array;
+use function sort;
+use function strpos;
+use function trim;
+use OutOfBoundsException;
+use PHP_Token_CLASS;
+use PHP_Token_COMMENT;
+use PHP_Token_DOC_COMMENT;
+use PHP_Token_FUNCTION;
+use PHP_Token_INTERFACE;
+use PHP_Token_Stream;
+use PHP_Token_Stream_CachingFactory;
+use PHP_Token_TRAIT;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
+use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
@@ -99,7 +125,7 @@ final class CodeCoverage
     private $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
 
     /**
-     * Determine if the data has been initialized or not
+     * Determine if the data has been initialized or not.
      *
      * @var bool
      */
@@ -203,7 +229,7 @@ final class CodeCoverage
      */
     public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
-        if (!\is_array($linesToBeCovered) && $linesToBeCovered !== false) {
+        if (!is_array($linesToBeCovered) && $linesToBeCovered !== false) {
             throw new InvalidArgumentException(
                 '$linesToBeCovered must be an array or false'
             );
@@ -272,7 +298,7 @@ final class CodeCoverage
                 }
 
                 $status = $id->getStatus();
-                $id     = \get_class($id) . '::' . $id->getName();
+                $id     = get_class($id) . '::' . $id->getName();
             } elseif ($id instanceof PhptTestCase) {
                 $size = 'large';
                 $id   = $id->getName();
@@ -297,7 +323,7 @@ final class CodeCoverage
 
         $this->data->merge($that->data);
 
-        $this->tests = \array_merge($this->tests, $that->getTests());
+        $this->tests = array_merge($this->tests, $that->getTests());
     }
 
     public function enableTokenCaching(): void
@@ -420,13 +446,13 @@ final class CodeCoverage
         }
 
         $rawLineData         = $rawData->lineCoverage();
-        $filesWithNoCoverage = \array_diff_key($rawLineData, $linesToBeCovered);
+        $filesWithNoCoverage = array_diff_key($rawLineData, $linesToBeCovered);
 
-        foreach (\array_keys($filesWithNoCoverage) as $fileWithNoCoverage) {
+        foreach (array_keys($filesWithNoCoverage) as $fileWithNoCoverage) {
             $rawData->removeCoverageDataForFile($fileWithNoCoverage);
         }
 
-        if (\is_array($linesToBeCovered)) {
+        if (is_array($linesToBeCovered)) {
             foreach ($linesToBeCovered as $fileToBeCovered => $includedLines) {
                 $rawData->keepCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
             }
@@ -439,7 +465,7 @@ final class CodeCoverage
             return;
         }
 
-        foreach (\array_keys($data->lineCoverage()) as $filename) {
+        foreach (array_keys($data->lineCoverage()) as $filename) {
             if ($this->filter->isExcluded($filename)) {
                 $data->removeCoverageDataForFile($filename);
             }
@@ -448,7 +474,7 @@ final class CodeCoverage
 
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
-        foreach (\array_keys($data->lineCoverage()) as $filename) {
+        foreach (array_keys($data->lineCoverage()) as $filename) {
             if (!$this->filter->isFile($filename)) {
                 continue;
             }
@@ -462,17 +488,17 @@ final class CodeCoverage
      */
     private function addUncoveredFilesFromFilter(): void
     {
-        $uncoveredFiles = \array_diff(
+        $uncoveredFiles = array_diff(
             $this->filter->files(),
-            \array_keys($this->data->lineCoverage())
+            array_keys($this->data->lineCoverage())
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            if (\file_exists($uncoveredFile)) {
+            if (file_exists($uncoveredFile)) {
                 if ($this->cacheTokens) {
-                    $tokens = \PHP_Token_Stream_CachingFactory::get($uncoveredFile);
+                    $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
                 } else {
-                    $tokens = new \PHP_Token_Stream($uncoveredFile);
+                    $tokens = new PHP_Token_Stream($uncoveredFile);
                 }
 
                 $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile, $tokens), self::UNCOVERED_FILES);
@@ -488,7 +514,7 @@ final class CodeCoverage
 
         try {
             return $this->getLinesToBeIgnoredInner($fileName);
-        } catch (\OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $e) {
             // This can happen with PHP_Token_Stream if the file is syntactically invalid,
             // and probably affects a file that wasn't executed.
             return [];
@@ -499,17 +525,17 @@ final class CodeCoverage
     {
         $this->ignoredLines[$fileName] = [];
 
-        $lines = \file($fileName);
+        $lines = file($fileName);
 
         if ($this->cacheTokens) {
-            $tokens = \PHP_Token_Stream_CachingFactory::get($fileName);
+            $tokens = PHP_Token_Stream_CachingFactory::get($fileName);
         } else {
-            $tokens = new \PHP_Token_Stream($fileName);
+            $tokens = new PHP_Token_Stream($fileName);
         }
 
         if ($this->disableIgnoredLines) {
-            $this->ignoredLines[$fileName] = \array_unique($this->ignoredLines[$fileName]);
-            \sort($this->ignoredLines[$fileName]);
+            $this->ignoredLines[$fileName] = array_unique($this->ignoredLines[$fileName]);
+            sort($this->ignoredLines[$fileName]);
 
             return $this->ignoredLines[$fileName];
         }
@@ -518,11 +544,11 @@ final class CodeCoverage
         $stop   = false;
 
         foreach ($tokens->tokens() as $token) {
-            switch (\get_class($token)) {
-                case \PHP_Token_COMMENT::class:
-                case \PHP_Token_DOC_COMMENT::class:
-                    $_token = \trim((string) $token);
-                    $_line  = \trim($lines[$token->getLine() - 1]);
+            switch (get_class($token)) {
+                case PHP_Token_COMMENT::class:
+                case PHP_Token_DOC_COMMENT::class:
+                    $_token = trim((string) $token);
+                    $_line  = trim($lines[$token->getLine() - 1]);
 
                     if ($_token === '// @codeCoverageIgnore' ||
                         $_token === '//@codeCoverageIgnore') {
@@ -540,15 +566,15 @@ final class CodeCoverage
 
                  // Intentional fallthrough
 
-                case \PHP_Token_INTERFACE::class:
-                case \PHP_Token_TRAIT::class:
-                case \PHP_Token_CLASS::class:
-                case \PHP_Token_FUNCTION::class:
+                case PHP_Token_INTERFACE::class:
+                case PHP_Token_TRAIT::class:
+                case PHP_Token_CLASS::class:
+                case PHP_Token_FUNCTION::class:
                     /* @var \PHP_Token_Interface $token */
 
                     $docblock = (string) $token->getDocblock();
 
-                    if (\strpos($docblock, '@codeCoverageIgnore') || ($this->ignoreDeprecatedCode && \strpos($docblock, '@deprecated'))) {
+                    if (strpos($docblock, '@codeCoverageIgnore') || ($this->ignoreDeprecatedCode && strpos($docblock, '@deprecated'))) {
                         $endLine = $token->getEndLine();
 
                         for ($i = $token->getLine(); $i <= $endLine; $i++) {
@@ -569,12 +595,12 @@ final class CodeCoverage
             }
         }
 
-        $this->ignoredLines[$fileName] = \array_unique(
+        $this->ignoredLines[$fileName] = array_unique(
             $this->ignoredLines[$fileName]
         );
 
-        $this->ignoredLines[$fileName] = \array_unique($this->ignoredLines[$fileName]);
-        \sort($this->ignoredLines[$fileName]);
+        $this->ignoredLines[$fileName] = array_unique($this->ignoredLines[$fileName]);
+        sort($this->ignoredLines[$fileName]);
 
         return $this->ignoredLines[$fileName];
     }
@@ -613,31 +639,31 @@ final class CodeCoverage
     {
         $allowedLines = [];
 
-        foreach (\array_keys($linesToBeCovered) as $file) {
+        foreach (array_keys($linesToBeCovered) as $file) {
             if (!isset($allowedLines[$file])) {
                 $allowedLines[$file] = [];
             }
 
-            $allowedLines[$file] = \array_merge(
+            $allowedLines[$file] = array_merge(
                 $allowedLines[$file],
                 $linesToBeCovered[$file]
             );
         }
 
-        foreach (\array_keys($linesToBeUsed) as $file) {
+        foreach (array_keys($linesToBeUsed) as $file) {
             if (!isset($allowedLines[$file])) {
                 $allowedLines[$file] = [];
             }
 
-            $allowedLines[$file] = \array_merge(
+            $allowedLines[$file] = array_merge(
                 $allowedLines[$file],
                 $linesToBeUsed[$file]
             );
         }
 
-        foreach (\array_keys($allowedLines) as $file) {
-            $allowedLines[$file] = \array_flip(
-                \array_unique($allowedLines[$file])
+        foreach (array_keys($allowedLines) as $file) {
+            $allowedLines[$file] = array_flip(
+                array_unique($allowedLines[$file])
             );
         }
 
@@ -649,18 +675,18 @@ final class CodeCoverage
      */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
     {
-        $unintentionallyCoveredUnits = \array_unique($unintentionallyCoveredUnits);
-        \sort($unintentionallyCoveredUnits);
+        $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
+        sort($unintentionallyCoveredUnits);
 
-        foreach (\array_keys($unintentionallyCoveredUnits) as $k => $v) {
-            $unit = \explode('::', $unintentionallyCoveredUnits[$k]);
+        foreach (array_keys($unintentionallyCoveredUnits) as $k => $v) {
+            $unit = explode('::', $unintentionallyCoveredUnits[$k]);
 
-            if (\count($unit) !== 2) {
+            if (count($unit) !== 2) {
                 continue;
             }
 
             try {
-                $class = new \ReflectionClass($unit[0]);
+                $class = new ReflectionClass($unit[0]);
 
                 foreach ($this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck as $parentClass) {
                     if ($class->isSubclassOf($parentClass)) {
@@ -678,7 +704,7 @@ final class CodeCoverage
             }
         }
 
-        return \array_values($unintentionallyCoveredUnits);
+        return array_values($unintentionallyCoveredUnits);
     }
 
     /**
@@ -723,7 +749,7 @@ final class CodeCoverage
             }
         }
 
-        return \array_unique($codeUnits);
+        return array_unique($codeUnits);
     }
 
     private function linesToCodeUnits(array $data): array
@@ -736,6 +762,6 @@ final class CodeCoverage
             }
         }
 
-        return \array_unique($codeUnits);
+        return array_unique($codeUnits);
     }
 }

@@ -9,10 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use function count;
+use RecursiveIterator;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class Iterator implements \RecursiveIterator
+final class Iterator implements RecursiveIterator
 {
     /**
      * @var int
@@ -42,7 +45,7 @@ final class Iterator implements \RecursiveIterator
      */
     public function valid(): bool
     {
-        return $this->position < \count($this->nodes);
+        return $this->position < count($this->nodes);
     }
 
     /**

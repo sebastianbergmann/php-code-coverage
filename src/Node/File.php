@@ -9,6 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use function array_filter;
+use function count;
+use function range;
+use function sprintf;
+use function strpos;
+use OutOfBoundsException;
+use PHP_Token_Stream;
+use PHP_Token_Stream_CachingFactory;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -308,7 +317,7 @@ final class File extends AbstractNode
 
     public function numberOfFunctions(): int
     {
-        return \count($this->functions);
+        return count($this->functions);
     }
 
     public function numberOfTestedFunctions(): int
@@ -330,14 +339,14 @@ final class File extends AbstractNode
     private function calculateStatistics(): void
     {
         if ($this->cacheTokens) {
-            $tokens = \PHP_Token_Stream_CachingFactory::get($this->pathAsString());
+            $tokens = PHP_Token_Stream_CachingFactory::get($this->pathAsString());
         } else {
-            $tokens = new \PHP_Token_Stream($this->pathAsString());
+            $tokens = new PHP_Token_Stream($this->pathAsString());
         }
 
         $this->linesOfCode = $tokens->getLinesOfCode();
 
-        foreach (\range(1, $this->linesOfCode['loc']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode['loc']) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
@@ -345,14 +354,14 @@ final class File extends AbstractNode
             $this->processClasses($tokens);
             $this->processTraits($tokens);
             $this->processFunctions($tokens);
-        } catch (\OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $e) {
             // This can happen with PHP_Token_Stream if the file is syntactically invalid,
             // and probably affects a file that wasn't executed.
         }
 
         unset($tokens);
 
-        foreach (\range(1, $this->linesOfCode['loc']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode['loc']) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                     $codeUnit['executableLines']++;
@@ -362,7 +371,7 @@ final class File extends AbstractNode
 
                 $this->numExecutableLines++;
 
-                if (\count($this->lineCoverageData[$lineNumber]) > 0) {
+                if (count($this->lineCoverageData[$lineNumber]) > 0) {
                     foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                         $codeUnit['executedLines']++;
                     }
@@ -464,13 +473,13 @@ final class File extends AbstractNode
         }
     }
 
-    private function processClasses(\PHP_Token_Stream $tokens): void
+    private function processClasses(PHP_Token_Stream $tokens): void
     {
         $classes = $tokens->getClasses();
         $link    = $this->id() . '.html#';
 
         foreach ($classes as $className => $class) {
-            if (\strpos($className, 'anonymous') === 0) {
+            if (strpos($className, 'anonymous') === 0) {
                 continue;
             }
 
@@ -496,7 +505,7 @@ final class File extends AbstractNode
             ];
 
             foreach ($class['methods'] as $methodName => $method) {
-                if (\strpos($methodName, 'anonymous') === 0) {
+                if (strpos($methodName, 'anonymous') === 0) {
                     continue;
                 }
 
@@ -513,7 +522,7 @@ final class File extends AbstractNode
                 $this->numExecutablePaths += $methodData['executablePaths'];
                 $this->numExecutedPaths += $methodData['executedPaths'];
 
-                foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
+                foreach (range($method['startLine'], $method['endLine']) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->classes[$className],
                         &$this->classes[$className]['methods'][$methodName],
@@ -523,7 +532,7 @@ final class File extends AbstractNode
         }
     }
 
-    private function processTraits(\PHP_Token_Stream $tokens): void
+    private function processTraits(PHP_Token_Stream $tokens): void
     {
         $traits = $tokens->getTraits();
         $link   = $this->id() . '.html#';
@@ -551,7 +560,7 @@ final class File extends AbstractNode
             ];
 
             foreach ($trait['methods'] as $methodName => $method) {
-                if (\strpos($methodName, 'anonymous') === 0) {
+                if (strpos($methodName, 'anonymous') === 0) {
                     continue;
                 }
 
@@ -563,7 +572,7 @@ final class File extends AbstractNode
                 $this->traits[$traitName]['executablePaths'] += $methodData['executablePaths'];
                 $this->traits[$traitName]['executedPaths'] += $methodData['executedPaths'];
 
-                foreach (\range($method['startLine'], $method['endLine']) as $lineNumber) {
+                foreach (range($method['startLine'], $method['endLine']) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->traits[$traitName],
                         &$this->traits[$traitName]['methods'][$methodName],
@@ -573,13 +582,13 @@ final class File extends AbstractNode
         }
     }
 
-    private function processFunctions(\PHP_Token_Stream $tokens): void
+    private function processFunctions(PHP_Token_Stream $tokens): void
     {
         $functions = $tokens->getFunctions();
         $link      = $this->id() . '.html#';
 
         foreach ($functions as $functionName => $function) {
-            if (\strpos($functionName, 'anonymous') === 0) {
+            if (strpos($functionName, 'anonymous') === 0) {
                 continue;
             }
 
@@ -599,7 +608,7 @@ final class File extends AbstractNode
                 'link'               => $link . $function['startLine'],
             ];
 
-            foreach (\range($function['startLine'], $function['endLine']) as $lineNumber) {
+            foreach (range($function['startLine'], $function['endLine']) as $lineNumber) {
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
         }
@@ -615,7 +624,7 @@ final class File extends AbstractNode
             return (string) $ccn;
         }
 
-        return \sprintf(
+        return sprintf(
             '%01.2F',
             $ccn ** 2 * (1 - $coverage / 100) ** 3 + $ccn
         );
@@ -644,15 +653,15 @@ final class File extends AbstractNode
         $key = $className . '->' . $methodName;
 
         if (isset($this->functionCoverageData[$key]['branches'])) {
-            $methodData['executableBranches'] = \count($this->functionCoverageData[$key]['branches']);
-            $methodData['executedBranches']   = \count(\array_filter($this->functionCoverageData[$key]['branches'], static function ($branch) {
+            $methodData['executableBranches'] = count($this->functionCoverageData[$key]['branches']);
+            $methodData['executedBranches']   = count(array_filter($this->functionCoverageData[$key]['branches'], static function ($branch) {
                 return (bool) $branch['hit'];
             }));
         }
 
         if (isset($this->functionCoverageData[$key]['paths'])) {
-            $methodData['executablePaths'] = \count($this->functionCoverageData[$key]['paths']);
-            $methodData['executedPaths']   = \count(\array_filter($this->functionCoverageData[$key]['paths'], static function ($path) {
+            $methodData['executablePaths'] = count($this->functionCoverageData[$key]['paths']);
+            $methodData['executedPaths']   = count(array_filter($this->functionCoverageData[$key]['paths'], static function ($path) {
                 return (bool) $path['hit'];
             }));
         }

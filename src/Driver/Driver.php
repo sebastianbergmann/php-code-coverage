@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use function phpversion;
+use function sprintf;
+use function version_compare;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
@@ -88,7 +91,7 @@ abstract class Driver
         }
 
         if ($runtime->hasXdebug()) {
-            if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+            if (version_compare(phpversion('xdebug'), '3', '>=')) {
                 $driver = new Xdebug3Driver($filter);
             } else {
                 $driver = new Xdebug2Driver($filter);
@@ -113,7 +116,7 @@ abstract class Driver
         $runtime = new Runtime;
 
         if ($runtime->hasXdebug()) {
-            if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+            if (version_compare(phpversion('xdebug'), '3', '>=')) {
                 $driver = new Xdebug3Driver($filter);
             } else {
                 $driver = new Xdebug2Driver($filter);
@@ -145,7 +148,7 @@ abstract class Driver
     {
         if (!$this->canCollectBranchAndPathCoverage()) {
             throw new BranchAndPathCoverageNotSupportedException(
-                \sprintf(
+                sprintf(
                     '%s does not support branch and path coverage',
                     $this->nameAndVersion()
                 )
@@ -177,7 +180,7 @@ abstract class Driver
     {
         if (!$this->canDetectDeadCode()) {
             throw new DeadCodeDetectionNotSupportedException(
-                \sprintf(
+                sprintf(
                     '%s does not support dead code detection',
                     $this->nameAndVersion()
                 )

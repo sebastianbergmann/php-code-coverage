@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use const PHP_EOL;
+use function str_replace;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 /**
@@ -22,7 +24,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-line.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
         );
     }
 
@@ -32,7 +34,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-path.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getPathCoverageForBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getPathCoverageForBankAccount()))
         );
     }
 
@@ -42,7 +44,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-summary.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount()))
         );
     }
 
@@ -52,7 +54,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount()))
         );
     }
 
@@ -62,7 +64,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-text.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines()))
         );
     }
 
@@ -72,7 +74,7 @@ final class TextTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
-            \str_replace(\PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()))
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()))
         );
     }
 }

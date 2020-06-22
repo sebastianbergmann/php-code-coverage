@@ -9,6 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
+use function file_get_contents;
+use function iterator_count;
+use function str_replace;
+use FilesystemIterator;
+use RegexIterator;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class HtmlTest extends TestCase
@@ -19,7 +26,7 @@ final class HtmlTest extends TestCase
     {
         parent::setUpBeforeClass();
 
-        self::$TEST_REPORT_PATH_SOURCE = TEST_FILES_PATH . 'Report' . \DIRECTORY_SEPARATOR . 'HTML';
+        self::$TEST_REPORT_PATH_SOURCE = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML';
     }
 
     protected function tearDown(): void
@@ -31,7 +38,7 @@ final class HtmlTest extends TestCase
 
     public function testLineCoverageForBankAccountTest(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $report = new Facade;
         $report->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
@@ -41,7 +48,7 @@ final class HtmlTest extends TestCase
 
     public function testPathCoverageForBankAccountTest(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
 
         $report = new Facade;
         $report->process($this->getPathCoverageForBankAccount(), self::$TEST_TMP_PATH);
@@ -51,7 +58,7 @@ final class HtmlTest extends TestCase
 
     public function testForFileWithIgnoredLines(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $report = new Facade;
         $report->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
@@ -62,7 +69,7 @@ final class HtmlTest extends TestCase
     public function testForClassWithAnonymousFunction(): void
     {
         $expectedFilesPath =
-            self::$TEST_REPORT_PATH_SOURCE . \DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
+            self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $report = new Facade;
         $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
@@ -72,12 +79,12 @@ final class HtmlTest extends TestCase
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
-        $expectedFilesIterator = new \FilesystemIterator($expectedFilesPath);
-        $actualFilesIterator   = new \RegexIterator(new \FilesystemIterator($actualFilesPath), '/.html/');
+        $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
+        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/.html/');
 
         $this->assertEquals(
-            \iterator_count($expectedFilesIterator),
-            \iterator_count($actualFilesIterator),
+            iterator_count($expectedFilesIterator),
+            iterator_count($actualFilesIterator),
             'Generated files and expected files not match'
         );
 
@@ -85,13 +92,13 @@ final class HtmlTest extends TestCase
             /* @var \SplFileInfo $fileInfo */
             $filename = $fileInfo->getFilename();
 
-            $actualFile = $actualFilesPath . \DIRECTORY_SEPARATOR . $filename;
+            $actualFile = $actualFilesPath . DIRECTORY_SEPARATOR . $filename;
 
             $this->assertFileExists($actualFile);
 
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
-                \str_replace(\PHP_EOL, "\n", \file_get_contents($actualFile)),
+                str_replace(PHP_EOL, "\n", file_get_contents($actualFile)),
                 "${filename} not match"
             );
         }

@@ -9,6 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_merge;
+use function range;
+use function rmdir;
+use function unlink;
+use BankAccountTest;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
@@ -831,44 +838,44 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            new BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative')
+            new BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testDepositWithdrawMoney')
+            new BankAccountTest('testDepositWithdrawMoney')
         );
 
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
-                    \range(6, 9),
-                    \range(20, 25),
-                    \range(27, 32)
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
                 ),
             ]
         );
@@ -893,44 +900,44 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            new BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative')
+            new BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testDepositWithdrawMoney')
+            new BankAccountTest('testDepositWithdrawMoney')
         );
 
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
-                    \range(6, 9),
-                    \range(20, 25),
-                    \range(27, 32)
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
                 ),
             ]
         );
@@ -1005,44 +1012,44 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            new BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(12, 15)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(12, 15)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative')
+            new BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(33, 38)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(33, 38)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => \range(26, 31)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(26, 31)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testDepositWithdrawMoney')
+            new BankAccountTest('testDepositWithdrawMoney')
         );
 
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'NamespacedBankAccount.php' => \array_merge(
-                    \range(12, 15),
-                    \range(26, 31),
-                    \range(33, 38)
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => array_merge(
+                    range(12, 15),
+                    range(26, 31),
+                    range(33, 38)
                 ),
             ]
         );
@@ -1065,22 +1072,22 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            new BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative')
+            new BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         return $coverage;
@@ -1101,25 +1108,25 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testDepositWithdrawMoney')
+            new BankAccountTest('testDepositWithdrawMoney')
         );
 
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
-                    \range(6, 9),
-                    \range(20, 25),
-                    \range(27, 32)
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
                 ),
             ]
         );
@@ -1210,22 +1217,22 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceIsInitiallyZero'),
+            new BankAccountTest('testBalanceIsInitiallyZero'),
             true
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative')
+            new BankAccountTest('testBalanceCannotBecomeNegative')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
         );
 
         return $coverage;
@@ -1246,25 +1253,25 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage = new CodeCoverage($stub, $filter);
 
         $coverage->start(
-            new \BankAccountTest('testBalanceCannotBecomeNegative2')
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
         );
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
         );
 
         $coverage->start(
-            new \BankAccountTest('testDepositWithdrawMoney')
+            new BankAccountTest('testDepositWithdrawMoney')
         );
 
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
-                    \range(6, 9),
-                    \range(20, 25),
-                    \range(27, 32)
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
                 ),
             ]
         );
@@ -1573,15 +1580,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function removeTemporaryFiles(): void
     {
-        $tmpFilesIterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(self::$TEST_TMP_PATH, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $tmpFilesIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(self::$TEST_TMP_PATH, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($tmpFilesIterator as $path => $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             $pathname = $fileInfo->getPathname();
-            $fileInfo->isDir() ? \rmdir($pathname) : \unlink($pathname);
+            $fileInfo->isDir() ? rmdir($pathname) : unlink($pathname);
         }
     }
 }

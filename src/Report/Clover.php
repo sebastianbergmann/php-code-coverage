@@ -9,6 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function count;
+use function dirname;
+use function file_put_contents;
+use function is_string;
+use function ksort;
+use function max;
+use function range;
+use function time;
+use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
@@ -24,9 +33,9 @@ final class Clover
      */
     public function process(CodeCoverage $coverage, ?string $target = null, ?string $name = null): string
     {
-        $time = (string) \time();
+        $time = (string) time();
 
-        $xmlDocument               = new \DOMDocument('1.0', 'UTF-8');
+        $xmlDocument               = new DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
 
         $xmlCoverage = $xmlDocument->createElement('coverage');
@@ -36,7 +45,7 @@ final class Clover
         $xmlProject = $xmlDocument->createElement('project');
         $xmlProject->setAttribute('timestamp', $time);
 
-        if (\is_string($name)) {
+        if (is_string($name)) {
             $xmlProject->setAttribute('name', $name);
         }
 
@@ -81,9 +90,9 @@ final class Clover
 
                     $methodCount = 0;
 
-                    foreach (\range($method['startLine'], $method['endLine']) as $line) {
+                    foreach (range($method['startLine'], $method['endLine']) as $line) {
                         if (isset($coverageData[$line]) && ($coverageData[$line] !== null)) {
-                            $methodCount = \max($methodCount, \count($coverageData[$line]));
+                            $methodCount = max($methodCount, count($coverageData[$line]));
                         }
                     }
 
@@ -154,11 +163,11 @@ final class Clover
                 }
 
                 $lines[$line] = [
-                    'count' => \count($data), 'type' => 'stmt',
+                    'count' => count($data), 'type' => 'stmt',
                 ];
             }
 
-            \ksort($lines);
+            ksort($lines);
 
             foreach ($lines as $line => $data) {
                 $xmlLine = $xmlDocument->createElement('line');
@@ -220,7 +229,7 @@ final class Clover
         $linesOfCode = $report->linesOfCode();
 
         $xmlMetrics = $xmlDocument->createElement('metrics');
-        $xmlMetrics->setAttribute('files', (string) \count($report));
+        $xmlMetrics->setAttribute('files', (string) count($report));
         $xmlMetrics->setAttribute('loc', (string) $linesOfCode['loc']);
         $xmlMetrics->setAttribute('ncloc', (string) $linesOfCode['ncloc']);
         $xmlMetrics->setAttribute('classes', (string) $report->numberOfClassesAndTraits());
@@ -237,9 +246,9 @@ final class Clover
         $buffer = $xmlDocument->saveXML();
 
         if ($target !== null) {
-            Directory::create(\dirname($target));
+            Directory::create(dirname($target));
 
-            if (@\file_put_contents($target, $buffer) === false) {
+            if (@file_put_contents($target, $buffer) === false) {
                 throw new WriteOperationFailedException($target);
             }
         }

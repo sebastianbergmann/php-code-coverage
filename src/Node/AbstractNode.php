@@ -9,12 +9,17 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use const DIRECTORY_SEPARATOR;
+use function array_merge;
+use function str_replace;
+use function substr;
+use Countable;
 use SebastianBergmann\CodeCoverage\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-abstract class AbstractNode implements \Countable
+abstract class AbstractNode implements Countable
 {
     /**
      * @var string
@@ -43,8 +48,8 @@ abstract class AbstractNode implements \Countable
 
     public function __construct(string $name, self $parent = null)
     {
-        if (\substr($name, -1) === \DIRECTORY_SEPARATOR) {
-            $name = \substr($name, 0, -1);
+        if (substr($name, -1) === DIRECTORY_SEPARATOR) {
+            $name = substr($name, 0, -1);
         }
 
         $this->name   = $name;
@@ -67,7 +72,7 @@ abstract class AbstractNode implements \Countable
                 $parentId = $parent->id();
 
                 if ($parentId === 'index') {
-                    $this->id = \str_replace(':', '_', $this->name);
+                    $this->id = str_replace(':', '_', $this->name);
                 } else {
                     $this->id = $parentId . '/' . $this->name;
                 }
@@ -83,7 +88,7 @@ abstract class AbstractNode implements \Countable
             if ($this->parent === null) {
                 $this->pathAsString = $this->name;
             } else {
-                $this->pathAsString = $this->parent->pathAsString() . \DIRECTORY_SEPARATOR . $this->name;
+                $this->pathAsString = $this->parent->pathAsString() . DIRECTORY_SEPARATOR . $this->name;
             }
         }
 
@@ -194,7 +199,7 @@ abstract class AbstractNode implements \Countable
 
     public function classesAndTraits(): array
     {
-        return \array_merge($this->classes(), $this->traits());
+        return array_merge($this->classes(), $this->traits());
     }
 
     public function numberOfFunctionsAndMethods(): int

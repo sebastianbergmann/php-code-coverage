@@ -9,27 +9,30 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMDocument;
+use DOMElement;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class Node
 {
     /**
-     * @var \DOMDocument
+     * @var DOMDocument
      */
     private $dom;
 
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $contextNode;
 
-    public function __construct(\DOMElement $context)
+    public function __construct(DOMElement $context)
     {
         $this->setContextNode($context);
     }
 
-    public function dom(): \DOMDocument
+    public function dom(): DOMDocument
     {
         return $this->dom;
     }
@@ -77,13 +80,13 @@ abstract class Node
         return new File($fileNode);
     }
 
-    protected function setContextNode(\DOMElement $context): void
+    protected function setContextNode(DOMElement $context): void
     {
         $this->dom         = $context->ownerDocument;
         $this->contextNode = $context;
     }
 
-    protected function contextNode(): \DOMElement
+    protected function contextNode(): DOMElement
     {
         return $this->contextNode;
     }

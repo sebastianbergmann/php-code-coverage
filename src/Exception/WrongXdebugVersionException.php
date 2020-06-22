@@ -9,8 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\Exception;
 
-final class WrongXdebugVersionException extends \RuntimeException implements Exception
+final class WrongXdebugVersionException extends RuntimeException implements Exception
 {
 }

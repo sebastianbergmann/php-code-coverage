@@ -9,6 +9,14 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_key_exists;
+use function array_keys;
+use function array_merge;
+use function array_unique;
+use function count;
+use function in_array;
+use function is_array;
+use function ksort;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 /**
@@ -27,7 +35,7 @@ final class ProcessedCodeCoverageData
     /**
      * Function coverage data.
      * Maintains base format of raw data (@see https://xdebug.org/docs/code_coverage), but each 'hit' entry is an array
-     * of testcase ids
+     * of testcase ids.
      *
      * @var array
      */
@@ -61,7 +69,7 @@ final class ProcessedCodeCoverageData
         foreach ($executedCode->lineCoverage() as $file => $lines) {
             foreach ($lines as $k => $v) {
                 if ($v === Driver::LINE_EXECUTED) {
-                    if (empty($this->lineCoverage[$file][$k]) || !\in_array($testCaseId, $this->lineCoverage[$file][$k], true)) {
+                    if (empty($this->lineCoverage[$file][$k]) || !in_array($testCaseId, $this->lineCoverage[$file][$k], true)) {
                         $this->lineCoverage[$file][$k][] = $testCaseId;
                     }
                 }
@@ -72,7 +80,7 @@ final class ProcessedCodeCoverageData
             foreach ($functions as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] === Driver::BRANCH_HIT) {
-                        if (!\in_array($testCaseId, $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], true)) {
+                        if (!in_array($testCaseId, $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], true)) {
                             $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'][] = $testCaseId;
                         }
                     }
@@ -80,7 +88,7 @@ final class ProcessedCodeCoverageData
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
                     if ($pathData['hit'] === Driver::BRANCH_HIT) {
-                        if (!\in_array($testCaseId, $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], true)) {
+                        if (!in_array($testCaseId, $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], true)) {
                             $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'][] = $testCaseId;
                         }
                     }
@@ -96,7 +104,7 @@ final class ProcessedCodeCoverageData
 
     public function lineCoverage(): array
     {
-        \ksort($this->lineCoverage);
+        ksort($this->lineCoverage);
 
         return $this->lineCoverage;
     }
@@ -108,14 +116,14 @@ final class ProcessedCodeCoverageData
 
     public function functionCoverage(): array
     {
-        \ksort($this->functionCoverage);
+        ksort($this->functionCoverage);
 
         return $this->functionCoverage;
     }
 
     public function coveredFiles(): array
     {
-        return \array_keys($this->lineCoverage);
+        return array_keys($this->lineCoverage);
     }
 
     public function renameFile(string $oldFile, string $newFile): void
@@ -139,10 +147,10 @@ final class ProcessedCodeCoverageData
             }
 
             // we should compare the lines if any of two contains data
-            $compareLineNumbers = \array_unique(
-                \array_merge(
-                    \array_keys($this->lineCoverage[$file]),
-                    \array_keys($newData->lineCoverage[$file])
+            $compareLineNumbers = array_unique(
+                array_merge(
+                    array_keys($this->lineCoverage[$file]),
+                    array_keys($newData->lineCoverage[$file])
                 )
             );
 
@@ -152,9 +160,9 @@ final class ProcessedCodeCoverageData
 
                 if ($thatPriority > $thisPriority) {
                     $this->lineCoverage[$file][$line] = $newData->lineCoverage[$file][$line];
-                } elseif ($thatPriority === $thisPriority && \is_array($this->lineCoverage[$file][$line])) {
-                    $this->lineCoverage[$file][$line] = \array_unique(
-                        \array_merge($this->lineCoverage[$file][$line], $newData->lineCoverage[$file][$line])
+                } elseif ($thatPriority === $thisPriority && is_array($this->lineCoverage[$file][$line])) {
+                    $this->lineCoverage[$file][$line] = array_unique(
+                        array_merge($this->lineCoverage[$file][$line], $newData->lineCoverage[$file][$line])
                     );
                 }
             }
@@ -175,18 +183,18 @@ final class ProcessedCodeCoverageData
                 }
 
                 foreach ($functionData['branches'] as $branchId => $branchData) {
-                    $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = \array_unique(\array_merge($this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], $branchData['hit']));
+                    $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = array_unique(array_merge($this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], $branchData['hit']));
                 }
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
-                    $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = \array_unique(\array_merge($this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], $pathData['hit']));
+                    $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = array_unique(array_merge($this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], $pathData['hit']));
                 }
             }
         }
     }
 
     /**
-     * Determine the priority for a line
+     * Determine the priority for a line.
      *
      * 1 = the line is not set
      * 2 = the line has not been tested
@@ -197,11 +205,11 @@ final class ProcessedCodeCoverageData
      */
     private function priorityForLine(array $data, int $line): int
     {
-        if (!\array_key_exists($line, $data)) {
+        if (!array_key_exists($line, $data)) {
             return 1;
         }
 
-        if (\is_array($data[$line]) && \count($data[$line]) === 0) {
+        if (is_array($data[$line]) && count($data[$line]) === 0) {
             return 2;
         }
 
@@ -213,17 +221,17 @@ final class ProcessedCodeCoverageData
     }
 
     /**
-     * For a function we have never seen before, copy all data over and simply init the 'hit' array
+     * For a function we have never seen before, copy all data over and simply init the 'hit' array.
      */
     private function initPreviouslyUnseenFunction(string $file, string $functionName, array $functionData): void
     {
         $this->functionCoverage[$file][$functionName] = $functionData;
 
-        foreach (\array_keys($functionData['branches']) as $branchId) {
+        foreach (array_keys($functionData['branches']) as $branchId) {
             $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
         }
 
-        foreach (\array_keys($functionData['paths']) as $pathId) {
+        foreach (array_keys($functionData['paths']) as $pathId) {
             $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
         }
     }

@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMDocument;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -63,14 +65,14 @@ final class Project extends Node
         return new Tests($testsNode);
     }
 
-    public function asDom(): \DOMDocument
+    public function asDom(): DOMDocument
     {
         return $this->dom();
     }
 
     private function init(): void
     {
-        $dom = new \DOMDocument;
+        $dom = new DOMDocument;
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
 
         $this->setContextNode(

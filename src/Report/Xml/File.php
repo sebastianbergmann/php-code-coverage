@@ -9,22 +9,25 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMDocument;
+use DOMElement;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 class File
 {
     /**
-     * @var \DOMDocument
+     * @var DOMDocument
      */
     private $dom;
 
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $contextNode;
 
-    public function __construct(\DOMElement $context)
+    public function __construct(DOMElement $context)
     {
         $this->dom         = $context->ownerDocument;
         $this->contextNode = $context;
@@ -72,12 +75,12 @@ class File
         return new Coverage($lineNode, $line);
     }
 
-    protected function contextNode(): \DOMElement
+    protected function contextNode(): DOMElement
     {
         return $this->contextNode;
     }
 
-    protected function dom(): \DOMDocument
+    protected function dom(): DOMDocument
     {
         return $this->dom;
     }

@@ -9,6 +9,17 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use const DIRECTORY_SEPARATOR;
+use function array_shift;
+use function basename;
+use function count;
+use function dirname;
+use function explode;
+use function file_exists;
+use function implode;
+use function str_replace;
+use function strpos;
+use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 
@@ -41,10 +52,10 @@ final class Builder
         foreach ($items as $key => $value) {
             $key = (string) $key;
 
-            if (\substr($key, -2) === '/f') {
-                $key = \substr($key, 0, -2);
+            if (substr($key, -2) === '/f') {
+                $key = substr($key, 0, -2);
 
-                if (\file_exists($root->pathAsString() . \DIRECTORY_SEPARATOR . $key)) {
+                if (file_exists($root->pathAsString() . DIRECTORY_SEPARATOR . $key)) {
                     $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests, $cacheTokens);
                 }
             } else {
@@ -99,9 +110,9 @@ final class Builder
         $result = [];
 
         foreach ($data->coveredFiles() as $originalPath) {
-            $path    = \explode(\DIRECTORY_SEPARATOR, $originalPath);
+            $path    = explode(DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
-            $max     = \count($path);
+            $max     = count($path);
 
             for ($i = 0; $i < $max; $i++) {
                 $type = '';
@@ -168,30 +179,30 @@ final class Builder
         $commonPath = '';
         $paths      = $coverage->coveredFiles();
 
-        if (\count($paths) === 1) {
-            $commonPath                  = \dirname($paths[0]) . \DIRECTORY_SEPARATOR;
-            $coverage->renameFile($paths[0], \basename($paths[0]));
+        if (count($paths) === 1) {
+            $commonPath                  = dirname($paths[0]) . DIRECTORY_SEPARATOR;
+            $coverage->renameFile($paths[0], basename($paths[0]));
 
             return $commonPath;
         }
 
-        $max = \count($paths);
+        $max = count($paths);
 
         for ($i = 0; $i < $max; $i++) {
             // strip phar:// prefixes
-            if (\strpos($paths[$i], 'phar://') === 0) {
-                $paths[$i] = \substr($paths[$i], 7);
-                $paths[$i] = \str_replace('/', \DIRECTORY_SEPARATOR, $paths[$i]);
+            if (strpos($paths[$i], 'phar://') === 0) {
+                $paths[$i] = substr($paths[$i], 7);
+                $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
             }
-            $paths[$i] = \explode(\DIRECTORY_SEPARATOR, $paths[$i]);
+            $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
 
             if (empty($paths[$i][0])) {
-                $paths[$i][0] = \DIRECTORY_SEPARATOR;
+                $paths[$i][0] = DIRECTORY_SEPARATOR;
             }
         }
 
         $done = false;
-        $max  = \count($paths);
+        $max  = count($paths);
 
         while (!$done) {
             for ($i = 0; $i < $max - 1; $i++) {
@@ -207,23 +218,23 @@ final class Builder
             if (!$done) {
                 $commonPath .= $paths[0][0];
 
-                if ($paths[0][0] !== \DIRECTORY_SEPARATOR) {
-                    $commonPath .= \DIRECTORY_SEPARATOR;
+                if ($paths[0][0] !== DIRECTORY_SEPARATOR) {
+                    $commonPath .= DIRECTORY_SEPARATOR;
                 }
 
                 for ($i = 0; $i < $max; $i++) {
-                    \array_shift($paths[$i]);
+                    array_shift($paths[$i]);
                 }
             }
         }
 
         $original = $coverage->coveredFiles();
-        $max      = \count($original);
+        $max      = count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $coverage->renameFile($original[$i], \implode(\DIRECTORY_SEPARATOR, $paths[$i]));
+            $coverage->renameFile($original[$i], implode(DIRECTORY_SEPARATOR, $paths[$i]));
         }
 
-        return \substr($commonPath, 0, -1);
+        return substr($commonPath, 0, -1);
     }
 }

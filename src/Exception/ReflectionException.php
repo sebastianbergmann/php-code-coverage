@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class ReflectionException extends \RuntimeException implements Exception
+use RuntimeException;
+
+final class ReflectionException extends RuntimeException implements Exception
 {
 }

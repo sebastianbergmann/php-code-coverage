@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use const DIRECTORY_SEPARATOR;
+use function rtrim;
+use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
@@ -26,7 +29,7 @@ final class BuilderTest extends TestCase
     {
         $root = $this->getLineCoverageForBankAccount()->getReport();
 
-        $expectedPath = \rtrim(TEST_FILES_PATH, \DIRECTORY_SEPARATOR);
+        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->name());
         $this->assertEquals($expectedPath, $root->pathAsString());
         $this->assertEquals(10, $root->numberOfExecutableLines());
@@ -150,21 +153,21 @@ final class BuilderTest extends TestCase
         $coverage = $this->getCoverageForCrashParsing();
         $root     = $coverage->getReport();
 
-        $expectedPath = \rtrim(TEST_FILES_PATH, \DIRECTORY_SEPARATOR);
+        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->name());
         $this->assertEquals($expectedPath, $root->pathAsString());
         $this->assertEquals(2, $root->numberOfExecutableLines());
         $this->assertEquals(0, $root->numberOfExecutedLines());
         $data         = $coverage->getData()->lineCoverage();
-        $expectedFile = $expectedPath . \DIRECTORY_SEPARATOR . 'Crash.php';
+        $expectedFile = $expectedPath . DIRECTORY_SEPARATOR . 'Crash.php';
         $this->assertSame([$expectedFile => [1 => [], 2 => []]], $data);
     }
 
     public function testBuildDirectoryStructure(): void
     {
-        $s = \DIRECTORY_SEPARATOR;
+        $s = DIRECTORY_SEPARATOR;
 
-        $method = new \ReflectionMethod(
+        $method = new ReflectionMethod(
             Builder::class,
             'buildDirectoryStructure'
         );
@@ -210,7 +213,7 @@ final class BuilderTest extends TestCase
      */
     public function testReducePaths(array $reducedPaths, string $commonPath, ProcessedCodeCoverageData $paths): void
     {
-        $method = new \ReflectionMethod(
+        $method = new ReflectionMethod(
             Builder::class,
             'reducePaths'
         );
@@ -225,7 +228,7 @@ final class BuilderTest extends TestCase
 
     public function reducePathsProvider()
     {
-        $s = \DIRECTORY_SEPARATOR;
+        $s = DIRECTORY_SEPARATOR;
 
         yield [
             [],

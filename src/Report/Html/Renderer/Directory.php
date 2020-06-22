@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use function count;
+use function sprintf;
+use function str_repeat;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\Template\Template;
@@ -74,25 +77,25 @@ final class Directory extends Renderer
             $data['name'] = 'Total';
         } else {
             if ($node instanceof DirectoryNode) {
-                $data['name'] = \sprintf(
+                $data['name'] = sprintf(
                     '<a href="%s/index.html">%s</a>',
                     $node->name(),
                     $node->name()
                 );
 
-                $up = \str_repeat('../', \count($node->pathAsArray()) - 2);
+                $up = str_repeat('../', count($node->pathAsArray()) - 2);
 
-                $data['icon'] = \sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
+                $data['icon'] = sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
             } else {
-                $data['name'] = \sprintf(
+                $data['name'] = sprintf(
                     '<a href="%s.html">%s</a>',
                     $node->name(),
                     $node->name()
                 );
 
-                $up = \str_repeat('../', \count($node->pathAsArray()) - 2);
+                $up = str_repeat('../', count($node->pathAsArray()) - 2);
 
-                $data['icon'] = \sprintf('<img src="%s_icons/file-code.svg" class="octicon" />', $up);
+                $data['icon'] = sprintf('<img src="%s_icons/file-code.svg" class="octicon" />', $up);
             }
         }
 

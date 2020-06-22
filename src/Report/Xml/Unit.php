@@ -9,17 +9,19 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMElement;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Unit
 {
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $contextNode;
 
-    public function __construct(\DOMElement $context, string $name)
+    public function __construct(DOMElement $context, string $name)
     {
         $this->contextNode = $context;
 

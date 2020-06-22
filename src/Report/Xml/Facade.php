@@ -9,6 +9,20 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use const DIRECTORY_SEPARATOR;
+use function count;
+use function dirname;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_array;
+use function is_dir;
+use function is_writable;
+use function sprintf;
+use function strlen;
+use function substr;
+use DateTimeImmutable;
+use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
@@ -46,8 +60,8 @@ final class Facade
 
     public function process(CodeCoverage $coverage, string $target): void
     {
-        if (\substr($target, -1, 1) !== \DIRECTORY_SEPARATOR) {
-            $target .= \DIRECTORY_SEPARATOR;
+        if (substr($target, -1, 1) !== DIRECTORY_SEPARATOR) {
+            $target .= DIRECTORY_SEPARATOR;
         }
 
         $this->target = $target;
@@ -70,7 +84,7 @@ final class Facade
     {
         $buildNode = $this->project->buildInformation();
         $buildNode->setRuntimeInformation(new Runtime);
-        $buildNode->setBuildTime(new \DateTimeImmutable);
+        $buildNode->setBuildTime(new DateTimeImmutable);
         $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
     }
 
@@ -80,12 +94,12 @@ final class Facade
      */
     private function initTargetDirectory(string $directory): void
     {
-        if (\file_exists($directory)) {
-            if (!\is_dir($directory)) {
+        if (file_exists($directory)) {
+            if (!is_dir($directory)) {
                 throw new PathExistsButIsNotDirectoryException($directory);
             }
 
-            if (!\is_writable($directory)) {
+            if (!is_writable($directory)) {
                 throw new WriteOperationFailedException($directory);
             }
         }
@@ -123,9 +137,9 @@ final class Facade
 
         $this->setTotals($file, $fileObject->totals());
 
-        $path = \substr(
+        $path = substr(
             $file->pathAsString(),
-            \strlen($this->project->projectSourceDirectory())
+            strlen($this->project->projectSourceDirectory())
         );
 
         $fileReport = new Report($path);
@@ -141,7 +155,7 @@ final class Facade
         }
 
         foreach ($file->lineCoverageData() as $line => $tests) {
-            if (!\is_array($tests) || \count($tests) === 0) {
+            if (!is_array($tests) || count($tests) === 0) {
                 continue;
             }
 
@@ -155,7 +169,7 @@ final class Facade
         }
 
         $fileReport->source()->setSourceCode(
-            \file_get_contents($file->pathAsString())
+            file_get_contents($file->pathAsString())
         );
 
         $this->saveDocument($fileReport->asDom(), $file->id());
@@ -256,15 +270,15 @@ final class Facade
         return $this->target;
     }
 
-    private function saveDocument(\DOMDocument $document, string $name): void
+    private function saveDocument(DOMDocument $document, string $name): void
     {
-        $filename = \sprintf('%s/%s.xml', $this->targetDirectory(), $name);
+        $filename = sprintf('%s/%s.xml', $this->targetDirectory(), $name);
 
         $document->formatOutput       = true;
         $document->preserveWhiteSpace = false;
-        $this->initTargetDirectory(\dirname($filename));
+        $this->initTargetDirectory(dirname($filename));
 
         /* @see https://bugs.php.net/bug.php?id=79191 */
-        \file_put_contents($filename, $document->saveXML());
+        file_put_contents($filename, $document->saveXML());
     }
 }

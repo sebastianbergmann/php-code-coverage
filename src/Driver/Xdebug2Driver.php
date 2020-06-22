@@ -9,6 +9,22 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use const XDEBUG_CC_BRANCH_CHECK;
+use const XDEBUG_CC_DEAD_CODE;
+use const XDEBUG_CC_UNUSED;
+use const XDEBUG_FILTER_CODE_COVERAGE;
+use const XDEBUG_PATH_INCLUDE;
+use const XDEBUG_PATH_WHITELIST;
+use function defined;
+use function extension_loaded;
+use function ini_get;
+use function phpversion;
+use function sprintf;
+use function version_compare;
+use function xdebug_get_code_coverage;
+use function xdebug_set_filter;
+use function xdebug_start_code_coverage;
+use function xdebug_stop_code_coverage;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
@@ -29,38 +45,38 @@ final class Xdebug2Driver extends Driver
      */
     public function __construct(Filter $filter)
     {
-        if (!\extension_loaded('xdebug')) {
+        if (!extension_loaded('xdebug')) {
             throw new XdebugNotAvailableException;
         }
 
-        if (\version_compare(\phpversion('xdebug'), '3', '>=')) {
+        if (version_compare(phpversion('xdebug'), '3', '>=')) {
             throw new WrongXdebugVersionException(
-                \sprintf(
+                sprintf(
                     'This driver requires Xdebug 2 but version %s is loaded',
-                    \phpversion('xdebug')
+                    phpversion('xdebug')
                 )
             );
         }
 
-        if (!\ini_get('xdebug.coverage_enable')) {
+        if (!ini_get('xdebug.coverage_enable')) {
             throw new Xdebug2NotEnabledException;
         }
 
         if (!$filter->isEmpty()) {
-            if (\defined('XDEBUG_PATH_WHITELIST')) {
-                $listType = \XDEBUG_PATH_WHITELIST;
+            if (defined('XDEBUG_PATH_WHITELIST')) {
+                $listType = XDEBUG_PATH_WHITELIST;
             } else {
-                $listType = \XDEBUG_PATH_INCLUDE;
+                $listType = XDEBUG_PATH_INCLUDE;
             }
 
-            \xdebug_set_filter(
-                \XDEBUG_FILTER_CODE_COVERAGE,
+            xdebug_set_filter(
+                XDEBUG_FILTER_CODE_COVERAGE,
                 $listType,
                 $filter->files()
             );
         }
 
-        $this->pathCoverageIsMixedCoverage = \version_compare(\phpversion('xdebug'), '2.9.6', '<');
+        $this->pathCoverageIsMixedCoverage = version_compare(phpversion('xdebug'), '2.9.6', '<');
     }
 
     public function canCollectBranchAndPathCoverage(): bool
@@ -75,24 +91,24 @@ final class Xdebug2Driver extends Driver
 
     public function start(): void
     {
-        $flags = \XDEBUG_CC_UNUSED;
+        $flags = XDEBUG_CC_UNUSED;
 
         if ($this->detectsDeadCode() || $this->collectsBranchAndPathCoverage()) {
-            $flags |= \XDEBUG_CC_DEAD_CODE;
+            $flags |= XDEBUG_CC_DEAD_CODE;
         }
 
         if ($this->collectsBranchAndPathCoverage()) {
-            $flags |= \XDEBUG_CC_BRANCH_CHECK;
+            $flags |= XDEBUG_CC_BRANCH_CHECK;
         }
 
-        \xdebug_start_code_coverage($flags);
+        xdebug_start_code_coverage($flags);
     }
 
     public function stop(): RawCodeCoverageData
     {
-        $data = \xdebug_get_code_coverage();
+        $data = xdebug_get_code_coverage();
 
-        \xdebug_stop_code_coverage();
+        xdebug_stop_code_coverage();
 
         if ($this->collectsBranchAndPathCoverage()) {
             if ($this->pathCoverageIsMixedCoverage) {
@@ -107,6 +123,6 @@ final class Xdebug2Driver extends Driver
 
     public function nameAndVersion(): string
     {
-        return 'Xdebug ' . \phpversion('xdebug');
+        return 'Xdebug ' . phpversion('xdebug');
     }
 }

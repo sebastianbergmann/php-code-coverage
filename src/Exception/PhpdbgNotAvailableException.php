@@ -9,9 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\Exception;
 
-final class PhpdbgNotAvailableException extends \RuntimeException implements Exception
+final class PhpdbgNotAvailableException extends RuntimeException implements Exception
 {
     public function __construct()
     {

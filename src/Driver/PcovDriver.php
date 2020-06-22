@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use function extension_loaded;
+use function phpversion;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
@@ -27,7 +29,7 @@ final class PcovDriver extends Driver
      */
     public function __construct(Filter $filter)
     {
-        if (!\extension_loaded('pcov')) {
+        if (!extension_loaded('pcov')) {
             throw new PcovNotAvailableException;
         }
 
@@ -55,6 +57,6 @@ final class PcovDriver extends Driver
 
     public function nameAndVersion(): string
     {
-        return 'PCOV ' . \phpversion('pcov');
+        return 'PCOV ' . phpversion('pcov');
     }
 }

@@ -9,6 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use const PHP_SAPI;
+use function extension_loaded;
+use function ini_get;
+use function phpversion;
+use function version_compare;
+use function xdebug_code_coverage_started;
+use function xdebug_get_code_coverage;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
@@ -16,23 +23,23 @@ final class Xdebug3DriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (\PHP_SAPI !== 'cli') {
+        if (PHP_SAPI !== 'cli') {
             $this->markTestSkipped('This test requires the PHP commandline interpreter');
         }
 
-        if (!\extension_loaded('xdebug')) {
+        if (!extension_loaded('xdebug')) {
             $this->markTestSkipped('This test requires the Xdebug extension to be loaded');
         }
 
-        if (\version_compare(\phpversion('xdebug'), '3', '<')) {
+        if (version_compare(phpversion('xdebug'), '3', '<')) {
             $this->markTestSkipped('This test requires version 3 of the Xdebug extension to be loaded');
         }
 
-        if (!\ini_get('xdebug.mode') || \ini_get('xdebug.mode') !== 'coverage') {
+        if (!ini_get('xdebug.mode') || ini_get('xdebug.mode') !== 'coverage') {
             $this->markTestSkipped('This test requires the Xdebug extension\'s code coverage functionality to be enabled');
         }
 
-        if (!\xdebug_code_coverage_started()) {
+        if (!xdebug_code_coverage_started()) {
             $this->markTestSkipped('This test requires code coverage data collection using Xdebug to be active');
         }
     }
@@ -104,7 +111,7 @@ final class Xdebug3DriverTest extends TestCase
 
         require $bankAccount;
 
-        $this->assertArrayNotHasKey($bankAccount, \xdebug_get_code_coverage());
+        $this->assertArrayNotHasKey($bankAccount, xdebug_get_code_coverage());
     }
 
     private function driver(): Xdebug3Driver

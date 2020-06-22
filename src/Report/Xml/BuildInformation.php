@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function constant;
+use function phpversion;
+use DateTimeImmutable;
+use DOMElement;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -17,11 +21,11 @@ use SebastianBergmann\Environment\Runtime;
 final class BuildInformation
 {
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $contextNode;
 
-    public function __construct(\DOMElement $contextNode)
+    public function __construct(DOMElement $contextNode)
     {
         $this->contextNode = $contextNode;
     }
@@ -38,21 +42,21 @@ final class BuildInformation
 
         if ($runtime->hasPHPDBGCodeCoverage()) {
             $driverNode->setAttribute('name', 'phpdbg');
-            $driverNode->setAttribute('version', \constant('PHPDBG_VERSION'));
+            $driverNode->setAttribute('version', constant('PHPDBG_VERSION'));
         }
 
         if ($runtime->hasXdebug()) {
             $driverNode->setAttribute('name', 'xdebug');
-            $driverNode->setAttribute('version', \phpversion('xdebug'));
+            $driverNode->setAttribute('version', phpversion('xdebug'));
         }
 
         if ($runtime->hasPCOV()) {
             $driverNode->setAttribute('name', 'pcov');
-            $driverNode->setAttribute('version', \phpversion('pcov'));
+            $driverNode->setAttribute('version', phpversion('pcov'));
         }
     }
 
-    public function setBuildTime(\DateTimeImmutable $date): void
+    public function setBuildTime(DateTimeImmutable $date): void
     {
         $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
     }
@@ -63,7 +67,7 @@ final class BuildInformation
         $this->contextNode->setAttribute('coverage', $coverageVersion);
     }
 
-    private function nodeByName(string $name): \DOMElement
+    private function nodeByName(string $name): DOMElement
     {
         $node = $this->contextNode->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',

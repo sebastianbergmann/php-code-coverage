@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-final class UnintentionallyCoveredCodeException extends \RuntimeException implements Exception
+use RuntimeException;
+
+final class UnintentionallyCoveredCodeException extends RuntimeException implements Exception
 {
     /**
      * @var array

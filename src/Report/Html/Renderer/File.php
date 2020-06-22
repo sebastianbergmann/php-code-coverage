@@ -9,6 +9,80 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const ENT_COMPAT;
+use const ENT_HTML401;
+use const ENT_SUBSTITUTE;
+use const T_ABSTRACT;
+use const T_ARRAY;
+use const T_AS;
+use const T_BREAK;
+use const T_CALLABLE;
+use const T_CASE;
+use const T_CATCH;
+use const T_CLASS;
+use const T_CLONE;
+use const T_COMMENT;
+use const T_CONTINUE;
+use const T_DEFAULT;
+use const T_DOC_COMMENT;
+use const T_ECHO;
+use const T_ELSE;
+use const T_ELSEIF;
+use const T_EMPTY;
+use const T_ENDDECLARE;
+use const T_ENDFOR;
+use const T_ENDFOREACH;
+use const T_ENDIF;
+use const T_ENDSWITCH;
+use const T_ENDWHILE;
+use const T_EXIT;
+use const T_EXTENDS;
+use const T_FINAL;
+use const T_FINALLY;
+use const T_FOREACH;
+use const T_FUNCTION;
+use const T_GLOBAL;
+use const T_IF;
+use const T_IMPLEMENTS;
+use const T_INCLUDE;
+use const T_INCLUDE_ONCE;
+use const T_INLINE_HTML;
+use const T_INSTANCEOF;
+use const T_INSTEADOF;
+use const T_INTERFACE;
+use const T_ISSET;
+use const T_LOGICAL_AND;
+use const T_LOGICAL_OR;
+use const T_LOGICAL_XOR;
+use const T_NAMESPACE;
+use const T_NEW;
+use const T_PRIVATE;
+use const T_PROTECTED;
+use const T_PUBLIC;
+use const T_REQUIRE;
+use const T_REQUIRE_ONCE;
+use const T_RETURN;
+use const T_STATIC;
+use const T_THROW;
+use const T_TRAIT;
+use const T_TRY;
+use const T_UNSET;
+use const T_USE;
+use const T_VAR;
+use const T_WHILE;
+use const T_YIELD;
+use function array_key_exists;
+use function array_pop;
+use function count;
+use function explode;
+use function file_get_contents;
+use function htmlspecialchars;
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function substr;
+use function token_get_all;
+use function trim;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Percentage;
 use SebastianBergmann\Template\Template;
@@ -21,7 +95,7 @@ final class File extends Renderer
     /**
      * @var int
      */
-    private $htmlSpecialCharsFlags = \ENT_COMPAT | \ENT_HTML401 | \ENT_SUBSTITUTE;
+    private $htmlSpecialCharsFlags = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
 
     public function render(FileNode $node, string $file): void
     {
@@ -258,11 +332,11 @@ final class File extends Renderer
         return $this->renderItemTemplate(
             $template,
             [
-                'name'                         => \sprintf(
+                'name'                         => sprintf(
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
                     $item['startLine'],
-                    \htmlspecialchars($item['signature'], $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($item['signature'], $this->htmlSpecialCharsFlags),
                     $item['functionName'] ?? $item['methodName']
                 ),
                 'numMethods'                      => $numMethods,
@@ -299,8 +373,8 @@ final class File extends Renderer
             $popoverContent = '';
             $popoverTitle   = '';
 
-            if (\array_key_exists($i, $coverageData)) {
-                $numTests = ($coverageData[$i] ? \count($coverageData[$i]) : 0);
+            if (array_key_exists($i, $coverageData)) {
+                $numTests = ($coverageData[$i] ? count($coverageData[$i]) : 0);
 
                 if ($coverageData[$i] === null) {
                     $trClass = ' class="warning"';
@@ -360,10 +434,10 @@ final class File extends Renderer
                                 $testCSS = '';
                         }
 
-                        $popoverContent .= \sprintf(
+                        $popoverContent .= sprintf(
                             '<li%s>%s</li>',
                             $testCSS,
-                            \htmlspecialchars($test, $this->htmlSpecialCharsFlags)
+                            htmlspecialchars($test, $this->htmlSpecialCharsFlags)
                         );
                     }
 
@@ -375,14 +449,14 @@ final class File extends Renderer
             $popover = '';
 
             if (!empty($popoverTitle)) {
-                $popover = \sprintf(
+                $popover = sprintf(
                     ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
                     $popoverTitle,
-                    \htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
+                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
                 );
             }
 
-            $lines .= \sprintf(
+            $lines .= sprintf(
                 '     <tr%s><td%s><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>' . "\n",
                 $trClass,
                 $popover,
@@ -403,28 +477,28 @@ final class File extends Renderer
      */
     private function loadFile($file): array
     {
-        $buffer              = \file_get_contents($file);
-        $tokens              = \token_get_all($buffer);
+        $buffer              = file_get_contents($file);
+        $tokens              = token_get_all($buffer);
         $result              = [''];
         $i                   = 0;
         $stringFlag          = false;
-        $fileEndsWithNewLine = \substr($buffer, -1) == "\n";
+        $fileEndsWithNewLine = substr($buffer, -1) == "\n";
 
         unset($buffer);
 
         foreach ($tokens as $j => $token) {
-            if (\is_string($token)) {
+            if (is_string($token)) {
                 if ($token === '"' && $tokens[$j - 1] !== '\\') {
-                    $result[$i] .= \sprintf(
+                    $result[$i] .= sprintf(
                         '<span class="string">%s</span>',
-                        \htmlspecialchars($token, $this->htmlSpecialCharsFlags)
+                        htmlspecialchars($token, $this->htmlSpecialCharsFlags)
                     );
 
                     $stringFlag = !$stringFlag;
                 } else {
-                    $result[$i] .= \sprintf(
+                    $result[$i] .= sprintf(
                         '<span class="keyword">%s</span>',
-                        \htmlspecialchars($token, $this->htmlSpecialCharsFlags)
+                        htmlspecialchars($token, $this->htmlSpecialCharsFlags)
                     );
                 }
 
@@ -433,92 +507,92 @@ final class File extends Renderer
 
             [$token, $value] = $token;
 
-            $value = \str_replace(
+            $value = str_replace(
                 ["\t", ' '],
                 ['&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'],
-                \htmlspecialchars($value, $this->htmlSpecialCharsFlags)
+                htmlspecialchars($value, $this->htmlSpecialCharsFlags)
             );
 
             if ($value === "\n") {
                 $result[++$i] = '';
             } else {
-                $lines = \explode("\n", $value);
+                $lines = explode("\n", $value);
 
                 foreach ($lines as $jj => $line) {
-                    $line = \trim($line);
+                    $line = trim($line);
 
                     if ($line !== '') {
                         if ($stringFlag) {
                             $colour = 'string';
                         } else {
                             switch ($token) {
-                                case \T_INLINE_HTML:
+                                case T_INLINE_HTML:
                                     $colour = 'html';
 
                                     break;
 
-                                case \T_COMMENT:
-                                case \T_DOC_COMMENT:
+                                case T_COMMENT:
+                                case T_DOC_COMMENT:
                                     $colour = 'comment';
 
                                     break;
 
-                                case \T_ABSTRACT:
-                                case \T_ARRAY:
-                                case \T_AS:
-                                case \T_BREAK:
-                                case \T_CALLABLE:
-                                case \T_CASE:
-                                case \T_CATCH:
-                                case \T_CLASS:
-                                case \T_CLONE:
-                                case \T_CONTINUE:
-                                case \T_DEFAULT:
-                                case \T_ECHO:
-                                case \T_ELSE:
-                                case \T_ELSEIF:
-                                case \T_EMPTY:
-                                case \T_ENDDECLARE:
-                                case \T_ENDFOR:
-                                case \T_ENDFOREACH:
-                                case \T_ENDIF:
-                                case \T_ENDSWITCH:
-                                case \T_ENDWHILE:
-                                case \T_EXIT:
-                                case \T_EXTENDS:
-                                case \T_FINAL:
-                                case \T_FINALLY:
-                                case \T_FOREACH:
-                                case \T_FUNCTION:
-                                case \T_GLOBAL:
-                                case \T_IF:
-                                case \T_IMPLEMENTS:
-                                case \T_INCLUDE:
-                                case \T_INCLUDE_ONCE:
-                                case \T_INSTANCEOF:
-                                case \T_INSTEADOF:
-                                case \T_INTERFACE:
-                                case \T_ISSET:
-                                case \T_LOGICAL_AND:
-                                case \T_LOGICAL_OR:
-                                case \T_LOGICAL_XOR:
-                                case \T_NAMESPACE:
-                                case \T_NEW:
-                                case \T_PRIVATE:
-                                case \T_PROTECTED:
-                                case \T_PUBLIC:
-                                case \T_REQUIRE:
-                                case \T_REQUIRE_ONCE:
-                                case \T_RETURN:
-                                case \T_STATIC:
-                                case \T_THROW:
-                                case \T_TRAIT:
-                                case \T_TRY:
-                                case \T_UNSET:
-                                case \T_USE:
-                                case \T_VAR:
-                                case \T_WHILE:
-                                case \T_YIELD:
+                                case T_ABSTRACT:
+                                case T_ARRAY:
+                                case T_AS:
+                                case T_BREAK:
+                                case T_CALLABLE:
+                                case T_CASE:
+                                case T_CATCH:
+                                case T_CLASS:
+                                case T_CLONE:
+                                case T_CONTINUE:
+                                case T_DEFAULT:
+                                case T_ECHO:
+                                case T_ELSE:
+                                case T_ELSEIF:
+                                case T_EMPTY:
+                                case T_ENDDECLARE:
+                                case T_ENDFOR:
+                                case T_ENDFOREACH:
+                                case T_ENDIF:
+                                case T_ENDSWITCH:
+                                case T_ENDWHILE:
+                                case T_EXIT:
+                                case T_EXTENDS:
+                                case T_FINAL:
+                                case T_FINALLY:
+                                case T_FOREACH:
+                                case T_FUNCTION:
+                                case T_GLOBAL:
+                                case T_IF:
+                                case T_IMPLEMENTS:
+                                case T_INCLUDE:
+                                case T_INCLUDE_ONCE:
+                                case T_INSTANCEOF:
+                                case T_INSTEADOF:
+                                case T_INTERFACE:
+                                case T_ISSET:
+                                case T_LOGICAL_AND:
+                                case T_LOGICAL_OR:
+                                case T_LOGICAL_XOR:
+                                case T_NAMESPACE:
+                                case T_NEW:
+                                case T_PRIVATE:
+                                case T_PROTECTED:
+                                case T_PUBLIC:
+                                case T_REQUIRE:
+                                case T_REQUIRE_ONCE:
+                                case T_RETURN:
+                                case T_STATIC:
+                                case T_THROW:
+                                case T_TRAIT:
+                                case T_TRY:
+                                case T_UNSET:
+                                case T_USE:
+                                case T_VAR:
+                                case T_WHILE:
+                                case T_YIELD:
                                     $colour = 'keyword';
 
                                     break;
@@ -528,7 +602,7 @@ final class File extends Renderer
                             }
                         }
 
-                        $result[$i] .= \sprintf(
+                        $result[$i] .= sprintf(
                             '<span class="%s">%s</span>',
                             $colour,
                             $line
@@ -543,7 +617,7 @@ final class File extends Renderer
         }
 
         if ($fileEndsWithNewLine) {
-            unset($result[\count($result) - 1]);
+            unset($result[count($result) - 1]);
         }
 
         return $result;
@@ -551,13 +625,13 @@ final class File extends Renderer
 
     private function abbreviateClassName(string $className): string
     {
-        $tmp = \explode('\\', $className);
+        $tmp = explode('\\', $className);
 
-        if (\count($tmp) > 1) {
-            $className = \sprintf(
+        if (count($tmp) > 1) {
+            $className = sprintf(
                 '<abbr title="%s">%s</abbr>',
                 $className,
-                \array_pop($tmp)
+                array_pop($tmp)
             );
         }
 

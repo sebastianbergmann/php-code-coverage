@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
+use const PHP_SAPI;
+use function extension_loaded;
+use function ini_get;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
@@ -18,15 +21,15 @@ final class PcovDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (\PHP_SAPI !== 'cli') {
+        if (PHP_SAPI !== 'cli') {
             $this->markTestSkipped('This test requires the PHP commandline interpreter');
         }
 
-        if (!\extension_loaded('pcov')) {
+        if (!extension_loaded('pcov')) {
             $this->markTestSkipped('This test requires the PCOV extension to be loaded');
         }
 
-        if (!\ini_get('pcov.enabled')) {
+        if (!ini_get('pcov.enabled')) {
             $this->markTestSkipped('This test requires the PCOV extension to be enabled');
         }
     }

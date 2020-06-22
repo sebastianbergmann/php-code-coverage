@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_keys;
+use function file_exists;
+use function realpath;
+use function strpos;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
 final class Filter
@@ -42,7 +46,7 @@ final class Filter
 
     public function includeFile(string $filename): void
     {
-        $filename = \realpath($filename);
+        $filename = realpath($filename);
 
         if (!$filename) {
             return;
@@ -60,7 +64,7 @@ final class Filter
 
     public function excludeFile(string $filename): void
     {
-        $filename = \realpath($filename);
+        $filename = realpath($filename);
 
         if (!$filename || !isset($this->files[$filename])) {
             return;
@@ -76,17 +80,17 @@ final class Filter
         }
 
         if ($filename === '-' ||
-            \strpos($filename, 'vfs://') === 0 ||
-            \strpos($filename, 'xdebug://debug-eval') !== false ||
-            \strpos($filename, 'eval()\'d code') !== false ||
-            \strpos($filename, 'runtime-created function') !== false ||
-            \strpos($filename, 'runkit created function') !== false ||
-            \strpos($filename, 'assert code') !== false ||
-            \strpos($filename, 'regexp code') !== false ||
-            \strpos($filename, 'Standard input code') !== false) {
+            strpos($filename, 'vfs://') === 0 ||
+            strpos($filename, 'xdebug://debug-eval') !== false ||
+            strpos($filename, 'eval()\'d code') !== false ||
+            strpos($filename, 'runtime-created function') !== false ||
+            strpos($filename, 'runkit created function') !== false ||
+            strpos($filename, 'assert code') !== false ||
+            strpos($filename, 'regexp code') !== false ||
+            strpos($filename, 'Standard input code') !== false) {
             $isFile = false;
         } else {
-            $isFile = \file_exists($filename);
+            $isFile = file_exists($filename);
         }
 
         $this->isFileCache[$filename] = $isFile;
@@ -108,7 +112,7 @@ final class Filter
      */
     public function files(): array
     {
-        return \array_keys($this->files);
+        return array_keys($this->files);
     }
 
     public function isEmpty(): bool

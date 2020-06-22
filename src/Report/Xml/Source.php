@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use DOMElement;
 use TheSeer\Tokenizer\NamespaceUri;
 use TheSeer\Tokenizer\Tokenizer;
 use TheSeer\Tokenizer\XMLSerializer;
@@ -18,10 +19,10 @@ use TheSeer\Tokenizer\XMLSerializer;
  */
 final class Source
 {
-    /** @var \DOMElement */
+    /** @var DOMElement */
     private $context;
 
-    public function __construct(\DOMElement $context)
+    public function __construct(DOMElement $context)
     {
         $this->context = $context;
     }

@@ -9,6 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function is_dir;
+use function mkdir;
+use function sprintf;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -19,11 +23,11 @@ final class Directory
      */
     public static function create(string $directory): void
     {
-        $success = !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
+        $success = !(!is_dir($directory) && !@mkdir($directory, 0777, true) && !is_dir($directory));
 
         if (!$success) {
             throw new DirectoryCouldNotBeCreatedException(
-                \sprintf(
+                sprintf(
                     'Directory "%s" could not be created',
                     $directory
                 )

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\Environment\Runtime;
 
@@ -206,11 +207,11 @@ final class CodeCoverageTest extends TestCase
     }
 
     /**
-     * @return \ReflectionMethod
+     * @return ReflectionMethod
      */
     private function getLinesToBeIgnored()
     {
-        $getLinesToBeIgnored = new \ReflectionMethod(
+        $getLinesToBeIgnored = new ReflectionMethod(
             'SebastianBergmann\CodeCoverage\CodeCoverage',
             'getLinesToBeIgnored'
         );

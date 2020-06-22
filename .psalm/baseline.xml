@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.11.5@3c60609c218d4d4b3b257728b8089094e5c6c6c2">
+<files psalm-version="3.11.6@7fc1f50f54bd6b174b1c43a37c1b0b151915d55c">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="2">
-      <code>!\is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
+      <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
       <code>$id === null</code>
     </DocblockTypeContradiction>
     <InternalMethod occurrences="5">
@@ -23,7 +23,7 @@
       <code>$currentId</code>
     </PropertyNotSetInConstructor>
     <RedundantConditionGivenDocblockType occurrences="1">
-      <code>\is_array($linesToBeCovered)</code>
+      <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
     <UnresolvableInclude occurrences="1">
       <code>include_once $file</code>
@@ -42,18 +42,18 @@
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
-      <code>\XDEBUG_CC_UNUSED</code>
-      <code>\XDEBUG_CC_DEAD_CODE</code>
-      <code>\XDEBUG_CC_BRANCH_CHECK</code>
+      <code>XDEBUG_CC_UNUSED</code>
+      <code>XDEBUG_CC_DEAD_CODE</code>
+      <code>XDEBUG_CC_BRANCH_CHECK</code>
     </UndefinedConstant>
   </file>
   <file src="src/Driver/Xdebug3Driver.php">
     <UndefinedConstant occurrences="5">
-      <code>\XDEBUG_FILTER_CODE_COVERAGE</code>
-      <code>\XDEBUG_PATH_INCLUDE</code>
-      <code>\XDEBUG_CC_UNUSED</code>
-      <code>\XDEBUG_CC_DEAD_CODE</code>
-      <code>\XDEBUG_CC_BRANCH_CHECK</code>
+      <code>XDEBUG_FILTER_CODE_COVERAGE</code>
+      <code>XDEBUG_PATH_INCLUDE</code>
+      <code>XDEBUG_CC_UNUSED</code>
+      <code>XDEBUG_CC_DEAD_CODE</code>
+      <code>XDEBUG_CC_BRANCH_CHECK</code>
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">

@@ -32,12 +32,12 @@
         "php": "^7.3 || ^8.0",
         "ext-dom": "*",
         "ext-xmlwriter": "*",
-        "phpunit/php-file-iterator": "^3.0",
-        "phpunit/php-token-stream": "^4.0",
-        "phpunit/php-text-template": "^2.0",
-        "sebastian/code-unit-reverse-lookup": "^2.0",
-        "sebastian/environment": "^5.0",
-        "sebastian/version": "^3.0",
+        "phpunit/php-file-iterator": "^3.0.3",
+        "phpunit/php-token-stream": "^4.0.2",
+        "phpunit/php-text-template": "^2.0.2",
+        "sebastian/code-unit-reverse-lookup": "^2.0.2",
+        "sebastian/environment": "^5.1.2",
+        "sebastian/version": "^3.0.1",
         "theseer/tokenizer": "^1.1.3"
     },
     "require-dev": {

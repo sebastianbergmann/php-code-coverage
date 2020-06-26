@@ -548,7 +548,6 @@ final class CodeCoverage
                 case PHP_Token_COMMENT::class:
                 case PHP_Token_DOC_COMMENT::class:
                     $_token = trim((string) $token);
-                    $_line  = trim($lines[$token->getLine() - 1]);
 
                     if ($_token === '// @codeCoverageIgnore' ||
                         $_token === '//@codeCoverageIgnore') {

@@ -33,7 +33,7 @@
         "ext-dom": "*",
         "ext-xmlwriter": "*",
         "phpunit/php-file-iterator": "^3.0.3",
-        "phpunit/php-token-stream": "^4.0.2",
+        "phpunit/php-token-stream": "^4.0.3",
         "phpunit/php-text-template": "^2.0.2",
         "sebastian/code-unit-reverse-lookup": "^2.0.2",
         "sebastian/environment": "^5.1.2",

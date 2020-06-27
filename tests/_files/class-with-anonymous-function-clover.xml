@@ -15,8 +15,8 @@
       <line num="14" type="stmt" count="1"/>
       <line num="17" type="stmt" count="1"/>
       <line num="18" type="stmt" count="1"/>
-      <metrics loc="19" ncloc="17" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="8" elements="10" coveredelements="8"/>
+      <metrics loc="19" ncloc="18" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="8" elements="10" coveredelements="8"/>
     </file>
-    <metrics files="1" loc="19" ncloc="17" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="8" elements="10" coveredelements="8"/>
+    <metrics files="1" loc="19" ncloc="18" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="8" elements="10" coveredelements="8"/>
   </project>
 </coverage>

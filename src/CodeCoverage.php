@@ -566,6 +566,8 @@ final class CodeCoverage
                 case PHP_Token_INTERFACE::class:
                 case PHP_Token_TRAIT::class:
                 case PHP_Token_CLASS::class:
+                    $this->ignoredLines[$fileName][] = $token->getLine(); //work around https://bugs.xdebug.org/view.php?id=1798
+                // Intentional fallthrough
                 case PHP_Token_FUNCTION::class:
                     /* @var \PHP_Token_Interface $token */
 

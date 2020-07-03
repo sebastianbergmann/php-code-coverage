@@ -156,11 +156,11 @@ final class BuilderTest extends TestCase
         $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->name());
         $this->assertEquals($expectedPath, $root->pathAsString());
-        $this->assertEquals(2, $root->numberOfExecutableLines());
+        $this->assertEquals(1, $root->numberOfExecutableLines());
         $this->assertEquals(0, $root->numberOfExecutedLines());
         $data         = $coverage->getData()->lineCoverage();
         $expectedFile = $expectedPath . DIRECTORY_SEPARATOR . 'Crash.php';
-        $this->assertSame([$expectedFile => [1 => [], 2 => []]], $data);
+        $this->assertSame([$expectedFile => [1 => []]], $data);
     }
 
     public function testBuildDirectoryStructure(): void

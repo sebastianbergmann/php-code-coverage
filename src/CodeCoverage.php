@@ -563,8 +563,6 @@ final class CodeCoverage
 
                     break;
 
-                 // Intentional fallthrough
-
                 case PHP_Token_INTERFACE::class:
                 case PHP_Token_TRAIT::class:
                 case PHP_Token_CLASS::class:

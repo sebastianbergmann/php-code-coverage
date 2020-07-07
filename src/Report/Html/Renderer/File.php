@@ -104,8 +104,9 @@ final class File extends Renderer
 
         $template->setVar(
             [
-                'items' => $this->renderItems($node),
-                'lines' => $this->renderSource($node),
+                'items'  => $this->renderItems($node),
+                'lines'  => $this->renderSource($node),
+                'legend' => '<p><span class="success"><strong>Executed</strong></span><span class="danger"><strong>Not Executed</strong></span><span class="warning"><strong>Dead Code</strong></span></p>',
             ]
         );
 

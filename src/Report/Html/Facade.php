@@ -100,7 +100,7 @@ final class Facade
 
                 DirectoryUtil::create($dir);
 
-                $file->render($node, $target . $id . '.html');
+                $file->render($node, $target . $id);
             }
         }
 

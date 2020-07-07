@@ -83,6 +83,7 @@ use function str_replace;
 use function substr;
 use function token_get_all;
 use function trim;
+use PHPUnit\Runner\BaseTestRunner;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Percentage;
 use SebastianBergmann\Template\Template;
@@ -381,14 +382,14 @@ final class File extends Renderer
                 } elseif ($numTests === 0) {
                     $trClass = ' class="danger"';
                 } else {
-                    $lineCss        = 'covered-by-large-tests';
-                    $popoverContent = '<ul>';
-
                     if ($numTests > 1) {
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
                     } else {
                         $popoverTitle = '1 test covers line ' . $i;
                     }
+
+                    $lineCss        = 'covered-by-large-tests';
+                    $popoverContent = '<ul>';
 
                     foreach ($coverageData[$i] as $test) {
                         if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
@@ -397,48 +398,7 @@ final class File extends Renderer
                             $lineCss = 'covered-by-small-tests';
                         }
 
-                        switch ($testData[$test]['status']) {
-                            case 0:
-                                switch ($testData[$test]['size']) {
-                                    case 'small':
-                                        $testCSS = ' class="covered-by-small-tests"';
-
-                                        break;
-
-                                    case 'medium':
-                                        $testCSS = ' class="covered-by-medium-tests"';
-
-                                        break;
-
-                                    default:
-                                        $testCSS = ' class="covered-by-large-tests"';
-
-                                        break;
-                                }
-
-                                break;
-
-                            case 1:
-                            case 2:
-                                $testCSS = ' class="warning"';
-
-                                break;
-
-                            case 3:
-                            case 4:
-                                $testCSS = ' class="danger"';
-
-                                break;
-
-                            default:
-                                $testCSS = '';
-                        }
-
-                        $popoverContent .= sprintf(
-                            '<li%s>%s</li>',
-                            $testCSS,
-                            htmlspecialchars($test, $this->htmlSpecialCharsFlags)
-                        );
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';
@@ -636,5 +596,53 @@ final class File extends Renderer
         }
 
         return $className;
+    }
+
+    private function createPopoverContentForTest(string $test, array $testData): string
+    {
+        switch ($testData['status']) {
+            case BaseTestRunner::STATUS_PASSED:
+                switch ($testData['size']) {
+                    case 'small':
+                        $testCSS = ' class="covered-by-small-tests"';
+
+                        break;
+
+                    case 'medium':
+                        $testCSS = ' class="covered-by-medium-tests"';
+
+                        break;
+
+                    default:
+                        $testCSS = ' class="covered-by-large-tests"';
+
+                        break;
+                }
+
+                break;
+
+            case BaseTestRunner::STATUS_SKIPPED:
+            case BaseTestRunner::STATUS_INCOMPLETE:
+            case BaseTestRunner::STATUS_RISKY:
+            case BaseTestRunner::STATUS_WARNING:
+                $testCSS = ' class="warning"';
+
+                break;
+
+            case BaseTestRunner::STATUS_FAILURE:
+            case BaseTestRunner::STATUS_ERROR:
+                $testCSS = ' class="danger"';
+
+                break;
+
+            default:
+                $testCSS = '';
+        }
+
+        return sprintf(
+            '<li%s>%s</li>',
+            $testCSS,
+            htmlspecialchars($test, $this->htmlSpecialCharsFlags)
+        );
     }
 }

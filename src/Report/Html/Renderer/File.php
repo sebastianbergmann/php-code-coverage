@@ -101,18 +101,17 @@ final class File extends Renderer
     {
         $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_branch.html' : 'file.html');
         $template     = new Template($templateName, '{{', '}}');
+        $this->setCommonTemplateVariables($template, $node);
 
         $template->setVar(
             [
                 'items'  => $this->renderItems($node),
-                'lines'  => $this->renderSource($node),
+                'lines'  => $this->renderSourceByLine($node),
                 'legend' => '<p><span class="success"><strong>Executed</strong></span><span class="danger"><strong>Not Executed</strong></span><span class="warning"><strong>Dead Code</strong></span></p>',
             ]
         );
 
-        $this->setCommonTemplateVariables($template, $node);
-
-        $template->renderTo($file);
+        $template->renderTo($file . '.html');
     }
 
     private function renderItems(FileNode $node): string
@@ -361,7 +360,7 @@ final class File extends Renderer
         );
     }
 
-    private function renderSource(FileNode $node): string
+    private function renderSourceByLine(FileNode $node): string
     {
         $coverageData = $node->lineCoverageData();
         $testData     = $node->testData();

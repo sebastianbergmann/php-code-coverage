@@ -199,7 +199,7 @@ final class File extends Renderer
 
             if ($item['executableLines'] > 0) {
                 $numClasses                   = 1;
-                $numTestedClasses             = $numTestedMethods == $numMethods ? 1 : 0;
+                $numTestedClasses             = $numTestedMethods === $numMethods ? 1 : 0;
                 $linesExecutedPercentAsString = Percentage::fromFractionAndTotal(
                     $item['executedLines'],
                     $item['executableLines']
@@ -379,7 +379,7 @@ final class File extends Renderer
 
                 if ($coverageData[$i] === null) {
                     $trClass = ' class="warning"';
-                } elseif ($numTests == 0) {
+                } elseif ($numTests === 0) {
                     $trClass = ' class="danger"';
                 } else {
                     $lineCss        = 'covered-by-large-tests';
@@ -392,9 +392,9 @@ final class File extends Renderer
                     }
 
                     foreach ($coverageData[$i] as $test) {
-                        if ($lineCss == 'covered-by-large-tests' && $testData[$test]['size'] == 'medium') {
+                        if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
                             $lineCss = 'covered-by-medium-tests';
-                        } elseif ($testData[$test]['size'] == 'small') {
+                        } elseif ($testData[$test]['size'] === 'small') {
                             $lineCss = 'covered-by-small-tests';
                         }
 
@@ -483,7 +483,7 @@ final class File extends Renderer
         $result              = [''];
         $i                   = 0;
         $stringFlag          = false;
-        $fileEndsWithNewLine = substr($buffer, -1) == "\n";
+        $fileEndsWithNewLine = substr($buffer, -1) === "\n";
 
         unset($buffer);
 

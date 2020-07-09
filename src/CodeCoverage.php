@@ -525,8 +525,6 @@ final class CodeCoverage
     {
         $this->ignoredLines[$fileName] = [];
 
-        $lines = file($fileName);
-
         if ($this->cacheTokens) {
             $tokens = PHP_Token_Stream_CachingFactory::get($fileName);
         } else {

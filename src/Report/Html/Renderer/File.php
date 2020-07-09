@@ -107,12 +107,34 @@ final class File extends Renderer
         $template->setVar(
             [
                 'items'  => $this->renderItems($node),
-                'lines'  => $this->renderSourceByLine($node),
+                'lines'  => $this->renderSourceWithLineCoverage($node),
                 'legend' => '<p><span class="success"><strong>Executed</strong></span><span class="danger"><strong>Not Executed</strong></span><span class="warning"><strong>Dead Code</strong></span></p>',
             ]
         );
 
         $template->renderTo($file . '.html');
+
+        if ($this->hasBranchCoverage) {
+            $template->setVar(
+                [
+                    'items'  => $this->renderItems($node),
+                    'lines'  => $this->renderSourceWithBranchCoverage($node),
+                    'legend' => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                ]
+            );
+
+            $template->renderTo($file . '_branch.html');
+
+            $template->setVar(
+                [
+                    'items'  => $this->renderItems($node),
+                    'lines'  => $this->renderSourceWithPathCoverage($node),
+                    'legend' => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                ]
+            );
+
+            $template->renderTo($file . '_path.html');
+        }
     }
 
     private function renderItems(FileNode $node): string
@@ -361,8 +383,11 @@ final class File extends Renderer
         );
     }
 
-    private function renderSourceByLine(FileNode $node): string
+    private function renderSourceWithLineCoverage(FileNode $node): string
     {
+        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
+        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+
         $coverageData = $node->lineCoverageData();
         $testData     = $node->testData();
         $codeLines    = $this->loadFile($node->pathAsString());
@@ -378,9 +403,9 @@ final class File extends Renderer
                 $numTests = ($coverageData[$i] ? count($coverageData[$i]) : 0);
 
                 if ($coverageData[$i] === null) {
-                    $trClass = ' class="warning"';
+                    $trClass = 'warning';
                 } elseif ($numTests === 0) {
-                    $trClass = ' class="danger"';
+                    $trClass = 'danger';
                 } else {
                     if ($numTests > 1) {
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
@@ -402,7 +427,7 @@ final class File extends Renderer
                     }
 
                     $popoverContent .= '</ul>';
-                    $trClass         = ' class="' . $lineCss . ' popin"';
+                    $trClass         = $lineCss . ' popin';
                 }
             }
 
@@ -416,20 +441,199 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= sprintf(
-                '     <tr%s><td%s><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>' . "\n",
-                $trClass,
-                $popover,
-                $i,
-                $i,
-                $i,
-                $line
-            );
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
 
             $i++;
         }
 
-        return $lines;
+        $linesTemplate->setVar(['lines' => $lines]);
+
+        return $linesTemplate->render();
+    }
+
+    private function renderSourceWithBranchCoverage(FileNode $node): string
+    {
+        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
+        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+
+        $functionCoverageData = $node->functionCoverageData();
+        $testData             = $node->testData();
+        $codeLines            = $this->loadFile($node->pathAsString());
+
+        $lineData = [];
+
+        foreach (array_keys($codeLines) as $line) {
+            $lineData[$line + 1] = [
+                'includedInBranches'    => 0,
+                'includedInHitBranches' => 0,
+                'tests'                 => [],
+            ];
+        }
+
+        foreach ($functionCoverageData as $method) {
+            foreach ($method['branches'] as $branch) {
+                foreach (range($branch['line_start'], $branch['line_end']) as $line) {
+                    if (!isset($lineData[$line])) { // blank line at end of file is sometimes included here
+                        continue;
+                    }
+
+                    $lineData[$line]['includedInBranches']++;
+
+                    if ($branch['hit']) {
+                        $lineData[$line]['includedInHitBranches']++;
+                        $lineData[$line]['tests'] = array_merge($lineData[$line]['tests'], $branch['hit']);
+                    }
+                }
+            }
+        }
+
+        $lines        = '';
+        $i            = 1;
+
+        foreach ($codeLines as $line) {
+            $trClass = '';
+            $popover = '';
+
+            if ($lineData[$i]['includedInBranches'] > 0) {
+                $lineCss = 'success';
+
+                if ($lineData[$i]['includedInHitBranches'] === 0) {
+                    $lineCss = 'danger';
+                } elseif ($lineData[$i]['includedInHitBranches'] !== $lineData[$i]['includedInBranches']) {
+                    $lineCss = 'warning';
+                }
+
+                $popoverContent = '<ul>';
+
+                if (count($lineData[$i]['tests']) === 1) {
+                    $popoverTitle = '1 test covers line ' . $i;
+                } else {
+                    $popoverTitle = count($lineData[$i]['tests']) . ' tests cover line ' . $i;
+                }
+                $popoverTitle .= '. These are covering ' . $lineData[$i]['includedInHitBranches'] . ' out of the ' . $lineData[$i]['includedInBranches'] . ' code branches.';
+
+                foreach ($lineData[$i]['tests'] as $test) {
+                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                }
+
+                $popoverContent .= '</ul>';
+                $trClass = $lineCss . ' popin';
+
+                $popover = sprintf(
+                    ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
+                    $popoverTitle,
+                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
+                );
+            }
+
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
+
+            $i++;
+        }
+
+        $linesTemplate->setVar(['lines' => $lines]);
+
+        return $linesTemplate->render();
+    }
+
+    private function renderSourceWithPathCoverage(FileNode $node): string
+    {
+        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
+        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+
+        $functionCoverageData = $node->functionCoverageData();
+        $testData             = $node->testData();
+        $codeLines            = $this->loadFile($node->pathAsString());
+
+        $lineData = [];
+
+        foreach (array_keys($codeLines) as $line) {
+            $lineData[$line + 1] = [
+                'includedInPaths'    => 0,
+                'includedInHitPaths' => 0,
+                'tests'              => [],
+            ];
+        }
+
+        foreach ($functionCoverageData as $method) {
+            foreach ($method['paths'] as $path) {
+                foreach ($path['path'] as $branchTaken) {
+                    foreach (range($method['branches'][$branchTaken]['line_start'], $method['branches'][$branchTaken]['line_end']) as $line) {
+                        if (!isset($lineData[$line])) {
+                            continue;
+                        }
+                        $lineData[$line]['includedInPaths']++;
+
+                        if ($path['hit']) {
+                            $lineData[$line]['includedInHitPaths']++;
+                            $lineData[$line]['tests'] = array_merge($lineData[$line]['tests'], $path['hit']);
+                        }
+                    }
+                }
+            }
+        }
+
+        $lines        = '';
+        $i            = 1;
+
+        foreach ($codeLines as $line) {
+            $trClass = '';
+            $popover = '';
+
+            if ($lineData[$i]['includedInPaths'] > 0) {
+                $lineCss = 'success';
+
+                if ($lineData[$i]['includedInHitPaths'] === 0) {
+                    $lineCss = 'danger';
+                } elseif ($lineData[$i]['includedInHitPaths'] !== $lineData[$i]['includedInPaths']) {
+                    $lineCss = 'warning';
+                }
+
+                $popoverContent = '<ul>';
+
+                if (count($lineData[$i]['tests']) === 1) {
+                    $popoverTitle = '1 test covers line ' . $i;
+                } else {
+                    $popoverTitle = count($lineData[$i]['tests']) . ' tests cover line ' . $i;
+                }
+                $popoverTitle .= '. These are covering ' . $lineData[$i]['includedInHitPaths'] . ' out of the ' . $lineData[$i]['includedInPaths'] . ' code paths.';
+
+                foreach ($lineData[$i]['tests'] as $test) {
+                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                }
+
+                $popoverContent .= '</ul>';
+                $trClass = $lineCss . ' popin';
+
+                $popover = sprintf(
+                    ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
+                    $popoverTitle,
+                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
+                );
+            }
+
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
+
+            $i++;
+        }
+
+        $linesTemplate->setVar(['lines' => $lines]);
+
+        return $linesTemplate->render();
+    }
+
+    private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
+    {
+        $template->setVar(
+            [
+                'lineNumber'  => $lineNumber,
+                'lineContent' => $lineContent,
+                'class'       => $class,
+                'popover'     => $popover,
+            ]
+        );
+
+        return $template->render();
     }
 
     /**

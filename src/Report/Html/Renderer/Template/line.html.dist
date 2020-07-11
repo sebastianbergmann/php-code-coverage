@@ -1,8 +1,1 @@
-    <tr class="{{class}}">
-        <td {{popover}} class="col-1">
-            <div class="text-right">
-                <a name="{{lineNumber}}"></a><a href="#{{lineNumber}}">{{lineNumber}}</a>
-            </div>
-        </td>
-        <td class="codeLine col-11">{{lineContent}}</td>
-    </tr>
+    <tr class="{{class}}"><td {{popover}} class="col-1 text-right"><a id="{{lineNumber}}" href="#{{lineNumber}}">{{lineNumber}}</a></td><td class="codeLine">{{lineContent}}</td></tr>

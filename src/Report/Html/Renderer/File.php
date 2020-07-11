@@ -106,9 +106,10 @@ final class File extends Renderer
 
         $template->setVar(
             [
-                'items'  => $this->renderItems($node),
-                'lines'  => $this->renderSourceWithLineCoverage($node),
-                'legend' => '<p><span class="success"><strong>Executed</strong></span><span class="danger"><strong>Not Executed</strong></span><span class="warning"><strong>Dead Code</strong></span></p>',
+                'items'     => $this->renderItems($node),
+                'lines'     => $this->renderSourceWithLineCoverage($node),
+                'legend'    => '<p><span class="success"><strong>Executed</strong></span><span class="danger"><strong>Not Executed</strong></span><span class="warning"><strong>Dead Code</strong></span></p>',
+                'structure' => '',
             ]
         );
 
@@ -117,9 +118,10 @@ final class File extends Renderer
         if ($this->hasBranchCoverage) {
             $template->setVar(
                 [
-                    'items'  => $this->renderItems($node),
-                    'lines'  => $this->renderSourceWithBranchCoverage($node),
-                    'legend' => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'items'     => $this->renderItems($node),
+                    'lines'     => $this->renderSourceWithBranchCoverage($node),
+                    'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'structure' => $this->renderBranchStructure($node),
                 ]
             );
 
@@ -127,9 +129,10 @@ final class File extends Renderer
 
             $template->setVar(
                 [
-                    'items'  => $this->renderItems($node),
-                    'lines'  => $this->renderSourceWithPathCoverage($node),
-                    'legend' => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'items'     => $this->renderItems($node),
+                    'lines'     => $this->renderSourceWithPathCoverage($node),
+                    'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'structure' => $this->renderPathStructure($node),
                 ]
             );
 
@@ -622,6 +625,194 @@ final class File extends Renderer
         return $linesTemplate->render();
     }
 
+    private function renderBranchStructure(FileNode $node): string
+    {
+        $branchesTemplate = new Template($this->templatePath . 'branches.html.dist', '{{', '}}');
+
+        $coverageData = $node->functionCoverageData();
+        $testData     = $node->testData();
+        $codeLines    = $this->loadFile($node->pathAsString());
+        $branches     = '';
+
+        ksort($coverageData);
+
+        foreach ($coverageData as $methodName => $methodData) {
+            if (!$methodData['branches']) {
+                continue;
+            }
+
+            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars('branches_' . $methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+
+            foreach ($methodData['branches'] as $branch) {
+                $branches .= $this->renderBranchLines($branch, $codeLines, $testData);
+            }
+        }
+
+        $branchesTemplate->setVar(['branches' => $branches]);
+
+        return $branchesTemplate->render();
+    }
+
+    private function renderBranchLines(array $branch, array $codeLines, array $testData): string
+    {
+        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
+        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+
+        $lines = '';
+
+        $branchLines = range($branch['line_start'], $branch['line_end']);
+        sort($branchLines); // sometimes end_line < start_line
+
+        foreach ($branchLines as $line) {
+            if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
+                continue;
+            }
+
+            $popoverContent = '';
+            $popoverTitle   = '';
+
+            $numTests = count($branch['hit']);
+
+            if ($numTests === 0) {
+                $trClass = 'danger';
+            } else {
+                $lineCss        = 'covered-by-large-tests';
+                $popoverContent = '<ul>';
+
+                if ($numTests > 1) {
+                    $popoverTitle = $numTests . ' tests cover this branch';
+                } else {
+                    $popoverTitle = '1 test covers this branch';
+                }
+
+                foreach ($branch['hit'] as $test) {
+                    if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
+                        $lineCss = 'covered-by-medium-tests';
+                    } elseif ($testData[$test]['size'] === 'small') {
+                        $lineCss = 'covered-by-small-tests';
+                    }
+
+                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                }
+                $trClass = $lineCss . ' popin';
+            }
+
+            $popover = '';
+
+            if (!empty($popoverTitle)) {
+                $popover = sprintf(
+                    ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
+                    $popoverTitle,
+                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
+                );
+            }
+
+            $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
+        }
+
+        $linesTemplate->setVar(['lines' => $lines]);
+
+        return $linesTemplate->render();
+    }
+
+    private function renderPathStructure(FileNode $node): string
+    {
+        $pathsTemplate = new Template($this->templatePath . 'paths.html.dist', '{{', '}}');
+
+        $coverageData = $node->functionCoverageData();
+        $testData     = $node->testData();
+        $codeLines    = $this->loadFile($node->pathAsString());
+        $paths        = '';
+
+        ksort($coverageData);
+
+        foreach ($coverageData as $methodName => $methodData) {
+            if (!$methodData['paths']) {
+                continue;
+            }
+
+            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars('paths_' . $methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+
+            if (count($methodData['paths']) > 250) {
+                $paths .= '<p>' . count($methodData['paths']) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
+
+                continue;
+            }
+
+            foreach ($methodData['paths'] as $path) {
+                $paths .= $this->renderPathLines($path, $methodData['branches'], $codeLines, $testData);
+            }
+        }
+
+        $pathsTemplate->setVar(['paths' => $paths]);
+
+        return $pathsTemplate->render();
+    }
+
+    private function renderPathLines(array $path, array $branches, array $codeLines, array $testData): string
+    {
+        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
+        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+
+        $lines = '';
+
+        foreach ($path['path'] as $branchId) {
+            $branchLines = range($branches[$branchId]['line_start'], $branches[$branchId]['line_end']);
+            sort($branchLines); // sometimes end_line < start_line
+
+            foreach ($branchLines as $line) {
+                if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
+                    continue;
+                }
+
+                $popoverContent = '';
+                $popoverTitle   = '';
+
+                $numTests = count($path['hit']);
+
+                if ($numTests === 0) {
+                    $trClass = 'danger';
+                } else {
+                    $lineCss        = 'covered-by-large-tests';
+                    $popoverContent = '<ul>';
+
+                    if ($numTests > 1) {
+                        $popoverTitle = $numTests . ' tests cover this path';
+                    } else {
+                        $popoverTitle = '1 test covers this path';
+                    }
+
+                    foreach ($path['hit'] as $test) {
+                        if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
+                            $lineCss = 'covered-by-medium-tests';
+                        } elseif ($testData[$test]['size'] === 'small') {
+                            $lineCss = 'covered-by-small-tests';
+                        }
+
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                    }
+                    $trClass = $lineCss . ' popin';
+                }
+
+                $popover = '';
+
+                if (!empty($popoverTitle)) {
+                    $popover = sprintf(
+                        ' data-title="%s" data-content="%s" data-placement="top" data-html="true"',
+                        $popoverTitle,
+                        htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags)
+                    );
+                }
+
+                $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
+            }
+        }
+
+        $linesTemplate->setVar(['lines' => $lines]);
+
+        return $linesTemplate->render();
+    }
+
     private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
     {
         $template->setVar(
@@ -800,6 +991,17 @@ final class File extends Renderer
         }
 
         return $className;
+    }
+
+    private function abbreviateMethodName(string $methodName): string
+    {
+        $parts = explode('->', $methodName);
+
+        if (count($parts) === 2) {
+            return $this->abbreviateClassName($parts[0]) . '->' . $parts[1];
+        }
+
+        return $methodName;
     }
 
     private function createPopoverContentForTest(string $test, array $testData): string

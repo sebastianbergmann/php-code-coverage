@@ -65,7 +65,7 @@ td.small {
 
 td.codeLine {
  font-family: "Source Code Pro", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
- white-space: pre;
+ white-space: pre-wrap;
 }
 
 td span.comment {
@@ -119,4 +119,9 @@ svg text {
  height:245px;
  overflow-x:hidden;
  overflow-y:scroll;
+}
+
+table + .structure-heading {
+ border-top: 1px solid lightgrey;
+ padding-top: 0.5em;
 }

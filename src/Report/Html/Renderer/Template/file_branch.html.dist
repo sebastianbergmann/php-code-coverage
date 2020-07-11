@@ -46,6 +46,7 @@
     </table>
    </div>
 {{lines}}
+{{structure}}
    <footer>
     <hr/>
     <h4>Legend</h4>

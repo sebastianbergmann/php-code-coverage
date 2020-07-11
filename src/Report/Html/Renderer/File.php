@@ -641,7 +641,7 @@ final class File extends Renderer
                 continue;
             }
 
-            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars('branches_' . $methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
 
             foreach ($methodData['branches'] as $branch) {
                 $branches .= $this->renderBranchLines($branch, $codeLines, $testData);
@@ -731,7 +731,7 @@ final class File extends Renderer
                 continue;
             }
 
-            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars('paths_' . $methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
 
             if (count($methodData['paths']) > 250) {
                 $paths .= '<p>' . count($methodData['paths']) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';

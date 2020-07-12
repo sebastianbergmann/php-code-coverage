@@ -267,16 +267,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             [
-                11,
                 12,
                 14,
-                15,
-                17,
                 18,
-                19,
-                20,
-                21,
-                22,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
@@ -289,7 +282,6 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertEquals(
             [
                 12,
-                14,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
@@ -301,16 +293,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             [
-                6,
                 7,
                 9,
-                10,
-                12,
                 13,
-                14,
-                15,
-                16,
-                17,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
@@ -322,9 +307,6 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             [
-                12,
-                13,
-                17,
                 19,
                 22,
                 26,
@@ -333,7 +315,6 @@ final class RawCodeCoverageDataTest extends TestCase
                 32,
                 33,
                 35,
-                36,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );

@@ -18,19 +18,11 @@ use function array_merge;
 use function array_unique;
 use function file_get_contents;
 use function is_array;
-use function range;
 use function sort;
-use function strpos;
 use function token_get_all;
 use function trim;
-use PhpParser\Builder\Trait_;
 use PhpParser\Error;
-use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 
 final class IgnoredLinesFinder
@@ -124,51 +116,7 @@ final class IgnoredLinesFinder
             assert($nodes !== null);
 
             $traverser = new NodeTraverser;
-
-            $visitor = new class($ignoreDeprecatedCode) extends NodeVisitorAbstract {
-                /**
-                 * @psalm-var list<int>
-                 */
-                private $ignoredLines = [];
-
-                private $ignoreDeprecated;
-
-                public function __construct(bool $ignoreDeprecated)
-                {
-                    $this->ignoreDeprecated = $ignoreDeprecated;
-                }
-
-                public function enterNode(Node $node): void
-                {
-                    if (!$node instanceof Class_ &&
-                        !$node instanceof Trait_ &&
-                        !$node instanceof ClassMethod &&
-                        !$node instanceof Function_) {
-                        return;
-                    }
-
-                    $docComment = $node->getDocComment();
-
-                    if ($docComment === null) {
-                        return;
-                    }
-
-                    if (strpos($docComment->getText(), '@codeCoverageIgnore') !== false) {
-                        $this->ignoredLines = array_merge(
-                            $this->ignoredLines,
-                            range($node->getStartLine(), $node->getEndLine())
-                        );
-                    }
-                }
-
-                /**
-                 * @psalm-return list<int>
-                 */
-                public function ignoredLines(): array
-                {
-                    return $this->ignoredLines;
-                }
-            };
+            $visitor   = new IgnoredLinesFindingVisitor($ignoreDeprecatedCode);
 
             $traverser->addVisitor($visitor);
 

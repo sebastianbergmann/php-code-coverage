@@ -57,6 +57,13 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
                 range($node->getStartLine(), $node->getEndLine())
             );
         }
+
+        if ($this->ignoreDeprecated && strpos($docComment->getText(), '@deprecated') !== false) {
+            $this->ignoredLines = array_merge(
+                $this->ignoredLines,
+                range($node->getStartLine(), $node->getEndLine())
+            );
+        }
     }
 
     /**

@@ -148,21 +148,6 @@ final class BuilderTest extends TestCase
         $this->assertEquals([], $root->functions());
     }
 
-    public function testNotCrashParsing(): void
-    {
-        $coverage = $this->getCoverageForCrashParsing();
-        $root     = $coverage->getReport();
-
-        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
-        $this->assertEquals($expectedPath, $root->name());
-        $this->assertEquals($expectedPath, $root->pathAsString());
-        $this->assertEquals(1, $root->numberOfExecutableLines());
-        $this->assertEquals(0, $root->numberOfExecutedLines());
-        $data         = $coverage->getData()->lineCoverage();
-        $expectedFile = $expectedPath . DIRECTORY_SEPARATOR . 'Crash.php';
-        $this->assertSame([$expectedFile => [1 => []]], $data);
-    }
-
     public function testBuildDirectoryStructure(): void
     {
         $s = DIRECTORY_SEPARATOR;

@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\Environment\Runtime;
 
@@ -128,102 +127,5 @@ final class CodeCoverageTest extends TestCase
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getData()->lineCoverage()
         );
-    }
-
-    public function testGetLinesToBeIgnored(): void
-    {
-        $this->assertEquals(
-            [
-                3,
-                4,
-                5,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16,
-                18,
-                23,
-                24,
-                25,
-                30,
-                33,
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnored2(): void
-    {
-        $this->assertEquals(
-            [],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_without_ignore.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnored3(): void
-    {
-        $this->assertEquals(
-            [
-                3,
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnoredOneLineAnnotations(): void
-    {
-        $this->assertEquals(
-            [
-                4,
-                9,
-                29,
-                31,
-                32,
-                33,
-            ],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_oneline_annotations.php'
-            )
-        );
-    }
-
-    public function testGetLinesToBeIgnoredWhenIgnoreIsDisabled(): void
-    {
-        $this->coverage->disableAnnotationsForIgnoringCode();
-
-        $this->assertEquals(
-            [],
-            $this->getLinesToBeIgnored()->invoke(
-                $this->coverage,
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
-        );
-    }
-
-    /**
-     * @return ReflectionMethod
-     */
-    private function getLinesToBeIgnored()
-    {
-        $getLinesToBeIgnored = new ReflectionMethod(
-            'SebastianBergmann\CodeCoverage\CodeCoverage',
-            'getLinesToBeIgnored'
-        );
-
-        $getLinesToBeIgnored->setAccessible(true);
-
-        return $getLinesToBeIgnored;
     }
 }

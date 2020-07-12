@@ -12,11 +12,11 @@ namespace SebastianBergmann\CodeCoverage;
 use function array_merge;
 use function range;
 use function strpos;
-use PhpParser\Builder\Trait_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
 final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract

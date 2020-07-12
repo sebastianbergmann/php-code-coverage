@@ -58,11 +58,6 @@ final class CodeCoverage
     /**
      * @var bool
      */
-    private $cacheTokens = false;
-
-    /**
-     * @var bool
-     */
     private $checkForUnintentionallyCoveredCode = false;
 
     /**
@@ -320,19 +315,26 @@ final class CodeCoverage
         $this->tests = array_merge($this->tests, $that->getTests());
     }
 
+    /**
+     * @todo remove
+     */
     public function enableTokenCaching(): void
     {
-        $this->cacheTokens = true;
     }
 
+    /**
+     * @todo remove
+     */
     public function disableTokenCaching(): void
     {
-        $this->cacheTokens = false;
     }
 
+    /**
+     * @todo remove
+     */
     public function cachesTokens(): bool
     {
-        return $this->cacheTokens;
+        return false;
     }
 
     public function enableCheckForUnintentionallyCoveredCode(): void

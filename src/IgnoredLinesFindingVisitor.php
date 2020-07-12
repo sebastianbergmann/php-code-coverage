@@ -46,6 +46,10 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
+        if ($node instanceof Class_ && $node->isAnonymous()) {
+            return null;
+        }
+
         $docComment = $node->getDocComment();
 
         if ($docComment === null) {

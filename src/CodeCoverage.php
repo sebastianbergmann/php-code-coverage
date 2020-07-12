@@ -22,8 +22,6 @@ use function file_exists;
 use function get_class;
 use function is_array;
 use function sort;
-use PHP_Token_Stream;
-use PHP_Token_Stream_CachingFactory;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
@@ -498,13 +496,7 @@ final class CodeCoverage
 
         foreach ($uncoveredFiles as $uncoveredFile) {
             if (file_exists($uncoveredFile)) {
-                if ($this->cacheTokens) {
-                    $tokens = PHP_Token_Stream_CachingFactory::get($uncoveredFile);
-                } else {
-                    $tokens = new PHP_Token_Stream($uncoveredFile);
-                }
-
-                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile, $tokens), self::UNCOVERED_FILES);
+                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile), self::UNCOVERED_FILES);
             }
         }
     }

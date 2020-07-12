@@ -100,8 +100,9 @@ final class RawCodeCoverageData
         return new self($lineCoverage, $functionCoverage);
     }
 
-    public static function fromUncoveredFile(string $filename, PHP_Token_Stream $tokens): self
+    public static function fromUncoveredFile(string $filename): self
     {
+        $tokens       = new PHP_Token_Stream($filename);
         $lineCoverage = [];
 
         $lines     = file($filename);

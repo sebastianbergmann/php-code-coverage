@@ -327,14 +327,6 @@ final class CodeCoverage
     {
     }
 
-    /**
-     * @todo remove
-     */
-    public function cachesTokens(): bool
-    {
-        return false;
-    }
-
     public function enableCheckForUnintentionallyCoveredCode(): void
     {
         $this->checkForUnintentionallyCoveredCode = true;

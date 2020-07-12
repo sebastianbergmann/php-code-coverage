@@ -160,9 +160,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $directory;
     }
 
-    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens): File
+    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData): File
     {
-        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData, $cacheTokens);
+        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData);
 
         $this->children[] = $file;
         $this->files[]    = &$this->children[count($this->children) - 1];

@@ -16,7 +16,6 @@ use function sprintf;
 use function strpos;
 use OutOfBoundsException;
 use PHP_Token_Stream;
-use PHP_Token_Stream_CachingFactory;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -124,23 +123,17 @@ final class File extends AbstractNode
     private $numTestedFunctions;
 
     /**
-     * @var bool
-     */
-    private $cacheTokens;
-
-    /**
      * @var array
      */
     private $codeUnitsByLine = [];
 
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens)
+    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData)
     {
         parent::__construct($name, $parent);
 
         $this->lineCoverageData     = $lineCoverageData;
         $this->functionCoverageData = $functionCoverageData;
         $this->testData             = $testData;
-        $this->cacheTokens          = $cacheTokens;
 
         $this->calculateStatistics();
     }
@@ -338,11 +331,7 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        if ($this->cacheTokens) {
-            $tokens = PHP_Token_Stream_CachingFactory::get($this->pathAsString());
-        } else {
-            $tokens = new PHP_Token_Stream($this->pathAsString());
-        }
+        $tokens = new PHP_Token_Stream($this->pathAsString());
 
         $this->linesOfCode = $tokens->getLinesOfCode();
 

@@ -40,14 +40,13 @@ final class Builder
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($data),
-            $coverage->getTests(),
-            $coverage->cachesTokens()
+            $coverage->getTests()
         );
 
         return $root;
     }
 
-    private function addItems(Directory $root, array $items, array $tests, bool $cacheTokens): void
+    private function addItems(Directory $root, array $items, array $tests): void
     {
         foreach ($items as $key => $value) {
             $key = (string) $key;
@@ -56,11 +55,11 @@ final class Builder
                 $key = substr($key, 0, -2);
 
                 if (file_exists($root->pathAsString() . DIRECTORY_SEPARATOR . $key)) {
-                    $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests, $cacheTokens);
+                    $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests);
                 }
             } else {
                 $child = $root->addDirectory($key);
-                $this->addItems($child, $value, $tests, $cacheTokens);
+                $this->addItems($child, $value, $tests);
             }
         }
     }

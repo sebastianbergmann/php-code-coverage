@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
 final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
@@ -36,19 +37,19 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
         $this->ignoreDeprecated = $ignoreDeprecated;
     }
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): ?int
     {
         if (!$node instanceof Class_ &&
             !$node instanceof Trait_ &&
             !$node instanceof ClassMethod &&
             !$node instanceof Function_) {
-            return;
+            return null;
         }
 
         $docComment = $node->getDocComment();
 
         if ($docComment === null) {
-            return;
+            return null;
         }
 
         if (strpos($docComment->getText(), '@codeCoverageIgnore') !== false) {
@@ -64,6 +65,12 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
                 range($node->getStartLine(), $node->getEndLine())
             );
         }
+
+        if ($node instanceof ClassMethod || $node instanceof Function_) {
+            return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+        }
+
+        return null;
     }
 
     /**

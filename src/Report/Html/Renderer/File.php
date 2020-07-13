@@ -94,6 +94,11 @@ use SebastianBergmann\Template\Template;
 final class File extends Renderer
 {
     /**
+     * @var array
+     */
+    private static $formattedSourceCache = [];
+
+    /**
      * @var int
      */
     private $htmlSpecialCharsFlags = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
@@ -733,7 +738,7 @@ final class File extends Renderer
 
             $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
 
-            if (count($methodData['paths']) > 250) {
+            if (count($methodData['paths']) > 100) {
                 $paths .= '<p>' . count($methodData['paths']) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
 
                 continue;
@@ -827,11 +832,12 @@ final class File extends Renderer
         return $template->render();
     }
 
-    /**
-     * @param string $file
-     */
-    private function loadFile($file): array
+    private function loadFile(string $file): array
     {
+        if (isset(self::$formattedSourceCache[$file])) {
+            return self::$formattedSourceCache[$file];
+        }
+
         $buffer              = file_get_contents($file);
         $tokens              = token_get_all($buffer);
         $result              = [''];
@@ -974,6 +980,8 @@ final class File extends Renderer
         if ($fileEndsWithNewLine) {
             unset($result[count($result) - 1]);
         }
+
+        self::$formattedSourceCache[$file] = $result;
 
         return $result;
     }

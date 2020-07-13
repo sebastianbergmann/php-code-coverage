@@ -19,6 +19,7 @@ use function file;
 use function in_array;
 use function range;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesFinder;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

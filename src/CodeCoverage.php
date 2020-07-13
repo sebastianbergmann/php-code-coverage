@@ -29,6 +29,7 @@ use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFinder;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**

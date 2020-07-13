@@ -7,10 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
+
+use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \SebastianBergmann\CodeCoverage\IgnoredLinesFinder
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFinder
  */
 final class IgnoredLinesFinderTest extends TestCase
 {

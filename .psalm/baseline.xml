@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.11.6@7fc1f50f54bd6b174b1c43a37c1b0b151915d55c">
+<files psalm-version="3.12.2@7c7ebd068f8acaba211d4a2c707c4ba90874fa26">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -144,6 +144,12 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>getEndLine</code>
     </PossiblyUndefinedMethod>
+  </file>
+  <file src="src/Report/Html/Renderer/File.php">
+    <RedundantCondition occurrences="2">
+      <code>$lineData[$i]['includedInHitBranches'] === 0</code>
+      <code>$lineData[$i]['includedInHitPaths'] === 0</code>
+    </RedundantCondition>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

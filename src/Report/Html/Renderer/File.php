@@ -470,6 +470,7 @@ final class File extends Renderer
 
         $lineData = [];
 
+        /** @var int $line */
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
                 'includedInBranches'    => 0,
@@ -498,6 +499,7 @@ final class File extends Renderer
         $lines        = '';
         $i            = 1;
 
+        /** @var string $line */
         foreach ($codeLines as $line) {
             $trClass = '';
             $popover = '';
@@ -555,6 +557,7 @@ final class File extends Renderer
 
         $lineData = [];
 
+        /** @var int $line */
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
                 'includedInPaths'    => 0,
@@ -584,6 +587,7 @@ final class File extends Renderer
         $lines        = '';
         $i            = 1;
 
+        /** @var string $line */
         foreach ($codeLines as $line) {
             $trClass = '';
             $popover = '';
@@ -668,6 +672,7 @@ final class File extends Renderer
         $branchLines = range($branch['line_start'], $branch['line_end']);
         sort($branchLines); // sometimes end_line < start_line
 
+        /** @var int $line */
         foreach ($branchLines as $line) {
             if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
                 continue;
@@ -765,6 +770,7 @@ final class File extends Renderer
             $branchLines = range($branches[$branchId]['line_start'], $branches[$branchId]['line_end']);
             sort($branchLines); // sometimes end_line < start_line
 
+            /** @var int $line */
             foreach ($branchLines as $line) {
                 if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
                     continue;

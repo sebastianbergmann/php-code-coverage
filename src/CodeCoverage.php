@@ -314,20 +314,6 @@ final class CodeCoverage
         $this->tests = array_merge($this->tests, $that->getTests());
     }
 
-    /**
-     * @todo remove
-     */
-    public function enableTokenCaching(): void
-    {
-    }
-
-    /**
-     * @todo remove
-     */
-    public function disableTokenCaching(): void
-    {
-    }
-
     public function enableCheckForUnintentionallyCoveredCode(): void
     {
         $this->checkForUnintentionallyCoveredCode = true;

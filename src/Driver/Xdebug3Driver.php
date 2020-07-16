@@ -51,7 +51,7 @@ final class Xdebug3Driver extends Driver
             );
         }
 
-        if (!ini_get('xdebug.mode') || ini_get('xdebug.mode') !== 'coverage') {
+        if (!\ini_get('xdebug.mode') || !\in_array('coverage', explode(',', ini_get('xdebug.mode')))) {
             throw new Xdebug3NotEnabledException;
         }
 

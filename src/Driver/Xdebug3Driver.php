@@ -15,6 +15,7 @@ use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
 use function extension_loaded;
+use function in_array;
 use function ini_get;
 use function phpversion;
 use function sprintf;
@@ -51,7 +52,7 @@ final class Xdebug3Driver extends Driver
             );
         }
 
-        if (!\ini_get('xdebug.mode') || !\in_array('coverage', explode(',', ini_get('xdebug.mode')))) {
+        if (!ini_get('xdebug.mode') || !in_array('coverage', explode(',', ini_get('xdebug.mode')))) {
             throw new Xdebug3NotEnabledException;
         }
 

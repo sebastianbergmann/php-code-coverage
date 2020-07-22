@@ -13,6 +13,7 @@ use function array_merge;
 use function count;
 use IteratorAggregate;
 use RecursiveIteratorIterator;
+use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -50,7 +51,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private $functions;
 
     /**
-     * @var array
+     * @var LinesOfCode
      */
     private $linesOfCode;
 
@@ -160,9 +161,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $directory;
     }
 
-    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens): File
+    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData): File
     {
-        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData, $cacheTokens);
+        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData);
 
         $this->children[] = $file;
         $this->files[]    = &$this->children[count($this->children) - 1];
@@ -236,17 +237,13 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->functions;
     }
 
-    public function linesOfCode(): array
+    public function linesOfCode(): LinesOfCode
     {
         if ($this->linesOfCode === null) {
-            $this->linesOfCode = ['loc' => 0, 'cloc' => 0, 'ncloc' => 0];
+            $this->linesOfCode = new LinesOfCode(0, 0, 0, 0);
 
             foreach ($this->children as $child) {
-                $linesOfCode = $child->linesOfCode();
-
-                $this->linesOfCode['loc'] += $linesOfCode['loc'];
-                $this->linesOfCode['cloc'] += $linesOfCode['cloc'];
-                $this->linesOfCode['ncloc'] += $linesOfCode['ncloc'];
+                $this->linesOfCode = $this->linesOfCode->plus($child->linesOfCode());
             }
         }
 

@@ -131,36 +131,15 @@ final class BuilderTest extends TestCase
                     'ccn'                => 5,
                     'coverage'           => 50,
                     'crap'               => '8.12',
-                    'package'            => [
-                        'namespace'   => '',
-                        'fullPackage' => '',
-                        'category'    => '',
-                        'package'     => '',
-                        'subpackage'  => '',
-                    ],
-                    'link'      => 'BankAccount.php.html#2',
-                    'className' => 'BankAccount',
+                    'link'               => 'BankAccount.php.html#2',
+                    'className'          => 'BankAccount',
+                    'namespace'          => '',
                 ],
             ],
             $root->classes()
         );
 
         $this->assertEquals([], $root->functions());
-    }
-
-    public function testNotCrashParsing(): void
-    {
-        $coverage = $this->getCoverageForCrashParsing();
-        $root     = $coverage->getReport();
-
-        $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
-        $this->assertEquals($expectedPath, $root->name());
-        $this->assertEquals($expectedPath, $root->pathAsString());
-        $this->assertEquals(1, $root->numberOfExecutableLines());
-        $this->assertEquals(0, $root->numberOfExecutedLines());
-        $data         = $coverage->getData()->lineCoverage();
-        $expectedFile = $expectedPath . DIRECTORY_SEPARATOR . 'Crash.php';
-        $this->assertSame([$expectedFile => [1 => []]], $data);
     }
 
     public function testBuildDirectoryStructure(): void

@@ -190,15 +190,7 @@ final class Facade
         );
 
         $unitObject->setCrap((float) $unit['crap']);
-
-        $unitObject->setPackage(
-            $unit['package']['fullPackage'],
-            $unit['package']['package'],
-            $unit['package']['subpackage'],
-            $unit['package']['category']
-        );
-
-        $unitObject->setNamespace($unit['package']['namespace']);
+        $unitObject->setNamespace($unit['namespace']);
 
         foreach ($unit['methods'] as $method) {
             $methodObject = $unitObject->addMethod($method['methodName']);
@@ -237,9 +229,9 @@ final class Facade
         $loc = $node->linesOfCode();
 
         $totals->setNumLines(
-            $loc['loc'],
-            $loc['cloc'],
-            $loc['ncloc'],
+            $loc->linesOfCode(),
+            $loc->commentLinesOfCode(),
+            $loc->nonCommentLinesOfCode(),
             $node->numberOfExecutableLines(),
             $node->numberOfExecutedLines()
         );

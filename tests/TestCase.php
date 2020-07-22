@@ -1556,28 +1556,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $stub;
     }
 
-    protected function getCoverageForCrashParsing(): CodeCoverage
-    {
-        $filter = new Filter;
-        $filter->includeFile(TEST_FILES_PATH . 'Crash.php');
-
-        // This is a file with invalid syntax, so it isn't executed.
-        return new CodeCoverage(
-            $this->setUpXdebugStubForCrashParsing(),
-            $filter
-        );
-    }
-
-    protected function setUpXdebugStubForCrashParsing(): Driver
-    {
-        $stub = $this->createStub(Driver::class);
-
-        $stub->method('stop')
-             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage([]));
-
-        return $stub;
-    }
-
     protected function removeTemporaryFiles(): void
     {
         $tmpFilesIterator = new RecursiveIteratorIterator(

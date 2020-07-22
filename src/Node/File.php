@@ -11,12 +11,18 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_filter;
 use function count;
+use function file_get_contents;
 use function range;
-use function sprintf;
-use function strpos;
-use OutOfBoundsException;
-use PHP_Token_Stream;
-use PHP_Token_Stream_CachingFactory;
+use PhpParser\Error;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\ParserFactory;
+use SebastianBergmann\CodeCoverage\CrapIndex;
+use SebastianBergmann\CodeCoverage\ParserException;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor;
+use SebastianBergmann\Complexity\ParentConnectingVisitor;
+use SebastianBergmann\LinesOfCode\LineCountingVisitor;
+use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -84,9 +90,9 @@ final class File extends AbstractNode
     private $functions = [];
 
     /**
-     * @var array
+     * @var LinesOfCode
      */
-    private $linesOfCode = [];
+    private $linesOfCode;
 
     /**
      * @var int
@@ -124,23 +130,17 @@ final class File extends AbstractNode
     private $numTestedFunctions;
 
     /**
-     * @var bool
-     */
-    private $cacheTokens;
-
-    /**
      * @var array
      */
     private $codeUnitsByLine = [];
 
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, bool $cacheTokens)
+    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData)
     {
         parent::__construct($name, $parent);
 
         $this->lineCoverageData     = $lineCoverageData;
         $this->functionCoverageData = $functionCoverageData;
         $this->testData             = $testData;
-        $this->cacheTokens          = $cacheTokens;
 
         $this->calculateStatistics();
     }
@@ -180,7 +180,7 @@ final class File extends AbstractNode
         return $this->functions;
     }
 
-    public function linesOfCode(): array
+    public function linesOfCode(): LinesOfCode
     {
         return $this->linesOfCode;
     }
@@ -338,30 +338,47 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        if ($this->cacheTokens) {
-            $tokens = PHP_Token_Stream_CachingFactory::get($this->pathAsString());
-        } else {
-            $tokens = new PHP_Token_Stream($this->pathAsString());
+        $source      = file_get_contents($this->pathAsString());
+        $linesOfCode = substr_count($source, "\n");
+        $parser      = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+
+        try {
+            $nodes = $parser->parse($source);
+
+            assert($nodes !== null);
+
+            $traverser              = new NodeTraverser;
+            $lineCountingVisitor    = new LineCountingVisitor($linesOfCode);
+            $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
+
+            $traverser->addVisitor(new NameResolver);
+            $traverser->addVisitor(new ParentConnectingVisitor);
+            $traverser->addVisitor($lineCountingVisitor);
+            $traverser->addVisitor($codeUnitFindingVisitor);
+
+            /* @noinspection UnusedFunctionResultInspection */
+            $traverser->traverse($nodes);
+            // @codeCoverageIgnoreStart
+        } catch (Error $error) {
+            throw new ParserException(
+                $error->getMessage(),
+                (int) $error->getCode(),
+                $error
+            );
         }
+        // @codeCoverageIgnoreEnd
 
-        $this->linesOfCode = $tokens->getLinesOfCode();
+        $this->linesOfCode = $lineCountingVisitor->result();
 
-        foreach (range(1, $this->linesOfCode['loc']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
-        try {
-            $this->processClasses($tokens);
-            $this->processTraits($tokens);
-            $this->processFunctions($tokens);
-        } catch (OutOfBoundsException $e) {
-            // This can happen with PHP_Token_Stream if the file is syntactically invalid,
-            // and probably affects a file that wasn't executed.
-        }
+        $this->processClasses($codeUnitFindingVisitor->classes());
+        $this->processTraits($codeUnitFindingVisitor->traits());
+        $this->processFunctions($codeUnitFindingVisitor->functions());
 
-        unset($tokens);
-
-        foreach (range(1, $this->linesOfCode['loc']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                     $codeUnit['executableLines']++;
@@ -390,11 +407,7 @@ final class File extends AbstractNode
                 $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
 
                 $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
-
-                $method['crap'] = $this->crap(
-                    $method['ccn'],
-                    $methodPathCoverage ?: $methodLineCoverage
-                );
+                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage ?: $methodLineCoverage))->asString();
 
                 $trait['ccn'] += $method['ccn'];
             }
@@ -406,15 +419,11 @@ final class File extends AbstractNode
             $traitPathCoverage   = $trait['executablePaths'] ? ($trait['executedPaths'] / $trait['executablePaths']) * 100 : 0;
 
             $trait['coverage'] = $traitBranchCoverage ?: $traitLineCoverage;
+            $trait['crap']     = (new CrapIndex($trait['ccn'], $traitPathCoverage ?: $traitLineCoverage))->asString();
 
             if ($trait['executableLines'] > 0 && $trait['coverage'] === 100) {
                 $this->numTestedClasses++;
             }
-
-            $trait['crap'] = $this->crap(
-                $trait['ccn'],
-                $traitPathCoverage ?: $traitLineCoverage
-            );
         }
 
         unset($trait);
@@ -426,11 +435,7 @@ final class File extends AbstractNode
                 $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
 
                 $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
-
-                $method['crap'] = $this->crap(
-                    $method['ccn'],
-                    $methodPathCoverage ?: $methodLineCoverage
-                );
+                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage ?: $methodLineCoverage))->asString();
 
                 $class['ccn'] += $method['ccn'];
             }
@@ -442,15 +447,11 @@ final class File extends AbstractNode
             $classPathCoverage   = $class['executablePaths'] ? ($class['executedPaths'] / $class['executablePaths']) * 100 : 0;
 
             $class['coverage'] = $classBranchCoverage ?: $classLineCoverage;
+            $class['crap']     = (new CrapIndex($class['ccn'], $classPathCoverage ?: $classLineCoverage))->asString();
 
             if ($class['executableLines'] > 0 && $class['coverage'] === 100) {
                 $this->numTestedClasses++;
             }
-
-            $class['crap'] = $this->crap(
-                $class['ccn'],
-                $classPathCoverage ?: $classLineCoverage
-            );
         }
 
         unset($class);
@@ -461,34 +462,22 @@ final class File extends AbstractNode
             $functionPathCoverage   = $function['executablePaths'] ? ($function['executedPaths'] / $function['executablePaths']) * 100 : 0;
 
             $function['coverage'] = $functionBranchCoverage ?: $functionLineCoverage;
+            $function['crap']     = (new CrapIndex($function['ccn'], $functionPathCoverage ?: $functionLineCoverage))->asString();
 
             if ($function['coverage'] === 100) {
                 $this->numTestedFunctions++;
             }
-
-            $function['crap'] = $this->crap(
-                $function['ccn'],
-                $functionPathCoverage ?: $functionLineCoverage
-            );
         }
     }
 
-    private function processClasses(PHP_Token_Stream $tokens): void
+    private function processClasses(array $classes): void
     {
-        $classes = $tokens->getClasses();
-        $link    = $this->id() . '.html#';
+        $link = $this->id() . '.html#';
 
         foreach ($classes as $className => $class) {
-            if (strpos($className, 'anonymous') === 0) {
-                continue;
-            }
-
-            if (!empty($class['package']['namespace'])) {
-                $className = $class['package']['namespace'] . '\\' . $className;
-            }
-
             $this->classes[$className] = [
                 'className'          => $className,
+                'namespace'          => $class['namespace'],
                 'methods'            => [],
                 'startLine'          => $class['startLine'],
                 'executableLines'    => 0,
@@ -500,15 +489,10 @@ final class File extends AbstractNode
                 'ccn'                => 0,
                 'coverage'           => 0,
                 'crap'               => 0,
-                'package'            => $class['package'],
                 'link'               => $link . $class['startLine'],
             ];
 
             foreach ($class['methods'] as $methodName => $method) {
-                if (strpos($methodName, 'anonymous') === 0) {
-                    continue;
-                }
-
                 $methodData                                        = $this->newMethod($className, $methodName, $method, $link);
                 $this->classes[$className]['methods'][$methodName] = $methodData;
 
@@ -532,18 +516,14 @@ final class File extends AbstractNode
         }
     }
 
-    private function processTraits(PHP_Token_Stream $tokens): void
+    private function processTraits(array $traits): void
     {
-        $traits = $tokens->getTraits();
-        $link   = $this->id() . '.html#';
+        $link = $this->id() . '.html#';
 
         foreach ($traits as $traitName => $trait) {
-            if (!empty($trait['package']['namespace'])) {
-                $traitName = $trait['package']['namespace'] . '\\' . $traitName;
-            }
-
             $this->traits[$traitName] = [
                 'traitName'          => $traitName,
+                'namespace'          => $trait['namespace'],
                 'methods'            => [],
                 'startLine'          => $trait['startLine'],
                 'executableLines'    => 0,
@@ -555,15 +535,10 @@ final class File extends AbstractNode
                 'ccn'                => 0,
                 'coverage'           => 0,
                 'crap'               => 0,
-                'package'            => $trait['package'],
                 'link'               => $link . $trait['startLine'],
             ];
 
             foreach ($trait['methods'] as $methodName => $method) {
-                if (strpos($methodName, 'anonymous') === 0) {
-                    continue;
-                }
-
                 $methodData                                       = $this->newMethod($traitName, $methodName, $method, $link);
                 $this->traits[$traitName]['methods'][$methodName] = $methodData;
 
@@ -582,18 +557,14 @@ final class File extends AbstractNode
         }
     }
 
-    private function processFunctions(PHP_Token_Stream $tokens): void
+    private function processFunctions(array $functions): void
     {
-        $functions = $tokens->getFunctions();
-        $link      = $this->id() . '.html#';
+        $link = $this->id() . '.html#';
 
         foreach ($functions as $functionName => $function) {
-            if (strpos($functionName, 'anonymous') === 0) {
-                continue;
-            }
-
             $this->functions[$functionName] = [
                 'functionName'       => $functionName,
+                'namespace'          => $function['namespace'],
                 'signature'          => $function['signature'],
                 'startLine'          => $function['startLine'],
                 'executableLines'    => 0,
@@ -612,22 +583,6 @@ final class File extends AbstractNode
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
         }
-    }
-
-    private function crap(int $ccn, float $coverage): string
-    {
-        if ($coverage === 0.0) {
-            return (string) ($ccn ** 2 + $ccn);
-        }
-
-        if ($coverage >= 95) {
-            return (string) $ccn;
-        }
-
-        return sprintf(
-            '%01.2F',
-            $ccn ** 2 * (1 - $coverage / 100) ** 3 + $ccn
-        );
     }
 
     private function newMethod(string $className, string $methodName, array $method, string $link): array

@@ -40,28 +40,6 @@ final class Unit
         $this->contextNode->setAttribute('crap', (string) $crap);
     }
 
-    public function setPackage(string $full, string $package, string $sub, string $category): void
-    {
-        $node = $this->contextNode->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
-            'package'
-        )->item(0);
-
-        if (!$node) {
-            $node = $this->contextNode->appendChild(
-                $this->contextNode->ownerDocument->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
-                    'package'
-                )
-            );
-        }
-
-        $node->setAttribute('full', $full);
-        $node->setAttribute('name', $package);
-        $node->setAttribute('sub', $sub);
-        $node->setAttribute('category', $category);
-    }
-
     public function setNamespace(string $namespace): void
     {
         $node = $this->contextNode->getElementsByTagNameNS(

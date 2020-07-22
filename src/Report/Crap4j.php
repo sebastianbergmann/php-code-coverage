@@ -88,8 +88,8 @@ final class Crap4j
 
                     $methodNode = $document->createElement('method');
 
-                    if (!empty($class['package']['namespace'])) {
-                        $namespace = $class['package']['namespace'];
+                    if (!empty($class['namespace'])) {
+                        $namespace = $class['namespace'];
                     }
 
                     $methodNode->appendChild($document->createElement('package', $namespace));

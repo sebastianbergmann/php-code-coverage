@@ -29,17 +29,6 @@
       <code>include_once $file</code>
     </UnresolvableInclude>
   </file>
-  <file src="src/Driver/PcovDriver.php">
-    <UndefinedConstant occurrences="1">
-      <code>\pcov\inclusive</code>
-    </UndefinedConstant>
-    <UndefinedFunction occurrences="5">
-      <code>\pcov\start()</code>
-      <code>\pcov\stop()</code>
-      <code>\pcov\waiting()</code>
-      <code>\pcov\clear()</code>
-    </UndefinedFunction>
-  </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
       <code>XDEBUG_CC_UNUSED</code>
@@ -114,8 +103,7 @@
       <code>$this-&gt;numTestedMethods === null</code>
       <code>$this-&gt;numTestedFunctions === null</code>
     </DocblockTypeContradiction>
-    <InvalidPropertyAssignmentValue occurrences="4">
-      <code>$this-&gt;codeUnitsByLine</code>
+    <InvalidPropertyAssignmentValue occurrences="3">
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
@@ -139,11 +127,6 @@
     <PropertyNotSetInConstructor occurrences="1">
       <code>$position</code>
     </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/RawCodeCoverageData.php">
-    <PossiblyUndefinedMethod occurrences="1">
-      <code>getEndLine</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <RedundantCondition occurrences="2">
@@ -222,11 +205,20 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Unit.php">
-    <PossiblyNullReference occurrences="3">
-      <code>createElementNS</code>
+    <PossiblyNullReference occurrences="2">
       <code>createElementNS</code>
       <code>createElementNS</code>
     </PossiblyNullReference>
+  </file>
+  <file src="src/StaticAnalysis/CodeUnitFindingVisitor.php">
+    <PossiblyNullReference occurrences="2">
+      <code>toString</code>
+      <code>toString</code>
+    </PossiblyNullReference>
+    <UndefinedPropertyFetch occurrences="2">
+      <code>$node-&gt;namespacedName</code>
+      <code>$node-&gt;namespacedName</code>
+    </UndefinedPropertyFetch>
   </file>
   <file src="src/Version.php">
     <DocblockTypeContradiction occurrences="1">

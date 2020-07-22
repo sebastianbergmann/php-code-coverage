@@ -20,7 +20,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#754](https://github.com/sebastianbergmann/php-code-coverage/pull/754): Implement collection of raw branch and path coverage
 * [#755](https://github.com/sebastianbergmann/php-code-coverage/pull/755): Implement processing of raw branch and path coverage
 * [#756](https://github.com/sebastianbergmann/php-code-coverage/pull/756): Improve handling of uncovered files
-* `SebastianBergmann\CodeCoverage\CodeCoverage::getCacheTokens()` has been renamed to `SebastianBergmann\CodeCoverage\CodeCoverage::cachesTokens()`
 * `SebastianBergmann\CodeCoverage\Filter::addDirectoryToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`
 * `SebastianBergmann\CodeCoverage\Filter::addFilesToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeFiles()`
 * `SebastianBergmann\CodeCoverage\Filter::addFileToWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::includeFile()`
@@ -32,7 +31,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Removed
 
-* `SebastianBergmann\CodeCoverage\CodeCoverage::setCacheTokens()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::enableTokenCaching()` or `SebastianBergmann\CodeCoverage\CodeCoverage::disableTokenCaching()` instead
+* `SebastianBergmann\CodeCoverage\CodeCoverage::setCacheTokens()` and `SebastianBergmann\CodeCoverage\CodeCoverage::getCacheTokens()` have been removed
 * `SebastianBergmann\CodeCoverage\CodeCoverage::setCheckForUnintentionallyCoveredCode()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::enableCheckForUnintentionallyCoveredCode()` or `SebastianBergmann\CodeCoverage\CodeCoverage::disableCheckForUnintentionallyCoveredCode()` instead
 * `SebastianBergmann\CodeCoverage\CodeCoverage::setSubclassesExcludedFromUnintentionallyCoveredCodeCheck()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck()` instead
 * `SebastianBergmann\CodeCoverage\CodeCoverage::setAddUncoveredFilesFromWhitelist()` has been removed, please use `SebastianBergmann\CodeCoverage\CodeCoverage::includeUncoveredFiles()` or `SebastianBergmann\CodeCoverage\CodeCoverage::excludeUncoveredFiles()` instead

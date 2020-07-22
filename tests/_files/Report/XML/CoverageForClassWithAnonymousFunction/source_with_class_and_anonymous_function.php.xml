@@ -9,7 +9,6 @@
       <traits count="0" tested="0" percent="0"/>
     </totals>
     <class name="CoveredClassWithAnonymousFunctionInStaticMethod" start="3" executable="9" executed="8" crap="1">
-      <package full="" name="" sub="" category=""/>
       <namespace name=""/>
       <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1.00" executable="9" executed="8" coverage="88.888888888889"/>
     </class>

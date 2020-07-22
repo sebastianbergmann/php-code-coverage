@@ -255,14 +255,8 @@ final class Text
                     }
                 }
 
-                $package = '';
-
-                if (!empty($class['package']['fullPackage'])) {
-                    $package = '@' . $class['package']['fullPackage'] . '::';
-                }
-
-                $classCoverage[$package . $className] = [
-                    'namespace'         => $class['package']['namespace'],
+                $classCoverage[$className] = [
+                    'namespace'         => $class['namespace'],
                     'className'         => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,

@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use function array_keys;
-use PHP_Token_Stream;
 
 final class RawCodeCoverageDataTest extends TestCase
 {
@@ -264,72 +263,50 @@ final class RawCodeCoverageDataTest extends TestCase
 
     public function testUseStatementsAreUncovered(): void
     {
-        $file   = TEST_FILES_PATH . 'source_with_use_statements.php';
-        $tokens = new PHP_Token_Stream($file);
+        $file = TEST_FILES_PATH . 'source_with_use_statements.php';
 
         $this->assertEquals(
             [
-                11,
                 12,
                 14,
-                15,
-                17,
                 18,
-                19,
-                20,
-                21,
-                22,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
     }
 
     public function testEmptyClassesAreUncovered(): void
     {
-        $file   = TEST_FILES_PATH . 'source_with_empty_class.php';
-        $tokens = new PHP_Token_Stream($file);
+        $file = TEST_FILES_PATH . 'source_with_empty_class.php';
 
         $this->assertEquals(
             [
                 12,
-                14,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
     }
 
     public function testInterfacesAreUncovered(): void
     {
-        $file   = TEST_FILES_PATH . 'source_with_interface.php';
-        $tokens = new PHP_Token_Stream($file);
+        $file = TEST_FILES_PATH . 'source_with_interface.php';
 
         $this->assertEquals(
             [
-                6,
                 7,
                 9,
-                10,
-                12,
                 13,
-                14,
-                15,
-                16,
-                17,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
     }
 
     public function testInlineCommentsKeepTheLine(): void
     {
-        $file   = TEST_FILES_PATH . 'source_with_oneline_annotations.php';
-        $tokens = new PHP_Token_Stream($file);
+        $file = TEST_FILES_PATH . 'source_with_oneline_annotations.php';
 
         $this->assertEquals(
             [
-                12,
-                13,
-                17,
                 19,
                 22,
                 26,
@@ -338,9 +315,8 @@ final class RawCodeCoverageDataTest extends TestCase
                 32,
                 33,
                 35,
-                36,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file, $tokens)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
         );
     }
 

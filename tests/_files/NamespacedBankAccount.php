@@ -1,6 +1,5 @@
 <?php
 namespace SomeNamespace;
-/** @package OldStylePackageName */
 class BankAccount
 {
     use BankAccountTrait;

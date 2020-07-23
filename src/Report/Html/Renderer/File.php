@@ -490,7 +490,7 @@ final class File extends Renderer
 
                     if ($branch['hit']) {
                         $lineData[$line]['includedInHitBranches']++;
-                        $lineData[$line]['tests'] = array_merge($lineData[$line]['tests'], $branch['hit']);
+                        $lineData[$line]['tests'] = array_unique(array_merge($lineData[$line]['tests'], $branch['hit']));
                     }
                 }
             }
@@ -577,7 +577,7 @@ final class File extends Renderer
 
                         if ($path['hit']) {
                             $lineData[$line]['includedInHitPaths']++;
-                            $lineData[$line]['tests'] = array_merge($lineData[$line]['tests'], $path['hit']);
+                            $lineData[$line]['tests'] = array_unique(array_merge($lineData[$line]['tests'], $path['hit']));
                         }
                     }
                 }

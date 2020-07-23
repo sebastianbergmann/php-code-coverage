@@ -650,10 +650,15 @@ final class File extends Renderer
                 continue;
             }
 
-            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $branchStructure = '';
 
             foreach ($methodData['branches'] as $branch) {
-                $branches .= $this->renderBranchLines($branch, $codeLines, $testData);
+                $branchStructure .= $this->renderBranchLines($branch, $codeLines, $testData);
+            }
+
+            if ($branchStructure !== '') { // don't show empty branches
+                $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+                $branches .= $branchStructure;
             }
         }
 
@@ -720,6 +725,10 @@ final class File extends Renderer
             $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
         }
 
+        if ($lines === '') {
+            return '';
+        }
+
         $linesTemplate->setVar(['lines' => $lines]);
 
         return $linesTemplate->render();
@@ -741,16 +750,21 @@ final class File extends Renderer
                 continue;
             }
 
-            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $pathStructure = '';
 
             if (count($methodData['paths']) > 100) {
-                $paths .= '<p>' . count($methodData['paths']) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
+                $pathStructure .= '<p>' . count($methodData['paths']) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
 
                 continue;
             }
 
             foreach ($methodData['paths'] as $path) {
-                $paths .= $this->renderPathLines($path, $methodData['branches'], $codeLines, $testData);
+                $pathStructure .= $this->renderPathLines($path, $methodData['branches'], $codeLines, $testData);
+            }
+
+            if ($pathStructure !== '') {
+                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+                $paths .= $pathStructure;
             }
         }
 
@@ -817,6 +831,10 @@ final class File extends Renderer
 
                 $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
             }
+        }
+
+        if ($lines === '') {
+            return '';
         }
 
         $linesTemplate->setVar(['lines' => $lines]);

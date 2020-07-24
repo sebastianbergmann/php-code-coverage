@@ -32,7 +32,7 @@
         "php": "^7.3 || ^8.0",
         "ext-dom": "*",
         "ext-xmlwriter": "*",
-        "nikic/php-parser": "^4.6",
+        "nikic/php-parser": "^4.7",
         "phpunit/php-file-iterator": "^3.0.3",
         "phpunit/php-text-template": "^2.0.2",
         "sebastian/code-unit-reverse-lookup": "^2.0.2",

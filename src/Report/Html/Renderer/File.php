@@ -243,8 +243,8 @@ final class File extends Renderer
                     $item['executablePaths']
                 )->asString();
             } else {
-                $numClasses                      = 'n/a';
-                $numTestedClasses                = 'n/a';
+                $numClasses                      = 0;
+                $numTestedClasses                = 0;
                 $linesExecutedPercentAsString    = 'n/a';
                 $branchesExecutedPercentAsString = 'n/a';
                 $pathsExecutedPercentAsString    = 'n/a';

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use function array_filter;
 use function count;
 use function file_get_contents;
@@ -20,7 +21,6 @@ use PhpParser\ParserFactory;
 use SebastianBergmann\CodeCoverage\CrapIndex;
 use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor;
-use SebastianBergmann\Complexity\ParentConnectingVisitor;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 

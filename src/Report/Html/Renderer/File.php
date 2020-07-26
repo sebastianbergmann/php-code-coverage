@@ -73,6 +73,7 @@ use const T_WHILE;
 use const T_YIELD;
 use function array_key_exists;
 use function array_pop;
+use function array_unique;
 use function count;
 use function explode;
 use function file_get_contents;
@@ -560,24 +561,24 @@ final class File extends Renderer
         /** @var int $line */
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
-                'includedInPaths'    => 0,
-                'includedInHitPaths' => 0,
+                'includedInPaths'    => [],
+                'includedInHitPaths' => [],
                 'tests'              => [],
             ];
         }
 
         foreach ($functionCoverageData as $method) {
-            foreach ($method['paths'] as $path) {
+            foreach ($method['paths'] as $pathId => $path) {
                 foreach ($path['path'] as $branchTaken) {
                     foreach (range($method['branches'][$branchTaken]['line_start'], $method['branches'][$branchTaken]['line_end']) as $line) {
                         if (!isset($lineData[$line])) {
                             continue;
                         }
-                        $lineData[$line]['includedInPaths']++;
+                        $lineData[$line]['includedInPaths'][] = $pathId;
 
                         if ($path['hit']) {
-                            $lineData[$line]['includedInHitPaths']++;
-                            $lineData[$line]['tests'] = array_unique(array_merge($lineData[$line]['tests'], $path['hit']));
+                            $lineData[$line]['includedInHitPaths'][] = $pathId;
+                            $lineData[$line]['tests']                = array_unique(array_merge($lineData[$line]['tests'], $path['hit']));
                         }
                     }
                 }
@@ -589,15 +590,17 @@ final class File extends Renderer
 
         /** @var string $line */
         foreach ($codeLines as $line) {
-            $trClass = '';
-            $popover = '';
+            $trClass                 = '';
+            $popover                 = '';
+            $includedInPathsCount    = count(array_unique($lineData[$i]['includedInPaths']));
+            $includedInHitPathsCount = count(array_unique($lineData[$i]['includedInHitPaths']));
 
-            if ($lineData[$i]['includedInPaths'] > 0) {
+            if ($includedInPathsCount > 0) {
                 $lineCss = 'success';
 
-                if ($lineData[$i]['includedInHitPaths'] === 0) {
+                if ($includedInHitPathsCount === 0) {
                     $lineCss = 'danger';
-                } elseif ($lineData[$i]['includedInHitPaths'] !== $lineData[$i]['includedInPaths']) {
+                } elseif ($includedInHitPathsCount !== $includedInPathsCount) {
                     $lineCss = 'warning';
                 }
 
@@ -608,7 +611,7 @@ final class File extends Renderer
                 } else {
                     $popoverTitle = count($lineData[$i]['tests']) . ' tests cover line ' . $i;
                 }
-                $popoverTitle .= '. These are covering ' . $lineData[$i]['includedInHitPaths'] . ' out of the ' . $lineData[$i]['includedInPaths'] . ' code paths.';
+                $popoverTitle .= '. These are covering ' . $includedInHitPathsCount . ' out of the ' . $includedInPathsCount . ' code paths.';
 
                 foreach ($lineData[$i]['tests'] as $test) {
                     $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);

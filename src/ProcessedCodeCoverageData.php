@@ -69,9 +69,7 @@ final class ProcessedCodeCoverageData
         foreach ($executedCode->lineCoverage() as $file => $lines) {
             foreach ($lines as $k => $v) {
                 if ($v === Driver::LINE_EXECUTED) {
-                    if (empty($this->lineCoverage[$file][$k]) || !in_array($testCaseId, $this->lineCoverage[$file][$k], true)) {
-                        $this->lineCoverage[$file][$k][] = $testCaseId;
-                    }
+                    $this->lineCoverage[$file][$k][] = $testCaseId;
                 }
             }
         }

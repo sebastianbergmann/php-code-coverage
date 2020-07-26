@@ -56,6 +56,16 @@ final class HtmlTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
+    public function testPathCoverageForSourceWithoutNamespace(): void
+    {
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
+
+        $report = new Facade;
+        $report->process($this->getPathCoverageForSourceWithoutNamespace(), self::$TEST_TMP_PATH);
+
+        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+    }
+
     public function testForFileWithIgnoredLines(): void
     {
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';

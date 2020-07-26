@@ -823,6 +823,152 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    protected function getPathCoverageXdebugDataForSourceWithoutNamespace()
+    {
+        return [
+            RawCodeCoverageData::fromXdebugWithPathCoverage(
+                [
+                    TEST_FILES_PATH . 'source_without_namespace.php' => [
+                        'lines' => [
+                            14 => -1,
+                            15 => -1,
+                            16 => -1,
+                            17 => -1,
+                            18 => -1,
+                            19 => 1,
+                        ],
+                        'functions' => [
+                            '{closure:' . TEST_FILES_PATH . 'source_without_namespace.php:14-14}' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 2,
+                                        'line_start' => 14,
+                                        'line_end'   => 14,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
+                            'foo' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 6,
+                                        'line_start' => 12,
+                                        'line_end'   => 15,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 7,
+                                            1 => 9,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                            1 => 0,
+                                        ],
+                                    ],
+                                    7 => [
+                                        'op_start'   => 7,
+                                        'op_end'     => 8,
+                                        'line_start' => 15,
+                                        'line_end'   => 15,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 10,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                    9 => [
+                                        'op_start'   => 9,
+                                        'op_end'     => 9,
+                                        'line_start' => 15,
+                                        'line_end'   => 15,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                            0 => 10,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                    10 => [
+                                        'op_start'   => 10,
+                                        'op_end'     => 18,
+                                        'line_start' => 15,
+                                        'line_end'   => 18,
+                                        'hit'        => 0,
+                                        'out'        => [
+                                        ],
+                                        'out_hit' => [
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                            1 => 7,
+                                            2 => 10,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                    1 => [
+                                        'path' => [
+                                            0 => 0,
+                                            1 => 9,
+                                            2 => 10,
+                                        ],
+                                        'hit' => 0,
+                                    ],
+                                ],
+                            ],
+                            '{main}' => [
+                                'branches' => [
+                                    0 => [
+                                        'op_start'   => 0,
+                                        'op_end'     => 0,
+                                        'line_start' => 19,
+                                        'line_end'   => 19,
+                                        'hit'        => 1,
+                                        'out'        => [
+                                            0 => 2147483645,
+                                        ],
+                                        'out_hit' => [
+                                            0 => 0,
+                                        ],
+                                    ],
+                                ],
+                                'paths' => [
+                                    0 => [
+                                        'path' => [
+                                            0 => 0,
+                                        ],
+                                        'hit' => 1,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ),
+        ];
+    }
+
     protected function getLineCoverageForBankAccount(): CodeCoverage
     {
         $data = $this->getLineCoverageXdebugDataForBankAccount();
@@ -941,6 +1087,32 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ),
             ]
         );
+
+        return $coverage;
+    }
+
+    protected function getPathCoverageForSourceWithoutNamespace(): CodeCoverage
+    {
+        $data = $this->getPathCoverageXdebugDataForSourceWithoutNamespace();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
+
+        $stub->method('stop')
+            ->will($this->onConsecutiveCalls(...$data));
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'source_without_namespace.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->start(
+            'faketest',
+            true
+        );
+
+        $coverage->stop();
 
         return $coverage;
     }

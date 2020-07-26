@@ -547,6 +547,11 @@ final class File extends AbstractNode
                 $this->traits[$traitName]['executablePaths'] += $methodData['executablePaths'];
                 $this->traits[$traitName]['executedPaths'] += $methodData['executedPaths'];
 
+                $this->numExecutableBranches += $methodData['executableBranches'];
+                $this->numExecutedBranches += $methodData['executedBranches'];
+                $this->numExecutablePaths += $methodData['executablePaths'];
+                $this->numExecutedPaths += $methodData['executedPaths'];
+
                 foreach (range($method['startLine'], $method['endLine']) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->traits[$traitName],
@@ -582,6 +587,25 @@ final class File extends AbstractNode
             foreach (range($function['startLine'], $function['endLine']) as $lineNumber) {
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
+
+            if (isset($this->functionCoverageData[$functionName]['branches'])) {
+                $this->functions[$functionName]['executableBranches'] = count($this->functionCoverageData[$functionName]['branches']);
+                $this->functions[$functionName]['executedBranches']   = count(array_filter($this->functionCoverageData[$functionName]['branches'], static function (array $branch) {
+                    return (bool) $branch['hit'];
+                }));
+            }
+
+            if (isset($this->functionCoverageData[$functionName]['paths'])) {
+                $this->functions[$functionName]['executablePaths'] = count($this->functionCoverageData[$functionName]['paths']);
+                $this->functions[$functionName]['executedPaths']   = count(array_filter($this->functionCoverageData[$functionName]['paths'], static function (array $path) {
+                    return (bool) $path['hit'];
+                }));
+            }
+
+            $this->numExecutableBranches += $this->functions[$functionName]['executableBranches'];
+            $this->numExecutedBranches += $this->functions[$functionName]['executedBranches'];
+            $this->numExecutablePaths += $this->functions[$functionName]['executablePaths'];
+            $this->numExecutedPaths += $this->functions[$functionName]['executedPaths'];
         }
     }
 
@@ -609,14 +633,14 @@ final class File extends AbstractNode
 
         if (isset($this->functionCoverageData[$key]['branches'])) {
             $methodData['executableBranches'] = count($this->functionCoverageData[$key]['branches']);
-            $methodData['executedBranches']   = count(array_filter($this->functionCoverageData[$key]['branches'], static function ($branch) {
+            $methodData['executedBranches']   = count(array_filter($this->functionCoverageData[$key]['branches'], static function (array $branch) {
                 return (bool) $branch['hit'];
             }));
         }
 
         if (isset($this->functionCoverageData[$key]['paths'])) {
             $methodData['executablePaths'] = count($this->functionCoverageData[$key]['paths']);
-            $methodData['executedPaths']   = count(array_filter($this->functionCoverageData[$key]['paths'], static function ($path) {
+            $methodData['executedPaths']   = count(array_filter($this->functionCoverageData[$key]['paths'], static function (array $path) {
                 return (bool) $path['hit'];
             }));
         }

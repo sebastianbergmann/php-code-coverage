@@ -108,10 +108,6 @@
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
     </InvalidPropertyAssignmentValue>
-    <MissingClosureParamType occurrences="2">
-      <code>$branch</code>
-      <code>$path</code>
-    </MissingClosureParamType>
     <PropertyNotSetInConstructor occurrences="5">
       <code>$numClasses</code>
       <code>$numTraits</code>
@@ -129,9 +125,8 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
-    <RedundantCondition occurrences="2">
+    <RedundantCondition occurrences="1">
       <code>$lineData[$i]['includedInHitBranches'] === 0</code>
-      <code>$lineData[$i]['includedInHitPaths'] === 0</code>
     </RedundantCondition>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">

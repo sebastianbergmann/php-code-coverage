@@ -78,17 +78,13 @@ final class ProcessedCodeCoverageData
             foreach ($functions as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] === Driver::BRANCH_HIT) {
-                        if (!in_array($testCaseId, $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], true)) {
-                            $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'][] = $testCaseId;
-                        }
+                        $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'][] = $testCaseId;
                     }
                 }
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
                     if ($pathData['hit'] === Driver::BRANCH_HIT) {
-                        if (!in_array($testCaseId, $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], true)) {
-                            $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'][] = $testCaseId;
-                        }
+                        $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'][] = $testCaseId;
                     }
                 }
             }

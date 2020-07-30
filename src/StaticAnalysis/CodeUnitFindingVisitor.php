@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function implode;
+use function str_replace;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -22,9 +24,6 @@ use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
-
-use function implode;
-use function str_replace;
 
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
@@ -182,15 +181,9 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processClass(Class_ $node): void
     {
-        $name = null;
-        if (isset($node->name)) {
-            $name = $node->name->toString();
-        }
-        $namespacedName = null;
-        if (isset($node->namespacedName)) {
-            $namespacedName = $node->namespacedName->toString();
-        }
-        $namespace = str_replace($name, '', $namespacedName);
+        $name           = $node->name ? $node->name->toString() : '';
+        $namespacedName = isset($node->namespacedName) ? $node->namespacedName->toString() : '';
+        $namespace      = str_replace($name, '', $namespacedName);
 
         $this->classes[$namespacedName] = [
             'name'           => $name,
@@ -231,15 +224,9 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         assert(isset($parentNode->namespacedName));
         assert($parentNode->namespacedName instanceof Name);
 
-        $parentName = null;
-        if (isset($parentNode->name)) {
-            $parentName = $parentNode->name->toString();
-        }
-        $parentNamespacedName = null;
-        if (isset($parentNode->namespacedName)) {
-            $parentNamespacedName = $parentNode->namespacedName->toString();
-        }
-        $namespace = str_replace($parentName, '', $parentNamespacedName);
+        $parentName           = $parentNode->name ? $parentNode->name->toString() : '';
+        $parentNamespacedName = isset($parentNode->namespacedName) ? $parentNode->namespacedName->toString() : '';
+        $namespace            = str_replace($parentName, '', $parentNamespacedName);
 
         if ($parentNode instanceof Class_) {
             $storage = &$this->classes;

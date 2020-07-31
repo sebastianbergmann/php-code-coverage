@@ -31,6 +31,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * `SebastianBergmann\CodeCoverage\Filter::getWhitelist()` has been renamed to `SebastianBergmann\CodeCoverage\Filter::files()`
 * The arguments for `CodeCoverage::__construct()` are no longer optional
 
+### Fixed
+
+* [#700](https://github.com/sebastianbergmann/php-code-coverage/pull/700): Throw an exception if code coverage fails to write to disk
+
 ### Removed
 
 * `SebastianBergmann\CodeCoverage\CodeCoverage::setCacheTokens()` and `SebastianBergmann\CodeCoverage\CodeCoverage::getCacheTokens()` have been removed

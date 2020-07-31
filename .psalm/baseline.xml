@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.12.2@7c7ebd068f8acaba211d4a2c707c4ba90874fa26">
+<files psalm-version="3.13.1@afd8874a9e4562eac42a02de90e42e430c3a1db1">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -8,6 +8,11 @@
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
       <code>$id === null</code>
     </DocblockTypeContradiction>
+    <InternalClass occurrences="3">
+      <code>Test::SMALL</code>
+      <code>Test::MEDIUM</code>
+      <code>Test::LARGE</code>
+    </InternalClass>
     <InternalMethod occurrences="5">
       <code>getSize</code>
       <code>getName</code>
@@ -125,9 +130,21 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
+    <InternalClass occurrences="7">
+      <code>BaseTestRunner::STATUS_PASSED</code>
+      <code>BaseTestRunner::STATUS_SKIPPED</code>
+      <code>BaseTestRunner::STATUS_INCOMPLETE</code>
+      <code>BaseTestRunner::STATUS_RISKY</code>
+      <code>BaseTestRunner::STATUS_WARNING</code>
+      <code>BaseTestRunner::STATUS_FAILURE</code>
+      <code>BaseTestRunner::STATUS_ERROR</code>
+    </InternalClass>
     <RedundantCondition occurrences="1">
       <code>$lineData[$i]['includedInHitBranches'] === 0</code>
     </RedundantCondition>
+    <TypeDoesNotContainType occurrences="1">
+      <code>$lineData[$i]['includedInBranches'] &gt; 0</code>
+    </TypeDoesNotContainType>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">
@@ -210,6 +227,10 @@
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
+    <RedundantConditionGivenDocblockType occurrences="2">
+      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
+      <code>assert($node-&gt;namespacedName instanceof Name)</code>
+    </RedundantConditionGivenDocblockType>
     <UndefinedPropertyFetch occurrences="2">
       <code>$node-&gt;namespacedName</code>
       <code>$node-&gt;namespacedName</code>

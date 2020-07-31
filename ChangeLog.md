@@ -9,6 +9,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#761](https://github.com/sebastianbergmann/php-code-coverage/pull/761): Support for Branch Coverage and Path Coverage
 * Added `SebastianBergmann\CodeCoverage\Driver\Driver::forLineCoverage()` for selecting the best available driver for line coverage
 * Added `SebastianBergmann\CodeCoverage\Driver\Driver::forLineAndPathCoverage()` for selecting the best available driver for path coverage
+* This component is now supported on PHP 8
+* This component now supports Xdebug 3
 
 ### Changed
 

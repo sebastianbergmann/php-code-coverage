@@ -183,12 +183,11 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     {
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
-        $namespace      = str_replace($name, '', $namespacedName);
 
         $this->classes[$namespacedName] = [
             'name'           => $name,
             'namespacedName' => $namespacedName,
-            'namespace'      => $namespace,
+            'namespace'      => $this->namespace($namespacedName, $name),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),
             'methods'        => [],
@@ -199,12 +198,11 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     {
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
-        $namespace      = str_replace($name, '', $namespacedName);
 
         $this->traits[$namespacedName] = [
             'name'           => $name,
             'namespacedName' => $namespacedName,
-            'namespace'      => $namespace,
+            'namespace'      => $this->namespace($namespacedName, $name),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),
             'methods'        => [],
@@ -226,7 +224,6 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         $parentName           = $parentNode->name->toString();
         $parentNamespacedName = $parentNode->namespacedName->toString();
-        $namespace            = str_replace($parentName, '', $parentNamespacedName);
 
         if ($parentNode instanceof Class_) {
             $storage = &$this->classes;
@@ -238,7 +235,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $storage[$parentNamespacedName] = [
                 'name'           => $parentName,
                 'namespacedName' => $parentNamespacedName,
-                'namespace'      => $namespace,
+                'namespace'      => $this->namespace($parentNamespacedName, $parentName),
                 'startLine'      => $parentNode->getStartLine(),
                 'endLine'        => $parentNode->getEndLine(),
                 'methods'        => [],
@@ -263,16 +260,27 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
-        $namespace      = str_replace($name, '', $namespacedName);
 
         $this->functions[$namespacedName] = [
             'name'           => $name,
             'namespacedName' => $namespacedName,
-            'namespace'      => $namespace,
+            'namespace'      => $this->namespace($namespacedName, $name),
             'signature'      => $this->signature($node),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),
             'ccn'            => $this->cyclomaticComplexity($node),
         ];
+    }
+
+    private function namespace(string $namespacedName, string $name): string
+    {
+        return \trim(
+            str_replace(
+                $name,
+                '',
+                $namespacedName
+            ),
+            '\\'
+        );
     }
 }

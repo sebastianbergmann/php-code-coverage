@@ -179,7 +179,7 @@ final class Builder
         $paths      = $coverage->coveredFiles();
 
         if (count($paths) === 1) {
-            $commonPath                  = dirname($paths[0]) . DIRECTORY_SEPARATOR;
+            $commonPath = dirname($paths[0]) . DIRECTORY_SEPARATOR;
             $coverage->renameFile($paths[0], basename($paths[0]));
 
             return $commonPath;

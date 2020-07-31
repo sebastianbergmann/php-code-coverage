@@ -264,19 +264,19 @@ final class File extends Renderer
             $buffer .= $this->renderItemTemplate(
                 $template,
                 [
-                    'name'                         => $this->abbreviateClassName($name),
-                    'numClasses'                   => $numClasses,
-                    'numTestedClasses'             => $numTestedClasses,
-                    'numMethods'                   => $numMethods,
-                    'numTestedMethods'             => $numTestedMethods,
-                    'linesExecutedPercent'         => Percentage::fromFractionAndTotal(
+                    'name'                 => $this->abbreviateClassName($name),
+                    'numClasses'           => $numClasses,
+                    'numTestedClasses'     => $numTestedClasses,
+                    'numMethods'           => $numMethods,
+                    'numTestedMethods'     => $numTestedMethods,
+                    'linesExecutedPercent' => Percentage::fromFractionAndTotal(
                         $item['executedLines'],
                         $item['executableLines'],
                     )->asFloat(),
-                    'linesExecutedPercentAsString'    => $linesExecutedPercentAsString,
-                    'numExecutedLines'                => $item['executedLines'],
-                    'numExecutableLines'              => $item['executableLines'],
-                    'branchesExecutedPercent'         => Percentage::fromFractionAndTotal(
+                    'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
+                    'numExecutedLines'             => $item['executedLines'],
+                    'numExecutableLines'           => $item['executableLines'],
+                    'branchesExecutedPercent'      => Percentage::fromFractionAndTotal(
                         $item['executedBranches'],
                         $item['executableBranches'],
                     )->asFloat(),
@@ -364,7 +364,7 @@ final class File extends Renderer
         return $this->renderItemTemplate(
             $template,
             [
-                'name'                         => sprintf(
+                'name' => sprintf(
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
                     $item['startLine'],
@@ -436,7 +436,7 @@ final class File extends Renderer
                     }
 
                     $popoverContent .= '</ul>';
-                    $trClass         = $lineCss . ' popin';
+                    $trClass = $lineCss . ' popin';
                 }
             }
 
@@ -497,8 +497,8 @@ final class File extends Renderer
             }
         }
 
-        $lines        = '';
-        $i            = 1;
+        $lines = '';
+        $i     = 1;
 
         /** @var string $line */
         foreach ($codeLines as $line) {
@@ -585,8 +585,8 @@ final class File extends Renderer
             }
         }
 
-        $lines        = '';
-        $i            = 1;
+        $lines = '';
+        $i     = 1;
 
         /** @var string $line */
         foreach ($codeLines as $line) {

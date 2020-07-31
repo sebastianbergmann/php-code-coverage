@@ -97,12 +97,12 @@ final class Clover
                     }
 
                     $lines[$method['startLine']] = [
-                        'ccn'         => $method['ccn'],
-                        'count'       => $methodCount,
-                        'crap'        => $method['crap'],
-                        'type'        => 'method',
-                        'visibility'  => $method['visibility'],
-                        'name'        => $methodName,
+                        'ccn'        => $method['ccn'],
+                        'count'      => $methodCount,
+                        'crap'       => $method['crap'],
+                        'type'       => 'method',
+                        'visibility' => $method['visibility'],
+                        'name'       => $methodName,
                     ];
                 }
 

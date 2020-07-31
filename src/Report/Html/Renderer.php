@@ -75,7 +75,7 @@ abstract class Renderer
 
     protected function renderItemTemplate(Template $template, array $data): string
     {
-        $numSeparator  = '&nbsp;/&nbsp;';
+        $numSeparator = '&nbsp;/&nbsp;';
 
         if (isset($data['numClasses']) && $data['numClasses'] > 0) {
             $classesLevel = $this->colorLevel($data['testedClassesPercent']);

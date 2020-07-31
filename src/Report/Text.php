@@ -92,14 +92,14 @@ final class Text
         $report = $coverage->getReport();
 
         $colors = [
-            'header'     => '',
-            'classes'    => '',
-            'methods'    => '',
-            'lines'      => '',
-            'branches'   => '',
-            'paths'      => '',
-            'reset'      => '',
-            'eol'        => '',
+            'header'   => '',
+            'classes'  => '',
+            'methods'  => '',
+            'lines'    => '',
+            'branches' => '',
+            'paths'    => '',
+            'reset'    => '',
+            'eol'      => '',
         ];
 
         if ($showColors) {
@@ -113,17 +113,17 @@ final class Text
                 $report->numberOfMethods()
             );
 
-            $colors['lines']   = $this->coverageColor(
+            $colors['lines'] = $this->coverageColor(
                 $report->numberOfExecutedLines(),
                 $report->numberOfExecutableLines()
             );
 
-            $colors['branches']   = $this->coverageColor(
+            $colors['branches'] = $this->coverageColor(
                 $report->numberOfExecutedBranches(),
                 $report->numberOfExecutableBranches()
             );
 
-            $colors['paths']   = $this->coverageColor(
+            $colors['paths'] = $this->coverageColor(
                 $report->numberOfExecutedPaths(),
                 $report->numberOfExecutablePaths()
             );
@@ -228,14 +228,14 @@ final class Text
             $classes = $item->classesAndTraits();
 
             foreach ($classes as $className => $class) {
-                $classExecutableLines           = 0;
-                $classExecutedLines             = 0;
-                $classExecutableBranches        = 0;
-                $classExecutedBranches          = 0;
-                $classExecutablePaths           = 0;
-                $classExecutedPaths             = 0;
-                $coveredMethods                 = 0;
-                $classMethods                   = 0;
+                $classExecutableLines    = 0;
+                $classExecutedLines      = 0;
+                $classExecutableBranches = 0;
+                $classExecutedBranches   = 0;
+                $classExecutablePaths    = 0;
+                $classExecutedPaths      = 0;
+                $coveredMethods          = 0;
+                $classMethods            = 0;
 
                 foreach ($class['methods'] as $method) {
                     if ($method['executableLines'] == 0) {
@@ -272,20 +272,20 @@ final class Text
 
         ksort($classCoverage);
 
-        $methodColor    = '';
-        $pathsColor     = '';
-        $branchesColor  = '';
-        $linesColor     = '';
-        $resetColor     = '';
+        $methodColor   = '';
+        $pathsColor    = '';
+        $branchesColor = '';
+        $linesColor    = '';
+        $resetColor    = '';
 
         foreach ($classCoverage as $fullQualifiedPath => $classInfo) {
             if ($this->showUncoveredFiles || $classInfo['statementsCovered'] != 0) {
                 if ($showColors) {
-                    $methodColor    = $this->coverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
-                    $pathsColor     = $this->coverageColor($classInfo['pathsCovered'], $classInfo['pathsCount']);
-                    $branchesColor  = $this->coverageColor($classInfo['branchesCovered'], $classInfo['branchesCount']);
-                    $linesColor     = $this->coverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
-                    $resetColor     = $colors['reset'];
+                    $methodColor   = $this->coverageColor($classInfo['methodsCovered'], $classInfo['methodCount']);
+                    $pathsColor    = $this->coverageColor($classInfo['pathsCovered'], $classInfo['pathsCount']);
+                    $branchesColor = $this->coverageColor($classInfo['branchesCovered'], $classInfo['branchesCount']);
+                    $linesColor    = $this->coverageColor($classInfo['statementsCovered'], $classInfo['statementCount']);
+                    $resetColor    = $colors['reset'];
                 }
 
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL

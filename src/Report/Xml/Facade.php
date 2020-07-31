@@ -26,7 +26,6 @@ use function strlen;
 use function substr;
 use DateTimeImmutable;
 use DOMDocument;
-use RuntimeException;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
@@ -35,6 +34,7 @@ use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Version;
+use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -286,7 +286,7 @@ final class Facade
                 $message .= "\n" . $error->message;
             }
 
-            throw new RuntimeException($message);
+            throw new XmlException($message);
         }
 
         libxml_clear_errors();

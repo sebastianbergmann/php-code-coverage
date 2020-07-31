@@ -18,11 +18,15 @@ use function file_put_contents;
 use function is_array;
 use function is_dir;
 use function is_writable;
+use function libxml_clear_errors;
+use function libxml_get_errors;
+use function libxml_use_internal_errors;
 use function sprintf;
 use function strlen;
 use function substr;
 use DateTimeImmutable;
 use DOMDocument;
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
@@ -270,7 +274,7 @@ final class Facade
         $document->preserveWhiteSpace = false;
         $this->initTargetDirectory(dirname($filename));
 
-        $original = \libxml_use_internal_errors(true);
+        $original = libxml_use_internal_errors(true);
 
         /* @see https://bugs.php.net/bug.php?id=79191 */
         $xml = $document->saveXML();
@@ -278,16 +282,16 @@ final class Facade
         if ($xml === false) {
             $message = 'Unable to generate the XML';
 
-            foreach (\libxml_get_errors() as $error) {
+            foreach (libxml_get_errors() as $error) {
                 $message .= "\n" . $error->message;
             }
 
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
 
-        \libxml_clear_errors();
-        \libxml_use_internal_errors($original);
+        libxml_clear_errors();
+        libxml_use_internal_errors($original);
 
-        \file_put_contents($filename, $xml);
+        file_put_contents($filename, $xml);
     }
 }

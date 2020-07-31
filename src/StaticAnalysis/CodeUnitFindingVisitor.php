@@ -46,6 +46,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof Class_) {
+            if ($node->isAnonymous()) {
+                return;
+            }
+
             $this->processClass($node);
         }
 
@@ -58,6 +62,12 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof ClassMethod) {
+            $parentNode = $node->getAttribute('parent');
+
+            if ($parentNode instanceof Class_ && $parentNode->isAnonymous()) {
+                return;
+            }
+
             $this->processMethod($node);
 
             return;

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
 use function count;
 use function dirname;
 use function file_exists;
@@ -62,6 +63,9 @@ final class Facade
         $this->phpUnitVersion = $version;
     }
 
+    /**
+     * @throws XmlException
+     */
     public function process(CodeCoverage $coverage, string $target): void
     {
         if (substr($target, -1, 1) !== DIRECTORY_SEPARATOR) {
@@ -111,6 +115,9 @@ final class Facade
         DirectoryUtil::create($directory);
     }
 
+    /**
+     * @throws XmlException
+     */
     private function processDirectory(DirectoryNode $directory, Node $context): void
     {
         $directoryName = $directory->name();
@@ -132,6 +139,9 @@ final class Facade
         }
     }
 
+    /**
+     * @throws XmlException
+     */
     private function processFile(FileNode $file, Directory $context): void
     {
         $fileObject = $context->addFile(
@@ -266,6 +276,9 @@ final class Facade
         return $this->target;
     }
 
+    /**
+     * @throws XmlException
+     */
     private function saveDocument(DOMDocument $document, string $name): void
     {
         $filename = sprintf('%s/%s.xml', $this->targetDirectory(), $name);
@@ -274,24 +287,32 @@ final class Facade
         $document->preserveWhiteSpace = false;
         $this->initTargetDirectory(dirname($filename));
 
-        $original = libxml_use_internal_errors(true);
+        file_put_contents($filename, $this->documentAsString($document));
+    }
 
-        /* @see https://bugs.php.net/bug.php?id=79191 */
-        $xml = $document->saveXML();
+    /**
+     * @throws XmlException
+     *
+     * @see https://bugs.php.net/bug.php?id=79191
+     */
+    private function documentAsString(DOMDocument $document): string
+    {
+        $xmlErrorHandling = libxml_use_internal_errors(true);
+        $xml              = $document->saveXML();
 
         if ($xml === false) {
             $message = 'Unable to generate the XML';
 
             foreach (libxml_get_errors() as $error) {
-                $message .= "\n" . $error->message;
+                $message .= PHP_EOL . $error->message;
             }
 
             throw new XmlException($message);
         }
 
         libxml_clear_errors();
-        libxml_use_internal_errors($original);
+        libxml_use_internal_errors($xmlErrorHandling);
 
-        file_put_contents($filename, $xml);
+        return $xml;
     }
 }

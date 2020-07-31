@@ -59,7 +59,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof ClassMethod) {
             $this->processMethod($node);
 
-            return null;
+            return;
         }
 
         $this->processFunction($node);

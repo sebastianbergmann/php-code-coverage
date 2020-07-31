@@ -54,8 +54,8 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $newCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    12  => [],
-                    34  => null,
+                    12 => [],
+                    34 => null,
                 ],
             ]
         );

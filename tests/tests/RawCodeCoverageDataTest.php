@@ -204,7 +204,7 @@ final class RawCodeCoverageDataTest extends TestCase
             '/some/path/SomeOtherClass.php' => [
             ],
             '/some/path/AnotherClass.php' => [
-                28  => 1,
+                28 => 1,
             ],
         ];
 
@@ -239,7 +239,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $expectedFilterResult = [
             '/some/path/SomeClass.php' => [
-                8  => 1,
+                8 => 1,
             ],
             '/some/path/SomeOtherClass.php' => [
                 18  => 1,

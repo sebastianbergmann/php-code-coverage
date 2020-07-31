@@ -36,7 +36,7 @@ final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 
         $this->assertSame($unintentionallyCoveredUnits, $exception->getUnintentionallyCoveredUnits());
 
-        $expected = <<<TXT
+        $expected = <<<'TXT'
 - foo
 - bar
 - baz

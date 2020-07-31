@@ -93,7 +93,7 @@ final class XmlTest extends TestCase
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
                 file_get_contents($actualFile),
-                "${filename} not match"
+                "{$filename} not match"
             );
         }
     }

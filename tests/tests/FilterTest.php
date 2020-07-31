@@ -82,7 +82,7 @@ final class FilterTest extends TestCase
         ];
     }
 
-    public function testAddingAFileToTheWhitelistWorks(): void
+    public function testSingleFileCanBeAdded(): void
     {
         $this->filter->includeFile($this->files[0]);
 
@@ -92,28 +92,7 @@ final class FilterTest extends TestCase
         );
     }
 
-    public function testRemovingAFileFromTheWhitelistWorks(): void
-    {
-        $this->filter->includeFile($this->files[0]);
-        $this->filter->excludeFile($this->files[0]);
-
-        $this->assertEquals([], $this->filter->files());
-    }
-
-    /**
-     * @depends testAddingAFileToTheWhitelistWorks
-     */
-    public function testAddingADirectoryToTheWhitelistWorks(): void
-    {
-        $this->filter->includeDirectory(TEST_FILES_PATH);
-
-        $whitelist = $this->filter->files();
-        sort($whitelist);
-
-        $this->assertEquals($this->files, $whitelist);
-    }
-
-    public function testAddingFilesToTheWhitelistWorks(): void
+    public function testMultipleFilesCanBeAdded(): void
     {
         $files = (new FileIteratorFacade)->getFilesAsArray(
             TEST_FILES_PATH,
@@ -122,16 +101,31 @@ final class FilterTest extends TestCase
 
         $this->filter->includeFiles($files);
 
-        $whitelist = $this->filter->files();
-        sort($whitelist);
+        $files = $this->filter->files();
+        sort($files);
 
-        $this->assertEquals($this->files, $whitelist);
+        $this->assertEquals($this->files, $files);
     }
 
-    /**
-     * @depends testAddingADirectoryToTheWhitelistWorks
-     */
-    public function testRemovingADirectoryFromTheWhitelistWorks(): void
+    public function testDirectoryCanBeAdded(): void
+    {
+        $this->filter->includeDirectory(TEST_FILES_PATH);
+
+        $files = $this->filter->files();
+        sort($files);
+
+        $this->assertEquals($this->files, $files);
+    }
+
+    public function testSingleFileCanBeRemoved(): void
+    {
+        $this->filter->includeFile($this->files[0]);
+        $this->filter->excludeFile($this->files[0]);
+
+        $this->assertEquals([], $this->filter->files());
+    }
+
+    public function testDirectoryCanBeRemoved(): void
     {
         $this->filter->includeDirectory(TEST_FILES_PATH);
         $this->filter->excludeDirectory(TEST_FILES_PATH);
@@ -139,7 +133,7 @@ final class FilterTest extends TestCase
         $this->assertEquals([], $this->filter->files());
     }
 
-    public function testIsFile(): void
+    public function testDeterminesWhetherStringContainsNameOfRealFileThatExists(): void
     {
         $this->assertFalse($this->filter->isFile('vfs://root/a/path'));
         $this->assertFalse($this->filter->isFile('xdebug://debug-eval'));
@@ -150,15 +144,17 @@ final class FilterTest extends TestCase
         $this->assertTrue($this->filter->isFile(__FILE__));
     }
 
-    public function testWhitelistedFileIsNotFiltered(): void
+    public function testIncludedFileIsNotFiltered(): void
     {
         $this->filter->includeFile($this->files[0]);
+
         $this->assertFalse($this->filter->isExcluded($this->files[0]));
     }
 
-    public function testNotWhitelistedFileIsFiltered(): void
+    public function testNotIncludedFileIsFiltered(): void
     {
         $this->filter->includeFile($this->files[0]);
+
         $this->assertTrue($this->filter->isExcluded($this->files[1]));
     }
 

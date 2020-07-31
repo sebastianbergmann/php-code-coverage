@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function implode;
 use function str_replace;
+use function trim;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -274,7 +275,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function namespace(string $namespacedName, string $name): string
     {
-        return \trim(
+        return trim(
             str_replace(
                 $name,
                 '',

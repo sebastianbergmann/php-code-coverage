@@ -78,8 +78,7 @@ final class HtmlTest extends TestCase
 
     public function testForClassWithAnonymousFunction(): void
     {
-        $expectedFilesPath =
-            self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $report = new Facade;
         $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
@@ -109,7 +108,7 @@ final class HtmlTest extends TestCase
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
                 str_replace(PHP_EOL, "\n", file_get_contents($actualFile)),
-                "${filename} not match"
+                "{$filename} not match"
             );
         }
     }

@@ -156,7 +156,7 @@ final class BuilderTest extends TestCase
         $this->assertEquals(
             [
                 'src' => [
-                    'Money.php/f'    => [
+                    'Money.php/f' => [
                         'lineCoverage'     => [],
                         'functionCoverage' => [],
                     ],
@@ -164,7 +164,7 @@ final class BuilderTest extends TestCase
                         'lineCoverage'     => [],
                         'functionCoverage' => [],
                     ],
-                    'Foo'            => [
+                    'Foo' => [
                         'Bar' => [
                             'Baz' => [
                                 'Foo.php/f' => [
@@ -215,7 +215,7 @@ final class BuilderTest extends TestCase
             $this->pathsToProcessedDataObjectHelper([]),
         ];
 
-        foreach (["C:$s", "$s"] as $p) {
+        foreach (["C:{$s}", "{$s}"] as $p) {
             yield [
                 [
                     'Money.php' => [],

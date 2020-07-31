@@ -9,7 +9,8 @@ file that was distributed with this source code.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('src');
+    ->in(__DIR__)
+    ->exclude('tests/_files');
 
 return PhpCsFixer\Config::create()
     ->setFinder($finder)

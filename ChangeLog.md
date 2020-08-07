@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [9.0.0] - 2020-MM-DD
+## [9.0.0] - 2020-08-07
 
 ### Added
 

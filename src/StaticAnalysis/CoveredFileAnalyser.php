@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
-interface ExecutedFileAnalyser
+interface CoveredFileAnalyser
 {
     public function classesIn(string $filename): array;
 

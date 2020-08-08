@@ -25,7 +25,7 @@ use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
-final class ParsingExecutedFileAnalyser implements ExecutedFileAnalyser
+final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 {
     /**
      * @var array

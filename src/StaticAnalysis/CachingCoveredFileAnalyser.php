@@ -20,7 +20,7 @@ use function unserialize;
 use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
-final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
+final class CachingCoveredFileAnalyser implements CoveredFileAnalyser
 {
     /**
      * @var string
@@ -28,16 +28,16 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
     private $directory;
 
     /**
-     * @var ExecutedFileAnalyser
+     * @var CoveredFileAnalyser
      */
-    private $executedFileAnalyser;
+    private $coveredFileAnalyser;
 
-    public function __construct(string $directory, ExecutedFileAnalyser $executedFileAnalyser)
+    public function __construct(string $directory, CoveredFileAnalyser $coveredFileAnalyser)
     {
         Directory::create($directory);
 
-        $this->directory            = $directory;
-        $this->executedFileAnalyser = $executedFileAnalyser;
+        $this->directory           = $directory;
+        $this->coveredFileAnalyser = $coveredFileAnalyser;
     }
 
     public function classesIn(string $filename): array
@@ -46,7 +46,7 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
             return $this->cacheRead($filename, __METHOD__);
         }
 
-        $data = $this->executedFileAnalyser->classesIn($filename);
+        $data = $this->coveredFileAnalyser->classesIn($filename);
 
         $this->cacheWrite($filename, __METHOD__, $data);
 
@@ -59,7 +59,7 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
             return $this->cacheRead($filename, __METHOD__);
         }
 
-        $data = $this->executedFileAnalyser->traitsIn($filename);
+        $data = $this->coveredFileAnalyser->traitsIn($filename);
 
         $this->cacheWrite($filename, __METHOD__, $data);
 
@@ -72,7 +72,7 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
             return $this->cacheRead($filename, __METHOD__);
         }
 
-        $data = $this->executedFileAnalyser->functionsIn($filename);
+        $data = $this->coveredFileAnalyser->functionsIn($filename);
 
         $this->cacheWrite($filename, __METHOD__, $data);
 
@@ -85,7 +85,7 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
             return $this->cacheRead($filename, __METHOD__, [LinesOfCode::class]);
         }
 
-        $data = $this->executedFileAnalyser->linesOfCodeFor($filename);
+        $data = $this->coveredFileAnalyser->linesOfCodeFor($filename);
 
         $this->cacheWrite($filename, __METHOD__, $data);
 
@@ -98,7 +98,7 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
             return $this->cacheRead($filename, __METHOD__);
         }
 
-        $data = $this->executedFileAnalyser->ignoredLinesFor($filename);
+        $data = $this->coveredFileAnalyser->ignoredLinesFor($filename);
 
         $this->cacheWrite($filename, __METHOD__, $data);
 

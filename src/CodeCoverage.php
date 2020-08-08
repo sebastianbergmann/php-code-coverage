@@ -29,9 +29,9 @@ use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingExecutedFileAnalyser;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingExecutedFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingCoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
@@ -113,9 +113,9 @@ final class CodeCoverage
     private $isInitialized = false;
 
     /**
-     * @var ?ExecutedFileAnalyser
+     * @var ?CoveredFileAnalyser
      */
-    private $executedFileAnalyser;
+    private $coveredFileAnalyser;
 
     /**
      * @var ?string
@@ -137,7 +137,7 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        return (new Builder($this->executedFileAnalyser()))->build($this);
+        return (new Builder($this->coveredFileAnalyser()))->build($this);
     }
 
     /**
@@ -480,7 +480,7 @@ final class CodeCoverage
 
             $data->removeCoverageDataForLines(
                 $filename,
-                $this->executedFileAnalyser()->ignoredLinesFor($filename)
+                $this->coveredFileAnalyser()->ignoredLinesFor($filename)
             );
         }
     }
@@ -634,24 +634,24 @@ final class CodeCoverage
         }
     }
 
-    private function executedFileAnalyser(): ExecutedFileAnalyser
+    private function coveredFileAnalyser(): CoveredFileAnalyser
     {
-        if ($this->executedFileAnalyser !== null) {
-            return $this->executedFileAnalyser;
+        if ($this->coveredFileAnalyser !== null) {
+            return $this->coveredFileAnalyser;
         }
 
-        $this->executedFileAnalyser = new ParsingExecutedFileAnalyser(
+        $this->coveredFileAnalyser = new ParsingCoveredFileAnalyser(
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode
         );
 
         if ($this->cachesStaticAnalysis()) {
-            $this->executedFileAnalyser = new CachingExecutedFileAnalyser(
+            $this->coveredFileAnalyser = new CachingCoveredFileAnalyser(
                 $this->cacheDirectory,
-                $this->executedFileAnalyser
+                $this->coveredFileAnalyser
             );
         }
 
-        return $this->executedFileAnalyser;
+        return $this->coveredFileAnalyser;
     }
 }

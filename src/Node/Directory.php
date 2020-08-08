@@ -161,7 +161,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $directory;
     }
 
-    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData): File
+    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData): void
     {
         $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData);
 
@@ -170,8 +170,6 @@ final class Directory extends AbstractNode implements IteratorAggregate
 
         $this->numExecutableLines = -1;
         $this->numExecutedLines   = -1;
-
-        return $file;
     }
 
     public function directories(): array

@@ -67,11 +67,14 @@ final class Builder
 
                 if (file_exists($root->pathAsString() . DIRECTORY_SEPARATOR . $key)) {
                     $root->addFile(
-                        $key,
-                        $value['lineCoverage'],
-                        $value['functionCoverage'],
-                        $tests,
-                        $this->executedFileAnalyser
+                        new File(
+                            $key,
+                            $root,
+                            $value['lineCoverage'],
+                            $value['functionCoverage'],
+                            $tests,
+                            $this->executedFileAnalyser
+                        )
                     );
                 }
             } else {

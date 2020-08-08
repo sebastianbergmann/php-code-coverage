@@ -59,6 +59,7 @@ final class Builder
                 }
             } else {
                 $child = $root->addDirectory($key);
+
                 $this->addItems($child, $value, $tests);
             }
         }

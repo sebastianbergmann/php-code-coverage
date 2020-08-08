@@ -13,7 +13,6 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CrapIndex;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
@@ -126,15 +125,16 @@ final class File extends AbstractNode
      */
     private $codeUnitsByLine = [];
 
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, ExecutedFileAnalyser $executedFileAnalyser)
+    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
     {
         parent::__construct($name, $parent);
 
         $this->lineCoverageData     = $lineCoverageData;
         $this->functionCoverageData = $functionCoverageData;
         $this->testData             = $testData;
+        $this->linesOfCode          = $linesOfCode;
 
-        $this->calculateStatistics($executedFileAnalyser);
+        $this->calculateStatistics($classes, $traits, $functions);
     }
 
     public function count(): int
@@ -328,17 +328,15 @@ final class File extends AbstractNode
         return $this->numTestedFunctions;
     }
 
-    private function calculateStatistics(ExecutedFileAnalyser $executedFileAnalyser): void
+    private function calculateStatistics(array $classes, array $traits, array $functions): void
     {
-        $this->linesOfCode = $executedFileAnalyser->linesOfCodeFor($this->pathAsString());
-
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
-        $this->processClasses($executedFileAnalyser->classesIn($this->pathAsString()));
-        $this->processTraits($executedFileAnalyser->traitsIn($this->pathAsString()));
-        $this->processFunctions($executedFileAnalyser->functionsIn($this->pathAsString()));
+        $this->processClasses($classes);
+        $this->processTraits($traits);
+        $this->processFunctions($functions);
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {

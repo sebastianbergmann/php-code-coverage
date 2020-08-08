@@ -63,9 +63,10 @@ final class Builder
             $key = (string) $key;
 
             if (substr($key, -2) === '/f') {
-                $key = substr($key, 0, -2);
+                $key      = substr($key, 0, -2);
+                $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
-                if (file_exists($root->pathAsString() . DIRECTORY_SEPARATOR . $key)) {
+                if (file_exists($filename)) {
                     $root->addFile(
                         new File(
                             $key,
@@ -73,7 +74,10 @@ final class Builder
                             $value['lineCoverage'],
                             $value['functionCoverage'],
                             $tests,
-                            $this->executedFileAnalyser
+                            $this->executedFileAnalyser->classesIn($filename),
+                            $this->executedFileAnalyser->traitsIn($filename),
+                            $this->executedFileAnalyser->functionsIn($filename),
+                            $this->executedFileAnalyser->linesOfCodeFor($filename)
                         )
                     );
                 }

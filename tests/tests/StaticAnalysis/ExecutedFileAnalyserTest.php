@@ -12,9 +12,11 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFinder
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
  */
-final class IgnoredLinesFinderTest extends TestCase
+final class ExecutedFileAnalyserTest extends TestCase
 {
     public function testGetLinesToBeIgnored(): void
     {
@@ -36,10 +38,8 @@ final class IgnoredLinesFinderTest extends TestCase
                 30,
                 33,
             ],
-            (new IgnoredLinesFinder)->findIgnoredLinesInFile(
-                TEST_FILES_PATH . 'source_with_ignore.php',
-                true,
-                true,
+            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
     }
@@ -48,10 +48,8 @@ final class IgnoredLinesFinderTest extends TestCase
     {
         $this->assertEquals(
             [],
-            (new IgnoredLinesFinder)->findIgnoredLinesInFile(
-                TEST_FILES_PATH . 'source_without_ignore.php',
-                true,
-                true,
+            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_without_ignore.php'
             )
         );
     }
@@ -62,10 +60,8 @@ final class IgnoredLinesFinderTest extends TestCase
             [
                 3,
             ],
-            (new IgnoredLinesFinder)->findIgnoredLinesInFile(
-                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
-                true,
-                true,
+            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
             )
         );
     }
@@ -81,10 +77,8 @@ final class IgnoredLinesFinderTest extends TestCase
                 32,
                 33,
             ],
-            (new IgnoredLinesFinder)->findIgnoredLinesInFile(
-                TEST_FILES_PATH . 'source_with_oneline_annotations.php',
-                true,
-                true,
+            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_oneline_annotations.php'
             )
         );
     }
@@ -97,10 +91,8 @@ final class IgnoredLinesFinderTest extends TestCase
                 18,
                 33,
             ],
-            (new IgnoredLinesFinder)->findIgnoredLinesInFile(
-                TEST_FILES_PATH . 'source_with_ignore.php',
-                false,
-                false,
+            (new ExecutedFileAnalyser(false, false))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
     }

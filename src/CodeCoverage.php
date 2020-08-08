@@ -29,7 +29,7 @@ use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFinder;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
@@ -87,11 +87,6 @@ final class CodeCoverage
     private $data;
 
     /**
-     * @var IgnoredLinesFinder
-     */
-    private $ignoredLinesFinder;
-
-    /**
      * @var bool
      */
     private $useAnnotationsForIgnoringCode = true;
@@ -115,13 +110,17 @@ final class CodeCoverage
      */
     private $isInitialized = false;
 
+    /**
+     * @var ?ExecutedFileAnalyser
+     */
+    private $executedFileAnalyser;
+
     public function __construct(Driver $driver, Filter $filter)
     {
-        $this->driver             = $driver;
-        $this->filter             = $filter;
-        $this->data               = new ProcessedCodeCoverageData;
-        $this->ignoredLinesFinder = new IgnoredLinesFinder;
-        $this->wizard             = new Wizard;
+        $this->driver = $driver;
+        $this->filter = $filter;
+        $this->data   = new ProcessedCodeCoverageData;
+        $this->wizard = new Wizard;
     }
 
     /**
@@ -447,6 +446,13 @@ final class CodeCoverage
 
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
+        if ($this->executedFileAnalyser === null) {
+            $this->executedFileAnalyser = ExecutedFileAnalyser::createInstance(
+                $this->useAnnotationsForIgnoringCode,
+                $this->ignoreDeprecatedCode
+            );
+        }
+
         foreach (array_keys($data->lineCoverage()) as $filename) {
             if (!$this->filter->isFile($filename)) {
                 continue;
@@ -454,11 +460,7 @@ final class CodeCoverage
 
             $data->removeCoverageDataForLines(
                 $filename,
-                $this->ignoredLinesFinder->findIgnoredLinesInFile(
-                    $filename,
-                    $this->useAnnotationsForIgnoringCode,
-                    $this->ignoreDeprecatedCode
-                )
+                $this->executedFileAnalyser->ignoredLinesFor($filename)
             );
         }
     }

@@ -11,17 +11,9 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_filter;
 use function count;
-use function file_get_contents;
 use function range;
-use PhpParser\Error;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
-use PhpParser\ParserFactory;
 use SebastianBergmann\CodeCoverage\CrapIndex;
-use SebastianBergmann\CodeCoverage\ParserException;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor;
-use SebastianBergmann\LinesOfCode\LineCountingVisitor;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
@@ -338,45 +330,15 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        $source      = file_get_contents($this->pathAsString());
-        $linesOfCode = substr_count($source, "\n");
-        $parser      = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-
-        try {
-            $nodes = $parser->parse($source);
-
-            assert($nodes !== null);
-
-            $traverser              = new NodeTraverser;
-            $lineCountingVisitor    = new LineCountingVisitor($linesOfCode);
-            $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
-
-            $traverser->addVisitor(new NameResolver);
-            $traverser->addVisitor(new ParentConnectingVisitor);
-            $traverser->addVisitor($lineCountingVisitor);
-            $traverser->addVisitor($codeUnitFindingVisitor);
-
-            /* @noinspection UnusedFunctionResultInspection */
-            $traverser->traverse($nodes);
-            // @codeCoverageIgnoreStart
-        } catch (Error $error) {
-            throw new ParserException(
-                $error->getMessage(),
-                (int) $error->getCode(),
-                $error
-            );
-        }
-        // @codeCoverageIgnoreEnd
-
-        $this->linesOfCode = $lineCountingVisitor->result();
+        $this->linesOfCode = ExecutedFileAnalyser::getInstance()->linesOfCodeFor($this->pathAsString());
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
-        $this->processClasses($codeUnitFindingVisitor->classes());
-        $this->processTraits($codeUnitFindingVisitor->traits());
-        $this->processFunctions($codeUnitFindingVisitor->functions());
+        $this->processClasses(ExecutedFileAnalyser::getInstance()->classesIn($this->pathAsString()));
+        $this->processTraits(ExecutedFileAnalyser::getInstance()->traitsIn($this->pathAsString()));
+        $this->processFunctions(ExecutedFileAnalyser::getInstance()->functionsIn($this->pathAsString()));
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {

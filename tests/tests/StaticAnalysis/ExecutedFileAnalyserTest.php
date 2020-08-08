@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingExecutedFileAnalyser
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
  */
@@ -38,7 +38,7 @@ final class ExecutedFileAnalyserTest extends TestCase
                 30,
                 33,
             ],
-            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingExecutedFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
@@ -48,7 +48,7 @@ final class ExecutedFileAnalyserTest extends TestCase
     {
         $this->assertEquals(
             [],
-            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingExecutedFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_without_ignore.php'
             )
         );
@@ -60,7 +60,7 @@ final class ExecutedFileAnalyserTest extends TestCase
             [
                 3,
             ],
-            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingExecutedFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
             )
         );
@@ -77,7 +77,7 @@ final class ExecutedFileAnalyserTest extends TestCase
                 32,
                 33,
             ],
-            (new ExecutedFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingExecutedFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_oneline_annotations.php'
             )
         );
@@ -91,7 +91,7 @@ final class ExecutedFileAnalyserTest extends TestCase
                 18,
                 33,
             ],
-            (new ExecutedFileAnalyser(false, false))->ignoredLinesFor(
+            (new ParsingExecutedFileAnalyser(false, false))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );

@@ -13,7 +13,7 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CrapIndex;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingExecutedFileAnalyser;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
@@ -330,15 +330,15 @@ final class File extends AbstractNode
 
     private function calculateStatistics(): void
     {
-        $this->linesOfCode = ExecutedFileAnalyser::getInstance()->linesOfCodeFor($this->pathAsString());
+        $this->linesOfCode = CachingExecutedFileAnalyser::getInstance()->linesOfCodeFor($this->pathAsString());
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
-        $this->processClasses(ExecutedFileAnalyser::getInstance()->classesIn($this->pathAsString()));
-        $this->processTraits(ExecutedFileAnalyser::getInstance()->traitsIn($this->pathAsString()));
-        $this->processFunctions(ExecutedFileAnalyser::getInstance()->functionsIn($this->pathAsString()));
+        $this->processClasses(CachingExecutedFileAnalyser::getInstance()->classesIn($this->pathAsString()));
+        $this->processTraits(CachingExecutedFileAnalyser::getInstance()->traitsIn($this->pathAsString()));
+        $this->processFunctions(CachingExecutedFileAnalyser::getInstance()->functionsIn($this->pathAsString()));
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {

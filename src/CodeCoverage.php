@@ -29,6 +29,7 @@ use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingExecutedFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
@@ -447,7 +448,8 @@ final class CodeCoverage
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
         if ($this->executedFileAnalyser === null) {
-            $this->executedFileAnalyser = ExecutedFileAnalyser::createInstance(
+            $this->executedFileAnalyser = CachingExecutedFileAnalyser::createInstance(
+                '/tmp/cache',
                 $this->useAnnotationsForIgnoringCode,
                 $this->ignoreDeprecatedCode
             );

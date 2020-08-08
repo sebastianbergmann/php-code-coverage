@@ -22,12 +22,23 @@ use function strpos;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Builder
 {
+    /**
+     * @var ExecutedFileAnalyser
+     */
+    private $executedFileAnalyser;
+
+    public function __construct(ExecutedFileAnalyser $executedFileAnalyser)
+    {
+        $this->executedFileAnalyser = $executedFileAnalyser;
+    }
+
     public function build(CodeCoverage $coverage): Directory
     {
         $data       = clone $coverage->getData(); // clone because path munging is destructive to the original data
@@ -55,7 +66,13 @@ final class Builder
                 $key = substr($key, 0, -2);
 
                 if (file_exists($root->pathAsString() . DIRECTORY_SEPARATOR . $key)) {
-                    $root->addFile($key, $value['lineCoverage'], $value['functionCoverage'], $tests);
+                    $root->addFile(
+                        $key,
+                        $value['lineCoverage'],
+                        $value['functionCoverage'],
+                        $tests,
+                        $this->executedFileAnalyser
+                    );
                 }
             } else {
                 $child = $root->addDirectory($key);

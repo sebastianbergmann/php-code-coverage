@@ -31,6 +31,7 @@ use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingExecutedFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingExecutedFileAnalyser;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
@@ -116,12 +117,19 @@ final class CodeCoverage
      */
     private $executedFileAnalyser;
 
+    /**
+     * @var ?string
+     */
+    private $cacheDirectory;
+
     public function __construct(Driver $driver, Filter $filter)
     {
         $this->driver = $driver;
         $this->filter = $filter;
         $this->data   = new ProcessedCodeCoverageData;
         $this->wizard = new Wizard;
+
+        $this->cacheStaticAnalysis('/tmp/cache');
     }
 
     /**
@@ -129,7 +137,7 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        return (new Builder)->build($this);
+        return (new Builder($this->executedFileAnalyser()))->build($this);
     }
 
     /**
@@ -365,6 +373,24 @@ final class CodeCoverage
     }
 
     /**
+     * @psalm-assert-if-true !null $this->cacheDirectory
+     */
+    public function cachesStaticAnalysis(): bool
+    {
+        return $this->cacheDirectory !== null;
+    }
+
+    public function cacheStaticAnalysis(string $cacheDirectory): void
+    {
+        $this->cacheDirectory = $cacheDirectory;
+    }
+
+    public function doNotCacheStaticAnalysis(): void
+    {
+        $this->cacheDirectory = null;
+    }
+
+    /**
      * @psalm-param class-string $className
      */
     public function excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck(string $className): void
@@ -447,14 +473,6 @@ final class CodeCoverage
 
     private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
-        if ($this->executedFileAnalyser === null) {
-            $this->executedFileAnalyser = CachingExecutedFileAnalyser::createInstance(
-                '/tmp/cache',
-                $this->useAnnotationsForIgnoringCode,
-                $this->ignoreDeprecatedCode
-            );
-        }
-
         foreach (array_keys($data->lineCoverage()) as $filename) {
             if (!$this->filter->isFile($filename)) {
                 continue;
@@ -462,7 +480,7 @@ final class CodeCoverage
 
             $data->removeCoverageDataForLines(
                 $filename,
-                $this->executedFileAnalyser->ignoredLinesFor($filename)
+                $this->executedFileAnalyser()->ignoredLinesFor($filename)
             );
         }
     }
@@ -614,5 +632,26 @@ final class CodeCoverage
 
             $this->append($this->driver->stop(), self::UNCOVERED_FILES);
         }
+    }
+
+    private function executedFileAnalyser(): ExecutedFileAnalyser
+    {
+        if ($this->executedFileAnalyser !== null) {
+            return $this->executedFileAnalyser;
+        }
+
+        $this->executedFileAnalyser = new ParsingExecutedFileAnalyser(
+            $this->useAnnotationsForIgnoringCode,
+            $this->ignoreDeprecatedCode
+        );
+
+        if ($this->cachesStaticAnalysis()) {
+            $this->executedFileAnalyser = new CachingExecutedFileAnalyser(
+                $this->cacheDirectory,
+                $this->executedFileAnalyser
+            );
+        }
+
+        return $this->executedFileAnalyser;
     }
 }

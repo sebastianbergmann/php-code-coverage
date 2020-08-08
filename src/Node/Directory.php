@@ -13,6 +13,7 @@ use function array_merge;
 use function count;
 use IteratorAggregate;
 use RecursiveIteratorIterator;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutedFileAnalyser;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
@@ -161,9 +162,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $directory;
     }
 
-    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData): void
+    public function addFile(string $name, array $lineCoverageData, array $functionCoverageData, array $testData, ExecutedFileAnalyser $executedFileAnalyser): void
     {
-        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData);
+        $file = new File($name, $this, $lineCoverageData, $functionCoverageData, $testData, $executedFileAnalyser);
 
         $this->children[] = $file;
         $this->files[]    = &$this->children[count($this->children) - 1];

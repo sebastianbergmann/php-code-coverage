@@ -20,16 +20,8 @@ use function unserialize;
 use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
-/**
- * @todo Refactor how Node\File objects are created so a Singleton of this is not required
- */
 final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
 {
-    /**
-     * @var ExecutedFileAnalyser
-     */
-    private static $instance;
-
     /**
      * @var string
      */
@@ -39,24 +31,6 @@ final class CachingExecutedFileAnalyser implements ExecutedFileAnalyser
      * @var ExecutedFileAnalyser
      */
     private $executedFileAnalyser;
-
-    public static function createInstance(string $directory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): ExecutedFileAnalyser
-    {
-        self::$instance = new self(
-            $directory,
-            new ParsingExecutedFileAnalyser(
-                $useAnnotationsForIgnoringCode,
-                $ignoreDeprecatedCode
-            )
-        );
-
-        return self::$instance;
-    }
-
-    public static function getInstance(): ExecutedFileAnalyser
-    {
-        return self::$instance;
-    }
 
     public function __construct(string $directory, ExecutedFileAnalyser $executedFileAnalyser)
     {

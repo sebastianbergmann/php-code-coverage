@@ -25,16 +25,8 @@ use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
-/**
- * @todo Refactor how Node\File objects are created so a Singleton of this is not required
- */
 final class ParsingExecutedFileAnalyser implements ExecutedFileAnalyser
 {
-    /**
-     * @var ExecutedFileAnalyser
-     */
-    private static $instance;
-
     /**
      * @var array
      */
@@ -69,18 +61,6 @@ final class ParsingExecutedFileAnalyser implements ExecutedFileAnalyser
      * @var bool
      */
     private $ignoreDeprecatedCode;
-
-    public static function createInstance(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): ExecutedFileAnalyser
-    {
-        self::$instance = new self($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
-
-        return self::$instance;
-    }
-
-    public static function getInstance(): ExecutedFileAnalyser
-    {
-        return self::$instance;
-    }
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
     {

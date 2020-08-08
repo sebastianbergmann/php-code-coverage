@@ -30,8 +30,11 @@ use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingCoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingUncoveredFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingUncoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\UncoveredFileAnalyser;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
@@ -116,6 +119,11 @@ final class CodeCoverage
      * @var ?CoveredFileAnalyser
      */
     private $coveredFileAnalyser;
+
+    /**
+     * @var ?UncoveredFileAnalyser
+     */
+    private $uncoveredFileAnalyser;
 
     /**
      * @var ?string
@@ -497,7 +505,13 @@ final class CodeCoverage
 
         foreach ($uncoveredFiles as $uncoveredFile) {
             if (file_exists($uncoveredFile)) {
-                $this->append(RawCodeCoverageData::fromUncoveredFile($uncoveredFile), self::UNCOVERED_FILES);
+                $this->append(
+                    RawCodeCoverageData::fromUncoveredFile(
+                        $uncoveredFile,
+                        $this->uncoveredFileAnalyser()
+                    ),
+                    self::UNCOVERED_FILES
+                );
             }
         }
     }
@@ -653,5 +667,23 @@ final class CodeCoverage
         }
 
         return $this->coveredFileAnalyser;
+    }
+
+    private function uncoveredFileAnalyser(): UncoveredFileAnalyser
+    {
+        if ($this->uncoveredFileAnalyser !== null) {
+            return $this->uncoveredFileAnalyser;
+        }
+
+        $this->uncoveredFileAnalyser = new ParsingUncoveredFileAnalyser;
+
+        if ($this->cachesStaticAnalysis()) {
+            $this->uncoveredFileAnalyser = new CachingUncoveredFileAnalyser(
+                $this->cacheDirectory,
+                $this->uncoveredFileAnalyser
+            );
+        }
+
+        return $this->uncoveredFileAnalyser;
     }
 }

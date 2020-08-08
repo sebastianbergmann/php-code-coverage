@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use function array_keys;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingUncoveredFileAnalyser;
 
 final class RawCodeCoverageDataTest extends TestCase
 {
@@ -271,7 +272,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 14,
                 18,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
         );
     }
 
@@ -283,7 +284,7 @@ final class RawCodeCoverageDataTest extends TestCase
             [
                 12,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
         );
     }
 
@@ -297,7 +298,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 9,
                 13,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
         );
     }
 
@@ -316,7 +317,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 33,
                 35,
             ],
-            array_keys(RawCodeCoverageData::fromUncoveredFile($file)->lineCoverage()[$file])
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
         );
     }
 

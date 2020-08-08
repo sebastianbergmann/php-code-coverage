@@ -13,9 +13,9 @@ use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 
-final class ExecutableLinesFinder
+final class ParsingUncoveredFileAnalyser implements UncoveredFileAnalyser
 {
-    public function findExecutableLinesInFile(string $filename): array
+    public function executableLinesIn(string $filename): array
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
 

@@ -615,32 +615,4 @@ final class CodeCoverage
             $this->append($this->driver->stop(), self::UNCOVERED_FILES);
         }
     }
-
-    private function coverageToCodeUnits(RawCodeCoverageData $rawData): array
-    {
-        $codeUnits = [];
-
-        foreach ($rawData->lineCoverage() as $filename => $lines) {
-            foreach ($lines as $line => $flag) {
-                if ($flag === 1) {
-                    $codeUnits[] = $this->wizard->lookup($filename, $line);
-                }
-            }
-        }
-
-        return array_unique($codeUnits);
-    }
-
-    private function linesToCodeUnits(array $data): array
-    {
-        $codeUnits = [];
-
-        foreach ($data as $filename => $lines) {
-            foreach ($lines as $line) {
-                $codeUnits[] = $this->wizard->lookup($filename, $line);
-            }
-        }
-
-        return array_unique($codeUnits);
-    }
 }

@@ -9,15 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use SebastianBergmann\CodeCoverage\Directory;
-
-final class CachingUncoveredFileAnalyser implements UncoveredFileAnalyser
+final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileAnalyser
 {
-    /**
-     * @var string
-     */
-    private $directory;
-
     /**
      * @var UncoveredFileAnalyser
      */
@@ -25,9 +18,8 @@ final class CachingUncoveredFileAnalyser implements UncoveredFileAnalyser
 
     public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser)
     {
-        Directory::create($directory);
+        parent::__construct($directory);
 
-        $this->directory             = $directory;
         $this->uncoveredFileAnalyser = $uncoveredFileAnalyser;
     }
 
@@ -42,59 +34,5 @@ final class CachingUncoveredFileAnalyser implements UncoveredFileAnalyser
         $this->cacheWrite($filename, __METHOD__, $data);
 
         return $data;
-    }
-
-    private function cacheFile(string $filename, string $method): string
-    {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . $method);
-    }
-
-    private function cacheHas(string $filename, string $method): bool
-    {
-        $cacheFile = $this->cacheFile($filename, $method);
-
-        if (!file_exists($cacheFile)) {
-            return false;
-        }
-
-        if (filemtime($cacheFile) < filemtime($filename)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @psalm-param list<string> $allowedClasses
-     *
-     * @return mixed
-     */
-    private function cacheRead(string $filename, string $method, array $allowedClasses = [])
-    {
-        $options = ['allowed_classes' => false];
-
-        if (!empty($allowedClasses)) {
-            $options = ['allowed_classes' => $allowedClasses];
-        }
-
-        return unserialize(
-            file_get_contents(
-                $this->cacheFile($filename, $method)
-            ),
-            [
-                'allowed_classes' => $allowedClasses,
-            ]
-        );
-    }
-
-    /**
-     * @param mixed $data
-     */
-    private function cacheWrite(string $filename, string $method, $data): void
-    {
-        file_put_contents(
-            $this->cacheFile($filename, $method),
-            serialize($data)
-        );
     }
 }

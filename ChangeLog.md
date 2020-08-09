@@ -10,7 +10,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added `SebastianBergmann\CodeCoverage::cacheStaticAnalysis(string $cacheDirectory)` method for enabling the cache; it will write its files to `$directory`
 * Added `SebastianBergmann\CodeCoverage::doNotCacheStaticAnalysis` method for disabling the cache
 * Added `SebastianBergmann\CodeCoverage::cachesStaticAnalysis()` method for querying whether the cache is enabled
-* Added `SebastianBergmann\CodeCoverage::warmCache()` method for warming the cache
+* Added `SebastianBergmann\CodeCoverage\StaticAnalysis\CacheWarmer::warmCache()` method for warming the cache
 
 ## [9.0.0] - 2020-08-07
 

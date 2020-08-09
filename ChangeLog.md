@@ -2,6 +2,16 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.1.0] - 2020-MM-DD
+
+### Added
+
+* Implemented a persistent cache for information gathered using PHP-Parser based static analysis (hereinafter referred to as "cache")
+* Added `SebastianBergmann\CodeCoverage::cacheStaticAnalysis(string $cacheDirectory)` method for enabling the cache; it will write its files to `$directory`
+* Added `SebastianBergmann\CodeCoverage::doNotCacheStaticAnalysis` method for disabling the cache
+* Added `SebastianBergmann\CodeCoverage::cachesStaticAnalysis()` method for querying whether the cache is enabled
+* Added `SebastianBergmann\CodeCoverage::warmCache()` method for warming the cache
+
 ## [9.0.0] - 2020-08-07
 
 ### Added
@@ -185,6 +195,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.0.0...master
 [9.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0...9.0.0
 [8.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.0...8.0.1

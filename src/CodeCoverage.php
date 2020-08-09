@@ -136,8 +136,6 @@ final class CodeCoverage
         $this->filter = $filter;
         $this->data   = new ProcessedCodeCoverageData;
         $this->wizard = new Wizard;
-
-        $this->cacheStaticAnalysis('/tmp/cache');
     }
 
     /**

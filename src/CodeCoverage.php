@@ -399,6 +399,29 @@ final class CodeCoverage
     }
 
     /**
+     * @throws CacheNotConfiguredException
+     */
+    public function warmCache(): void
+    {
+        if (!$this->cachesStaticAnalysis()) {
+            throw new CacheNotConfiguredException(
+                'The cache has not been configured using cacheStaticAnalysis()'
+            );
+        }
+
+        $coveredFileAnalyser   = $this->coveredFileAnalyser();
+        $uncoveredFileAnalyser = $this->uncoveredFileAnalyser();
+
+        foreach ($this->filter->files() as $file) {
+            /* @noinspection UnusedFunctionResultInspection */
+            $coveredFileAnalyser->linesOfCodeFor($file);
+
+            /* @noinspection UnusedFunctionResultInspection */
+            $uncoveredFileAnalyser->executableLinesIn($file);
+        }
+    }
+
+    /**
      * @psalm-param class-string $className
      */
     public function excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck(string $className): void

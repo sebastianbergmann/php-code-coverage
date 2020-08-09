@@ -316,8 +316,6 @@ final class CodeCoverage
 
     /**
      * Merges the data from another instance.
-     *
-     * @param CodeCoverage $that
      */
     public function merge(self $that): void
     {

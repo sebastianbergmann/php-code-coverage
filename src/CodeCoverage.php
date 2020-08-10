@@ -395,6 +395,20 @@ final class CodeCoverage
     }
 
     /**
+     * @throws StaticAnalysisCacheNotConfiguredException
+     */
+    public function cacheDirectory(): string
+    {
+        if (!$this->cachesStaticAnalysis()) {
+            throw new StaticAnalysisCacheNotConfiguredException(
+                'The static analysis cache is not configured'
+            );
+        }
+
+        return $this->cacheDirectory;
+    }
+
+    /**
      * @psalm-param class-string $className
      */
     public function excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck(string $className): void

@@ -31,12 +31,16 @@ final class CacheWarmer
         foreach ($filter->files() as $file) {
             /* @noinspection UnusedFunctionResultInspection */
             $coveredFileAnalyser->classesIn($file);
+
             /* @noinspection UnusedFunctionResultInspection */
             $coveredFileAnalyser->traitsIn($file);
+
             /* @noinspection UnusedFunctionResultInspection */
             $coveredFileAnalyser->functionsIn($file);
+
             /* @noinspection UnusedFunctionResultInspection */
             $coveredFileAnalyser->linesOfCodeFor($file);
+
             /* @noinspection UnusedFunctionResultInspection */
             $coveredFileAnalyser->ignoredLinesFor($file);
 

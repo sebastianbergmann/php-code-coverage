@@ -13,6 +13,7 @@ use function array_unique;
 use function assert;
 use function file_get_contents;
 use function is_array;
+use function sprintf;
 use function substr_count;
 use function token_get_all;
 use function trim;
@@ -142,7 +143,11 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
             // @codeCoverageIgnoreStart
         } catch (Error $error) {
             throw new ParserException(
-                $error->getMessage(),
+                sprintf(
+                    'Cannot parse %s: %s',
+                    $filename,
+                    $error->getMessage()
+                ),
                 (int) $error->getCode(),
                 $error
             );

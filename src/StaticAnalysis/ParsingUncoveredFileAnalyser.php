@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PhpParser\Error;
+use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 
@@ -17,7 +18,10 @@ final class ParsingUncoveredFileAnalyser implements UncoveredFileAnalyser
 {
     public function executableLinesIn(string $filename): array
     {
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory)->create(
+            ParserFactory::PREFER_PHP7,
+            new Lexer
+        );
 
         try {
             $nodes = $parser->parse(file_get_contents($filename));

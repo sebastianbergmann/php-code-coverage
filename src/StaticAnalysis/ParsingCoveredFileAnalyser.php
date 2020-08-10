@@ -18,6 +18,7 @@ use function substr_count;
 use function token_get_all;
 use function trim;
 use PhpParser\Error;
+use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
@@ -116,7 +117,10 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
         $source      = file_get_contents($filename);
         $linesOfCode = substr_count($source, "\n");
 
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory)->create(
+            ParserFactory::PREFER_PHP7,
+            new Lexer
+        );
 
         try {
             $nodes = $parser->parse($source);

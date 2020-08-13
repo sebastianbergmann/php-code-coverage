@@ -16,6 +16,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -30,23 +31,45 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
     /**
      * @var bool
      */
+    private $useAnnotationsForIgnoringCode;
+
+    /**
+     * @var bool
+     */
     private $ignoreDeprecated;
 
-    public function __construct(bool $ignoreDeprecated)
+    public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecated)
     {
-        $this->ignoreDeprecated = $ignoreDeprecated;
+        $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
+        $this->ignoreDeprecated              = $ignoreDeprecated;
     }
 
     public function enterNode(Node $node): ?int
     {
         if (!$node instanceof Class_ &&
             !$node instanceof Trait_ &&
+            !$node instanceof Interface_ &&
             !$node instanceof ClassMethod &&
             !$node instanceof Function_) {
             return null;
         }
 
         if ($node instanceof Class_ && $node->isAnonymous()) {
+            return null;
+        }
+
+        // Workaround for https://bugs.xdebug.org/view.php?id=1798
+        if ($node instanceof Class_ ||
+            $node instanceof Trait_ ||
+            $node instanceof Interface_) {
+            $this->ignoredLines[] = $node->getStartLine();
+        }
+
+        if (!$this->useAnnotationsForIgnoringCode) {
+            return null;
+        }
+
+        if ($node instanceof Interface_) {
             return null;
         }
 

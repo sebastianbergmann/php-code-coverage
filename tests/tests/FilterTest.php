@@ -72,6 +72,7 @@ final class FilterTest extends TestCase
             TEST_FILES_PATH . 'NamespacedBankAccount.php',
             TEST_FILES_PATH . 'NotExistingCoveredElementTest.php',
             TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
+            TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php',
             TEST_FILES_PATH . 'source_with_empty_class.php',
             TEST_FILES_PATH . 'source_with_ignore.php',
             TEST_FILES_PATH . 'source_with_interface.php',

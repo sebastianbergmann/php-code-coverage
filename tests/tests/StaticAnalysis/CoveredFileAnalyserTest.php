@@ -66,6 +66,22 @@ final class CoveredFileAnalyserTest extends TestCase
         );
     }
 
+    /**
+     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/793
+     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/794
+     */
+    public function testLineWithFullyQualifiedClassNameConstantIsNotIgnored(): void
+    {
+        $this->assertSame(
+            [
+                2,
+            ],
+            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php'
+            )
+        );
+    }
+
     public function testGetLinesToBeIgnoredOneLineAnnotations(): void
     {
         $this->assertEquals(

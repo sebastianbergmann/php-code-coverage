@@ -127,20 +127,16 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 
             assert($nodes !== null);
 
-            $traverser              = new NodeTraverser;
-            $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
-            $lineCountingVisitor    = new LineCountingVisitor($linesOfCode);
+            $traverser                  = new NodeTraverser;
+            $codeUnitFindingVisitor     = new CodeUnitFindingVisitor;
+            $lineCountingVisitor        = new LineCountingVisitor($linesOfCode);
+            $ignoredLinesFindingVisitor = new IgnoredLinesFindingVisitor($this->useAnnotationsForIgnoringCode, $this->ignoreDeprecatedCode);
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new ParentConnectingVisitor);
             $traverser->addVisitor($codeUnitFindingVisitor);
             $traverser->addVisitor($lineCountingVisitor);
-
-            if ($this->useAnnotationsForIgnoringCode) {
-                $ignoredLinesFindingVisitor = new IgnoredLinesFindingVisitor($this->ignoreDeprecatedCode);
-
-                $traverser->addVisitor($ignoredLinesFindingVisitor);
-            }
+            $traverser->addVisitor($ignoredLinesFindingVisitor);
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
@@ -166,14 +162,12 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 
         $this->findLinesIgnoredByLineBasedAnnotations($filename, $source, $this->useAnnotationsForIgnoringCode);
 
-        if (isset($ignoredLinesFindingVisitor)) {
-            $this->ignoredLines[$filename] = array_merge(
+        $this->ignoredLines[$filename] = array_unique(
+            array_merge(
                 $this->ignoredLines[$filename],
                 $ignoredLinesFindingVisitor->ignoredLines()
-            );
-        }
-
-        $this->ignoredLines[$filename] = array_unique($this->ignoredLines[$filename]);
+            )
+        );
 
         sort($this->ignoredLines[$filename]);
     }
@@ -208,14 +202,6 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
                         $comment === '//@codeCoverageIgnoreEnd') {
                         $stop = true;
                     }
-
-                    break;
-
-                case T_INTERFACE:
-                case T_TRAIT:
-                case T_CLASS:
-                    // Workaround for https://bugs.xdebug.org/view.php?id=1798
-                    $this->ignoredLines[$filename][] = $token[2];
 
                     break;
             }

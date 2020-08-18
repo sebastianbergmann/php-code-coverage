@@ -23,12 +23,18 @@ composer require --dev phpunit/php-code-coverage
 ## Usage
 
 ```php
-<?php
+<?php declare(strict_types=1);
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlReport;
 
-$coverage = new CodeCoverage;
+$filter = new Filter;
+$filter->includeDirectory('/path/to/directory');
 
-$coverage->filter()->includeDirectory('/path/to/src');
+$driver = Driver::forLineCoverage($filter);
+
+$coverage = new CodeCoverage($driver, $filter);
 
 $coverage->start('<name of test>');
 
@@ -36,10 +42,6 @@ $coverage->start('<name of test>');
 
 $coverage->stop();
 
-$writer = new \SebastianBergmann\CodeCoverage\Report\Clover;
-$writer->process($coverage, '/tmp/clover.xml');
 
-$writer = new \SebastianBergmann\CodeCoverage\Report\Html\Facade;
-$writer->process($coverage, '/tmp/code-coverage-report');
+(new HtmlReport)->process($coverage, '/tmp/code-coverage-report');
 ```
-

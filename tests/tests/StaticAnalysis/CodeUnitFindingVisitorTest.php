@@ -15,7 +15,7 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\CodeCoverage\TestFixture\ClassThatUsesAnonymousClass;
+use SebastianBergmann\CodeCoverage\ClassThatUsesAnonymousClass\TestFixture\ClassThatUsesAnonymousClass;
 
 /**
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
@@ -55,7 +55,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame('ClassThatUsesAnonymousClass', $class['name']);
         $this->assertSame(ClassThatUsesAnonymousClass::class, $class['namespacedName']);
-        $this->assertSame('SebastianBergmann\CodeCoverage\TestFixture', $class['namespace']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\ClassThatUsesAnonymousClass\TestFixture', $class['namespace']);
         $this->assertSame(4, $class['startLine']);
         $this->assertSame(17, $class['endLine']);
 

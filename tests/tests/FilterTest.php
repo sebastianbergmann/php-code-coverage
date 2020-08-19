@@ -37,6 +37,7 @@ final class FilterTest extends TestCase
             TEST_FILES_PATH . 'BankAccount.php',
             TEST_FILES_PATH . 'BankAccountTest.php',
             TEST_FILES_PATH . 'ClassThatUsesAnonymousClass.php',
+            TEST_FILES_PATH . 'ClassWithNameThatIsPartOfItsNamespacesName.php',
             TEST_FILES_PATH . 'CoverageClassExtendedTest.php',
             TEST_FILES_PATH . 'CoverageClassTest.php',
             TEST_FILES_PATH . 'CoverageFunctionParenthesesTest.php',

@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace SebastianBergmann\CodeCoverage\ClassThatUsesAnonymousClass\TestFixture;
+namespace SebastianBergmann\CodeCoverage\TestFixture;
 
 final class ClassThatUsesAnonymousClass
 {

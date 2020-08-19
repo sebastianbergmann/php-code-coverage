@@ -15,7 +15,8 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\CodeCoverage\ClassThatUsesAnonymousClass\TestFixture\ClassThatUsesAnonymousClass;
+use SebastianBergmann\CodeCoverage\TestFixture\ClassThatUsesAnonymousClass;
+use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName\ClassWithNameThatIsPartOfItsNamespacesName;
 
 /**
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
@@ -55,7 +56,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame('ClassThatUsesAnonymousClass', $class['name']);
         $this->assertSame(ClassThatUsesAnonymousClass::class, $class['namespacedName']);
-        $this->assertSame('SebastianBergmann\CodeCoverage\ClassThatUsesAnonymousClass\TestFixture', $class['namespace']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\TestFixture', $class['namespace']);
         $this->assertSame(4, $class['startLine']);
         $this->assertSame(17, $class['endLine']);
 
@@ -70,5 +71,41 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame(6, $method['startLine']);
         $this->assertSame(16, $method['endLine']);
         $this->assertSame(1, $method['ccn']);
+    }
+
+    /**
+     * @ticket https://github.com/sebastianbergmann/php-code-coverage/pull/797
+     */
+    public function testHandlesClassWithNameThatIsPartOfItsNamespacesName(): void
+    {
+        $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(
+            file_get_contents(__DIR__ . '/../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php')
+        );
+
+        assert($nodes !== null);
+
+        $traverser              = new NodeTraverser;
+        $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
+
+        $traverser->addVisitor(new NameResolver);
+        $traverser->addVisitor(new ParentConnectingVisitor);
+        $traverser->addVisitor($codeUnitFindingVisitor);
+
+        /* @noinspection UnusedFunctionResultInspection */
+        $traverser->traverse($nodes);
+
+        $this->assertEmpty($codeUnitFindingVisitor->functions());
+        $this->assertEmpty($codeUnitFindingVisitor->traits());
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(1, $classes);
+        $this->assertArrayHasKey(ClassWithNameThatIsPartOfItsNamespacesName::class, $classes);
+
+        $class = $classes[ClassWithNameThatIsPartOfItsNamespacesName::class];
+
+        $this->assertSame('ClassWithNameThatIsPartOfItsNamespacesName', $class['name']);
+        $this->assertSame(ClassWithNameThatIsPartOfItsNamespacesName::class, $class['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName', $class['namespace']);
     }
 }

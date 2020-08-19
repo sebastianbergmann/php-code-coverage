@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function implode;
+use function rtrim;
 use function trim;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;

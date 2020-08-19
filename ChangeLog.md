@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.1.5] - 2020-MM-DD
+
+### Fixed
+
+* [#797](https://github.com/sebastianbergmann/php-code-coverage/pull/797): Class name is wrongly removed from namespace name
+
 ## [9.1.4] - 2020-08-13
 
 ### Fixed
@@ -219,6 +225,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.1.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.4...master
 [9.1.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.3...9.1.4
 [9.1.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.2...9.1.3
 [9.1.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.1...9.1.2

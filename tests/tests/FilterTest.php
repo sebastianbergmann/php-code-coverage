@@ -31,7 +31,7 @@ final class FilterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->filter = unserialize('O:37:"SebastianBergmann\CodeCoverage\Filter":0:{}');
+        $this->filter = new Filter;
 
         $this->files = [
             TEST_FILES_PATH . 'BankAccount.php',

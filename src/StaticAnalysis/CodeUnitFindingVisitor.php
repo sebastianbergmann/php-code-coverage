@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function implode;
-use function str_replace;
 use function trim;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -285,13 +284,6 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function namespace(string $namespacedName, string $name): string
     {
-        return trim(
-            str_replace(
-                $name,
-                '',
-                $namespacedName
-            ),
-            '\\'
-        );
+        return trim(rtrim($namespacedName, $name), '\\');
     }
 }

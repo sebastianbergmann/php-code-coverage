@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.1.5] - 2020-MM-DD
 
+### Changed
+
+* [#800](https://github.com/sebastianbergmann/php-code-coverage/pull/800): All files on the inclusion list are no longer loaded when `SebastianBergmann\CodeCoverage::start()` is called for the first time and `processUncoveredFiles` is set to `true`
+
 ### Fixed
 
 * [#797](https://github.com/sebastianbergmann/php-code-coverage/pull/797): Class name is wrongly removed from namespace name

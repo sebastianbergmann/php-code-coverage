@@ -530,11 +530,9 @@ final class CodeCoverage
 
         $this->driver->start();
 
-        foreach ($this->filter->files() as $file) {
-            foreach ($uncoveredFiles as $uncoveredFile) {
-                if (file_exists($uncoveredFile)) {
-                    include_once $file;
-                }
+        foreach ($uncoveredFiles as $uncoveredFile) {
+            if (file_exists($uncoveredFile)) {
+                include_once $uncoveredFile;
             }
         }
 

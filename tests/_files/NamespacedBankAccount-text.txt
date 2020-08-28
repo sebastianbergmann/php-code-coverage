@@ -11,4 +11,4 @@ Code Coverage Report:
 SomeNamespace\BankAccount
   Methods:  ( 0/ 0)   Lines:  (  0/  0)
 SomeNamespace\BankAccountTrait
-  Methods:  75.00% ( 3/ 4)   Lines:  55.56% (  5/  9)
+  Methods:  75.00% ( 3/ 4)   Lines:  50.00% (  5/ 10)

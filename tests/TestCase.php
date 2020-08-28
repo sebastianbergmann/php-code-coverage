@@ -1122,48 +1122,48 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return [
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
-                    14 => 1,
-                    15 => -2,
+                    13 => 1,
+                    14 => -2,
+                    18 => -1,
                     19 => -1,
                     20 => -1,
                     21 => -1,
-                    22 => -1,
-                    24 => -1,
-                    28 => -1,
-                    30 => -1,
-                    31 => -2,
-                    35 => -1,
-                    37 => -1,
-                    38 => -2,
+                    23 => -1,
+                    27 => -1,
+                    29 => -1,
+                    30 => -2,
+                    34 => -1,
+                    36 => -1,
+                    37 => -2,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
-                    14 => 1,
-                    19 => 1,
-                    22 => 1,
-                    35 => 1,
+                    13 => 1,
+                    18 => 1,
+                    21 => 1,
+                    34 => 1,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
-                    14 => 1,
-                    19 => 1,
-                    22 => 1,
-                    28 => 1,
+                    13 => 1,
+                    18 => 1,
+                    21 => 1,
+                    27 => 1,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
-                    14 => 1,
+                    13 => 1,
+                    18 => 1,
                     19 => 1,
                     20 => 1,
-                    21 => 1,
-                    24 => 1,
-                    28 => 1,
-                    30 => 1,
-                    35 => 1,
-                    37 => 1,
+                    23 => 1,
+                    27 => 1,
+                    29 => 1,
+                    34 => 1,
+                    36 => 1,
                 ],
             ]),
         ];
@@ -1190,7 +1190,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(12, 15)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(11, 14)]
         );
 
         $coverage->start(
@@ -1199,7 +1199,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(33, 38)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(32, 37)]
         );
 
         $coverage->start(
@@ -1208,7 +1208,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(26, 31)]
+            [TEST_FILES_PATH . 'NamespacedBankAccount.php' => range(25, 30)]
         );
 
         $coverage->start(
@@ -1219,9 +1219,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             true,
             [
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => array_merge(
-                    range(12, 15),
-                    range(26, 31),
-                    range(33, 38)
+                    range(11, 14),
+                    range(25, 30),
+                    range(32, 37)
                 ),
             ]
         );

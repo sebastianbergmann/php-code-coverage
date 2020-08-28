@@ -116,6 +116,8 @@ final class ProcessedCodeCoverageData
 
     public function coveredFiles(): array
     {
+        ksort($this->lineCoverage);
+
         return array_keys($this->lineCoverage);
     }
 

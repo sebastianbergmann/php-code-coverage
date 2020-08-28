@@ -188,6 +188,34 @@ final class ProcessedCodeCoverageData
         }
     }
 
+    public function finalize(): void
+    {
+        $this->ensureEmptyLinesAreMarkedNonExecutable();
+    }
+
+    /**
+     * At the end of a file, the PHP interpreter always sees an implicit return. Where this occurs in a file that has
+     * e.g. a class definition, that line cannot be invoked from a test and results in confusing coverage. This engine
+     * implementation detail therefore needs to be masked which is done here by simply ensuring that all empty lines
+     * are considered non-executable for coverage purposes.
+     *
+     * @see https://github.com/sebastianbergmann/php-code-coverage/issues/799
+     */
+    private function ensureEmptyLinesAreMarkedNonExecutable(): void
+    {
+        foreach ($this->lineCoverage as $filename => $coverage) {
+            if (is_file($filename)) {
+                $sourceLines = explode("\n", file_get_contents($filename));
+
+                foreach ($coverage as $line => $lineCoverage) {
+                    if (is_array($lineCoverage) && trim($sourceLines[$line - 1]) === '') {
+                        $this->lineCoverage[$filename][$line] = null;
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Determine the priority for a line.
      *

@@ -162,6 +162,8 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
+        $this->data->finalize();
+
         if (!$raw) {
             if ($this->processUncoveredFiles) {
                 $this->processUncoveredFilesFromFilter();

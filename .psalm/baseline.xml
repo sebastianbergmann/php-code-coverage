@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.13.1@afd8874a9e4562eac42a02de90e42e430c3a1db1">
+<files psalm-version="3.14.2@3538fe1955d47f6ee926c0769d71af6db08aa488">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -30,9 +30,6 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
-    <UnresolvableInclude occurrences="1">
-      <code>include_once $file</code>
-    </UnresolvableInclude>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
@@ -139,12 +136,6 @@
       <code>BaseTestRunner::STATUS_FAILURE</code>
       <code>BaseTestRunner::STATUS_ERROR</code>
     </InternalClass>
-    <RedundantCondition occurrences="1">
-      <code>$lineData[$i]['includedInHitBranches'] === 0</code>
-    </RedundantCondition>
-    <TypeDoesNotContainType occurrences="1">
-      <code>$lineData[$i]['includedInBranches'] &gt; 0</code>
-    </TypeDoesNotContainType>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

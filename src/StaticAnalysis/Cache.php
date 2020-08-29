@@ -65,9 +65,7 @@ abstract class Cache
             file_get_contents(
                 $this->cacheFile($filename, $method)
             ),
-            [
-                'allowed_classes' => $allowedClasses,
-            ]
+            $options
         );
     }
 

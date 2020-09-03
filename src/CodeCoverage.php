@@ -20,6 +20,7 @@ use function count;
 use function explode;
 use function file_exists;
 use function get_class;
+use function in_array;
 use function is_array;
 use function sort;
 use PHPUnit\Framework\TestCase;
@@ -502,7 +503,7 @@ final class CodeCoverage
     {
         $uncoveredFiles = array_diff(
             $this->filter->files(),
-            $this->data->coveredFiles()
+            array_keys($this->data->lineCoverage())
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
@@ -523,18 +524,13 @@ final class CodeCoverage
      */
     private function processUncoveredFilesFromFilter(): void
     {
-        $uncoveredFiles = array_diff(
-            $this->filter->files(),
-            $this->data->coveredFiles()
-        );
+        $coveredFiles = $this->data->coveredFiles();
 
         $this->driver->start();
 
         foreach ($this->filter->files() as $file) {
-            foreach ($uncoveredFiles as $uncoveredFile) {
-                if (file_exists($uncoveredFile)) {
-                    include_once $file;
-                }
+            if (!in_array($file, $coveredFiles, true) && $this->filter->isFile($file)) {
+                include_once $file;
             }
         }
 

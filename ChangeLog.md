@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.1.7] - 2020-MM-DD
+
+### Fixed
+
+* Fixed regressions introduced in versions 9.1.5 and 9.1.6
+
 ## [9.1.6] - 2020-08-31
 
 ### Fixed
@@ -236,6 +242,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.1.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.6...master
 [9.1.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.5...9.1.6
 [9.1.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.4...9.1.5
 [9.1.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.3...9.1.4

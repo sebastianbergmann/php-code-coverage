@@ -439,7 +439,6 @@ final class RawCodeCoverageDataTest extends TestCase
                 26 => -1,
                 35 => -1,
                 36 => -1,
-                37 => -1,
             ],
             $coverage->lineCoverage()[$filename]
         );

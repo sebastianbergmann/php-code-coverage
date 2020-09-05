@@ -139,6 +139,9 @@
       <code>BaseTestRunner::STATUS_FAILURE</code>
       <code>BaseTestRunner::STATUS_ERROR</code>
     </InternalClass>
+    <UndefinedConstant occurrences="1">
+      <code>T_MATCH</code>
+    </UndefinedConstant>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

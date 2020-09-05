@@ -934,8 +934,11 @@ final class File extends Renderer
                                 case T_CATCH:
                                 case T_CLASS:
                                 case T_CLONE:
+                                case T_CONST:
                                 case T_CONTINUE:
+                                case T_DECLARE:
                                 case T_DEFAULT:
+                                case T_DO:
                                 case T_ECHO:
                                 case T_ELSE:
                                 case T_ELSEIF:
@@ -946,13 +949,18 @@ final class File extends Renderer
                                 case T_ENDIF:
                                 case T_ENDSWITCH:
                                 case T_ENDWHILE:
+                                case T_EVAL:
                                 case T_EXIT:
                                 case T_EXTENDS:
                                 case T_FINAL:
                                 case T_FINALLY:
+                                case T_FN:
+                                case T_FOR:
                                 case T_FOREACH:
                                 case T_FUNCTION:
                                 case T_GLOBAL:
+                                case T_GOTO:
+                                case T_HALT_COMPILER:
                                 case T_IF:
                                 case T_IMPLEMENTS:
                                 case T_INCLUDE:
@@ -961,11 +969,11 @@ final class File extends Renderer
                                 case T_INSTEADOF:
                                 case T_INTERFACE:
                                 case T_ISSET:
-                                case T_LOGICAL_AND:
-                                case T_LOGICAL_OR:
-                                case T_LOGICAL_XOR:
+                                case T_LIST:
+                                case T_MATCH:
                                 case T_NAMESPACE:
                                 case T_NEW:
+                                case T_PRINT:
                                 case T_PRIVATE:
                                 case T_PROTECTED:
                                 case T_PUBLIC:
@@ -973,6 +981,7 @@ final class File extends Renderer
                                 case T_REQUIRE_ONCE:
                                 case T_RETURN:
                                 case T_STATIC:
+                                case T_SWITCH:
                                 case T_THROW:
                                 case T_TRAIT:
                                 case T_TRY:
@@ -981,6 +990,7 @@ final class File extends Renderer
                                 case T_VAR:
                                 case T_WHILE:
                                 case T_YIELD:
+                                case T_YIELD_FROM:
                                     $colour = 'keyword';
 
                                     break;

@@ -109,13 +109,6 @@ final class CodeCoverage
     private $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
 
     /**
-     * Determine if the data has been initialized or not.
-     *
-     * @var bool
-     */
-    private $isInitialized = false;
-
-    /**
      * @var ?CoveredFileAnalyser
      */
     private $coveredFileAnalyser;
@@ -151,10 +144,9 @@ final class CodeCoverage
      */
     public function clear(): void
     {
-        $this->isInitialized = false;
-        $this->currentId     = null;
-        $this->data          = new ProcessedCodeCoverageData;
-        $this->tests         = [];
+        $this->currentId = null;
+        $this->data      = new ProcessedCodeCoverageData;
+        $this->tests     = [];
     }
 
     /**
@@ -170,8 +162,12 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
-        if (!$raw && $this->includeUncoveredFiles) {
-            $this->addUncoveredFilesFromFilter();
+        if (!$raw) {
+            if ($this->processUncoveredFiles) {
+                $this->processUncoveredFilesFromFilter();
+            } elseif ($this->includeUncoveredFiles) {
+                $this->addUncoveredFilesFromFilter();
+            }
         }
 
         return $this->data;
@@ -210,10 +206,6 @@ final class CodeCoverage
     {
         if ($clear) {
             $this->clear();
-        }
-
-        if ($this->isInitialized === false) {
-            $this->initializeData();
         }
 
         $this->currentId = $id;
@@ -510,7 +502,7 @@ final class CodeCoverage
     {
         $uncoveredFiles = array_diff(
             $this->filter->files(),
-            array_keys($this->data->lineCoverage())
+            $this->data->coveredFiles()
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
@@ -524,6 +516,27 @@ final class CodeCoverage
                 );
             }
         }
+    }
+
+    /**
+     * @throws UnintentionallyCoveredCodeException
+     */
+    private function processUncoveredFilesFromFilter(): void
+    {
+        $uncoveredFiles = array_diff(
+            $this->filter->files(),
+            $this->data->coveredFiles()
+        );
+
+        $this->driver->start();
+
+        foreach ($uncoveredFiles as $uncoveredFile) {
+            if (file_exists($uncoveredFile)) {
+                include_once $uncoveredFile;
+            }
+        }
+
+        $this->append($this->driver->stop(), self::UNCOVERED_FILES);
     }
 
     /**
@@ -626,36 +639,6 @@ final class CodeCoverage
         }
 
         return array_values($unintentionallyCoveredUnits);
-    }
-
-    /**
-     * @throws UnintentionallyCoveredCodeException
-     */
-    private function initializeData(): void
-    {
-        $this->isInitialized = true;
-
-        if ($this->processUncoveredFiles) {
-            // by collecting dead code data here on an initial pass, future runs with test data do not need to
-            if ($this->driver->canDetectDeadCode()) {
-                $this->driver->enableDeadCodeDetection();
-            }
-
-            $this->driver->start();
-
-            foreach ($this->filter->files() as $file) {
-                if ($this->filter->isFile($file)) {
-                    include_once $file;
-                }
-            }
-
-            // having now collected dead code for the entire list of files, we can safely skip this data on subsequent runs
-            if ($this->driver->canDetectDeadCode()) {
-                $this->driver->disableDeadCodeDetection();
-            }
-
-            $this->append($this->driver->stop(), self::UNCOVERED_FILES);
-        }
     }
 
     private function coveredFileAnalyser(): CoveredFileAnalyser

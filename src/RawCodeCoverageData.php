@@ -27,6 +27,11 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\UncoveredFileAnalyser;
 final class RawCodeCoverageData
 {
     /**
+     * @var array<string, array<int>>
+     */
+    private static $emptyLineCache = [];
+
+    /**
      * @var array
      *
      * @see https://xdebug.org/docs/code_coverage for format
@@ -94,6 +99,8 @@ final class RawCodeCoverageData
     {
         $this->lineCoverage     = $lineCoverage;
         $this->functionCoverage = $functionCoverage;
+
+        $this->skipEmptyLines();
     }
 
     public function clear(): void
@@ -180,5 +187,41 @@ final class RawCodeCoverageData
                 }
             }
         }
+    }
+
+    /**
+     * At the end of a file, the PHP interpreter always sees an implicit return. Where this occurs in a file that has
+     * e.g. a class definition, that line cannot be invoked from a test and results in confusing coverage. This engine
+     * implementation detail therefore needs to be masked which is done here by simply ensuring that all empty lines
+     * are skipped over for coverage purposes.
+     *
+     * @see https://github.com/sebastianbergmann/php-code-coverage/issues/799
+     */
+    private function skipEmptyLines(): void
+    {
+        foreach ($this->lineCoverage as $filename => $coverage) {
+            foreach ($this->getEmptyLinesForFile($filename) as $emptyLine) {
+                unset($this->lineCoverage[$filename][$emptyLine]);
+            }
+        }
+    }
+
+    private function getEmptyLinesForFile(string $filename): array
+    {
+        if (!isset(self::$emptyLineCache[$filename])) {
+            self::$emptyLineCache[$filename] = [];
+
+            if (is_file($filename)) {
+                $sourceLines = explode("\n", file_get_contents($filename));
+
+                foreach ($sourceLines as $line => $source) {
+                    if (trim($source) === '') {
+                        self::$emptyLineCache[$filename][] = ($line + 1);
+                    }
+                }
+            }
+        }
+
+        return self::$emptyLineCache[$filename];
     }
 }

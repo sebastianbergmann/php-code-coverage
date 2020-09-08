@@ -1095,7 +1095,6 @@ final class File extends Renderer
             T_INTERFACE     => true,
             T_ISSET         => true,
             T_LIST          => true,
-            T_MATCH         => true,
             T_NAMESPACE     => true,
             T_NEW           => true,
             T_PRINT         => true,
@@ -1117,6 +1116,10 @@ final class File extends Renderer
             T_YIELD         => true,
             T_YIELD_FROM    => true,
         ];
+
+        if (defined('T_MATCH')) {
+            self::$keywordTokens[constant('T_MATCH')] = true;
+        }
 
         return self::$keywordTokens;
     }

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.1.9] - 2020-MM-DD
+
+### Fixed
+
+* [#808](https://github.com/sebastianbergmann/php-code-coverage/issues/808): `PHP Warning: Use of undefined constant T_MATCH`
+
 ## [9.1.8] - 2020-09-07
 
 ### Changed
@@ -252,6 +258,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.1.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.8...master
 [9.1.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.7...9.1.8
 [9.1.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.6...9.1.7
 [9.1.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.5...9.1.6

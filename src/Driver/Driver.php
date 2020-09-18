@@ -9,16 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use function phpversion;
 use function sprintf;
-use function version_compare;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverAvailableException;
 use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
-use SebastianBergmann\Environment\Runtime;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -77,32 +74,12 @@ abstract class Driver
      * @throws XdebugNotAvailableException
      * @throws Xdebug2NotEnabledException
      * @throws Xdebug3NotEnabledException
+     *
+     * @deprecated Use DriverSelector::forLineCoverage() instead
      */
     public static function forLineCoverage(Filter $filter): self
     {
-        $runtime = new Runtime;
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            return new PhpdbgDriver;
-        }
-
-        if ($runtime->hasPCOV()) {
-            return new PcovDriver($filter);
-        }
-
-        if ($runtime->hasXdebug()) {
-            if (version_compare(phpversion('xdebug'), '3', '>=')) {
-                $driver = new Xdebug3Driver($filter);
-            } else {
-                $driver = new Xdebug2Driver($filter);
-            }
-
-            $driver->enableDeadCodeDetection();
-
-            return $driver;
-        }
-
-        throw new NoCodeCoverageDriverAvailableException;
+        return (new Selector)->forLineCoverage($filter);
     }
 
     /**
@@ -110,25 +87,12 @@ abstract class Driver
      * @throws XdebugNotAvailableException
      * @throws Xdebug2NotEnabledException
      * @throws Xdebug3NotEnabledException
+     *
+     * @deprecated Use DriverSelector::forLineAndPathCoverage() instead
      */
     public static function forLineAndPathCoverage(Filter $filter): self
     {
-        $runtime = new Runtime;
-
-        if ($runtime->hasXdebug()) {
-            if (version_compare(phpversion('xdebug'), '3', '>=')) {
-                $driver = new Xdebug3Driver($filter);
-            } else {
-                $driver = new Xdebug2Driver($filter);
-            }
-
-            $driver->enableDeadCodeDetection();
-            $driver->enableBranchAndPathCoverage();
-
-            return $driver;
-        }
-
-        throw new NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
+        return (new Selector)->forLineAndPathCoverage($filter);
     }
 
     public function canCollectBranchAndPathCoverage(): bool

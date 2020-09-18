@@ -2,6 +2,20 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.1.10] - 2020-MM-DD
+
+### Added
+
+* `SebastianBergmann\CodeCoverage\Driver\Selector::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver\Selector::forLineAndPathCoverage()` have been added
+
+### Fixed
+
+* [#810](https://github.com/sebastianbergmann/php-code-coverage/issues/810): `SebastianBergmann\CodeCoverage\Driver\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver\Driver::forLineAndPathCoverage()` are marked as internal 
+
+### Removed
+
+* `SebastianBergmann\CodeCoverage\Driver\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver\Driver::forLineAndPathCoverage()` are now deprecated
+
 ## [9.1.9] - 2020-09-15
 
 ### Fixed

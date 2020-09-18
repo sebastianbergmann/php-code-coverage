@@ -24,17 +24,18 @@ composer require --dev phpunit/php-code-coverage
 
 ```php
 <?php declare(strict_types=1);
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlReport;
 
 $filter = new Filter;
 $filter->includeDirectory('/path/to/directory');
 
-$driver = Driver::forLineCoverage($filter);
-
-$coverage = new CodeCoverage($driver, $filter);
+$coverage = new CodeCoverage(
+    (new Selector)->forLineCoverage($filter),
+    $filter
+);
 
 $coverage->start('<name of test>');
 

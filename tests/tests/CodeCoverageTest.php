@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -33,7 +34,7 @@ final class CodeCoverageTest extends TestCase
         $filter = new Filter;
 
         $this->coverage = new CodeCoverage(
-            Driver::forLineCoverage($filter),
+            (new Selector)->forLineCoverage($filter),
             $filter
         );
     }

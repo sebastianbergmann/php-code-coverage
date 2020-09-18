@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.15@de6e7f324f44dde540ebe7ebd4eb481b97c86f30">
+<files psalm-version="3.16@d03e5ef057d6adc656c0ff7e166c50b73b4f48f3">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -9,16 +9,16 @@
       <code>$id === null</code>
     </DocblockTypeContradiction>
     <InternalClass occurrences="3">
-      <code>Test::SMALL</code>
-      <code>Test::MEDIUM</code>
       <code>Test::LARGE</code>
+      <code>Test::MEDIUM</code>
+      <code>Test::SMALL</code>
     </InternalClass>
     <InternalMethod occurrences="5">
+      <code>getName</code>
+      <code>getName</code>
       <code>getSize</code>
-      <code>getName</code>
-      <code>getName</code>
-      <code>isMedium</code>
       <code>isLarge</code>
+      <code>isMedium</code>
     </InternalMethod>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
@@ -30,24 +30,21 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
-    <UnresolvableInclude occurrences="1">
-      <code>include_once $file</code>
-    </UnresolvableInclude>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
-      <code>XDEBUG_CC_UNUSED</code>
-      <code>XDEBUG_CC_DEAD_CODE</code>
       <code>XDEBUG_CC_BRANCH_CHECK</code>
+      <code>XDEBUG_CC_DEAD_CODE</code>
+      <code>XDEBUG_CC_UNUSED</code>
     </UndefinedConstant>
   </file>
   <file src="src/Driver/Xdebug3Driver.php">
     <UndefinedConstant occurrences="5">
+      <code>XDEBUG_CC_BRANCH_CHECK</code>
+      <code>XDEBUG_CC_DEAD_CODE</code>
+      <code>XDEBUG_CC_UNUSED</code>
       <code>XDEBUG_FILTER_CODE_COVERAGE</code>
       <code>XDEBUG_PATH_INCLUDE</code>
-      <code>XDEBUG_CC_UNUSED</code>
-      <code>XDEBUG_CC_DEAD_CODE</code>
-      <code>XDEBUG_CC_BRANCH_CHECK</code>
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">
@@ -58,18 +55,18 @@
   <file src="src/Node/AbstractNode.php">
     <DocblockTypeContradiction occurrences="5">
       <code>$this-&gt;id === null</code>
-      <code>$this-&gt;pathAsString === null</code>
+      <code>$this-&gt;parent === null</code>
       <code>$this-&gt;parent === null</code>
       <code>$this-&gt;pathAsArray === null</code>
-      <code>$this-&gt;parent === null</code>
+      <code>$this-&gt;pathAsString === null</code>
     </DocblockTypeContradiction>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>$parent</code>
     </PossiblyNullPropertyAssignmentValue>
     <PropertyNotSetInConstructor occurrences="3">
-      <code>$pathAsString</code>
-      <code>$pathAsArray</code>
       <code>$id</code>
+      <code>$pathAsArray</code>
+      <code>$pathAsString</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Builder.php">
@@ -85,15 +82,15 @@
   <file src="src/Node/Directory.php">
     <DocblockTypeContradiction occurrences="4">
       <code>$this-&gt;classes === null</code>
-      <code>$this-&gt;traits === null</code>
       <code>$this-&gt;functions === null</code>
       <code>$this-&gt;linesOfCode === null</code>
+      <code>$this-&gt;traits === null</code>
     </DocblockTypeContradiction>
     <PropertyNotSetInConstructor occurrences="4">
       <code>$classes</code>
-      <code>$traits</code>
       <code>$functions</code>
       <code>$linesOfCode</code>
+      <code>$traits</code>
     </PropertyNotSetInConstructor>
     <PropertyTypeCoercion occurrences="2">
       <code>$this-&gt;directories</code>
@@ -103,10 +100,10 @@
   <file src="src/Node/File.php">
     <DocblockTypeContradiction occurrences="5">
       <code>$this-&gt;numClasses === null</code>
-      <code>$this-&gt;numTraits === null</code>
       <code>$this-&gt;numMethods === null</code>
-      <code>$this-&gt;numTestedMethods === null</code>
       <code>$this-&gt;numTestedFunctions === null</code>
+      <code>$this-&gt;numTestedMethods === null</code>
+      <code>$this-&gt;numTraits === null</code>
     </DocblockTypeContradiction>
     <InvalidPropertyAssignmentValue occurrences="3">
       <code>$this-&gt;codeUnitsByLine</code>
@@ -115,10 +112,10 @@
     </InvalidPropertyAssignmentValue>
     <PropertyNotSetInConstructor occurrences="5">
       <code>$numClasses</code>
-      <code>$numTraits</code>
       <code>$numMethods</code>
-      <code>$numTestedMethods</code>
       <code>$numTestedFunctions</code>
+      <code>$numTestedMethods</code>
+      <code>$numTraits</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Iterator.php">
@@ -131,17 +128,14 @@
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <InternalClass occurrences="7">
-      <code>BaseTestRunner::STATUS_PASSED</code>
-      <code>BaseTestRunner::STATUS_SKIPPED</code>
-      <code>BaseTestRunner::STATUS_INCOMPLETE</code>
-      <code>BaseTestRunner::STATUS_RISKY</code>
-      <code>BaseTestRunner::STATUS_WARNING</code>
-      <code>BaseTestRunner::STATUS_FAILURE</code>
       <code>BaseTestRunner::STATUS_ERROR</code>
+      <code>BaseTestRunner::STATUS_FAILURE</code>
+      <code>BaseTestRunner::STATUS_INCOMPLETE</code>
+      <code>BaseTestRunner::STATUS_PASSED</code>
+      <code>BaseTestRunner::STATUS_RISKY</code>
+      <code>BaseTestRunner::STATUS_SKIPPED</code>
+      <code>BaseTestRunner::STATUS_WARNING</code>
     </InternalClass>
-    <UndefinedConstant occurrences="1">
-      <code>T_MATCH</code>
-    </UndefinedConstant>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">
@@ -159,8 +153,8 @@
   </file>
   <file src="src/Report/Xml/Facade.php">
     <PropertyNotSetInConstructor occurrences="2">
-      <code>$target</code>
       <code>$project</code>
+      <code>$target</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/File.php">
@@ -179,8 +173,8 @@
       <code>$context-&gt;ownerDocument</code>
     </PossiblyNullPropertyAssignmentValue>
     <PropertyNotSetInConstructor occurrences="2">
-      <code>$dom</code>
       <code>$contextNode</code>
+      <code>$dom</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/Report.php">
@@ -196,8 +190,8 @@
       <code>$context-&gt;namespaceURI</code>
     </PossiblyNullArgument>
     <PossiblyNullReference occurrences="2">
-      <code>replaceChild</code>
       <code>importNode</code>
+      <code>replaceChild</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Tests.php">
@@ -225,8 +219,8 @@
       <code>toString</code>
     </PossiblyNullReference>
     <RedundantConditionGivenDocblockType occurrences="2">
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
+      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
     </RedundantConditionGivenDocblockType>
     <UndefinedPropertyFetch occurrences="2">
       <code>$node-&gt;namespacedName</code>

@@ -43,7 +43,6 @@ use const T_EXIT;
 use const T_EXTENDS;
 use const T_FINAL;
 use const T_FINALLY;
-use const T_FN;
 use const T_FOR;
 use const T_FOREACH;
 use const T_FUNCTION;

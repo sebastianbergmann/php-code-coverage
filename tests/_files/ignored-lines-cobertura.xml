@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage line-rate="2" branch-rate="0" lines-covered="1" lines-valid="2" branches-covered="0" branches-valid="0" complexity="2" version="0.4" timestamp="%i">
+  <sources>
+    <source>%s</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="0.5" branch-rate="0" complexity="2">
+      <classes>
+        <class name="Foo" filename="source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+          <methods/>
+          <lines/>
+        </class>
+        <class name="Bar" filename="source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+          <methods/>
+          <lines/>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

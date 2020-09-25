@@ -13,9 +13,9 @@ use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function file_put_contents;
 use function filemtime;
-use function hash;
 use function is_file;
 use function serialize;
+use function str_replace;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Directory;
 
@@ -38,7 +38,7 @@ abstract class Cache
     {
         Directory::create($directory);
 
-        $this->directory = $directory;
+        $this->directory = $directory . DIRECTORY_SEPARATOR;
         $this->validate  = $validate;
     }
 
@@ -95,6 +95,6 @@ abstract class Cache
 
     private function cacheFile(string $filename, string $method): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . $method);
+        return $this->directory . str_replace([DIRECTORY_SEPARATOR, '.'], '_', $filename) . '_' . $method;
     }
 }

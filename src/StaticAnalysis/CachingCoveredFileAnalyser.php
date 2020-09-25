@@ -30,65 +30,65 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
 
     public function classesIn(string $filename): array
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__);
+        if ($this->has($filename, 'classes')) {
+            return $this->read($filename, 'classes');
         }
 
         $data = $this->coveredFileAnalyser->classesIn($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, 'classes', $data);
 
         return $data;
     }
 
     public function traitsIn(string $filename): array
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__);
+        if ($this->has($filename, 'traits')) {
+            return $this->read($filename, 'traits');
         }
 
         $data = $this->coveredFileAnalyser->traitsIn($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, 'traits', $data);
 
         return $data;
     }
 
     public function functionsIn(string $filename): array
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__);
+        if ($this->has($filename, 'functions')) {
+            return $this->read($filename, 'functions');
         }
 
         $data = $this->coveredFileAnalyser->functionsIn($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, 'functions', $data);
 
         return $data;
     }
 
     public function linesOfCodeFor(string $filename): LinesOfCode
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__, [LinesOfCode::class]);
+        if ($this->has($filename, 'linesOfCode')) {
+            return $this->read($filename, 'linesOfCode', [LinesOfCode::class]);
         }
 
         $data = $this->coveredFileAnalyser->linesOfCodeFor($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, 'linesOfCode', $data);
 
         return $data;
     }
 
     public function ignoredLinesFor(string $filename): array
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__);
+        if ($this->has($filename, 'ignoredLines')) {
+            return $this->read($filename, 'ignoredLines');
         }
 
         $data = $this->coveredFileAnalyser->ignoredLinesFor($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, 'ignoredLines', $data);
 
         return $data;
     }

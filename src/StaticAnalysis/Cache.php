@@ -93,7 +93,7 @@ abstract class Cache
         );
     }
 
-    protected function cacheFile(string $filename, string $method): string
+    private function cacheFile(string $filename, string $method): string
     {
         return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . $method);
     }

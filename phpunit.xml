@@ -6,14 +6,16 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          colors="true"
-         verbose="true">
+         verbose="true"
+         cacheResultFile=".phpunit.cache/test-results">
     <testsuites>
         <testsuite name="default">
             <directory suffix="Test.php">tests/tests</directory>
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
+    <coverage cacheDirectory=".phpunit.cache/code-coverage"
+              processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src</directory>
         </include>

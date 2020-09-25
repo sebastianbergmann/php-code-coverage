@@ -21,6 +21,11 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
      */
     private $coveredFileAnalyser;
 
+    /**
+     * @var array
+     */
+    private $inMemoryCacheForIgnoredLines = [];
+
     public function __construct(string $directory, CoveredFileAnalyser $coveredFileAnalyser, bool $validate = true)
     {
         parent::__construct($directory, $validate);
@@ -82,14 +87,18 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
 
     public function ignoredLinesFor(string $filename): array
     {
+        if (isset($this->inMemoryCacheForIgnoredLines[$filename])) {
+            return $this->inMemoryCacheForIgnoredLines[$filename];
+        }
+
         if ($this->has($filename, 'ignoredLines')) {
             return $this->read($filename, 'ignoredLines');
         }
 
-        $data = $this->coveredFileAnalyser->ignoredLinesFor($filename);
+        $this->inMemoryCacheForIgnoredLines[$filename] = $this->coveredFileAnalyser->ignoredLinesFor($filename);
 
-        $this->write($filename, 'ignoredLines', $data);
+        $this->write($filename, 'ignoredLines', $this->inMemoryCacheForIgnoredLines[$filename]);
 
-        return $data;
+        return $this->inMemoryCacheForIgnoredLines[$filename];
     }
 }

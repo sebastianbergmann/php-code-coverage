@@ -19,6 +19,9 @@ use function serialize;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Directory;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 abstract class Cache
 {
     /**

@@ -21,6 +21,9 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
 {
     /**

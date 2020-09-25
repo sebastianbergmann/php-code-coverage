@@ -27,6 +27,9 @@ use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 use SebastianBergmann\LinesOfCode\LinesOfCode;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 {
     /**

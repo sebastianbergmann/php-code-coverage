@@ -13,11 +13,11 @@ use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function count;
 use function dirname;
-use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function is_array;
 use function is_dir;
+use function is_file;
 use function is_writable;
 use function libxml_clear_errors;
 use function libxml_get_errors;
@@ -102,7 +102,7 @@ final class Facade
      */
     private function initTargetDirectory(string $directory): void
     {
-        if (file_exists($directory)) {
+        if (is_file($directory)) {
             if (!is_dir($directory)) {
                 throw new PathExistsButIsNotDirectoryException($directory);
             }

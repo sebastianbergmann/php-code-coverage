@@ -10,11 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const DIRECTORY_SEPARATOR;
-use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function filemtime;
 use function hash;
+use function is_file;
 use function serialize;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Directory;
@@ -47,7 +47,7 @@ abstract class Cache
 
         $cacheFile = $this->cacheFile($filename, $method);
 
-        if (!file_exists($cacheFile)) {
+        if (!is_file($cacheFile)) {
             return false;
         }
 

@@ -15,8 +15,8 @@ use function basename;
 use function count;
 use function dirname;
 use function explode;
-use function file_exists;
 use function implode;
+use function is_file;
 use function str_replace;
 use function strpos;
 use function substr;
@@ -66,7 +66,7 @@ final class Builder
                 $key      = substr($key, 0, -2);
                 $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
-                if (file_exists($filename)) {
+                if (is_file($filename)) {
                     $root->addFile(
                         new File(
                             $key,

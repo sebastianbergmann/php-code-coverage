@@ -405,14 +405,14 @@ final class CodeCoverage
         return $this->cacheDirectory;
     }
 
-    public function forceStaticAnalysisCache(): void
-    {
-        $this->cacheValidation = false;
-    }
-
-    public function doNotForceStaticAnalysisCache(): void
+    public function validateStaticAnalysisCache(): void
     {
         $this->cacheValidation = true;
+    }
+
+    public function doNotValidateStaticAnalysisCache(): void
+    {
+        $this->cacheValidation = false;
     }
 
     public function validatesStaticAnalysisCache(): bool

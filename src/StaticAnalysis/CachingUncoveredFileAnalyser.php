@@ -28,13 +28,13 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
 
     public function executableLinesIn(string $filename): array
     {
-        if ($this->has($filename, 'executableLines')) {
-            return $this->read($filename, 'executableLines');
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__);
         }
 
         $data = $this->uncoveredFileAnalyser->executableLinesIn($filename);
 
-        $this->write($filename, 'executableLines', $data);
+        $this->write($filename, __METHOD__, $data);
 
         return $data;
     }

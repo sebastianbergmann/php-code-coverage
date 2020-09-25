@@ -35,52 +35,52 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
 
     public function classesIn(string $filename): array
     {
-        if ($this->has($filename, 'classes')) {
-            return $this->read($filename, 'classes');
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__);
         }
 
         $data = $this->coveredFileAnalyser->classesIn($filename);
 
-        $this->write($filename, 'classes', $data);
+        $this->write($filename, __METHOD__, $data);
 
         return $data;
     }
 
     public function traitsIn(string $filename): array
     {
-        if ($this->has($filename, 'traits')) {
-            return $this->read($filename, 'traits');
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__);
         }
 
         $data = $this->coveredFileAnalyser->traitsIn($filename);
 
-        $this->write($filename, 'traits', $data);
+        $this->write($filename, __METHOD__, $data);
 
         return $data;
     }
 
     public function functionsIn(string $filename): array
     {
-        if ($this->has($filename, 'functions')) {
-            return $this->read($filename, 'functions');
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__);
         }
 
         $data = $this->coveredFileAnalyser->functionsIn($filename);
 
-        $this->write($filename, 'functions', $data);
+        $this->write($filename, __METHOD__, $data);
 
         return $data;
     }
 
     public function linesOfCodeFor(string $filename): LinesOfCode
     {
-        if ($this->has($filename, 'linesOfCode')) {
-            return $this->read($filename, 'linesOfCode', [LinesOfCode::class]);
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__, [LinesOfCode::class]);
         }
 
         $data = $this->coveredFileAnalyser->linesOfCodeFor($filename);
 
-        $this->write($filename, 'linesOfCode', $data);
+        $this->write($filename, __METHOD__, $data);
 
         return $data;
     }
@@ -91,13 +91,13 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
             return $this->inMemoryCacheForIgnoredLines[$filename];
         }
 
-        if ($this->has($filename, 'ignoredLines')) {
-            return $this->read($filename, 'ignoredLines');
+        if ($this->has($filename, __METHOD__)) {
+            return $this->read($filename, __METHOD__);
         }
 
         $this->inMemoryCacheForIgnoredLines[$filename] = $this->coveredFileAnalyser->ignoredLinesFor($filename);
 
-        $this->write($filename, 'ignoredLines', $this->inMemoryCacheForIgnoredLines[$filename]);
+        $this->write($filename, __METHOD__, $this->inMemoryCacheForIgnoredLines[$filename]);
 
         return $this->inMemoryCacheForIgnoredLines[$filename];
     }

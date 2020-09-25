@@ -26,15 +26,25 @@ abstract class Cache
      */
     private $directory;
 
-    public function __construct(string $directory)
+    /**
+     * @var bool
+     */
+    private $validate;
+
+    public function __construct(string $directory, bool $validate = true)
     {
         Directory::create($directory);
 
         $this->directory = $directory;
+        $this->validate  = $validate;
     }
 
     protected function cacheHas(string $filename, string $method): bool
     {
+        if (!$this->validate) {
+            return true;
+        }
+
         $cacheFile = $this->cacheFile($filename, $method);
 
         if (!file_exists($cacheFile)) {

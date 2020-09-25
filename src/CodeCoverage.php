@@ -123,6 +123,11 @@ final class CodeCoverage
      */
     private $cacheDirectory;
 
+    /**
+     * @var bool
+     */
+    private $cacheValidation = true;
+
     public function __construct(Driver $driver, Filter $filter)
     {
         $this->driver = $driver;
@@ -376,14 +381,24 @@ final class CodeCoverage
         return $this->cacheDirectory !== null;
     }
 
-    public function cacheStaticAnalysis(string $cacheDirectory): void
+    public function cacheStaticAnalysis(string $directory, bool $validate = true): void
     {
-        $this->cacheDirectory = $cacheDirectory;
+        $this->cacheDirectory = $directory;
     }
 
     public function doNotCacheStaticAnalysis(): void
     {
         $this->cacheDirectory = null;
+    }
+
+    public function forceStaticAnalysisCache(): void
+    {
+        $this->cacheValidation = false;
+    }
+
+    public function doNotForceStaticAnalysisCache(): void
+    {
+        $this->cacheValidation = true;
     }
 
     /**
@@ -655,7 +670,8 @@ final class CodeCoverage
         if ($this->cachesStaticAnalysis()) {
             $this->coveredFileAnalyser = new CachingCoveredFileAnalyser(
                 $this->cacheDirectory,
-                $this->coveredFileAnalyser
+                $this->coveredFileAnalyser,
+                $this->cacheValidation
             );
         }
 
@@ -673,7 +689,8 @@ final class CodeCoverage
         if ($this->cachesStaticAnalysis()) {
             $this->uncoveredFileAnalyser = new CachingUncoveredFileAnalyser(
                 $this->cacheDirectory,
-                $this->uncoveredFileAnalyser
+                $this->uncoveredFileAnalyser,
+                $this->cacheValidation
             );
         }
 

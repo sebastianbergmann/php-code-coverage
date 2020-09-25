@@ -18,9 +18,9 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
      */
     private $coveredFileAnalyser;
 
-    public function __construct(string $directory, CoveredFileAnalyser $coveredFileAnalyser)
+    public function __construct(string $directory, CoveredFileAnalyser $coveredFileAnalyser, bool $validate = true)
     {
-        parent::__construct($directory);
+        parent::__construct($directory, $validate);
 
         $this->coveredFileAnalyser = $coveredFileAnalyser;
     }

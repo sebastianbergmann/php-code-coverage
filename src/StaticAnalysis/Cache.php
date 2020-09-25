@@ -42,7 +42,7 @@ abstract class Cache
         $this->validate  = $validate;
     }
 
-    protected function cacheHas(string $filename, string $method): bool
+    protected function has(string $filename, string $method): bool
     {
         if (!$this->validate) {
             return true;
@@ -66,7 +66,7 @@ abstract class Cache
      *
      * @return mixed
      */
-    protected function cacheRead(string $filename, string $method, array $allowedClasses = [])
+    protected function read(string $filename, string $method, array $allowedClasses = [])
     {
         $options = ['allowed_classes' => false];
 
@@ -85,7 +85,7 @@ abstract class Cache
     /**
      * @param mixed $data
      */
-    protected function cacheWrite(string $filename, string $method, $data): void
+    protected function write(string $filename, string $method, $data): void
     {
         file_put_contents(
             $this->cacheFile($filename, $method),

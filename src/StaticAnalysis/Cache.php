@@ -42,13 +42,13 @@ abstract class Cache
         $this->validate  = $validate;
     }
 
-    protected function has(string $filename, string $method): bool
+    protected function has(string $filename, string $key): bool
     {
         if (!$this->validate) {
             return true;
         }
 
-        $cacheFile = $this->cacheFile($filename, $method);
+        $cacheFile = $this->cacheFile($filename, $key);
 
         if (!is_file($cacheFile)) {
             return false;
@@ -66,7 +66,7 @@ abstract class Cache
      *
      * @return mixed
      */
-    protected function read(string $filename, string $method, array $allowedClasses = [])
+    protected function read(string $filename, string $key, array $allowedClasses = [])
     {
         $options = ['allowed_classes' => false];
 
@@ -76,7 +76,7 @@ abstract class Cache
 
         return unserialize(
             file_get_contents(
-                $this->cacheFile($filename, $method)
+                $this->cacheFile($filename, $key)
             ),
             $options
         );
@@ -85,16 +85,16 @@ abstract class Cache
     /**
      * @param mixed $data
      */
-    protected function write(string $filename, string $method, $data): void
+    protected function write(string $filename, string $key, $data): void
     {
         file_put_contents(
-            $this->cacheFile($filename, $method),
+            $this->cacheFile($filename, $key),
             serialize($data)
         );
     }
 
-    private function cacheFile(string $filename, string $method): string
+    private function cacheFile(string $filename, string $key): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . $method);
+        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . $key);
     }
 }

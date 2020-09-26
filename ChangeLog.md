@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#812](https://github.com/sebastianbergmann/php-code-coverage/pull/812): Support for Cobertura XML report format
 * Added `SebastianBergmann\CodeCoverage\CodeCoverage::doNotValidateStaticAnalysisCache()` and `SebastianBergmann\CodeCoverage\CodeCoverage::validateStaticAnalysisCache()` for configuring whether the static analysis cache should validate cache entries
 
 ### Changed

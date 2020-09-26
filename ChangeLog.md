@@ -8,6 +8,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added `SebastianBergmann\CodeCoverage\CodeCoverage::doNotValidateStaticAnalysisCache()` and `SebastianBergmann\CodeCoverage\CodeCoverage::validateStaticAnalysisCache()` for configuring whether the static analysis cache should validate cache entries
 
+### Changed
+
+* Reduced the number of I/O operations performed by the static analysis cache
+
 ## [9.1.11] - 2020-09-19
 
 ### Fixed

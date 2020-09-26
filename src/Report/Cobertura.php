@@ -35,49 +35,49 @@ final class Cobertura
 
         $report = $coverage->getReport();
 
-        $impl = new DOMImplementation();
-        $dtd  = $impl->createDocumentType(
+        $implementation = new DOMImplementation;
+
+        $documentType = $implementation->createDocumentType(
             'coverage',
             '',
             'http://cobertura.sourceforge.net/xml/coverage-04.dtd'
         );
 
-        $xmlDocument               = $impl->createDocument('', '', $dtd);
-        $xmlDocument->xmlVersion   = '1.0';
-        $xmlDocument->encoding     = 'UTF-8';
-        $xmlDocument->formatOutput = true;
+        $document               = $implementation->createDocument('', '', $documentType);
+        $document->xmlVersion   = '1.0';
+        $document->encoding     = 'UTF-8';
+        $document->formatOutput = true;
 
-        $xmlCoverage = $xmlDocument->createElement('coverage');
+        $coverageElement = $document->createElement('coverage');
 
-        // Line rate.
         $linesValid   = $report->numberOfExecutedLines();
         $linesCovered = $report->numberOfExecutableLines();
         $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
-        $xmlCoverage->setAttribute('line-rate', (string) $lineRate);
+        $coverageElement->setAttribute('line-rate', (string) $lineRate);
 
-        // Branch rate.
         $branchesValid   = $report->numberOfExecutedBranches();
         $branchesCovered = $report->numberOfExecutableBranches();
         $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
-        $xmlCoverage->setAttribute('branch-rate', (string) $branchRate);
+        $coverageElement->setAttribute('branch-rate', (string) $branchRate);
 
-        $xmlCoverage->setAttribute('lines-covered', (string) $report->numberOfExecutedLines());
-        $xmlCoverage->setAttribute('lines-valid', (string) $report->numberOfExecutableLines());
-        $xmlCoverage->setAttribute('branches-covered', (string) $report->numberOfExecutedBranches());
-        $xmlCoverage->setAttribute('branches-valid', (string) $report->numberOfExecutableBranches());
-        $xmlCoverage->setAttribute('complexity', '');
-        $xmlCoverage->setAttribute('version', '0.4');
-        $xmlCoverage->setAttribute('timestamp', $time);
-        $xmlDocument->appendChild($xmlCoverage);
+        $coverageElement->setAttribute('lines-covered', (string) $report->numberOfExecutedLines());
+        $coverageElement->setAttribute('lines-valid', (string) $report->numberOfExecutableLines());
+        $coverageElement->setAttribute('branches-covered', (string) $report->numberOfExecutedBranches());
+        $coverageElement->setAttribute('branches-valid', (string) $report->numberOfExecutableBranches());
+        $coverageElement->setAttribute('complexity', '');
+        $coverageElement->setAttribute('version', '0.4');
+        $coverageElement->setAttribute('timestamp', $time);
 
-        $xmlSources = $xmlDocument->createElement('sources');
-        $xmlCoverage->appendChild($xmlSources);
+        $document->appendChild($coverageElement);
 
-        $xmlSource = $xmlDocument->createElement('source', $report->pathAsString());
-        $xmlSources->appendChild($xmlSource);
+        $sourcesElement = $document->createElement('sources');
+        $coverageElement->appendChild($sourcesElement);
 
-        $xmlPackages = $xmlDocument->createElement('packages');
-        $xmlCoverage->appendChild($xmlPackages);
+        $sourceElement = $document->createElement('source', $report->pathAsString());
+        $sourcesElement->appendChild($sourceElement);
+
+        $packagesElement = $document->createElement('packages');
+        $coverageElement->appendChild($packagesElement);
 
         $complexity = 0;
 
@@ -86,32 +86,30 @@ final class Cobertura
                 continue;
             }
 
+            $packageElement    = $document->createElement('package');
             $packageComplexity = 0;
+            $packageName       = $name ?? '';
 
-            $xmlPackage = $xmlDocument->createElement('package');
-
-            $packageName = '';
-
-            if ($name !== null) {
-                $packageName = $name;
-            }
-            $xmlPackage->setAttribute('name', $packageName);
+            $packageElement->setAttribute('name', $packageName);
 
             $linesValid   = $item->numberOfExecutableLines();
             $linesCovered = $item->numberOfExecutedLines();
             $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
-            $xmlPackage->setAttribute('line-rate', (string) $lineRate);
+
+            $packageElement->setAttribute('line-rate', (string) $lineRate);
 
             $branchesValid   = $item->numberOfExecutableBranches();
             $branchesCovered = $item->numberOfExecutedBranches();
             $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
-            $xmlPackage->setAttribute('branch-rate', (string) $branchRate);
 
-            $xmlPackage->setAttribute('complexity', '');
-            $xmlPackages->appendChild($xmlPackage);
+            $packageElement->setAttribute('branch-rate', (string) $branchRate);
 
-            $xmlClasses = $xmlDocument->createElement('classes');
-            $xmlPackage->appendChild($xmlClasses);
+            $packageElement->setAttribute('complexity', '');
+            $packagesElement->appendChild($packageElement);
+
+            $classesElement = $document->createElement('classes');
+
+            $packageElement->appendChild($classesElement);
 
             $classes      = $item->classesAndTraits();
             $coverageData = $item->lineCoverageData();
@@ -132,22 +130,26 @@ final class Cobertura
                 $branchesCovered = $class['executedBranches'];
                 $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
-                $xmlClass = $xmlDocument->createElement('class');
-                $xmlClass->setAttribute('name', $className);
-                $xmlClass->setAttribute('filename', str_replace($report->pathAsString() . '/', '', $item->pathAsString()));
-                $xmlClass->setAttribute('line-rate', (string) $lineRate);
-                $xmlClass->setAttribute('branch-rate', (string) $branchRate);
-                $xmlClass->setAttribute('complexity', (string) $class['ccn']);
-                $xmlClasses->appendChild($xmlClass);
+                $classElement = $document->createElement('class');
 
-                $xmlMethods = $xmlDocument->createElement('methods');
-                $xmlClass->appendChild($xmlMethods);
+                $classElement->setAttribute('name', $className);
+                $classElement->setAttribute('filename', str_replace($report->pathAsString() . '/', '', $item->pathAsString()));
+                $classElement->setAttribute('line-rate', (string) $lineRate);
+                $classElement->setAttribute('branch-rate', (string) $branchRate);
+                $classElement->setAttribute('complexity', (string) $class['ccn']);
 
-                $xmlClassLines = $xmlDocument->createElement('lines');
-                $xmlClass->appendChild($xmlClassLines);
+                $classesElement->appendChild($classElement);
+
+                $methodsElement = $document->createElement('methods');
+
+                $classElement->appendChild($methodsElement);
+
+                $classLinesElement = $document->createElement('lines');
+
+                $classElement->appendChild($classLinesElement);
 
                 foreach ($class['methods'] as $methodName => $method) {
-                    if ($method['executableLines'] == 0) {
+                    if ($method['executableLines'] === 0) {
                         continue;
                     }
 
@@ -157,10 +159,11 @@ final class Cobertura
                         if (isset($coverageData[$line]) && $coverageData[$line] !== null) {
                             $methodCount = max($methodCount, count($coverageData[$line]));
 
-                            $xmlClassLine = $xmlDocument->createElement('line');
-                            $xmlClassLine->setAttribute('number', (string) $line);
-                            $xmlClassLine->setAttribute('hits', (string) count($coverageData[$line]));
-                            $xmlClassLines->appendChild($xmlClassLine);
+                            $classLineElement = $document->createElement('line');
+                            $classLineElement->setAttribute('number', (string) $line);
+                            $classLineElement->setAttribute('hits', (string) count($coverageData[$line]));
+
+                            $classLinesElement->appendChild($classLineElement);
                         }
                     }
 
@@ -172,31 +175,34 @@ final class Cobertura
                     $branchesCovered = $method['executedBranches'];
                     $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
-                    $xmlMethod = $xmlDocument->createElement('method');
-                    $xmlMethod->setAttribute('name', $methodName);
-                    $xmlMethod->setAttribute('signature', $method['signature']);
-                    $xmlMethod->setAttribute('line-rate', (string) $lineRate);
-                    $xmlMethod->setAttribute('branch-rate', (string) $branchRate);
-                    $xmlMethod->setAttribute('complexity', (string) $method['ccn']);
+                    $methodElement = $document->createElement('method');
 
-                    $xmlLines = $xmlDocument->createElement('lines');
-                    $xmlMethod->appendChild($xmlLines);
+                    $methodElement->setAttribute('name', $methodName);
+                    $methodElement->setAttribute('signature', $method['signature']);
+                    $methodElement->setAttribute('line-rate', (string) $lineRate);
+                    $methodElement->setAttribute('branch-rate', (string) $branchRate);
+                    $methodElement->setAttribute('complexity', (string) $method['ccn']);
 
-                    $xmlLine = $xmlDocument->createElement('line');
-                    $xmlLine->setAttribute('number', (string) $method['startLine']);
-                    $xmlLine->setAttribute('hits', (string) $methodCount);
-                    $xmlLines->appendChild($xmlLine);
+                    $methodLinesElement = $document->createElement('lines');
 
-                    $xmlMethods->appendChild($xmlMethod);
+                    $methodElement->appendChild($methodLinesElement);
+
+                    $methodLineElement = $document->createElement('line');
+
+                    $methodLineElement->setAttribute('number', (string) $method['startLine']);
+                    $methodLineElement->setAttribute('hits', (string) $methodCount);
+
+                    $methodLinesElement->appendChild($methodLineElement);
+                    $methodsElement->appendChild($methodElement);
                 }
             }
 
-            $xmlPackage->setAttribute('complexity', (string) $packageComplexity);
+            $packageElement->setAttribute('complexity', (string) $packageComplexity);
         }
 
-        $xmlCoverage->setAttribute('complexity', (string) $complexity);
+        $coverageElement->setAttribute('complexity', (string) $complexity);
 
-        $buffer = $xmlDocument->saveXML();
+        $buffer = $document->saveXML();
 
         if ($target !== null) {
             Directory::create(dirname($target));

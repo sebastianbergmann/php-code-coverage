@@ -19,9 +19,9 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
      */
     private $uncoveredFileAnalyser;
 
-    public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser, bool $validate = true)
+    public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser)
     {
-        parent::__construct($directory, $validate);
+        parent::__construct($directory);
 
         $this->uncoveredFileAnalyser = $uncoveredFileAnalyser;
     }

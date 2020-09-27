@@ -391,6 +391,16 @@ final class CodeCoverage
         $this->cacheDirectory = null;
     }
 
+    public function forceStaticAnalysisCache(): void
+    {
+        $this->cacheValidation = false;
+    }
+
+    public function doNotForceStaticAnalysisCache(): void
+    {
+        $this->cacheValidation = true;
+    }
+
     /**
      * @throws StaticAnalysisCacheNotConfiguredException
      */
@@ -403,21 +413,6 @@ final class CodeCoverage
         }
 
         return $this->cacheDirectory;
-    }
-
-    public function forceStaticAnalysisCache(): void
-    {
-        $this->cacheValidation = false;
-    }
-
-    public function doNotForceStaticAnalysisCache(): void
-    {
-        $this->cacheValidation = true;
-    }
-
-    public function validatesStaticAnalysisCache(): bool
-    {
-        return $this->cacheValidation;
     }
 
     /**

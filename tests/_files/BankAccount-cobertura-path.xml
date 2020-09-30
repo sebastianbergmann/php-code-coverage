@@ -11,22 +11,28 @@
           <methods>
             <method name="getBalance" signature="getBalance()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="6" hits="2"/>
+                <line number="8" hits="2"/>
               </lines>
             </method>
             <method name="setBalance" signature="setBalance($balance)" line-rate="0" branch-rate="0" complexity="2">
               <lines>
-                <line number="11" hits="0"/>
+                <line number="13" hits="0"/>
+                <line number="14" hits="0"/>
+                <line number="15" hits="0"/>
+                <line number="16" hits="0"/>
+                <line number="18" hits="0"/>
               </lines>
             </method>
             <method name="depositMoney" signature="depositMoney($balance)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="20" hits="2"/>
+                <line number="22" hits="2"/>
+                <line number="24" hits="1"/>
               </lines>
             </method>
             <method name="withdrawMoney" signature="withdrawMoney($balance)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="27" hits="2"/>
+                <line number="29" hits="2"/>
+                <line number="31" hits="1"/>
               </lines>
             </method>
           </methods>

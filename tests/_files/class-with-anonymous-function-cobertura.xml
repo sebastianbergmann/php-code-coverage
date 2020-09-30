@@ -11,7 +11,15 @@
           <methods>
             <method name="runAnonymous" signature="runAnonymous()" line-rate="0.88888888888889" branch-rate="0" complexity="1">
               <lines>
-                <line number="5" hits="1"/>
+                <line number="7" hits="1"/>
+                <line number="9" hits="1"/>
+                <line number="10" hits="0"/>
+                <line number="11" hits="1"/>
+                <line number="12" hits="1"/>
+                <line number="13" hits="1"/>
+                <line number="14" hits="1"/>
+                <line number="17" hits="1"/>
+                <line number="18" hits="1"/>
               </lines>
             </method>
           </methods>

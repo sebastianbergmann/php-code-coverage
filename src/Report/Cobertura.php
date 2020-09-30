@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use function count;
 use function dirname;
 use function file_put_contents;
-use function max;
 use function range;
 use function time;
 use DOMImplementation;
@@ -153,20 +152,6 @@ final class Cobertura
                         continue;
                     }
 
-                    $methodCount = 0;
-
-                    foreach (range($method['startLine'], $method['endLine']) as $line) {
-                        if (isset($coverageData[$line]) && $coverageData[$line] !== null) {
-                            $methodCount = max($methodCount, count($coverageData[$line]));
-
-                            $classLineElement = $document->createElement('line');
-                            $classLineElement->setAttribute('number', (string) $line);
-                            $classLineElement->setAttribute('hits', (string) count($coverageData[$line]));
-
-                            $classLinesElement->appendChild($classLineElement);
-                        }
-                    }
-
                     $linesValid   = $method['executableLines'];
                     $linesCovered = $method['executedLines'];
                     $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
@@ -187,12 +172,22 @@ final class Cobertura
 
                     $methodElement->appendChild($methodLinesElement);
 
-                    $methodLineElement = $document->createElement('line');
+                    foreach (range($method['startLine'], $method['endLine']) as $line) {
+                        if (!isset($coverageData[$line]) || $coverageData[$line] === null) {
+                            continue;
+                        }
+                        $methodLineElement = $document->createElement('line');
 
-                    $methodLineElement->setAttribute('number', (string) $method['startLine']);
-                    $methodLineElement->setAttribute('hits', (string) $methodCount);
+                        $methodLineElement->setAttribute('number', (string) $line);
+                        $methodLineElement->setAttribute('hits', (string) count($coverageData[$line]));
 
-                    $methodLinesElement->appendChild($methodLineElement);
+                        $methodLinesElement->appendChild($methodLineElement);
+
+                        $classLineElement = $methodLineElement->cloneNode();
+
+                        $classLinesElement->appendChild($classLineElement);
+                    }
+
                     $methodsElement->appendChild($methodElement);
                 }
             }

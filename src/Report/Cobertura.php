@@ -49,13 +49,13 @@ final class Cobertura
 
         $coverageElement = $document->createElement('coverage');
 
-        $linesValid   = $report->numberOfExecutedLines();
-        $linesCovered = $report->numberOfExecutableLines();
+        $linesValid   = $report->numberOfExecutableLines();
+        $linesCovered = $report->numberOfExecutedLines();
         $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
         $coverageElement->setAttribute('line-rate', (string) $lineRate);
 
-        $branchesValid   = $report->numberOfExecutedBranches();
-        $branchesCovered = $report->numberOfExecutableBranches();
+        $branchesValid   = $report->numberOfExecutableBranches();
+        $branchesCovered = $report->numberOfExecutedBranches();
         $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
         $coverageElement->setAttribute('branch-rate', (string) $branchRate);
 

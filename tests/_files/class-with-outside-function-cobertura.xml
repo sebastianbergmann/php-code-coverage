@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage line-rate="1.3333333333333" branch-rate="0" lines-covered="3" lines-valid="4" branches-covered="0" branches-valid="0" complexity="3" version="0.4" timestamp="%i">
+  <sources>
+    <source>%s</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="0.75" branch-rate="0" complexity="3">
+      <classes>
+        <class name="ClassInFileWithOutsideFunction" filename="source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
+          <methods>
+            <method name="classMethod" signature="classMethod(): string" line-rate="1" branch-rate="0" complexity="1">
+              <lines>
+                <line number="6" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="6" hits="1"/>
+          </lines>
+        </class>
+        <class name="source_with_class_and_outside_function.php" filename="source_with_class_and_outside_function.php" line-rate="0.66666666666667" branch-rate="0" complexity="2">
+          <methods>
+            <method name="outsideFunction" signature="outsideFunction(bool $test): int" line-rate="0.66666666666667" branch-rate="0" complexity="2">
+              <lines>
+                <line number="12" hits="1"/>
+                <line number="13" hits="1"/>
+                <line number="16" hits="0"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="12" hits="1"/>
+            <line number="13" hits="1"/>
+            <line number="16" hits="0"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

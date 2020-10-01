@@ -55,4 +55,14 @@ final class CoberturaTest extends TestCase
             $cobertura->process($this->getCoverageForClassWithAnonymousFunction())
         );
     }
+
+    public function testCoberturaForClassAndOutsideFunction(): void
+    {
+        $cobertura = new Cobertura;
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'class-with-outside-function-cobertura.xml',
+            $cobertura->process($this->getCoverageForClassWithOutsideFunction())
+        );
+    }
 }

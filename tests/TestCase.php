@@ -1728,6 +1728,41 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $stub;
     }
 
+    protected function getCoverageForClassWithOutsideFunction(): CodeCoverage
+    {
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'source_with_class_and_outside_function.php');
+
+        $coverage = new CodeCoverage(
+            $this->setUpXdebugStubForClassWithOutsideFunction(),
+            $filter
+        );
+
+        $coverage->start('ClassWithOutsideFunction', true);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function setUpXdebugStubForClassWithOutsideFunction(): Driver
+    {
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+                [
+                    TEST_FILES_PATH . 'source_with_class_and_outside_function.php' => [
+                        6  => 1,
+                        12 => 1,
+                        13 => 1,
+                        16 => -1,
+                    ],
+                ]
+            ));
+
+        return $stub;
+    }
+
     protected function removeTemporaryFiles(): void
     {
         $tmpFilesIterator = new RecursiveIteratorIterator(

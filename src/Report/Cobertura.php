@@ -192,7 +192,100 @@ final class Cobertura
                 }
             }
 
+            if ($report->numberOfFunctions() === 0) {
+                $packageElement->setAttribute('complexity', (string) $packageComplexity);
+
+                continue;
+            }
+
+            $functionsComplexity      = 0;
+            $functionsLinesValid      = 0;
+            $functionsLinesCovered    = 0;
+            $functionsBranchesValid   = 0;
+            $functionsBranchesCovered = 0;
+
+            $classElement = $document->createElement('class');
+            $classElement->setAttribute('name', basename($item->pathAsString()));
+            $classElement->setAttribute('filename', str_replace($report->pathAsString() . '/', '', $item->pathAsString()));
+
+            $methodsElement = $document->createElement('methods');
+
+            $classElement->appendChild($methodsElement);
+
+            $classLinesElement = $document->createElement('lines');
+
+            $classElement->appendChild($classLinesElement);
+
+            $functions = $report->functions();
+
+            foreach ($functions as $functionName => $function) {
+                if ($function['executableLines'] === 0) {
+                    continue;
+                }
+
+                $complexity += $function['ccn'];
+                $packageComplexity += $function['ccn'];
+                $functionsComplexity += $function['ccn'];
+
+                $linesValid   = $function['executableLines'];
+                $linesCovered = $function['executedLines'];
+                $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+
+                $functionsLinesValid += $linesValid;
+                $functionsLinesCovered += $linesCovered;
+
+                $branchesValid   = $function['executableBranches'];
+                $branchesCovered = $function['executedBranches'];
+                $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+
+                $functionsBranchesValid += $branchesValid;
+                $functionsBranchesCovered += $branchesValid;
+
+                $methodElement = $document->createElement('method');
+
+                $methodElement->setAttribute('name', $functionName);
+                $methodElement->setAttribute('signature', $function['signature']);
+                $methodElement->setAttribute('line-rate', (string) $lineRate);
+                $methodElement->setAttribute('branch-rate', (string) $branchRate);
+                $methodElement->setAttribute('complexity', (string) $function['ccn']);
+
+                $methodLinesElement = $document->createElement('lines');
+
+                $methodElement->appendChild($methodLinesElement);
+
+                foreach (range($function['startLine'], $function['endLine']) as $line) {
+                    if (!isset($coverageData[$line]) || $coverageData[$line] === null) {
+                        continue;
+                    }
+                    $methodLineElement = $document->createElement('line');
+
+                    $methodLineElement->setAttribute('number', (string) $line);
+                    $methodLineElement->setAttribute('hits', (string) count($coverageData[$line]));
+
+                    $methodLinesElement->appendChild($methodLineElement);
+
+                    $classLineElement = $methodLineElement->cloneNode();
+
+                    $classLinesElement->appendChild($classLineElement);
+                }
+
+                $methodsElement->appendChild($methodElement);
+            }
+
             $packageElement->setAttribute('complexity', (string) $packageComplexity);
+
+            if ($functionsLinesValid === 0) {
+                continue;
+            }
+
+            $lineRate   = $functionsLinesCovered / $functionsLinesValid;
+            $branchRate = $functionsBranchesValid === 0 ? 0 : ($functionsBranchesCovered / $functionsBranchesValid);
+
+            $classElement->setAttribute('line-rate', (string) $lineRate);
+            $classElement->setAttribute('branch-rate', (string) $branchRate);
+            $classElement->setAttribute('complexity', (string) $functionsComplexity);
+
+            $classesElement->appendChild($classElement);
         }
 
         $coverageElement->setAttribute('complexity', (string) $complexity);

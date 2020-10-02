@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [9.2.0] - 2020-MM-DD
+## [9.2.0] - 2020-10-02
 
 ### Added
 
@@ -288,7 +288,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
-[9.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.11...master
+[9.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.11...9.2.0
 [9.1.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.10...9.1.11
 [9.1.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.9...9.1.10
 [9.1.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.1.8...9.1.9

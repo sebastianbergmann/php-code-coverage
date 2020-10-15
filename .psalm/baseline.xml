@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.16@d03e5ef057d6adc656c0ff7e166c50b73b4f48f3">
+<files psalm-version="3.17.2@9e526d9cb569fe4631e6a737bbb7948d05596e3f">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -33,6 +33,17 @@
     <UnresolvableInclude occurrences="1">
       <code>include_once $uncoveredFile</code>
     </UnresolvableInclude>
+  </file>
+  <file src="src/Driver/PcovDriver.php">
+    <UndefinedConstant occurrences="1">
+      <code>\pcov\inclusive</code>
+    </UndefinedConstant>
+    <UndefinedFunction occurrences="5">
+      <code>\pcov\clear()</code>
+      <code>\pcov\start()</code>
+      <code>\pcov\stop()</code>
+      <code>\pcov\waiting()</code>
+    </UndefinedFunction>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
@@ -244,7 +255,10 @@
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
-    <RedundantConditionGivenDocblockType occurrences="2">
+    <RedundantConditionGivenDocblockType occurrences="5">
+      <code>$node instanceof Function_</code>
+      <code>$node instanceof Function_</code>
+      <code>$type instanceof UnionType</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
       <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
     </RedundantConditionGivenDocblockType>

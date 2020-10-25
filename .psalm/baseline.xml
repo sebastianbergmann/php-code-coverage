@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.17.2@9e526d9cb569fe4631e6a737bbb7948d05596e3f">
+<files psalm-version="4.0.1@b1e2e30026936ef8d5bf6a354d1c3959b6231f44">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -87,11 +87,6 @@
     <EmptyArrayAccess occurrences="1">
       <code>$pointer[$path[$i] . $type]</code>
     </EmptyArrayAccess>
-    <PossiblyInvalidArgument occurrences="3">
-      <code>$paths[$i]</code>
-      <code>$paths[$i]</code>
-      <code>$paths[$i]</code>
-    </PossiblyInvalidArgument>
   </file>
   <file src="src/Node/Directory.php">
     <DocblockTypeContradiction occurrences="4">
@@ -251,16 +246,17 @@
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/StaticAnalysis/CodeUnitFindingVisitor.php">
+    <PossiblyInvalidOperand occurrences="1">
+      <code>$parameter-&gt;var-&gt;name</code>
+    </PossiblyInvalidOperand>
     <PossiblyNullReference occurrences="2">
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
-    <RedundantConditionGivenDocblockType occurrences="5">
+    <RedundantConditionGivenDocblockType occurrences="3">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
       <code>$type instanceof UnionType</code>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
     </RedundantConditionGivenDocblockType>
     <UndefinedPropertyFetch occurrences="2">
       <code>$node-&gt;namespacedName</code>

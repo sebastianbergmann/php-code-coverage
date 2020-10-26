@@ -9,9 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-/**
- * Exception interface for php-code-coverage component.
- */
-interface Exception
+use Throwable;
+
+interface Exception extends Throwable
 {
 }

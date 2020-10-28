@@ -21,10 +21,6 @@
             <arg value="--no-progress"/>
             <arg value="update"/>
         </exec>
-
-        <exec executable="${basedir}/tools/composer" taskname="composer">
-            <arg value="self-update"/>
-        </exec>
     </target>
 </project>
 

@@ -1,0 +1,1 @@
+<?php // This file contains no newline.

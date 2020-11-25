@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\Node\Directory;
 
 interface CodeCoverageInterface
 {
-   /**
+    /**
      * Returns the code coverage information as a graph of node objects.
      */
     public function getReport(): Directory;
@@ -114,6 +114,7 @@ interface CodeCoverageInterface
      * @throws StaticAnalysisCacheNotConfiguredException
      */
     public function cacheDirectory(): string;
+
     /**
      * @psalm-param class-string $className
      */

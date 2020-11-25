@@ -40,7 +40,7 @@ use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 /**
  * Provides collection functionality for PHP code coverage information.
  */
-final class CodeCoverage
+final class CodeCoverage implements CodeCoverageInterface
 {
     private const UNCOVERED_FILES = 'UNCOVERED_FILES';
 

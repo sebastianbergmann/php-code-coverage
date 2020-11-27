@@ -16,6 +16,6 @@ final class Xdebug3NotEnabledException extends RuntimeException implements Excep
 {
     public function __construct()
     {
-        parent::__construct('xdebug.mode=coverage has to be set in php.ini');
+        parent::__construct('XDEBUG_MODE=coverage or xdebug.mode=coverage has to be set');
     }
 }

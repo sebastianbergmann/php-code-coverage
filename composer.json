@@ -38,7 +38,7 @@
         "sebastian/code-unit-reverse-lookup": "^2.0.2",
         "sebastian/complexity": "^2.0",
         "sebastian/environment": "^5.1.2",
-        "sebastian/lines-of-code": "^1.0",
+        "sebastian/lines-of-code": "^1.0.3",
         "sebastian/version": "^3.0.1",
         "theseer/tokenizer": "^1.2.0"
     },

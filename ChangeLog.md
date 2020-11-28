@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.5] - 2020-MM-DD
+
+### Fixed
+
+* [#831](https://github.com/sebastianbergmann/php-code-coverage/issues/831): Files that do not contain a newline are not handled correctly
+
 ## [9.2.4] - 2020-11-27
 
 ### Added
@@ -312,6 +318,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[9.2.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.4...master
 [9.2.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.3...9.2.4
 [9.2.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.2...9.2.3
 [9.2.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.1...9.2.2

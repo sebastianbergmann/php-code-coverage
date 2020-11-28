@@ -115,7 +115,7 @@ final class CoveredFileAnalyserTest extends TestCase
 
     public function testGetLinesOfCodeForFileWithoutNewline(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             1,
             (new ParsingCoveredFileAnalyser(false, false))->linesOfCodeFor(
                 TEST_FILES_PATH . 'source_without_newline.php'

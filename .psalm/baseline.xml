@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.2.1@ea9cb72143b77e7520c52fa37290bd8d8bc88fd9">
+<files psalm-version="4.3.1@2feba22a005a18bf31d4c7b9bdb9252c73897476">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -264,10 +264,14 @@
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
-    <RedundantConditionGivenDocblockType occurrences="3">
+    <RedundantConditionGivenDocblockType occurrences="7">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
       <code>$type instanceof UnionType</code>
+      <code>assert($node-&gt;namespacedName instanceof Name)</code>
+      <code>assert(isset($node-&gt;name))</code>
+      <code>assert(isset($node-&gt;namespacedName))</code>
+      <code>assert(isset($parameter-&gt;var-&gt;name))</code>
     </RedundantConditionGivenDocblockType>
     <UndefinedPropertyFetch occurrences="2">
       <code>$node-&gt;namespacedName</code>

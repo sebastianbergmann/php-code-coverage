@@ -52,7 +52,7 @@ final class Facade
     {
         $target = $this->directory($target);
         $report = $coverage->getReport();
-        $date   = (string) date('D M j G:i:s T Y');
+        $date   = date('D M j G:i:s T Y');
 
         $dashboard = new Dashboard(
             $this->templatePath,

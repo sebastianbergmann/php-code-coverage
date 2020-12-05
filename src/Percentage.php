@@ -40,7 +40,7 @@ final class Percentage
     public function asFloat(): float
     {
         if ($this->total > 0) {
-            return (float) ($this->fraction / $this->total) * 100;
+            return ($this->fraction / $this->total) * 100;
         }
 
         return 100.0;

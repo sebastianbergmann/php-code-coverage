@@ -13,12 +13,13 @@
       <code>Test::MEDIUM</code>
       <code>Test::SMALL</code>
     </InternalClass>
-    <InternalMethod occurrences="5">
+    <InternalMethod occurrences="6">
       <code>getName</code>
       <code>getName</code>
       <code>getSize</code>
       <code>isLarge</code>
       <code>isMedium</code>
+      <code>type</code>
     </InternalMethod>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
@@ -146,17 +147,6 @@
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
     </PossiblyNullArrayAssignment>
   </file>
-  <file src="src/Report/Html/Renderer/File.php">
-    <InternalClass occurrences="7">
-      <code>BaseTestRunner::STATUS_ERROR</code>
-      <code>BaseTestRunner::STATUS_FAILURE</code>
-      <code>BaseTestRunner::STATUS_INCOMPLETE</code>
-      <code>BaseTestRunner::STATUS_PASSED</code>
-      <code>BaseTestRunner::STATUS_RISKY</code>
-      <code>BaseTestRunner::STATUS_SKIPPED</code>
-      <code>BaseTestRunner::STATUS_WARNING</code>
-    </InternalClass>
-  </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">
       <code>createElementNS</code>
@@ -215,9 +205,6 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Tests.php">
-    <MissingPropertyType occurrences="1">
-      <code>$codeMap</code>
-    </MissingPropertyType>
     <PossiblyNullReference occurrences="1">
       <code>createElementNS</code>
     </PossiblyNullReference>

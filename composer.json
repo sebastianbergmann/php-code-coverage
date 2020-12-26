@@ -21,14 +21,15 @@
     },
     "config": {
         "platform": {
-            "php": "7.3.0"
+            "php": "7.4.0"
         },
         "optimize-autoloader": true,
         "sort-packages": true
     },
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
@@ -43,7 +44,7 @@
         "theseer/tokenizer": "^1.2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^10.0"
     },
     "suggest": {
         "ext-pcov": "*",
@@ -62,7 +63,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "9.2-dev"
+            "dev-master": "10.0-dev"
         }
     }
 }

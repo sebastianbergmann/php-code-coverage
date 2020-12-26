@@ -278,7 +278,7 @@ final class CodeCoverage
             }
 
             $size         = 'unknown';
-            $status       = -1;
+            $status       = 'unknown';
             $fromTestcase = false;
 
             if ($id instanceof TestCase) {
@@ -293,7 +293,7 @@ final class CodeCoverage
                     $size = 'large';
                 }
 
-                $status = $id->getStatus();
+                $status = $id->status()->type();
                 $id     = get_class($id) . '::' . $id->getName();
             } elseif ($id instanceof PhptTestCase) {
                 $fromTestcase = true;

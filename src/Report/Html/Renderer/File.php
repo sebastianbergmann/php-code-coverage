@@ -94,7 +94,6 @@ use function str_replace;
 use function substr;
 use function token_get_all;
 use function trim;
-use PHPUnit\Runner\BaseTestRunner;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Percentage;
 use SebastianBergmann\Template\Template;
@@ -994,7 +993,7 @@ final class File extends Renderer
 
         if ($testData['fromTestcase']) {
             switch ($testData['status']) {
-                case BaseTestRunner::STATUS_PASSED:
+                case 'success':
                     switch ($testData['size']) {
                         case 'small':
                             $testCSS = ' class="covered-by-small-tests"';
@@ -1014,16 +1013,16 @@ final class File extends Renderer
 
                     break;
 
-                case BaseTestRunner::STATUS_SKIPPED:
-                case BaseTestRunner::STATUS_INCOMPLETE:
-                case BaseTestRunner::STATUS_RISKY:
-                case BaseTestRunner::STATUS_WARNING:
+                case 'skipped':
+                case 'incomplete':
+                case 'risky':
+                case 'warning':
                     $testCSS = ' class="warning"';
 
                     break;
 
-                case BaseTestRunner::STATUS_FAILURE:
-                case BaseTestRunner::STATUS_ERROR:
+                case 'failure':
+                case 'error':
                     $testCSS = ' class="danger"';
 
                     break;

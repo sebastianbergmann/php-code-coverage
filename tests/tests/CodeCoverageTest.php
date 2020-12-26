@@ -64,10 +64,10 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             [
-                'BankAccountTest::testBalanceIsInitiallyZero'       => ['size' => 'unknown', 'status' => -1, 'fromTestcase' => true],
-                'BankAccountTest::testBalanceCannotBecomeNegative'  => ['size' => 'unknown', 'status' => -1, 'fromTestcase' => true],
-                'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => -1, 'fromTestcase' => true],
-                'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => -1, 'fromTestcase' => true],
+                'BankAccountTest::testBalanceIsInitiallyZero'       => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
+                'BankAccountTest::testBalanceCannotBecomeNegative'  => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
+                'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
+                'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
             ],
             $coverage->getTests()
         );

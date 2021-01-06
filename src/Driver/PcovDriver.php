@@ -19,10 +19,7 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
  */
 final class PcovDriver extends Driver
 {
-    /**
-     * @var Filter
-     */
-    private $filter;
+    private Filter $filter;
 
     /**
      * @throws PcovNotAvailableException

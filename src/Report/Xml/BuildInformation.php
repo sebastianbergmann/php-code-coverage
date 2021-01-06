@@ -20,10 +20,7 @@ use SebastianBergmann\Environment\Runtime;
  */
 final class BuildInformation
 {
-    /**
-     * @var DOMElement
-     */
-    private $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $contextNode)
     {

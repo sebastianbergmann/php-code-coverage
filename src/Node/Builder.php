@@ -29,10 +29,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
  */
 final class Builder
 {
-    /**
-     * @var CoveredFileAnalyser
-     */
-    private $coveredFileAnalyser;
+    private CoveredFileAnalyser $coveredFileAnalyser;
 
     public function __construct(CoveredFileAnalyser $coveredFileAnalyser)
     {

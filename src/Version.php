@@ -14,14 +14,11 @@ use SebastianBergmann\Version as VersionId;
 
 final class Version
 {
-    /**
-     * @var string
-     */
-    private static $version;
+    private static string $version = '';
 
     public static function id(): string
     {
-        if (self::$version === null) {
+        if (self::$version === '') {
             self::$version = (new VersionId('10.0', dirname(__DIR__)))->getVersion();
         }
 

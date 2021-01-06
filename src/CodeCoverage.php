@@ -44,84 +44,44 @@ final class CodeCoverage
 {
     private const UNCOVERED_FILES = 'UNCOVERED_FILES';
 
-    /**
-     * @var Driver
-     */
-    private $driver;
+    private Driver $driver;
 
-    /**
-     * @var Filter
-     */
-    private $filter;
+    private Filter $filter;
 
     /**
      * @var Wizard
      */
     private $wizard;
 
-    /**
-     * @var bool
-     */
-    private $checkForUnintentionallyCoveredCode = false;
+    private bool $checkForUnintentionallyCoveredCode = false;
 
-    /**
-     * @var bool
-     */
-    private $includeUncoveredFiles = true;
+    private bool $includeUncoveredFiles = true;
 
-    /**
-     * @var bool
-     */
-    private $processUncoveredFiles = false;
+    private bool $processUncoveredFiles = false;
 
-    /**
-     * @var bool
-     */
-    private $ignoreDeprecatedCode = false;
+    private bool $ignoreDeprecatedCode = false;
 
     /**
      * @var PhptTestCase|string|TestCase
      */
     private $currentId;
 
-    /**
-     * Code coverage data.
-     *
-     * @var ProcessedCodeCoverageData
-     */
-    private $data;
+    private ProcessedCodeCoverageData $data;
 
-    /**
-     * @var bool
-     */
-    private $useAnnotationsForIgnoringCode = true;
+    private bool $useAnnotationsForIgnoringCode = true;
 
-    /**
-     * Test data.
-     *
-     * @var array
-     */
-    private $tests = [];
+    private array $tests = [];
 
     /**
      * @psalm-var list<class-string>
      */
-    private $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
+    private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
 
-    /**
-     * @var ?CoveredFileAnalyser
-     */
-    private $coveredFileAnalyser;
+    private ?CoveredFileAnalyser $coveredFileAnalyser = null;
 
-    /**
-     * @var ?UncoveredFileAnalyser
-     */
-    private $uncoveredFileAnalyser;
+    private ?UncoveredFileAnalyser $uncoveredFileAnalyser = null;
 
-    /**
-     * @var ?string
-     */
-    private $cacheDirectory;
+    private ?string $cacheDirectory = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -608,7 +568,11 @@ final class CodeCoverage
     }
 
     /**
+     * @param list<string> $unintentionallyCoveredUnits
+     *
      * @throws ReflectionException
+     *
+     * @return list<string>
      */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
     {

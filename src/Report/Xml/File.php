@@ -17,15 +17,9 @@ use DOMElement;
  */
 class File
 {
-    /**
-     * @var DOMDocument
-     */
-    private $dom;
+    private DOMDocument $dom;
 
-    /**
-     * @var DOMElement
-     */
-    private $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {

@@ -21,114 +21,57 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
 final class Directory extends AbstractNode implements IteratorAggregate
 {
     /**
-     * @var AbstractNode[]
+     * @var list<AbstractNode>
      */
-    private $children = [];
+    private array $children = [];
 
     /**
-     * @var Directory[]
+     * @var list<Directory>
      */
-    private $directories = [];
+    private array $directories = [];
 
     /**
-     * @var File[]
+     * @var list<File>
      */
-    private $files = [];
+    private array $files = [];
 
-    /**
-     * @var array
-     */
-    private $classes;
+    private ?array $classes = null;
 
-    /**
-     * @var array
-     */
-    private $traits;
+    private ?array $traits = null;
 
-    /**
-     * @var array
-     */
-    private $functions;
+    private ?array $functions = null;
 
-    /**
-     * @var LinesOfCode
-     */
-    private $linesOfCode;
+    private ?LinesOfCode $linesOfCode = null;
 
-    /**
-     * @var int
-     */
-    private $numFiles = -1;
+    private int $numFiles = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutableLines = -1;
+    private int $numExecutableLines = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutedLines = -1;
+    private int $numExecutedLines = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutableBranches = -1;
+    private int $numExecutableBranches = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutedBranches = -1;
+    private int $numExecutedBranches = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutablePaths = -1;
+    private int $numExecutablePaths = -1;
 
-    /**
-     * @var int
-     */
-    private $numExecutedPaths = -1;
+    private int $numExecutedPaths = -1;
 
-    /**
-     * @var int
-     */
-    private $numClasses = -1;
+    private int $numClasses = -1;
 
-    /**
-     * @var int
-     */
-    private $numTestedClasses = -1;
+    private int $numTestedClasses = -1;
 
-    /**
-     * @var int
-     */
-    private $numTraits = -1;
+    private int $numTraits = -1;
 
-    /**
-     * @var int
-     */
-    private $numTestedTraits = -1;
+    private int $numTestedTraits = -1;
 
-    /**
-     * @var int
-     */
-    private $numMethods = -1;
+    private int $numMethods = -1;
 
-    /**
-     * @var int
-     */
-    private $numTestedMethods = -1;
+    private int $numTestedMethods = -1;
 
-    /**
-     * @var int
-     */
-    private $numFunctions = -1;
+    private int $numFunctions = -1;
 
-    /**
-     * @var int
-     */
-    private $numTestedFunctions = -1;
+    private int $numTestedFunctions = -1;
 
     public function count(): int
     {

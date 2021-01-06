@@ -20,110 +20,47 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
  */
 final class File extends AbstractNode
 {
-    /**
-     * @var array
-     */
-    private $lineCoverageData;
+    private array $lineCoverageData;
 
-    /**
-     * @var array
-     */
-    private $functionCoverageData;
+    private array $functionCoverageData;
 
-    /**
-     * @var array
-     */
-    private $testData;
+    private array $testData;
 
-    /**
-     * @var int
-     */
-    private $numExecutableLines = 0;
+    private int $numExecutableLines = 0;
 
-    /**
-     * @var int
-     */
-    private $numExecutedLines = 0;
+    private int $numExecutedLines = 0;
 
-    /**
-     * @var int
-     */
-    private $numExecutableBranches = 0;
+    private int $numExecutableBranches = 0;
 
-    /**
-     * @var int
-     */
-    private $numExecutedBranches = 0;
+    private int $numExecutedBranches = 0;
 
-    /**
-     * @var int
-     */
-    private $numExecutablePaths = 0;
+    private int $numExecutablePaths = 0;
 
-    /**
-     * @var int
-     */
-    private $numExecutedPaths = 0;
+    private int $numExecutedPaths = 0;
 
-    /**
-     * @var array
-     */
-    private $classes = [];
+    private array $classes = [];
 
-    /**
-     * @var array
-     */
-    private $traits = [];
+    private array $traits = [];
 
-    /**
-     * @var array
-     */
-    private $functions = [];
+    private array $functions = [];
 
-    /**
-     * @var LinesOfCode
-     */
-    private $linesOfCode;
+    private LinesOfCode $linesOfCode;
 
-    /**
-     * @var int
-     */
-    private $numClasses;
+    private ?int $numClasses = null;
 
-    /**
-     * @var int
-     */
-    private $numTestedClasses = 0;
+    private int $numTestedClasses = 0;
 
-    /**
-     * @var int
-     */
-    private $numTraits;
+    private ?int $numTraits = null;
 
-    /**
-     * @var int
-     */
-    private $numTestedTraits = 0;
+    private int $numTestedTraits = 0;
 
-    /**
-     * @var int
-     */
-    private $numMethods;
+    private ?int $numMethods = null;
 
-    /**
-     * @var int
-     */
-    private $numTestedMethods;
+    private ?int $numTestedMethods = null;
 
-    /**
-     * @var int
-     */
-    private $numTestedFunctions;
+    private ?int $numTestedFunctions = null;
 
-    /**
-     * @var array
-     */
-    private $codeUnitsByLine = [];
+    private array $codeUnitsByLine = [];
 
     public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
     {

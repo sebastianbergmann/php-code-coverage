@@ -16,7 +16,7 @@ use DOMElement;
  */
 final class Tests
 {
-    private $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {

@@ -57,15 +57,9 @@ abstract class Driver
      */
     public const BRANCH_HIT = 1;
 
-    /**
-     * @var bool
-     */
-    private $collectBranchAndPathCoverage = false;
+    private bool $collectBranchAndPathCoverage = false;
 
-    /**
-     * @var bool
-     */
-    private $detectDeadCode = false;
+    private bool $detectDeadCode = false;
 
     /**
      * @throws NoCodeCoverageDriverAvailableException

@@ -20,12 +20,12 @@ final class Filter
     /**
      * @psalm-var array<string,true>
      */
-    private $files = [];
+    private array $files = [];
 
     /**
      * @psalm-var array<string,bool>
      */
-    private $isFileCache = [];
+    private array $isFileCache = [];
 
     public function includeDirectory(string $directory, string $suffix = '.php', string $prefix = ''): void
     {

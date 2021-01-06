@@ -29,17 +29,11 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
     /**
      * @psalm-var list<int>
      */
-    private $ignoredLines = [];
+    private array $ignoredLines = [];
 
-    /**
-     * @var bool
-     */
-    private $useAnnotationsForIgnoringCode;
+    private bool $useAnnotationsForIgnoringCode;
 
-    /**
-     * @var bool
-     */
-    private $ignoreDeprecated;
+    private bool $ignoreDeprecated;
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecated)
     {

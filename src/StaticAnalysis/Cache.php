@@ -24,10 +24,7 @@ use SebastianBergmann\CodeCoverage\Directory;
  */
 abstract class Cache
 {
-    /**
-     * @var string
-     */
-    private $directory;
+    private string $directory;
 
     public function __construct(string $directory)
     {

@@ -29,21 +29,17 @@ final class RawCodeCoverageData
     /**
      * @var array<string, array<int>>
      */
-    private static $emptyLineCache = [];
+    private static array $emptyLineCache = [];
 
     /**
-     * @var array
-     *
      * @see https://xdebug.org/docs/code_coverage for format
      */
-    private $lineCoverage;
+    private array $lineCoverage;
 
     /**
-     * @var array
-     *
      * @see https://xdebug.org/docs/code_coverage for format
      */
-    private $functionCoverage;
+    private array $functionCoverage;
 
     public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {

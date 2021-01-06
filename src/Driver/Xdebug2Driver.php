@@ -33,10 +33,7 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
  */
 final class Xdebug2Driver extends Driver
 {
-    /**
-     * @var bool
-     */
-    private $pathCoverageIsMixedCoverage;
+    private bool $pathCoverageIsMixedCoverage;
 
     /**
      * @throws XdebugNotAvailableException

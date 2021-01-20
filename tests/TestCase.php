@@ -1029,6 +1029,50 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $coverage;
     }
 
+    protected function getLineCoverageForBankAccountByPoints(int $points): CodeCoverage
+    {
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8  => 1,
+                13 => 1,
+                14 => 1,
+                15 => 1,
+                18 => 1,
+                22 => 1,
+                24 => 1,
+                29 => 1,
+                31 => 1,
+            ],
+        ]);
+
+        $stub = $this->createStub(Driver::class);
+        $stub->method('stop')
+             ->willReturn($data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        for ($i = 0; $i < $points; $i++) {
+            $coverage->start(
+                uniqid(),
+                ($i === 0)
+            );
+
+            $coverage->stop(
+                true,
+                [
+                    TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                        range(rand(0, 15), rand(16, 34))
+                    ),
+                ]
+            );
+        }
+
+        return $coverage;
+    }
+
     protected function getPathCoverageForBankAccount(): CodeCoverage
     {
         $data = $this->getPathCoverageXdebugDataForBankAccount();

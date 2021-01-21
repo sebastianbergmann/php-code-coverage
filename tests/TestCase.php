@@ -1688,6 +1688,42 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $stub;
     }
 
+    protected function getLineCoverageForFileWithEval(): CodeCoverage
+    {
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'source_with_eval.php');
+
+        $coverage = new CodeCoverage(
+            $this->setUpXdebugStubForFileWithEval(),
+            $filter
+        );
+
+        $coverage->start('FileWithEval', true);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    protected function setUpXdebugStubForFileWithEval(): Driver
+    {
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+                [
+                    TEST_FILES_PATH . 'source_with_eval.php' => [
+                        3 => 1,
+                        5 => 1,
+                    ],
+                    TEST_FILES_PATH . 'source_with_eval.php(5) : eval()\'d code' => [
+                        1 => 1,
+                    ],
+                ]
+            ));
+
+        return $stub;
+    }
+
     protected function getCoverageForClassWithAnonymousFunction(): CodeCoverage
     {
         $filter = new Filter;

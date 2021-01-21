@@ -31,4 +31,16 @@ final class PhpTest extends TestCase
 
         $this->assertEquals($coverage, $unserialized);
     }
+
+    public function testPHPSerialisationProducesValidCodeWhenOutputIncludesSingleQuote(): void
+    {
+        $coverage = $this->getLineCoverageForFileWithEval();
+
+        /* @noinspection UnusedFunctionResultInspection */
+        (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
+
+        $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';
+
+        $this->assertEquals($coverage, $unserialized);
+    }
 }

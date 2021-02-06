@@ -24,7 +24,6 @@ use function is_file;
 use function sort;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
-use PHPUnit\Util\Test;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
@@ -243,17 +242,9 @@ final class CodeCoverage
 
             if ($id instanceof TestCase) {
                 $fromTestcase = true;
-                $_size        = $id->getSize();
 
-                if ($_size === Test::SMALL) {
-                    $size = 'small';
-                } elseif ($_size === Test::MEDIUM) {
-                    $size = 'medium';
-                } elseif ($_size === Test::LARGE) {
-                    $size = 'large';
-                }
-
-                $status = $id->status()->type();
+                $size   = $id->getSize()->asString();
+                $status = $id->status()->asString();
                 $id     = get_class($id) . '::' . $id->getName();
             } elseif ($id instanceof PhptTestCase) {
                 $fromTestcase = true;

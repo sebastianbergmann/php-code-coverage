@@ -9,7 +9,7 @@
       <classes>
         <class name="ClassInFileWithOutsideFunction" filename="source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>
-            <method name="classMethod" signature="classMethod(): string" line-rate="1" branch-rate="0" complexity="1">
+            <method name="classMethod" signature="" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="6" hits="1"/>
               </lines>

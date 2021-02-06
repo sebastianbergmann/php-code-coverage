@@ -149,6 +149,8 @@ final class Cobertura
                         continue;
                     }
 
+                    preg_match("/\((.*?)\)/", $method['signature'], $signature);
+
                     $linesValid   = $method['executableLines'];
                     $linesCovered = $method['executedLines'];
                     $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
@@ -160,7 +162,7 @@ final class Cobertura
                     $methodElement = $document->createElement('method');
 
                     $methodElement->setAttribute('name', $methodName);
-                    $methodElement->setAttribute('signature', $method['signature']);
+                    $methodElement->setAttribute('signature', $signature[1]);
                     $methodElement->setAttribute('line-rate', (string) $lineRate);
                     $methodElement->setAttribute('branch-rate', (string) $branchRate);
                     $methodElement->setAttribute('complexity', (string) $method['ccn']);

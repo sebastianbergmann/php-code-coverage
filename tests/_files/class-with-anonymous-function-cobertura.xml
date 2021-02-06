@@ -9,7 +9,7 @@
       <classes>
         <class name="CoveredClassWithAnonymousFunctionInStaticMethod" filename="source_with_class_and_anonymous_function.php" line-rate="0.88888888888889" branch-rate="0" complexity="1">
           <methods>
-            <method name="runAnonymous" signature="runAnonymous()" line-rate="0.88888888888889" branch-rate="0" complexity="1">
+            <method name="runAnonymous" signature="" line-rate="0.88888888888889" branch-rate="0" complexity="1">
               <lines>
                 <line number="7" hits="1"/>
                 <line number="9" hits="1"/>

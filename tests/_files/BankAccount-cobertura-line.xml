@@ -9,12 +9,12 @@
       <classes>
         <class name="BankAccount" filename="BankAccount.php" line-rate="0.5" branch-rate="0" complexity="5">
           <methods>
-            <method name="getBalance" signature="getBalance()" line-rate="1" branch-rate="0" complexity="1">
+            <method name="getBalance" signature="" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="8" hits="2"/>
               </lines>
             </method>
-            <method name="setBalance" signature="setBalance($balance)" line-rate="0" branch-rate="0" complexity="2">
+            <method name="setBalance" signature="$balance" line-rate="0" branch-rate="0" complexity="2">
               <lines>
                 <line number="13" hits="0"/>
                 <line number="14" hits="0"/>
@@ -23,13 +23,13 @@
                 <line number="18" hits="0"/>
               </lines>
             </method>
-            <method name="depositMoney" signature="depositMoney($balance)" line-rate="1" branch-rate="0" complexity="1">
+            <method name="depositMoney" signature="$balance" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="22" hits="2"/>
                 <line number="24" hits="1"/>
               </lines>
             </method>
-            <method name="withdrawMoney" signature="withdrawMoney($balance)" line-rate="1" branch-rate="0" complexity="1">
+            <method name="withdrawMoney" signature="$balance" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="29" hits="2"/>
                 <line number="31" hits="1"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.3.1@2feba22a005a18bf31d4c7b9bdb9252c73897476">
+<files psalm-version="4.x-dev@">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
@@ -8,18 +8,13 @@
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
       <code>$id === null</code>
     </DocblockTypeContradiction>
-    <InternalClass occurrences="3">
-      <code>Test::LARGE</code>
-      <code>Test::MEDIUM</code>
-      <code>Test::SMALL</code>
-    </InternalClass>
     <InternalMethod occurrences="6">
+      <code>asString</code>
       <code>getName</code>
       <code>getName</code>
       <code>getSize</code>
       <code>isLarge</code>
       <code>isMedium</code>
-      <code>type</code>
     </InternalMethod>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
@@ -34,17 +29,6 @@
     <UnresolvableInclude occurrences="1">
       <code>include_once $uncoveredFile</code>
     </UnresolvableInclude>
-  </file>
-  <file src="src/Driver/PcovDriver.php">
-    <UndefinedConstant occurrences="1">
-      <code>\pcov\inclusive</code>
-    </UndefinedConstant>
-    <UndefinedFunction occurrences="5">
-      <code>\pcov\clear()</code>
-      <code>\pcov\start()</code>
-      <code>\pcov\stop()</code>
-      <code>\pcov\waiting()</code>
-    </UndefinedFunction>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
@@ -67,66 +51,23 @@
       <code>$files</code>
     </InvalidDocblockParamName>
   </file>
-  <file src="src/Node/AbstractNode.php">
-    <DocblockTypeContradiction occurrences="5">
-      <code>$this-&gt;id === null</code>
-      <code>$this-&gt;parent === null</code>
-      <code>$this-&gt;parent === null</code>
-      <code>$this-&gt;pathAsArray === null</code>
-      <code>$this-&gt;pathAsString === null</code>
-    </DocblockTypeContradiction>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>$parent</code>
-    </PossiblyNullPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="3">
-      <code>$id</code>
-      <code>$pathAsArray</code>
-      <code>$pathAsString</code>
-    </PropertyNotSetInConstructor>
-  </file>
   <file src="src/Node/Builder.php">
     <EmptyArrayAccess occurrences="1">
       <code>$pointer[$path[$i] . $type]</code>
     </EmptyArrayAccess>
   </file>
   <file src="src/Node/Directory.php">
-    <DocblockTypeContradiction occurrences="4">
-      <code>$this-&gt;classes === null</code>
-      <code>$this-&gt;functions === null</code>
-      <code>$this-&gt;linesOfCode === null</code>
-      <code>$this-&gt;traits === null</code>
-    </DocblockTypeContradiction>
-    <PropertyNotSetInConstructor occurrences="4">
-      <code>$classes</code>
-      <code>$functions</code>
-      <code>$linesOfCode</code>
-      <code>$traits</code>
-    </PropertyNotSetInConstructor>
     <PropertyTypeCoercion occurrences="2">
       <code>$this-&gt;directories</code>
       <code>$this-&gt;files</code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/Node/File.php">
-    <DocblockTypeContradiction occurrences="5">
-      <code>$this-&gt;numClasses === null</code>
-      <code>$this-&gt;numMethods === null</code>
-      <code>$this-&gt;numTestedFunctions === null</code>
-      <code>$this-&gt;numTestedMethods === null</code>
-      <code>$this-&gt;numTraits === null</code>
-    </DocblockTypeContradiction>
     <InvalidPropertyAssignmentValue occurrences="3">
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
     </InvalidPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="5">
-      <code>$numClasses</code>
-      <code>$numMethods</code>
-      <code>$numTestedFunctions</code>
-      <code>$numTestedMethods</code>
-      <code>$numTraits</code>
-    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Iterator.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -264,10 +205,5 @@
       <code>$node-&gt;namespacedName</code>
       <code>$node-&gt;namespacedName</code>
     </UndefinedPropertyFetch>
-  </file>
-  <file src="src/Version.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>self::$version === null</code>
-    </DocblockTypeContradiction>
   </file>
 </files>

@@ -8,13 +8,15 @@
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
       <code>$id === null</code>
     </DocblockTypeContradiction>
-    <InternalMethod occurrences="6">
+    <InternalMethod occurrences="8">
       <code>asString</code>
       <code>getName</code>
       <code>getName</code>
-      <code>getSize</code>
       <code>isLarge</code>
       <code>isMedium</code>
+      <code>size</code>
+      <code>size</code>
+      <code>size</code>
     </InternalMethod>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>

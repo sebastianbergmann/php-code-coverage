@@ -243,7 +243,7 @@ final class CodeCoverage
             if ($id instanceof TestCase) {
                 $fromTestcase = true;
 
-                $size   = $id->getSize()->asString();
+                $size   = $id->size()->asString();
                 $status = $id->status()->asString();
                 $id     = get_class($id) . '::' . $id->getName();
             } elseif ($id instanceof PhptTestCase) {

@@ -8,7 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.3
 
-## [9.2.6] - 2021-MM-DD
+## [9.2.6] - 2021-03-28
 
 ### Fixed
 

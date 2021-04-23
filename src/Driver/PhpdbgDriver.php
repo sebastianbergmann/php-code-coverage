@@ -30,9 +30,7 @@ final class PhpdbgDriver extends Driver
      */
     public function __construct()
     {
-        if (PHP_SAPI !== 'phpdbg') {
-            throw new PhpdbgNotAvailableException;
-        }
+        $this->ensurePhpdbgIsAvailable();
     }
 
     public function start(): void
@@ -89,5 +87,15 @@ final class PhpdbgDriver extends Driver
         }
 
         return $sourceLines;
+    }
+
+    /**
+     * @throws PhpdbgNotAvailableException
+     */
+    private function ensurePhpdbgIsAvailable(): void
+    {
+        if (PHP_SAPI !== 'phpdbg') {
+            throw new PhpdbgNotAvailableException;
+        }
     }
 }

@@ -41,29 +41,9 @@ final class Xdebug3Driver extends Driver
      */
     public function __construct(Filter $filter)
     {
-        if (!extension_loaded('xdebug')) {
-            throw new XdebugNotAvailableException;
-        }
-
-        if (version_compare(phpversion('xdebug'), '3', '<')) {
-            throw new WrongXdebugVersionException(
-                sprintf(
-                    'This driver requires Xdebug 3 but version %s is loaded',
-                    phpversion('xdebug')
-                )
-            );
-        }
-
-        $mode = getenv('XDEBUG_MODE');
-
-        if ($mode === false) {
-            $mode = ini_get('xdebug.mode');
-        }
-
-        if ($mode === false ||
-            !in_array('coverage', explode(',', $mode), true)) {
-            throw new Xdebug3NotEnabledException;
-        }
+        $this->ensureXdebugIsAvailable();
+        $this->ensureXdebugIsCorrectVersion();
+        $this->ensureXdebugCodeCoverageFeatureIsEnabled();
 
         if (!$filter->isEmpty()) {
             xdebug_set_filter(
@@ -115,5 +95,47 @@ final class Xdebug3Driver extends Driver
     public function nameAndVersion(): string
     {
         return 'Xdebug ' . phpversion('xdebug');
+    }
+
+    /**
+     * @throws XdebugNotAvailableException
+     */
+    private function ensureXdebugIsAvailable(): void
+    {
+        if (!extension_loaded('xdebug')) {
+            throw new XdebugNotAvailableException;
+        }
+    }
+
+    /**
+     * @throws WrongXdebugVersionException
+     */
+    private function ensureXdebugIsCorrectVersion(): void
+    {
+        if (version_compare(phpversion('xdebug'), '3', '<')) {
+            throw new WrongXdebugVersionException(
+                sprintf(
+                    'This driver requires Xdebug 3 but version %s is loaded',
+                    phpversion('xdebug')
+                )
+            );
+        }
+    }
+
+    /**
+     * @throws Xdebug3NotEnabledException
+     */
+    private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
+    {
+        $mode = getenv('XDEBUG_MODE');
+
+        if ($mode === false) {
+            $mode = ini_get('xdebug.mode');
+        }
+
+        if ($mode === false ||
+            !in_array('coverage', explode(',', $mode), true)) {
+            throw new Xdebug3NotEnabledException;
+        }
     }
 }

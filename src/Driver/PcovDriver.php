@@ -26,9 +26,7 @@ final class PcovDriver extends Driver
      */
     public function __construct(Filter $filter)
     {
-        if (!extension_loaded('pcov')) {
-            throw new PcovNotAvailableException;
-        }
+        $this->ensurePcovIsAvailable();
 
         $this->filter = $filter;
     }
@@ -55,5 +53,15 @@ final class PcovDriver extends Driver
     public function nameAndVersion(): string
     {
         return 'PCOV ' . phpversion('pcov');
+    }
+
+    /**
+     * @throws PcovNotAvailableException
+     */
+    private function ensurePcovIsAvailable(): void
+    {
+        if (!extension_loaded('pcov')) {
+            throw new PcovNotAvailableException;
+        }
     }
 }

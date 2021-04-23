@@ -42,22 +42,9 @@ final class Xdebug2Driver extends Driver
      */
     public function __construct(Filter $filter)
     {
-        if (!extension_loaded('xdebug')) {
-            throw new XdebugNotAvailableException;
-        }
-
-        if (version_compare(phpversion('xdebug'), '3', '>=')) {
-            throw new WrongXdebugVersionException(
-                sprintf(
-                    'This driver requires Xdebug 2 but version %s is loaded',
-                    phpversion('xdebug')
-                )
-            );
-        }
-
-        if (!ini_get('xdebug.coverage_enable')) {
-            throw new Xdebug2NotEnabledException;
-        }
+        $this->ensureXdebugIsAvailable();
+        $this->ensureXdebugIsCorrectVersion();
+        $this->ensureXdebugCodeCoverageFeatureIsEnabled();
 
         if (!$filter->isEmpty()) {
             if (defined('XDEBUG_PATH_WHITELIST')) {
@@ -121,5 +108,40 @@ final class Xdebug2Driver extends Driver
     public function nameAndVersion(): string
     {
         return 'Xdebug ' . phpversion('xdebug');
+    }
+
+    /**
+     * @throws XdebugNotAvailableException
+     */
+    private function ensureXdebugIsAvailable(): void
+    {
+        if (!extension_loaded('xdebug')) {
+            throw new XdebugNotAvailableException;
+        }
+    }
+
+    /**
+     * @throws WrongXdebugVersionException
+     */
+    private function ensureXdebugIsCorrectVersion(): void
+    {
+        if (version_compare(phpversion('xdebug'), '3', '>=')) {
+            throw new WrongXdebugVersionException(
+                sprintf(
+                    'This driver requires Xdebug 2 but version %s is loaded',
+                    phpversion('xdebug')
+                )
+            );
+        }
+    }
+
+    /**
+     * @throws Xdebug2NotEnabledException
+     */
+    private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
+    {
+        if (!ini_get('xdebug.coverage_enable')) {
+            throw new Xdebug2NotEnabledException;
+        }
     }
 }

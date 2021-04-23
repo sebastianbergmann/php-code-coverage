@@ -23,6 +23,7 @@ use function phpversion;
 use function sprintf;
 use function version_compare;
 use function xdebug_get_code_coverage;
+use function xdebug_info;
 use function xdebug_set_filter;
 use function xdebug_start_code_coverage;
 use function xdebug_stop_code_coverage;
@@ -127,6 +128,14 @@ final class Xdebug3Driver extends Driver
      */
     private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
     {
+        if (version_compare(phpversion('xdebug'), '3.1', '>=')) {
+            if (!in_array('coverage', xdebug_info('mode'), true)) {
+                throw new Xdebug3NotEnabledException;
+            }
+
+            return;
+        }
+
         $mode = getenv('XDEBUG_MODE');
 
         if ($mode === false) {

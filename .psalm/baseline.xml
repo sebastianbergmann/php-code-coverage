@@ -28,9 +28,6 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
-    <UnresolvableInclude occurrences="1">
-      <code>include_once $uncoveredFile</code>
-    </UnresolvableInclude>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
@@ -47,6 +44,9 @@
       <code>XDEBUG_FILTER_CODE_COVERAGE</code>
       <code>XDEBUG_PATH_INCLUDE</code>
     </UndefinedConstant>
+    <UndefinedFunction occurrences="1">
+      <code>xdebug_info('mode')</code>
+    </UndefinedFunction>
   </file>
   <file src="src/Filter.php">
     <InvalidDocblockParamName occurrences="1">

@@ -56,8 +56,6 @@ final class CodeCoverage
 
     private bool $includeUncoveredFiles = true;
 
-    private bool $processUncoveredFiles = false;
-
     private bool $ignoreDeprecatedCode = false;
 
     /**
@@ -121,12 +119,8 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
-        if (!$raw) {
-            if ($this->processUncoveredFiles) {
-                $this->processUncoveredFilesFromFilter();
-            } elseif ($this->includeUncoveredFiles) {
-                $this->addUncoveredFilesFromFilter();
-            }
+        if (!$raw && $this->includeUncoveredFiles) {
+            $this->addUncoveredFilesFromFilter();
         }
 
         return $this->data;
@@ -290,16 +284,6 @@ final class CodeCoverage
     public function excludeUncoveredFiles(): void
     {
         $this->includeUncoveredFiles = false;
-    }
-
-    public function processUncoveredFiles(): void
-    {
-        $this->processUncoveredFiles = true;
-    }
-
-    public function doNotProcessUncoveredFiles(): void
-    {
-        $this->processUncoveredFiles = false;
     }
 
     public function enableAnnotationsForIgnoringCode(): void
@@ -470,27 +454,6 @@ final class CodeCoverage
                 );
             }
         }
-    }
-
-    /**
-     * @throws UnintentionallyCoveredCodeException
-     */
-    private function processUncoveredFilesFromFilter(): void
-    {
-        $uncoveredFiles = array_diff(
-            $this->filter->files(),
-            $this->data->coveredFiles()
-        );
-
-        $this->driver->start();
-
-        foreach ($uncoveredFiles as $uncoveredFile) {
-            if (is_file($uncoveredFile)) {
-                include_once $uncoveredFile;
-            }
-        }
-
-        $this->append($this->driver->stop(), self::UNCOVERED_FILES);
     }
 
     /**

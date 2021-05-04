@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [10.0.0] - 2021-MM-DD
 
+### Changed
+
+* [#856](https://github.com/sebastianbergmann/php-code-coverage/issues/856): Do not include (and execute) uncovered files
+
 ### Removed
 
 * This component is no longer supported on PHP 7.3

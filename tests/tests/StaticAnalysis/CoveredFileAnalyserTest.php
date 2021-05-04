@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser
  */
 final class CoveredFileAnalyserTest extends TestCase
 {

@@ -193,9 +193,9 @@ final class CodeCoverage
      * @param PhptTestCase|string|TestCase $id
      * @param array|false                  $linesToBeCovered
      *
-     * @throws UnintentionallyCoveredCodeException
-     * @throws TestIdMissingException
      * @throws ReflectionException
+     * @throws TestIdMissingException
+     * @throws UnintentionallyCoveredCodeException
      */
     public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
@@ -371,8 +371,8 @@ final class CodeCoverage
      *
      * @param array|false $linesToBeCovered
      *
-     * @throws UnintentionallyCoveredCodeException
      * @throws ReflectionException
+     * @throws UnintentionallyCoveredCodeException
      */
     private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed): void
     {
@@ -457,8 +457,8 @@ final class CodeCoverage
     }
 
     /**
-     * @throws UnintentionallyCoveredCodeException
      * @throws ReflectionException
+     * @throws UnintentionallyCoveredCodeException
      */
     private function performUnintentionallyCoveredCodeCheck(RawCodeCoverageData $data, array $linesToBeCovered, array $linesToBeUsed): void
     {

@@ -36,9 +36,9 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 final class Xdebug3Driver extends Driver
 {
     /**
-     * @throws XdebugNotAvailableException
      * @throws WrongXdebugVersionException
      * @throws Xdebug3NotEnabledException
+     * @throws XdebugNotAvailableException
      */
     public function __construct(Filter $filter)
     {

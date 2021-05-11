@@ -317,10 +317,7 @@ final class Text
         sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    /**
-     * @param false|string $string
-     */
-    private function format(string $color, int $padding, $string): string
+    private function format(string $color, int $padding, string|false $string): string
     {
         $reset = $color ? self::COLOR_RESET : '';
 

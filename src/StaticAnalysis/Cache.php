@@ -50,10 +50,8 @@ abstract class Cache
 
     /**
      * @psalm-param list<class-string> $allowedClasses
-     *
-     * @return mixed
      */
-    protected function read(string $filename, string $key, array $allowedClasses = [])
+    protected function read(string $filename, string $key, array $allowedClasses = []): mixed
     {
         $options = ['allowed_classes' => false];
 
@@ -69,10 +67,7 @@ abstract class Cache
         );
     }
 
-    /**
-     * @param mixed $data
-     */
-    protected function write(string $filename, string $key, $data): void
+    protected function write(string $filename, string $key, mixed $data): void
     {
         file_put_contents(
             $this->cacheFile($filename, $key),

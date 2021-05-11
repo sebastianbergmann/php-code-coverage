@@ -39,20 +39,6 @@ final class CodeCoverageTest extends TestCase
         );
     }
 
-    public function testCannotStopWithInvalidSecondArgument(): void
-    {
-        $this->expectException(Exception::class);
-
-        $this->coverage->stop(true, null);
-    }
-
-    public function testCannotAppendWithInvalidArgument(): void
-    {
-        $this->expectException(Exception::class);
-
-        $this->coverage->append(RawCodeCoverageData::fromXdebugWithoutPathCoverage([]), null);
-    }
-
     public function testCollect(): void
     {
         $coverage = $this->getLineCoverageForBankAccount();

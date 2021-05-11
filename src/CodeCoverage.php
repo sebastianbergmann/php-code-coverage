@@ -47,10 +47,7 @@ final class CodeCoverage
 
     private Filter $filter;
 
-    /**
-     * @var Wizard
-     */
-    private $wizard;
+    private Wizard $wizard;
 
     private bool $checkForUnintentionallyCoveredCode = false;
 
@@ -58,10 +55,7 @@ final class CodeCoverage
 
     private bool $ignoreDeprecatedCode = false;
 
-    /**
-     * @var PhptTestCase|string|TestCase
-     */
-    private $currentId;
+    private PhptTestCase|string|TestCase|null $currentId;
 
     private ProcessedCodeCoverageData $data;
 
@@ -150,12 +144,7 @@ final class CodeCoverage
         $this->tests = $tests;
     }
 
-    /**
-     * Start collection of code coverage information.
-     *
-     * @param PhptTestCase|string|TestCase $id
-     */
-    public function start($id, bool $clear = false): void
+    public function start(PhptTestCase|string|TestCase $id, bool $clear = false): void
     {
         if ($clear) {
             $this->clear();
@@ -166,12 +155,7 @@ final class CodeCoverage
         $this->driver->start();
     }
 
-    /**
-     * Stop collection of code coverage information.
-     *
-     * @param array|false $linesToBeCovered
-     */
-    public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
+    public function stop(bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
         if (!is_array($linesToBeCovered) && $linesToBeCovered !== false) {
             throw new InvalidArgumentException(
@@ -188,16 +172,11 @@ final class CodeCoverage
     }
 
     /**
-     * Appends code coverage data.
-     *
-     * @param PhptTestCase|string|TestCase $id
-     * @param array|false                  $linesToBeCovered
-     *
      * @throws ReflectionException
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): void
+    public function append(RawCodeCoverageData $rawData, PhptTestCase|string|TestCase|null $id = null, bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -367,14 +346,10 @@ final class CodeCoverage
     }
 
     /**
-     * Applies the @covers annotation filtering.
-     *
-     * @param array|false $linesToBeCovered
-     *
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed): void
+    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed): void
     {
         if ($linesToBeCovered === false) {
             $rawData->clear();

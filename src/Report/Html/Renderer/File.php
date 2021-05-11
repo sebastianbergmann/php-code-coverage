@@ -91,7 +91,6 @@ use function htmlspecialchars;
 use function is_string;
 use function sprintf;
 use function str_replace;
-use function substr;
 use function token_get_all;
 use function trim;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
@@ -878,7 +877,7 @@ final class File extends Renderer
         $result              = [''];
         $i                   = 0;
         $stringFlag          = false;
-        $fileEndsWithNewLine = substr($buffer, -1) === "\n";
+        $fileEndsWithNewLine = str_ends_with($buffer, "\n");
 
         unset($buffer);
 

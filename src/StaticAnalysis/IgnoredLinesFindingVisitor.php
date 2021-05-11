@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_merge;
 use function range;
-use function strpos;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -76,14 +75,14 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if (strpos($docComment->getText(), '@codeCoverageIgnore') !== false) {
+        if (str_contains($docComment->getText(), '@codeCoverageIgnore')) {
             $this->ignoredLines = array_merge(
                 $this->ignoredLines,
                 range($node->getStartLine(), $node->getEndLine())
             );
         }
 
-        if ($this->ignoreDeprecated && strpos($docComment->getText(), '@deprecated') !== false) {
+        if ($this->ignoreDeprecated && str_contains($docComment->getText(), '@deprecated')) {
             $this->ignoredLines = array_merge(
                 $this->ignoredLines,
                 range($node->getStartLine(), $node->getEndLine())

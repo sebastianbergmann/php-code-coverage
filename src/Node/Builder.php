@@ -18,7 +18,6 @@ use function explode;
 use function implode;
 use function is_file;
 use function str_replace;
-use function strpos;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
@@ -59,7 +58,7 @@ final class Builder
         foreach ($items as $key => $value) {
             $key = (string) $key;
 
-            if (substr($key, -2) === '/f') {
+            if (str_ends_with($key, '/f')) {
                 $key      = substr($key, 0, -2);
                 $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
@@ -211,7 +210,7 @@ final class Builder
 
         for ($i = 0; $i < $max; $i++) {
             // strip phar:// prefixes
-            if (strpos($paths[$i], 'phar://') === 0) {
+            if (str_starts_with($paths[$i], 'phar://')) {
                 $paths[$i] = substr($paths[$i], 7);
                 $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
             }

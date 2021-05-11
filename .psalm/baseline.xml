@@ -24,6 +24,17 @@
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
     </TypeDoesNotContainType>
   </file>
+  <file src="src/Driver/PcovDriver.php">
+    <UndefinedConstant occurrences="1">
+      <code>\pcov\inclusive</code>
+    </UndefinedConstant>
+    <UndefinedFunction occurrences="5">
+      <code>\pcov\clear()</code>
+      <code>\pcov\start()</code>
+      <code>\pcov\stop()</code>
+      <code>\pcov\waiting()</code>
+    </UndefinedFunction>
+  </file>
   <file src="src/Driver/XdebugDriver.php">
     <UndefinedConstant occurrences="5">
       <code>XDEBUG_CC_BRANCH_CHECK</code>

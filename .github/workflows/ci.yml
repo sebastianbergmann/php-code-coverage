@@ -57,12 +57,7 @@ jobs:
 
         coverage-driver:
           - "pcov"
-          - "xdebug"
           - "xdebug3"
-
-        exclude:
-          - php-version: "8.0"
-            coverage-driver: "xdebug"
 
     steps:
       - name: "Checkout"

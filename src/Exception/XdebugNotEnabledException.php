@@ -12,10 +12,10 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use RuntimeException;
 use SebastianBergmann\CodeCoverage\Exception;
 
-final class Xdebug2NotEnabledException extends RuntimeException implements Exception
+final class XdebugNotEnabledException extends RuntimeException implements Exception
 {
     public function __construct()
     {
-        parent::__construct('xdebug.coverage_enable=On has to be set');
+        parent::__construct('XDEBUG_MODE=coverage or xdebug.mode=coverage has to be set');
     }
 }

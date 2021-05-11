@@ -20,7 +20,6 @@ use function getenv;
 use function in_array;
 use function ini_get;
 use function phpversion;
-use function sprintf;
 use function version_compare;
 use function xdebug_get_code_coverage;
 use function xdebug_info;
@@ -33,17 +32,15 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class Xdebug3Driver extends Driver
+final class XdebugDriver extends Driver
 {
     /**
-     * @throws WrongXdebugVersionException
-     * @throws Xdebug3NotEnabledException
      * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     public function __construct(Filter $filter)
     {
         $this->ensureXdebugIsAvailable();
-        $this->ensureXdebugIsCorrectVersion();
         $this->ensureXdebugCodeCoverageFeatureIsEnabled();
 
         if (!$filter->isEmpty()) {
@@ -109,28 +106,13 @@ final class Xdebug3Driver extends Driver
     }
 
     /**
-     * @throws WrongXdebugVersionException
-     */
-    private function ensureXdebugIsCorrectVersion(): void
-    {
-        if (version_compare(phpversion('xdebug'), '3', '<')) {
-            throw new WrongXdebugVersionException(
-                sprintf(
-                    'This driver requires Xdebug 3 but version %s is loaded',
-                    phpversion('xdebug')
-                )
-            );
-        }
-    }
-
-    /**
-     * @throws Xdebug3NotEnabledException
+     * @throws XdebugNotEnabledException
      */
     private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
     {
         if (version_compare(phpversion('xdebug'), '3.1', '>=')) {
             if (!in_array('coverage', xdebug_info('mode'), true)) {
-                throw new Xdebug3NotEnabledException;
+                throw new XdebugNotEnabledException;
             }
 
             return;
@@ -144,7 +126,7 @@ final class Xdebug3Driver extends Driver
 
         if ($mode === false ||
             !in_array('coverage', explode(',', $mode), true)) {
-            throw new Xdebug3NotEnabledException;
+            throw new XdebugNotEnabledException;
         }
     }
 }

@@ -29,14 +29,7 @@
       <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
   </file>
-  <file src="src/Driver/Xdebug2Driver.php">
-    <UndefinedConstant occurrences="3">
-      <code>XDEBUG_CC_BRANCH_CHECK</code>
-      <code>XDEBUG_CC_DEAD_CODE</code>
-      <code>XDEBUG_CC_UNUSED</code>
-    </UndefinedConstant>
-  </file>
-  <file src="src/Driver/Xdebug3Driver.php">
+  <file src="src/Driver/XdebugDriver.php">
     <UndefinedConstant occurrences="5">
       <code>XDEBUG_CC_BRANCH_CHECK</code>
       <code>XDEBUG_CC_DEAD_CODE</code>

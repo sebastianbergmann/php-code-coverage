@@ -12,14 +12,12 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use const PHP_SAPI;
 use function extension_loaded;
 use function ini_get;
-use function phpversion;
-use function version_compare;
 use function xdebug_code_coverage_started;
 use function xdebug_get_code_coverage;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-final class Xdebug3DriverTest extends TestCase
+final class XdebugDriverTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -29,10 +27,6 @@ final class Xdebug3DriverTest extends TestCase
 
         if (!extension_loaded('xdebug')) {
             $this->markTestSkipped('This test requires the Xdebug extension to be loaded');
-        }
-
-        if (version_compare(phpversion('xdebug'), '3', '<')) {
-            $this->markTestSkipped('This test requires version 3 of the Xdebug extension to be loaded');
         }
 
         if (!ini_get('xdebug.mode') || ini_get('xdebug.mode') !== 'coverage') {
@@ -114,8 +108,8 @@ final class Xdebug3DriverTest extends TestCase
         $this->assertArrayNotHasKey($bankAccount, xdebug_get_code_coverage());
     }
 
-    private function driver(): Xdebug3Driver
+    private function driver(): XdebugDriver
     {
-        return new Xdebug3Driver(new Filter);
+        return new XdebugDriver(new Filter);
     }
 }

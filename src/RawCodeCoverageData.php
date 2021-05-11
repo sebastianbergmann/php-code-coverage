@@ -59,27 +59,6 @@ final class RawCodeCoverageData
         return new self($lineCoverage, $functionCoverage);
     }
 
-    public static function fromXdebugWithMixedCoverage(array $rawCoverage): self
-    {
-        $lineCoverage     = [];
-        $functionCoverage = [];
-
-        foreach ($rawCoverage as $file => $fileCoverageData) {
-            if (!isset($fileCoverageData['functions'])) {
-                // Current file does not have functions, so line coverage
-                // is stored in $fileCoverageData, not in $fileCoverageData['lines']
-                $lineCoverage[$file] = $fileCoverageData;
-
-                continue;
-            }
-
-            $lineCoverage[$file]     = $fileCoverageData['lines'];
-            $functionCoverage[$file] = $fileCoverageData['functions'];
-        }
-
-        return new self($lineCoverage, $functionCoverage);
-    }
-
     public static function fromUncoveredFile(string $filename, UncoveredFileAnalyser $uncoveredFileAnalyser): self
     {
         $lineCoverage = [];

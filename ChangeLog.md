@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Removed
 
 * This component is no longer supported on PHP 7.3 and PHP 7.4
+* This component no longer supports Xdebug 2
 
 ## [9.2.6] - 2021-03-28
 

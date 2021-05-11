@@ -37,10 +37,7 @@ jobs:
       - name: Update dependencies with composer
         run: ./tools/composer update --no-interaction --no-ansi --no-progress
 
-      - name: Run vimeo/psalm on public API
-        run: ./tools/psalm --config=.psalm/static-analysis.xml --no-progress --show-info=false
-
-      - name: Run vimeo/psalm on internal code
+      - name: Run vimeo/psalm
         run: ./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats
 
   tests:

@@ -4,10 +4,6 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="2">
-      <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
-      <code>$id === null</code>
-    </DocblockTypeContradiction>
     <InternalMethod occurrences="8">
       <code>asString</code>
       <code>getName</code>
@@ -18,16 +14,15 @@
       <code>size</code>
       <code>size</code>
     </InternalMethod>
-    <PossiblyNullPropertyAssignmentValue occurrences="2">
-      <code>null</code>
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
     <PropertyNotSetInConstructor occurrences="1">
       <code>$currentId</code>
     </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="1">
+    <RedundantCondition occurrences="1">
       <code>is_array($linesToBeCovered)</code>
-    </RedundantConditionGivenDocblockType>
+    </RedundantCondition>
+    <TypeDoesNotContainType occurrences="1">
+      <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
+    </TypeDoesNotContainType>
   </file>
   <file src="src/Driver/XdebugDriver.php">
     <UndefinedConstant occurrences="5">

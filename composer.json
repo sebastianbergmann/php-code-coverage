@@ -34,7 +34,7 @@
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
         "nikic/php-parser": "^4.10.2",
-        "phpunit/php-file-iterator": "^3.0.3",
+        "phpunit/php-file-iterator": "^4.0",
         "phpunit/php-text-template": "^2.0.2",
         "sebastian/code-unit-reverse-lookup": "^2.0.2",
         "sebastian/complexity": "^3.0",

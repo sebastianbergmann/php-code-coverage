@@ -4,9 +4,15 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <InternalMethod occurrences="2">
+    <InternalMethod occurrences="8">
+      <code>asString</code>
       <code>getName</code>
       <code>getName</code>
+      <code>isLarge</code>
+      <code>isMedium</code>
+      <code>size</code>
+      <code>size</code>
+      <code>size</code>
     </InternalMethod>
     <PropertyNotSetInConstructor occurrences="1">
       <code>$currentId</code>
@@ -17,12 +23,6 @@
     <TypeDoesNotContainType occurrences="1">
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
     </TypeDoesNotContainType>
-    <UndefinedMethod occurrences="4">
-      <code>size</code>
-      <code>size</code>
-      <code>size</code>
-      <code>status</code>
-    </UndefinedMethod>
   </file>
   <file src="src/Driver/PcovDriver.php">
     <UndefinedConstant occurrences="1">

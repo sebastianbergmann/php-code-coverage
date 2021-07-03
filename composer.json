@@ -38,7 +38,7 @@
         "phpunit/php-text-template": "^3.0",
         "sebastian/code-unit-reverse-lookup": "^3.0",
         "sebastian/complexity": "^3.0",
-        "sebastian/environment": "^5.1.2",
+        "sebastian/environment": "^6.0",
         "sebastian/lines-of-code": "^2.0",
         "sebastian/version": "^4.0",
         "theseer/tokenizer": "^1.2.0"

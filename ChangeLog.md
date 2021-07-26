@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [7.0.15] - 2021-07-26
+
+### Changed
+
+* Bumped required version of php-token-stream
+
 ## [7.0.14] - 2020-12-02
 
 ### Changed
@@ -136,6 +142,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[7.0.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.14...7.0.15
 [7.0.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.13...7.0.14
 [7.0.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.12...7.0.13
 [7.0.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.11...7.0.12

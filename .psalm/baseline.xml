@@ -95,9 +95,6 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Coverage.php">
-    <NullArgument occurrences="1">
-      <code>null</code>
-    </NullArgument>
     <PossiblyNullReference occurrences="2">
       <code>createDocumentFragment</code>
       <code>replaceChild</code>

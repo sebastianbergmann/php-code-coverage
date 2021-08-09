@@ -120,7 +120,7 @@ final class XdebugDriver extends Driver
 
         $mode = getenv('XDEBUG_MODE');
 
-        if ($mode === false) {
+        if ($mode === false || $mode === '') {
             $mode = ini_get('xdebug.mode');
         }
 

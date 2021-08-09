@@ -220,6 +220,36 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.2
 
+## [7.0.15] - 2021-07-26
+
+### Changed
+
+* Bumped required version of php-token-stream
+
+## [7.0.14] - 2020-12-02
+
+### Changed
+
+* [#837](https://github.com/sebastianbergmann/php-code-coverage/issues/837): Allow version 4 of php-token-stream
+
+## [7.0.13] - 2020-11-30
+
+### Changed
+
+* Changed PHP version constraint in `composer.json` from `^7.2` to `>=7.2` to allow installation of this version of this library on PHP 8. However, this version of this library does not work on PHP 8. PHPUnit 8.5, which uses this version of this library, does not call into this library and instead shows a message that code coverage functionality is not available for PHPUnit 8.5 on PHP 8.
+
+## [7.0.12] - 2020-11-27
+
+### Added
+
+* [#834](https://github.com/sebastianbergmann/php-code-coverage/issues/834): Support `XDEBUG_MODE` environment variable
+
+## [7.0.11] - 2020-11-27
+
+### Added
+
+* Support for Xdebug 3
+
 ## [7.0.10] - 2019-11-20
 
 ### Fixed
@@ -354,6 +384,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 [8.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.10...8.0.0
+[7.0.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.14...7.0.15
+[7.0.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.13...7.0.14
+[7.0.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.12...7.0.13
+[7.0.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.11...7.0.12
+[7.0.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.10...7.0.11
 [7.0.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.9...7.0.10
 [7.0.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.8...7.0.9
 [7.0.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.7...7.0.8

@@ -53,7 +53,43 @@ final class HtmlTest extends TestCase
         $report = new Facade;
         $report->process($this->getPathCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        // Prevent error: "preg_match(): Compilation failed: regular expression is too large at offset 35557"
+        $expectedFilesPath2 = self::$TEST_TMP_PATH . '2';
+        if (!file_exists($expectedFilesPath2)){
+            mkdir($expectedFilesPath2);
+        }
+        $paths = glob("{$expectedFilesPath2}/*");
+        foreach ($paths as $path) {
+            unlink($path);
+        }
+        
+        $paths = glob("{$expectedFilesPath}/*");
+        foreach ($paths as $path) {
+            $file = basename($path);
+            copy($path, "{$expectedFilesPath2}/{$file}");
+        }
+        
+        foreach (
+          [
+            'BankAccount.php_branch.html',
+            'BankAccount.php_path.html',
+          ] as $file) {
+            foreach ([$expectedFilesPath2, self::$TEST_TMP_PATH] as $dir) {
+                $path = "{$dir}/{$file}";
+                $lines = file($path);
+                $half = (int)(count($lines) / 2);
+                file_put_contents("{$path}.part1", join('', array_slice($lines, 0, $half)));
+                file_put_contents("{$path}.part2", join('', array_slice($lines, $half)));
+                unlink($path);
+            }
+        }
+        $this->assertFilesEquals($expectedFilesPath2, self::$TEST_TMP_PATH);
+
+        $paths = glob("{$expectedFilesPath2}/*");
+        foreach ($paths as $path) {
+            unlink($path);
+        }
+        rmdir($expectedFilesPath2);
     }
 
     public function testPathCoverageForSourceWithoutNamespace(): void

@@ -33,11 +33,11 @@
       </tr>
       <tr>
        <td>&nbsp;</td>
-       <td colspan="3"><div align="center"><strong>Classes and Traits</strong></div></td>
-       <td colspan="4"><div align="center"><strong>Functions and Methods</strong></div></td>
-       <td colspan="3"><div align="center"><strong>Paths</strong></div></td>
-       <td colspan="3"><div align="center"><strong>Branches</strong></div></td>
        <td colspan="3"><div align="center"><strong>Lines</strong></div></td>
+       <td colspan="3"><div align="center"><strong>Branches</strong></div></td>
+       <td colspan="3"><div align="center"><strong>Paths</strong></div></td>
+       <td colspan="4"><div align="center"><strong>Functions and Methods</strong></div></td>
+       <td colspan="3"><div align="center"><strong>Classes and Traits</strong></div></td>
       </tr>
      </thead>
      <tbody>

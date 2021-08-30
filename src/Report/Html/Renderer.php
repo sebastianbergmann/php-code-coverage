@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use function array_pop;
 use function count;
-use function phpversion;
 use function sprintf;
 use function str_repeat;
 use function substr_count;

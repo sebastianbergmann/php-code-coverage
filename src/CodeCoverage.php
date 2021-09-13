@@ -295,10 +295,6 @@ final class CodeCoverage
             throw new RuntimeException;
         }
 
-        $this->applyWhitelistFilter($data);
-        $this->applyIgnoredLinesFilter($data);
-        $this->initializeFilesThatAreSeenTheFirstTime($data);
-
         if (!$append) {
             return;
         }
@@ -315,6 +311,10 @@ final class CodeCoverage
         if (empty($data)) {
             return;
         }
+
+        $this->applyWhitelistFilter($data);
+        $this->applyIgnoredLinesFilter($data);
+        $this->initializeFilesThatAreSeenTheFirstTime($data);
 
         $size   = 'unknown';
         $status = -1;

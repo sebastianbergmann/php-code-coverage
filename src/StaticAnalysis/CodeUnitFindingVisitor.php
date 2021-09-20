@@ -32,10 +32,19 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
  */
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     private array $classes = [];
 
+    /**
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     private array $traits = [];
 
+    /**
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
+     */
     private array $functions = [];
 
     public function enterNode(Node $node): void
@@ -71,16 +80,25 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         $this->processFunction($node);
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     public function classes(): array
     {
         return $this->classes;
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     public function traits(): array
     {
         return $this->traits;
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
+     */
     public function functions(): array
     {
         return $this->functions;

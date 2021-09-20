@@ -18,6 +18,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
@@ -222,7 +223,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        assert($parentNode instanceof Class_ || $parentNode instanceof Trait_);
+        assert($parentNode instanceof Class_ || $parentNode instanceof Trait_ || $parentNode instanceof Enum_);
         assert(isset($parentNode->name));
         assert(isset($parentNode->namespacedName));
         assert($parentNode->namespacedName instanceof Name);

@@ -28,21 +28,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
      */
     public function testDoesNotFindAnonymousClass(): void
     {
-        $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(
-            file_get_contents(__DIR__ . '/../../_files/ClassThatUsesAnonymousClass.php')
-        );
-
-        assert($nodes !== null);
-
-        $traverser              = new NodeTraverser;
-        $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
-
-        $traverser->addVisitor(new NameResolver);
-        $traverser->addVisitor(new ParentConnectingVisitor);
-        $traverser->addVisitor($codeUnitFindingVisitor);
-
-        /* @noinspection UnusedFunctionResultInspection */
-        $traverser->traverse($nodes);
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassThatUsesAnonymousClass.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->functions());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -78,21 +64,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
      */
     public function testHandlesClassWithNameThatIsPartOfItsNamespacesName(): void
     {
-        $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(
-            file_get_contents(__DIR__ . '/../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php')
-        );
-
-        assert($nodes !== null);
-
-        $traverser              = new NodeTraverser;
-        $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
-
-        $traverser->addVisitor(new NameResolver);
-        $traverser->addVisitor(new ParentConnectingVisitor);
-        $traverser->addVisitor($codeUnitFindingVisitor);
-
-        /* @noinspection UnusedFunctionResultInspection */
-        $traverser->traverse($nodes);
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->functions());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -107,5 +79,26 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame('ClassWithNameThatIsPartOfItsNamespacesName', $class['name']);
         $this->assertSame(ClassWithNameThatIsPartOfItsNamespacesName::class, $class['namespacedName']);
         $this->assertSame('SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName', $class['namespace']);
+    }
+
+    private function findCodeUnits(string $filename): CodeUnitFindingVisitor
+    {
+        $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(
+            file_get_contents($filename)
+        );
+
+        assert($nodes !== null);
+
+        $traverser              = new NodeTraverser;
+        $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
+
+        $traverser->addVisitor(new NameResolver);
+        $traverser->addVisitor(new ParentConnectingVisitor);
+        $traverser->addVisitor($codeUnitFindingVisitor);
+
+        /* @noinspection UnusedFunctionResultInspection */
+        $traverser->traverse($nodes);
+
+        return $codeUnitFindingVisitor;
     }
 }

@@ -33,17 +33,17 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var array
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     private $classes = [];
 
     /**
-     * @var array
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
     private $traits = [];
 
     /**
-     * @var array
+     * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
      */
     private $functions = [];
 
@@ -80,16 +80,25 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         $this->processFunction($node);
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     public function classes(): array
     {
         return $this->classes;
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
+     */
     public function traits(): array
     {
         return $this->traits;
     }
 
+    /**
+     * @psalm-return array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
+     */
     public function functions(): array
     {
         return $this->functions;

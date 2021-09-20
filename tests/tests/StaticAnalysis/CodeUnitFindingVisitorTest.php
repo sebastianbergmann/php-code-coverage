@@ -81,6 +81,43 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame('SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName', $class['namespace']);
     }
 
+    public function testHandlesFunctionOrMethodWithUnionTypes(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithUnionTypes.php');
+
+        $this->assertEmpty($codeUnitFindingVisitor->classes());
+        $this->assertEmpty($codeUnitFindingVisitor->traits());
+
+        $functions = $codeUnitFindingVisitor->functions();
+
+        $this->assertCount(1, $functions);
+
+        $this->assertSame(
+            'functionWithUnionTypes(string|bool $x): string|bool',
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithUnionTypes']['signature']
+        );
+    }
+
+    /**
+     * @requires PHP 8.1
+     */
+    public function testHandlesFunctionOrMethodWithIntersectionTypes(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithIntersectionTypes.php');
+
+        $this->assertEmpty($codeUnitFindingVisitor->classes());
+        $this->assertEmpty($codeUnitFindingVisitor->traits());
+
+        $functions = $codeUnitFindingVisitor->functions();
+
+        $this->assertCount(1, $functions);
+
+        $this->assertSame(
+            'functionWithIntersectionTypes(\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo $x): \SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo',
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithIntersectionTypes']['signature']
+        );
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(

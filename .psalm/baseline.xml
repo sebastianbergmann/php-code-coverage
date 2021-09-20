@@ -190,10 +190,13 @@
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>toString</code>
+    </PossiblyUndefinedMethod>
     <RedundantConditionGivenDocblockType occurrences="7">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
-      <code>$type instanceof UnionType</code>
+      <code>$type instanceof ComplexType</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
       <code>assert(isset($node-&gt;name))</code>
       <code>assert(isset($node-&gt;namespacedName))</code>

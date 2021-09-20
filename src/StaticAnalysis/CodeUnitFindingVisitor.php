@@ -13,7 +13,9 @@ use function implode;
 use function rtrim;
 use function trim;
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -167,24 +169,18 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @psalm-param Identifier|Name|NullableType|UnionType $type
+     * @psalm-param Identifier|Name|ComplexType $type
      */
     private function type(Node $type): string
     {
-        assert($type instanceof Identifier || $type instanceof Name || $type instanceof NullableType || $type instanceof UnionType);
+        assert($type instanceof Identifier || $type instanceof Name || $type instanceof ComplexType);
 
         if ($type instanceof NullableType) {
             return '?' . $type->type;
         }
 
-        if ($type instanceof UnionType) {
-            $types = [];
-
-            foreach ($type->types as $_type) {
-                $types[] = $_type->toString();
-            }
-
-            return implode('|', $types);
+        if ($type instanceof UnionType || $type instanceof IntersectionType) {
+            return $this->unionOrIntersectionAsString($type);
         }
 
         return $type->toString();
@@ -299,5 +295,29 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     private function namespace(string $namespacedName, string $name): string
     {
         return trim(rtrim($namespacedName, $name), '\\');
+    }
+
+    /**
+     * @psalm-param UnionType|IntersectionType $type
+     */
+    private function unionOrIntersectionAsString(ComplexType $type): string
+    {
+        if ($type instanceof UnionType) {
+            $separator = '|';
+        } else {
+            $separator = '&';
+        }
+
+        $types = [];
+
+        foreach ($type->types as $_type) {
+            if ($_type instanceof Name) {
+                $types[] = $_type->toCodeString();
+            } else {
+                $types[] = $_type->toString();
+            }
+        }
+
+        return implode($separator, $types);
     }
 }

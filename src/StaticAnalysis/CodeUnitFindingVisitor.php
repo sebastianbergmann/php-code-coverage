@@ -210,7 +210,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         $this->classes[$namespacedName] = [
             'name'           => $name,
-            'namespacedName' => $namespacedName,
+            'namespacedName' => (string) $namespacedName,
             'namespace'      => $this->namespace($namespacedName, $name),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),
@@ -225,7 +225,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         $this->traits[$namespacedName] = [
             'name'           => $name,
-            'namespacedName' => $namespacedName,
+            'namespacedName' => (string) $namespacedName,
             'namespace'      => $this->namespace($namespacedName, $name),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),

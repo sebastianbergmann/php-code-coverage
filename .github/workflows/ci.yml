@@ -1,98 +1,125 @@
 # https://help.github.com/en/categories/automating-your-workflow-with-github-actions
 
 on:
-  - "pull_request"
-  - "push"
+  - pull_request
+  - push
 
-name: "CI"
+name: CI
+
+env:
+  COMPOSER_ROOT_VERSION: "9.2-dev"
 
 jobs:
   coding-guidelines:
-    name: "Coding Guidelines"
+    name: Coding Guidelines
 
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: "Run friendsofphp/php-cs-fixer"
-        run: "php7.4 ./tools/php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose"
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: :apcu, :imagick
+          coverage: none
+          tools: none
+
+      - name: Run friendsofphp/php-cs-fixer
+        run: ./tools/php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
 
   type-checker:
-    name: "Type Checker"
+    name: Type Checker
 
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: "Install PHP with extensions"
-        uses: "shivammathur/setup-php@v2"
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: "7.4"
-          coverage: "pcov"
+          php-version: 8.0
+          extensions: :apcu, :imagick
+          coverage: none
+          tools: none
 
-      - name: "Cache dependencies installed with composer"
-        uses: "actions/cache@v2"
-        with:
-          path: "~/.composer/cache"
-          key: "php7.4-composer-${{ hashFiles('**/composer.json') }}"
-          restore-keys: "php7.4-composer-"
+      - name: Update dependencies with composer
+        run: ./tools/composer update --no-interaction --no-ansi --no-progress
 
-      - name: "Update dependencies with composer"
-        run: "./tools/composer update --no-ansi --no-interaction --no-progress"
-
-      - name: "Run vimeo/psalm"
-        run: "./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
+      - name: Run vimeo/psalm
+        run: ./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats
 
   tests:
-    name: "Tests"
+    name: Tests
 
-    runs-on: "ubuntu-latest"
+    runs-on: ${{ matrix.os }}
+
+    env:
+      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter, :apcu, :imagick
+      PHP_INI_VALUES: memory_limit=-1, assert.exception=1, zend.assertions=1, error_reporting=-1, log_errors_max_len=0, display_errors=On
 
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
         php-version:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
 
         coverage-driver:
           - "pcov"
           - "xdebug"
           - "xdebug3"
 
+        dependencies:
+          - lowest
+          - highest
+
         exclude:
           - php-version: "8.0"
             coverage-driver: "xdebug"
 
+          - php-version: "8.1"
+            coverage-driver: "xdebug"
+
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
+      - name: Configure git to avoid issues with line endings
+        if: matrix.os == 'windows-latest'
+        run: git config --global core.autocrlf false
 
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: "${{ matrix.php-version }}"
-          coverage: "${{ matrix.coverage-driver }}"
+          php-version: ${{ matrix.php-version }}
+          coverage: ${{ matrix.coverage-driver }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}
+          tools: none
 
-      - name: "Cache dependencies installed with composer"
-        uses: "actions/cache@v2"
+      - name: Install lowest dependencies with composer
+        if: matrix.dependencies == 'lowest'
+        run: php ./tools/composer update --no-ansi --no-interaction --no-progress --prefer-lowest
+
+      - name: Install highest dependencies with composer
+        if: matrix.dependencies == 'highest'
+        run: php ./tools/composer update --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit/phpunit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Send code coverage report to Codecov.io
+        uses: codecov/codecov-action@v1
         with:
-          path: "~/.composer/cache"
-          key: "php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}"
-          restore-keys: "php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
-
-      - name: "Install dependencies with composer"
-        run: "./tools/composer update --no-ansi --no-interaction --no-progress"
-
-      - name: "Run tests with phpunit/phpunit"
-        run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
-
-      - name: "Send code coverage report to Codecov.io"
-        env:
-          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
-        run: "bash <(curl -s https://codecov.io/bash) || true"
+          token: ${{ secrets.CODECOV_TOKEN }}

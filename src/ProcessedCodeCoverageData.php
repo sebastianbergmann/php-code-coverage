@@ -26,19 +26,15 @@ final class ProcessedCodeCoverageData
     /**
      * Line coverage data.
      * An array of filenames, each having an array of linenumbers, each executable line having an array of testcase ids.
-     *
-     * @var array
      */
-    private $lineCoverage = [];
+    private array $lineCoverage = [];
 
     /**
      * Function coverage data.
      * Maintains base format of raw data (@see https://xdebug.org/docs/code_coverage), but each 'hit' entry is an array
      * of testcase ids.
-     *
-     * @var array
      */
-    private $functionCoverage = [];
+    private array $functionCoverage = [];
 
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {

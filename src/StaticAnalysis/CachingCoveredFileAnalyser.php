@@ -16,15 +16,9 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
  */
 final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnalyser
 {
-    /**
-     * @var CoveredFileAnalyser
-     */
-    private $coveredFileAnalyser;
+    private CoveredFileAnalyser $coveredFileAnalyser;
 
-    /**
-     * @var array
-     */
-    private $cache = [];
+    private array $cache = [];
 
     public function __construct(string $directory, CoveredFileAnalyser $coveredFileAnalyser)
     {

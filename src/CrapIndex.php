@@ -16,15 +16,9 @@ use function sprintf;
  */
 final class CrapIndex
 {
-    /**
-     * @var int
-     */
-    private $cyclomaticComplexity;
+    private int $cyclomaticComplexity;
 
-    /**
-     * @var float
-     */
-    private $codeCoverage;
+    private float $codeCoverage;
 
     public static function fromCyclomaticComplexityAndCoveragePercentage(int $cyclomaticComplexity, float $codeCoverage): self
     {

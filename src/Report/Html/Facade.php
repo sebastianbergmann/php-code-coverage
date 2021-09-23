@@ -20,25 +20,13 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 
 final class Facade
 {
-    /**
-     * @var string
-     */
-    private $templatePath;
+    private string $templatePath;
 
-    /**
-     * @var string
-     */
-    private $generator;
+    private string $generator;
 
-    /**
-     * @var int
-     */
-    private $lowUpperBound;
+    private int $lowUpperBound;
 
-    /**
-     * @var int
-     */
-    private $highLowerBound;
+    private int $highLowerBound;
 
     public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
     {

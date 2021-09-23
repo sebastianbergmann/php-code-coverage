@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use function array_pop;
 use function count;
-use function phpversion;
 use function sprintf;
 use function str_repeat;
 use function substr_count;
@@ -27,40 +26,19 @@ use SebastianBergmann\Template\Template;
  */
 abstract class Renderer
 {
-    /**
-     * @var string
-     */
-    protected $templatePath;
+    protected string $templatePath;
 
-    /**
-     * @var string
-     */
-    protected $generator;
+    protected string $generator;
 
-    /**
-     * @var string
-     */
-    protected $date;
+    protected string $date;
 
-    /**
-     * @var int
-     */
-    protected $lowUpperBound;
+    protected int $lowUpperBound;
 
-    /**
-     * @var int
-     */
-    protected $highLowerBound;
+    protected int $highLowerBound;
 
-    /**
-     * @var bool
-     */
-    protected $hasBranchCoverage;
+    protected bool $hasBranchCoverage;
 
-    /**
-     * @var string
-     */
-    protected $version;
+    protected string $version;
 
     public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound, bool $hasBranchCoverage)
     {

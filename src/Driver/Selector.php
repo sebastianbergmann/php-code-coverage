@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use function phpversion;
-use function version_compare;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverAvailableException;
 use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
@@ -22,9 +20,8 @@ final class Selector
      * @throws NoCodeCoverageDriverAvailableException
      * @throws PcovNotAvailableException
      * @throws PhpdbgNotAvailableException
-     * @throws Xdebug2NotEnabledException
-     * @throws Xdebug3NotEnabledException
      * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     public function forLineCoverage(Filter $filter): Driver
     {
@@ -39,11 +36,7 @@ final class Selector
         }
 
         if ($runtime->hasXdebug()) {
-            if (version_compare(phpversion('xdebug'), '3', '>=')) {
-                $driver = new Xdebug3Driver($filter);
-            } else {
-                $driver = new Xdebug2Driver($filter);
-            }
+            $driver = new XdebugDriver($filter);
 
             $driver->enableDeadCodeDetection();
 
@@ -55,18 +48,13 @@ final class Selector
 
     /**
      * @throws NoCodeCoverageDriverWithPathCoverageSupportAvailableException
-     * @throws Xdebug2NotEnabledException
-     * @throws Xdebug3NotEnabledException
      * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     public function forLineAndPathCoverage(Filter $filter): Driver
     {
         if ((new Runtime)->hasXdebug()) {
-            if (version_compare(phpversion('xdebug'), '3', '>=')) {
-                $driver = new Xdebug3Driver($filter);
-            } else {
-                $driver = new Xdebug2Driver($filter);
-            }
+            $driver = new XdebugDriver($filter);
 
             $driver->enableDeadCodeDetection();
             $driver->enableBranchAndPathCoverage();

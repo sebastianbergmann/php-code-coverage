@@ -40,20 +40,11 @@ use SebastianBergmann\Environment\Runtime;
 
 final class Facade
 {
-    /**
-     * @var string
-     */
-    private $target;
+    private string $target;
 
-    /**
-     * @var Project
-     */
-    private $project;
+    private Project $project;
 
-    /**
-     * @var string
-     */
-    private $phpUnitVersion;
+    private string $phpUnitVersion;
 
     public function __construct(string $version)
     {

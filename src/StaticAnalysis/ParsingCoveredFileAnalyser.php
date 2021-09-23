@@ -32,40 +32,22 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
  */
 final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 {
-    /**
-     * @var array
-     */
-    private $classes = [];
+    private array $classes = [];
+
+    private array $traits = [];
+
+    private array $functions = [];
 
     /**
-     * @var array
+     * @var array<string,LinesOfCode>
      */
-    private $traits = [];
+    private array $linesOfCode = [];
 
-    /**
-     * @var array
-     */
-    private $functions = [];
+    private array $ignoredLines = [];
 
-    /**
-     * @var LinesOfCode[]
-     */
-    private $linesOfCode = [];
+    private bool $useAnnotationsForIgnoringCode;
 
-    /**
-     * @var array
-     */
-    private $ignoredLines = [];
-
-    /**
-     * @var bool
-     */
-    private $useAnnotationsForIgnoringCode;
-
-    /**
-     * @var bool
-     */
-    private $ignoreDeprecatedCode;
+    private bool $ignoreDeprecatedCode;
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
     {

@@ -14,10 +14,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileAnalyser
 {
-    /**
-     * @var UncoveredFileAnalyser
-     */
-    private $uncoveredFileAnalyser;
+    private UncoveredFileAnalyser $uncoveredFileAnalyser;
 
     public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser)
     {

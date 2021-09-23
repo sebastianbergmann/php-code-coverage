@@ -19,35 +19,17 @@ use SebastianBergmann\CodeCoverage\Percentage;
  */
 final class Totals
 {
-    /**
-     * @var DOMNode
-     */
-    private $container;
+    private DOMNode $container;
 
-    /**
-     * @var DOMElement
-     */
-    private $linesNode;
+    private DOMElement $linesNode;
 
-    /**
-     * @var DOMElement
-     */
-    private $methodsNode;
+    private DOMElement $methodsNode;
 
-    /**
-     * @var DOMElement
-     */
-    private $functionsNode;
+    private DOMElement $functionsNode;
 
-    /**
-     * @var DOMElement
-     */
-    private $classesNode;
+    private DOMElement $classesNode;
 
-    /**
-     * @var DOMElement
-     */
-    private $traitsNode;
+    private DOMElement $traitsNode;
 
     public function __construct(DOMElement $container)
     {

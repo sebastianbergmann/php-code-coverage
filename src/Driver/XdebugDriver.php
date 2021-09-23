@@ -14,14 +14,15 @@ use const XDEBUG_CC_DEAD_CODE;
 use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
-use const XDEBUG_PATH_WHITELIST;
-use function defined;
+use function explode;
 use function extension_loaded;
+use function getenv;
+use function in_array;
 use function ini_get;
 use function phpversion;
-use function sprintf;
 use function version_compare;
 use function xdebug_get_code_coverage;
+use function xdebug_info;
 use function xdebug_set_filter;
 use function xdebug_start_code_coverage;
 use function xdebug_stop_code_coverage;
@@ -31,52 +32,24 @@ use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class Xdebug2Driver extends Driver
+final class XdebugDriver extends Driver
 {
     /**
-     * @var bool
-     */
-    private $pathCoverageIsMixedCoverage;
-
-    /**
-     * @throws WrongXdebugVersionException
-     * @throws Xdebug2NotEnabledException
      * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
      */
     public function __construct(Filter $filter)
     {
-        if (!extension_loaded('xdebug')) {
-            throw new XdebugNotAvailableException;
-        }
-
-        if (version_compare(phpversion('xdebug'), '3', '>=')) {
-            throw new WrongXdebugVersionException(
-                sprintf(
-                    'This driver requires Xdebug 2 but version %s is loaded',
-                    phpversion('xdebug')
-                )
-            );
-        }
-
-        if (!ini_get('xdebug.coverage_enable')) {
-            throw new Xdebug2NotEnabledException;
-        }
+        $this->ensureXdebugIsAvailable();
+        $this->ensureXdebugCodeCoverageFeatureIsEnabled();
 
         if (!$filter->isEmpty()) {
-            if (defined('XDEBUG_PATH_WHITELIST')) {
-                $listType = XDEBUG_PATH_WHITELIST;
-            } else {
-                $listType = XDEBUG_PATH_INCLUDE;
-            }
-
             xdebug_set_filter(
                 XDEBUG_FILTER_CODE_COVERAGE,
-                $listType,
+                XDEBUG_PATH_INCLUDE,
                 $filter->files()
             );
         }
-
-        $this->pathCoverageIsMixedCoverage = version_compare(phpversion('xdebug'), '2.9.6', '<');
     }
 
     public function canCollectBranchAndPathCoverage(): bool
@@ -111,10 +84,6 @@ final class Xdebug2Driver extends Driver
         xdebug_stop_code_coverage();
 
         if ($this->collectsBranchAndPathCoverage()) {
-            if ($this->pathCoverageIsMixedCoverage) {
-                return RawCodeCoverageData::fromXdebugWithMixedCoverage($data);
-            }
-
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
 
@@ -124,5 +93,40 @@ final class Xdebug2Driver extends Driver
     public function nameAndVersion(): string
     {
         return 'Xdebug ' . phpversion('xdebug');
+    }
+
+    /**
+     * @throws XdebugNotAvailableException
+     */
+    private function ensureXdebugIsAvailable(): void
+    {
+        if (!extension_loaded('xdebug')) {
+            throw new XdebugNotAvailableException;
+        }
+    }
+
+    /**
+     * @throws XdebugNotEnabledException
+     */
+    private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
+    {
+        if (version_compare(phpversion('xdebug'), '3.1', '>=')) {
+            if (!in_array('coverage', xdebug_info('mode'), true)) {
+                throw new XdebugNotEnabledException;
+            }
+
+            return;
+        }
+
+        $mode = getenv('XDEBUG_MODE');
+
+        if ($mode === false || $mode === '') {
+            $mode = ini_get('xdebug.mode');
+        }
+
+        if ($mode === false ||
+            !in_array('coverage', explode(',', $mode), true)) {
+            throw new XdebugNotEnabledException;
+        }
     }
 }

@@ -2,7 +2,25 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [9.2.7] - 2021-MM-DD
+## [10.0.0] - 2021-MM-DD
+
+### Changed
+
+* [#856](https://github.com/sebastianbergmann/php-code-coverage/issues/856): Do not include (and execute) uncovered files
+
+### Removed
+
+* The deprecated methods `SebastianBergmann\CodeCoverage\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver::forLineAndPathCoverage()` have been removed
+* This component is no longer supported on PHP 7.3 and PHP 7.4
+* This component no longer supports Xdebug 2
+
+## [9.2.8] - 2021-MM-DD
+
+### Fixed
+
+* [#866](https://github.com/sebastianbergmann/php-code-coverage/issues/866): `CodeUnitFindingVisitor` does not handle `enum` type introduced in PHP 8.1
+
+## [9.2.7] - 2021-09-17
 
 ### Fixed
 
@@ -329,7 +347,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
-[9.2.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.6...9.2
+[10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...master
+[9.2.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.7...9.2
+[9.2.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.6...9.2.7
 [9.2.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.5...9.2.6
 [9.2.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.4...9.2.5
 [9.2.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.3...9.2.4

@@ -24,7 +24,6 @@ use function is_file;
 use function sort;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
-use PHPUnit\Util\Test;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
@@ -44,84 +43,36 @@ final class CodeCoverage
 {
     private const UNCOVERED_FILES = 'UNCOVERED_FILES';
 
-    /**
-     * @var Driver
-     */
-    private $driver;
+    private Driver $driver;
 
-    /**
-     * @var Filter
-     */
-    private $filter;
+    private Filter $filter;
 
-    /**
-     * @var Wizard
-     */
-    private $wizard;
+    private Wizard $wizard;
 
-    /**
-     * @var bool
-     */
-    private $checkForUnintentionallyCoveredCode = false;
+    private bool $checkForUnintentionallyCoveredCode = false;
 
-    /**
-     * @var bool
-     */
-    private $includeUncoveredFiles = true;
+    private bool $includeUncoveredFiles = true;
 
-    /**
-     * @var bool
-     */
-    private $processUncoveredFiles = false;
+    private bool $ignoreDeprecatedCode = false;
 
-    /**
-     * @var bool
-     */
-    private $ignoreDeprecatedCode = false;
+    private PhptTestCase|string|TestCase|null $currentId;
 
-    /**
-     * @var PhptTestCase|string|TestCase
-     */
-    private $currentId;
+    private ProcessedCodeCoverageData $data;
 
-    /**
-     * Code coverage data.
-     *
-     * @var ProcessedCodeCoverageData
-     */
-    private $data;
+    private bool $useAnnotationsForIgnoringCode = true;
 
-    /**
-     * @var bool
-     */
-    private $useAnnotationsForIgnoringCode = true;
-
-    /**
-     * Test data.
-     *
-     * @var array
-     */
-    private $tests = [];
+    private array $tests = [];
 
     /**
      * @psalm-var list<class-string>
      */
-    private $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
+    private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
 
-    /**
-     * @var ?CoveredFileAnalyser
-     */
-    private $coveredFileAnalyser;
+    private ?CoveredFileAnalyser $coveredFileAnalyser = null;
 
-    /**
-     * @var ?UncoveredFileAnalyser
-     */
-    private $uncoveredFileAnalyser;
+    private ?UncoveredFileAnalyser $uncoveredFileAnalyser = null;
 
-    /**
-     * @var ?string
-     */
-    private $cacheDirectory;
+    private ?string $cacheDirectory = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -162,12 +113,8 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
-        if (!$raw) {
-            if ($this->processUncoveredFiles) {
-                $this->processUncoveredFilesFromFilter();
-            } elseif ($this->includeUncoveredFiles) {
-                $this->addUncoveredFilesFromFilter();
-            }
+        if (!$raw && $this->includeUncoveredFiles) {
+            $this->addUncoveredFilesFromFilter();
         }
 
         return $this->data;
@@ -197,12 +144,7 @@ final class CodeCoverage
         $this->tests = $tests;
     }
 
-    /**
-     * Start collection of code coverage information.
-     *
-     * @param PhptTestCase|string|TestCase $id
-     */
-    public function start($id, bool $clear = false): void
+    public function start(PhptTestCase|string|TestCase $id, bool $clear = false): void
     {
         if ($clear) {
             $this->clear();
@@ -213,12 +155,7 @@ final class CodeCoverage
         $this->driver->start();
     }
 
-    /**
-     * Stop collection of code coverage information.
-     *
-     * @param array|false $linesToBeCovered
-     */
-    public function stop(bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
+    public function stop(bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
         if (!is_array($linesToBeCovered) && $linesToBeCovered !== false) {
             throw new InvalidArgumentException(
@@ -235,16 +172,11 @@ final class CodeCoverage
     }
 
     /**
-     * Appends code coverage data.
-     *
-     * @param PhptTestCase|string|TestCase $id
-     * @param array|false                  $linesToBeCovered
-     *
      * @throws ReflectionException
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, $id = null, bool $append = true, $linesToBeCovered = [], array $linesToBeUsed = []): void
+    public function append(RawCodeCoverageData $rawData, PhptTestCase|string|TestCase|null $id = null, bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -278,22 +210,14 @@ final class CodeCoverage
             }
 
             $size         = 'unknown';
-            $status       = -1;
+            $status       = 'unknown';
             $fromTestcase = false;
 
             if ($id instanceof TestCase) {
                 $fromTestcase = true;
-                $_size        = $id->getSize();
 
-                if ($_size === Test::SMALL) {
-                    $size = 'small';
-                } elseif ($_size === Test::MEDIUM) {
-                    $size = 'medium';
-                } elseif ($_size === Test::LARGE) {
-                    $size = 'large';
-                }
-
-                $status = $id->getStatus();
+                $size   = $id->size()->asString();
+                $status = $id->status()->asString();
                 $id     = get_class($id) . '::' . $id->getName();
             } elseif ($id instanceof PhptTestCase) {
                 $fromTestcase = true;
@@ -339,16 +263,6 @@ final class CodeCoverage
     public function excludeUncoveredFiles(): void
     {
         $this->includeUncoveredFiles = false;
-    }
-
-    public function processUncoveredFiles(): void
-    {
-        $this->processUncoveredFiles = true;
-    }
-
-    public function doNotProcessUncoveredFiles(): void
-    {
-        $this->processUncoveredFiles = false;
     }
 
     public function enableAnnotationsForIgnoringCode(): void
@@ -432,14 +346,10 @@ final class CodeCoverage
     }
 
     /**
-     * Applies the @covers annotation filtering.
-     *
-     * @param array|false $linesToBeCovered
-     *
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, $linesToBeCovered, array $linesToBeUsed): void
+    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed): void
     {
         if ($linesToBeCovered === false) {
             $rawData->clear();
@@ -453,7 +363,7 @@ final class CodeCoverage
 
         if ($this->checkForUnintentionallyCoveredCode &&
             (!$this->currentId instanceof TestCase ||
-            (!$this->currentId->isMedium() && !$this->currentId->isLarge()))) {
+            (!$this->currentId->size()->isMedium() && !$this->currentId->size()->isLarge()))) {
             $this->performUnintentionallyCoveredCodeCheck($rawData, $linesToBeCovered, $linesToBeUsed);
         }
 
@@ -522,27 +432,6 @@ final class CodeCoverage
     }
 
     /**
-     * @throws UnintentionallyCoveredCodeException
-     */
-    private function processUncoveredFilesFromFilter(): void
-    {
-        $uncoveredFiles = array_diff(
-            $this->filter->files(),
-            $this->data->coveredFiles()
-        );
-
-        $this->driver->start();
-
-        foreach ($uncoveredFiles as $uncoveredFile) {
-            if (is_file($uncoveredFile)) {
-                include_once $uncoveredFile;
-            }
-        }
-
-        $this->append($this->driver->stop(), self::UNCOVERED_FILES);
-    }
-
-    /**
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
@@ -608,7 +497,11 @@ final class CodeCoverage
     }
 
     /**
+     * @param list<string> $unintentionallyCoveredUnits
+     *
      * @throws ReflectionException
+     *
+     * @return list<string>
      */
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
     {

@@ -12,9 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use function sprintf;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
-use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverAvailableException;
-use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
 use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
@@ -57,43 +54,9 @@ abstract class Driver
      */
     public const BRANCH_HIT = 1;
 
-    /**
-     * @var bool
-     */
-    private $collectBranchAndPathCoverage = false;
+    private bool $collectBranchAndPathCoverage = false;
 
-    /**
-     * @var bool
-     */
-    private $detectDeadCode = false;
-
-    /**
-     * @throws NoCodeCoverageDriverAvailableException
-     * @throws PcovNotAvailableException
-     * @throws PhpdbgNotAvailableException
-     * @throws Xdebug2NotEnabledException
-     * @throws Xdebug3NotEnabledException
-     * @throws XdebugNotAvailableException
-     *
-     * @deprecated Use DriverSelector::forLineCoverage() instead
-     */
-    public static function forLineCoverage(Filter $filter): self
-    {
-        return (new Selector)->forLineCoverage($filter);
-    }
-
-    /**
-     * @throws NoCodeCoverageDriverWithPathCoverageSupportAvailableException
-     * @throws Xdebug2NotEnabledException
-     * @throws Xdebug3NotEnabledException
-     * @throws XdebugNotAvailableException
-     *
-     * @deprecated Use DriverSelector::forLineAndPathCoverage() instead
-     */
-    public static function forLineAndPathCoverage(Filter $filter): self
-    {
-        return (new Selector)->forLineAndPathCoverage($filter);
-    }
+    private bool $detectDeadCode = false;
 
     public function canCollectBranchAndPathCoverage(): bool
     {

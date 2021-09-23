@@ -16,15 +16,9 @@ use function sprintf;
  */
 final class Percentage
 {
-    /**
-     * @var float
-     */
-    private $fraction;
+    private float $fraction;
 
-    /**
-     * @var float
-     */
-    private $total;
+    private float $total;
 
     public static function fromFractionAndTotal(float $fraction, float $total): self
     {

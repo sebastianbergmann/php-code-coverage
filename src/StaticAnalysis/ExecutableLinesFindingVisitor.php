@@ -42,7 +42,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     /**
      * @psalm-var list<int>
      */
-    private $executableLines = [];
+    private array $executableLines = [];
 
     public function enterNode(Node $node): void
     {

@@ -53,25 +53,13 @@ final class Text
      */
     private const COLOR_EOL = "\x1b[2K";
 
-    /**
-     * @var int
-     */
-    private $lowUpperBound;
+    private int $lowUpperBound;
 
-    /**
-     * @var int
-     */
-    private $highLowerBound;
+    private int $highLowerBound;
 
-    /**
-     * @var bool
-     */
-    private $showUncoveredFiles;
+    private bool $showUncoveredFiles;
 
-    /**
-     * @var bool
-     */
-    private $showOnlySummary;
+    private bool $showOnlySummary;
 
     public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, bool $showUncoveredFiles = false, bool $showOnlySummary = false)
     {
@@ -329,10 +317,7 @@ final class Text
         sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    /**
-     * @param false|string $string
-     */
-    private function format(string $color, int $padding, $string): string
+    private function format(string $color, int $padding, string|false $string): string
     {
         $reset = $color ? self::COLOR_RESET : '';
 

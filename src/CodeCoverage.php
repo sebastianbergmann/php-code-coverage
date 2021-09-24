@@ -167,6 +167,8 @@ final class CodeCoverage
                 $this->processUncoveredFilesFromFilter();
             } elseif ($this->includeUncoveredFiles) {
                 $this->addUncoveredFilesFromFilter();
+            } else {
+                $this->data->removeFilesWithNoCoverage();
             }
         }
 

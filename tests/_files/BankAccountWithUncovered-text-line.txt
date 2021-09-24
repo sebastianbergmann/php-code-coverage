@@ -1,0 +1,12 @@
+
+
+Code Coverage Report:   
+  %s
+                        
+ Summary:               
+  Classes:  0.00% (0/2) 
+  Methods: 37.50% (3/8) 
+  Lines:   26.32% (5/19)
+
+BankAccount
+  Methods:  75.00% ( 3/ 4)   Lines:  50.00% (  5/ 10)

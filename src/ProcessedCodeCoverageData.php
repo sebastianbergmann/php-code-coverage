@@ -132,6 +132,18 @@ final class ProcessedCodeCoverageData
         unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile]);
     }
 
+    public function removeFilesWithNoCoverage(): void
+    {
+        foreach ($this->lineCoverage as $file => $lines) {
+            foreach ($lines as $line) {
+                if (is_array($line) && !empty($line)) {
+                    continue 2;
+                }
+            }
+            unset($file);
+        }
+    }
+
     public function merge(self $newData): void
     {
         foreach ($newData->lineCoverage as $file => $lines) {

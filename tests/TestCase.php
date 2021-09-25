@@ -1812,4 +1812,128 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $fileInfo->isDir() ? rmdir($pathname) : unlink($pathname);
         }
     }
+
+    protected function getCoverageForFilesWithUncoveredIncluded(): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->will($this->onConsecutiveCalls(...$data));
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+        $coverage->includeUncoveredFiles();
+
+        $coverage->start(
+            new BankAccountTest('testBalanceIsInitiallyZero'),
+            true
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testBalanceCannotBecomeNegative')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testDepositWithdrawMoney')
+        );
+
+        $coverage->stop(
+            true,
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
+                ),
+            ]
+        );
+
+        return $coverage;
+    }
+
+    protected function getCoverageForFilesWithUncoveredExcluded(): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->will($this->onConsecutiveCalls(...$data));
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+        $coverage->excludeUncoveredFiles();
+
+        $coverage->start(
+            new BankAccountTest('testBalanceIsInitiallyZero'),
+            true
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testBalanceCannotBecomeNegative')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testBalanceCannotBecomeNegative2')
+        );
+
+        $coverage->stop(
+            true,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+        );
+
+        $coverage->start(
+            new BankAccountTest('testDepositWithdrawMoney')
+        );
+
+        $coverage->stop(
+            true,
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
+                ),
+            ]
+        );
+
+        return $coverage;
+    }
 }

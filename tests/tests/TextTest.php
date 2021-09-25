@@ -77,4 +77,24 @@ final class TextTest extends TestCase
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction()))
         );
     }
+
+    public function testUncoveredFilesAreIncludedWhenConfiguredTest(): void
+    {
+        $text = new Text(50, 90, false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredIncluded()))
+        );
+    }
+
+    public function testUncoveredFilesAreExcludedWhenConfiguredTest(): void
+    {
+        $text = new Text(50, 90, false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccountWithoutUncovered-text-line.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredExcluded()))
+        );
+    }
 }

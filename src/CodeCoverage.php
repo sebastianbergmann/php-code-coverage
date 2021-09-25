@@ -113,8 +113,12 @@ final class CodeCoverage
      */
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
-        if (!$raw && $this->includeUncoveredFiles) {
-            $this->addUncoveredFilesFromFilter();
+        if (!$raw) {
+            if ($this->includeUncoveredFiles) {
+                $this->addUncoveredFilesFromFilter();
+            } else {
+                $this->data->removeFilesWithNoCoverage();
+            }
         }
 
         return $this->data;

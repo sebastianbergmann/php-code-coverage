@@ -25,6 +25,16 @@ use SebastianBergmann\CodeCoverage\Node\File;
  */
 final class Lcov
 {
+    private function sanitizeTestName(string $testName): string
+    {
+        $testName = explode('::', $testName);
+        if (isset($testName[1])) {
+            return $testName[1];
+        }
+
+        return $testName[0];
+    }
+
     /**
      * @throws WriteOperationFailedException
      */
@@ -33,43 +43,37 @@ final class Lcov
         $lcovLines = [];
         $report    = $coverage->getReport();
 
+        /** @var File $file */
         foreach ($report as $file) {
-            $lcovLines[] = 'TN:';
-            $lcovLines[] = 'SF:' . $file->pathAsString();
-            $lcovLines[] = 'FNF:' . $file->numberOfMethods();
-            $lcovLines[] = 'FNH:' . $file->numberOfTestedMethods();
+            $tests = $this->getCoverageByTestCase($file);
+            foreach ($tests as $name => $test) {
+                $lcovLines[] = 'TN:' . $this->sanitizeTestName($name);
+                $lcovLines[] = 'SF:' . $file->pathAsString();
 
-            $lines = $this->getLinesFromFile($file);
-
-            foreach ($lines as $lineNumber => $data) {
-                $numberExecution = array_key_exists('count', $data) ? $data['count'] : 0;
-
-                if (isset($data['type']) && $data['type'] === 'method') {
-                    $functionName = $data['name'] ?? "nameless-{$lineNumber}";
-
-                    $lcovLines[] = "FN:{$lineNumber},{$functionName}";
-                    $lcovLines[] = "FNDA:{$numberExecution},{$functionName}";
-
-                    if (array_key_exists('branches', $data)) {
-                        foreach ($data['branches'] as $branch) {
-                            $lcovLines[] = "BRDA:{$lineNumber},{$branch['block']},{$branch['branch']},{$branch['count']}";
-                        }
-                    }
-                } elseif (array_key_exists('branches', $data)) {
-                    foreach ($data['branches'] as $branch) {
-                        $lcovLines[] = "BRDA:{$lineNumber},{$branch['block']},{$branch['branch']},{$branch['count']}";
-                        $lcovLines[] = "DA:{$lineNumber}," . ($branch['count'] === '-' ? '0' : $branch['count']);
-                    }
-                } else {
-                    $lcovLines[] = "DA:{$lineNumber},{$numberExecution}";
+                foreach ($test['lineNumbers'] as $lineNumber) {
+                    $hit = in_array($lineNumber, $test['lineNumbersHit']) ? 1 : 0;
+                    $lcovLines[] = "DA:$lineNumber,$hit";
                 }
-            }
+                $lcovLines[] = 'LF:' . $file->numberOfExecutableLines();
+                $lcovLines[] = 'LH:' . $file->numberOfExecutedLines();
 
-            $lcovLines[] = 'BRF:' . $file->numberOfExecutableBranches();
-            $lcovLines[] = 'BRH:' . $file->numberOfExecutedBranches();
-            $lcovLines[] = 'LF:' . $file->numberOfExecutableLines();
-            $lcovLines[] = 'LH:' . $file->numberOfExecutedLines();
-            $lcovLines[] = 'end_of_record';
+                foreach ($test['functionLineNumbers'] as $functionName => $lineNumber) {
+                    $hit = in_array($lineNumber, $test['functionLineNumbersHit']) ? 1 : 0;
+                    $lcovLines[] = "FN:$lineNumber,$functionName";
+                    $lcovLines[] = "FNDA:$hit,$functionName";
+                }
+                $lcovLines[] = 'FNF:' . $file->numberOfMethods();
+                $lcovLines[] = 'FNH:' . $file->numberOfTestedMethods();
+
+                foreach ($test['branchLineNumbers'] as $branchId => $data) {
+                    list ($lineNumber, $branchHit) = $data;
+                    $lcovLines[] = "BRDA:$lineNumber,0,$branchId,$branchHit";
+                }
+                $lcovLines[] = 'BRF:' . $file->numberOfExecutableBranches();
+                $lcovLines[] = 'BRH:' . $file->numberOfExecutedBranches();
+
+                $lcovLines[] = 'end_of_record';
+            }
         }
 
         $buffer = implode("\n", $lcovLines) . "\n";
@@ -81,6 +85,64 @@ final class Lcov
         return $buffer;
     }
 
+    private function getCoverageByTestCase(File $file): array
+    {
+        $testSpecificData = [];
+        $tests = array_keys($file->testData());
+        foreach ($tests as $test) {
+            $testSpecificData[$test] = [
+                'lineNumbers'            => [],
+                'lineNumbersHit'         => [],
+                'functionLineNumbers'    => [],
+                'functionLineNumbersHit' => [],
+                'branchLineNumbers'      => [],
+            ];
+
+            foreach ($file->lineCoverageData() as $lineNumber => $data) {
+                $testSpecificData[$test]['lineNumbers'][] = $lineNumber;
+                if (empty($data) || !in_array($test, $data)) {
+                    continue;
+                }
+
+                $testSpecificData[$test]['lineNumbersHit'][] = $lineNumber;
+            }
+
+            foreach ($file->classesAndTraits() as $class) {
+                foreach ($class['methods'] as $methodName => $method) {
+                    if ($method['executableLines'] == 0) {
+                        continue;
+                    }
+
+                    $testSpecificData[$test]['functionLineNumbers'][$methodName] = $method['startLine'];
+
+                    if ($method['executedLines'] > 0) {
+                        $testSpecificData[$test]['functionLineNumbersHit'][$methodName] = $method['startLine'];
+                    }
+                }
+            }
+
+            foreach ($file->functionCoverageData() as $data) {
+                foreach ($data['branches'] as $branchId => $branch) {
+                    $branchHit = '-';
+                    foreach (range($branch['line_start'], $branch['line_end']) as $lineNumber) {
+                        if (in_array($lineNumber, $testSpecificData[$test]['lineNumbersHit'])
+                            && in_array($test, $branch['hit'])) {
+
+                            $branchHit = '1';
+                            break;
+                        }
+                    }
+
+                    $testSpecificData[$test]['branchLineNumbers'][$branchId] = [$branch['line_start'], $branchHit];
+                }
+            }
+        }
+
+        ksort($testSpecificData);
+
+        return $testSpecificData;
+    }
+
     private function writeFile(string $target, string $buffer): void
     {
         Directory::create(dirname($target));
@@ -88,69 +150,5 @@ final class Lcov
         if (@file_put_contents($target, $buffer) === false) {
             throw new WriteOperationFailedException($target);
         }
-    }
-
-    private function getLinesFromFile(File $file): array
-    {
-        $lines        = [];
-        $functionData = $file->functionCoverageData();
-        $coverageData = $file->lineCoverageData();
-        $classes      = $file->classesAndTraits();
-
-        foreach ($classes as $class) {
-            $className = $class['className'];
-
-            foreach ($class['methods'] as $methodName => $method) {
-                if ($method['executableLines'] == 0) {
-                    continue;
-                }
-
-                $methodCount = 0;
-
-                foreach (range($method['startLine'], $method['endLine']) as $line) {
-                    if (isset($coverageData[$line]) && ($coverageData[$line] !== null)) {
-                        $methodCount = max($methodCount, count($coverageData[$line]));
-                    }
-                }
-
-                $lines[$method['startLine']] = [
-                    'type'  => 'method',
-                    'name'  => $methodName,
-                    'count' => $methodCount,
-                ];
-
-                $functionDataIndex = $className . '->' . $method['methodName'];
-
-                if (array_key_exists($functionDataIndex, $functionData)) {
-                    $branchData = $functionData[$functionDataIndex]['branches'];
-
-                    foreach ($branchData as $branchNumber => $data) {
-                        $lineNumber = $data['line_start'];
-
-                        if (!array_key_exists($lineNumber, $lines)) {
-                            $lines[$lineNumber] = ['branches' => []];
-                        }
-
-                        $lines[$lineNumber]['branches'][] = [
-                            'block'  => 0,
-                            'branch' => $branchNumber,
-                            'count'  => empty($data['hit']) ? '-' : count($data['hit']),
-                        ];
-                    }
-                }
-            }
-        }
-
-        foreach ($coverageData as $line => $data) {
-            if ($data === null || isset($lines[$line])) {
-                continue;
-            }
-
-            $lines[$line] = ['count' => count($data), 'type' => 'stmt'];
-        }
-
-        ksort($lines);
-
-        return $lines;
     }
 }

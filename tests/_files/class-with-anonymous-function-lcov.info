@@ -1,9 +1,5 @@
-TN:
-SF:%s%e/tests/_files/source_with_class_and_anonymous_function.php
-FNF:1
-FNH:0
-FN:5,runAnonymous
-FNDA:1,runAnonymous
+TN:ClassWithAnonymousFunction
+SF:%s%esource_with_class_and_anonymous_function.php
 DA:7,1
 DA:9,1
 DA:10,0
@@ -13,8 +9,12 @@ DA:13,1
 DA:14,1
 DA:17,1
 DA:18,1
-BRF:0
-BRH:0
 LF:9
 LH:8
+FN:5,runAnonymous
+FNDA:0,runAnonymous
+FNF:1
+FNH:0
+BRF:0
+BRH:0
 end_of_record

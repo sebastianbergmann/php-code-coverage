@@ -9,11 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use function count;
 use function dirname;
 use function file_put_contents;
 use function ksort;
-use function max;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory;
@@ -25,16 +23,6 @@ use SebastianBergmann\CodeCoverage\Node\File;
  */
 final class Lcov
 {
-    private function sanitizeTestName(string $testName): string
-    {
-        $testName = explode('::', $testName);
-        if (isset($testName[1])) {
-            return $testName[1];
-        }
-
-        return $testName[0];
-    }
-
     /**
      * @throws WriteOperationFailedException
      */
@@ -46,28 +34,29 @@ final class Lcov
         /** @var File $file */
         foreach ($report as $file) {
             $tests = $this->getCoverageByTestCase($file);
+
             foreach ($tests as $name => $test) {
                 $lcovLines[] = 'TN:' . $this->sanitizeTestName($name);
                 $lcovLines[] = 'SF:' . $file->pathAsString();
 
                 foreach ($test['lineNumbers'] as $lineNumber) {
-                    $hit = in_array($lineNumber, $test['lineNumbersHit']) ? 1 : 0;
-                    $lcovLines[] = "DA:$lineNumber,$hit";
+                    $hit         = in_array($lineNumber, $test['lineNumbersHit'], true) ? 1 : 0;
+                    $lcovLines[] = "DA:{$lineNumber},{$hit}";
                 }
                 $lcovLines[] = 'LF:' . $file->numberOfExecutableLines();
                 $lcovLines[] = 'LH:' . $file->numberOfExecutedLines();
 
                 foreach ($test['functionLineNumbers'] as $functionName => $lineNumber) {
-                    $hit = in_array($lineNumber, $test['functionLineNumbersHit']) ? 1 : 0;
-                    $lcovLines[] = "FN:$lineNumber,$functionName";
-                    $lcovLines[] = "FNDA:$hit,$functionName";
+                    $hit         = in_array($lineNumber, $test['functionLineNumbersHit'], true) ? 1 : 0;
+                    $lcovLines[] = "FN:{$lineNumber},{$functionName}";
+                    $lcovLines[] = "FNDA:{$hit},{$functionName}";
                 }
                 $lcovLines[] = 'FNF:' . $file->numberOfMethods();
                 $lcovLines[] = 'FNH:' . $file->numberOfTestedMethods();
 
-                foreach ($test['branchLineNumbers'] as $branchId => $data) {
-                    list ($lineNumber, $branchHit) = $data;
-                    $lcovLines[] = "BRDA:$lineNumber,0,$branchId,$branchHit";
+                foreach ($test['branchLineNumbers'] as $data) {
+                    [$branchId, $lineNumber, $branchHit] = $data;
+                    $lcovLines[]                         = "BRDA:{$lineNumber},0,{$branchId},{$branchHit}";
                 }
                 $lcovLines[] = 'BRF:' . $file->numberOfExecutableBranches();
                 $lcovLines[] = 'BRH:' . $file->numberOfExecutedBranches();
@@ -85,10 +74,22 @@ final class Lcov
         return $buffer;
     }
 
+    private function sanitizeTestName(string $testName): string
+    {
+        $testName = explode('::', $testName);
+
+        if (isset($testName[1])) {
+            return $testName[1];
+        }
+
+        return $testName[0];
+    }
+
     private function getCoverageByTestCase(File $file): array
     {
         $testSpecificData = [];
-        $tests = array_keys($file->testData());
+        $tests            = array_keys($file->testData());
+
         foreach ($tests as $test) {
             $testSpecificData[$test] = [
                 'lineNumbers'            => [],
@@ -99,8 +100,13 @@ final class Lcov
             ];
 
             foreach ($file->lineCoverageData() as $lineNumber => $data) {
+                if ($data === null || in_array($lineNumber, $testSpecificData[$test]['lineNumbers'], true)) {
+                    continue;
+                }
+
                 $testSpecificData[$test]['lineNumbers'][] = $lineNumber;
-                if (empty($data) || !in_array($test, $data)) {
+
+                if (!in_array($test, $data, true)) {
                     continue;
                 }
 
@@ -109,13 +115,13 @@ final class Lcov
 
             foreach ($file->classesAndTraits() as $class) {
                 foreach ($class['methods'] as $methodName => $method) {
-                    if ($method['executableLines'] == 0) {
+                    if (0 == $method['executableLines']) {
                         continue;
                     }
 
                     $testSpecificData[$test]['functionLineNumbers'][$methodName] = $method['startLine'];
 
-                    if ($method['executedLines'] > 0) {
+                    if (0 < $method['executedLines'] && $method['coverage'] == 100) {
                         $testSpecificData[$test]['functionLineNumbersHit'][$methodName] = $method['startLine'];
                     }
                 }
@@ -124,16 +130,17 @@ final class Lcov
             foreach ($file->functionCoverageData() as $data) {
                 foreach ($data['branches'] as $branchId => $branch) {
                     $branchHit = '-';
-                    foreach (range($branch['line_start'], $branch['line_end']) as $lineNumber) {
-                        if (in_array($lineNumber, $testSpecificData[$test]['lineNumbersHit'])
-                            && in_array($test, $branch['hit'])) {
 
+                    foreach (range($branch['line_start'], $branch['line_end']) as $lineNumber) {
+                        if (in_array($lineNumber, $testSpecificData[$test]['lineNumbersHit'], true) &&
+                            in_array($test, $branch['hit'], true)) {
                             $branchHit = '1';
+
                             break;
                         }
                     }
 
-                    $testSpecificData[$test]['branchLineNumbers'][$branchId] = [$branch['line_start'], $branchHit];
+                    $testSpecificData[$test]['branchLineNumbers'][] = [$branchId, $branch['line_start'], $branchHit];
                 }
             }
         }

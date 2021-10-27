@@ -45,14 +45,19 @@ final class PcovDriver extends Driver
     {
         \pcov\stop();
 
-        $collect = \pcov\collect(
-            \pcov\inclusive,
-            !$this->filter->isEmpty() ? $this->filter->files() : \pcov\waiting()
-        );
+        $filesToCollectCoverageFor = \pcov\waiting();
+        $collected                 = [];
 
-        \pcov\clear();
+        if ($filesToCollectCoverageFor) {
+            if (!$this->filter->isEmpty()) {
+                $filesToCollectCoverageFor = array_intersect($filesToCollectCoverageFor, $this->filter->files());
+            }
+            $collected = \pcov\collect(\pcov\inclusive, $filesToCollectCoverageFor);
 
-        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($collect);
+            \pcov\clear();
+        }
+
+        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($collected);
     }
 
     public function nameAndVersion(): string

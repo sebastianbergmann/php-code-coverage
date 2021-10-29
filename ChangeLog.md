@@ -19,6 +19,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#866](https://github.com/sebastianbergmann/php-code-coverage/issues/866): `CodeUnitFindingVisitor` does not handle `enum` type introduced in PHP 8.1
+* [#868](https://github.com/sebastianbergmann/php-code-coverage/pull/868): Uncovered files should be ignored unless requested
+* [#876](https://github.com/sebastianbergmann/php-code-coverage/issues/876): PCOV driver causes 2x slowdown after upgrade to PHPUnit 9.5
 
 ## [9.2.7] - 2021-09-17
 

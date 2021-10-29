@@ -26,13 +26,14 @@
   </file>
   <file src="src/Driver/PcovDriver.php">
     <UndefinedConstant occurrences="1">
-      <code>\pcov\inclusive</code>
+      <code>inclusive</code>
     </UndefinedConstant>
     <UndefinedFunction occurrences="5">
-      <code>\pcov\clear()</code>
-      <code>\pcov\start()</code>
-      <code>\pcov\stop()</code>
-      <code>\pcov\waiting()</code>
+      <code>clear()</code>
+      <code>collect(inclusive, $filesToCollectCoverageFor)</code>
+      <code>start()</code>
+      <code>stop()</code>
+      <code>waiting()</code>
     </UndefinedFunction>
   </file>
   <file src="src/Driver/XdebugDriver.php">

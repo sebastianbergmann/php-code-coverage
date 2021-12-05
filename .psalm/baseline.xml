@@ -262,19 +262,25 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantConditionGivenDocblockType occurrences="7">
+    <RedundantCast occurrences="2">
+      <code>(string) $namespacedName</code>
+      <code>(string) $namespacedName</code>
+    </RedundantCast>
+    <RedundantConditionGivenDocblockType occurrences="13">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
       <code>$type instanceof ComplexType</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
+      <code>assert($node-&gt;namespacedName instanceof Name)</code>
+      <code>assert($node-&gt;namespacedName instanceof Name)</code>
+      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
+      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
       <code>assert(isset($node-&gt;name))</code>
       <code>assert(isset($node-&gt;namespacedName))</code>
+      <code>assert(isset($node-&gt;namespacedName))</code>
       <code>assert(isset($parameter-&gt;var-&gt;name))</code>
+      <code>assert(isset($parentNode-&gt;namespacedName))</code>
     </RedundantConditionGivenDocblockType>
-    <UndefinedPropertyFetch occurrences="2">
-      <code>$node-&gt;namespacedName</code>
-      <code>$node-&gt;namespacedName</code>
-    </UndefinedPropertyFetch>
   </file>
   <file src="src/Version.php">
     <DocblockTypeContradiction occurrences="1">

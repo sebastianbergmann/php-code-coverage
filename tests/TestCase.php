@@ -50,30 +50,46 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
+                    9  => -2,
                     13 => 1,
+                    14 => -1,
+                    15 => -1,
                     16 => 1,
+                    18 => -1,
                     29 => 1,
+                    31 => -1,
+                    32 => -2,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
+                    9  => -2,
                     13 => 1,
+                    14 => -1,
+                    15 => -1,
                     16 => 1,
+                    18 => -1,
                     22 => 1,
+                    24 => -1,
+                    25 => -2,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
+                    9  => -2,
                     13 => 1,
                     14 => 1,
                     15 => 1,
+                    16 => -1,
                     18 => 1,
                     22 => 1,
                     24 => 1,
+                    25 => -2,
                     29 => 1,
                     31 => 1,
+                    32 => -2,
                 ],
             ]),
         ];
@@ -276,9 +292,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     'lines' => [
                         8  => 1,
+                        9  => -2,
                         13 => 1,
+                        14 => -1,
+                        15 => -1,
                         16 => 1,
+                        18 => -1,
                         29 => 1,
+                        31 => -1,
+                        32 => -2,
                     ],
                     'functions' => [
                         'BankAccount->depositMoney' => [
@@ -457,9 +479,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     'lines' => [
                         8  => 1,
+                        9  => -2,
                         13 => 1,
+                        14 => -1,
+                        15 => -1,
                         16 => 1,
+                        18 => -1,
                         22 => 1,
+                        24 => -1,
+                        25 => -2,
                     ],
                     'functions' => [
                         'BankAccount->depositMoney' => [
@@ -638,14 +666,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     'lines' => [
                         8  => 1,
+                        9  => -2,
                         13 => 1,
                         14 => 1,
                         15 => 1,
+                        16 => -1,
                         18 => 1,
                         22 => 1,
                         24 => 1,
+                        25 => -2,
                         29 => 1,
                         31 => 1,
+                        32 => -2,
                     ],
                     'functions' => [
                         'BankAccount->depositMoney' => [

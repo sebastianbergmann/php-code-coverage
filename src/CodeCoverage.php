@@ -116,8 +116,6 @@ final class CodeCoverage
         if (!$raw) {
             if ($this->includeUncoveredFiles) {
                 $this->addUncoveredFilesFromFilter();
-            } else {
-                $this->data->removeFilesWithNoCoverage();
             }
         }
 

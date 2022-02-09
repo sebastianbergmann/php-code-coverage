@@ -1346,12 +1346,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     0 => 'BankAccountTest::testBalanceIsInitiallyZero',
                     1 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                9  => null,
                 13 => [],
                 14 => [],
                 15 => [],
                 16 => [],
-                18 => [],
                 22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
                     1 => 'BankAccountTest::testDepositWithdrawMoney',
@@ -1359,7 +1357,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 24 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                25 => null,
                 29 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
                     1 => 'BankAccountTest::testDepositWithdrawMoney',
@@ -1367,7 +1364,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 31 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                32 => null,
             ],
         ];
     }
@@ -1380,12 +1376,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                     1 => 'BankAccountTest::testBalanceIsInitiallyZero',
                 ],
-                9  => null,
                 13 => [],
                 14 => [],
                 15 => [],
                 16 => [],
-                18 => [],
                 22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
                     1 => 'BankAccountTest::testDepositWithdrawMoney',
@@ -1393,7 +1387,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 24 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                25 => null,
                 29 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                     1 => 'BankAccountTest::testBalanceCannotBecomeNegative',
@@ -1401,7 +1394,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 31 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                32 => null,
             ],
         ];
     }

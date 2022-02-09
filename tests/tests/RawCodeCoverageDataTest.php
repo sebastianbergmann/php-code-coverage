@@ -211,9 +211,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
 
         $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }

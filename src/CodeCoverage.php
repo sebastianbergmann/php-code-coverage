@@ -468,7 +468,8 @@ final class CodeCoverage
 
         if (is_array($linesToBeCovered)) {
             foreach ($linesToBeCovered as $fileToBeCovered => $includedLines) {
-                $rawData->keepCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
+                $rawData->keepLineCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
+                $rawData->keepFunctionCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
             }
         }
     }
@@ -489,7 +490,7 @@ final class CodeCoverage
     private function applyExecutableLinesFilter(RawCodeCoverageData $data): void
     {
         foreach (array_keys($data->lineCoverage()) as $filename) {
-            $data->keepCoverageDataOnlyForLines(
+            $data->keepLineCoverageDataOnlyForLines(
                 $filename,
                 $this->uncoveredFileAnalyser()->executableLinesIn($filename)
             );

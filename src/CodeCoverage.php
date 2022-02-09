@@ -256,6 +256,8 @@ final class CodeCoverage
 
         $this->applyFilter($rawData);
 
+        $this->applyExecutableLinesFilter($rawData);
+
         if ($this->useAnnotationsForIgnoringCode) {
             $this->applyIgnoredLinesFilter($rawData);
         }
@@ -481,6 +483,16 @@ final class CodeCoverage
             if ($this->filter->isExcluded($filename)) {
                 $data->removeCoverageDataForFile($filename);
             }
+        }
+    }
+
+    private function applyExecutableLinesFilter(RawCodeCoverageData $data): void
+    {
+        foreach (array_keys($data->lineCoverage()) as $filename) {
+            $data->keepCoverageDataOnlyForLines(
+                $filename,
+                $this->uncoveredFileAnalyser()->executableLinesIn($filename)
+            );
         }
     }
 

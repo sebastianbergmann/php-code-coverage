@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.5" branch-rate="0" lines-covered="5" lines-valid="10" branches-covered="0" branches-valid="0" complexity="5" version="0.4" timestamp="%i">
+<coverage line-rate="0.55555555555556" branch-rate="0" lines-covered="5" lines-valid="9" branches-covered="0" branches-valid="0" complexity="5" version="0.4" timestamp="%i">
   <sources>
     <source>%s</source>
   </sources>
   <packages>
-    <package name="BankAccount" line-rate="0.5" branch-rate="0" complexity="5">
+    <package name="BankAccount" line-rate="0.55555555555556" branch-rate="0" complexity="5">
       <classes>
-        <class name="BankAccount" filename="BankAccount.php" line-rate="0.5" branch-rate="0" complexity="5">
+        <class name="BankAccount" filename="BankAccount.php" line-rate="0.55555555555556" branch-rate="0" complexity="5">
           <methods>
             <method name="getBalance" signature="" line-rate="1" branch-rate="0" complexity="1">
               <lines>
@@ -20,7 +20,6 @@
                 <line number="14" hits="0"/>
                 <line number="15" hits="0"/>
                 <line number="16" hits="0"/>
-                <line number="18" hits="0"/>
               </lines>
             </method>
             <method name="depositMoney" signature="$balance" line-rate="1" branch-rate="0" complexity="1">
@@ -42,7 +41,6 @@
             <line number="14" hits="0"/>
             <line number="15" hits="0"/>
             <line number="16" hits="0"/>
-            <line number="18" hits="0"/>
             <line number="22" hits="2"/>
             <line number="24" hits="1"/>
             <line number="29" hits="2"/>

@@ -1,38 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.88888888888889" branch-rate="0" lines-covered="8" lines-valid="9" branches-covered="0" branches-valid="0" complexity="1" version="0.4" timestamp="%i">
+<coverage line-rate="1" branch-rate="0" lines-covered="4" lines-valid="4" branches-covered="0" branches-valid="0" complexity="1" version="0.4" timestamp="%i">
   <sources>
     <source>%s</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.88888888888889" branch-rate="0" complexity="1">
+    <package name="" line-rate="1" branch-rate="0" complexity="1">
       <classes>
-        <class name="CoveredClassWithAnonymousFunctionInStaticMethod" filename="source_with_class_and_anonymous_function.php" line-rate="0.88888888888889" branch-rate="0" complexity="1">
+        <class name="CoveredClassWithAnonymousFunctionInStaticMethod" filename="source_with_class_and_anonymous_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>
-            <method name="runAnonymous" signature="" line-rate="0.88888888888889" branch-rate="0" complexity="1">
+            <method name="runAnonymous" signature="" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="7" hits="1"/>
                 <line number="9" hits="1"/>
-                <line number="10" hits="0"/>
-                <line number="11" hits="1"/>
                 <line number="12" hits="1"/>
-                <line number="13" hits="1"/>
-                <line number="14" hits="1"/>
                 <line number="17" hits="1"/>
-                <line number="18" hits="1"/>
               </lines>
             </method>
           </methods>
           <lines>
             <line number="7" hits="1"/>
             <line number="9" hits="1"/>
-            <line number="10" hits="0"/>
-            <line number="11" hits="1"/>
             <line number="12" hits="1"/>
-            <line number="13" hits="1"/>
-            <line number="14" hits="1"/>
             <line number="17" hits="1"/>
-            <line number="18" hits="1"/>
           </lines>
         </class>
       </classes>

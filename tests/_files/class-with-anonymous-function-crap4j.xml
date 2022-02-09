@@ -19,7 +19,7 @@
       <fullMethod>runAnonymous()</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>88.89</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
   </methods>

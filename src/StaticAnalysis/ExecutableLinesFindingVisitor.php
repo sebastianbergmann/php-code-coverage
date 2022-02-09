@@ -12,6 +12,8 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function array_unique;
 use function sort;
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
@@ -67,7 +69,9 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     private function isExecutable(Node $node): bool
     {
-        return $node instanceof Break_ ||
+        return $node instanceof BinaryOp ||
+               $node instanceof Break_ ||
+               $node instanceof CallLike ||
                $node instanceof Case_ ||
                $node instanceof Catch_ ||
                $node instanceof Continue_ ||

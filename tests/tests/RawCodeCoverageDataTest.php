@@ -321,6 +321,25 @@ final class RawCodeCoverageDataTest extends TestCase
         );
     }
 
+    public function testHeavyIndentationIsHandledCorrectly(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_heavy_indentation.php';
+
+        $this->assertEquals(
+            [
+                7,
+                8,
+                10,
+                11,
+                16,
+                17,
+                20,
+                27,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
+        );
+    }
+
     public function testCoverageForFileWithInlineAnnotations(): void
     {
         $filename = TEST_FILES_PATH . 'source_with_oneline_annotations.php';

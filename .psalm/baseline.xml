@@ -90,6 +90,12 @@
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
     </PossiblyNullArrayAssignment>
   </file>
+  <file src="src/Report/Html/Renderer.php">
+    <InvalidScalarArgument occurrences="1"/>
+  </file>
+  <file src="src/Report/Html/Renderer/File.php">
+    <InvalidScalarArgument occurrences="1"/>
+  </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">
       <code>createElementNS</code>

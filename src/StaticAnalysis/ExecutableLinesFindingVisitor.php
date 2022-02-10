@@ -14,6 +14,7 @@ use function sort;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
@@ -28,6 +29,7 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
@@ -46,13 +48,26 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private $executableLines = [];
 
+    /**
+     * @psalm-var array<int, int>
+     */
+    private $propertyLines = [];
+
     public function enterNode(Node $node): void
     {
+        $this->savePropertyLines($node);
+
         if (!$this->isExecutable($node)) {
             return;
         }
 
-        $this->executableLines[] = $node->getStartLine();
+        $line = $this->getLine($node);
+
+        if (isset($this->propertyLines[$line])) {
+            return;
+        }
+
+        $this->executableLines[] = $line;
     }
 
     /**
@@ -65,6 +80,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         sort($executableLines);
 
         return $executableLines;
+    }
+
+    private function savePropertyLines(Node $node): void
+    {
+        if (!$node instanceof Property && !$node instanceof Node\Stmt\ClassConst) {
+            return;
+        }
+
+        foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
+            $this->propertyLines[$index] = $index;
+        }
+    }
+
+    private function getLine(Node $node): int
+    {
+        if (
+            $node instanceof Node\Expr\PropertyFetch ||
+            $node instanceof Node\Expr\NullsafePropertyFetch ||
+            $node instanceof Node\Expr\StaticPropertyFetch
+        ) {
+            return $node->getEndLine();
+        }
+
+        return $node->getStartLine();
     }
 
     private function isExecutable(Node $node): bool
@@ -86,10 +125,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Goto_ ||
                $node instanceof If_ ||
                $node instanceof Return_ ||
+               $node instanceof Scalar ||
                $node instanceof Switch_ ||
                $node instanceof Throw_ ||
                $node instanceof TryCatch ||
                $node instanceof Unset_ ||
+               $node instanceof Node\Expr\Assign ||
+               $node instanceof Node\Expr\PropertyFetch ||
+               $node instanceof Node\Expr\NullsafePropertyFetch ||
+               $node instanceof Node\Expr\StaticPropertyFetch ||
                $node instanceof While_;
     }
 }

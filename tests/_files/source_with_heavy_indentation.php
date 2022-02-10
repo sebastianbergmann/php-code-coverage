@@ -2,8 +2,16 @@
 
 class Foo
 {
+    private $state = 1;
+
     public function isOne(): bool
     {
+        $v3
+            =
+            (bool)
+            AType::OPT
+        ;
+
         return
             AType::A === $this->state
             or (
@@ -19,6 +27,46 @@ class Foo
                     AType::D,
                     AType::toOutput($this->state),
                 ], true))
+            ||
+            \in_array
+                (
+                    1
+                    ,
+                    [
+                        AType::A
+                        ,
+                        2
+                        ,
+                        $v2
+                            =
+                            PHP_INT_MAX
+                        ,
+                        $this
+                            ->
+                            state
+                        ,
+                        $v3
+                            =
+                            1
+                        =>
+                            2
+                        ,
+                        uniqid()
+                        =>
+                            true
+                        ,
+                        $this
+                            ?->
+                            state
+                        ,
+                        self
+                            ::
+                            $state
+                    ]
+                    ,
+                    (bool)
+                    AType::A
+                )
             ;
     }
 
@@ -29,4 +77,7 @@ class Foo
             AType::B,
         ], true);
     }
+
+    private static $staticState = 1;
+    private const CONST_STATE = 1.1;
 }

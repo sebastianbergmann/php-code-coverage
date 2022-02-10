@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use function array_unique;
-use function sort;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
@@ -44,7 +42,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
     /**
-     * @psalm-var list<int>
+     * @psalm-var array<int, int>
      */
     private $executableLines = [];
 
@@ -67,19 +65,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        $this->executableLines[] = $line;
+        $this->executableLines[$line] = $line;
     }
 
     /**
-     * @psalm-return list<int>
+     * @psalm-return array<int, int>
      */
     public function executableLines(): array
     {
-        $executableLines = array_unique($this->executableLines);
-
-        sort($executableLines);
-
-        return $executableLines;
+        return $this->executableLines;
     }
 
     private function savePropertyLines(Node $node): void

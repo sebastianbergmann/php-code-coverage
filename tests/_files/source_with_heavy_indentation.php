@@ -55,10 +55,6 @@ class Foo
                         =>
                             true
                         ,
-                        $this
-                            ?->
-                            state
-                        ,
                         self
                             ::
                             $state

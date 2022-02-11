@@ -19,11 +19,6 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
      */
     private $uncoveredFileAnalyser;
 
-    /**
-     * @var array
-     */
-    private $cache = [];
-
     public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser)
     {
         parent::__construct($directory);
@@ -33,20 +28,14 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
 
     public function executableLinesIn(string $filename): array
     {
-        if (isset($this->cache[$filename])) {
-            return $this->cache[$filename];
-        }
-
         if ($this->has($filename, __METHOD__)) {
-            $this->cache[$filename] = $this->read($filename, __METHOD__);
-
-            return $this->cache[$filename];
+            return $this->read($filename, __METHOD__);
         }
 
-        $this->cache[$filename] = $this->uncoveredFileAnalyser->executableLinesIn($filename);
+        $data = $this->uncoveredFileAnalyser->executableLinesIn($filename);
 
-        $this->write($filename, __METHOD__, $this->cache[$filename]);
+        $this->write($filename, __METHOD__, $data);
 
-        return $this->cache[$filename];
+        return $data;
     }
 }

@@ -107,7 +107,7 @@ final class BuilderTest extends TestCase
                         'withdrawMoney' => [
                             'signature'          => 'withdrawMoney($balance)',
                             'startLine'          => 27,
-                            'endLine'            => 32,
+                            'endLine'            => 33,
                             'executableLines'    => 2,
                             'executedLines'      => 2,
                             'executableBranches' => 0,

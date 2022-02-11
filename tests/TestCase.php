@@ -45,6 +45,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     29 => -1,
                     31 => -1,
                     32 => -2,
+                    33 => -2,
+                    35 => 1,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
@@ -59,6 +61,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     29 => 1,
                     31 => -1,
                     32 => -2,
+                    33 => -2,
                 ],
             ]),
             RawCodeCoverageData::fromXdebugWithoutPathCoverage([
@@ -90,6 +93,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     29 => 1,
                     31 => 1,
                     32 => -2,
+                    33 => -2,
                 ],
             ]),
         ];
@@ -1364,6 +1368,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 31 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
+                32 => null,
             ],
         ];
     }
@@ -1394,6 +1399,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 31 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
+                32 => null,
             ],
         ];
     }

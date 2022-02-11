@@ -2,7 +2,7 @@
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="BankAccount.php" path="%e">
     <totals>
-      <lines total="33" comments="0" code="33" executable="9" executed="5" percent="55.56"/>
+      <lines total="34" comments="0" code="34" executable="9" executed="5" percent="55.56"/>
       <methods count="4" tested="3" percent="75.00"/>
       <functions count="0" tested="0" percent="0"/>
       <classes count="1" tested="0" percent="0.00"/>
@@ -13,7 +13,7 @@
       <method name="getBalance" signature="getBalance()" start="6" end="9" crap="1" executable="1" executed="1" coverage="100"/>
       <method name="setBalance" signature="setBalance($balance)" start="11" end="18" crap="6" executable="4" executed="0" coverage="0"/>
       <method name="depositMoney" signature="depositMoney($balance)" start="20" end="25" crap="1" executable="2" executed="2" coverage="100"/>
-      <method name="withdrawMoney" signature="withdrawMoney($balance)" start="27" end="32" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="withdrawMoney" signature="withdrawMoney($balance)" start="27" end="33" crap="1" executable="2" executed="2" coverage="100"/>
     </class>
     <coverage>
       <line nr="8">
@@ -249,13 +249,24 @@
         <token name="T_SEMICOLON">;</token>
       </line>
       <line no="32">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$this</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getBalance</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="33">
         <token name="T_WHITESPACE">    </token>
         <token name="T_CLOSE_CURLY">}</token>
       </line>
-      <line no="33">
+      <line no="34">
         <token name="T_CLOSE_CURLY">}</token>
       </line>
-      <line no="34"/>
+      <line no="35"/>
     </source>
   </file>
 </phpunit>

@@ -29,5 +29,6 @@ class BankAccount
         $this->setBalance($this->getBalance() - $balance);
 
         return $this->getBalance();
+        return $this->getBalance();
     }
 }

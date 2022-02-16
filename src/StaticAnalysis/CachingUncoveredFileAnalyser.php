@@ -14,6 +14,8 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileAnalyser
 {
+    private const CACHE_FORMAT_VERSION = 2;
+
     /**
      * @var UncoveredFileAnalyser
      */
@@ -28,7 +30,7 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
 
     public function executableLinesIn(string $filename): array
     {
-        $cacheKey = 'v2' . __METHOD__;
+        $cacheKey = __CLASS__ . self::CACHE_FORMAT_VERSION;
 
         if ($this->has($filename, $cacheKey)) {
             return $this->read($filename, $cacheKey);

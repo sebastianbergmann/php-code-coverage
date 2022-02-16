@@ -14,6 +14,8 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileAnalyser
 {
+    private const CACHE_FORMAT_VERSION = 2;
+
     private UncoveredFileAnalyser $uncoveredFileAnalyser;
 
     public function __construct(string $directory, UncoveredFileAnalyser $uncoveredFileAnalyser)
@@ -25,13 +27,15 @@ final class CachingUncoveredFileAnalyser extends Cache implements UncoveredFileA
 
     public function executableLinesIn(string $filename): array
     {
-        if ($this->has($filename, __METHOD__)) {
-            return $this->read($filename, __METHOD__);
+        $cacheKey = __CLASS__ . self::CACHE_FORMAT_VERSION;
+
+        if ($this->has($filename, $cacheKey)) {
+            return $this->read($filename, $cacheKey);
         }
 
         $data = $this->uncoveredFileAnalyser->executableLinesIn($filename);
 
-        $this->write($filename, __METHOD__, $data);
+        $this->write($filename, $cacheKey, $data);
 
         return $data;
     }

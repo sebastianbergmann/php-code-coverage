@@ -79,6 +79,34 @@ final class CodeCoverageTest extends TestCase
         $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->getData()->coveredFiles());
     }
 
+    public function testExcludeNonExecutableLines(): void
+    {
+        $this->coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => array_fill(1, 100, -1),
+        ]);
+
+        $this->coverage->append($data, 'A test', true);
+
+        $expectedLineCoverage = [
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8  => [],
+                13 => [],
+                14 => [],
+                15 => [],
+                16 => [],
+                22 => [],
+                24 => [],
+                29 => [],
+                31 => [],
+                32 => [],
+            ],
+        ];
+
+        $this->assertEquals($expectedLineCoverage, $this->coverage->getData()->lineCoverage());
+    }
+
     public function testMerge(): void
     {
         $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests();

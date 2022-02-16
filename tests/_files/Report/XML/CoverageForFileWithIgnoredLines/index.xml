@@ -10,7 +10,7 @@
     </tests>
     <directory name="%s">
       <totals>
-        <lines total="37" comments="9" code="28" executable="2" executed="1" percent="50.00"/>
+        <lines total="37" comments="9" code="28" executable="1" executed="1" percent="100.00"/>
         <methods count="0" tested="0" percent="0"/>
         <functions count="1" tested="1" percent="100.00"/>
         <classes count="0" tested="0" percent="0"/>
@@ -18,7 +18,7 @@
       </totals>
       <file name="source_with_ignore.php" href="source_with_ignore.php.xml">
         <totals>
-          <lines total="37" comments="9" code="28" executable="2" executed="1" percent="50.00"/>
+          <lines total="37" comments="9" code="28" executable="1" executed="1" percent="100.00"/>
           <methods count="0" tested="0" percent="0"/>
           <functions count="1" tested="1" percent="100.00"/>
           <classes count="0" tested="0" percent="0"/>

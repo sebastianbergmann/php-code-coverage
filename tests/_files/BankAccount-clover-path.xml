@@ -3,7 +3,7 @@
   <project timestamp="%i" name="BankAccount">
     <file name="%s%eBankAccount.php">
       <class name="BankAccount" namespace="global">
-        <metrics complexity="5" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="10" coveredstatements="5" elements="21" coveredelements="11"/>
+        <metrics complexity="5" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="9" coveredstatements="5" elements="20" coveredelements="11"/>
       </class>
       <line num="6" type="method" name="getBalance" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="8" type="stmt" count="2"/>
@@ -12,15 +12,14 @@
       <line num="14" type="stmt" count="0"/>
       <line num="15" type="stmt" count="0"/>
       <line num="16" type="stmt" count="0"/>
-      <line num="18" type="stmt" count="0"/>
       <line num="20" type="method" name="depositMoney" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="22" type="stmt" count="2"/>
       <line num="24" type="stmt" count="1"/>
       <line num="27" type="method" name="withdrawMoney" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="29" type="stmt" count="2"/>
       <line num="31" type="stmt" count="1"/>
-      <metrics loc="33" ncloc="33" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="10" coveredstatements="5" elements="21" coveredelements="11"/>
+      <metrics loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="9" coveredstatements="5" elements="20" coveredelements="11"/>
     </file>
-    <metrics files="1" loc="33" ncloc="33" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="10" coveredstatements="5" elements="21" coveredelements="11"/>
+    <metrics files="1" loc="34" ncloc="34" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="9" coveredstatements="5" elements="20" coveredelements="11"/>
   </project>
 </coverage>

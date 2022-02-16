@@ -14,6 +14,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.3 and PHP 7.4
 * This component no longer supports Xdebug 2
 
+## [9.2.11] - 2022-MM-DD
+
+### Fixed
+
+* [#889](https://github.com/sebastianbergmann/php-code-coverage/issues/889): Code Coverage depends on autoload order
+
 ## [9.2.10] - 2021-12-05
 
 ### Fixed
@@ -362,6 +368,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.1
 
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...master
+[9.2.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.10...9.2
 [9.2.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.9...9.2.10
 [9.2.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.8...9.2.9
 [9.2.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.7...9.2.8

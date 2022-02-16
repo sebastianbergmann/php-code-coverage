@@ -101,7 +101,7 @@ final class RawCodeCoverageData
     /**
      * @param int[] $lines
      */
-    public function keepCoverageDataOnlyForLines(string $filename, array $lines): void
+    public function keepLineCoverageDataOnlyForLines(string $filename, array $lines): void
     {
         if (!isset($this->lineCoverage[$filename])) {
             return;
@@ -111,17 +111,25 @@ final class RawCodeCoverageData
             $this->lineCoverage[$filename],
             array_flip($lines)
         );
+    }
 
-        if (isset($this->functionCoverage[$filename])) {
-            foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
-                foreach ($functionData['branches'] as $branchId => $branch) {
-                    if (count(array_diff(range($branch['line_start'], $branch['line_end']), $lines)) > 0) {
-                        unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+    /**
+     * @param int[] $lines
+     */
+    public function keepFunctionCoverageDataOnlyForLines(string $filename, array $lines): void
+    {
+        if (!isset($this->functionCoverage[$filename])) {
+            return;
+        }
 
-                        foreach ($functionData['paths'] as $pathId => $path) {
-                            if (in_array($branchId, $path['path'], true)) {
-                                unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
-                            }
+        foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
+            foreach ($functionData['branches'] as $branchId => $branch) {
+                if (count(array_diff(range($branch['line_start'], $branch['line_end']), $lines)) > 0) {
+                    unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+
+                    foreach ($functionData['paths'] as $pathId => $path) {
+                        if (in_array($branchId, $path['path'], true)) {
+                            unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
                         }
                     }
                 }

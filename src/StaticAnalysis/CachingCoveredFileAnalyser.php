@@ -16,6 +16,8 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
  */
 final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnalyser
 {
+    private const CACHE_FORMAT_VERSION = 2;
+
     private CoveredFileAnalyser $coveredFileAnalyser;
 
     private array $cache = [];
@@ -74,8 +76,10 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
 
     public function process(string $filename): void
     {
-        if ($this->has($filename, __CLASS__)) {
-            $this->cache[$filename] = $this->read($filename, __CLASS__, [LinesOfCode::class]);
+        $cacheKey = __CLASS__ . self::CACHE_FORMAT_VERSION;
+
+        if ($this->has($filename, $cacheKey)) {
+            $this->cache[$filename] = $this->read($filename, $cacheKey, [LinesOfCode::class]);
 
             return;
         }
@@ -88,6 +92,6 @@ final class CachingCoveredFileAnalyser extends Cache implements CoveredFileAnaly
             'ignoredLinesFor' => $this->coveredFileAnalyser->ignoredLinesFor($filename),
         ];
 
-        $this->write($filename, __CLASS__, $this->cache[$filename]);
+        $this->write($filename, $cacheKey, $this->cache[$filename]);
     }
 }

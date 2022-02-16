@@ -169,9 +169,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
-        $dataObject->keepCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
 
         $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
@@ -228,6 +228,7 @@ final class RawCodeCoverageDataTest extends TestCase
             [
                 12,
                 14,
+                15,
                 18,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
@@ -254,6 +255,7 @@ final class RawCodeCoverageDataTest extends TestCase
             [
                 7,
                 9,
+                10,
                 13,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
@@ -274,6 +276,36 @@ final class RawCodeCoverageDataTest extends TestCase
                 32,
                 33,
                 35,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
+        );
+    }
+
+    public function testHeavyIndentationIsHandledCorrectly(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_heavy_indentation.php';
+
+        $this->assertEquals(
+            [
+                9,
+                15,
+                16,
+                18,
+                19,
+                24,
+                25,
+                28,
+                31,
+                33,
+                38,
+                40,
+                46,
+                48,
+                50,
+                52,
+                54,
+                60,
+                71,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingUncoveredFileAnalyser)->lineCoverage()[$file])
         );

@@ -21,18 +21,18 @@ use function str_replace;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Builder
 {
-    private CoveredFileAnalyser $coveredFileAnalyser;
+    private FileAnalyser $analyser;
 
-    public function __construct(CoveredFileAnalyser $coveredFileAnalyser)
+    public function __construct(FileAnalyser $analyser)
     {
-        $this->coveredFileAnalyser = $coveredFileAnalyser;
+        $this->analyser = $analyser;
     }
 
     public function build(CodeCoverage $coverage): Directory
@@ -70,10 +70,10 @@ final class Builder
                             $value['lineCoverage'],
                             $value['functionCoverage'],
                             $tests,
-                            $this->coveredFileAnalyser->classesIn($filename),
-                            $this->coveredFileAnalyser->traitsIn($filename),
-                            $this->coveredFileAnalyser->functionsIn($filename),
-                            $this->coveredFileAnalyser->linesOfCodeFor($filename)
+                            $this->analyser->classesIn($filename),
+                            $this->analyser->traitsIn($filename),
+                            $this->analyser->functionsIn($filename),
+                            $this->analyser->linesOfCodeFor($filename)
                         )
                     );
                 }

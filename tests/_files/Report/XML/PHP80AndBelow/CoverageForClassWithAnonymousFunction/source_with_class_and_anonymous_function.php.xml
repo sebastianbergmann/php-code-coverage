@@ -2,21 +2,24 @@
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="source_with_class_and_anonymous_function.php" path="%e">
     <totals>
-      <lines total="19" comments="1" code="18" executable="4" executed="4" percent="100.00"/>
+      <lines total="19" comments="1" code="18" executable="5" executed="5" percent="100.00"/>
       <methods count="1" tested="1" percent="100.00"/>
       <functions count="0" tested="0" percent="0"/>
       <classes count="1" tested="1" percent="100.00"/>
       <traits count="0" tested="0" percent="0"/>
     </totals>
-    <class name="CoveredClassWithAnonymousFunctionInStaticMethod" start="3" executable="4" executed="4" crap="1">
+    <class name="CoveredClassWithAnonymousFunctionInStaticMethod" start="3" executable="5" executed="5" crap="1">
       <namespace name=""/>
-      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1" executable="4" executed="4" coverage="100"/>
+      <method name="runAnonymous" signature="runAnonymous()" start="5" end="18" crap="1" executable="5" executed="5" coverage="100"/>
     </class>
     <coverage>
       <line nr="7">
         <covered by="ClassWithAnonymousFunction"/>
       </line>
       <line nr="9">
+        <covered by="ClassWithAnonymousFunction"/>
+      </line>
+      <line nr="11">
         <covered by="ClassWithAnonymousFunction"/>
       </line>
       <line nr="12">

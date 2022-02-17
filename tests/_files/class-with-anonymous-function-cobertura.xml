@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="1" branch-rate="0" lines-covered="4" lines-valid="4" branches-covered="0" branches-valid="0" complexity="1" version="0.4" timestamp="%i">
+<coverage line-rate="1" branch-rate="0" lines-covered="5" lines-valid="5" branches-covered="0" branches-valid="0" complexity="1" version="0.4" timestamp="%i">
   <sources>
     <source>%s</source>
   </sources>
@@ -13,6 +13,7 @@
               <lines>
                 <line number="7" hits="1"/>
                 <line number="9" hits="1"/>
+                <line number="11" hits="1"/>
                 <line number="12" hits="1"/>
                 <line number="17" hits="1"/>
               </lines>
@@ -21,6 +22,7 @@
           <lines>
             <line number="7" hits="1"/>
             <line number="9" hits="1"/>
+            <line number="11" hits="1"/>
             <line number="12" hits="1"/>
             <line number="17" hits="1"/>
           </lines>

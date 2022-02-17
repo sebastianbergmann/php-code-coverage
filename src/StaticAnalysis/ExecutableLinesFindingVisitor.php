@@ -10,8 +10,14 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
@@ -59,13 +65,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        $line = $this->getLine($node);
+        foreach ($this->getLines($node) as $line) {
+            if (isset($this->propertyLines[$line])) {
+                return;
+            }
 
-        if (isset($this->propertyLines[$line])) {
-            return;
+            $this->executableLines[$line] = $line;
         }
-
-        $this->executableLines[$line] = $line;
     }
 
     /**
@@ -87,26 +93,43 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
     }
 
-    private function getLine(Node $node): int
+    /**
+     * @return int[]
+     */
+    private function getLines(Node $node): array
     {
         if (
-            $node instanceof Node\Expr\PropertyFetch ||
-            $node instanceof Node\Expr\NullsafePropertyFetch ||
-            $node instanceof Node\Expr\StaticPropertyFetch
+            $node instanceof PropertyFetch ||
+            $node instanceof NullsafePropertyFetch ||
+            $node instanceof StaticPropertyFetch
         ) {
-            return $node->getEndLine();
+            return [$node->getEndLine()];
         }
 
-        return $node->getStartLine();
+        if ($node instanceof Ternary) {
+            $lines = [$node->cond->getStartLine()];
+
+            if (null !== $node->if) {
+                $lines[] = $node->if->getStartLine();
+            }
+
+            $lines[] = $node->else->getStartLine();
+
+            return $lines;
+        }
+
+        return [$node->getStartLine()];
     }
 
     private function isExecutable(Node $node): bool
     {
-        return $node instanceof BinaryOp ||
+        return $node instanceof Assign ||
+               $node instanceof BinaryOp ||
                $node instanceof Break_ ||
                $node instanceof CallLike ||
                $node instanceof Case_ ||
                $node instanceof Catch_ ||
+               $node instanceof Closure ||
                $node instanceof Continue_ ||
                $node instanceof Do_ ||
                $node instanceof Echo_ ||
@@ -114,20 +137,20 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Else_ ||
                $node instanceof Expression ||
                $node instanceof Finally_ ||
-               $node instanceof Foreach_ ||
                $node instanceof For_ ||
+               $node instanceof Foreach_ ||
                $node instanceof Goto_ ||
                $node instanceof If_ ||
+               $node instanceof NullsafePropertyFetch ||
+               $node instanceof PropertyFetch ||
                $node instanceof Return_ ||
                $node instanceof Scalar ||
+               $node instanceof StaticPropertyFetch ||
                $node instanceof Switch_ ||
+               $node instanceof Ternary ||
                $node instanceof Throw_ ||
                $node instanceof TryCatch ||
                $node instanceof Unset_ ||
-               $node instanceof Node\Expr\Assign ||
-               $node instanceof Node\Expr\PropertyFetch ||
-               $node instanceof Node\Expr\NullsafePropertyFetch ||
-               $node instanceof Node\Expr\StaticPropertyFetch ||
                $node instanceof While_;
     }
 }

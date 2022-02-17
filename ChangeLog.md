@@ -16,6 +16,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.11] - 2022-MM-DD
 
+### Changed
+
+* `CoveredFileAnalyser` and `UncoveredFileAnalyser` have been combined to `FileAnalyser`
+
 ### Fixed
 
 * [#889](https://github.com/sebastianbergmann/php-code-coverage/issues/889): Code Coverage depends on autoload order

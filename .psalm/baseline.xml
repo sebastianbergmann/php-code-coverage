@@ -166,22 +166,25 @@
       <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
-  <file src="src/StaticAnalysis/CachingCoveredFileAnalyser.php">
-    <NullableReturnStatement occurrences="5">
+  <file src="src/StaticAnalysis/CachingFileAnalyser.php">
+    <NullableReturnStatement occurrences="6">
       <code>$this-&gt;cache[$filename]['classesIn']</code>
+      <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
       <code>$this-&gt;cache[$filename]['functionsIn']</code>
       <code>$this-&gt;cache[$filename]['ignoredLinesFor']</code>
       <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
       <code>$this-&gt;cache[$filename]['traitsIn']</code>
     </NullableReturnStatement>
-    <PossiblyNullArrayAccess occurrences="5">
+    <PossiblyNullArrayAccess occurrences="6">
       <code>$this-&gt;cache[$filename]['classesIn']</code>
+      <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
       <code>$this-&gt;cache[$filename]['functionsIn']</code>
       <code>$this-&gt;cache[$filename]['ignoredLinesFor']</code>
       <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
       <code>$this-&gt;cache[$filename]['traitsIn']</code>
     </PossiblyNullArrayAccess>
-    <PossiblyUndefinedArrayOffset occurrences="5">
+    <PossiblyUndefinedArrayOffset occurrences="6">
+      <code>$this-&gt;cache[$filename]</code>
       <code>$this-&gt;cache[$filename]</code>
       <code>$this-&gt;cache[$filename]</code>
       <code>$this-&gt;cache[$filename]</code>

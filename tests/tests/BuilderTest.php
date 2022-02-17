@@ -14,7 +14,7 @@ use function rtrim;
 use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class BuilderTest extends TestCase
@@ -23,7 +23,7 @@ final class BuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = new Builder(new ParsingCoveredFileAnalyser(true, true));
+        $this->factory = new Builder(new ParsingFileAnalyser(true, true));
     }
 
     public function testSomething(): void

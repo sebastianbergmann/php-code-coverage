@@ -19,7 +19,7 @@ use function file;
 use function in_array;
 use function range;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\UncoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -59,11 +59,11 @@ final class RawCodeCoverageData
         return new self($lineCoverage, $functionCoverage);
     }
 
-    public static function fromUncoveredFile(string $filename, UncoveredFileAnalyser $uncoveredFileAnalyser): self
+    public static function fromUncoveredFile(string $filename, FileAnalyser $analyser): self
     {
         $lineCoverage = [];
 
-        foreach ($uncoveredFileAnalyser->executableLinesIn($filename) as $line) {
+        foreach ($analyser->executableLinesIn($filename) as $line) {
             $lineCoverage[$line] = Driver::LINE_NOT_EXECUTED;
         }
 

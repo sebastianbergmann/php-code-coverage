@@ -107,11 +107,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Ternary) {
-            return [
-                $node->cond->getStartLine(),
-                $node->if->getStartLine(),
-                $node->else->getStartLine(),
-            ];
+            $lines = [$node->cond->getStartLine()];
+
+            if (null !== $node->if) {
+                $lines[] = $node->if->getStartLine();
+            }
+
+            $lines[] = $node->else->getStartLine();
+
+            return $lines;
         }
 
         return [$node->getStartLine()];

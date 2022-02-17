@@ -19,20 +19,11 @@ final class CachingFileAnalyser implements FileAnalyser
 {
     private const CACHE_FORMAT_VERSION = 2;
 
-    /**
-     * @var FileAnalyser
-     */
-    private $analyser;
+    private FileAnalyser $analyser;
 
-    /**
-     * @var array
-     */
-    private $cache = [];
+    private array $cache = [];
 
-    /**
-     * @var string
-     */
-    private $directory;
+    private string $directory;
 
     public function __construct(string $directory, FileAnalyser $analyser)
     {
@@ -131,10 +122,7 @@ final class CachingFileAnalyser implements FileAnalyser
         return true;
     }
 
-    /**
-     * @return mixed
-     */
-    private function read(string $filename)
+    private function read(string $filename): array
     {
         return unserialize(
             file_get_contents(
@@ -144,10 +132,7 @@ final class CachingFileAnalyser implements FileAnalyser
         );
     }
 
-    /**
-     * @param mixed $data
-     */
-    private function write(string $filename, $data): void
+    private function write(string $filename, array $data): void
     {
         file_put_contents(
             $this->cacheFile($filename),

@@ -13,7 +13,6 @@ use function array_merge;
 use function count;
 use IteratorAggregate;
 use RecursiveIteratorIterator;
-use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -41,7 +40,10 @@ final class Directory extends AbstractNode implements IteratorAggregate
 
     private ?array $functions = null;
 
-    private ?LinesOfCode $linesOfCode = null;
+    /**
+     * @psalm-var null|array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     */
+    private ?array $linesOfCode = null;
 
     private int $numFiles = -1;
 
@@ -176,13 +178,24 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->functions;
     }
 
-    public function linesOfCode(): LinesOfCode
+    /**
+     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     */
+    public function linesOfCode(): array
     {
         if ($this->linesOfCode === null) {
-            $this->linesOfCode = new LinesOfCode(0, 0, 0, 0);
+            $this->linesOfCode = [
+                'linesOfCode'           => 0,
+                'commentLinesOfCode'    => 0,
+                'nonCommentLinesOfCode' => 0,
+            ];
 
             foreach ($this->children as $child) {
-                $this->linesOfCode = $this->linesOfCode->plus($child->linesOfCode());
+                $childLinesOfCode = $child->linesOfCode();
+
+                $this->linesOfCode['linesOfCode'] += $childLinesOfCode['linesOfCode'];
+                $this->linesOfCode['commentLinesOfCode'] += $childLinesOfCode['commentLinesOfCode'];
+                $this->linesOfCode['nonCommentLinesOfCode'] += $childLinesOfCode['nonCommentLinesOfCode'];
             }
         }
 

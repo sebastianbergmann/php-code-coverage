@@ -32,11 +32,11 @@ final class Builder
     /**
      * @var FileAnalyser
      */
-    private $coveredFileAnalyser;
+    private $analyser;
 
-    public function __construct(FileAnalyser $coveredFileAnalyser)
+    public function __construct(FileAnalyser $analyser)
     {
-        $this->coveredFileAnalyser = $coveredFileAnalyser;
+        $this->analyser = $analyser;
     }
 
     public function build(CodeCoverage $coverage): Directory
@@ -74,10 +74,10 @@ final class Builder
                             $value['lineCoverage'],
                             $value['functionCoverage'],
                             $tests,
-                            $this->coveredFileAnalyser->classesIn($filename),
-                            $this->coveredFileAnalyser->traitsIn($filename),
-                            $this->coveredFileAnalyser->functionsIn($filename),
-                            $this->coveredFileAnalyser->linesOfCodeFor($filename)
+                            $this->analyser->classesIn($filename),
+                            $this->analyser->traitsIn($filename),
+                            $this->analyser->functionsIn($filename),
+                            $this->analyser->linesOfCodeFor($filename)
                         )
                     );
                 }

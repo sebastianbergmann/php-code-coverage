@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser
  */
-final class CoveredFileAnalyserTest extends TestCase
+final class ParsingFileAnalyserTest extends TestCase
 {
     public function testGetLinesToBeIgnored(): void
     {

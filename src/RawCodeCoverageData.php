@@ -15,7 +15,6 @@ use function array_flip;
 use function array_intersect;
 use function array_intersect_key;
 use function count;
-use function file;
 use function in_array;
 use function range;
 use SebastianBergmann\CodeCoverage\Driver\Driver;

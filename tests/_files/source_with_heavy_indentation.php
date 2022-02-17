@@ -77,3 +77,27 @@ class Foo
     private static $staticState = 1;
     private const CONST_STATE = 1.1;
 }
+
+function &foo($bar)
+{
+    $baz
+        =
+        function () {}
+    ;
+    $a
+        =
+        true
+            ?
+            true
+            :
+            false
+    ;
+    $b
+        =
+        "{$a}"
+    ;
+    $c
+        =
+        "${b}"
+    ;
+}

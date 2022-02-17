@@ -14,7 +14,7 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-interface CoveredFileAnalyser
+interface FileAnalyser
 {
     public function classesIn(string $filename): array;
 
@@ -23,6 +23,8 @@ interface CoveredFileAnalyser
     public function functionsIn(string $filename): array;
 
     public function linesOfCodeFor(string $filename): LinesOfCode;
+
+    public function executableLinesIn(string $filename): array;
 
     public function ignoredLinesFor(string $filename): array;
 }

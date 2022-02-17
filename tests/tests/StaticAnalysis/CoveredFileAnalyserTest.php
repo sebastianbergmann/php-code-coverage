@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingCoveredFileAnalyser
+ * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser
  */
 final class CoveredFileAnalyserTest extends TestCase
 {
@@ -38,7 +38,7 @@ final class CoveredFileAnalyserTest extends TestCase
                 30,
                 33,
             ],
-            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
@@ -48,7 +48,7 @@ final class CoveredFileAnalyserTest extends TestCase
     {
         $this->assertEquals(
             [],
-            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_without_ignore.php'
             )
         );
@@ -60,7 +60,7 @@ final class CoveredFileAnalyserTest extends TestCase
             [
                 3,
             ],
-            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
             )
         );
@@ -76,7 +76,7 @@ final class CoveredFileAnalyserTest extends TestCase
             [
                 2,
             ],
-            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php'
             )
         );
@@ -93,7 +93,7 @@ final class CoveredFileAnalyserTest extends TestCase
                 32,
                 33,
             ],
-            (new ParsingCoveredFileAnalyser(true, true))->ignoredLinesFor(
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_oneline_annotations.php'
             )
         );
@@ -107,7 +107,7 @@ final class CoveredFileAnalyserTest extends TestCase
                 18,
                 33,
             ],
-            (new ParsingCoveredFileAnalyser(false, false))->ignoredLinesFor(
+            (new ParsingFileAnalyser(false, false))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore.php'
             )
         );
@@ -117,7 +117,7 @@ final class CoveredFileAnalyserTest extends TestCase
     {
         $this->assertSame(
             1,
-            (new ParsingCoveredFileAnalyser(false, false))->linesOfCodeFor(
+            (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
                 TEST_FILES_PATH . 'source_without_newline.php'
             )->linesOfCode()
         );

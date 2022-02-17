@@ -22,7 +22,7 @@ use function strpos;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -30,11 +30,11 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\CoveredFileAnalyser;
 final class Builder
 {
     /**
-     * @var CoveredFileAnalyser
+     * @var FileAnalyser
      */
     private $coveredFileAnalyser;
 
-    public function __construct(CoveredFileAnalyser $coveredFileAnalyser)
+    public function __construct(FileAnalyser $coveredFileAnalyser)
     {
         $this->coveredFileAnalyser = $coveredFileAnalyser;
     }

@@ -30,7 +30,7 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
+final class ParsingFileAnalyser implements FileAnalyser
 {
     /**
      * @var array
@@ -56,6 +56,11 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
      * @var array
      */
     private $ignoredLines = [];
+
+    /**
+     * @var array
+     */
+    private $executableLines = [];
 
     /**
      * @var bool
@@ -101,6 +106,13 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
         return $this->linesOfCode[$filename];
     }
 
+    public function executableLinesIn(string $filename): array
+    {
+        $this->analyse($filename);
+
+        return $this->executableLines[$filename];
+    }
+
     public function ignoredLinesFor(string $filename): array
     {
         $this->analyse($filename);
@@ -134,16 +146,18 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
 
             assert($nodes !== null);
 
-            $traverser                  = new NodeTraverser;
-            $codeUnitFindingVisitor     = new CodeUnitFindingVisitor;
-            $lineCountingVisitor        = new LineCountingVisitor($linesOfCode);
-            $ignoredLinesFindingVisitor = new IgnoredLinesFindingVisitor($this->useAnnotationsForIgnoringCode, $this->ignoreDeprecatedCode);
+            $traverser                     = new NodeTraverser;
+            $codeUnitFindingVisitor        = new CodeUnitFindingVisitor;
+            $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
+            $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($this->useAnnotationsForIgnoringCode, $this->ignoreDeprecatedCode);
+            $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor;
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new ParentConnectingVisitor);
             $traverser->addVisitor($codeUnitFindingVisitor);
             $traverser->addVisitor($lineCountingVisitor);
             $traverser->addVisitor($ignoredLinesFindingVisitor);
+            $traverser->addVisitor($executableLinesFindingVisitor);
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
@@ -161,11 +175,12 @@ final class ParsingCoveredFileAnalyser implements CoveredFileAnalyser
         }
         // @codeCoverageIgnoreEnd
 
-        $this->classes[$filename]      = $codeUnitFindingVisitor->classes();
-        $this->traits[$filename]       = $codeUnitFindingVisitor->traits();
-        $this->functions[$filename]    = $codeUnitFindingVisitor->functions();
-        $this->linesOfCode[$filename]  = $lineCountingVisitor->result();
-        $this->ignoredLines[$filename] = [];
+        $this->classes[$filename]         = $codeUnitFindingVisitor->classes();
+        $this->traits[$filename]          = $codeUnitFindingVisitor->traits();
+        $this->functions[$filename]       = $codeUnitFindingVisitor->functions();
+        $this->linesOfCode[$filename]     = $lineCountingVisitor->result();
+        $this->executableLines[$filename] = $executableLinesFindingVisitor->executableLines();
+        $this->ignoredLines[$filename]    = [];
 
         $this->findLinesIgnoredByLineBasedAnnotations($filename, $source, $this->useAnnotationsForIgnoringCode);
 

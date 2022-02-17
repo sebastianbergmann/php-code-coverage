@@ -15,24 +15,16 @@ final class CacheWarmer
 {
     public function warmCache(string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, Filter $filter): void
     {
-        $coveredFileAnalyser = new CachingCoveredFileAnalyser(
+        $analyser = new CachingFileAnalyser(
             $cacheDirectory,
-            new ParsingCoveredFileAnalyser(
+            new ParsingFileAnalyser(
                 $useAnnotationsForIgnoringCode,
                 $ignoreDeprecatedCode
             )
         );
 
-        $uncoveredFileAnalyser = new CachingUncoveredFileAnalyser(
-            $cacheDirectory,
-            new ParsingUncoveredFileAnalyser
-        );
-
         foreach ($filter->files() as $file) {
-            $coveredFileAnalyser->process($file);
-
-            /* @noinspection UnusedFunctionResultInspection */
-            $uncoveredFileAnalyser->executableLinesIn($file);
+            $analyser->process($file);
         }
     }
 }

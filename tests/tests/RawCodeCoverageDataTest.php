@@ -271,6 +271,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 12,
                 14,
                 15,
+                16,
                 18,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
@@ -298,6 +299,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 7,
                 9,
                 10,
+                11,
                 13,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])

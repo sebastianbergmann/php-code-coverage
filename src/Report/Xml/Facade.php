@@ -240,9 +240,9 @@ final class Facade
         $loc = $node->linesOfCode();
 
         $totals->setNumLines(
-            $loc->linesOfCode(),
-            $loc->commentLinesOfCode(),
-            $loc->nonCommentLinesOfCode(),
+            $loc['linesOfCode'],
+            $loc['commentLinesOfCode'],
+            $loc['nonCommentLinesOfCode'],
             $node->numberOfExecutableLines(),
             $node->numberOfExecutedLines()
         );

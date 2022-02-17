@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use SebastianBergmann\CodeCoverage\Directory;
-use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -69,7 +68,10 @@ final class CachingFileAnalyser implements FileAnalyser
         return $this->cache[$filename]['functionsIn'];
     }
 
-    public function linesOfCodeFor(string $filename): LinesOfCode
+    /**
+     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     */
+    public function linesOfCodeFor(string $filename): array
     {
         if (!isset($this->cache[$filename])) {
             $this->process($filename);
@@ -140,7 +142,7 @@ final class CachingFileAnalyser implements FileAnalyser
             file_get_contents(
                 $this->cacheFile($filename)
             ),
-            ['allowed_classes' => [LinesOfCode::class]]
+            ['allowed_classes' => false]
         );
     }
 

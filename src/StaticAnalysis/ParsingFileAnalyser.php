@@ -25,7 +25,6 @@ use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
-use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -48,7 +47,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     private $functions = [];
 
     /**
-     * @var LinesOfCode[]
+     * @var array<string,array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}>
      */
     private $linesOfCode = [];
 
@@ -99,7 +98,10 @@ final class ParsingFileAnalyser implements FileAnalyser
         return $this->functions[$filename];
     }
 
-    public function linesOfCodeFor(string $filename): LinesOfCode
+    /**
+     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     */
+    public function linesOfCodeFor(string $filename): array
     {
         $this->analyse($filename);
 
@@ -178,7 +180,6 @@ final class ParsingFileAnalyser implements FileAnalyser
         $this->classes[$filename]         = $codeUnitFindingVisitor->classes();
         $this->traits[$filename]          = $codeUnitFindingVisitor->traits();
         $this->functions[$filename]       = $codeUnitFindingVisitor->functions();
-        $this->linesOfCode[$filename]     = $lineCountingVisitor->result();
         $this->executableLines[$filename] = $executableLinesFindingVisitor->executableLines();
         $this->ignoredLines[$filename]    = [];
 
@@ -192,6 +193,14 @@ final class ParsingFileAnalyser implements FileAnalyser
         );
 
         sort($this->ignoredLines[$filename]);
+
+        $result = $lineCountingVisitor->result();
+
+        $this->linesOfCode[$filename] = [
+            'linesOfCode'           => $result->linesOfCode(),
+            'commentLinesOfCode'    => $result->commentLinesOfCode(),
+            'nonCommentLinesOfCode' => $result->nonCommentLinesOfCode(),
+        ];
     }
 
     private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): void

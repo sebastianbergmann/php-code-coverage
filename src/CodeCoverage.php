@@ -482,6 +482,10 @@ final class CodeCoverage
     private function applyExecutableLinesFilter(RawCodeCoverageData $data): void
     {
         foreach (array_keys($data->lineCoverage()) as $filename) {
+            if (!$this->filter->isFile($filename)) {
+                continue;
+            }
+
             $data->keepLineCoverageDataOnlyForLines(
                 $filename,
                 $this->analyser()->executableLinesIn($filename)

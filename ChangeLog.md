@@ -19,6 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * `CoveredFileAnalyser` and `UncoveredFileAnalyser` have been combined to `FileAnalyser`
+* Updated bundled CSS/JavaScript components used for HTML report: Bootstrap 4.6.1, jQuery 3.6.0, and popper.js 1.16.1
 
 ### Fixed
 
@@ -308,7 +309,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* Update HTML report Bootstrap 4.3.1, jQuery 3.4.1, and popper.js 1.15.0
+* Updated bundled CSS/JavaScript components used for HTML report: Bootstrap 4.3.1, jQuery 3.4.1, and popper.js 1.15.0
 
 ## [7.0.7] - 2019-07-25
 
@@ -344,7 +345,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* Updated HTML report to Bootstrap 4.3.0
+* Updated bundled CSS/JavaScript components used for HTML report: Bootstrap 4.3.0
 
 ### Fixed
 

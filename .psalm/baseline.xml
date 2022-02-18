@@ -203,10 +203,7 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantConditionGivenDocblockType occurrences="13">
-      <code>$node instanceof Function_</code>
-      <code>$node instanceof Function_</code>
-      <code>$type instanceof ComplexType</code>
+    <RedundantConditionGivenDocblockType occurrences="10">
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>

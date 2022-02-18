@@ -106,13 +106,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $this->functions;
     }
 
-    /**
-     * @psalm-param ClassMethod|Function_ $node
-     */
-    private function cyclomaticComplexity(Node $node): int
+    private function cyclomaticComplexity(ClassMethod|Function_ $node): int
     {
-        assert($node instanceof ClassMethod || $node instanceof Function_);
-
         $nodes = $node->getStmts();
 
         if ($nodes === null) {
@@ -131,13 +126,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $cyclomaticComplexityCalculatingVisitor->cyclomaticComplexity();
     }
 
-    /**
-     * @psalm-param ClassMethod|Function_ $node
-     */
-    private function signature(Node $node): string
+    private function signature(ClassMethod|Function_ $node): string
     {
-        assert($node instanceof ClassMethod || $node instanceof Function_);
-
         $signature  = ($node->returnsByRef() ? '&' : '') . $node->name->toString() . '(';
         $parameters = [];
 
@@ -168,13 +158,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $signature;
     }
 
-    /**
-     * @psalm-param Identifier|Name|ComplexType $type
-     */
-    private function type(Node $type): string
+    private function type(Identifier|Name|ComplexType $type): string
     {
-        assert($type instanceof Identifier || $type instanceof Name || $type instanceof ComplexType);
-
         if ($type instanceof NullableType) {
             return '?' . $type->type;
         }

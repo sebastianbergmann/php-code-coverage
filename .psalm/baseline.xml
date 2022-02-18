@@ -203,10 +203,6 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantCast occurrences="2">
-      <code>(string) $namespacedName</code>
-      <code>(string) $namespacedName</code>
-    </RedundantCast>
     <RedundantConditionGivenDocblockType occurrences="13">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>

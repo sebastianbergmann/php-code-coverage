@@ -87,16 +87,14 @@
     </EmptyArrayAccess>
   </file>
   <file src="src/Node/Directory.php">
-    <DocblockTypeContradiction occurrences="4">
+    <DocblockTypeContradiction occurrences="3">
       <code>$this-&gt;classes === null</code>
       <code>$this-&gt;functions === null</code>
-      <code>$this-&gt;linesOfCode === null</code>
       <code>$this-&gt;traits === null</code>
     </DocblockTypeContradiction>
-    <PropertyNotSetInConstructor occurrences="4">
+    <PropertyNotSetInConstructor occurrences="3">
       <code>$classes</code>
       <code>$functions</code>
-      <code>$linesOfCode</code>
       <code>$traits</code>
     </PropertyNotSetInConstructor>
     <PropertyTypeCoercion occurrences="2">
@@ -265,10 +263,6 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantCast occurrences="2">
-      <code>(string) $namespacedName</code>
-      <code>(string) $namespacedName</code>
-    </RedundantCast>
     <RedundantConditionGivenDocblockType occurrences="13">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>

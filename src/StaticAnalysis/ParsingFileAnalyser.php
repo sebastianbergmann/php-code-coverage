@@ -34,6 +34,11 @@ final class ParsingFileAnalyser implements FileAnalyser
     /**
      * @var array
      */
+    private $hash = [];
+
+    /**
+     * @var array
+     */
     private $classes = [];
 
     /**
@@ -71,10 +76,22 @@ final class ParsingFileAnalyser implements FileAnalyser
      */
     private $ignoreDeprecatedCode;
 
+    public static function computeHashForSource(string $source): int
+    {
+        return crc32($source);
+    }
+
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
     {
         $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
         $this->ignoreDeprecatedCode          = $ignoreDeprecatedCode;
+    }
+
+    public function hash(string $filename): int
+    {
+        $this->analyse($filename);
+
+        return $this->hash[$filename];
     }
 
     public function classesIn(string $filename): array
@@ -177,6 +194,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         }
         // @codeCoverageIgnoreEnd
 
+        $this->hash[$filename]            = self::computeHashForSource($source);
         $this->classes[$filename]         = $codeUnitFindingVisitor->classes();
         $this->traits[$filename]          = $codeUnitFindingVisitor->traits();
         $this->functions[$filename]       = $codeUnitFindingVisitor->functions();

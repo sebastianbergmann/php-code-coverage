@@ -137,9 +137,7 @@ final class CachingFileAnalyser implements FileAnalyser
         }
 
         return unserialize(
-            file_get_contents(
-                $cacheFile
-            ),
+            file_get_contents($cacheFile),
             ['allowed_classes' => false]
         );
     }

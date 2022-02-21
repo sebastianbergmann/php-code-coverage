@@ -21,7 +21,7 @@ use SebastianBergmann\CodeCoverage\Directory;
  */
 final class CachingFileAnalyser implements FileAnalyser
 {
-    private const CACHE_FORMAT_VERSION = 3;
+    private const CACHE_FORMAT_VERSION = 2;
 
     /**
      * @var FileAnalyser
@@ -106,17 +106,14 @@ final class CachingFileAnalyser implements FileAnalyser
     public function process(string $filename): void
     {
         $cache = $this->read($filename);
-        $hash  = crc32(file_get_contents($filename));
 
-        if ($cache !== false &&
-            $hash === $cache['hash']) {
+        if ($cache !== false) {
             $this->cache[$filename] = $cache;
 
             return;
         }
 
         $this->cache[$filename] = [
-            'hash'              => $hash,
             'classesIn'         => $this->analyser->classesIn($filename),
             'traitsIn'          => $this->analyser->traitsIn($filename),
             'functionsIn'       => $this->analyser->functionsIn($filename),
@@ -160,6 +157,6 @@ final class CachingFileAnalyser implements FileAnalyser
 
     private function cacheFile(string $filename): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . self::CACHE_FORMAT_VERSION);
+        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . crc32(file_get_contents($filename)) . self::CACHE_FORMAT_VERSION);
     }
 }

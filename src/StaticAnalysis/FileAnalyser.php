@@ -14,8 +14,6 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 interface FileAnalyser
 {
-    public function hash(string $filename): int;
-
     public function classesIn(string $filename): array;
 
     public function traitsIn(string $filename): array;

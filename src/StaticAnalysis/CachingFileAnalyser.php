@@ -41,15 +41,6 @@ final class CachingFileAnalyser implements FileAnalyser
         $this->directory = $directory;
     }
 
-    public function hash(string $filename): int
-    {
-        if (!isset($this->cache[$filename])) {
-            $this->process($filename);
-        }
-
-        return $this->cache[$filename]['hash'];
-    }
-
     public function classesIn(string $filename): array
     {
         if (!isset($this->cache[$filename])) {
@@ -109,18 +100,18 @@ final class CachingFileAnalyser implements FileAnalyser
 
     public function process(string $filename): void
     {
-        if (false !== ($cache = $this->read($filename))) {
-            $hash = ParsingFileAnalyser::computeHashForSource(file_get_contents($filename));
+        $cache = $this->read($filename);
+        $hash  = crc32(file_get_contents($filename));
 
-            if ($hash === $cache['hash']) {
-                $this->cache[$filename] = $cache;
+        if ($cache !== false &&
+            $hash === $cache['hash']) {
+            $this->cache[$filename] = $cache;
 
-                return;
-            }
+            return;
         }
 
         $this->cache[$filename] = [
-            'hash'              => $this->analyser->hash($filename),
+            'hash'              => $hash,
             'classesIn'         => $this->analyser->classesIn($filename),
             'traitsIn'          => $this->analyser->traitsIn($filename),
             'functionsIn'       => $this->analyser->functionsIn($filename),

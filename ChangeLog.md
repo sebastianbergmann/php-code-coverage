@@ -8,6 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#736](https://github.com/sebastianbergmann/php-code-coverage/issues/736): HTML report generator allows invalid values for low upper bound and high lower bound
 * [#854](https://github.com/sebastianbergmann/php-code-coverage/issues/854): "Class Coverage Distribution" and "Class Complexity" graphs are not displayed at full width
+* [#897](https://github.com/sebastianbergmann/php-code-coverage/issues/897): `declare(strict_types=1)` marked as uncovered
 
 ## [9.2.11] - 2022-02-18
 

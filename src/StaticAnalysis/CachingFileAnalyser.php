@@ -16,7 +16,7 @@ use SebastianBergmann\CodeCoverage\Directory;
  */
 final class CachingFileAnalyser implements FileAnalyser
 {
-    private const CACHE_FORMAT_VERSION = 2;
+    private const CACHE_FORMAT_VERSION = 3;
 
     /**
      * @var FileAnalyser
@@ -39,6 +39,15 @@ final class CachingFileAnalyser implements FileAnalyser
 
         $this->analyser  = $analyser;
         $this->directory = $directory;
+    }
+
+    public function hash(string $filename): int
+    {
+        if (!isset($this->cache[$filename])) {
+            $this->process($filename);
+        }
+
+        return $this->cache[$filename]['hash'];
     }
 
     public function classesIn(string $filename): array
@@ -100,13 +109,18 @@ final class CachingFileAnalyser implements FileAnalyser
 
     public function process(string $filename): void
     {
-        if ($this->has($filename)) {
-            $this->cache[$filename] = $this->read($filename);
+        if (false !== ($cache = $this->read($filename))) {
+            $hash = ParsingFileAnalyser::computeHashForSource(file_get_contents($filename));
 
-            return;
+            if ($hash === $cache['hash']) {
+                $this->cache[$filename] = $cache;
+
+                return;
+            }
         }
 
         $this->cache[$filename] = [
+            'hash'              => $this->analyser->hash($filename),
             'classesIn'         => $this->analyser->classesIn($filename),
             'traitsIn'          => $this->analyser->traitsIn($filename),
             'functionsIn'       => $this->analyser->functionsIn($filename),
@@ -118,7 +132,10 @@ final class CachingFileAnalyser implements FileAnalyser
         $this->write($filename, $this->cache[$filename]);
     }
 
-    private function has(string $filename): bool
+    /**
+     * @return mixed
+     */
+    private function read(string $filename)
     {
         $cacheFile = $this->cacheFile($filename);
 
@@ -126,21 +143,9 @@ final class CachingFileAnalyser implements FileAnalyser
             return false;
         }
 
-        if (filemtime($cacheFile) < filemtime($filename)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function read(string $filename)
-    {
         return unserialize(
             file_get_contents(
-                $this->cacheFile($filename)
+                $cacheFile
             ),
             ['allowed_classes' => false]
         );

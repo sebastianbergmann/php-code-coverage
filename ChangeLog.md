@@ -14,6 +14,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.3 and PHP 7.4
 * This component no longer supports Xdebug 2
 
+## [9.2.12] - 2022-MM-DD
+
+### Fixed
+
+* [#854](https://github.com/sebastianbergmann/php-code-coverage/issues/854): "Class Coverage Distribution" and "Class Complexity" graphs are not displayed at full width
+
 ## [9.2.11] - 2022-02-18
 
 ### Changed
@@ -373,6 +379,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.1
 
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...master
+[9.2.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.11...9.2
 [9.2.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.10...9.2.11
 [9.2.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.9...9.2.10
 [9.2.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.8...9.2.9

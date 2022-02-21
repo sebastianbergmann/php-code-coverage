@@ -16,6 +16,7 @@ use function dirname;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
+use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 
 final class Facade
@@ -42,6 +43,12 @@ final class Facade
 
     public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
     {
+        if ($lowUpperBound > $highLowerBound) {
+            throw new InvalidArgumentException(
+                '$lowUpperBound must not be larger than $highLowerBound'
+            );
+        }
+
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->lowUpperBound  = $lowUpperBound;

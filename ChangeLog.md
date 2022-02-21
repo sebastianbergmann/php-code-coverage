@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.12] - 2022-MM-DD
 
+### Changed
+
+* [#898](https://github.com/sebastianbergmann/php-code-coverage/pull/898): Use content hash instead of `filemtime()` to determine cache hit/miss
+
 ### Fixed
 
 * [#736](https://github.com/sebastianbergmann/php-code-coverage/issues/736): HTML report generator allows invalid values for low upper bound and high lower bound

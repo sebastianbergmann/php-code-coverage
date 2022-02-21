@@ -9,6 +9,11 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function crc32;
+use function file_get_contents;
+use function file_put_contents;
+use function is_file;
+use function serialize;
 use SebastianBergmann\CodeCoverage\Directory;
 
 /**
@@ -91,8 +96,10 @@ final class CachingFileAnalyser implements FileAnalyser
 
     public function process(string $filename): void
     {
-        if ($this->has($filename)) {
-            $this->cache[$filename] = $this->read($filename);
+        $cache = $this->read($filename);
+
+        if ($cache !== false) {
+            $this->cache[$filename] = $cache;
 
             return;
         }
@@ -109,7 +116,10 @@ final class CachingFileAnalyser implements FileAnalyser
         $this->write($filename, $this->cache[$filename]);
     }
 
-    private function has(string $filename): bool
+    /**
+     * @return mixed
+     */
+    private function read(string $filename): array|false
     {
         $cacheFile = $this->cacheFile($filename);
 
@@ -117,18 +127,9 @@ final class CachingFileAnalyser implements FileAnalyser
             return false;
         }
 
-        if (filemtime($cacheFile) < filemtime($filename)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function read(string $filename): array
-    {
         return unserialize(
             file_get_contents(
-                $this->cacheFile($filename)
+                $cacheFile
             ),
             ['allowed_classes' => false]
         );
@@ -144,6 +145,6 @@ final class CachingFileAnalyser implements FileAnalyser
 
     private function cacheFile(string $filename): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . self::CACHE_FORMAT_VERSION);
+        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . crc32(file_get_contents($filename)) . self::CACHE_FORMAT_VERSION);
     }
 }

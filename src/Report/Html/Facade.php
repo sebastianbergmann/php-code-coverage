@@ -41,7 +41,12 @@ final class Facade
      */
     private $highLowerBound;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
+    /**
+     * @var ?string
+     */
+    private $customCssFile;
+
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', ?string $customCssFile = null)
     {
         if ($lowUpperBound > $highLowerBound) {
             throw new InvalidArgumentException(
@@ -52,6 +57,7 @@ final class Facade
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->lowUpperBound  = $lowUpperBound;
+        $this->customCssFile  = $customCssFile;
         $this->templatePath   = __DIR__ . '/Renderer/Template/';
     }
 
@@ -118,7 +124,7 @@ final class Facade
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
         copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
         copy($this->templatePath . 'css/style.css', $dir . 'style.css');
-        copy($this->templatePath . 'css/custom.css', $dir . 'custom.css');
+        copy($this->customCssFile ?? $this->templatePath . 'css/custom.css', $dir . 'custom.css');
         copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
 
         $dir = $this->directory($target . '_icons');

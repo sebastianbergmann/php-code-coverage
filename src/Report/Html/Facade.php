@@ -16,7 +16,6 @@ use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
-use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\Template\Template;
 
@@ -26,25 +25,16 @@ final class Facade
 
     private string $generator;
 
-    private int $lowUpperBound;
-
-    private int $highLowerBound;
-
     private Colors $colors;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', ?Colors $colors = null)
-    {
-        if ($lowUpperBound > $highLowerBound) {
-            throw new InvalidArgumentException(
-                '$lowUpperBound must not be larger than $highLowerBound'
-            );
-        }
+    private Thresholds $thresholds;
 
-        $this->generator      = $generator;
-        $this->highLowerBound = $highLowerBound;
-        $this->lowUpperBound  = $lowUpperBound;
-        $this->colors         = $colors ?? Colors::default();
-        $this->templatePath   = __DIR__ . '/Renderer/Template/';
+    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null)
+    {
+        $this->generator    = $generator;
+        $this->colors       = $colors ?? Colors::default();
+        $this->thresholds   = $thresholds ?? Thresholds::default();
+        $this->templatePath = __DIR__ . '/Renderer/Template/';
     }
 
     public function process(CodeCoverage $coverage, string $target): void
@@ -57,8 +47,7 @@ final class Facade
             $this->templatePath,
             $this->generator,
             $date,
-            $this->lowUpperBound,
-            $this->highLowerBound,
+            $this->thresholds,
             $coverage->collectsBranchAndPathCoverage()
         );
 
@@ -66,8 +55,7 @@ final class Facade
             $this->templatePath,
             $this->generator,
             $date,
-            $this->lowUpperBound,
-            $this->highLowerBound,
+            $this->thresholds,
             $coverage->collectsBranchAndPathCoverage()
         );
 
@@ -75,8 +63,7 @@ final class Facade
             $this->templatePath,
             $this->generator,
             $date,
-            $this->lowUpperBound,
-            $this->highLowerBound,
+            $this->thresholds,
             $coverage->collectsBranchAndPathCoverage()
         );
 

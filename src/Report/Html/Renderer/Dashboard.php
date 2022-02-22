@@ -188,7 +188,7 @@ final class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->highLowerBound) {
+                if ($method['coverage'] < $this->thresholds->highLowerBound()) {
                     $key = $methodName;
 
                     if ($className !== '*') {
@@ -199,7 +199,7 @@ final class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] < $this->highLowerBound) {
+            if ($class['coverage'] < $this->thresholds->highLowerBound()) {
                 $leastTestedClasses[$className] = $class['coverage'];
             }
         }
@@ -242,7 +242,7 @@ final class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->highLowerBound && $method['ccn'] > 1) {
+                if ($method['coverage'] < $this->thresholds->highLowerBound() && $method['ccn'] > 1) {
                     $key = $methodName;
 
                     if ($className !== '*') {
@@ -253,7 +253,7 @@ final class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] < $this->highLowerBound &&
+            if ($class['coverage'] < $this->thresholds->highLowerBound() &&
                 $class['ccn'] > count($class['methods'])) {
                 $classRisks[$className] = $class['crap'];
             }

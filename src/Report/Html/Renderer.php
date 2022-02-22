@@ -32,21 +32,18 @@ abstract class Renderer
 
     protected string $date;
 
-    protected int $lowUpperBound;
-
-    protected int $highLowerBound;
+    protected Thresholds $thresholds;
 
     protected bool $hasBranchCoverage;
 
     protected string $version;
 
-    public function __construct(string $templatePath, string $generator, string $date, int $lowUpperBound, int $highLowerBound, bool $hasBranchCoverage)
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)
     {
         $this->templatePath      = $templatePath;
         $this->generator         = $generator;
         $this->date              = $date;
-        $this->lowUpperBound     = $lowUpperBound;
-        $this->highLowerBound    = $highLowerBound;
+        $this->thresholds        = $thresholds;
         $this->version           = Version::id();
         $this->hasBranchCoverage = $hasBranchCoverage;
     }
@@ -178,8 +175,8 @@ abstract class Renderer
                 'version'          => $this->version,
                 'runtime'          => $this->runtimeString(),
                 'generator'        => $this->generator,
-                'low_upper_bound'  => $this->lowUpperBound,
-                'high_lower_bound' => $this->highLowerBound,
+                'low_upper_bound'  => $this->thresholds->lowUpperBound(),
+                'high_lower_bound' => $this->thresholds->highLowerBound(),
             ]
         );
     }
@@ -267,12 +264,12 @@ abstract class Renderer
 
     protected function colorLevel(float $percent): string
     {
-        if ($percent <= $this->lowUpperBound) {
+        if ($percent <= $this->thresholds->lowUpperBound()) {
             return 'danger';
         }
 
-        if ($percent > $this->lowUpperBound &&
-            $percent < $this->highLowerBound) {
+        if ($percent > $this->thresholds->lowUpperBound() &&
+            $percent < $this->thresholds->highLowerBound()) {
             return 'warning';
         }
 

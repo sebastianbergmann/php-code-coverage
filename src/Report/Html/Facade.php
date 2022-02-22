@@ -13,7 +13,7 @@ use const DIRECTORY_SEPARATOR;
 use function copy;
 use function date;
 use function dirname;
-use function substr;
+use function str_ends_with;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
@@ -157,7 +157,7 @@ final class Facade
 
     private function directory(string $directory): string
     {
-        if (substr($directory, -1, 1) != DIRECTORY_SEPARATOR) {
+        if (!str_ends_with($directory, DIRECTORY_SEPARATOR)) {
             $directory .= DIRECTORY_SEPARATOR;
         }
 

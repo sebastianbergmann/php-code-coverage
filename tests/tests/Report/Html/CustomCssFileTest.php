@@ -25,7 +25,7 @@ final class CustomCssFileTest extends TestCase
 
         $this->assertSame(
             realpath(__DIR__ . '/../../../../src/Report/Html/Renderer/Template/css/custom.css'),
-            $file->path()
+            realpath($file->path())
         );
     }
 

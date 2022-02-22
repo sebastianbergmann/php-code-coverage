@@ -25,6 +25,8 @@ use function sort;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use ReflectionClass;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;

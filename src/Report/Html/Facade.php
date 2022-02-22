@@ -15,8 +15,8 @@ use function date;
 use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Template;
 
 final class Facade
@@ -77,14 +77,14 @@ final class Facade
             $id = $node->id();
 
             if ($node instanceof DirectoryNode) {
-                DirectoryUtil::create($target . $id);
+                Filesystem::createDirectory($target . $id);
 
                 $directory->render($node, $target . $id . '/index.html');
                 $dashboard->render($node, $target . $id . '/dashboard.html');
             } else {
                 $dir = dirname($target . $id);
 
-                DirectoryUtil::create($dir);
+                Filesystem::createDirectory($dir);
 
                 $file->render($node, $target . $id);
             }
@@ -139,7 +139,7 @@ final class Facade
             $directory .= DIRECTORY_SEPARATOR;
         }
 
-        DirectoryUtil::create($directory);
+        Filesystem::createDirectory($directory);
 
         return $directory;
     }

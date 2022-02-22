@@ -20,7 +20,7 @@ use function is_file;
 use function str_replace;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**

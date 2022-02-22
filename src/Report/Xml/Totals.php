@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 use function sprintf;
 use DOMElement;
 use DOMNode;
-use SebastianBergmann\CodeCoverage\Percentage;
+use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

@@ -94,7 +94,7 @@ use function str_replace;
 use function token_get_all;
 use function trim;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Percentage;
+use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Template;
 
 /**

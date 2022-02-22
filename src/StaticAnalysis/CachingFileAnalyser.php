@@ -14,7 +14,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function is_file;
 use function serialize;
-use SebastianBergmann\CodeCoverage\Directory;
+use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -31,7 +31,7 @@ final class CachingFileAnalyser implements FileAnalyser
 
     public function __construct(string $directory, FileAnalyser $analyser)
     {
-        Directory::create($directory);
+        Filesystem::createDirectory($directory);
 
         $this->analyser  = $analyser;
         $this->directory = $directory;

@@ -18,7 +18,7 @@ use FilesystemIterator;
 use RegexIterator;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-final class HtmlTest extends TestCase
+final class EndToEndTest extends TestCase
 {
     private static $TEST_REPORT_PATH_SOURCE;
 

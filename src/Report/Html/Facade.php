@@ -29,12 +29,15 @@ final class Facade
 
     private Thresholds $thresholds;
 
-    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null)
+    private CustomCssFile $customCssFile;
+
+    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null)
     {
-        $this->generator    = $generator;
-        $this->colors       = $colors ?? Colors::default();
-        $this->thresholds   = $thresholds ?? Thresholds::default();
-        $this->templatePath = __DIR__ . '/Renderer/Template/';
+        $this->generator     = $generator;
+        $this->colors        = $colors ?? Colors::default();
+        $this->thresholds    = $thresholds ?? Thresholds::default();
+        $this->customCssFile = $customCssFile ?? CustomCssFile::default();
+        $this->templatePath  = __DIR__ . '/Renderer/Template/';
     }
 
     public function process(CodeCoverage $coverage, string $target): void
@@ -97,7 +100,7 @@ final class Facade
 
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
         copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
-        copy($this->templatePath . 'css/custom.css', $dir . 'custom.css');
+        copy($this->customCssFile->path(), $dir . 'custom.css');
         copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
 
         $dir = $this->directory($target . '_icons');

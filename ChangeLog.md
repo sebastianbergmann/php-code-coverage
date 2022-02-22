@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * [#556](https://github.com/sebastianbergmann/php-code-coverage/issues/556): Make colors in HTML report configurable
+* The path to `custom.css` for the HTML report can now be configured
 
 ### Changed
 

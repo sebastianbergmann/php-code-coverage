@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use function array_filter;
 use function count;
 use function range;
-use SebastianBergmann\CodeCoverage\CrapIndex;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

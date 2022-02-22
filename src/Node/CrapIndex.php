@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Node;
 
 use function sprintf;
 
@@ -25,11 +25,6 @@ final class CrapIndex
      * @var float
      */
     private $codeCoverage;
-
-    public static function fromCyclomaticComplexityAndCoveragePercentage(int $cyclomaticComplexity, float $codeCoverage): self
-    {
-        return new self($cyclomaticComplexity, $codeCoverage);
-    }
 
     public function __construct(int $cyclomaticComplexity, float $codeCoverage)
     {

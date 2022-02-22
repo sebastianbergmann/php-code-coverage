@@ -18,6 +18,7 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\Template\Template;
 
 final class Facade
 {
@@ -29,7 +30,17 @@ final class Facade
 
     private int $highLowerBound;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '')
+    private string $colorSuccessLow;
+
+    private string $colorSuccessMedium;
+
+    private string $colorSuccessHigh;
+
+    private string $colorWarning;
+
+    private string $colorDanger;
+
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', string $colorSuccessLow = '#dff0d8', string $colorSuccessMedium = '#c3e3b5', string $colorSuccessHigh = '#99cb84', string $colorWarning = '#fcf8e3', string $colorDanger = '#f2dede')
     {
         if ($lowUpperBound > $highLowerBound) {
             throw new InvalidArgumentException(
@@ -37,10 +48,15 @@ final class Facade
             );
         }
 
-        $this->generator      = $generator;
-        $this->highLowerBound = $highLowerBound;
-        $this->lowUpperBound  = $lowUpperBound;
-        $this->templatePath   = __DIR__ . '/Renderer/Template/';
+        $this->generator          = $generator;
+        $this->highLowerBound     = $highLowerBound;
+        $this->lowUpperBound      = $lowUpperBound;
+        $this->colorSuccessLow    = $colorSuccessLow;
+        $this->colorSuccessMedium = $colorSuccessMedium;
+        $this->colorSuccessHigh   = $colorSuccessHigh;
+        $this->colorWarning       = $colorWarning;
+        $this->colorDanger        = $colorDanger;
+        $this->templatePath       = __DIR__ . '/Renderer/Template/';
     }
 
     public function process(CodeCoverage $coverage, string $target): void
@@ -97,6 +113,7 @@ final class Facade
         }
 
         $this->copyFiles($target);
+        $this->renderCss($target);
     }
 
     private function copyFiles(string $target): void
@@ -105,7 +122,6 @@ final class Facade
 
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
         copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
-        copy($this->templatePath . 'css/style.css', $dir . 'style.css');
         copy($this->templatePath . 'css/custom.css', $dir . 'custom.css');
         copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
 
@@ -120,6 +136,23 @@ final class Facade
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
         copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/file.js', $dir . 'file.js');
+    }
+
+    private function renderCss(string $target): void
+    {
+        $template = new Template($this->templatePath . 'css/style.css', '{{', '}}');
+
+        $template->setVar(
+            [
+                'success-low'    => $this->colorSuccessLow,
+                'success-medium' => $this->colorSuccessMedium,
+                'success-high'   => $this->colorSuccessHigh,
+                'warning'        => $this->colorWarning,
+                'danger'         => $this->colorDanger,
+            ]
+        );
+
+        $template->renderTo($this->directory($target . '_css') . 'style.css');
     }
 
     private function directory(string $directory): string

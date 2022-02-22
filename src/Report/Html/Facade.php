@@ -15,7 +15,6 @@ use function date;
 use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\CoverageColors;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
@@ -31,9 +30,9 @@ final class Facade
 
     private int $highLowerBound;
 
-    private CoverageColors $coverageColors;
+    private Colors $colors;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', ?CoverageColors $coverageColors = null)
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', ?Colors $colors = null)
     {
         if ($lowUpperBound > $highLowerBound) {
             throw new InvalidArgumentException(
@@ -44,7 +43,7 @@ final class Facade
         $this->generator      = $generator;
         $this->highLowerBound = $highLowerBound;
         $this->lowUpperBound  = $lowUpperBound;
-        $this->coverageColors = $coverageColors ?? CoverageColors::default();
+        $this->colors         = $colors ?? Colors::default();
         $this->templatePath   = __DIR__ . '/Renderer/Template/';
     }
 
@@ -133,11 +132,11 @@ final class Facade
 
         $template->setVar(
             [
-                'success-low'    => $this->coverageColors->successLow(),
-                'success-medium' => $this->coverageColors->successMedium(),
-                'success-high'   => $this->coverageColors->successHigh(),
-                'warning'        => $this->coverageColors->warning(),
-                'danger'         => $this->coverageColors->danger(),
+                'success-low'    => $this->colors->successLow(),
+                'success-medium' => $this->colors->successMedium(),
+                'success-high'   => $this->colors->successHigh(),
+                'warning'        => $this->colors->warning(),
+                'danger'         => $this->colors->danger(),
             ]
         );
 

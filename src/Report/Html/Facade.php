@@ -15,6 +15,7 @@ use function date;
 use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\CoverageColors;
 use SebastianBergmann\CodeCoverage\Directory as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
@@ -30,17 +31,9 @@ final class Facade
 
     private int $highLowerBound;
 
-    private string $colorSuccessLow;
+    private CoverageColors $coverageColors;
 
-    private string $colorSuccessMedium;
-
-    private string $colorSuccessHigh;
-
-    private string $colorWarning;
-
-    private string $colorDanger;
-
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', string $colorSuccessLow = '#dff0d8', string $colorSuccessMedium = '#c3e3b5', string $colorSuccessHigh = '#99cb84', string $colorWarning = '#fcf8e3', string $colorDanger = '#f2dede')
+    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, string $generator = '', ?CoverageColors $coverageColors = null)
     {
         if ($lowUpperBound > $highLowerBound) {
             throw new InvalidArgumentException(
@@ -48,15 +41,11 @@ final class Facade
             );
         }
 
-        $this->generator          = $generator;
-        $this->highLowerBound     = $highLowerBound;
-        $this->lowUpperBound      = $lowUpperBound;
-        $this->colorSuccessLow    = $colorSuccessLow;
-        $this->colorSuccessMedium = $colorSuccessMedium;
-        $this->colorSuccessHigh   = $colorSuccessHigh;
-        $this->colorWarning       = $colorWarning;
-        $this->colorDanger        = $colorDanger;
-        $this->templatePath       = __DIR__ . '/Renderer/Template/';
+        $this->generator      = $generator;
+        $this->highLowerBound = $highLowerBound;
+        $this->lowUpperBound  = $lowUpperBound;
+        $this->coverageColors = $coverageColors ?? CoverageColors::default();
+        $this->templatePath   = __DIR__ . '/Renderer/Template/';
     }
 
     public function process(CodeCoverage $coverage, string $target): void
@@ -144,11 +133,11 @@ final class Facade
 
         $template->setVar(
             [
-                'success-low'    => $this->colorSuccessLow,
-                'success-medium' => $this->colorSuccessMedium,
-                'success-high'   => $this->colorSuccessHigh,
-                'warning'        => $this->colorWarning,
-                'danger'         => $this->colorDanger,
+                'success-low'    => $this->coverageColors->successLow(),
+                'success-medium' => $this->coverageColors->successMedium(),
+                'success-high'   => $this->coverageColors->successHigh(),
+                'warning'        => $this->coverageColors->warning(),
+                'danger'         => $this->coverageColors->danger(),
             ]
         );
 

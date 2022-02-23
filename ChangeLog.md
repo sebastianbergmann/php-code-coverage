@@ -19,7 +19,19 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.3 and PHP 7.4
 * This component no longer supports Xdebug 2
 
-## [9.2.12] - 2022-02-23
+## [9.2.13] - 2022-02-23
+
+### Changed
+
+* The contents of the static analysis sourcecode files is now used to generate the static analysis cache version identifier
+
+### Fixed
+
+* Reverted rename of `SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData` to `SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData` (this class is marked as `@internal` and not covered by the backward compatibility promise, but it is (still) used directly by PHPUnit)
+* Reverted rename of `SebastianBergmann\CodeCoverage\RawCodeCoverageData` to `SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData` (this class is marked as `@internal` and not covered by the backward compatibility promise, but it is (still) used directly by PHPUnit)
+* The `ArrayDim`, `Cast`, and `MethodCall` nodes are now considered when determining whether a line of code is executable or not
+
+## [9.2.12] - 2022-02-23 [YANKED]
 
 ### Changed
 
@@ -390,7 +402,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.1
 
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...master
-[9.2.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.11...9.2.12
+[9.2.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/c011a0b6aaa4acd2f39b7f51fb4ad4442b6ec631...9.2.13
+[9.2.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.11...c011a0b6aaa4acd2f39b7f51fb4ad4442b6ec631
 [9.2.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.10...9.2.11
 [9.2.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.9...9.2.10
 [9.2.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.8...9.2.9

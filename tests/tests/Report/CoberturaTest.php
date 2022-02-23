@@ -9,11 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Report\Cobertura
- */
+#[CoversClass(Cobertura::class)]
 final class CoberturaTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

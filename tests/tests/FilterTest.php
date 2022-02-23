@@ -10,11 +10,10 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use function realpath;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Filter
- */
+#[CoversClass(Filter::class)]
 final class FilterTest extends TestCase
 {
     /**

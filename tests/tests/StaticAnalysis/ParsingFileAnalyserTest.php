@@ -9,13 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\IgnoredLinesFindingVisitor
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser
- */
+#[CoversClass(CodeUnitFindingVisitor::class)]
+#[CoversClass(IgnoredLinesFindingVisitor::class)]
+#[CoversClass(ParsingFileAnalyser::class)]
 final class ParsingFileAnalyserTest extends TestCase
 {
     public function testGetLinesToBeIgnored(): void

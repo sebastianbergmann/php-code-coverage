@@ -9,11 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Util;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Util\Percentage
- */
+#[CoversClass(Percentage::class)]
 final class PercentageTest extends TestCase
 {
     public function testCanBeRepresentedAsFloat(): void

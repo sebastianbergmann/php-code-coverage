@@ -9,11 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Report\Clover
- */
+#[CoversClass(Clover::class)]
 final class CloverTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

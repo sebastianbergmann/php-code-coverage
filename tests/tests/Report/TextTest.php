@@ -11,11 +11,10 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use const PHP_EOL;
 use function str_replace;
+use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Report\Text
- */
+#[CoversClass(Text::class)]
 final class TextTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

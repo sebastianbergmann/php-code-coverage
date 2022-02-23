@@ -9,11 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Report\Crap4j
- */
+#[CoversClass(Crap4j::class)]
 final class Crap4jTest extends TestCase
 {
     public function testForBankAccountTest(): void

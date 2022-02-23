@@ -9,14 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\CodeCoverage
- */
+#[CoversClass(CodeCoverage::class)]
 final class CodeCoverageTest extends TestCase
 {
     /**

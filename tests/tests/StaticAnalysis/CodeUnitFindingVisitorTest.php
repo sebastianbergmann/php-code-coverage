@@ -14,13 +14,12 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassThatUsesAnonymousClass;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName\ClassWithNameThatIsPartOfItsNamespacesName;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- */
+#[CoversClass(CodeUnitFindingVisitor::class)]
 final class CodeUnitFindingVisitorTest extends TestCase
 {
     /**

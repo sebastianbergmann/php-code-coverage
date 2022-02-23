@@ -16,10 +16,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Filter::class)]
 final class FilterTest extends TestCase
 {
-    /**
-     * @var Filter
-     */
-    private $filter;
+    private Filter $filter;
 
     protected function setUp(): void
     {

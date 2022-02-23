@@ -18,10 +18,7 @@ use SebastianBergmann\Environment\Runtime;
 #[CoversClass(CodeCoverage::class)]
 final class CodeCoverageTest extends TestCase
 {
-    /**
-     * @var CodeCoverage
-     */
-    private $coverage;
+    private CodeCoverage $coverage;
 
     protected function setUp(): void
     {

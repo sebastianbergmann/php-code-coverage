@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\TestCase;
 
 final class XmlTest extends TestCase
 {
-    private static $TEST_REPORT_PATH_SOURCE;
+    private static string $TEST_REPORT_PATH_SOURCE;
 
     public static function setUpBeforeClass(): void
     {

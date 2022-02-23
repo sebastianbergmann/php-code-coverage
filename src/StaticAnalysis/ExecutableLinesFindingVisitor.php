@@ -103,12 +103,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private function getLines(Node $node): array
     {
-        if (
-            $node instanceof Cast ||
+        if ($node instanceof Cast ||
             $node instanceof PropertyFetch ||
             $node instanceof NullsafePropertyFetch ||
-            $node instanceof StaticPropertyFetch
-        ) {
+            $node instanceof StaticPropertyFetch) {
             return [$node->getEndLine()];
         }
 

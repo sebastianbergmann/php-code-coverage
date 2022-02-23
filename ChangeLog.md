@@ -4,10 +4,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.13] - 2022-MM-DD
 
+### Changed
+
+* The contents of the static analysis sourcecode files is now used to generate the static analysis cache version identifier
+
 ### Fixed
 
 * Reverted rename of `SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData` to `SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData` (this class is marked as `@internal` and not covered by the backward compatibility promise, but it is (still) used directly by PHPUnit)
 * Reverted rename of `SebastianBergmann\CodeCoverage\RawCodeCoverageData` to `SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData` (this class is marked as `@internal` and not covered by the backward compatibility promise, but it is (still) used directly by PHPUnit)
+* The `ArrayDim`, `Cast`, and `MethodCall` nodes are now considered when determining whether a line of code is executable or not
 
 ## [9.2.12] - 2022-02-23
 

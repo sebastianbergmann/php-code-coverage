@@ -9,7 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use function array_merge;
 use function range;
 use function rmdir;

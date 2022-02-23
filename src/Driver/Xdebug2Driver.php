@@ -25,8 +25,8 @@ use function xdebug_get_code_coverage;
 use function xdebug_set_filter;
 use function xdebug_start_code_coverage;
 use function xdebug_stop_code_coverage;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

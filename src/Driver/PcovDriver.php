@@ -18,8 +18,8 @@ use function pcov\start;
 use function pcov\stop;
 use function pcov\waiting;
 use function phpversion;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

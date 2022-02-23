@@ -43,17 +43,6 @@
       <code>waiting()</code>
     </UndefinedFunction>
   </file>
-  <file src="src/Data/ProcessedCodeCoverageData.php">
-    <PossiblyNullArgument occurrences="1">
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
-    </PossiblyNullArgument>
-    <PossiblyNullArrayAccess occurrences="1">
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
-    </PossiblyNullArrayAccess>
-    <PossiblyNullArrayAssignment occurrences="1">
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
-    </PossiblyNullArrayAssignment>
-  </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
       <code>XDEBUG_CC_BRANCH_CHECK</code>
@@ -141,6 +130,17 @@
     <PropertyNotSetInConstructor occurrences="1">
       <code>$position</code>
     </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/ProcessedCodeCoverageData.php">
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
+    </PossiblyNullArgument>
+    <PossiblyNullArrayAccess occurrences="1">
+      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
+    </PossiblyNullArrayAccess>
+    <PossiblyNullArrayAssignment occurrences="1">
+      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
+    </PossiblyNullArrayAssignment>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <InternalClass occurrences="7">

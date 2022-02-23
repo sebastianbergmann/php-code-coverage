@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class ProcessedCodeCoverageDataTest extends TestCase

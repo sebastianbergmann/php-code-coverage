@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use const DIRECTORY_SEPARATOR;
 use function rtrim;
 use ReflectionMethod;
-use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 

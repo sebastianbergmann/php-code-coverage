@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_keys;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 

@@ -18,7 +18,7 @@ use function get_included_files;
 use function phpdbg_end_oplog;
 use function phpdbg_get_executable;
 use function phpdbg_start_oplog;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

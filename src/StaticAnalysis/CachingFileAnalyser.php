@@ -24,10 +24,7 @@ use SplFileInfo;
  */
 final class CachingFileAnalyser implements FileAnalyser
 {
-    /**
-     * @var ?string
-     */
-    private static $cacheVersion;
+    private static ?string $cacheVersion = null;
 
     private FileAnalyser $analyser;
 

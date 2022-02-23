@@ -10,10 +10,13 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -79,6 +82,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     public function executableLines(): array
     {
+        sort($this->executableLines);
+
         return $this->executableLines;
     }
 
@@ -99,11 +104,24 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function getLines(Node $node): array
     {
         if (
+            $node instanceof Cast ||
             $node instanceof PropertyFetch ||
             $node instanceof NullsafePropertyFetch ||
             $node instanceof StaticPropertyFetch
         ) {
             return [$node->getEndLine()];
+        }
+
+        if ($node instanceof ArrayDimFetch) {
+            if (null === $node->dim) {
+                return [];
+            }
+
+            return [$node->dim->getStartLine()];
+        }
+
+        if ($node instanceof MethodCall) {
+            return [$node->name->getStartLine()];
         }
 
         if ($node instanceof Ternary) {
@@ -124,10 +142,12 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function isExecutable(Node $node): bool
     {
         return $node instanceof Assign ||
+               $node instanceof ArrayDimFetch ||
                $node instanceof BinaryOp ||
                $node instanceof Break_ ||
                $node instanceof CallLike ||
                $node instanceof Case_ ||
+               $node instanceof Cast ||
                $node instanceof Catch_ ||
                $node instanceof Closure ||
                $node instanceof Continue_ ||
@@ -142,6 +162,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Foreach_ ||
                $node instanceof Goto_ ||
                $node instanceof If_ ||
+               $node instanceof MethodCall ||
                $node instanceof NullsafePropertyFetch ||
                $node instanceof PropertyFetch ||
                $node instanceof Return_ ||

@@ -101,3 +101,66 @@ function &foo($bar)
         "${b}"
     ;
 }
+final class BarS
+{
+    public
+    function
+    foo
+    (
+        int
+        $var
+        =
+        1
+    )
+    {
+        if (
+            !
+            $var
+            &&
+            []
+            ===
+            (
+            $columnCollection
+                =
+                []
+            )
+            &&
+            isset
+            (
+                $columnCollection
+                [
+                $key
+                ]
+                [
+                $key
+                ]
+            )
+        ) {
+            $dataType
+                =
+                $columnCollection
+                [
+                $key
+                ]
+            ;
+
+            $obj
+                ->
+                method1
+                (
+                )
+                ->
+                method2
+                (
+                )
+            ;
+
+            $var[]
+            ;
+
+            (string)
+            $var
+            ;
+        }
+    }
+}

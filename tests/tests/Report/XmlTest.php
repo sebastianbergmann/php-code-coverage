@@ -71,11 +71,7 @@ final class XmlTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
 
-    /**
-     * @param string $expectedFilesPath
-     * @param string $actualFilesPath
-     */
-    private function assertFilesEquals($expectedFilesPath, $actualFilesPath): void
+    private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
         $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new FilesystemIterator($actualFilesPath);

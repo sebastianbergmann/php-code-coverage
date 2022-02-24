@@ -132,6 +132,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         $parameters = [];
 
         foreach ($node->getParams() as $parameter) {
+            assert(isset($parameter->var->name));
+
             $parameterAsString = '';
 
             if ($parameter->type !== null) {
@@ -222,6 +224,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         assert($parentNode instanceof Class_ || $parentNode instanceof Trait_ || $parentNode instanceof Enum_);
         assert(isset($parentNode->name));
+        assert(isset($parentNode->namespacedName));
+        assert($parentNode->namespacedName instanceof Name);
 
         $parentName           = $parentNode->name->toString();
         $parentNamespacedName = $parentNode->namespacedName->toString();
@@ -255,6 +259,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processFunction(Function_ $node): void
     {
+        assert(isset($node->name));
+        assert(isset($node->namespacedName));
+        assert($node->namespacedName instanceof Name);
+
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
 

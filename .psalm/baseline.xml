@@ -203,17 +203,5 @@
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantConditionGivenDocblockType occurrences="10">
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
-      <code>assert(isset($node-&gt;name))</code>
-      <code>assert(isset($node-&gt;namespacedName))</code>
-      <code>assert(isset($node-&gt;namespacedName))</code>
-      <code>assert(isset($parameter-&gt;var-&gt;name))</code>
-      <code>assert(isset($parentNode-&gt;namespacedName))</code>
-    </RedundantConditionGivenDocblockType>
   </file>
 </files>

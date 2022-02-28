@@ -25,6 +25,8 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
@@ -118,6 +120,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return [$node->dim->getStartLine()];
         }
 
+        if ($node instanceof ClassMethod) {
+            if ($node->name->name !== '__construct') {
+                return [];
+            }
+
+            $existsAPromotedProperty = false;
+
+            foreach ($node->getParams() as $param) {
+                if (0 !== ($param->flags & Class_::VISIBILITY_MODIFIER_MASK)) {
+                    $existsAPromotedProperty = true;
+
+                    break;
+                }
+            }
+
+            if ($existsAPromotedProperty) {
+                // Only the line with `function` keyword should be listed here
+                // but `nikic/php-parser` doesn't provide a way to fetch it
+                return range($node->getStartLine(), $node->name->getEndLine());
+            }
+
+            return [];
+        }
+
         if ($node instanceof MethodCall) {
             return [$node->name->getStartLine()];
         }
@@ -147,6 +173,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Case_ ||
                $node instanceof Cast ||
                $node instanceof Catch_ ||
+               $node instanceof ClassMethod ||
                $node instanceof Closure ||
                $node instanceof Continue_ ||
                $node instanceof Do_ ||

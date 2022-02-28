@@ -377,6 +377,21 @@ final class RawCodeCoverageDataTest extends TestCase
         );
     }
 
+    public function testEmtpyConstructorIsMarkedAsExevutable(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_empty_constructor.php';
+
+        $this->assertEquals(
+            [
+                5,
+                6,
+                7,
+                30,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
+        );
+    }
+
     public function testCoverageForFileWithInlineAnnotations(): void
     {
         $filename = TEST_FILES_PATH . 'source_with_oneline_annotations.php';

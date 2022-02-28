@@ -389,6 +389,9 @@ final class RawCodeCoverageDataTest extends TestCase
         );
     }
 
+    /**
+     * @requires PHP 8.0
+     */
     public function testEachCaseInMatchExpressionIsMarkedAsExecutable(): void
     {
         $file = TEST_FILES_PATH . 'source_with_match_expression.php';

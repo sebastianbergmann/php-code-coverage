@@ -155,9 +155,6 @@ final class BarS
                 )
             ;
 
-            $var[]
-            ;
-
             (string)
             $var
             ;

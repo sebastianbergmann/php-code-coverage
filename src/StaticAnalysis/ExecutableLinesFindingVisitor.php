@@ -16,11 +16,13 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\MatchArm;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
@@ -160,6 +162,22 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return $lines;
         }
 
+        if ($node instanceof Match_) {
+            return [$node->cond->getStartLine()];
+        }
+
+        if ($node instanceof MatchArm) {
+            return [$node->body->getStartLine()];
+        }
+
+        if ($node instanceof Expression && (
+            $node->expr instanceof Cast ||
+            $node->expr instanceof Match_ ||
+            $node->expr instanceof MethodCall
+        )) {
+            return [];
+        }
+
         return [$node->getStartLine()];
     }
 
@@ -187,6 +205,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Foreach_ ||
                $node instanceof Goto_ ||
                $node instanceof If_ ||
+               $node instanceof Match_ ||
+               $node instanceof MatchArm ||
                $node instanceof MethodCall ||
                $node instanceof NullsafePropertyFetch ||
                $node instanceof PropertyFetch ||

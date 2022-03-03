@@ -1,0 +1,1 @@
+<?php// at least two lines of comments are needed to trigger bug// because number of lines is 1 (no LF at all) and number of comment lines is 2phpinfo();

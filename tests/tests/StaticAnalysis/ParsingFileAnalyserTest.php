@@ -121,4 +121,18 @@ final class ParsingFileAnalyserTest extends TestCase
             )['linesOfCode']
         );
     }
+
+    /**
+     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/885
+     */
+    public function testGetLinesOfCodeForFileCrLineEndings(): void
+    {
+        $result = (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
+            TEST_FILES_PATH . 'source_without_lf_only_cr.php'
+        );
+
+        $this->assertSame(4, $result['linesOfCode']);
+        $this->assertSame(2, $result['commentLinesOfCode']);
+        $this->assertSame(2, $result['nonCommentLinesOfCode']);
+    }
 }

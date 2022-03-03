@@ -10,7 +10,7 @@
     </tests>
     <directory name="%s">
       <totals>
-        <lines total="19" comments="1" code="18" executable="5" executed="5" percent="100.00"/>
+        <lines total="20" comments="1" code="19" executable="5" executed="5" percent="100.00"/>
         <methods count="1" tested="1" percent="100.00"/>
         <functions count="0" tested="0" percent="0"/>
         <classes count="1" tested="1" percent="100.00"/>
@@ -18,7 +18,7 @@
       </totals>
       <file name="source_with_class_and_anonymous_function.php" href="source_with_class_and_anonymous_function.php.xml">
         <totals>
-          <lines total="19" comments="1" code="18" executable="5" executed="5" percent="100.00"/>
+          <lines total="20" comments="1" code="19" executable="5" executed="5" percent="100.00"/>
           <methods count="1" tested="1" percent="100.00"/>
           <functions count="0" tested="0" percent="0"/>
           <classes count="1" tested="1" percent="100.00"/>

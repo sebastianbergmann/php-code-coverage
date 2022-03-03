@@ -13,7 +13,7 @@
     </tests>
     <directory name="%s">
       <totals>
-        <lines total="34" comments="0" code="34" executable="9" executed="5" percent="55.56"/>
+        <lines total="35" comments="0" code="35" executable="9" executed="5" percent="55.56"/>
         <methods count="4" tested="3" percent="75.00"/>
         <functions count="0" tested="0" percent="0"/>
         <classes count="1" tested="0" percent="0.00"/>
@@ -21,7 +21,7 @@
       </totals>
       <file name="BankAccount.php" href="BankAccount.php.xml">
         <totals>
-          <lines total="34" comments="0" code="34" executable="9" executed="5" percent="55.56"/>
+          <lines total="35" comments="0" code="35" executable="9" executed="5" percent="55.56"/>
           <methods count="4" tested="3" percent="75.00"/>
           <functions count="0" tested="0" percent="0"/>
           <classes count="1" tested="0" percent="0.00"/>

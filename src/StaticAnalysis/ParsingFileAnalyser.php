@@ -13,6 +13,7 @@ use function array_unique;
 use function assert;
 use function file_get_contents;
 use function is_array;
+use function max;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
@@ -132,7 +133,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         }
 
         $source      = file_get_contents($filename);
-        $linesOfCode = substr_count($source, "\n");
+        $linesOfCode = max(substr_count($source, "\n") + 1, substr_count($source, "\r") + 1);
 
         if ($linesOfCode === 0 && !empty($source)) {
             $linesOfCode = 1;

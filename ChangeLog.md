@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#885](https://github.com/sebastianbergmann/php-code-coverage/issues/885): Files that have only `\r` (CR, 0x0d) EOL characters are not handled correctly
+* [#907](https://github.com/sebastianbergmann/php-code-coverage/issues/907): Line with only `return [` is not recognized as executable
 
 ## [9.2.14] - 2022-02-28
 

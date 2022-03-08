@@ -53,18 +53,15 @@ final class Text
      */
     private const COLOR_EOL = "\x1b[2K";
 
-    private int $lowUpperBound;
-
-    private int $highLowerBound;
+    private Thresholds $thresholds;
 
     private bool $showUncoveredFiles;
 
     private bool $showOnlySummary;
 
-    public function __construct(int $lowUpperBound = 50, int $highLowerBound = 90, bool $showUncoveredFiles = false, bool $showOnlySummary = false)
+    public function __construct(Thresholds $thresholds, bool $showUncoveredFiles = false, bool $showOnlySummary = false)
     {
-        $this->lowUpperBound      = $lowUpperBound;
-        $this->highLowerBound     = $highLowerBound;
+        $this->thresholds         = $thresholds;
         $this->showUncoveredFiles = $showUncoveredFiles;
         $this->showOnlySummary    = $showOnlySummary;
     }
@@ -294,11 +291,11 @@ final class Text
             $totalNumberOfElements
         );
 
-        if ($coverage->asFloat() >= $this->highLowerBound) {
+        if ($coverage->asFloat() >= $this->thresholds->highLowerBound()) {
             return self::COLOR_GREEN;
         }
 
-        if ($coverage->asFloat() > $this->lowUpperBound) {
+        if ($coverage->asFloat() > $this->thresholds->lowUpperBound()) {
             return self::COLOR_YELLOW;
         }
 

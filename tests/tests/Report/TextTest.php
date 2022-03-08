@@ -19,7 +19,7 @@ final class TextTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-line.txt',
@@ -29,7 +29,7 @@ final class TextTest extends TestCase
 
     public function testPathCoverageForBankAccountTest(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-path.txt',
@@ -39,7 +39,7 @@ final class TextTest extends TestCase
 
     public function testTextOnlySummaryForBankAccountTest(): void
     {
-        $text = new Text(50, 90, false, true);
+        $text = new Text(Thresholds::default(), false, true);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-text-summary.txt',
@@ -49,7 +49,7 @@ final class TextTest extends TestCase
 
     public function testTextForNamespacedBankAccountTest(): void
     {
-        $text = new Text(50, 90, true, false);
+        $text = new Text(Thresholds::default(), true, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
@@ -59,7 +59,7 @@ final class TextTest extends TestCase
 
     public function testTextForFileWithIgnoredLines(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-text.txt',
@@ -69,7 +69,7 @@ final class TextTest extends TestCase
 
     public function testTextForClassWithAnonymousFunction(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
@@ -79,7 +79,7 @@ final class TextTest extends TestCase
 
     public function testUncoveredFilesAreIncludedWhenConfiguredTest(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt',
@@ -89,7 +89,7 @@ final class TextTest extends TestCase
 
     public function testUncoveredFilesAreExcludedWhenConfiguredTest(): void
     {
-        $text = new Text(50, 90, false, false);
+        $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccountWithoutUncovered-text-line.txt',

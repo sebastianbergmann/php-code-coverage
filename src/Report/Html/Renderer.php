@@ -92,7 +92,8 @@ abstract class Renderer
                 $data['numExecutableLines'];
 
             $linesBar = $this->coverageBar(
-                $data['linesExecutedPercent']
+                $data['linesExecutedPercent'],
+				$data['numExecutableLines'] / ($data['maxNumExecutableLines'] ?? $data['numExecutableLines'])
             );
         } else {
             $linesLevel                           = '';
@@ -247,7 +248,7 @@ abstract class Renderer
         return str_repeat('../', $depth);
     }
 
-    protected function coverageBar(float $percent): string
+    protected function coverageBar(float $percent, float $proportion = 1): string
     {
         $level = $this->colorLevel($percent);
 
@@ -258,7 +259,7 @@ abstract class Renderer
             '}}'
         );
 
-        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent)]);
+        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent), 'proportion' => sprintf('%.2F', $proportion)]);
 
         return $template->render();
     }

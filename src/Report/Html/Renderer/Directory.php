@@ -30,12 +30,15 @@ final class Directory extends Renderer
 
         $items = $this->renderItem($node, true);
 
+
+		$maxLines = max(array_map(static fn($n)=> $n->numberOfExecutableLines(), array_merge($node->directories(),$node->files())));
+
         foreach ($node->directories() as $item) {
-            $items .= $this->renderItem($item);
+            $items .= $this->renderItem($item, false, $maxLines);
         }
 
         foreach ($node->files() as $item) {
-            $items .= $this->renderItem($item);
+            $items .= $this->renderItem($item, false, $maxLines);
         }
 
         $template->setVar(
@@ -48,7 +51,7 @@ final class Directory extends Renderer
         $template->renderTo($file);
     }
 
-    private function renderItem(Node $node, bool $total = false): string
+    private function renderItem(Node $node, bool $total = false, int $maxLines = 0): string
     {
         $data = [
             'numClasses'                      => $node->numberOfClassesAndTraits(),
@@ -59,6 +62,7 @@ final class Directory extends Renderer
             'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
             'numExecutedLines'                => $node->numberOfExecutedLines(),
             'numExecutableLines'              => $node->numberOfExecutableLines(),
+			'maxNumExecutableLines'           => $maxLines,
             'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
             'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
             'numExecutedBranches'             => $node->numberOfExecutedBranches(),

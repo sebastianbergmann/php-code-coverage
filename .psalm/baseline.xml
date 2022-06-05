@@ -256,27 +256,25 @@
     <PossiblyInvalidOperand occurrences="1">
       <code>$parameter-&gt;var-&gt;name</code>
     </PossiblyInvalidOperand>
-    <PossiblyNullReference occurrences="2">
+    <PossiblyNullReference occurrences="4">
+      <code>toString</code>
+      <code>toString</code>
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
     <PossiblyUndefinedMethod occurrences="1">
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantConditionGivenDocblockType occurrences="13">
+    <RedundantConditionGivenDocblockType occurrences="9">
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
       <code>$type instanceof ComplexType</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
       <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
       <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
       <code>assert(isset($node-&gt;name))</code>
       <code>assert(isset($node-&gt;namespacedName))</code>
-      <code>assert(isset($node-&gt;namespacedName))</code>
       <code>assert(isset($parameter-&gt;var-&gt;name))</code>
-      <code>assert(isset($parentNode-&gt;namespacedName))</code>
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Version.php">

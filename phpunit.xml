@@ -5,8 +5,7 @@
          cacheDirectory=".phpunit.cache"
          executionOrder="depends,defects"
          beStrictAboutOutputDuringTests="true"
-         colors="true"
-         verbose="true">
+         colors="true">
     <testsuites>
         <testsuite name="default">
             <directory>tests/tests</directory>

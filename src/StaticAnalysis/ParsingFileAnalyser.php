@@ -200,21 +200,21 @@ final class ParsingFileAnalyser implements FileAnalyser
                         break;
                     }
 
-                    $comment = trim($token[1]);
+                $comment = trim($token[1]);
 
-                    if ($comment === '// @codeCoverageIgnore' ||
-                        $comment === '//@codeCoverageIgnore') {
-                        $ignore = true;
-                        $stop   = true;
-                    } elseif ($comment === '// @codeCoverageIgnoreStart' ||
-                        $comment === '//@codeCoverageIgnoreStart') {
-                        $ignore = true;
-                    } elseif ($comment === '// @codeCoverageIgnoreEnd' ||
-                        $comment === '//@codeCoverageIgnoreEnd') {
-                        $stop = true;
-                    }
+                if ($comment === '// @codeCoverageIgnore' ||
+                    $comment === '//@codeCoverageIgnore') {
+                    $ignore = true;
+                    $stop   = true;
+                } elseif ($comment === '// @codeCoverageIgnoreStart' ||
+                    $comment === '//@codeCoverageIgnoreStart') {
+                    $ignore = true;
+                } elseif ($comment === '// @codeCoverageIgnoreEnd' ||
+                    $comment === '//@codeCoverageIgnoreEnd') {
+                    $stop = true;
+                }
 
-                    break;
+                break;
             }
 
             if ($ignore) {

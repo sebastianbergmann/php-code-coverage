@@ -4,9 +4,8 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="2">
+    <DocblockTypeContradiction occurrences="1">
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
-      <code>$id === null</code>
     </DocblockTypeContradiction>
     <InternalClass occurrences="3">
       <code>Test::LARGE</code>
@@ -20,28 +19,9 @@
       <code>isLarge</code>
       <code>isMedium</code>
     </InternalMethod>
-    <PossiblyNullPropertyAssignmentValue occurrences="2">
-      <code>null</code>
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>$currentId</code>
-    </PropertyNotSetInConstructor>
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="src/Driver/PcovDriver.php">
-    <UndefinedConstant occurrences="1">
-      <code>inclusive</code>
-    </UndefinedConstant>
-    <UndefinedFunction occurrences="5">
-      <code>clear()</code>
-      <code>collect(inclusive, $filesToCollectCoverageFor)</code>
-      <code>start()</code>
-      <code>stop()</code>
-      <code>waiting()</code>
-    </UndefinedFunction>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">

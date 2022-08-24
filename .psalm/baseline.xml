@@ -7,9 +7,9 @@
     <InternalMethod occurrences="8">
       <code>asString</code>
       <code>getName</code>
-      <code>getName</code>
       <code>isLarge</code>
       <code>isMedium</code>
+      <code>nameWithDataSet</code>
       <code>size</code>
       <code>size</code>
       <code>size</code>

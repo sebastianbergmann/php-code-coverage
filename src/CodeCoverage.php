@@ -22,6 +22,7 @@ use function get_class;
 use function is_array;
 use function is_file;
 use function sort;
+use function sys_get_temp_dir;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
@@ -121,6 +122,10 @@ final class CodeCoverage
         $this->filter = $filter;
         $this->data   = new ProcessedCodeCoverageData;
         $this->wizard = new Wizard;
+
+        if (@is_writable(sys_get_temp_dir())) {
+            $this->cacheDirectory = sys_get_temp_dir() . '/phpunit/coverage-cache';
+        }
     }
 
     /**

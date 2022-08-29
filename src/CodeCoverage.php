@@ -156,12 +156,6 @@ final class CodeCoverage
 
     public function stop(bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
-        if (!is_array($linesToBeCovered) && $linesToBeCovered !== false) {
-            throw new InvalidArgumentException(
-                '$linesToBeCovered must be an array or false'
-            );
-        }
-
         $data = $this->driver->stop();
         $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed);
 

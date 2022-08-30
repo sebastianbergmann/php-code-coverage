@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.17] - 2022-MM-DD
+
+### Fixed
+
+* [#926](https://github.com/sebastianbergmann/php-code-coverage/pull/926): Static Analysis cache does not work with `open_basedir`
+
 ## [9.2.16] - 2022-08-20
 
 ### Fixed
@@ -404,6 +410,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.16...9.2
 [9.2.16]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.15...9.2.16
 [9.2.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.14...9.2.15
 [9.2.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.13...9.2.14

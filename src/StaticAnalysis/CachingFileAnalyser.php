@@ -48,10 +48,6 @@ final class CachingFileAnalyser implements FileAnalyser
 
         $this->analyser  = $analyser;
         $this->directory = $directory;
-
-        if (self::$cacheVersion === null) {
-            $this->calculateCacheVersion();
-        }
     }
 
     public function classesIn(string $filename): array
@@ -163,11 +159,15 @@ final class CachingFileAnalyser implements FileAnalyser
 
     private function cacheFile(string $filename): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . crc32(file_get_contents($filename)) . self::$cacheVersion);
+        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . crc32(file_get_contents($filename)) . self::cacheVersion());
     }
 
-    private function calculateCacheVersion(): void
+    private static function cacheVersion(): string
     {
+        if (self::$cacheVersion !== null) {
+            return self::$cacheVersion;
+        }
+
         $buffer = '';
 
         foreach ((new FileIteratorFacade)->getFilesAsArray(__DIR__, '.php') as $file) {
@@ -175,5 +175,7 @@ final class CachingFileAnalyser implements FileAnalyser
         }
 
         self::$cacheVersion = (string) crc32($buffer);
+
+        return self::$cacheVersion;
     }
 }

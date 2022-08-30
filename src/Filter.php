@@ -100,11 +100,7 @@ final class Filter
 
     public function isExcluded(string $filename): bool
     {
-        if (!$this->isFile($filename)) {
-            return true;
-        }
-
-        return !isset($this->files[$filename]);
+        return !isset($this->files[$filename]) || !$this->isFile($filename);
     }
 
     /**

@@ -170,7 +170,7 @@ final class CachingFileAnalyser implements FileAnalyser
     {
         $buffer = '';
 
-        foreach ((new FileIteratorFacade())->getFilesAsArray(__DIR__, '.php') as $file) {
+        foreach ((new FileIteratorFacade)->getFilesAsArray(__DIR__, '.php') as $file) {
             $buffer .= file_get_contents($file);
         }
 

@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * [#928](https://github.com/sebastianbergmann/php-code-coverage/pull/928): Avoid unnecessary `is_file()` calls
+* [#931](https://github.com/sebastianbergmann/php-code-coverage/pull/931): Use MD5 instead of CRC32 for static analysis cache file identifier
 
 ### Fixed
 

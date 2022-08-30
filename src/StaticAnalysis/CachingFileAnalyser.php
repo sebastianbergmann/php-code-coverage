@@ -9,10 +9,11 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use function crc32;
 use function file_get_contents;
 use function file_put_contents;
+use function implode;
 use function is_file;
+use function md5;
 use function serialize;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
@@ -159,7 +160,8 @@ final class CachingFileAnalyser implements FileAnalyser
 
     private function cacheFile(string $filename): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR . hash('sha256', $filename . crc32(file_get_contents($filename)) . self::cacheVersion());
+        return $this->directory . DIRECTORY_SEPARATOR
+            . md5($filename . "\0" . file_get_contents($filename) . "\0" . self::cacheVersion());
     }
 
     private static function cacheVersion(): string
@@ -168,13 +170,14 @@ final class CachingFileAnalyser implements FileAnalyser
             return self::$cacheVersion;
         }
 
-        $buffer = '';
+        $buffer = [];
 
         foreach ((new FileIteratorFacade)->getFilesAsArray(__DIR__, '.php') as $file) {
-            $buffer .= file_get_contents($file);
+            $buffer[] = $file;
+            $buffer[] = file_get_contents($file);
         }
 
-        self::$cacheVersion = (string) crc32($buffer);
+        self::$cacheVersion = md5(implode("\0", $buffer));
 
         return self::$cacheVersion;
     }

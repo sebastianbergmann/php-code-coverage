@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.17] - 2022-MM-DD
 
+### Changed
+
+* [#928](https://github.com/sebastianbergmann/php-code-coverage/pull/928): Avoid unnecessary `is_file()` calls
+
 ### Fixed
 
 * [#926](https://github.com/sebastianbergmann/php-code-coverage/pull/926): Static Analysis cache does not work with `open_basedir`

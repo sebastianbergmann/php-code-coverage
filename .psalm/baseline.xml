@@ -20,9 +20,6 @@
     <RedundantCondition occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>
-    <TypeDoesNotContainType occurrences="1">
-      <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
-    </TypeDoesNotContainType>
   </file>
   <file src="src/Data/ProcessedCodeCoverageData.php">
     <PossiblyNullArgument occurrences="1">

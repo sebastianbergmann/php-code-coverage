@@ -47,16 +47,16 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             [
-                'BankAccountTest::testBalanceIsInitiallyZero'       => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
-                'BankAccountTest::testBalanceCannotBecomeNegative'  => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
-                'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
-                'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => 'unknown', 'fromTestcase' => true],
+                'BankAccountTest::testBalanceIsInitiallyZero'       => ['size' => 'unknown', 'status' => 'unknown'],
+                'BankAccountTest::testBalanceCannotBecomeNegative'  => ['size' => 'unknown', 'status' => 'unknown'],
+                'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => 'unknown'],
+                'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => 'unknown'],
             ],
             $coverage->getTests()
         );
     }
 
-    public function testWhitelistFiltering(): void
+    public function testIncludeListFiltering(): void
     {
         $this->coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 

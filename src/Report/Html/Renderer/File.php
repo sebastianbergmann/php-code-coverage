@@ -984,42 +984,21 @@ final class File extends Renderer
     {
         $testCSS = '';
 
-        if ($testData['fromTestcase']) {
-            switch ($testData['status']) {
-                case 'success':
-                    switch ($testData['size']) {
-                        case 'small':
-                            $testCSS = ' class="covered-by-small-tests"';
+        switch ($testData['status']) {
+            case 'success':
+                $testCSS = match ($testData['size']) {
+                    'small'  => ' class="covered-by-small-tests"',
+                    'medium' => ' class="covered-by-medium-tests"',
+                    // no break
+                    default => ' class="covered-by-large-tests"',
+                };
 
-                            break;
+                break;
 
-                        case 'medium':
-                            $testCSS = ' class="covered-by-medium-tests"';
+            case 'failure':
+                $testCSS = ' class="danger"';
 
-                            break;
-
-                        default:
-                            $testCSS = ' class="covered-by-large-tests"';
-
-                            break;
-                    }
-
-                    break;
-
-                case 'skipped':
-                case 'incomplete':
-                case 'risky':
-                case 'warning':
-                    $testCSS = ' class="warning"';
-
-                    break;
-
-                case 'failure':
-                case 'error':
-                    $testCSS = ' class="danger"';
-
-                    break;
-            }
+                break;
         }
 
         return sprintf(

@@ -4,19 +4,6 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <InternalMethod occurrences="8">
-      <code>asString</code>
-      <code>getName</code>
-      <code>isLarge</code>
-      <code>isMedium</code>
-      <code>nameWithDataSet</code>
-      <code>size</code>
-      <code>size</code>
-      <code>size</code>
-    </InternalMethod>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>$currentId</code>
-    </PropertyNotSetInConstructor>
     <RedundantCondition occurrences="1">
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>

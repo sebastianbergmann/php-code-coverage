@@ -18,12 +18,9 @@ use function array_unique;
 use function array_values;
 use function count;
 use function explode;
-use function get_class;
 use function is_array;
 use function is_file;
 use function sort;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\PhptTestCase;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
@@ -33,6 +30,8 @@ use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
+use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
@@ -54,7 +53,9 @@ final class CodeCoverage
 
     private bool $ignoreDeprecatedCode = false;
 
-    private PhptTestCase|string|TestCase|null $currentId;
+    private ?string $currentId = null;
+
+    private ?TestSize $currentSize = null;
 
     private ProcessedCodeCoverageData $data;
 
@@ -92,9 +93,10 @@ final class CodeCoverage
      */
     public function clear(): void
     {
-        $this->currentId = null;
-        $this->data      = new ProcessedCodeCoverageData;
-        $this->tests     = [];
+        $this->currentId   = null;
+        $this->currentSize = null;
+        $this->data        = new ProcessedCodeCoverageData;
+        $this->tests       = [];
     }
 
     /**
@@ -143,23 +145,26 @@ final class CodeCoverage
         $this->tests = $tests;
     }
 
-    public function start(PhptTestCase|string|TestCase $id, bool $clear = false): void
+    public function start(string $id, TestSize $size = null, bool $clear = false): void
     {
         if ($clear) {
             $this->clear();
         }
 
-        $this->currentId = $id;
+        $this->currentId   = $id;
+        $this->currentSize = $size;
 
         $this->driver->start();
     }
 
-    public function stop(bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
+    public function stop(bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
         $data = $this->driver->stop();
-        $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed);
 
-        $this->currentId = null;
+        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed);
+
+        $this->currentId   = null;
+        $this->currentSize = null;
 
         return $data;
     }
@@ -169,7 +174,7 @@ final class CodeCoverage
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, PhptTestCase|string|TestCase|null $id = null, bool $append = true, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
+    public function append(RawCodeCoverageData $rawData, string $id = null, bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -177,6 +182,16 @@ final class CodeCoverage
 
         if ($id === null) {
             throw new TestIdMissingException;
+        }
+
+        if ($status === null) {
+            $status = TestStatus::unknown();
+        }
+
+        $size = $this->currentSize;
+
+        if ($size === null) {
+            $size = TestSize::unknown();
         }
 
         $this->applyFilter($rawData);
@@ -197,30 +212,18 @@ final class CodeCoverage
             $this->applyCoversAnnotationFilter(
                 $rawData,
                 $linesToBeCovered,
-                $linesToBeUsed
+                $linesToBeUsed,
+                $size
             );
 
             if (empty($rawData->lineCoverage())) {
                 return;
             }
 
-            $size         = 'unknown';
-            $status       = 'unknown';
-            $fromTestcase = false;
-
-            if ($id instanceof TestCase) {
-                $fromTestcase = true;
-
-                $size   = $id->size()->asString();
-                $status = $id->status()->asString();
-                $id     = get_class($id) . '::' . $id->nameWithDataSet();
-            } elseif ($id instanceof PhptTestCase) {
-                $fromTestcase = true;
-                $size         = 'large';
-                $id           = $id->getName();
-            }
-
-            $this->tests[$id] = ['size' => $size, 'status' => $status, 'fromTestcase' => $fromTestcase];
+            $this->tests[$id] = [
+                'size'   => $size->asString(),
+                'status' => $status->asString(),
+            ];
 
             $this->data->markCodeAsExecutedByTestCase($id, $rawData);
         }
@@ -344,7 +347,7 @@ final class CodeCoverage
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed): void
+    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size): void
     {
         if ($linesToBeCovered === false) {
             $rawData->clear();
@@ -356,9 +359,7 @@ final class CodeCoverage
             return;
         }
 
-        if ($this->checkForUnintentionallyCoveredCode &&
-            (!$this->currentId instanceof TestCase ||
-            (!$this->currentId->size()->isMedium() && !$this->currentId->size()->isLarge()))) {
+        if ($this->checkForUnintentionallyCoveredCode && !$size->isMedium() && !$size->isLarge()) {
             $this->performUnintentionallyCoveredCodeCheck($rawData, $linesToBeCovered, $linesToBeUsed);
         }
 

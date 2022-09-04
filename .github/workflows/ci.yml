@@ -80,10 +80,6 @@ jobs:
           - "xdebug"
           - "xdebug3"
 
-        dependencies:
-          - lowest
-          - highest
-
         exclude:
           - php-version: "8.0"
             coverage-driver: "xdebug"
@@ -108,12 +104,7 @@ jobs:
           ini-values: ${{ env.PHP_INI_VALUES }}
           tools: none
 
-      - name: Install lowest dependencies with Composer
-        if: matrix.dependencies == 'lowest'
-        run: php ./tools/composer update --no-ansi --no-interaction --no-progress --prefer-lowest
-
-      - name: Install highest dependencies with Composer
-        if: matrix.dependencies == 'highest'
+      - name: Install dependencies with Composer
         run: php ./tools/composer update --no-ansi --no-interaction --no-progress
 
       - name: Run tests with PHPUnit

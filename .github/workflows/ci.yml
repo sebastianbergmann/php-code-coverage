@@ -78,16 +78,6 @@ jobs:
           - "pcov"
           - "xdebug3"
 
-        exclude:
-          - php-version: "8.1"
-            coverage-driver: "xdebug"
-
-          - php-version: "8.2"
-            coverage-driver: "xdebug"
-
-          - php-version: "8.3"
-            coverage-driver: "xdebug"
-
     steps:
       - name: Configure Git to avoid issues with line endings
         if: matrix.os == 'windows-latest'

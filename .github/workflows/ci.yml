@@ -27,7 +27,7 @@ jobs:
           coverage: none
           tools: none
 
-      - name: Run friendsofphp/php-cs-fixer
+      - name: Run PHP-CS-Fixer
         run: ./tools/php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
 
   type-checker:
@@ -71,21 +71,25 @@ jobs:
 
         php-version:
           - "8.1"
+          - "8.2"
+          - "8.3"
 
         coverage-driver:
           - "pcov"
           - "xdebug3"
 
-        dependencies:
-          - lowest
-          - highest
-
         exclude:
           - php-version: "8.1"
             coverage-driver: "xdebug"
 
+          - php-version: "8.2"
+            coverage-driver: "xdebug"
+
+          - php-version: "8.3"
+            coverage-driver: "xdebug"
+
     steps:
-      - name: Configure git to avoid issues with line endings
+      - name: Configure Git to avoid issues with line endings
         if: matrix.os == 'windows-latest'
         run: git config --global core.autocrlf false
 
@@ -101,15 +105,10 @@ jobs:
           ini-values: ${{ env.PHP_INI_VALUES }}
           tools: none
 
-      - name: Install lowest dependencies with composer
-        if: matrix.dependencies == 'lowest'
-        run: php ./tools/composer update --no-ansi --no-interaction --no-progress --prefer-lowest
-
-      - name: Install highest dependencies with composer
-        if: matrix.dependencies == 'highest'
+      - name: Install dependencies with Composer
         run: php ./tools/composer update --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with phpunit/phpunit
+      - name: Run tests with PHPUnit
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Send code coverage report to Codecov.io

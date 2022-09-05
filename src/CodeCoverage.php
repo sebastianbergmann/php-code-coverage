@@ -209,7 +209,7 @@ final class CodeCoverage
         }
 
         if ($id !== self::UNCOVERED_FILES) {
-            $this->applyCoversAnnotationFilter(
+            $this->applyCoversAndUsesFilter(
                 $rawData,
                 $linesToBeCovered,
                 $linesToBeUsed,
@@ -347,7 +347,7 @@ final class CodeCoverage
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    private function applyCoversAnnotationFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size): void
+    private function applyCoversAndUsesFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size): void
     {
         if ($linesToBeCovered === false) {
             $rawData->clear();

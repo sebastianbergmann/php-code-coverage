@@ -136,6 +136,9 @@ final class ParsingFileAnalyserTest extends TestCase
         $this->assertSame(2, $result['nonCommentLinesOfCode']);
     }
 
+    /**
+     * @requires PHP 8
+     */
     public function testLinesCanBeIgnoredUsingAttribute(): void
     {
         $this->assertSame(

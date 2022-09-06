@@ -10,9 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_merge;
+use function assert;
 use function range;
 use function strpos;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -52,7 +54,8 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             !$node instanceof Trait_ &&
             !$node instanceof Interface_ &&
             !$node instanceof ClassMethod &&
-            !$node instanceof Function_) {
+            !$node instanceof Function_ &&
+            !$node instanceof Attribute) {
             return;
         }
 
@@ -60,11 +63,16 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        // Workaround for https://bugs.xdebug.org/view.php?id=1798
         if ($node instanceof Class_ ||
             $node instanceof Trait_ ||
-            $node instanceof Interface_) {
+            $node instanceof Interface_ ||
+            $node instanceof Attribute) {
             $this->ignoredLines[] = $node->getStartLine();
+
+            assert($node->name !== null);
+
+            // Workaround for https://github.com/nikic/PHP-Parser/issues/886
+            $this->ignoredLines[] = $node->name->getStartLine();
         }
 
         if (!$this->useAnnotationsForIgnoringCode) {

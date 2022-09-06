@@ -75,6 +75,19 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        $this->processDocComment($node);
+    }
+
+    /**
+     * @psalm-return list<int>
+     */
+    public function ignoredLines(): array
+    {
+        return $this->ignoredLines;
+    }
+
+    private function processDocComment(Node $node): void
+    {
         $docComment = $node->getDocComment();
 
         if ($docComment === null) {
@@ -94,13 +107,5 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
                 range($node->getStartLine(), $node->getEndLine())
             );
         }
-    }
-
-    /**
-     * @psalm-return list<int>
-     */
-    public function ignoredLines(): array
-    {
-        return $this->ignoredLines;
     }
 }

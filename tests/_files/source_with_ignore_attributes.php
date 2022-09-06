@@ -4,15 +4,17 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 #[CodeCoverageIgnore]
 class Foo
 {
-    public function bar(): void
+    public function bar(): bool
     {
+        return true;
     }
 }
 
 class Bar
 {
     #[CodeCoverageIgnore]
-    public function foo(): void
+    public function foo(): bool
     {
+        return false;
     }
 }

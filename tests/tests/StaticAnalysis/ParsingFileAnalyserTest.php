@@ -142,8 +142,18 @@ final class ParsingFileAnalyserTest extends TestCase
             [
                 4,
                 5,
-                12,
-                14,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                13,
+                15,
+                16,
+                17,
+                18,
+                19,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore_attributes.php'

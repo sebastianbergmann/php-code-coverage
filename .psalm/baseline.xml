@@ -199,6 +199,8 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/StaticAnalysis/IgnoredLinesFindingVisitor.php">
-    <InvalidPropertyAssignmentValue occurrences="1"/>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;ignoredLines</code>
+    </InvalidPropertyAssignmentValue>
   </file>
 </files>

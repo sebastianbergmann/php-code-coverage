@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function assert;
-use function range;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Stmt\Class_;
@@ -80,7 +79,7 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             $attributeGroup = $node->getAttribute('parent');
             $attributedNode = $attributeGroup->getAttribute('parent');
 
-            foreach (range($attributedNode->getStartLine(), $attributedNode->getEndLine()) as $line) {
+            for ($line = $attributedNode->getStartLine(); $line <= $attributedNode->getEndLine(); $line++) {
                 $this->ignoredLines[] = $line;
             }
 
@@ -91,7 +90,7 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @psalm-return list<int>
+     * @psalm-return array<int>
      */
     public function ignoredLines(): array
     {
@@ -107,13 +106,13 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if (str_contains($docComment->getText(), '@codeCoverageIgnore')) {
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
+            for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
                 $this->ignoredLines[] = $line;
             }
         }
 
         if ($this->ignoreDeprecated && str_contains($docComment->getText(), '@deprecated')) {
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
+            for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
                 $this->ignoredLines[] = $line;
             }
         }

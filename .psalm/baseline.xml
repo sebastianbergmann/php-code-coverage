@@ -198,9 +198,4 @@
       <code>assert(isset($parameter-&gt;var-&gt;name))</code>
     </RedundantConditionGivenDocblockType>
   </file>
-  <file src="src/StaticAnalysis/IgnoredLinesFindingVisitor.php">
-    <InvalidPropertyAssignmentValue occurrences="1">
-      <code>$this-&gt;ignoredLines</code>
-    </InvalidPropertyAssignmentValue>
-  </file>
 </files>

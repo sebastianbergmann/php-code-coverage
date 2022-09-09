@@ -5,7 +5,7 @@
     <source>%s</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.75" branch-rate="0" complexity="3">
+    <package name="source_with_class_and_outside_function.php" line-rate="0.75" branch-rate="0" complexity="3">
       <classes>
         <class name="ClassInFileWithOutsideFunction" filename="source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>

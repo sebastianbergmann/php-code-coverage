@@ -22,7 +22,7 @@ final class CoberturaTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-cobertura-line.xml',
-            $cobertura->process($this->getLineCoverageForBankAccount(), null, 'BankAccount')
+            $cobertura->process($this->getLineCoverageForBankAccount(), null)
         );
     }
 
@@ -32,7 +32,7 @@ final class CoberturaTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-cobertura-path.xml',
-            $cobertura->process($this->getPathCoverageForBankAccount(), null, 'BankAccount')
+            $cobertura->process($this->getPathCoverageForBankAccount(), null)
         );
     }
 

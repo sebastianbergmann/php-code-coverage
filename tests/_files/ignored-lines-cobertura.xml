@@ -5,7 +5,7 @@
     <source>%s</source>
   </sources>
   <packages>
-    <package name="" line-rate="1" branch-rate="0" complexity="2">
+    <package name="source_with_ignore.php" line-rate="1" branch-rate="0" complexity="2">
       <classes>
         <class name="Foo" filename="source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
           <methods/>

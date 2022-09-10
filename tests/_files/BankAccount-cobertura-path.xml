@@ -5,7 +5,7 @@
     <source>%s</source>
   </sources>
   <packages>
-    <package name="BankAccount" line-rate="0.55555555555556" branch-rate="0.42857142857143" complexity="5">
+    <package name="BankAccount.php" line-rate="0.55555555555556" branch-rate="0.42857142857143" complexity="5">
       <classes>
         <class name="BankAccount" filename="BankAccount.php" line-rate="0.55555555555556" branch-rate="0.42857142857143" complexity="5">
           <methods>

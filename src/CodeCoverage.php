@@ -515,17 +515,37 @@ final class CodeCoverage
             $this->filter->files(),
             $this->data->coveredFiles()
         );
+        foreach ($uncoveredFiles as $k => $uncoveredFile) {
+            if (!$this->filter->isFile($uncoveredFile)) {
+                unset($uncoveredFiles[$k]);
+            }
+        }
+
+        if (extension_loaded('Zend OPcache')
+            && opcache_get_status() !== false
+            && opcache_get_status()['opcache_enabled']
+        ) {
+            $this->driver->start();
+
+            foreach ($uncoveredFiles as $k => $uncoveredFile) {
+                $compiled = opcache_compile_file($uncoveredFile);
+
+                if ($compiled) {
+                    unset($uncoveredFiles[$k]);
+                }
+            }
+
+            $this->append($this->driver->stop(), self::UNCOVERED_FILES);
+        }
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            if ($this->filter->isFile($uncoveredFile)) {
-                $this->append(
-                    RawCodeCoverageData::fromUncoveredFile(
-                        $uncoveredFile,
-                        $this->analyser()
-                    ),
-                    self::UNCOVERED_FILES
-                );
-            }
+            $this->append(
+                RawCodeCoverageData::fromUncoveredFile(
+                    $uncoveredFile,
+                    $this->analyser()
+                ),
+                self::UNCOVERED_FILES
+            );
         }
     }
 

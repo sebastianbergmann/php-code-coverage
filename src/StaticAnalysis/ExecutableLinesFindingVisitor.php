@@ -10,9 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
@@ -150,22 +148,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return [$node->dim->getStartLine()];
         }
 
-        if ($node instanceof Array_) {
-            $startLine = $node->getStartLine();
-
-            if (isset($this->executableLines[$startLine])) {
-                return [];
-            }
-
-            if ([] === $node->items) {
-                return [$node->getEndLine()];
-            }
-
-            if ($node->items[0] instanceof ArrayItem) {
-                return [$node->items[0]->getStartLine()];
-            }
-        }
-
         if ($node instanceof ClassMethod) {
             if ($node->name->name !== '__construct') {
                 return [];
@@ -235,7 +217,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         return $node instanceof Assign ||
                $node instanceof ArrayDimFetch ||
-               $node instanceof Array_ ||
                $node instanceof BinaryOp ||
                $node instanceof Break_ ||
                $node instanceof CallLike ||

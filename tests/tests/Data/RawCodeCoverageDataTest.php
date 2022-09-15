@@ -272,7 +272,6 @@ final class RawCodeCoverageDataTest extends TestCase
             [
                 12,
                 14,
-                15,
                 16,
                 18,
             ],
@@ -300,7 +299,6 @@ final class RawCodeCoverageDataTest extends TestCase
             [
                 7,
                 9,
-                10,
                 11,
                 13,
             ],
@@ -342,7 +340,6 @@ final class RawCodeCoverageDataTest extends TestCase
                 25,
                 28,
                 31,
-                36,
                 40,
                 46,
                 48,
@@ -364,7 +361,6 @@ final class RawCodeCoverageDataTest extends TestCase
                 117,
                 120,
                 123,
-                125, // This shouldn't be marked as LoC, but it's high unlikely to happen IRL to have $var = []; on multiple lines
                 132,
                 135,
                 139,
@@ -415,14 +411,15 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             [
-                8,
+                7,
                 15,
-                24,
+                22,
                 30,
-                40,
+                39,
                 47,
                 54,
                 63,
+                74,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
         );

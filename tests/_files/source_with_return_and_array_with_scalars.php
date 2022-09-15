@@ -62,4 +62,24 @@ class Foo
         return
             ;
     }
+
+    /**
+     * Array expression must not add executable line to make uncovered
+     * output consistent with output from real coverage driver like Xdebug.
+     *
+     * @see https://github.com/sebastianbergmann/php-code-coverage/pull/938
+     */
+    public function nineNestedArray(): array
+    {
+        return [
+            [],
+            [[]],
+            [[
+                'test',
+                'test' => [
+                    [[[false]]]
+                ]
+            ]],
+        ];
+    }
 }

@@ -20,7 +20,6 @@ use function count;
 use function explode;
 use function get_class;
 use function is_array;
-use function is_file;
 use function sort;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
@@ -518,7 +517,7 @@ final class CodeCoverage
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            if (is_file($uncoveredFile)) {
+            if ($this->filter->isFile($uncoveredFile)) {
                 $this->append(
                     RawCodeCoverageData::fromUncoveredFile(
                         $uncoveredFile,
@@ -543,7 +542,7 @@ final class CodeCoverage
         $this->driver->start();
 
         foreach ($uncoveredFiles as $uncoveredFile) {
-            if (is_file($uncoveredFile)) {
+            if ($this->filter->isFile($uncoveredFile)) {
                 include_once $uncoveredFile;
             }
         }

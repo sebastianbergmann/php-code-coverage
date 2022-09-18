@@ -129,7 +129,7 @@ final class BuilderTest extends TestCase
                     'executablePaths'    => 0,
                     'executedPaths'      => 0,
                     'ccn'                => 5,
-                    'coverage'           => 55.555555555556,
+                    'coverage'           => 55.55555555555556,
                     'crap'               => '7.19',
                     'link'               => 'BankAccount.php.html#2',
                     'className'          => 'BankAccount',

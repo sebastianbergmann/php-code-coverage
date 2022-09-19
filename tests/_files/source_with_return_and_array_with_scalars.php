@@ -48,7 +48,7 @@ class Foo
         ;
     }
 
-    public function seventh(): int
+    public function seventh(): string
     {
         return
             self

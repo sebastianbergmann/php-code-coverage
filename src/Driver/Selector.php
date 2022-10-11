@@ -19,17 +19,12 @@ final class Selector
     /**
      * @throws NoCodeCoverageDriverAvailableException
      * @throws PcovNotAvailableException
-     * @throws PhpdbgNotAvailableException
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
      */
     public function forLineCoverage(Filter $filter): Driver
     {
         $runtime = new Runtime;
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            return new PhpdbgDriver;
-        }
 
         if ($runtime->hasPCOV()) {
             return new PcovDriver($filter);

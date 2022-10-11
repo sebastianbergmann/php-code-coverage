@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function constant;
 use function phpversion;
 use DateTimeImmutable;
 use DOMElement;
@@ -36,11 +35,6 @@ final class BuildInformation
         $runtimeNode->setAttribute('url', $runtime->getVendorUrl());
 
         $driverNode = $this->nodeByName('driver');
-
-        if ($runtime->hasPHPDBGCodeCoverage()) {
-            $driverNode->setAttribute('name', 'phpdbg');
-            $driverNode->setAttribute('version', constant('PHPDBG_VERSION'));
-        }
 
         if ($runtime->hasXdebug()) {
             $driverNode->setAttribute('name', 'xdebug');

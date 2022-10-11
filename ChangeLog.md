@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The deprecated methods `SebastianBergmann\CodeCoverage\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver::forLineAndPathCoverage()` have been removed
 * This component is no longer supported on PHP 7.3, PHP 7.4 and PHP 8.0
+* This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2
 
 ## [9.2.18] - 2022-MM-DD

@@ -25,6 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#935](https://github.com/sebastianbergmann/php-code-coverage/pull/935): Cobertura package name attribute is always empty
+* [#946](https://github.com/sebastianbergmann/php-code-coverage/issues/946): `return` with multiline constant expression must only contain the last line
 
 ## [9.2.17] - 2022-08-30
 

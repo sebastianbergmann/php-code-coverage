@@ -318,7 +318,6 @@ final class RawCodeCoverageDataTest extends TestCase
                 99,
                 101,
                 116,
-                117,
                 120,
                 123,
                 125, // This shouldn't be marked as LoC, but it's high unlikely to happen IRL to have $var = []; on multiple lines
@@ -380,6 +379,44 @@ final class RawCodeCoverageDataTest extends TestCase
                 47,
                 54,
                 63,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
+        );
+    }
+
+    public function testReturnStatementWithConstantExprOnlyReturnTheLineOfLast(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_multiline_constant_return.php';
+
+        $this->assertEquals(
+            [
+                10,
+                19,
+                28,
+                37,
+                46,
+                55,
+                64,
+                73,
+                82,
+                91,
+                100,
+                109,
+                118,
+                127,
+                136,
+                145,
+                154,
+                163,
+                172,
+                181,
+                190,
+                199,
+                208,
+                217,
+                226,
+                235,
+                244,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
         );

@@ -135,6 +135,17 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private function getLines(Node $node): array
     {
+        if ($node instanceof BinaryOp) {
+            if (($node->left instanceof Node\Scalar ||
+                $node->left instanceof Node\Expr\ConstFetch) &&
+                ($node->right instanceof Node\Scalar ||
+                $node->right instanceof Node\Expr\ConstFetch)) {
+                return [$node->right->getStartLine()];
+            }
+
+            return [];
+        }
+
         if ($node instanceof Cast ||
             $node instanceof PropertyFetch ||
             $node instanceof NullsafePropertyFetch ||

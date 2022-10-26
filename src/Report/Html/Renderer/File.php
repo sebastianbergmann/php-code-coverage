@@ -799,6 +799,7 @@ final class File extends Renderer
         $lines = '';
 
         foreach ($path['path'] as $branchId) {
+            $lines .= '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>' . "\n";
             $branchLines = range($branches[$branchId]['line_start'], $branches[$branchId]['line_end']);
             sort($branchLines); // sometimes end_line < start_line
 

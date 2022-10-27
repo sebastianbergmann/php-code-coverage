@@ -835,6 +835,7 @@ final class File extends Renderer
 
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
+
                     $trClass = $lineCss . ' popin';
                 }
 

@@ -48,11 +48,6 @@ final class Text
      */
     private const COLOR_RESET = "\x1b[0m";
 
-    /**
-     * @var string
-     */
-    private const COLOR_EOL = "\x1b[2K";
-
     private Thresholds $thresholds;
 
     private bool $showUncoveredFiles;
@@ -81,7 +76,6 @@ final class Text
             'branches' => '',
             'paths'    => '',
             'reset'    => '',
-            'eol'      => '',
         ];
 
         if ($showColors) {
@@ -112,7 +106,6 @@ final class Text
 
             $colors['reset']  = self::COLOR_RESET;
             $colors['header'] = self::COLOR_HEADER;
-            $colors['eol']    = self::COLOR_EOL;
         }
 
         $classes = sprintf(

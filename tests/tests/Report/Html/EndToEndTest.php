@@ -58,11 +58,7 @@ final class EndToEndTest extends TestCase
 
     public function testPathCoverageForSourceWithoutNamespace(): void
     {
-        if (PHP_VERSION_ID >= 80100) {
-            $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PHP81AndUp' . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
-        } else {
-            $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PHP80AndBelow' . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
-        }
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
 
         $report = new Facade;
         $report->process($this->getPathCoverageForSourceWithoutNamespace(), self::$TEST_TMP_PATH);
@@ -82,11 +78,7 @@ final class EndToEndTest extends TestCase
 
     public function testForClassWithAnonymousFunction(): void
     {
-        if (PHP_VERSION_ID >= 80100) {
-            $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PHP81AndUp' . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
-        } else {
-            $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PHP80AndBelow' . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
-        }
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $report = new Facade;
         $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);

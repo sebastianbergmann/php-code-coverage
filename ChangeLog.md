@@ -20,7 +20,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2
 
-## [9.2.18] - 2022-MM-DD
+## [9.2.18] - 2022-10-27
 
 ### Fixed
 
@@ -441,7 +441,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.1
 
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...master
-[9.2.18]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.17...9.2
+[9.2.18]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.17...9.2.18
 [9.2.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.16...9.2.17
 [9.2.16]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.15...9.2.16
 [9.2.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.14...9.2.15

@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.19] - 2022-MM-DD
+
+### Changed
+
+* Tweaked CSS for HTML report
+* Updated bundled CSS/JavaScript components used for HTML report: Bootstrap 4.6.2 and jQuery 3.6.1
+
 ## [9.2.18] - 2022-10-27
 
 ### Fixed
@@ -422,6 +429,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.19]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.18...9.2
 [9.2.18]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.17...9.2.18
 [9.2.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.16...9.2.17
 [9.2.16]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.15...9.2.16

@@ -1,4 +1,9 @@
 body {
+ font-family: sans-serif;
+ font-size: 2em;
+ font-kerning: normal;
+ font-variant-ligatures: common-ligatures;
+ text-rendering: optimizeLegibility;
  padding-top: 10px;
 }
 
@@ -8,6 +13,8 @@ body {
 
 .octicon {
  margin-right:.25em;
+ vertical-align: middle;
+ width: 0.75em;
 }
 
 .table-bordered>thead>tr>td {
@@ -57,6 +64,7 @@ body {
 }
 
 td.big {
+ vertical-align: middle;
  width: 117px;
 }
 

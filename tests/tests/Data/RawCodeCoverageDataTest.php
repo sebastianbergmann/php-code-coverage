@@ -333,7 +333,7 @@ final class RawCodeCoverageDataTest extends TestCase
         );
     }
 
-    public function testEmtpyConstructorIsMarkedAsExecutable(): void
+    public function testEmptyConstructorIsMarkedAsExecutable(): void
     {
         $file = TEST_FILES_PATH . 'source_with_empty_constructor.php';
 
@@ -379,6 +379,23 @@ final class RawCodeCoverageDataTest extends TestCase
                 47,
                 54,
                 63,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
+        );
+    }
+
+    public function testReturnArrayWithVariable(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_return_array_with_variable.php';
+
+        $this->assertEquals(
+            [
+                8,
+                9,
+                12,
+                13,
+                15,
+                17,
             ],
             array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
         );

@@ -172,9 +172,36 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 return [$node->getEndLine()];
             }
 
-            if ($node->items[0] instanceof ArrayItem) {
-                return [$node->items[0]->getStartLine()];
+            $lines = [];
+
+            foreach ($node->items as $index => $item) {
+                if (!$item instanceof ArrayItem) {
+                    continue;
+                }
+
+                if ($index === 0) {
+                    $lines[] = $item->getStartLine();
+
+                    continue;
+                }
+
+                if ($item->key instanceof BinaryOp ||
+                    $item->value instanceof BinaryOp) {
+                    continue;
+                }
+
+                if ($item->key instanceof Node\Expr\Variable) {
+                    $lines[] = $item->key->getStartLine();
+
+                    continue;
+                }
+
+                if ($item->value instanceof Node\Expr\Variable) {
+                    $lines[] = $item->value->getStartLine();
+                }
             }
+
+            return $lines;
         }
 
         if ($node instanceof ClassMethod) {

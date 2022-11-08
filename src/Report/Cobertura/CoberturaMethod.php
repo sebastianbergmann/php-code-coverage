@@ -23,7 +23,7 @@ class CoberturaMethod extends CoberturaElement
             return null;
         }
 
-        $method = new self($name, $methodData['signature'], $methodData['executableLines'], $methodData['executedLines'], $methodData['executableBranches'], $methodData['executedBranches']);
+        $method = new self($name, $methodData['signature'], $methodData['executableLines'], $methodData['executedLines'], $methodData['executableBranches'], $methodData['executedBranches'], $methodData['ccn']);
 
         /** @var int $lineNumber */
         foreach (range($methodData['startLine'], $methodData['endLine']) as $lineNumber) {
@@ -37,7 +37,7 @@ class CoberturaMethod extends CoberturaElement
         return $method;
     }
 
-    private function __construct(private string $name, private string $signature, int $linesValid, int $linesCovered, int $branchesValid, int $branchesCovered)
+    private function __construct(private string $name, private string $signature, int $linesValid, int $linesCovered, int $branchesValid, int $branchesCovered, private float $complexity)
     {
         parent::__construct($linesValid, $linesCovered, $branchesValid, $branchesCovered);
     }
@@ -50,6 +50,7 @@ class CoberturaMethod extends CoberturaElement
         $methodElement->setAttribute('signature', $this->signature);
         $methodElement->setAttribute('line-rate', (string) $this->lineRate());
         $methodElement->setAttribute('branch-rate', (string) $this->branchRate());
+        $methodElement->setAttribute('complexity', (string) $this->complexity);
 
         $linesElement = $document->createElement('lines');
 

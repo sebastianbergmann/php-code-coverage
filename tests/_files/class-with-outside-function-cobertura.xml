@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.75" branch-rate="0" lines-covered="3" lines-valid="4" branches-covered="0" branches-valid="0" complexity="3" version="0.4" timestamp="%i">
+<coverage line-rate="0.75" branch-rate="0" method-rate="0.5" class-rate="1" lines-covered="3" lines-valid="4" branches-covered="0" branches-valid="0" methods-covered="1" methods-valid="2" classes-covered="1" classes-valid="1" complexity="3" version="0.4" timestamp="%i">
   <sources>
-    <source>tests/_files</source>
+    <source>tests%e_files</source>
   </sources>
   <packages>
     <package name="ClassInFileWithOutsideFunction" line-rate="1" branch-rate="0" complexity="1">
       <classes>
-        <class name="ClassInFileWithOutsideFunction" filename="tests/_files/source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
+        <class name="ClassInFileWithOutsideFunction" filename="tests%e_files%esource_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>
-            <method name="classMethod" signature="classMethod(): string" line-rate="1" branch-rate="0">
+            <method name="classMethod" signature="classMethod(): string" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="6" hits="1"/>
               </lines>
@@ -21,11 +21,11 @@
         </class>
       </classes>
     </package>
-    <package name="_functions" line-rate="1" branch-rate="1" complexity="2">
+    <package name="_functions" line-rate="0.66666666666667" branch-rate="0" complexity="2">
       <classes>
-        <class name="_functions\source_with_class_and_outside_function.php" filename="tests/_files/source_with_class_and_outside_function.php" line-rate="1" branch-rate="1" complexity="2">
+        <class name="_functions\source_with_class_and_outside_function.php" filename="tests%e_files%esource_with_class_and_outside_function.php" line-rate="0.66666666666667" branch-rate="0" complexity="2">
           <methods>
-            <method name="outsideFunction" signature="outsideFunction(bool $test): int" line-rate="0.66666666666667" branch-rate="0">
+            <method name="outsideFunction" signature="outsideFunction(bool $test): int" line-rate="0.66666666666667" branch-rate="0" complexity="2">
               <lines>
                 <line number="12" hits="1"/>
                 <line number="13" hits="1"/>

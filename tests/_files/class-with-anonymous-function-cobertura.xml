@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="1" branch-rate="0" lines-covered="5" lines-valid="5" branches-covered="0" branches-valid="0" complexity="1" version="0.4" timestamp="%i">
+<coverage line-rate="1" branch-rate="0" method-rate="1" class-rate="1" lines-covered="5" lines-valid="5" branches-covered="0" branches-valid="0" methods-covered="1" methods-valid="1" classes-covered="1" classes-valid="1" complexity="1" version="0.4" timestamp="%i">
   <sources>
-    <source>%s</source>
+    <source>tests%e_files</source>
   </sources>
   <packages>
     <package name="CoveredClassWithAnonymousFunctionInStaticMethod" line-rate="1" branch-rate="0" complexity="1">
       <classes>
-        <class name="CoveredClassWithAnonymousFunctionInStaticMethod" filename="tests/_files/source_with_class_and_anonymous_function.php" line-rate="1" branch-rate="0" complexity="1">
+        <class name="CoveredClassWithAnonymousFunctionInStaticMethod" filename="tests%e_files%esource_with_class_and_anonymous_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>
-            <method name="runAnonymous" signature="runAnonymous()" line-rate="1" branch-rate="0">
+            <method name="runAnonymous" signature="runAnonymous()" line-rate="1" branch-rate="0" complexity="1">
               <lines>
                 <line number="7" hits="1"/>
                 <line number="9" hits="1"/>

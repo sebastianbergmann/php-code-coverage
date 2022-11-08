@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="1" branch-rate="0" lines-covered="1" lines-valid="1" branches-covered="0" branches-valid="0" complexity="2" version="0.4" timestamp="%i">
+<coverage line-rate="1" branch-rate="0" method-rate="1" class-rate="0" lines-covered="1" lines-valid="1" branches-covered="0" branches-valid="0" methods-covered="1" methods-valid="1" classes-covered="0" classes-valid="0" complexity="2" version="0.4" timestamp="%i">
   <sources>
-    <source>%s</source>
+    <source>tests%e_files</source>
   </sources>
   <packages>
     <package name="Foo" line-rate="0" branch-rate="0" complexity="1">
       <classes>
-        <class name="Foo" filename="tests/_files/source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+        <class name="Foo" filename="tests%e_files%esource_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
           <methods/>
           <lines/>
         </class>
@@ -15,7 +15,7 @@
     </package>
     <package name="Bar" line-rate="0" branch-rate="0" complexity="1">
       <classes>
-        <class name="Bar" filename="tests/_files/source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+        <class name="Bar" filename="tests%e_files%esource_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
           <methods/>
           <lines/>
         </class>

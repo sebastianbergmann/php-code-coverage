@@ -28,20 +28,40 @@ class CoberturaCoverage extends CoberturaElement
 
     public static function create(Directory $report): self
     {
-        $coverage = new self(time(), $report->numberOfExecutableLines(), $report->numberOfExecutedLines(), $report->numberOfExecutableBranches(), $report->numberOfExecutedBranches());
+        $coverage = new self(
+            time(),
+            $report->numberOfExecutableLines(),
+            $report->numberOfExecutedLines(),
+            $report->numberOfExecutableBranches(),
+            $report->numberOfExecutedBranches(),
+            $report->numberOfFunctionsAndMethods(),
+            $report->numberOfTestedFunctionsAndMethods(),
+            $report->numberOfClassesAndTraits(),
+            $report->numberOfTestedClassesAndTraits(),
+        );
 
         foreach ($report as $item) {
             if (!$item instanceof File) {
                 continue;
             }
+
             $coverage->processFile($item);
         }
 
         return $coverage;
     }
 
-    private function __construct(private int $timestamp, int $linesValid, int $linesCovered, int $branchesValid, int $branchesCovered)
-    {
+    private function __construct(
+        private int $timestamp,
+        int $linesValid,
+        int $linesCovered,
+        int $branchesValid,
+        int $branchesCovered,
+        private int $methodsValid,
+        private int $methodsCovered,
+        private int $classesValid,
+        private int $classesCovered
+    ) {
         parent::__construct($linesValid, $linesCovered, $branchesValid, $branchesCovered);
     }
 
@@ -60,13 +80,22 @@ class CoberturaCoverage extends CoberturaElement
         $document->encoding     = 'UTF-8';
         $document->formatOutput = true;
 
+        $methodRate = $this->methodsValid === 0 ? 0 : $this->methodsCovered / $this->methodsValid;
+        $classRate  = $this->classesValid === 0 ? 0 : $this->classesCovered / $this->classesValid;
+
         $coverageElement = $document->createElement('coverage');
         $coverageElement->setAttribute('line-rate', (string) $this->lineRate());
         $coverageElement->setAttribute('branch-rate', (string) $this->branchRate());
+        $coverageElement->setAttribute('method-rate', (string) $methodRate);
+        $coverageElement->setAttribute('class-rate', (string) $classRate);
         $coverageElement->setAttribute('lines-covered', (string) $this->linesCovered);
         $coverageElement->setAttribute('lines-valid', (string) $this->linesValid);
         $coverageElement->setAttribute('branches-covered', (string) $this->branchesCovered);
         $coverageElement->setAttribute('branches-valid', (string) $this->branchesValid);
+        $coverageElement->setAttribute('methods-covered', (string) $this->methodsCovered);
+        $coverageElement->setAttribute('methods-valid', (string) $this->methodsValid);
+        $coverageElement->setAttribute('classes-covered', (string) $this->classesCovered);
+        $coverageElement->setAttribute('classes-valid', (string) $this->classesValid);
         $coverageElement->setAttribute('complexity', (string) $this->complexity());
         $coverageElement->setAttribute('version', '0.4');
         $coverageElement->setAttribute('timestamp', (string) $this->timestamp);
@@ -132,9 +161,9 @@ class CoberturaCoverage extends CoberturaElement
             $classCoverageData = array_reduce($functions, static function (array $data, CoberturaMethod $function)
             {
                 $data['linesValid'] += $function->getLinesValid();
-                $data['linesCovered'] += $function->getLinesValid();
-                $data['branchesValid'] += $function->getLinesValid();
-                $data['branchesCovered'] += $function->getLinesValid();
+                $data['linesCovered'] += $function->getLinesCovered();
+                $data['branchesValid'] += $function->getBranchesValid();
+                $data['branchesCovered'] += $function->getBranchesCovered();
 
                 return $data;
             }, ['linesValid' => 0, 'linesCovered' => 0, 'branchesValid' => 0, 'branchesCovered' => 0]);

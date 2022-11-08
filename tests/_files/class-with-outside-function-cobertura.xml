@@ -2,14 +2,14 @@
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 <coverage line-rate="0.75" branch-rate="0" lines-covered="3" lines-valid="4" branches-covered="0" branches-valid="0" complexity="3" version="0.4" timestamp="%i">
   <sources>
-    <source>%s</source>
+    <source>tests/_files</source>
   </sources>
   <packages>
-    <package name="source_with_class_and_outside_function.php" line-rate="0.75" branch-rate="0" complexity="3">
+    <package name="ClassInFileWithOutsideFunction" line-rate="1" branch-rate="0" complexity="1">
       <classes>
-        <class name="ClassInFileWithOutsideFunction" filename="source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
+        <class name="ClassInFileWithOutsideFunction" filename="tests/_files/source_with_class_and_outside_function.php" line-rate="1" branch-rate="0" complexity="1">
           <methods>
-            <method name="classMethod" signature="" line-rate="1" branch-rate="0" complexity="1">
+            <method name="classMethod" signature="classMethod(): string" line-rate="1" branch-rate="0">
               <lines>
                 <line number="6" hits="1"/>
               </lines>
@@ -19,9 +19,13 @@
             <line number="6" hits="1"/>
           </lines>
         </class>
-        <class name="source_with_class_and_outside_function.php" filename="source_with_class_and_outside_function.php" line-rate="0.66666666666667" branch-rate="0" complexity="2">
+      </classes>
+    </package>
+    <package name="_functions" line-rate="1" branch-rate="1" complexity="2">
+      <classes>
+        <class name="_functions\source_with_class_and_outside_function.php" filename="tests/_files/source_with_class_and_outside_function.php" line-rate="1" branch-rate="1" complexity="2">
           <methods>
-            <method name="outsideFunction" signature="outsideFunction(bool $test): int" line-rate="0.66666666666667" branch-rate="0" complexity="2">
+            <method name="outsideFunction" signature="outsideFunction(bool $test): int" line-rate="0.66666666666667" branch-rate="0">
               <lines>
                 <line number="12" hits="1"/>
                 <line number="13" hits="1"/>

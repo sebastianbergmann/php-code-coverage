@@ -5,13 +5,17 @@
     <source>%s</source>
   </sources>
   <packages>
-    <package name="source_with_ignore.php" line-rate="1" branch-rate="0" complexity="2">
+    <package name="Foo" line-rate="0" branch-rate="0" complexity="1">
       <classes>
-        <class name="Foo" filename="source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+        <class name="Foo" filename="tests/_files/source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
           <methods/>
           <lines/>
         </class>
-        <class name="Bar" filename="source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
+      </classes>
+    </package>
+    <package name="Bar" line-rate="0" branch-rate="0" complexity="1">
+      <classes>
+        <class name="Bar" filename="tests/_files/source_with_ignore.php" line-rate="0" branch-rate="0" complexity="1">
           <methods/>
           <lines/>
         </class>

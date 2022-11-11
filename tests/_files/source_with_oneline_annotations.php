@@ -34,3 +34,7 @@ function baz()
 
     print '*';
 }
+
+function xyz()
+{
+}

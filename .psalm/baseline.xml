@@ -2,7 +2,7 @@
 <files psalm-version="4.x-dev@">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
-      <code>$unit[0]</code>
+      <code>$tmp[0]</code>
     </ArgumentTypeCoercion>
     <RedundantCondition occurrences="1">
       <code>is_array($linesToBeCovered)</code>

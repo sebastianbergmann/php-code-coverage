@@ -15,7 +15,6 @@ use function array_flip;
 use function array_keys;
 use function array_merge;
 use function array_unique;
-use function array_values;
 use function count;
 use function explode;
 use function is_array;
@@ -517,23 +516,23 @@ final class CodeCoverage
     private function processUnintentionallyCoveredUnits(array $unintentionallyCoveredUnits): array
     {
         $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
-        sort($unintentionallyCoveredUnits);
+        $processed                   = [];
 
-        foreach (array_keys($unintentionallyCoveredUnits) as $k => $v) {
-            $unit = explode('::', $unintentionallyCoveredUnits[$k]);
+        foreach ($unintentionallyCoveredUnits as $unintentionallyCoveredUnit) {
+            $tmp = explode('::', $unintentionallyCoveredUnit);
 
-            if (count($unit) !== 2) {
+            if (count($tmp) !== 2) {
+                $processed[] = $unintentionallyCoveredUnit;
+
                 continue;
             }
 
             try {
-                $class = new ReflectionClass($unit[0]);
+                $class = new ReflectionClass($tmp[0]);
 
                 foreach ($this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck as $parentClass) {
                     if ($class->isSubclassOf($parentClass)) {
-                        unset($unintentionallyCoveredUnits[$k]);
-
-                        break;
+                        continue 2;
                     }
                 }
             } catch (\ReflectionException $e) {
@@ -543,9 +542,15 @@ final class CodeCoverage
                     $e
                 );
             }
+
+            $processed[] = $tmp[0];
         }
 
-        return array_values($unintentionallyCoveredUnits);
+        $processed = array_unique($processed);
+
+        sort($processed);
+
+        return $processed;
     }
 
     private function analyser(): FileAnalyser

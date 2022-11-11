@@ -33,7 +33,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\For_;
@@ -316,7 +315,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Do_ ||
                $node instanceof Echo_ ||
                $node instanceof ElseIf_ ||
-               $node instanceof Else_ ||
                $node instanceof Encapsed ||
                $node instanceof Expression ||
                $node instanceof For_ ||

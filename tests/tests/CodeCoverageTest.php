@@ -108,7 +108,6 @@ final class CodeCoverageTest extends TestCase
                 8  => [],
                 13 => [],
                 14 => [],
-                15 => [],
                 16 => [],
                 22 => [],
                 24 => [],

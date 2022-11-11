@@ -366,7 +366,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 134,
                 135,
                 136,
-                137,
+                // line 137 is else statement, not in xdebug output (only if/elseif conditions are covered)
                 138,
                 141,
                 146,

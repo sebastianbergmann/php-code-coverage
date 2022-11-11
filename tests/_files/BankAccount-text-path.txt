@@ -8,7 +8,7 @@ Code Coverage Report:
   Methods: 75.00% (3/4)
   Paths:   60.00% (3/5)
   Branches:   42.86% (3/7)
-  Lines:   55.56% (5/9)
+  Lines:   62.50% (5/8)
 
 BankAccount
-  Methods:  75.00% ( 3/ 4)   Paths:  60.00% (  3/  5)   Branches:  42.86% (  3/  7)   Lines:  55.56% (  5/  9)
+  Methods:  75.00% ( 3/ 4)   Paths:  60.00% (  3/  5)   Branches:  42.86% (  3/  7)   Lines:  62.50% (  5/  8)

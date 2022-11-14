@@ -90,7 +90,7 @@ class Foo
         ], true);
     }
 
-    public function variable(): bool
+    public function variableBinaryPlus(): bool
     {
         $xa = $this->isOne();
         $xb = 1;
@@ -121,6 +121,43 @@ class Foo
             +
             $xc
             +
+            1
+        );
+
+        return $v2 === $v3;
+    }
+
+    public function variableBinaryConcat(): bool
+    {
+        $xa = $this->isOne();
+        $xb = 1;
+        $xc = $xa;
+
+        $va
+            =
+        $vb
+            =
+        [
+            $xa,
+            $xb,
+            1
+            .
+            $xb
+            . 1,
+        ];
+
+        [
+            $v2,
+            $v3
+        ]
+        =
+        u(
+            $xa,
+            $xb,
+            1
+            .
+            $xc
+            .
             1
         );
 

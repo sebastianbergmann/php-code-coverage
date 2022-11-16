@@ -1,11 +1,27 @@
 <?php
 
+class AType {
+    const A = 1;
+    const B = 2;
+}
+
 class Foo
 {
     private $state = 1;
 
     public function isOne(): bool
     {
+        $v1
+            =
+            1
+        ;
+
+        $v2
+            =
+            (bool)
+            1
+        ;
+
         $v3
             =
             (bool)
@@ -72,6 +88,160 @@ class Foo
             AType::A,
             AType::B,
         ], true);
+    }
+
+    public function variableBinaryPlus(): bool
+    {
+        $xa = $this->isOne();
+        $xb = 1;
+        $xc = $xa;
+
+        $va
+            =
+        $vb
+            =
+        [
+            $xa,
+            $xb,
+            1
+            +
+            $xb
+            + 1,
+        ];
+
+        [
+            $v2,
+            $v3
+        ]
+        =
+        u(
+            $xa,
+            $xb,
+            1
+            +
+            $xc
+            +
+            1
+        );
+
+        return $v2 === $v3;
+    }
+
+    public function variableBinaryConcat(): bool
+    {
+        $xa = $this->isOne();
+        $xb = 1;
+        $xc = $xa;
+
+        $va
+            =
+        $vb
+            =
+        [
+            $xa,
+            $xb,
+            1
+            .
+            $xb
+            . 1,
+        ];
+
+        [
+            $v2,
+            $v3
+        ]
+        =
+        u(
+            $xa,
+            $xb,
+            1
+            .
+            $xc
+            .
+            1
+        );
+
+        return $v2 === $v3;
+    }
+
+    public function noElse(): int
+    {
+        $res = 0;
+        if (mt_rand() === 0) {
+            return 1;
+        } elseif (mt_rand() === 0) {
+            return 2;
+        } else {
+            $res = 3;
+        }
+
+        return $res;
+    }
+
+    public function noDo(): int
+    {
+        $res = 0;
+        do {
+            if (mt_rand() !== 0) {
+                $res++;
+            }
+        } while (
+            $res
+            <
+            10
+        );
+
+        return $res;
+    }
+
+    public function noTryNoFinally(): int
+    {
+        $res = 0;
+        try {
+            if (mt_rand() === 0) {
+                throw new \Exception();
+            }
+        } catch (
+            \x\y
+            |
+            \x\z
+            $e
+        ) {
+            $res = 1;
+        } catch (\Error $e) {
+            $res = 1;
+        } finally {
+            $res += 10;
+        }
+
+        return $res;
+    }
+
+    public function switch(): int
+    {
+        switch (
+            'x'
+            .
+            mt_rand()
+            . 'x'
+        ) {
+            case
+                <<<EOF
+                    x1x
+                    EOF:
+                $res = 'a';
+
+                break;
+            case 'x2x':
+            case 'x3x':
+                $res = 'a';
+
+                break;
+            default:
+                $res = 'c';
+        }
+
+        return $res;
     }
 
     private static $staticState = 1;

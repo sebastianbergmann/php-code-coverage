@@ -1374,7 +1374,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
                 13 => [],
                 14 => [],
-                15 => [],
                 16 => [],
                 22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
@@ -1405,7 +1404,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
                 13 => [],
                 14 => [],
-                15 => [],
                 16 => [],
                 22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',

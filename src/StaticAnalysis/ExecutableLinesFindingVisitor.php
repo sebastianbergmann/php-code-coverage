@@ -12,15 +12,14 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
+use PhpParser\Node\Expr\Print_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
@@ -34,21 +33,19 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
-use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
+use PhpParser\NodeAbstract;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -67,19 +64,23 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private array $propertyLines = [];
 
     /**
-     * @psalm-var array<int, Return_>
+     * @psalm-var array<int, Function_|ClassMethod|Return_|Expression|Assign|Array_>
      */
     private $returns = [];
 
     public function enterNode(Node $node): void
     {
+        if (!$node instanceof NodeAbstract) {
+            return;
+        }
+
         $this->savePropertyLines($node);
 
         if (!$this->isExecutable($node)) {
             return;
         }
 
-        foreach ($this->getLines($node) as $line) {
+        foreach ($this->getLines($node, false) as $line) {
             if (isset($this->propertyLines[$line])) {
                 return;
             }
@@ -88,170 +89,225 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
     }
 
+    public function afterTraverse(array $nodes): void
+    {
+        $this->computeReturns();
+
+        sort($this->executableLines);
+    }
+
     /**
      * @psalm-return array<int, int>
      */
     public function executableLines(): array
     {
-        $this->computeReturns();
-
-        sort($this->executableLines);
-
         return $this->executableLines;
     }
 
     private function savePropertyLines(Node $node): void
     {
-        if (!$node instanceof Property && !$node instanceof Node\Stmt\ClassConst) {
-            return;
-        }
-
-        foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
-            $this->propertyLines[$index] = $index;
+        if ($node instanceof Property) {
+            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
+                $this->propertyLines[$index] = $index;
+            }
         }
     }
 
     private function computeReturns(): void
     {
-        foreach ($this->returns as $return) {
-            foreach (range($return->getStartLine(), $return->getEndLine()) as $loc) {
-                if (isset($this->executableLines[$loc])) {
-                    continue 2;
+        foreach (array_reverse($this->returns) as $node) {
+            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
+                if (isset($this->executableLines[$index])) {
+                    continue;
                 }
             }
 
-            $line = $return->getEndLine();
-
-            if ($return->expr !== null) {
-                $line = $return->expr->getStartLine();
+            foreach ($this->getLines($node, true) as $line) {
+                $this->executableLines[$line] = $line;
             }
-
-            $this->executableLines[$line] = $line;
         }
     }
 
     /**
      * @return int[]
      */
-    private function getLines(Node $node): array
+    private function getLines(NodeAbstract $node, bool $fromReturns): array
     {
-        if ($node instanceof BinaryOp) {
-            if (($node->left instanceof Node\Scalar ||
-                $node->left instanceof Node\Expr\ConstFetch) &&
-                ($node->right instanceof Node\Scalar ||
-                $node->right instanceof Node\Expr\ConstFetch)) {
-                return [$node->right->getStartLine()];
-            }
+        if ($node instanceof Function_ ||
+            $node instanceof ClassMethod ||
+            $node instanceof Return_ ||
+            $node instanceof Expression ||
+            $node instanceof Assign ||
+            $node instanceof Array_
+        ) {
+            if (!$fromReturns) {
+                $this->returns[] = $node;
 
-            return [];
-        }
+                if ($node instanceof ClassMethod && $node->name->name === '__construct') {
+                    $existsAPromotedProperty = false;
 
-        if ($node instanceof Cast ||
-            $node instanceof PropertyFetch ||
-            $node instanceof NullsafePropertyFetch ||
-            $node instanceof StaticPropertyFetch) {
-            return [$node->getEndLine()];
-        }
+                    foreach ($node->getParams() as $param) {
+                        if (0 !== ($param->flags & Class_::VISIBILITY_MODIFIER_MASK)) {
+                            $existsAPromotedProperty = true;
 
-        if ($node instanceof ArrayDimFetch) {
-            if (null === $node->dim) {
+                            break;
+                        }
+                    }
+
+                    if ($existsAPromotedProperty) {
+                        // Only the line with `function` keyword should be listed here
+                        // but `nikic/php-parser` doesn't provide a way to fetch it
+                        return range($node->getStartLine(), $node->name->getEndLine());
+                    }
+                }
+
                 return [];
             }
 
-            return [$node->dim->getStartLine()];
-        }
-
-        if ($node instanceof Array_) {
-            $startLine = $node->getStartLine();
-
-            if (isset($this->executableLines[$startLine])) {
-                return [];
-            }
-
-            if ([] === $node->items) {
-                return [$node->getEndLine()];
-            }
-
-            if ($node->items[0] instanceof ArrayItem) {
-                return [$node->items[0]->getStartLine()];
-            }
-        }
-
-        if ($node instanceof ClassMethod) {
-            if ($node->name->name !== '__construct') {
-                return [];
-            }
-
-            $existsAPromotedProperty = false;
-
-            foreach ($node->getParams() as $param) {
-                if (0 !== ($param->flags & Class_::VISIBILITY_MODIFIER_MASK)) {
-                    $existsAPromotedProperty = true;
-
-                    break;
+            // ugly fix for non-fully AST based processing
+            // self::afterTraverse()/self::computeReturns() should be rewritten using self::leaveNode()
+            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
+                if (isset($this->executableLines[$index]) && !($node instanceof Assign)) {
+                    return [];
                 }
             }
 
-            if ($existsAPromotedProperty) {
-                // Only the line with `function` keyword should be listed here
-                // but `nikic/php-parser` doesn't provide a way to fetch it
-                return range($node->getStartLine(), $node->name->getEndLine());
+            // empty function
+            if ($node instanceof Function_) {
+                return [$node->getEndLine()];
             }
 
-            return [];
+            // empty method
+            if ($node instanceof ClassMethod) {
+                if (null === $node->stmts) { // method without body (interface prototype)
+                    return [];
+                }
+
+                return [$node->getEndLine()];
+            }
+        }
+
+        if ($node instanceof Return_) {
+            if ($node->expr === null) {
+                return [$node->getEndLine()];
+            }
+
+            return $this->getLines($node->expr, $fromReturns);
+        }
+
+        if ($node instanceof Expression) {
+            return $this->getLines($node->expr, $fromReturns);
+        }
+
+        if ($node instanceof Assign) {
+            return [$this->getNodeStartLine($node->var)];
+        }
+
+        if ($node instanceof BinaryOp) {
+            return $fromReturns ? $this->getLines($node->right, $fromReturns) : [];
+        }
+
+        if ($node instanceof PropertyFetch ||
+            $node instanceof NullsafePropertyFetch ||
+            $node instanceof StaticPropertyFetch) {
+            return [$this->getNodeStartLine($node->name)];
+        }
+
+        if ($node instanceof ArrayDimFetch && null !== $node->dim) {
+            return [$this->getNodeStartLine($node->dim)];
         }
 
         if ($node instanceof MethodCall) {
-            return [$node->name->getStartLine()];
+            return [$this->getNodeStartLine($node->name)];
         }
 
         if ($node instanceof Ternary) {
-            $lines = [$node->cond->getStartLine()];
+            $lines = [$this->getNodeStartLine($node->cond)];
 
             if (null !== $node->if) {
-                $lines[] = $node->if->getStartLine();
+                $lines[] = $this->getNodeStartLine($node->if);
             }
 
-            $lines[] = $node->else->getStartLine();
+            $lines[] = $this->getNodeStartLine($node->else);
 
             return $lines;
         }
 
         if ($node instanceof Match_) {
-            return [$node->cond->getStartLine()];
+            return [$this->getNodeStartLine($node->cond)];
         }
 
         if ($node instanceof MatchArm) {
-            return [$node->body->getStartLine()];
+            return [$this->getNodeStartLine($node->body)];
         }
 
-        if ($node instanceof Expression && (
-            $node->expr instanceof Cast ||
-            $node->expr instanceof Match_ ||
-            $node->expr instanceof MethodCall
+        // TODO this concept should be extended for every statement class like Foreach_, For_, ...
+        if ($node instanceof If_ ||
+            $node instanceof ElseIf_ ||
+            $node instanceof While_ ||
+            $node instanceof Do_) {
+            return [$this->getNodeStartLine($node->cond)];
+        }
+
+        if ($node instanceof Case_) {
+            if (null === $node->cond) { // default case
+                return [];
+            }
+
+            return [$this->getNodeStartLine($node->cond)];
+        }
+
+        if ($node instanceof Catch_) {
+            return [$this->getNodeStartLine($node->types[0])];
+        }
+
+        return [$this->getNodeStartLine($node)];
+    }
+
+    private function getNodeStartLine(NodeAbstract $node): int
+    {
+        if ($node instanceof Node\Expr\Cast ||
+            $node instanceof Node\Expr\BooleanNot ||
+            $node instanceof Node\Expr\UnaryMinus ||
+            $node instanceof Node\Expr\UnaryPlus
+        ) {
+            return $this->getNodeStartLine($node->expr);
+        }
+
+        if ($node instanceof BinaryOp) {
+            return $this->getNodeStartLine($node->right);
+        }
+
+        if ($node instanceof Node\Scalar\String_ && (
+            $node->getAttribute('kind') === Node\Scalar\String_::KIND_HEREDOC ||
+            $node->getAttribute('kind') === Node\Scalar\String_::KIND_NOWDOC
         )) {
-            return [];
+            return $node->getStartLine() + 1;
         }
 
-        if ($node instanceof Return_) {
-            $this->returns[] = $node;
+        if ($node instanceof Array_) {
+            if ([] === $node->items || $node->items[0] === null) {
+                return $node->getEndLine();
+            }
 
-            return [];
+            return $this->getNodeStartLine($node->items[0]->value);
         }
 
-        return [$node->getStartLine()];
+        if ($node instanceof Assign) {
+            return $this->getNodeStartLine($node->expr);
+        }
+
+        return $node->getStartLine(); // $node should be only a scalar here
     }
 
     private function isExecutable(Node $node): bool
     {
         return $node instanceof Assign ||
                $node instanceof ArrayDimFetch ||
-               $node instanceof Array_ ||
                $node instanceof BinaryOp ||
                $node instanceof Break_ ||
                $node instanceof CallLike ||
                $node instanceof Case_ ||
-               $node instanceof Cast ||
                $node instanceof Catch_ ||
                $node instanceof ClassMethod ||
                $node instanceof Closure ||
@@ -259,25 +315,23 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $node instanceof Do_ ||
                $node instanceof Echo_ ||
                $node instanceof ElseIf_ ||
-               $node instanceof Else_ ||
                $node instanceof Encapsed ||
                $node instanceof Expression ||
-               $node instanceof Finally_ ||
                $node instanceof For_ ||
                $node instanceof Foreach_ ||
+               $node instanceof Function_ ||
                $node instanceof Goto_ ||
                $node instanceof If_ ||
                $node instanceof Match_ ||
                $node instanceof MatchArm ||
                $node instanceof MethodCall ||
                $node instanceof NullsafePropertyFetch ||
+               $node instanceof Print_ ||
                $node instanceof PropertyFetch ||
                $node instanceof Return_ ||
                $node instanceof StaticPropertyFetch ||
-               $node instanceof Switch_ ||
                $node instanceof Ternary ||
                $node instanceof Throw_ ||
-               $node instanceof TryCatch ||
                $node instanceof Unset_ ||
                $node instanceof While_;
     }

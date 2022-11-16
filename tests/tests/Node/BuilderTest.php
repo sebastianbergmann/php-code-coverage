@@ -32,7 +32,7 @@ final class BuilderTest extends TestCase
         $expectedPath = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
         $this->assertEquals($expectedPath, $root->name());
         $this->assertEquals($expectedPath, $root->pathAsString());
-        $this->assertEquals(9, $root->numberOfExecutableLines());
+        $this->assertEquals(8, $root->numberOfExecutableLines());
         $this->assertEquals(5, $root->numberOfExecutedLines());
         $this->assertEquals(1, $root->numberOfClasses());
         $this->assertEquals(0, $root->numberOfTestedClasses());
@@ -40,7 +40,7 @@ final class BuilderTest extends TestCase
         $this->assertEquals(3, $root->numberOfTestedMethods());
         $this->assertEquals('0.00%', $root->percentageOfTestedClasses()->asString());
         $this->assertEquals('75.00%', $root->percentageOfTestedMethods()->asString());
-        $this->assertEquals('55.56%', $root->percentageOfExecutedLines()->asString());
+        $this->assertEquals('62.50%', $root->percentageOfExecutedLines()->asString());
         $this->assertEquals(0, $root->numberOfFunctions());
         $this->assertEquals(0, $root->numberOfTestedFunctions());
         $this->assertNull($root->parent());
@@ -73,7 +73,7 @@ final class BuilderTest extends TestCase
                             'signature'          => 'setBalance($balance)',
                             'startLine'          => 11,
                             'endLine'            => 18,
-                            'executableLines'    => 4,
+                            'executableLines'    => 3,
                             'executedLines'      => 0,
                             'executableBranches' => 0,
                             'executedBranches'   => 0,
@@ -122,15 +122,15 @@ final class BuilderTest extends TestCase
                         ],
                     ],
                     'startLine'          => 2,
-                    'executableLines'    => 9,
+                    'executableLines'    => 8,
                     'executedLines'      => 5,
                     'executableBranches' => 0,
                     'executedBranches'   => 0,
                     'executablePaths'    => 0,
                     'executedPaths'      => 0,
                     'ccn'                => 5,
-                    'coverage'           => 55.55555555555556,
-                    'crap'               => '7.19',
+                    'coverage'           => 62.5,
+                    'crap'               => '6.32',
                     'link'               => 'BankAccount.php.html#2',
                     'className'          => 'BankAccount',
                     'namespace'          => '',

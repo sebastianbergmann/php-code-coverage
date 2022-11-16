@@ -40,7 +40,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
     public function testMergeWithPathCoverageIntoEmpty(): void
     {
-        $coverage = new ProcessedCodeCoverageData();
+        $coverage = new ProcessedCodeCoverageData;
 
         $coverage->merge($this->getPathCoverageForBankAccount()->getData());
 

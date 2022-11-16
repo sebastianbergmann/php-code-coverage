@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function assert;
 use function implode;
 use function rtrim;
 use function trim;

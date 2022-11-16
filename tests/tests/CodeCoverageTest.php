@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_fill;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;

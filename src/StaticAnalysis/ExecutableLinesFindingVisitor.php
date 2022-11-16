@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_reverse;
+use function range;
+use function sort;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;

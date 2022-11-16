@@ -9,10 +9,13 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function basename;
 use function count;
 use function dirname;
 use function file_put_contents;
+use function preg_match;
 use function range;
+use function str_replace;
 use function time;
 use DOMImplementation;
 use SebastianBergmann\CodeCoverage\CodeCoverage;

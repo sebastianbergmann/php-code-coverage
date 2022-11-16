@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use function is_file;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 
 /**

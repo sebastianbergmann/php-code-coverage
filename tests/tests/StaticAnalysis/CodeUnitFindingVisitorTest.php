@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function assert;
 use function file_get_contents;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;

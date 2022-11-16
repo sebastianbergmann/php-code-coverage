@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
 use function array_merge;
+use function str_ends_with;
 use function str_replace;
 use function substr;
 use Countable;

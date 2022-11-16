@@ -12,6 +12,8 @@ namespace SebastianBergmann\CodeCoverage;
 use function array_keys;
 use function is_file;
 use function realpath;
+use function str_contains;
+use function str_starts_with;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
 final class Filter

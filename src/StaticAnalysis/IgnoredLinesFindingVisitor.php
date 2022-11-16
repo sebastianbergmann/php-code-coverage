@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function assert;
+use function str_contains;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Stmt\Class_;

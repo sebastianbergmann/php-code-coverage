@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_fill;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;

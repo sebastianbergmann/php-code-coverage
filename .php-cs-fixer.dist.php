@@ -119,9 +119,16 @@ $config->setFinder($finder)
         'multiline_whitespace_before_semicolons' => true,
         'native_constant_invocation' => false,
         'native_function_casing' => false,
-        'native_function_invocation' => false,
+        'native_function_invocation' => [
+            'include' => [
+                '@internal',
+            ],
+        ],
         'native_function_type_declaration_casing' => true,
-        'new_with_braces' => false,
+        'new_with_braces' => [
+            'named_class' => false,
+            'anonymous_class' => false,
+        ],
         'no_alias_functions' => true,
         'no_alias_language_construct_call' => true,
         'no_alternative_syntax' => true,
@@ -158,6 +165,7 @@ $config->setFinder($finder)
         'no_unneeded_control_parentheses' => true,
         'no_unneeded_curly_braces' => true,
         'no_unneeded_final_method' => true,
+        'no_unneeded_import_alias' => true,
         'no_unreachable_default_argument_value' => true,
         'no_unset_cast' => true,
         'no_unset_on_property' => true,

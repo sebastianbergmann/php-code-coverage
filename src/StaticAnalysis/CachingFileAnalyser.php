@@ -15,6 +15,7 @@ use function implode;
 use function is_file;
 use function md5;
 use function serialize;
+use function unserialize;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 

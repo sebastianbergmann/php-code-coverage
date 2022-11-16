@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.19] - 2022-MM-DD
 
+### Fixed
+
+* [#949](https://github.com/sebastianbergmann/php-code-coverage/pull/949): Various issues related to identifying executable lines
+
 ### Changed
 
 * Tweaked CSS for HTML report

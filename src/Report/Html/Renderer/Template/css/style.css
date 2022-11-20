@@ -128,3 +128,47 @@ table + .structure-heading {
  border-top: 1px solid lightgrey;
  padding-top: 0.5em;
 }
+
+nav {
+ display: flex;
+ align-items: center;
+ background-color: #e9ecef;
+}
+
+.breadcrumb {
+ flex: 1;
+ margin-bottom: 0;
+ background: transparent;
+}
+
+.font-size-changer__small {
+ font-size: 14px;
+}
+
+.font-size-changer__medium {
+ font-size: 16px;
+}
+
+.font-size-changer__large {
+ font-size: 20px;
+}
+
+.font-size-changer__xlarge {
+ font-size: 24px;
+}
+
+body[data-size="small"] {
+ font-size: 0.75em;
+}
+
+body[data-size="medium"] {
+ font-size: 1em;
+}
+
+body[data-size="large"] {
+ font-size: 1.5em;
+}
+
+body[data-size="xlarge"] {
+ font-size: 2em;
+}

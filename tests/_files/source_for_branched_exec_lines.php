@@ -13,7 +13,7 @@ $var1               // +1
 function simple()   // +1
 {                   // 0
     return 1;       // 0
-}                   // 0
+}
 
 $var2 = 1;          // -1
 
@@ -31,7 +31,7 @@ function withIf()   // +3
         $var += 2;  // +1
     }               // -1
     return $var;    // 0
-}                   // 0
+}
 
 class MyClass
 {
@@ -48,7 +48,7 @@ class MyClass
         if (false) {    // 0
             $var += 2;  // +1
         }               // -1
-    }                   // 0
+    }
     public function withForeach()           // +2
     {                                       // 0
         $var = 1;                           // 0
@@ -73,7 +73,7 @@ class MyClass
         {                                   // 0
             $var += 2;                      // +4
         }                                   // -4
-    }                                       // 0
+    }
     public function withWhile()             // +5
     {                                       // 0
         $var = 1;                           // 0
@@ -96,7 +96,7 @@ class MyClass
         {                                   // 0
             ++$var;                         // +4
         }                                   // -4
-    }                                       // 0
+    }
     public function withIfElseifElse()      // +5
     {                                       // 0
         $var = 1;                           // 0
@@ -140,7 +140,7 @@ class MyClass
         {                                   // 0
             ++$var;                         // +12
         }                                   // -12
-    }                                       // 0
+    }
     public function withFor()               // +13
     {                                       // 0
         $var = 1;                           // 0
@@ -163,7 +163,7 @@ class MyClass
         {                                   // 0
             $var += 2;                      // +4
         }                                   // -4
-    }                                       // 0
+    }
     public function withDoWhile()           // +5
     {                                       // 0
         $var = 1;                           // 0
@@ -188,7 +188,7 @@ class MyClass
             $var                            // 0
         )                                   // 0
         ;                                   // 0
-    }                                       // 0
+    }
     public function withSwitch()            // +1
     {                                       // 0
         $var = 1;                           // 0
@@ -218,7 +218,7 @@ class MyClass
             default:                        // -7
                 ++$var;                     // +8
         endswitch;                          // -8
-    }                                       // 0
+    }
     public function withMatch()             // +9
     {                                       // 0
         $var = 1;                           // 0
@@ -248,5 +248,21 @@ class MyClass
             ,                               // -6
         }                                   // 0
         ;                                   // 0
-    }                                       // 0
+    }
+    public function withReturn()            // +7
+    {                                       // 0
+        $var = 1;                           // 0
+        if (false) {                        // 0
+            ++$var;                         // +1
+            return                          // 0
+                $var                        // 0
+            ;                               // 0
+            ++$var;                         // +1
+            if (false) {                    // 0
+                ++$var;                     // +1
+            }                               // -1
+        }                                   // -2
+        return;                             // 0
+        ++$var;                             // +4
+    }
 }

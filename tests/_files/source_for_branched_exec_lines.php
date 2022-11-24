@@ -142,8 +142,3 @@ class MyClass
         }                                   // -12
     }                                       // 0
 }
-
-//$myClass = new MyClass();
-//foreach (get_class_methods($myClass) as $method) {
-//    $myClass->{$method}();
-//}

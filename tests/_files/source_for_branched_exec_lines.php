@@ -219,4 +219,34 @@ class MyClass
                 ++$var;                     // +8
         endswitch;                          // -8
     }                                       // 0
+    public function withMatch()             // +9
+    {                                       // 0
+        $var = 1;                           // 0
+        $var2 = match ($var) {              // 0
+            0 => ++$var,                    // +1
+            1 => ++$var,                    // +1
+            default => ++$var,              // +1
+        };                                  // -3
+        $var2                               // 0
+            =                               // 0
+            match                           // 0
+            (                               // 0
+            $var                            // 0
+            )                               // 0
+            {                               // 0
+                0                           // 0
+                =>                          // 0
+                ++$var                      // +4
+            ,                               // -4
+                1                           // 0
+                =>                          // 0
+                ++$var                      // +5
+            ,                               // -5
+                default                     // 0
+                =>                          // 0
+                ++$var                      // +6
+            ,                               // -6
+        }                                   // 0
+        ;                                   // 0
+    }                                       // 0
 }

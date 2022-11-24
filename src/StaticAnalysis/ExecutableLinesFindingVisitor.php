@@ -52,17 +52,22 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\If_ ||
             $node instanceof Node\Stmt\ElseIf_ ||
             $node instanceof Node\Stmt\Else_ ||
+            $node instanceof Node\Stmt\Case_ ||
             $node instanceof Node\Stmt\For_ ||
             $node instanceof Node\Stmt\Foreach_ ||
             $node instanceof Node\Stmt\While_) {
+            $incrementNextBranch = false;
+
             if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
                 $stmtBranch = 1 + $this->executableLinesGroupedByBranch[$node->getStartLine()];
 
                 if (false !== array_search($stmtBranch, $this->executableLinesGroupedByBranch, true)) {
-                    $stmtBranch = ++$this->nextBranch;
+                    $stmtBranch          = 1 + $this->nextBranch;
+                    $incrementNextBranch = true;
                 }
             } else {
-                $stmtBranch = ++$this->nextBranch;
+                $stmtBranch          = 1 + $this->nextBranch;
+                $incrementNextBranch = true;
             }
 
             $endLine = $node->getEndLine();
@@ -89,16 +94,27 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             );
             $contentEnd = $endLine;
 
+            if ($node instanceof Node\Stmt\Case_) {
+                $contentEnd++;
+            }
+
             end($node->stmts);
             $lastNode = current($node->stmts);
             reset($node->stmts);
 
-            if ($lastNode instanceof Node\Stmt\Nop) {
+            if (
+                $lastNode instanceof Node\Stmt\Nop ||
+                $lastNode instanceof Node\Stmt\Break_
+            ) {
                 $contentEnd = $lastNode->getEndLine() + 1;
             }
 
             if (1 > ($contentEnd - $contentStart)) {
                 return;
+            }
+
+            if ($incrementNextBranch) {
+                $this->nextBranch++;
             }
 
             $this->setLineBranch(

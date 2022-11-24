@@ -189,4 +189,34 @@ class MyClass
         )                                   // 0
         ;                                   // 0
     }                                       // 0
+    public function withSwitch()            // +1
+    {                                       // 0
+        $var = 1;                           // 0
+        switch ($var) {                     // 0
+            case 0:                         // 0
+            case 1:                         // 0
+                ++$var;                     // +1
+                break;                      // 0
+            case 2:                         // -1
+                ++$var;                     // +2
+            case 3:                         // -2
+                ++$var;                     // +3
+                break;                      // 0
+            default:                        // -3
+                ++$var;                     // +4
+        }                                   // -4
+        switch ($var):                      // 0
+            case 0:                         // 0
+            case 1:                         // 0
+                ++$var;                     // +5
+                break;                      // 0
+            case 2:                         // -5
+                ++$var;                     // +6
+            case 3:                         // -6
+                ++$var;                     // +7
+                break;                      // 0
+            default:                        // -7
+                ++$var;                     // +8
+        endswitch;                          // -8
+    }                                       // 0
 }

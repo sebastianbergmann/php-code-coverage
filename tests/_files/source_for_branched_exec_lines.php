@@ -77,19 +77,19 @@ class MyClass
     public function withWhile()             // +5
     {                                       // 0
         $var = 1;                           // 0
-        while (1 === $var);                 // 0
-        while (1 === $var) ++$var;          // 0
-        while (1 === $var) {                // 0
+        while (0 === $var);                 // 0
+        while (0 === $var) ++$var;          // 0
+        while (0 === $var) {                // 0
             ++$var;                         // +1
         }                                   // -1
-        while (1 === $var) { ++$var;        // 0
+        while (0 === $var) { ++$var;        // 0
             ++$var;                         // +2
         ++$var; }                           // -2
-        while (1 === $var):                 // 0
+        while (0 === $var):                 // 0
             ++$var;                         // +3
         endwhile;                           // -3
         while (                             // 0
-            1                               // 0
+            0                               // 0
             ===                             // 0
             $var                            // 0
         )                                   // 0
@@ -140,5 +140,53 @@ class MyClass
         {                                   // 0
             ++$var;                         // +12
         }                                   // -12
+    }                                       // 0
+    public function withFor()               // +13
+    {                                       // 0
+        $var = 1;                           // 0
+        for (;false;);                      // 0
+        for (;false;) $var += 2;            // 0
+        for (;false;) {                     // 0
+            $var += 2;                      // +1
+        }                                   // -1
+        for (;false;):                      // 0
+            $var += 2;                      // +2
+        endfor;                             // -2
+        for (;false;) { $var +=2;           // 0
+            $var += 2;                      // +3
+        $var += 2; }                        // -3
+        for (                               // 0
+            $inc = 0;                       // 0
+            false;                          // 0
+            ++$inc                          // 0
+        )                                   // 0
+        {                                   // 0
+            $var += 2;                      // +4
+        }                                   // -4
+    }                                       // 0
+    public function withDoWhile()           // +5
+    {                                       // 0
+        $var = 1;                           // 0
+        do {} while (0 === $var);           // 0
+        do ++$var; while (0 === $var);      // 0
+        do                                  // 0
+            ++$var;                         // 0
+        while (0 === $var);                 // 0
+        do {                                // 0
+            ++$var;                         // 0
+        } while (0 === $var);               // 0
+        do { ++$var;                        // 0
+            ++$var;                         // 0
+        ++$var; } while (0 === $var);       // 0
+        do {                                // 0
+            ++$var;                         // 0
+        }                                   // 0
+        while                               // 0
+        (                                   // 0
+            0                               // 0
+            ===                             // 0
+            $var                            // 0
+        )                                   // 0
+        ;                                   // 0
     }                                       // 0
 }

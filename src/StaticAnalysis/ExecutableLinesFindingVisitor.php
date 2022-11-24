@@ -52,6 +52,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\If_ ||
             $node instanceof Node\Stmt\ElseIf_ ||
             $node instanceof Node\Stmt\Else_ ||
+            $node instanceof Node\Stmt\For_ ||
             $node instanceof Node\Stmt\Foreach_ ||
             $node instanceof Node\Stmt\While_) {
             if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {

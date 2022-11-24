@@ -138,7 +138,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if ($node instanceof Node\Stmt\Return_) {
+        if (
+            $node instanceof Node\Stmt\Return_ ||
+            $node instanceof Node\Stmt\Continue_ ||
+            $node instanceof Node\Stmt\Break_
+        ) {
             $returnBranch  = $this->executableLinesGroupedByBranch[$node->getStartLine()];
             $returnEndLine = $node->getEndLine();
             $nextBranch    = null;

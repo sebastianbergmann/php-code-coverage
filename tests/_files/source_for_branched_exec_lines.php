@@ -265,4 +265,36 @@ class MyClass
         return;                             // 0
         ++$var;                             // +4
     }
+    public function withContinue()          // +1
+    {                                       // 0
+        $var = 1;                           // 0
+        for ($i = 0; $i < 10; $i++) {       // 0
+            if (false) {                    // +1
+                ++$var;                     // +1
+                continue                    // 0
+                    1                       // 0
+                ;                           // 0
+                ++$var;                     // +1
+            }                               // -2
+            ++$var;                         // 0
+            continue;                       // 0
+            ++$var;                         // +3
+        }                                   // -4
+    }
+    public function withBreak()             // +5
+    {                                       // 0
+        $var = 1;                           // 0
+        for ($i = 0; $i < 10; $i++) {       // 0
+            if (false) {                    // +1
+                ++$var;                     // +1
+                break                       // 0
+                    1                       // 0
+                ;                           // 0
+                ++$var;                     // +1
+            }                               // -2
+            ++$var;                         // 0
+            break;                          // 0
+            ++$var;                         // +3
+        }                                   // -4
+    }
 }

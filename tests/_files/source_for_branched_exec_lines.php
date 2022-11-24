@@ -297,4 +297,21 @@ class MyClass
             ++$var;                         // +3
         }                                   // -4
     }
+    public function withGoto()              // +5
+    {                                       // 0
+        $var = 1;                           // 0
+        if (false) {                        // 0
+            ++$var;                         // +1
+            goto                            // 0
+            a                               // 0
+            ;                               // 0
+            ++$var;                         // +1
+        }                                   // -2
+        ++$var;                             // 0
+        a                                   // +3
+        :                                   // 0
+        ++$var;                             // 0
+        b:                                  // +1
+        ++$var;                             // 0
+    }
 }

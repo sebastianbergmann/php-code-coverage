@@ -126,6 +126,18 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($node instanceof Node\Expr\Match_) {
+            foreach ($node->arms as $arm) {
+                $this->setLineBranch(
+                    $arm->body->getStartLine(),
+                    $arm->body->getEndLine(),
+                    ++$this->nextBranch
+                );
+            }
+
+            return;
+        }
+
         if ($node instanceof Node\Stmt\Declare_) {
             $this->unsets[] = range($node->getStartLine(), $node->getEndLine());
         }

@@ -44,7 +44,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $branch = 0;
 
         foreach ($linesFromSource as $lineNumber => $line) {
-            if (1 !== preg_match('#^[^/].+// (?<branchIncrement>[+-]?\d+)$#', $line, $matches)) {
+            if (1 !== preg_match('#^\s*[^/].+// (?<branchIncrement>[+-]?\d+)$#', $line, $matches)) {
                 continue;
             }
 

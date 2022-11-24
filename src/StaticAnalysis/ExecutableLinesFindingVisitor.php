@@ -10,8 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_search;
+use function current;
+use function end;
 use function max;
 use function range;
+use function reset;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -84,6 +87,14 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 $node->stmts[0]->getStartLine()
             );
             $contentEnd = $endLine;
+
+            end($node->stmts);
+            $lastNode = current($node->stmts);
+            reset($node->stmts);
+
+            if ($lastNode instanceof Node\Stmt\Nop) {
+                $contentEnd = $lastNode->getEndLine() + 1;
+            }
 
             if (1 > ($contentEnd - $contentStart)) {
                 return;

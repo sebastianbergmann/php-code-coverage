@@ -49,6 +49,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($node instanceof Node\Expr\Ternary) {
+            $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
+            $this->setLineBranch($node->else->getStartLine(), $node->else->getEndLine(), ++$this->nextBranch);
+
+            return;
+        }
+
         if ($node instanceof Node\Stmt\If_ ||
             $node instanceof Node\Stmt\ElseIf_ ||
             $node instanceof Node\Stmt\Else_ ||

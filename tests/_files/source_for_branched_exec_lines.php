@@ -334,4 +334,15 @@ class MyClass
         }                                   // -6
         ++$var;                             // 0
     }
+    public function withTernaryOperator()   // +7
+    {                                       // 0
+        $var                                // 0
+            =                               // 0
+            true                            // 0
+            ?                               // 0
+                'a'                         // +1
+                :                           // -1
+                'b'                         // +2
+            ;                               // -2
+    }
 }

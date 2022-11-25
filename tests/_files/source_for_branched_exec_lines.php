@@ -322,19 +322,19 @@ class MyClass
             throw                           // 0
             new                             // 0
             \Exception()                    // 0
-            ;                               // 0
-            ++$var;                         // +1
-        } catch (\Exception $exception) {   // +1
+            ;                               // +2
+            ++$var;                         // -1
+        } catch (\Exception $exception) {   // +2
             ++$var;                         // 0
         } catch (\RuntimeException $re) {   // +1
         } catch (\Throwable $throwable) {   // +1
             ++$var;                         // 0
         } finally {                         // +1
             ++$var;                         // 0
-        }                                   // -6
+        }                                   // -7
         ++$var;                             // 0
     }
-    public function withTernaryOperator()   // +7
+    public function withTernaryOperator()   // +8
     {                                       // 0
         $var                                // 0
             =                               // 0
@@ -344,5 +344,19 @@ class MyClass
                 :                           // -1
                 'b'                         // +2
             ;                               // -2
+    }
+    public function withCall()              // +3
+    {                                       // 0
+        $var = 1;                           // 0
+        $var = intval($var);                // 0
+        ++$var;                             // +1
+        $date = new DateTimeImmutable();    // 0
+        ++$var;                             // +1
+        $ymd = $date->format('Ymd');        // 0
+        ++$var;                             // +1
+        $ymd = $date?->format('Ymd');       // 0
+        ++$var;                             // +1
+        $date = DateTime::createFromImmutable($date);       // 0
+        ++$var;                             // +1
     }
 }

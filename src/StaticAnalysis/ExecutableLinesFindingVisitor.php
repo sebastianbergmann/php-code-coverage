@@ -162,7 +162,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Break_ ||
             $node instanceof Node\Stmt\Goto_ ||
             $node instanceof Node\Stmt\Throw_ ||
-            $node instanceof Node\Stmt\Label
+            $node instanceof Node\Stmt\Label ||
+            $node instanceof Node\Expr\CallLike
         ) {
             $returnBranch  = $this->executableLinesGroupedByBranch[$node->getStartLine()];
             $returnEndLine = $node->getEndLine();

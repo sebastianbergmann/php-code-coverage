@@ -314,4 +314,24 @@ class MyClass
         b:                                  // +1
         ++$var;                             // 0
     }
+    public function withThrow()             // +1
+    {                                       // 0
+        $var = 1;                           // 0
+        try {                               // 0
+            ++$var;                         // +1
+            throw                           // 0
+            new                             // 0
+            \Exception()                    // 0
+            ;                               // 0
+            ++$var;                         // +1
+        } catch (\Exception $exception) {   // +1
+            ++$var;                         // 0
+        } catch (\RuntimeException $re) {   // +1
+        } catch (\Throwable $throwable) {   // +1
+            ++$var;                         // 0
+        } finally {                         // +1
+            ++$var;                         // 0
+        }                                   // -6
+        ++$var;                             // 0
+    }
 }

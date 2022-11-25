@@ -55,7 +55,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Case_ ||
             $node instanceof Node\Stmt\For_ ||
             $node instanceof Node\Stmt\Foreach_ ||
-            $node instanceof Node\Stmt\While_) {
+            $node instanceof Node\Stmt\While_ ||
+            $node instanceof Node\Stmt\TryCatch ||
+            $node instanceof Node\Stmt\Catch_ ||
+            $node instanceof Node\Stmt\Finally_
+        ) {
             $incrementNextBranch = false;
 
             if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
@@ -93,6 +97,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 $node->stmts[0]->getStartLine()
             );
             $contentEnd = $endLine;
+
+            if (
+                $node instanceof Node\Stmt\Catch_ ||
+                $node instanceof Node\Stmt\Finally_
+            ) {
+                $contentStart = $node->getStartLine();
+            }
 
             if ($node instanceof Node\Stmt\Case_) {
                 $contentEnd++;
@@ -143,6 +154,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Continue_ ||
             $node instanceof Node\Stmt\Break_ ||
             $node instanceof Node\Stmt\Goto_ ||
+            $node instanceof Node\Stmt\Throw_ ||
             $node instanceof Node\Stmt\Label
         ) {
             $returnBranch  = $this->executableLinesGroupedByBranch[$node->getStartLine()];

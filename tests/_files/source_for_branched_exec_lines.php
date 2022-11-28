@@ -405,4 +405,11 @@ class MyClass
         {                                   // 0
         };                                  // +5
     }
+    public function withArrowFn()           // +1
+    {                                       // 0
+        $y = 1;                             // 0
+        $fn1 = fn($x) => $x + $y;           // 0
+        $fn1 = fn($x) =>                    // 0
+            $x + $y;                        // +1
+    }
 }

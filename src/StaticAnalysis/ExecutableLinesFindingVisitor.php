@@ -42,6 +42,22 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($node instanceof Node\Expr\ArrowFunction) {
+            $startLine = max(
+                $node->getStartLine() + 1,
+                $node->expr->getStartLine()
+            );
+            $endLine = $node->expr->getEndLine();
+
+            if ($endLine < $startLine) {
+                return;
+            }
+
+            $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
+
+            return;
+        }
+
         if ($node instanceof Node\Stmt\Function_ ||
             $node instanceof Node\Stmt\ClassMethod ||
             $node instanceof Node\Expr\Closure

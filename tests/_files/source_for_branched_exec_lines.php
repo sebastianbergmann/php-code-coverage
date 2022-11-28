@@ -44,6 +44,8 @@ function withIf()   // +6
 
 class MyClass
 {
+    public const C1 = 1;
+    public $var1 = 1;
     public              // +2
     function            // 0
     __construct         // 0

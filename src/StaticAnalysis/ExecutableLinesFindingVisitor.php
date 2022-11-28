@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_search;
+use function count;
 use function current;
 use function end;
 use function max;
@@ -44,7 +45,17 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\Function_ ||
             $node instanceof Node\Stmt\ClassMethod
         ) {
-            $this->setLineBranch($node->getStartLine(), $node->getEndLine() - 1, ++$this->nextBranch);
+            $endLine = $node->getEndLine() - 1;
+
+            if ([] === $node->stmts ||
+                (
+                    1 === count($node->stmts) &&
+                    $node->stmts[0] instanceof Node\Stmt\Nop
+                )
+            ) {
+                $endLine++;
+            }
+            $this->setLineBranch($node->getStartLine(), $endLine, ++$this->nextBranch);
 
             return;
         }

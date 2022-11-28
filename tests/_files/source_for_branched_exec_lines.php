@@ -371,4 +371,38 @@ class MyClass
         $date = DateTime::createFromImmutable($date);       // 0
         ++$var;                             // +1
     }
+    public function withClosure()           // +1
+    {                                       // 0
+        $myf = function(){};                // 0
+        $myf = function(){                  // 0
+        };                                  // +1
+        $myf = function()                   // -1
+        {                                   // 0
+        };                                  // +2
+        $myf = function(){                  // -2
+            return 1;                       // +3
+        };                                  // -3
+        $myf = function()                   // 0
+        {                                   // 0
+            return 1;                       // +4
+        };                                  // -4
+        $var = 1;                           // 0
+        $myf                                // 0
+            =                               // 0
+            function                        // 0
+            (                               // 0
+                $var2                       // 0
+                =                           // 0
+                2                           // 0
+            )                               // 0
+                use                         // 0
+                (                           // 0
+                    &                       // 0
+                    $var                    // 0
+                )                           // 0
+            :                               // 0
+            void                            // 0
+        {                                   // 0
+        };                                  // +5
+    }
 }

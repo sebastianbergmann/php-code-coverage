@@ -43,8 +43,28 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Stmt\Function_ ||
-            $node instanceof Node\Stmt\ClassMethod
+            $node instanceof Node\Stmt\ClassMethod ||
+            $node instanceof Node\Expr\Closure
         ) {
+            $startLine = $node->getStartLine();
+
+            if ($node instanceof Node\Expr\Closure) {
+                if ([] === $node->stmts ||
+                    (
+                        1 === count($node->stmts) &&
+                        $node->stmts[0] instanceof Node\Stmt\Nop
+                    )
+                ) {
+                    $startLine = $node->getEndLine();
+
+                    if ($startLine === $node->getStartLine()) {
+                        return;
+                    }
+                } else {
+                    $startLine = $node->stmts[0]->getStartLine();
+                }
+            }
+
             $endLine = $node->getEndLine() - 1;
 
             if ([] === $node->stmts ||
@@ -55,7 +75,12 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             ) {
                 $endLine++;
             }
-            $this->setLineBranch($node->getStartLine(), $endLine, ++$this->nextBranch);
+
+            if ($endLine < $startLine) {
+                return;
+            }
+
+            $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
 
             return;
         }

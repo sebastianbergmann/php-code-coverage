@@ -31,14 +31,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private $executableLinesGroupedByBranch = [];
 
-    /**
-     * @var array
-     */
-    private $unsets = [];
-
     public function enterNode(Node $node): void
     {
-        if ($node instanceof Node\Stmt\Class_) {
+        if ($node instanceof Node\Stmt\Declare_ ||
+            $node instanceof Node\Stmt\DeclareDeclare ||
+            $node instanceof Node\Stmt\Class_ ||
+            $node instanceof Node\Stmt\ClassConst ||
+            $node instanceof Node\Stmt\Property ||
+            $node instanceof Node\Stmt\PropertyProperty ||
+            $node instanceof Node\Const_ ||
+            $node instanceof Node\Scalar ||
+            $node instanceof Node\Identifier ||
+            $node instanceof Node\VarLikeIdentifier
+        ) {
             return;
         }
 
@@ -240,30 +245,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if ($node instanceof Node\Stmt\Declare_) {
-            $this->unsets[] = range($node->getStartLine(), $node->getEndLine());
-
-            return;
-        }
-
-        if ($node instanceof Node\Identifier) {
-            return;
-        }
-
         if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
             return;
         }
 
         $this->setLineBranch($node->getStartLine(), $node->getEndLine(), 1);
-    }
-
-    public function afterTraverse(array $nodes): void
-    {
-        foreach ($this->unsets as $unset) {
-            foreach ($unset as $line) {
-                unset($this->executableLinesGroupedByBranch[$line]);
-            }
-        }
     }
 
     public function executableLinesGroupedByBranch(): array

@@ -250,11 +250,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if (!isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
-            $this->setLineBranch($node->getStartLine(), $node->getEndLine(), 1);
-
+        if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
             return;
         }
+
+        $this->setLineBranch($node->getStartLine(), $node->getEndLine(), 1);
     }
 
     public function afterTraverse(array $nodes): void

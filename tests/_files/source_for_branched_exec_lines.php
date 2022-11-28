@@ -10,21 +10,30 @@ $var1               // +1
     1               // 0
 ;                   // 0
 
-function simple()   // +1
+function empty1()   // +1
+{                   // 0
+}                   // 0
+function empty2(){  // +1
+}                   // 0
+
+function simple1()  // +1
 {                   // 0
     return 1;       // 0
 }
+function simple2(){ // +1
+    return 1;       // 0
+}
 
-$var2 = 1;          // -1
+$var2 = 1;          // -4
 
 if (                // 0
     false           // 0
 )                   // 0
 {                   // 0
-    $var2 += 1;     // +2
-}                   // -2
+    $var2 += 1;     // +5
+}                   // -5
 
-function withIf()   // +3
+function withIf()   // +6
 {                   // 0
     $var = 1;       // 0
     if (false) {    // 0
@@ -49,7 +58,10 @@ class MyClass
             $var += 2;  // +1
         }               // -1
     }
-    public function withForeach()           // +2
+    public function myEmpty()               // +2
+    {                                       // 0
+    }                                       // 0
+    public function withForeach()           // +1
     {                                       // 0
         $var = 1;                           // 0
         foreach ([] as $value);             // 0

@@ -39,6 +39,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\ClassConst ||
             $node instanceof Node\Stmt\Property ||
             $node instanceof Node\Stmt\PropertyProperty ||
+            $node instanceof Node\Expr\Variable ||
+            $node instanceof Node\Param ||
             $node instanceof Node\Const_ ||
             $node instanceof Node\Scalar ||
             $node instanceof Node\Identifier ||
@@ -67,33 +69,25 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\ClassMethod ||
             $node instanceof Node\Expr\Closure
         ) {
-            $startLine = $node->getStartLine();
+            $hasEmptyBody = [] === $node->stmts ||
+                (
+                    1 === count($node->stmts) &&
+                    $node->stmts[0] instanceof Node\Stmt\Nop
+                );
 
-            if ($node instanceof Node\Expr\Closure) {
-                if ([] === $node->stmts ||
-                    (
-                        1 === count($node->stmts) &&
-                        $node->stmts[0] instanceof Node\Stmt\Nop
-                    )
-                ) {
-                    $startLine = $node->getEndLine();
+            if ($hasEmptyBody) {
+                $startLine = $node->getEndLine();
 
-                    if ($startLine === $node->getStartLine()) {
-                        return;
-                    }
-                } else {
-                    $startLine = $node->stmts[0]->getStartLine();
+                if ($startLine === $node->getStartLine()) {
+                    return;
                 }
+            } else {
+                $startLine = $node->stmts[0]->getStartLine();
             }
 
             $endLine = $node->getEndLine() - 1;
 
-            if ([] === $node->stmts ||
-                (
-                    1 === count($node->stmts) &&
-                    $node->stmts[0] instanceof Node\Stmt\Nop
-                )
-            ) {
+            if ($hasEmptyBody) {
                 $endLine++;
             }
 

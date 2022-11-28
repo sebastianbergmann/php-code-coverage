@@ -10,18 +10,18 @@ $var1               // +1
     1               // 0
 ;                   // 0
 
-function empty1()   // +1
-{                   // 0
-}                   // 0
-function empty2(){  // +1
-}                   // 0
+function empty1()
+{
+}                   // +1
+function empty2(){
+}                   // +1
 
-function simple1()  // +1
-{                   // 0
-    return 1;       // 0
+function simple1()
+{
+    return 1;       // +1
 }
-function simple2(){ // +1
-    return 1;       // 0
+function simple2(){
+    return 1;       // +1
 }
 
 $var2 = 1;          // -4
@@ -33,9 +33,9 @@ if (                // 0
     $var2 += 1;     // +5
 }                   // -5
 
-function withIf()   // +6
-{                   // 0
-    $var = 1;       // 0
+function withIf()
+{
+    $var = 1;       // +6
     if (false) {    // 0
         $var += 2;  // +1
     }               // -1
@@ -46,26 +46,27 @@ class MyClass
 {
     public const C1 = 1;
     public $var1 = 1;
-    public              // +2
-    function            // 0
-    __construct         // 0
-    (                   // 0
-        $var            // 0
-        =               // 0
-        1               // 0
-    )                   // 0
-    {                   // 0
-        $var = 1;       // 0
+    public
+    function
+    __construct
+    (
+        &
+        $var
+        =
+        1
+    )
+    {
+        $var = 1;       // +2
         if (false) {    // 0
             $var += 2;  // +1
         }               // -1
     }
-    public function myEmpty()               // +2
-    {                                       // 0
-    }                                       // 0
-    public function withForeach()           // +1
-    {                                       // 0
-        $var = 1;                           // 0
+    public function myEmpty()
+    {
+    }                                       // +2
+    public function withForeach()
+    {
+        $var = 1;                           // +1
         foreach ([] as $value);             // 0
         foreach ([] as $value) $var += 2;   // 0
         foreach ([] as $value) {            // 0
@@ -88,9 +89,9 @@ class MyClass
             $var += 2;                      // +4
         }                                   // -4
     }
-    public function withWhile()             // +5
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withWhile()
+    {
+        $var = 1;                           // +5
         while (0 === $var);                 // 0
         while (0 === $var) ++$var;          // 0
         while (0 === $var) {                // 0
@@ -111,9 +112,9 @@ class MyClass
             ++$var;                         // +4
         }                                   // -4
     }
-    public function withIfElseifElse()      // +5
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withIfElseifElse()
+    {
+        $var = 1;                           // +5
         if (0 === $var);                    // 0
         if (0 === $var) { ++$var; }         // 0
         if (1 === $var):                    // 0
@@ -155,9 +156,9 @@ class MyClass
             ++$var;                         // +12
         }                                   // -12
     }
-    public function withFor()               // +13
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withFor()
+    {
+        $var = 1;                           // +13
         for (;false;);                      // 0
         for (;false;) $var += 2;            // 0
         for (;false;) {                     // 0
@@ -178,9 +179,9 @@ class MyClass
             $var += 2;                      // +4
         }                                   // -4
     }
-    public function withDoWhile()           // +5
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withDoWhile()
+    {
+        $var = 1;                           // +5
         do {} while (0 === $var);           // 0
         do ++$var; while (0 === $var);      // 0
         do                                  // 0
@@ -203,9 +204,9 @@ class MyClass
         )                                   // 0
         ;                                   // 0
     }
-    public function withSwitch()            // +1
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withSwitch()
+    {
+        $var = 1;                           // +1
         switch ($var) {                     // 0
             case 0:                         // 0
             case 1:                         // 0
@@ -233,9 +234,9 @@ class MyClass
                 ++$var;                     // +8
         endswitch;                          // -8
     }
-    public function withMatch()             // +9
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withMatch()
+    {
+        $var = 1;                           // +9
         $var2 = match ($var) {              // 0
             0 => ++$var,                    // +1
             1 => ++$var,                    // +1
@@ -263,9 +264,9 @@ class MyClass
         }                                   // 0
         ;                                   // 0
     }
-    public function withReturn()            // +7
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withReturn()
+    {
+        $var = 1;                           // +7
         if (false) {                        // 0
             ++$var;                         // +1
             return                          // 0
@@ -279,9 +280,9 @@ class MyClass
         return;                             // 0
         ++$var;                             // +4
     }
-    public function withContinue()          // +1
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withContinue()
+    {
+        $var = 1;                           // +1
         for ($i = 0; $i < 10; $i++) {       // 0
             if (false) {                    // +1
                 ++$var;                     // +1
@@ -295,9 +296,9 @@ class MyClass
             ++$var;                         // +3
         }                                   // -4
     }
-    public function withBreak()             // +5
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withBreak()
+    {
+        $var = 1;                           // +5
         for ($i = 0; $i < 10; $i++) {       // 0
             if (false) {                    // +1
                 ++$var;                     // +1
@@ -311,9 +312,9 @@ class MyClass
             ++$var;                         // +3
         }                                   // -4
     }
-    public function withGoto()              // +5
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withGoto()
+    {
+        $var = 1;                           // +5
         if (false) {                        // 0
             ++$var;                         // +1
             goto                            // 0
@@ -328,9 +329,9 @@ class MyClass
         b:                                  // +1
         ++$var;                             // 0
     }
-    public function withThrow()             // +1
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withThrow()
+    {
+        $var = 1;                           // +1
         try {                               // 0
             ++$var;                         // +1
             throw                           // 0
@@ -348,9 +349,9 @@ class MyClass
         }                                   // -7
         ++$var;                             // 0
     }
-    public function withTernaryOperator()   // +8
-    {                                       // 0
-        $var                                // 0
+    public function withTernaryOperator()
+    {
+        $var                                // +8
             =                               // 0
             true                            // 0
             ?                               // 0
@@ -359,9 +360,9 @@ class MyClass
                 'b'                         // +2
             ;                               // -2
     }
-    public function withCall()              // +3
-    {                                       // 0
-        $var = 1;                           // 0
+    public function withCall()
+    {
+        $var = 1;                           // +3
         $var = intval($var);                // 0
         ++$var;                             // +1
         $date = new DateTimeImmutable();    // 0
@@ -373,9 +374,9 @@ class MyClass
         $date = DateTime::createFromImmutable($date);       // 0
         ++$var;                             // +1
     }
-    public function withClosure()           // +1
-    {                                       // 0
-        $myf = function(){};                // 0
+    public function withClosure()
+    {
+        $myf = function(){};                // +1
         $myf = function(){                  // 0
         };                                  // +1
         $myf = function()                   // -1
@@ -408,9 +409,9 @@ class MyClass
         };                                  // +5
         $myf = function(){ $var = 1;};      // -5
     }
-    public function withArrowFn()           // +6
-    {                                       // 0
-        $y = 1;                             // 0
+    public function withArrowFn()
+    {
+        $y = 1;                             // +6
         $fn1 = fn($x) => $x + $y;           // 0
         $fn1 = fn($x) =>                    // 0
             $x + $y;                        // +1

@@ -28,22 +28,19 @@ function simple2(){
     return 1;       // +1
 }
 
-$var2 = 1;          // -4
+$var2 = 1;          // +1
 
-if (                // 0
-    false           // 0
-)                   // 0
-{                   // 0
-    $var2 += 1;     // +5
-}                   // -5
+if (false) {        // +1
+    $var2 += 1;     // +1
+}
 
 function withIf()
 {
-    $var = 1;       // +6
-    if (false) {    // 0
+    $var = 1;       // +1
+    if (false) {    // +1
         $var += 2;  // +1
-    }               // -1
-    return $var;    // 0
+    }
+    return $var;    // +1
 }
 
 /**
@@ -63,194 +60,194 @@ class MyClass
         1
     )
     {
-        $var = 1;       // +2
+        $var = 1;       // +3
 
-        if (false) {    // 0
+        if (false) {    // +1
             $var += 2;  // +1
-        }               // -1
+        }
     }
     public function myEmpty()
     {
-    }                                       // +2
+    }                                       // +1
     public function withForeach()
     {
         $var = 1;                           // +1
-        foreach ([] as $value);             // 0
-        foreach ([] as $value) $var += 2;   // 0
-        foreach ([] as $value) {            // 0
+        foreach ([] as $value);             // +1
+        foreach ([] as $value) $var += 2;   // +1
+        foreach ([] as $value) {            // +1
             $var += 2;                      // +1
-        }                                   // -1
-        foreach ([] as $value):             // 0
-            $var += 2;                      // +2
-        endforeach;                         // -2
-        foreach ([] as $value) { $var +=2;  // 0
-            $var += 2;                      // +3
-        $var += 2; }                        // -3
-        foreach (                           // 0
-            []                              // 0
+        }
+        foreach ([] as $value):             // +1
+            $var += 2;                      // +1
+        endforeach;
+        foreach ([] as $value) { $var +=2;  // +1
+            $var += 2;                      // +1
+        $var += 2; }                        // +1
+        foreach (
+            []                              // +1
             as                              // 0
             $key                            // 0
             =>                              // 0
             $value                          // 0
-        )                                   // 0
-        {                                   // 0
-            $var += 2;                      // +4
-        }                                   // -4
+        )
+        {
+            $var += 2;                      // +1
+        }
     }
     public function withWhile()
     {
-        $var = 1;                           // +5
-        while (0 === $var);                 // 0
-        while (0 === $var) ++$var;          // 0
-        while (0 === $var) {                // 0
+        $var = 1;                           // +1
+        while (0 === $var);                 // +1
+        while (0 === $var) ++$var;          // +1
+        while (0 === $var) {                // +1
             ++$var;                         // +1
-        }                                   // -1
-        while (0 === $var) { ++$var;        // 0
-            ++$var;                         // +2
-        ++$var; }                           // -2
-        while (0 === $var):                 // 0
-            ++$var;                         // +3
-        endwhile;                           // -3
-        while (                             // 0
-            0                               // 0
+        }
+        while (0 === $var) { ++$var;        // +1
+            ++$var;                         // +1
+        ++$var; }                           // +1
+        while (0 === $var):                 // +1
+            ++$var;                         // +1
+        endwhile;
+        while (
+            0                               // +1
             ===                             // 0
             $var                            // 0
-        )                                   // 0
-        {                                   // 0
-            ++$var;                         // +4
-        }                                   // -4
+        )
+        {
+            ++$var;                         // +1
+        }
     }
     public function withIfElseifElse()
     {
-        $var = 1;                           // +5
-        if (0 === $var);                    // 0
-        if (0 === $var) { ++$var; }         // 0
-        if (1 === $var):                    // 0
+        $var = 1;                           // +1
+        if (0 === $var);                    // +1
+        if (0 === $var) { ++$var; }         // +1
+        if (1 === $var):                    // +1
             ++$var;                         // +1
-        elseif (1 === $var):                // -1
-            ++$var;                         // +2
-        else:                               // -2
-            ++$var;                         // +3
-        endif;                              // -3
-        if (1 === $var) {                   // 0
-            ++$var;                         // +4
-        } elseif (1 === $var) {             // -4
-            ++$var;                         // +5
-        } else {                            // -5
-            ++$var;                         // +6
-        }                                   // -6
-        if (1 === $var) { ++$var;           // 0
-            ++$var;                         // +7
-        } elseif (1 === $var) { ++$var;     // -7
-            ++$var;                         // +8
-        ++$var; } else { ++$var;            // -8
-            ++$var;                         // +9
-        }                                   // -9
-        if (                                // 0
-            1 === $var                      // 0
-        )                                   // 0
-        {                                   // 0
-            ++$var;                         // +10
-        }                                   // -10
-        elseif                              // 0
-        (                                   // 0
-            1 === $var                      // 0
-        )                                   // 0
-        {                                   // 0
-            ++$var;                         // +11
-        }                                   // -11
-        else                                // 0
-        {                                   // 0
-            ++$var;                         // +12
-        }                                   // -12
+        elseif (1 === $var):                // +1
+            ++$var;                         // +1
+        else:
+            ++$var;                         // +1
+        endif;
+        if (1 === $var) {                   // +1
+            ++$var;                         // +1
+        } elseif (1 === $var) {             // +1
+            ++$var;                         // +1
+        } else {
+            ++$var;                         // +1
+        }
+        if (1 === $var) { ++$var;           // +1
+            ++$var;                         // +1
+        } elseif (1 === $var) { ++$var;     // +1
+            ++$var;                         // +1
+        ++$var; } else { ++$var;            // +1
+            ++$var;                         // +1
+        }
+        if (
+            1 === $var                      // +1
+        )
+        {
+            ++$var;                         // +1
+        }
+        elseif
+        (
+            1 === $var                      // +1
+        )
+        {
+            ++$var;                         // +1
+        }
+        else
+        {
+            ++$var;                         // +1
+        }
     }
     public function withFor()
     {
-        $var = 1;                           // +13
-        for (;false;);                      // 0
-        for (;false;) $var += 2;            // 0
-        for (;false;) {                     // 0
+        $var = 1;                           // +1
+        for (;false;);                      // +1
+        for (;false;) $var += 2;            // +1
+        for (;false;) {                     // +1
             $var += 2;                      // +1
-        }                                   // -1
-        for (;false;):                      // 0
-            $var += 2;                      // +2
-        endfor;                             // -2
-        for (;false;) { $var +=2;           // 0
-            $var += 2;                      // +3
-        $var += 2; }                        // -3
-        for (                               // 0
-            $inc = 0;                       // 0
+        }
+        for (;false;):                      // +1
+            $var += 2;                      // +1
+        endfor;
+        for (;false;) { $var +=2;           // +1
+            $var += 2;                      // +1
+        $var += 2; }                        // +1
+        for (
+            $inc = 0;                       // +1
             false;                          // 0
             ++$inc                          // 0
-        )                                   // 0
-        {                                   // 0
-            $var += 2;                      // +4
-        }                                   // -4
+        )
+        {
+            $var += 2;                      // +1
+        }
     }
     public function withDoWhile()
     {
-        $var = 1;                           // +5
-        do {} while (0 === $var);           // 0
-        do ++$var; while (0 === $var);      // 0
-        do                                  // 0
-            ++$var;                         // 0
-        while (0 === $var);                 // 0
-        do {                                // 0
-            ++$var;                         // 0
-        } while (0 === $var);               // 0
-        do { ++$var;                        // 0
-            ++$var;                         // 0
-        ++$var; } while (0 === $var);       // 0
-        do {                                // 0
-            ++$var;                         // 0
-        }                                   // 0
-        while                               // 0
-        (                                   // 0
-            0                               // 0
+        $var = 1;                           // +1
+        do {} while (0 === $var);           // +1
+        do ++$var; while (0 === $var);      // +1
+        do
+            ++$var;                         // +2
+        while (0 === $var);                 // -1
+        do {
+            ++$var;                         // +3
+        } while (0 === $var);               // -1
+        do { ++$var;                        // +3
+            ++$var;                         // +1
+        ++$var; } while (0 === $var);       // -2
+        do {
+            ++$var;                         // +4
+        }
+        while
+        (
+            0                               // -1
             ===                             // 0
             $var                            // 0
-        )                                   // 0
-        ;                                   // 0
+        )
+        ;
     }
     public function withSwitch()
     {
-        $var = 1;                           // +1
-        switch ($var) {                     // 0
-            case 0:                         // 0
-            case 1:                         // 0
+        $var = 1;                           // +2
+        switch ($var) {
+            case 0:                         // +1
+            case 1:                         // +1
                 ++$var;                     // +1
-                break;                      // 0
-            case 2:                         // -1
-                ++$var;                     // +2
-            case 3:                         // -2
-                ++$var;                     // +3
-                break;                      // 0
-            default:                        // -3
-                ++$var;                     // +4
-        }                                   // -4
-        switch ($var):                      // 0
-            case 0:                         // 0
-            case 1:                         // 0
-                ++$var;                     // +5
-                break;                      // 0
-            case 2:                         // -5
-                ++$var;                     // +6
-            case 3:                         // -6
-                ++$var;                     // +7
-                break;                      // 0
-            default:                        // -7
-                ++$var;                     // +8
-        endswitch;                          // -8
+                break;                      // +1
+            case 2:                         // +1
+                ++$var;                     // +1
+            case 3:                         // +1
+                ++$var;                     // +1
+                break;                      // +1
+            default:
+                ++$var;                     // +1
+        }
+        switch ($var):
+            case 0:                         // +1
+            case 1:                         // +1
+                ++$var;                     // +1
+                break;                      // +1
+            case 2:                         // +1
+                ++$var;                     // +1
+            case 3:                         // +1
+                ++$var;                     // +1
+                break;                      // +1
+            default:
+                ++$var;                     // +1
+        endswitch;
     }
     public function withMatch()
     {
-        $var = 1;                           // +9
-        $var2 = match ($var) {              // 0
+        $var = 1;                           // +1
+        $var2 = match ($var) {              // +1
             0 => ++$var,                    // +1
             1 => ++$var,                    // +1
             default => ++$var,              // +1
         };                                  // -3
-        $var2                               // 0
+        $var2                               // +4
             =                               // 0
             match                           // 0
             (                               // 0
@@ -259,108 +256,115 @@ class MyClass
             {                               // 0
                 0                           // 0
                 =>                          // 0
-                ++$var                      // +4
-            ,                               // -4
-                1                           // 0
+                ++$var                      // +1
+            ,                               // -1
+                1,                          // 0
+                2                           // 0
                 =>                          // 0
-                ++$var                      // +5
-            ,                               // -5
+                ++$var                      // +2
+            ,                               // -2
                 default                     // 0
                 =>                          // 0
-                ++$var                      // +6
-            ,                               // -6
+                ++$var                      // +3
+            ,                               // -3
         }                                   // 0
         ;                                   // 0
     }
     public function withReturn()
     {
-        $var = 1;                           // +7
-        if (false) {                        // 0
+        $var = 1;                           // +4
+        if (false) {                        // +1
             ++$var;                         // +1
-            return                          // 0
+            return                          // +1
                 $var                        // 0
             ;                               // 0
             ++$var;                         // +1
-            if (false) {                    // 0
+            if (false) {                    // +1
                 ++$var;                     // +1
-            }                               // -1
-        }                                   // -2
-        return;                             // 0
-        ++$var;                             // +4
+            }
+        }
+        return;                             // +1
+        ++$var;                             // +1
     }
     public function withContinue()
     {
         $var = 1;                           // +1
-        for ($i = 0; $i < 10; $i++) {       // 0
+        for ($i = 0; $i < 10; $i++) {       // +1
             if (false) {                    // +1
                 ++$var;                     // +1
-                continue                    // 0
+                continue                    // +1
                     1                       // 0
                 ;                           // 0
                 ++$var;                     // +1
-            }                               // -2
-            ++$var;                         // 0
-            continue;                       // 0
-            ++$var;                         // +3
-        }                                   // -4
+            }
+            ++$var;                         // +1
+            continue;                       // +1
+            ++$var;                         // +1
+        }
     }
     public function withBreak()
     {
-        $var = 1;                           // +5
-        for ($i = 0; $i < 10; $i++) {       // 0
+        $var = 1;                           // +1
+        for ($i = 0; $i < 10; $i++) {       // +1
             if (false) {                    // +1
                 ++$var;                     // +1
-                break                       // 0
+                break                       // +1
                     1                       // 0
                 ;                           // 0
                 ++$var;                     // +1
-            }                               // -2
-            ++$var;                         // 0
-            break;                          // 0
-            ++$var;                         // +3
-        }                                   // -4
+            }
+            ++$var;                         // +1
+            break;                          // +1
+            ++$var;                         // +1
+        }
     }
     public function withGoto()
     {
-        $var = 1;                           // +5
-        if (false) {                        // 0
+        $var = 1;                           // +1
+        if (false) {                        // +1
             ++$var;                         // +1
-            goto                            // 0
+            goto                            // +1
             a                               // 0
             ;                               // 0
             ++$var;                         // +1
-        }                                   // -2
-        ++$var;                             // 0
-        a                                   // +3
-        :                                   // 0
-        ++$var;                             // 0
-        b:                                  // +1
-        ++$var;                             // 0
+        }
+        ++$var;                             // +1
+        a
+        :
+        ++$var;                             // +1
+        b:
+        ++$var;                             // +1
     }
     public function withThrow()
     {
         $var = 1;                           // +1
-        try {                               // 0
+        try {
             ++$var;                         // +1
-            throw                           // 0
-            new                             // 0
+            throw
+            new                             // +1
             \Exception()                    // 0
-            ;                               // +2
-            ++$var;                         // -1
-        } catch (\Exception $exception) {   // +2
-            ++$var;                         // 0
+            ;
+            ++$var;                         // +1
+        } catch (\Exception $exception) {   // +1
+            ++$var;                         // +1
         } catch (\RuntimeException $re) {   // +1
-        } catch (\Throwable $throwable) {   // +1
-            ++$var;                         // 0
-        } finally {                         // +1
-            ++$var;                         // 0
-        }                                   // -7
-        ++$var;                             // 0
+        }
+        catch
+        (
+            \Throwable                      // +1
+            $throwable
+        )
+        {
+            ++$var;                         // +1
+        } finally {
+            ++$var;                         // +1
+        }
+        ++$var;                             // +1
     }
     public function withTernaryOperator()
     {
-        $var = true ? 'a' : 'b';            // +8
-        $var                                // 0
+        $var = true ? 'a' : 'b';            // +1
+        $var                                // +1
             =                               // 0
             true                            // 0
             ?                               // 0
@@ -369,45 +373,76 @@ class MyClass
                 'b'                         // +2
             ;                               // -2
 
-        $short = $var ?: null;              // 0
-        $short = $var                       // 0
-            ?: null;                        // +3
+        $short = $var ?: null;              // +3
+        $short = $var                       // +1
+            ?: null;                        // +1
 
-        $short = $var ?? null;              // -3
-        $short = $var                       // 0
-            ?? null;                        // +4
+        $short = $var ?? null;              // +1
+        $short = $var                       // +1
+            ?? null;                        // +1
     }
     public function withCall()
     {
         $var = 1;                           // +1
-        $var = intval($var);                // 0
+        $var = intval(                      // +1
+            $var                            // 0
+        );                                  // 0
+        $var                                // +1
+            =                               // 0
+            intval(                         // 0
+            $var                            // 0
+        );                                  // 0
         ++$var;                             // +1
-        $date = new DateTimeImmutable();    // 0
+        $date = new \DateTimeImmutable();   // +1
+        $date                               // +1
+            =                               // 0
+            new                             // 0
+            \DateTimeImmutable              // 0
+            (                               // 0
+                'now'                       // 0
+            )                               // 0
+        ;                                   // 0
         ++$var;                             // +1
-        $ymd = $date->format('Ymd');        // 0
+        $ymd = $date->format('Ymd');        // +1
+        $ymd                                // +1
+            =                               // 0
+            $date                           // 0
+            ->format(                       // 0
+                'Ymd'                       // 0
+            )                               // 0
+        ;                                   // 0
         ++$var;                             // +1
-        $ymd = $date?->format('Ymd');       // 0
+        $ymd = $date?->format('Ymd');       // +1
         ++$var;                             // +1
-        $date = DateTime::createFromImmutable($date);       // 0
+        $date = \DateTime::createFromImmutable($date);       // +1
+        $date                               // +1
+            =                               // 0
+            \DateTimeImmutable              // 0
+                ::                          // 0
+                createFromMutable           // 0
+                (                           // 0
+                    $date                   // 0
+                )                           // 0
+        ;                                   // 0
         ++$var;                             // +1
     }
     public function withClosure()
     {
         $myf = function(){};                // +1
-        $myf = function(){                  // 0
+        $myf = function(){                  // +1
         };                                  // +1
-        $myf = function()                   // -1
+        $myf = function()                   // +1
         {                                   // 0
-        };                                  // +2
-        $myf = function(){                  // -2
-            return 1;                       // +3
-        };                                  // -3
-        $myf = function()                   // 0
+        };                                  // +1
+        $myf = function(){                  // +1
+            return 1;                       // +1
+        };                                  // -1
+        $myf = function()                   // +2
         {                                   // 0
-            return 1;                       // +4
-        };                                  // -4
-        $var = 1;                           // 0
-        $myf                                // 0
+            return 1;                       // +1
+        };                                  // -1
+        $var = 1;                           // +2
+        $myf                                // +1
             =                               // 0
             function                        // 0
             (                               // 0
@@ -423,14 +458,35 @@ class MyClass
             :                               // 0
             void                            // 0
         {                                   // 0
-        };                                  // +5
-        $myf = function(){ $var = 1;};      // -5
+        };                                  // +1
+        $myf = function(){ $var = 1;};      // +2
+    }
+    public function withAnonymousClass()
+    {
+        $var = 1;                           // +1
+        $myClass                            // +1
+            =                               // 0
+            new                             // 0
+            class                           // 0
+            extends                         // 0
+            \RuntimeException               // 0
+            implements                      // 0
+            \Throwable                      // 0
+            {                               // 0
+                private const MY_CONST = 1;
+                private $var = 1;
+                public function myMethod()
+                {
+                    return;                 // +3
+                }
+            }                               // -3
+        ;                                   // 0
     }
     public function withArrowFn()
     {
-        $y = 1;                             // +6
-        $fn1 = fn($x) => $x + $y;           // 0
-        $fn1 = fn($x) =>                    // 0
+        $y = 1;                             // +4
+        $fn1 = fn($x) => $x + $y;           // +1
+        $fn1 = fn($x) =>                    // +1
             $x + $y;                        // +1
     }
     public function withComments()
@@ -438,13 +494,13 @@ class MyClass
         /** @var int $var */
         $var = 1;                           // +1
         /** @var int $var */
-        $var = 2;                           // 0
+        $var = 2;                           // +1
         // C3
-        $var = 3;                           // 0
+        $var = 3;                           // +1
         # C4
-        $var = 3;                           // 0
+        $var = 3;                           // +1
         /* @var int $var */
-        $var = 5;                           // 0
+        $var = 5;                           // +1
         // Comment2
     }
     public function withCommentsOnly()
@@ -453,6 +509,40 @@ class MyClass
          $var = 1;
          */
     }                                       // +1
+    public function withEarlyReturns()
+    {
+        foreach ([] as $value) {            // +1
+            $var = 1;                       // +1
+            if (false) {                    // +1
+                ++$var;                     // +1
+                continue;                   // +1
+                ++$var;                     // +1
+            }
+            if (false) {                    // +1
+                ++$var;                     // +1
+                break;                      // +1
+                ++$var;                     // +1
+            }
+            if (false) {                    // +1
+                ++$var;                     // +1
+                throw new \Exception();     // +1
+                ++$var;                     // +1
+            }
+            if (false) {                    // +1
+                ++$var;                     // +1
+                return;                     // +1
+                ++$var;                     // +1
+            }
+            if (false) {                    // +1
+                ++$var;                     // +1
+                intval(1);            // +1
+                ++$var;                     // +1
+            }
+        }
+
+        return;                             // +1
+        $var = 2;                           // +1
+    }
 }
 
 interface MyInterface
@@ -477,5 +567,5 @@ final class MyFinalClass extends MyAbstractClass
     private readonly string $var;
     public function myMethod(): void
     {
-    }                                       // +1
+    }                                       // +4
 }

@@ -441,3 +441,14 @@ class MyClass
          */
     }                                       // +1
 }
+
+interface MyInterface
+{
+    public function myMethod();
+}
+
+trait MyTrait
+{
+    public function myTrait()
+    {}                                      // +1
+}

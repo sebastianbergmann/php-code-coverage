@@ -49,9 +49,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\DeclareDeclare ||
             $node instanceof Node\Stmt\Class_ ||
             $node instanceof Node\Stmt\ClassConst ||
+            $node instanceof Node\Stmt\Interface_ ||
             $node instanceof Node\Stmt\Nop ||
             $node instanceof Node\Stmt\Property ||
             $node instanceof Node\Stmt\PropertyProperty ||
+            $node instanceof Node\Stmt\Trait_ ||
             $node instanceof Node\Expr\Variable ||
             $node instanceof Node\Param ||
             $node instanceof Node\Const_ ||
@@ -83,6 +85,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Expr\Closure
         ) {
             $hasEmptyBody = [] === $node->stmts ||
+                null === $node->stmts ||
                 (
                     1 === count($node->stmts) &&
                     $node->stmts[0] instanceof Node\Stmt\Nop

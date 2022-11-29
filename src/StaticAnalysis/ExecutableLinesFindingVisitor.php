@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_diff_key;
 use function array_search;
 use function count;
 use function current;
@@ -38,6 +39,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private $executableLinesGroupedByBranch = [];
 
+    private $unsets = [];
+
     public function __construct(string $source)
     {
         $this->source = $source;
@@ -47,20 +50,36 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Node\Stmt\Declare_ ||
             $node instanceof Node\Stmt\DeclareDeclare ||
-            $node instanceof Node\Stmt\Class_ ||
-            $node instanceof Node\Stmt\ClassConst ||
             $node instanceof Node\Stmt\Interface_ ||
+            $node instanceof Node\Stmt\Namespace_ ||
             $node instanceof Node\Stmt\Nop ||
-            $node instanceof Node\Stmt\Property ||
-            $node instanceof Node\Stmt\PropertyProperty ||
-            $node instanceof Node\Stmt\Trait_ ||
+            $node instanceof Node\Stmt\Use_ ||
+            $node instanceof Node\Stmt\UseUse ||
             $node instanceof Node\Expr\Variable ||
+            $node instanceof Node\Name ||
             $node instanceof Node\Param ||
             $node instanceof Node\Const_ ||
             $node instanceof Node\Scalar ||
-            $node instanceof Node\Identifier ||
-            $node instanceof Node\VarLikeIdentifier
+            $node instanceof Node\Identifier
         ) {
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\Class_ ||
+            $node instanceof Node\Stmt\Trait_
+        ) {
+            foreach ($node->stmts as $stmt) {
+                if ($stmt instanceof Node\Stmt\ClassMethod ||
+                    $stmt instanceof Node\Stmt\Nop
+                ) {
+                    continue;
+                }
+
+                foreach (range($stmt->getStartLine(), $stmt->getEndLine()) as $line) {
+                    $this->unsets[$line] = true;
+                }
+            }
+
             return;
         }
 
@@ -292,6 +311,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
             unset($this->executableLinesGroupedByBranch[1 + $lineNumber]);
         }
+
+        $this->executableLinesGroupedByBranch = array_diff_key(
+            $this->executableLinesGroupedByBranch,
+            $this->unsets
+        );
     }
 
     public function executableLinesGroupedByBranch(): array

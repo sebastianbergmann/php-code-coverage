@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+namespace MyNamespace;
+
+use DateTimeInterface;
+
 // Integer in comments represent the branch index difference
 // relative to the previous line
 
@@ -460,4 +464,18 @@ trait MyTrait
 {
     public function myTrait()
     {}                                      // +1
+}
+
+abstract class MyAbstractClass implements MyInterface
+{}
+final class MyFinalClass extends MyAbstractClass
+{
+    use MyTrait;
+    public const STRUCT = [
+        'foo' => 'bar',
+    ];
+    private readonly string $var;
+    public function myMethod(): void
+    {
+    }                                       // +1
 }

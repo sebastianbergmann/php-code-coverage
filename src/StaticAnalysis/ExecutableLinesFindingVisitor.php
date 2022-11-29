@@ -13,7 +13,9 @@ use function array_search;
 use function count;
 use function current;
 use function end;
+use function explode;
 use function max;
+use function preg_match;
 use function range;
 use function reset;
 use PhpParser\Node;
@@ -27,9 +29,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private $nextBranch = 1;
 
     /**
-     * @var array
+     * @var string
+     */
+    private $source;
+
+    /**
+     * @var array<int, int>
      */
     private $executableLinesGroupedByBranch = [];
+
+    public function __construct(string $source)
+    {
+        $this->source = $source;
+    }
 
     public function enterNode(Node $node): void
     {
@@ -37,6 +49,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\DeclareDeclare ||
             $node instanceof Node\Stmt\Class_ ||
             $node instanceof Node\Stmt\ClassConst ||
+            $node instanceof Node\Stmt\Nop ||
             $node instanceof Node\Stmt\Property ||
             $node instanceof Node\Stmt\PropertyProperty ||
             $node instanceof Node\Expr\Variable ||
@@ -76,26 +89,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 );
 
             if ($hasEmptyBody) {
-                $startLine = $node->getEndLine();
-
-                if ($startLine === $node->getStartLine()) {
+                if ($node->getEndLine() === $node->getStartLine()) {
                     return;
                 }
-            } else {
-                $startLine = $node->stmts[0]->getStartLine();
-            }
 
-            $endLine = $node->getEndLine() - 1;
+                $this->setLineBranch($node->getEndLine(), $node->getEndLine(), ++$this->nextBranch);
 
-            if ($hasEmptyBody) {
-                $endLine++;
-            }
-
-            if ($endLine < $startLine) {
                 return;
             }
 
-            $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
+            if ($node instanceof Node\Expr\Closure &&
+                $node->getEndLine() === $node->getStartLine()
+            ) {
+                return;
+            }
+
+            $branch = ++$this->nextBranch;
+
+            foreach ($node->stmts as $stmt) {
+                if ($stmt instanceof Node\Stmt\Nop) {
+                    continue;
+                }
+
+                $this->setLineBranch($stmt->getStartLine(), $stmt->getEndLine(), $branch);
+            }
 
             return;
         }
@@ -244,6 +261,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         $this->setLineBranch($node->getStartLine(), $node->getEndLine(), 1);
+    }
+
+    public function afterTraverse(array $nodes): void
+    {
+        $lines = explode("\n", $this->source);
+
+        foreach ($lines as $lineNumber => $line) {
+            if (1 !== preg_match('/^\s*$/', $line)) {
+                continue;
+            }
+
+            unset($this->executableLinesGroupedByBranch[1 + $lineNumber]);
+        }
     }
 
     public function executableLinesGroupedByBranch(): array

@@ -155,7 +155,7 @@ final class ParsingFileAnalyser implements FileAnalyser
             $codeUnitFindingVisitor        = new CodeUnitFindingVisitor;
             $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
             $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($this->useAnnotationsForIgnoringCode, $this->ignoreDeprecatedCode);
-            $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor;
+            $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new ParentConnectingVisitor);

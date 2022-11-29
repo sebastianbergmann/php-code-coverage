@@ -355,7 +355,8 @@ class MyClass
     }
     public function withTernaryOperator()
     {
-        $var                                // +8
+        $var = true ? 'a' : 'b';            // +8
+        $var                                // 0
             =                               // 0
             true                            // 0
             ?                               // 0
@@ -363,10 +364,18 @@ class MyClass
                 :                           // -1
                 'b'                         // +2
             ;                               // -2
+
+        $short = $var ?: null;              // 0
+        $short = $var                       // 0
+            ?: null;                        // +3
+
+        $short = $var ?? null;              // -3
+        $short = $var                       // 0
+            ?? null;                        // +4
     }
     public function withCall()
     {
-        $var = 1;                           // +3
+        $var = 1;                           // +1
         $var = intval($var);                // 0
         ++$var;                             // +1
         $date = new DateTimeImmutable();    // 0

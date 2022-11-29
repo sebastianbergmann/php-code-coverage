@@ -121,8 +121,23 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Expr\Ternary) {
-            $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
-            $this->setLineBranch($node->else->getStartLine(), $node->else->getEndLine(), ++$this->nextBranch);
+            if (null !== $node->if &&
+                $node->getStartLine() !== $node->if->getEndLine()
+            ) {
+                $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
+            }
+
+            if ($node->getStartLine() !== $node->else->getEndLine()) {
+                $this->setLineBranch($node->else->getStartLine(), $node->else->getEndLine(), ++$this->nextBranch);
+            }
+
+            return;
+        }
+
+        if ($node instanceof Node\Expr\BinaryOp\Coalesce) {
+            if ($node->getStartLine() !== $node->getEndLine()) {
+                $this->setLineBranch($node->getEndLine(), $node->getEndLine(), ++$this->nextBranch);
+            }
 
             return;
         }

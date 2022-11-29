@@ -109,12 +109,37 @@ final class CodeCoverageTest extends TestCase
                 8  => [],
                 13 => [],
                 14 => [],
+                15 => [],
                 16 => [],
+                17 => [],
                 22 => [],
                 24 => [],
                 29 => [],
                 31 => [],
                 32 => [],
+            ],
+        ];
+
+        $this->assertEquals($expectedLineCoverage, $this->coverage->getData()->lineCoverage());
+    }
+
+    public function testMarkExecutedAllLinesOfTheSameBranch(): void
+    {
+        $this->coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                13 => 1,
+            ],
+        ]);
+
+        $this->coverage->append($data, 'ccid', true);
+
+        $expectedLineCoverage = [
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                13 => ['ccid'],
+                15 => ['ccid'],
+                17 => ['ccid'],
             ],
         ];
 

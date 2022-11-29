@@ -183,7 +183,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         $this->classes[$filename]         = $codeUnitFindingVisitor->classes();
         $this->traits[$filename]          = $codeUnitFindingVisitor->traits();
         $this->functions[$filename]       = $codeUnitFindingVisitor->functions();
-        $this->executableLines[$filename] = $executableLinesFindingVisitor->executableLines();
+        $this->executableLines[$filename] = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
         $this->ignoredLines[$filename]    = [];
 
         $this->findLinesIgnoredByLineBasedAnnotations($filename, $source, $this->useAnnotationsForIgnoringCode);

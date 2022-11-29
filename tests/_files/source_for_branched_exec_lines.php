@@ -42,6 +42,9 @@ function withIf()
     return $var;    // 0
 }
 
+/**
+ * @internal
+ */
 class MyClass
 {
     public const C1 = 1;
@@ -57,6 +60,7 @@ class MyClass
     )
     {
         $var = 1;       // +2
+
         if (false) {    // 0
             $var += 2;  // +1
         }               // -1
@@ -416,4 +420,24 @@ class MyClass
         $fn1 = fn($x) =>                    // 0
             $x + $y;                        // +1
     }
+    public function withComments()
+    {
+        /** @var int $var */
+        $var = 1;                           // +1
+        /** @var int $var */
+        $var = 2;                           // 0
+        // C3
+        $var = 3;                           // 0
+        # C4
+        $var = 3;                           // 0
+        /* @var int $var */
+        $var = 5;                           // 0
+        // Comment2
+    }
+    public function withCommentsOnly()
+    {
+        /**
+         $var = 1;
+         */
+    }                                       // +1
 }

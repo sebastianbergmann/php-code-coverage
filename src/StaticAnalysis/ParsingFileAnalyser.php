@@ -153,7 +153,7 @@ final class ParsingFileAnalyser implements FileAnalyser
                     $filename,
                     $error->getMessage()
                 ),
-                (int) $error->getCode(),
+                $error->getCode(),
                 $error
             );
         }

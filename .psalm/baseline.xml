@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
+<files psalm-version="dev-master@">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$tmp[0]</code>
@@ -12,8 +12,10 @@
     <PossiblyNullArgument occurrences="1">
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
     </PossiblyNullArgument>
-    <PossiblyNullArrayAccess occurrences="1">
+    <PossiblyNullArrayAccess occurrences="3">
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
+      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]</code>
+      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
     </PossiblyNullArrayAccess>
     <PossiblyNullArrayAssignment occurrences="1">
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
@@ -49,15 +51,22 @@
     </InvalidDocblockParamName>
   </file>
   <file src="src/Node/Builder.php">
-    <EmptyArrayAccess occurrences="1">
-      <code>$pointer[$path[$i] . $type]</code>
-    </EmptyArrayAccess>
+    <UnsupportedReferenceUsage occurrences="1">
+      <code>$pointer = &amp;$pointer[$path[$i] . $type]</code>
+    </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
+    <MissingTemplateParam occurrences="1">
+      <code>IteratorAggregate</code>
+    </MissingTemplateParam>
     <PropertyTypeCoercion occurrences="2">
       <code>$this-&gt;directories</code>
       <code>$this-&gt;files</code>
     </PropertyTypeCoercion>
+    <UnsupportedReferenceUsage occurrences="2">
+      <code>$this-&gt;directories[] = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
+      <code>$this-&gt;files[]    = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
+    </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/File.php">
     <InvalidPropertyAssignmentValue occurrences="3">
@@ -70,15 +79,18 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$this-&gt;nodes[$this-&gt;position]</code>
     </ArgumentTypeCoercion>
+    <MissingTemplateParam occurrences="1">
+      <code>RecursiveIterator</code>
+    </MissingTemplateParam>
     <PropertyNotSetInConstructor occurrences="1">
       <code>$position</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Html/Renderer.php">
-    <InvalidScalarArgument occurrences="1"/>
+    <InvalidArgument occurrences="1"/>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
-    <InvalidScalarArgument occurrences="1"/>
+    <InvalidArgument occurrences="1"/>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

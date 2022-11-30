@@ -27,6 +27,9 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @var int
+     */
     private $nextBranch = 0;
 
     /**
@@ -302,7 +305,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         return $this->executableLinesGroupedByBranch;
     }
 
-    private function setLineBranch($start, $end, $branch): void
+    private function setLineBranch(int $start, int $end, int $branch): void
     {
         $this->nextBranch = max($this->nextBranch, $branch);
 

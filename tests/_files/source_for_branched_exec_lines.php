@@ -387,6 +387,9 @@ class MyClass
         $var = intval(                      // +1
             $var                            // 0
         );                                  // 0
+        $var = time(                        // +1
+
+        );                                  // 0
         $var                                // +1
             =                               // 0
             intval(                         // 0

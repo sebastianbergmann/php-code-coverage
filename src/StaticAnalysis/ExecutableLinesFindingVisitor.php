@@ -39,6 +39,9 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private $executableLinesGroupedByBranch = [];
 
+    /**
+     * @var array<int, bool>
+     */
     private $unsets = [];
 
     public function __construct(string $source)

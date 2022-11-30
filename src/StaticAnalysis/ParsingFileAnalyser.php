@@ -15,6 +15,7 @@ use function assert;
 use function file_get_contents;
 use function is_array;
 use function max;
+use function range;
 use function sort;
 use function sprintf;
 use function substr_count;
@@ -208,45 +209,45 @@ final class ParsingFileAnalyser implements FileAnalyser
 
     private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): void
     {
-        $ignore = false;
-        $stop   = false;
+        if (!$useAnnotationsForIgnoringCode) {
+            return;
+        }
+
+        $start = false;
 
         foreach (token_get_all($source) as $token) {
-            if (!is_array($token)) {
+            if (!is_array($token) ||
+                !(T_COMMENT === $token[0] || T_DOC_COMMENT === $token[0])
+            ) {
                 continue;
             }
 
-            switch ($token[0]) {
-                case T_COMMENT:
-                case T_DOC_COMMENT:
-                    if (!$useAnnotationsForIgnoringCode) {
-                        break;
-                    }
+            $comment = trim($token[1]);
 
-                    $comment = trim($token[1]);
-
-                    if ($comment === '// @codeCoverageIgnore' ||
-                        $comment === '//@codeCoverageIgnore') {
-                        $ignore = true;
-                        $stop   = true;
-                    } elseif ($comment === '// @codeCoverageIgnoreStart' ||
-                        $comment === '//@codeCoverageIgnoreStart') {
-                        $ignore = true;
-                    } elseif ($comment === '// @codeCoverageIgnoreEnd' ||
-                        $comment === '//@codeCoverageIgnoreEnd') {
-                        $stop = true;
-                    }
-
-                    break;
-            }
-
-            if ($ignore) {
+            if ($comment === '// @codeCoverageIgnore' ||
+                $comment === '//@codeCoverageIgnore') {
                 $this->ignoredLines[$filename][] = $token[2];
 
-                if ($stop) {
-                    $ignore = false;
-                    $stop   = false;
+                continue;
+            }
+
+            if ($comment === '// @codeCoverageIgnoreStart' ||
+                $comment === '//@codeCoverageIgnoreStart') {
+                $start = $token[2];
+
+                continue;
+            }
+
+            if ($comment === '// @codeCoverageIgnoreEnd' ||
+                $comment === '//@codeCoverageIgnoreEnd') {
+                if (false === $start) {
+                    $start = $token[2];
                 }
+
+                $this->ignoredLines[$filename] = array_merge(
+                    $this->ignoredLines[$filename],
+                    range($start, $token[2])
+                );
             }
         }
     }

@@ -243,11 +243,11 @@ class MyClass
     {
         $var = 1;                           // +1
         $var2 = match ($var) {              // +1
-            0 => ++$var,                    // +1
-            1 => ++$var,                    // +1
-            default => ++$var,              // +1
-        };                                  // -3
-        $var2                               // +4
+            0 => ++$var,                    // 0
+            1 => ++$var,                    // 0
+            default => ++$var,              // 0
+        };                                  // 0
+        $var2                               // +1
             =                               // 0
             match                           // 0
             (                               // 0
@@ -256,23 +256,23 @@ class MyClass
             {                               // 0
                 0                           // 0
                 =>                          // 0
-                ++$var                      // +1
-            ,                               // -1
+                ++$var                      // 0
+            ,                               // 0
                 1,                          // 0
                 2                           // 0
                 =>                          // 0
-                ++$var                      // +2
-            ,                               // -2
+                ++$var                      // 0
+            ,                               // 0
                 default                     // 0
                 =>                          // 0
-                ++$var                      // +3
-            ,                               // -3
+                ++$var                      // 0
+            ,                               // 0
         }                                   // 0
         ;                                   // 0
     }
     public function withReturn()
     {
-        $var = 1;                           // +4
+        $var = 1;                           // +1
         if (false) {                        // +1
             ++$var;                         // +1
             return                          // +1

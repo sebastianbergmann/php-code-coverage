@@ -61,6 +61,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\TryCatch ||
             $node instanceof Node\Stmt\Use_ ||
             $node instanceof Node\Stmt\UseUse ||
+            $node instanceof Node\Expr\Match_ ||
             $node instanceof Node\Expr\Variable ||
             $node instanceof Node\Const_ ||
             $node instanceof Node\Identifier ||
@@ -237,18 +238,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 $node->cond->getEndLine(),
                 ++$this->nextBranch
             );
-
-            return;
-        }
-
-        if ($node instanceof Node\Expr\Match_) {
-            foreach ($node->arms as $arm) {
-                $this->setLineBranch(
-                    $arm->body->getStartLine(),
-                    $arm->body->getEndLine(),
-                    ++$this->nextBranch
-                );
-            }
 
             return;
         }

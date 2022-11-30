@@ -239,37 +239,6 @@ class MyClass
                 ++$var;                     // +1
         endswitch;
     }
-    public function withMatch()
-    {
-        $var = 1;                           // +1
-        $var2 = match ($var) {              // +1
-            0 => ++$var,                    // 0
-            1 => ++$var,                    // 0
-            default => ++$var,              // 0
-        };                                  // 0
-        $var2                               // +1
-            =                               // 0
-            match                           // 0
-            (                               // 0
-            $var                            // 0
-            )                               // 0
-            {                               // 0
-                0                           // 0
-                =>                          // 0
-                ++$var                      // 0
-            ,                               // 0
-                1,                          // 0
-                2                           // 0
-                =>                          // 0
-                ++$var                      // 0
-            ,                               // 0
-                default                     // 0
-                =>                          // 0
-                ++$var                      // 0
-            ,                               // 0
-        }                                   // 0
-        ;                                   // 0
-    }
     public function withReturn()
     {
         $var = 1;                           // +1
@@ -415,8 +384,6 @@ class MyClass
             )                               // 0
         ;                                   // 0
         ++$var;                             // +1
-        $ymd = $date?->format('Ymd');       // +1
-        ++$var;                             // +1
         $date = \DateTime::createFromImmutable($date);       // +1
         $date                               // +1
             =                               // 0
@@ -485,17 +452,10 @@ class MyClass
             }                               // -3
         ;                                   // 0
     }
-    public function withArrowFn()
-    {
-        $y = 1;                             // +4
-        $fn1 = fn($x) => $x + $y;           // +1
-        $fn1 = fn($x) =>                    // +1
-            $x + $y;                        // +1
-    }
     public function withComments()
     {
         /** @var int $var */
-        $var = 1;                           // +1
+        $var = 1;                           // +4
         /** @var int $var */
         $var = 2;                           // +1
         // C3
@@ -567,7 +527,7 @@ final class MyFinalClass extends MyAbstractClass
     public const STRUCT = [
         'foo' => 'bar',
     ];
-    private readonly string $var;
+    private string $var;
     public function myMethod(): void
     {
     }                                       // +4

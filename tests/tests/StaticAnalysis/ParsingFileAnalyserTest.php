@@ -37,6 +37,11 @@ final class ParsingFileAnalyserTest extends TestCase
                 25,
                 30,
                 33,
+                38,
+                39,
+                40,
+                41,
+                42,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore.php'

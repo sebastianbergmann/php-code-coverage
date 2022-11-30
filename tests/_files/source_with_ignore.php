@@ -33,5 +33,10 @@ function baz()
 interface Bor
 {
     public function foo();
-
 }
+
+// @codeCoverageIgnoreStart
+print '
+Multiline
+';
+// @codeCoverageIgnoreEnd

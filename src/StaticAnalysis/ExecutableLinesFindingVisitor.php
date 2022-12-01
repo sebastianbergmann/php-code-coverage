@@ -307,8 +307,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     private function setLineBranch(int $start, int $end, int $branch): void
     {
-        $this->nextBranch = max($this->nextBranch, $branch);
-
         foreach (range($start, $end) as $line) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
         }

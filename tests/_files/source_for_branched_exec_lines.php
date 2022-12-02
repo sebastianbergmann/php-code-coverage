@@ -506,6 +506,38 @@ class MyClass
         return;                             // +1
         $var = 2;                           // +1
     }
+    public function withMultilineStrings()
+    {
+        $var = 1;                           // +1
+        $singleQuote =                      // +1
+        'start                              // 0
+        a
+        $var
+        z
+        end';                               // 0
+        $doubleQuote =                      // +1
+        "start                              // 0
+        a
+        $var                                // 0
+        z
+        end";                               // 0
+        $nowDoc =                           // +1
+<<<'LINE_ADDED_IN_TEST'
+        start
+        a
+        $var
+        z
+        end
+LINE_ADDED_IN_TEST;                         // 0
+        $hereDoc =                          // +1
+<<<LINE_ADDED_IN_TEST
+        start                               // 0
+        a
+        $var                                // 0
+        z
+        end
+LINE_ADDED_IN_TEST;                         // 0
+    }
 }
 
 interface MyInterface

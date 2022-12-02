@@ -454,7 +454,6 @@ class MyClass
     }
     public function withComments()
     {
-        /** @var int $var */
         $var = 1;                           // +4
         /** @var int $var */
         $var = 2;                           // +1
@@ -464,6 +463,20 @@ class MyClass
         $var = 3;                           // +1
         /* @var int $var */
         $var = 5;                           // +1
+        $var = [                            // +1
+            // within nodes
+            new \DateTimeImmutable(),       // 0
+            # within nodes
+            new \DateTimeImmutable(),       // 0
+            /*
+             * within nodes
+             */
+            new \DateTimeImmutable(),       // 0
+            /*
+             * within nodes
+             */
+            new \DateTimeImmutable(),       // 0
+        ];                                  // 0
         // Comment2
     }
     public function withCommentsOnly()

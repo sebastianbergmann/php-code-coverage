@@ -17,8 +17,10 @@ use function end;
 use function explode;
 use function max;
 use function preg_match;
+use function preg_quote;
 use function range;
 use function reset;
+use function sprintf;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -47,6 +49,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private $unsets = [];
 
+    /**
+     * @var array<int, string>
+     */
+    private $commentsToCheckForUnset = [];
+
     public function __construct(string $source)
     {
         $this->source = $source;
@@ -54,6 +61,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): void
     {
+        foreach ($node->getComments() as $comment) {
+            $commentLine = $comment->getStartLine();
+
+            if (!isset($this->executableLinesGroupedByBranch[$commentLine])) {
+                continue;
+            }
+
+            foreach (explode("\n", $comment->getText()) as $text) {
+                $this->commentsToCheckForUnset[$commentLine] = $text;
+                $commentLine++;
+            }
+        }
+
         if ($node instanceof Node\Scalar\String_ ||
             $node instanceof Node\Scalar\EncapsedStringPart
         ) {
@@ -302,11 +322,16 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $lines = explode("\n", $this->source);
 
         foreach ($lines as $lineNumber => $line) {
-            if (1 !== preg_match('/^\s*$/', $line)) {
-                continue;
-            }
+            $lineNumber++;
 
-            unset($this->executableLinesGroupedByBranch[1 + $lineNumber]);
+            if (1 === preg_match('/^\s*$/', $line) ||
+                (
+                    isset($this->commentsToCheckForUnset[$lineNumber]) &&
+                    1 === preg_match(sprintf('/^\s*%s\s*$/', preg_quote($this->commentsToCheckForUnset[$lineNumber], '/')), $line)
+                )
+            ) {
+                unset($this->executableLinesGroupedByBranch[$lineNumber]);
+            }
         }
 
         $this->executableLinesGroupedByBranch = array_diff_key(

@@ -54,6 +54,21 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): void
     {
+        if ($node instanceof Node\Scalar\String_ ||
+            $node instanceof Node\Scalar\EncapsedStringPart
+        ) {
+            $startLine = $node->getStartLine() + 1;
+            $endLine   = $node->getEndLine() - 1;
+
+            if ($startLine <= $endLine) {
+                foreach (range($startLine, $endLine) as $line) {
+                    unset($this->executableLinesGroupedByBranch[$line]);
+                }
+            }
+
+            return;
+        }
+
         if ($node instanceof Node\Stmt\Declare_ ||
             $node instanceof Node\Stmt\DeclareDeclare ||
             $node instanceof Node\Stmt\Else_ ||

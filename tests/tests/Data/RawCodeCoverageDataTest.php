@@ -694,4 +694,18 @@ final class RawCodeCoverageDataTest extends TestCase
             $coverage->functionCoverage()[$filename]
         );
     }
+
+    public function testParentConstructorCallIsCovered(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_parent_constructor_call.php';
+
+        $this->assertEquals(
+            [
+                7,
+                8,
+                9,
+            ],
+            array_keys(RawCodeCoverageData::fromUncoveredFile($file, new ParsingFileAnalyser(true, true))->lineCoverage()[$file])
+        );
+    }
 }

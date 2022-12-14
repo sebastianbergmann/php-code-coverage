@@ -9,46 +9,19 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use function array_reverse;
+use function array_diff_key;
+use function assert;
+use function count;
+use function current;
+use function end;
+use function explode;
+use function max;
+use function preg_match;
+use function preg_quote;
 use function range;
-use function sort;
+use function reset;
+use function sprintf;
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\Match_;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\NullsafePropertyFetch;
-use PhpParser\Node\Expr\Print_;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\MatchArm;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Case_;
-use PhpParser\Node\Stmt\Catch_;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Continue_;
-use PhpParser\Node\Stmt\Do_;
-use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\For_;
-use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Goto_;
-use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
-use PhpParser\Node\Stmt\Unset_;
-use PhpParser\Node\Stmt\While_;
-use PhpParser\NodeAbstract;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -57,285 +30,325 @@ use PhpParser\NodeVisitorAbstract;
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
     /**
-     * @psalm-var array<int, int>
+     * @var int
      */
-    private array $executableLines = [];
+    private $nextBranch = 0;
 
     /**
-     * @psalm-var array<int, int>
+     * @var string
      */
-    private array $propertyLines = [];
+    private $source;
 
     /**
-     * @psalm-var array<int, Function_|ClassMethod|Return_|Expression|Assign|Array_>
+     * @var array<int, int>
      */
-    private $returns = [];
+    private $executableLinesGroupedByBranch = [];
+
+    /**
+     * @var array<int, bool>
+     */
+    private $unsets = [];
+
+    /**
+     * @var array<int, string>
+     */
+    private $commentsToCheckForUnset = [];
+
+    public function __construct(string $source)
+    {
+        $this->source = $source;
+    }
 
     public function enterNode(Node $node): void
     {
-        if (!$node instanceof NodeAbstract) {
+        foreach ($node->getComments() as $comment) {
+            $commentLine = $comment->getStartLine();
+
+            if (!isset($this->executableLinesGroupedByBranch[$commentLine])) {
+                continue;
+            }
+
+            foreach (explode("\n", $comment->getText()) as $text) {
+                $this->commentsToCheckForUnset[$commentLine] = $text;
+                $commentLine++;
+            }
+        }
+
+        if ($node instanceof Node\Scalar\String_ ||
+            $node instanceof Node\Scalar\EncapsedStringPart
+        ) {
+            $startLine = $node->getStartLine() + 1;
+            $endLine   = $node->getEndLine() - 1;
+
+            if ($startLine <= $endLine) {
+                foreach (range($startLine, $endLine) as $line) {
+                    unset($this->executableLinesGroupedByBranch[$line]);
+                }
+            }
+
             return;
         }
 
-        $this->savePropertyLines($node);
-
-        if (!$this->isExecutable($node)) {
+        if ($node instanceof Node\Stmt\Declare_ ||
+            $node instanceof Node\Stmt\DeclareDeclare ||
+            $node instanceof Node\Stmt\Else_ ||
+            $node instanceof Node\Stmt\Finally_ ||
+            $node instanceof Node\Stmt\Interface_ ||
+            $node instanceof Node\Stmt\Label ||
+            $node instanceof Node\Stmt\Namespace_ ||
+            $node instanceof Node\Stmt\Nop ||
+            $node instanceof Node\Stmt\Switch_ ||
+            $node instanceof Node\Stmt\Throw_ ||
+            $node instanceof Node\Stmt\TryCatch ||
+            $node instanceof Node\Stmt\Use_ ||
+            $node instanceof Node\Stmt\UseUse ||
+            $node instanceof Node\Expr\Match_ ||
+            $node instanceof Node\Expr\Variable ||
+            $node instanceof Node\Const_ ||
+            $node instanceof Node\Identifier ||
+            $node instanceof Node\Name ||
+            $node instanceof Node\Param ||
+            $node instanceof Node\Scalar
+        ) {
             return;
         }
 
-        foreach ($this->getLines($node, false) as $line) {
-            if (isset($this->propertyLines[$line])) {
+        if ($node instanceof Node\Stmt\Function_ ||
+            $node instanceof Node\Stmt\Class_ ||
+            $node instanceof Node\Stmt\ClassMethod ||
+            $node instanceof Node\Expr\Closure ||
+            $node instanceof Node\Stmt\Trait_
+        ) {
+            $isConcreteClassLike = $node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Trait_;
+
+            if (null !== $node->stmts) {
+                foreach ($node->stmts as $stmt) {
+                    if ($stmt instanceof Node\Stmt\Nop) {
+                        continue;
+                    }
+
+                    foreach (range($stmt->getStartLine(), $stmt->getEndLine()) as $line) {
+                        unset($this->executableLinesGroupedByBranch[$line]);
+
+                        if (
+                            $isConcreteClassLike &&
+                            !$stmt instanceof Node\Stmt\ClassMethod
+                        ) {
+                            $this->unsets[$line] = true;
+                        }
+                    }
+                }
+            }
+
+            if ($isConcreteClassLike) {
                 return;
             }
 
-            $this->executableLines[$line] = $line;
+            $hasEmptyBody = [] === $node->stmts ||
+                null === $node->stmts ||
+                (
+                    1 === count($node->stmts) &&
+                    $node->stmts[0] instanceof Node\Stmt\Nop
+                );
+
+            if ($hasEmptyBody) {
+                if ($node->getEndLine() === $node->getStartLine()) {
+                    return;
+                }
+
+                $this->setLineBranch($node->getEndLine(), $node->getEndLine(), ++$this->nextBranch);
+
+                return;
+            }
+
+            return;
         }
+
+        if ($node instanceof Node\Expr\ArrowFunction) {
+            $startLine = max(
+                $node->getStartLine() + 1,
+                $node->expr->getStartLine()
+            );
+            $endLine = $node->expr->getEndLine();
+
+            if ($endLine < $startLine) {
+                return;
+            }
+
+            $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
+
+            return;
+        }
+
+        if ($node instanceof Node\Expr\Ternary) {
+            if (null !== $node->if &&
+                $node->getStartLine() !== $node->if->getEndLine()
+            ) {
+                $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
+            }
+
+            if ($node->getStartLine() !== $node->else->getEndLine()) {
+                $this->setLineBranch($node->else->getStartLine(), $node->else->getEndLine(), ++$this->nextBranch);
+            }
+
+            return;
+        }
+
+        if ($node instanceof Node\Expr\BinaryOp\Coalesce) {
+            if ($node->getStartLine() !== $node->getEndLine()) {
+                $this->setLineBranch($node->getEndLine(), $node->getEndLine(), ++$this->nextBranch);
+            }
+
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\If_ ||
+            $node instanceof Node\Stmt\ElseIf_ ||
+            $node instanceof Node\Stmt\Case_
+        ) {
+            if (null === $node->cond) {
+                return;
+            }
+
+            $this->setLineBranch(
+                $node->cond->getStartLine(),
+                $node->cond->getStartLine(),
+                ++$this->nextBranch
+            );
+
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\For_) {
+            $startLine = null;
+            $endLine   = null;
+
+            if ([] !== $node->init) {
+                $startLine = $node->init[0]->getStartLine();
+                end($node->init);
+                $endLine = current($node->init)->getEndLine();
+                reset($node->init);
+            }
+
+            if ([] !== $node->cond) {
+                if (null === $startLine) {
+                    $startLine = $node->cond[0]->getStartLine();
+                }
+                end($node->cond);
+                $endLine = current($node->cond)->getEndLine();
+                reset($node->cond);
+            }
+
+            if ([] !== $node->loop) {
+                if (null === $startLine) {
+                    $startLine = $node->loop[0]->getStartLine();
+                }
+                end($node->loop);
+                $endLine = current($node->loop)->getEndLine();
+                reset($node->loop);
+            }
+
+            if (null === $startLine || null === $endLine) {
+                return;
+            }
+
+            $this->setLineBranch(
+                $startLine,
+                $endLine,
+                ++$this->nextBranch
+            );
+
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\Foreach_) {
+            $this->setLineBranch(
+                $node->expr->getStartLine(),
+                $node->valueVar->getEndLine(),
+                ++$this->nextBranch
+            );
+
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\While_ ||
+            $node instanceof Node\Stmt\Do_
+        ) {
+            $this->setLineBranch(
+                $node->cond->getStartLine(),
+                $node->cond->getEndLine(),
+                ++$this->nextBranch
+            );
+
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\Catch_) {
+            assert([] !== $node->types);
+            $startLine = $node->types[0]->getStartLine();
+            end($node->types);
+            $endLine = current($node->types)->getEndLine();
+
+            $this->setLineBranch(
+                $startLine,
+                $endLine,
+                ++$this->nextBranch
+            );
+
+            return;
+        }
+
+        if ($node instanceof Node\Expr\CallLike) {
+            if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
+                $branch = $this->executableLinesGroupedByBranch[$node->getStartLine()];
+            } else {
+                $branch = ++$this->nextBranch;
+            }
+
+            $this->setLineBranch($node->getStartLine(), $node->getEndLine(), $branch);
+
+            return;
+        }
+
+        if (isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
+            return;
+        }
+
+        $this->setLineBranch($node->getStartLine(), $node->getEndLine(), ++$this->nextBranch);
     }
 
     public function afterTraverse(array $nodes): void
     {
-        $this->computeReturns();
+        $lines = explode("\n", $this->source);
 
-        sort($this->executableLines);
+        foreach ($lines as $lineNumber => $line) {
+            $lineNumber++;
+
+            if (1 === preg_match('/^\s*$/', $line) ||
+                (
+                    isset($this->commentsToCheckForUnset[$lineNumber]) &&
+                    1 === preg_match(sprintf('/^\s*%s\s*$/', preg_quote($this->commentsToCheckForUnset[$lineNumber], '/')), $line)
+                )
+            ) {
+                unset($this->executableLinesGroupedByBranch[$lineNumber]);
+            }
+        }
+
+        $this->executableLinesGroupedByBranch = array_diff_key(
+            $this->executableLinesGroupedByBranch,
+            $this->unsets
+        );
     }
 
-    /**
-     * @psalm-return array<int, int>
-     */
-    public function executableLines(): array
+    public function executableLinesGroupedByBranch(): array
     {
-        return $this->executableLines;
+        return $this->executableLinesGroupedByBranch;
     }
 
-    private function savePropertyLines(Node $node): void
+    private function setLineBranch(int $start, int $end, int $branch): void
     {
-        if ($node instanceof Property) {
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
-                $this->propertyLines[$index] = $index;
-            }
+        foreach (range($start, $end) as $line) {
+            $this->executableLinesGroupedByBranch[$line] = $branch;
         }
-    }
-
-    private function computeReturns(): void
-    {
-        foreach (array_reverse($this->returns) as $node) {
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
-                if (isset($this->executableLines[$index])) {
-                    continue;
-                }
-            }
-
-            foreach ($this->getLines($node, true) as $line) {
-                $this->executableLines[$line] = $line;
-            }
-        }
-    }
-
-    /**
-     * @return int[]
-     */
-    private function getLines(NodeAbstract $node, bool $fromReturns): array
-    {
-        if ($node instanceof Function_ ||
-            $node instanceof ClassMethod ||
-            $node instanceof Return_ ||
-            $node instanceof Expression ||
-            $node instanceof Assign ||
-            $node instanceof Array_
-        ) {
-            if (!$fromReturns) {
-                $this->returns[] = $node;
-
-                if ($node instanceof ClassMethod && $node->name->name === '__construct') {
-                    $existsAPromotedProperty = false;
-
-                    foreach ($node->getParams() as $param) {
-                        if (0 !== ($param->flags & Class_::VISIBILITY_MODIFIER_MASK)) {
-                            $existsAPromotedProperty = true;
-
-                            break;
-                        }
-                    }
-
-                    if ($existsAPromotedProperty) {
-                        // Only the line with `function` keyword should be listed here
-                        // but `nikic/php-parser` doesn't provide a way to fetch it
-                        return range($node->getStartLine(), $node->name->getEndLine());
-                    }
-                }
-
-                return [];
-            }
-
-            // ugly fix for non-fully AST based processing
-            // self::afterTraverse()/self::computeReturns() should be rewritten using self::leaveNode()
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $index) {
-                if (isset($this->executableLines[$index]) && !($node instanceof Assign)) {
-                    return [];
-                }
-            }
-
-            // empty function
-            if ($node instanceof Function_) {
-                return [$node->getEndLine()];
-            }
-
-            // empty method
-            if ($node instanceof ClassMethod) {
-                if (null === $node->stmts) { // method without body (interface prototype)
-                    return [];
-                }
-
-                return [$node->getEndLine()];
-            }
-        }
-
-        if ($node instanceof Return_) {
-            if ($node->expr === null) {
-                return [$node->getEndLine()];
-            }
-
-            return $this->getLines($node->expr, $fromReturns);
-        }
-
-        if ($node instanceof Expression) {
-            return $this->getLines($node->expr, $fromReturns);
-        }
-
-        if ($node instanceof Assign) {
-            return [$this->getNodeStartLine($node->var)];
-        }
-
-        if ($node instanceof BinaryOp) {
-            return $fromReturns ? $this->getLines($node->right, $fromReturns) : [];
-        }
-
-        if ($node instanceof PropertyFetch ||
-            $node instanceof NullsafePropertyFetch ||
-            $node instanceof StaticPropertyFetch) {
-            return [$this->getNodeStartLine($node->name)];
-        }
-
-        if ($node instanceof ArrayDimFetch && null !== $node->dim) {
-            return [$this->getNodeStartLine($node->dim)];
-        }
-
-        if ($node instanceof MethodCall) {
-            return [$this->getNodeStartLine($node->name)];
-        }
-
-        if ($node instanceof Ternary) {
-            $lines = [$this->getNodeStartLine($node->cond)];
-
-            if (null !== $node->if) {
-                $lines[] = $this->getNodeStartLine($node->if);
-            }
-
-            $lines[] = $this->getNodeStartLine($node->else);
-
-            return $lines;
-        }
-
-        if ($node instanceof Match_) {
-            return [$this->getNodeStartLine($node->cond)];
-        }
-
-        if ($node instanceof MatchArm) {
-            return [$this->getNodeStartLine($node->body)];
-        }
-
-        // TODO this concept should be extended for every statement class like Foreach_, For_, ...
-        if ($node instanceof If_ ||
-            $node instanceof ElseIf_ ||
-            $node instanceof While_ ||
-            $node instanceof Do_) {
-            return [$this->getNodeStartLine($node->cond)];
-        }
-
-        if ($node instanceof Case_) {
-            if (null === $node->cond) { // default case
-                return [];
-            }
-
-            return [$this->getNodeStartLine($node->cond)];
-        }
-
-        if ($node instanceof Catch_) {
-            return [$this->getNodeStartLine($node->types[0])];
-        }
-
-        return [$this->getNodeStartLine($node)];
-    }
-
-    private function getNodeStartLine(NodeAbstract $node): int
-    {
-        if ($node instanceof Node\Expr\Cast ||
-            $node instanceof Node\Expr\BooleanNot ||
-            $node instanceof Node\Expr\UnaryMinus ||
-            $node instanceof Node\Expr\UnaryPlus
-        ) {
-            return $this->getNodeStartLine($node->expr);
-        }
-
-        if ($node instanceof BinaryOp) {
-            return $this->getNodeStartLine($node->right);
-        }
-
-        if ($node instanceof Node\Scalar\String_ && (
-            $node->getAttribute('kind') === Node\Scalar\String_::KIND_HEREDOC ||
-            $node->getAttribute('kind') === Node\Scalar\String_::KIND_NOWDOC
-        )) {
-            return $node->getStartLine() + 1;
-        }
-
-        if ($node instanceof Array_) {
-            if ([] === $node->items || $node->items[0] === null) {
-                return $node->getEndLine();
-            }
-
-            return $this->getNodeStartLine($node->items[0]->value);
-        }
-
-        if ($node instanceof Assign) {
-            return $this->getNodeStartLine($node->expr);
-        }
-
-        return $node->getStartLine(); // $node should be only a scalar here
-    }
-
-    private function isExecutable(Node $node): bool
-    {
-        return $node instanceof Assign ||
-               $node instanceof ArrayDimFetch ||
-               $node instanceof BinaryOp ||
-               $node instanceof Break_ ||
-               $node instanceof CallLike ||
-               $node instanceof Case_ ||
-               $node instanceof Catch_ ||
-               $node instanceof ClassMethod ||
-               $node instanceof Closure ||
-               $node instanceof Continue_ ||
-               $node instanceof Do_ ||
-               $node instanceof Echo_ ||
-               $node instanceof ElseIf_ ||
-               $node instanceof Encapsed ||
-               $node instanceof Expression ||
-               $node instanceof For_ ||
-               $node instanceof Foreach_ ||
-               $node instanceof Function_ ||
-               $node instanceof Goto_ ||
-               $node instanceof If_ ||
-               $node instanceof Match_ ||
-               $node instanceof MatchArm ||
-               $node instanceof MethodCall ||
-               $node instanceof NullsafePropertyFetch ||
-               $node instanceof Print_ ||
-               $node instanceof PropertyFetch ||
-               $node instanceof Return_ ||
-               $node instanceof StaticPropertyFetch ||
-               $node instanceof Ternary ||
-               $node instanceof Throw_ ||
-               $node instanceof Unset_ ||
-               $node instanceof While_;
     }
 }

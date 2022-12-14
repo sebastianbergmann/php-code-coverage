@@ -2,7 +2,7 @@
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
   <file name="source_with_ignore.php" path="%e">
     <totals>
-      <lines total="38" comments="9" code="29" executable="1" executed="1" percent="100.00"/>
+      <lines total="43" comments="11" code="32" executable="1" executed="1" percent="100.00"/>
       <methods count="0" tested="0" percent="0"/>
       <functions count="1" tested="1" percent="100.00"/>
       <classes count="0" tested="0" percent="0"/>
@@ -175,11 +175,29 @@
         <token name="T_CLOSE_BRACKET">)</token>
         <token name="T_SEMICOLON">;</token>
       </line>
-      <line no="36"/>
-      <line no="37">
+      <line no="36">
         <token name="T_CLOSE_CURLY">}</token>
       </line>
-      <line no="38"/>
+      <line no="37"/>
+      <line no="38">
+        <token name="T_COMMENT">// @codeCoverageIgnoreStart</token>
+      </line>
+      <line no="39">
+        <token name="T_PRINT">print</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'</token>
+      </line>
+      <line no="40">
+        <token name="T_CONSTANT_ENCAPSED_STRING">Multiline</token>
+      </line>
+      <line no="41">
+        <token name="T_CONSTANT_ENCAPSED_STRING">'</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="42">
+        <token name="T_COMMENT">// @codeCoverageIgnoreEnd</token>
+      </line>
+      <line no="43"/>
     </source>
   </file>
 </phpunit>

@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
 use function rtrim;
+use Generator;
 use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
@@ -205,7 +206,7 @@ final class BuilderTest extends TestCase
         $this->assertEquals($commonPath, $_commonPath);
     }
 
-    public function reducePathsProvider()
+    public function reducePathsProvider(): Generator
     {
         $s = DIRECTORY_SEPARATOR;
 

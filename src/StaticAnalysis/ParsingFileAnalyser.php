@@ -196,8 +196,7 @@ final class ParsingFileAnalyser implements FileAnalyser
 
         foreach (token_get_all($source) as $token) {
             if (!is_array($token) ||
-                !(T_COMMENT === $token[0] || T_DOC_COMMENT === $token[0])
-            ) {
+                !(T_COMMENT === $token[0] || T_DOC_COMMENT === $token[0])) {
                 continue;
             }
 

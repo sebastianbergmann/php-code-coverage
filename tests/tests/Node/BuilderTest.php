@@ -21,6 +21,55 @@ final class BuilderTest extends TestCase
 {
     private $factory;
 
+    public static function reducePathsProvider(): Generator
+    {
+        $s = DIRECTORY_SEPARATOR;
+
+        yield [
+            [],
+            '.',
+            self::pathsToProcessedDataObjectHelper([]),
+        ];
+
+        foreach (["C:{$s}", "{$s}"] as $p) {
+            yield [
+                [
+                    'Money.php' => [],
+                ],
+                "{$p}home{$s}sb{$s}Money{$s}",
+                self::pathsToProcessedDataObjectHelper([
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php" => [],
+                ]),
+            ];
+
+            yield [
+                [
+                    'Money.php'    => [],
+                    'MoneyBag.php' => [],
+                ],
+                "{$p}home{$s}sb{$s}Money",
+                self::pathsToProcessedDataObjectHelper([
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php"    => [],
+                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php" => [],
+                ]),
+            ];
+
+            yield [
+                [
+                    'Money.php'             => [],
+                    'MoneyBag.php'          => [],
+                    "Cash.phar{$s}Cash.php" => [],
+                ],
+                "{$p}home{$s}sb{$s}Money",
+                self::pathsToProcessedDataObjectHelper([
+                    "{$p}home{$s}sb{$s}Money{$s}Money.php"                    => [],
+                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php"                 => [],
+                    "phar://{$p}home{$s}sb{$s}Money{$s}Cash.phar{$s}Cash.php" => [],
+                ]),
+            ];
+        }
+    }
+
     protected function setUp(): void
     {
         $this->factory = new Builder(new ParsingFileAnalyser(true, true));
@@ -204,55 +253,6 @@ final class BuilderTest extends TestCase
 
         $this->assertEquals($reducedPaths, $paths->lineCoverage());
         $this->assertEquals($commonPath, $_commonPath);
-    }
-
-    public static function reducePathsProvider(): Generator
-    {
-        $s = DIRECTORY_SEPARATOR;
-
-        yield [
-            [],
-            '.',
-            self::pathsToProcessedDataObjectHelper([]),
-        ];
-
-        foreach (["C:{$s}", "{$s}"] as $p) {
-            yield [
-                [
-                    'Money.php' => [],
-                ],
-                "{$p}home{$s}sb{$s}Money{$s}",
-                self::pathsToProcessedDataObjectHelper([
-                    "{$p}home{$s}sb{$s}Money{$s}Money.php" => [],
-                ]),
-            ];
-
-            yield [
-                [
-                    'Money.php'    => [],
-                    'MoneyBag.php' => [],
-                ],
-                "{$p}home{$s}sb{$s}Money",
-                self::pathsToProcessedDataObjectHelper([
-                    "{$p}home{$s}sb{$s}Money{$s}Money.php"    => [],
-                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php" => [],
-                ]),
-            ];
-
-            yield [
-                [
-                    'Money.php'             => [],
-                    'MoneyBag.php'          => [],
-                    "Cash.phar{$s}Cash.php" => [],
-                ],
-                "{$p}home{$s}sb{$s}Money",
-                self::pathsToProcessedDataObjectHelper([
-                    "{$p}home{$s}sb{$s}Money{$s}Money.php"                    => [],
-                    "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php"                 => [],
-                    "phar://{$p}home{$s}sb{$s}Money{$s}Cash.phar{$s}Cash.php" => [],
-                ]),
-            ];
-        }
     }
 
     private static function pathsToProcessedDataObjectHelper(array $paths): ProcessedCodeCoverageData

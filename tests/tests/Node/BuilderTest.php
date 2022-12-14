@@ -206,14 +206,14 @@ final class BuilderTest extends TestCase
         $this->assertEquals($commonPath, $_commonPath);
     }
 
-    public function reducePathsProvider(): Generator
+    public static function reducePathsProvider(): Generator
     {
         $s = DIRECTORY_SEPARATOR;
 
         yield [
             [],
             '.',
-            $this->pathsToProcessedDataObjectHelper([]),
+            self::pathsToProcessedDataObjectHelper([]),
         ];
 
         foreach (["C:{$s}", "{$s}"] as $p) {
@@ -222,7 +222,7 @@ final class BuilderTest extends TestCase
                     'Money.php' => [],
                 ],
                 "{$p}home{$s}sb{$s}Money{$s}",
-                $this->pathsToProcessedDataObjectHelper([
+                self::pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php" => [],
                 ]),
             ];
@@ -233,7 +233,7 @@ final class BuilderTest extends TestCase
                     'MoneyBag.php' => [],
                 ],
                 "{$p}home{$s}sb{$s}Money",
-                $this->pathsToProcessedDataObjectHelper([
+                self::pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php"    => [],
                     "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php" => [],
                 ]),
@@ -246,7 +246,7 @@ final class BuilderTest extends TestCase
                     "Cash.phar{$s}Cash.php" => [],
                 ],
                 "{$p}home{$s}sb{$s}Money",
-                $this->pathsToProcessedDataObjectHelper([
+                self::pathsToProcessedDataObjectHelper([
                     "{$p}home{$s}sb{$s}Money{$s}Money.php"                    => [],
                     "{$p}home{$s}sb{$s}Money{$s}MoneyBag.php"                 => [],
                     "phar://{$p}home{$s}sb{$s}Money{$s}Cash.phar{$s}Cash.php" => [],
@@ -255,7 +255,7 @@ final class BuilderTest extends TestCase
         }
     }
 
-    private function pathsToProcessedDataObjectHelper(array $paths): ProcessedCodeCoverageData
+    private static function pathsToProcessedDataObjectHelper(array $paths): ProcessedCodeCoverageData
     {
         $coverage = new ProcessedCodeCoverageData;
         $coverage->setLineCoverage($paths);

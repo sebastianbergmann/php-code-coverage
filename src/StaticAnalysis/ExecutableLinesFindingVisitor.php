@@ -97,7 +97,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Namespace_ ||
             $node instanceof Node\Stmt\Nop ||
             $node instanceof Node\Stmt\Switch_ ||
-            $node instanceof Node\Stmt\Throw_ ||
             $node instanceof Node\Stmt\TryCatch ||
             $node instanceof Node\Stmt\Use_ ||
             $node instanceof Node\Stmt\UseUse ||
@@ -108,6 +107,12 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Name ||
             $node instanceof Node\Param ||
             $node instanceof Node\Scalar) {
+            return;
+        }
+
+        if ($node instanceof Node\Stmt\Throw_) {
+            $this->setLineBranch($node->expr->getEndLine(), $node->expr->getEndLine(), ++$this->nextBranch);
+
             return;
         }
 

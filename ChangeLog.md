@@ -20,6 +20,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2
 
+## [9.2.22] - 2022-12-18
+
+### Fixed
+
+* [#969](https://github.com/sebastianbergmann/php-code-coverage/pull/969): Fixed identifying line with `throw` as executable
+
 ## [9.2.21] - 2022-12-14
 
 ### Changed
@@ -464,6 +470,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 7.1
 
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...main
+[9.2.22]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.21...9.2.22
 [9.2.21]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.20...9.2.21
 [9.2.20]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.19...9.2.20
 [9.2.19]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.18...9.2.19

@@ -56,13 +56,13 @@
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
+    <InvalidPropertyAssignmentValue occurrences="2">
+      <code>$this-&gt;directories</code>
+      <code>$this-&gt;files</code>
+    </InvalidPropertyAssignmentValue>
     <MissingTemplateParam occurrences="1">
       <code>IteratorAggregate</code>
     </MissingTemplateParam>
-    <PropertyTypeCoercion occurrences="2">
-      <code>$this-&gt;directories</code>
-      <code>$this-&gt;files</code>
-    </PropertyTypeCoercion>
     <UnsupportedReferenceUsage occurrences="2">
       <code>$this-&gt;directories[] = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
       <code>$this-&gt;files[]    = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
@@ -85,12 +85,24 @@
     <PropertyNotSetInConstructor occurrences="1">
       <code>$position</code>
     </PropertyNotSetInConstructor>
+    <PropertyTypeCoercion occurrences="1">
+      <code>$node-&gt;children()</code>
+    </PropertyTypeCoercion>
   </file>
   <file src="src/Report/Html/Renderer.php">
     <InvalidArgument occurrences="1"/>
+    <PossiblyUndefinedArrayOffset occurrences="4">
+      <code>$data['branchesExecutedPercentAsString']</code>
+      <code>$data['linesExecutedPercentAsString']</code>
+      <code>$data['pathsExecutedPercentAsString']</code>
+      <code>$data['testedMethodsPercentAsString']</code>
+    </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <InvalidArgument occurrences="1"/>
+    <InvalidArrayOffset occurrences="1">
+      <code>$tokens[$j - 1]</code>
+    </InvalidArrayOffset>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
     <PossiblyNullReference occurrences="1">

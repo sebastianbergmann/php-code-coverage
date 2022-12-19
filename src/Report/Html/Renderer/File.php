@@ -277,19 +277,19 @@ final class File extends Renderer
             $buffer .= $this->renderItemTemplate(
                 $template,
                 [
-                    'name'                 => $this->abbreviateClassName($name),
-                    'numClasses'           => $numClasses,
-                    'numTestedClasses'     => $numTestedClasses,
-                    'numMethods'           => $numMethods,
-                    'numTestedMethods'     => $numTestedMethods,
-                    'linesExecutedPercent' => Percentage::fromFractionAndTotal(
+                    'name'                            => $this->abbreviateClassName($name),
+                    'numClasses'                      => $numClasses,
+                    'numTestedClasses'                => $numTestedClasses,
+                    'numMethods'                      => $numMethods,
+                    'numTestedMethods'                => $numTestedMethods,
+                    'linesExecutedPercent'            => Percentage::fromFractionAndTotal(
                         $item['executedLines'],
                         $item['executableLines'],
                     )->asFloat(),
-                    'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
-                    'numExecutedLines'             => $item['executedLines'],
-                    'numExecutableLines'           => $item['executableLines'],
-                    'branchesExecutedPercent'      => Percentage::fromFractionAndTotal(
+                    'linesExecutedPercentAsString'    => $linesExecutedPercentAsString,
+                    'numExecutedLines'                => $item['executedLines'],
+                    'numExecutableLines'              => $item['executableLines'],
+                    'branchesExecutedPercent'         => Percentage::fromFractionAndTotal(
                         $item['executedBranches'],
                         $item['executableBranches'],
                     )->asFloat(),
@@ -300,14 +300,14 @@ final class File extends Renderer
                         $item['executedPaths'],
                         $item['executablePaths']
                     )->asFloat(),
-                    'pathsExecutedPercentAsString' => $pathsExecutedPercentAsString,
-                    'numExecutedPaths'             => $item['executedPaths'],
-                    'numExecutablePaths'           => $item['executablePaths'],
-                    'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
-                    'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
-                    'testedClassesPercent'         => $testedClassesPercentage->asFloat(),
-                    'testedClassesPercentAsString' => $testedClassesPercentage->asString(),
-                    'crap'                         => $item['crap'],
+                    'pathsExecutedPercentAsString'    => $pathsExecutedPercentAsString,
+                    'numExecutedPaths'                => $item['executedPaths'],
+                    'numExecutablePaths'              => $item['executablePaths'],
+                    'testedMethodsPercent'            => $testedMethodsPercentage->asFloat(),
+                    'testedMethodsPercentAsString'    => $testedMethodsPercentage->asString(),
+                    'testedClassesPercent'            => $testedClassesPercentage->asFloat(),
+                    'testedClassesPercentAsString'    => $testedClassesPercentage->asString(),
+                    'crap'                            => $item['crap'],
                 ]
             );
 
@@ -377,7 +377,7 @@ final class File extends Renderer
         return $this->renderItemTemplate(
             $template,
             [
-                'name' => sprintf(
+                'name'                            => sprintf(
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
                     $item['startLine'],
@@ -1004,7 +1004,7 @@ final class File extends Renderer
                     'small'  => ' class="covered-by-small-tests"',
                     'medium' => ' class="covered-by-medium-tests"',
                     // no break
-                    default => ' class="covered-by-large-tests"',
+                    default  => ' class="covered-by-large-tests"',
                 };
 
                 break;

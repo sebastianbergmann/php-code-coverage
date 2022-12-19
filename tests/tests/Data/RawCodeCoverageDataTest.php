@@ -37,8 +37,8 @@ final class RawCodeCoverageDataTest extends TestCase
     public function testLineDataFromPathCoverageXDebugFormat(): void
     {
         $rawDataFromDriver = [
-            '/some/path/SomeClass.php' => [
-                'lines' => [
+            '/some/path/SomeClass.php'   => [
+                'lines'     => [
                     8  => 1,
                     9  => -2,
                     13 => -1,
@@ -48,7 +48,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 ],
             ],
             '/some/path/justAScript.php' => [
-                'lines' => [
+                'lines'     => [
                     18  => 1,
                     19  => -2,
                     113 => -1,
@@ -60,7 +60,7 @@ final class RawCodeCoverageDataTest extends TestCase
         ];
 
         $lineData = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'   => [
                 8  => 1,
                 9  => -2,
                 13 => -1,
@@ -97,7 +97,7 @@ final class RawCodeCoverageDataTest extends TestCase
     public function testRemoveCoverageDataForFile(): void
     {
         $lineDataFromDriver = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'      => [
                 8  => 1,
                 9  => -2,
                 13 => -1,
@@ -107,7 +107,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 19  => -2,
                 113 => -1,
             ],
-            '/some/path/AnotherClass.php' => [
+            '/some/path/AnotherClass.php'   => [
                 28  => 1,
                 29  => -2,
                 213 => -1,
@@ -115,7 +115,7 @@ final class RawCodeCoverageDataTest extends TestCase
         ];
 
         $expectedFilterResult = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'    => [
                 8  => 1,
                 9  => -2,
                 13 => -1,
@@ -137,7 +137,7 @@ final class RawCodeCoverageDataTest extends TestCase
     public function testKeepCoverageDataOnlyForLines(): void
     {
         $lineDataFromDriver = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'      => [
                 8  => 1,
                 9  => -2,
                 13 => -1,
@@ -147,7 +147,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 19  => -2,
                 113 => -1,
             ],
-            '/some/path/AnotherClass.php' => [
+            '/some/path/AnotherClass.php'   => [
                 28  => 1,
                 29  => -2,
                 213 => -1,
@@ -155,13 +155,13 @@ final class RawCodeCoverageDataTest extends TestCase
         ];
 
         $expectedFilterResult = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'      => [
                 9  => -2,
                 13 => -1,
             ],
             '/some/path/SomeOtherClass.php' => [
             ],
-            '/some/path/AnotherClass.php' => [
+            '/some/path/AnotherClass.php'   => [
                 28 => 1,
             ],
         ];
@@ -178,7 +178,7 @@ final class RawCodeCoverageDataTest extends TestCase
     public function testRemoveCoverageDataForLines(): void
     {
         $lineDataFromDriver = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'      => [
                 8  => 1,
                 9  => -2,
                 13 => -1,
@@ -188,7 +188,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 19  => -2,
                 113 => -1,
             ],
-            '/some/path/AnotherClass.php' => [
+            '/some/path/AnotherClass.php'   => [
                 28  => 1,
                 29  => -2,
                 213 => -1,
@@ -196,7 +196,7 @@ final class RawCodeCoverageDataTest extends TestCase
         ];
 
         $expectedFilterResult = [
-            '/some/path/SomeClass.php' => [
+            '/some/path/SomeClass.php'      => [
                 8 => 1,
             ],
             '/some/path/SomeOtherClass.php' => [
@@ -204,7 +204,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 19  => -2,
                 113 => -1,
             ],
-            '/some/path/AnotherClass.php' => [
+            '/some/path/AnotherClass.php'   => [
                 29  => -2,
                 213 => -1,
             ],
@@ -225,7 +225,7 @@ final class RawCodeCoverageDataTest extends TestCase
         $coverage = RawCodeCoverageData::fromXdebugWithPathCoverage(
             [
                 $filename => [
-                    'lines' => [
+                    'lines'     => [
                         13 => -1,
                         19 => -1,
                         22 => -1,
@@ -239,7 +239,7 @@ final class RawCodeCoverageDataTest extends TestCase
                         37 => -1,
                     ],
                     'functions' => [
-                        '{main}' => [
+                        '{main}'   => [
                             'branches' => [
                                 0 => [
                                     'op_start'   => 0,
@@ -250,17 +250,17 @@ final class RawCodeCoverageDataTest extends TestCase
                                     'out'        => [
                                         0 => 2147483645,
                                     ],
-                                    'out_hit' => [
+                                    'out_hit'    => [
                                         0 => 0,
                                     ],
                                 ],
                             ],
-                            'paths' => [
+                            'paths'    => [
                                 0 => [
                                     'path' => [
                                         0 => 0,
                                     ],
-                                    'hit' => 0,
+                                    'hit'  => 0,
                                 ],
                             ],
                         ],
@@ -275,21 +275,21 @@ final class RawCodeCoverageDataTest extends TestCase
                                     'out'        => [
                                         0 => 2147483645,
                                     ],
-                                    'out_hit' => [
+                                    'out_hit'    => [
                                         0 => 0,
                                     ],
                                 ],
                             ],
-                            'paths' => [
+                            'paths'    => [
                                 0 => [
                                     'path' => [
                                         0 => 0,
                                     ],
-                                    'hit' => 0,
+                                    'hit'  => 0,
                                 ],
                             ],
                         ],
-                        'baz' => [
+                        'baz'      => [
                             'branches' => [
                                 0 => [
                                     'op_start'   => 0,
@@ -300,17 +300,17 @@ final class RawCodeCoverageDataTest extends TestCase
                                     'out'        => [
                                         0 => 2147483645,
                                     ],
-                                    'out_hit' => [
+                                    'out_hit'    => [
                                         0 => 0,
                                     ],
                                 ],
                             ],
-                            'paths' => [
+                            'paths'    => [
                                 0 => [
                                     'path' => [
                                         0 => 0,
                                     ],
-                                    'hit' => 0,
+                                    'hit'  => 0,
                                 ],
                             ],
                         ],
@@ -343,7 +343,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             [
-                '{main}' => [
+                '{main}'   => [
                     'branches' => [
                         0 => [
                             'op_start'   => 0,
@@ -354,17 +354,17 @@ final class RawCodeCoverageDataTest extends TestCase
                             'out'        => [
                                 0 => 2147483645,
                             ],
-                            'out_hit' => [
+                            'out_hit'    => [
                                 0 => 0,
                             ],
                         ],
                     ],
-                    'paths' => [
+                    'paths'    => [
                         0 => [
                             'path' => [
                                 0 => 0,
                             ],
-                            'hit' => 0,
+                            'hit'  => 0,
                         ],
                     ],
                 ],
@@ -379,24 +379,24 @@ final class RawCodeCoverageDataTest extends TestCase
                             'out'        => [
                                 0 => 2147483645,
                             ],
-                            'out_hit' => [
+                            'out_hit'    => [
                                 0 => 0,
                             ],
                         ],
                     ],
-                    'paths' => [
+                    'paths'    => [
                         0 => [
                             'path' => [
                                 0 => 0,
                             ],
-                            'hit' => 0,
+                            'hit'  => 0,
                         ],
                     ],
                 ],
-                'baz' => [
+                'baz'      => [
                     'branches' => [
                     ],
-                    'paths' => [
+                    'paths'    => [
                     ],
                 ],
             ],

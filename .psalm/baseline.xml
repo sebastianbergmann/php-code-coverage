@@ -19,7 +19,8 @@
       <code>isLarge</code>
       <code>isMedium</code>
     </InternalMethod>
-    <RedundantCondition occurrences="1">
+    <RedundantCondition occurrences="2">
+      <code>$class-&gt;isSubclassOf($parentClass)</code>
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>
     <UnresolvableInclude occurrences="1">

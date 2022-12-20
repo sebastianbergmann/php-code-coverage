@@ -4,7 +4,8 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$tmp[0]</code>
     </ArgumentTypeCoercion>
-    <RedundantCondition occurrences="1">
+    <RedundantCondition occurrences="2">
+      <code>$class-&gt;isSubclassOf($parentClass)</code>
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>
   </file>

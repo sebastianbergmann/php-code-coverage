@@ -9,60 +9,67 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use DOMDocument;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\Report\Cobertura
- */
 final class CoberturaTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void
     {
-        $cobertura = new Cobertura;
+        $report = (new Cobertura)->process($this->getLineCoverageForBankAccount(), null);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-cobertura-line.xml',
-            $cobertura->process($this->getLineCoverageForBankAccount(), null)
+            $report
         );
+
+        $this->validateReport($report);
     }
 
     public function testPathCoverageForBankAccountTest(): void
     {
-        $cobertura = new Cobertura;
+        $report = (new Cobertura)->process($this->getPathCoverageForBankAccount(), null);
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'BankAccount-cobertura-path.xml',
-            $cobertura->process($this->getPathCoverageForBankAccount(), null)
+            $report
         );
     }
 
     public function testCoberturaForFileWithIgnoredLines(): void
     {
-        $cobertura = new Cobertura;
+        $report = (new Cobertura)->process($this->getCoverageForFileWithIgnoredLines());
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'ignored-lines-cobertura.xml',
-            $cobertura->process($this->getCoverageForFileWithIgnoredLines())
+            $report
         );
     }
 
     public function testCoberturaForClassWithAnonymousFunction(): void
     {
-        $cobertura = new Cobertura;
+        $report = (new Cobertura)->process($this->getCoverageForClassWithAnonymousFunction());
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-cobertura.xml',
-            $cobertura->process($this->getCoverageForClassWithAnonymousFunction())
+            $report
         );
     }
 
     public function testCoberturaForClassAndOutsideFunction(): void
     {
-        $cobertura = new Cobertura;
+        $report = (new Cobertura)->process($this->getCoverageForClassWithOutsideFunction());
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-outside-function-cobertura.xml',
-            $cobertura->process($this->getCoverageForClassWithOutsideFunction())
+            $report
         );
+    }
+
+    private function validateReport(string $coberturaReport): void
+    {
+        $document = (new DOMDocument);
+        $this->assertTrue($document->loadXML($coberturaReport));
+        $this->assertTrue(@$document->validate());
     }
 }

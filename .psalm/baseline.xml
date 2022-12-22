@@ -27,6 +27,18 @@
       <code>include_once $uncoveredFile</code>
     </UnresolvableInclude>
   </file>
+  <file src="src/Driver/PcovDriver.php">
+    <UndefinedConstant occurrences="1">
+      <code>inclusive</code>
+    </UndefinedConstant>
+    <UndefinedFunction occurrences="5">
+      <code>clear()</code>
+      <code>collect(inclusive, $filesToCollectCoverageFor)</code>
+      <code>start()</code>
+      <code>stop()</code>
+      <code>waiting()</code>
+    </UndefinedFunction>
+  </file>
   <file src="src/Driver/Xdebug2Driver.php">
     <UndefinedConstant occurrences="3">
       <code>XDEBUG_CC_BRANCH_CHECK</code>

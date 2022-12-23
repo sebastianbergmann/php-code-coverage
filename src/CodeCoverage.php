@@ -21,6 +21,7 @@ use function explode;
 use function get_class;
 use function is_array;
 use function sort;
+use Error;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Util\Test;
@@ -550,7 +551,11 @@ final class CodeCoverage
 
         foreach ($uncoveredFiles as $uncoveredFile) {
             if ($this->filter->isFile($uncoveredFile)) {
-                include_once $uncoveredFile;
+                try {
+                    include_once $uncoveredFile;
+                } catch (Error $e) {
+                    // Include may fail if file content is not valid (due to implementing/extending non-existent class, ...)
+                }
             }
         }
 

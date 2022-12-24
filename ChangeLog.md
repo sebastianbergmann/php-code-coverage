@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#971](https://github.com/sebastianbergmann/php-code-coverage/issues/971): PHP report does not handle serialized code coverage data larger than 2 GB
+* [#974](https://github.com/sebastianbergmann/php-code-coverage/issues/974): Executable line analysis fails for declarations with enumerations and unions
 
 ## [9.2.22] - 2022-12-18
 

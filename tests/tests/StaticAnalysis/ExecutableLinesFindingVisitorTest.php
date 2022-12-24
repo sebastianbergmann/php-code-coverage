@@ -44,6 +44,14 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php80.php');
     }
 
+    /**
+     * @requires PHP 8.1
+     */
+    public function testExecutableLinesAreGroupedByBranchPhp81(): void
+    {
+        $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');
+    }
+
     private function doTestSelfDescribingAsset(string $filename): void
     {
         $source = file_get_contents($filename);

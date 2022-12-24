@@ -24,3 +24,11 @@ enum BackedSuit: string
 
 BasicSuit::Diamonds->shape();       // +1
 BackedSuit::Clubs;                  // +1
+
+
+// Intersection types
+interface MyIntersection
+{
+    public function check(MyIntOne&MyIntTwo $intersection);
+    public function neverReturn(): never;
+}

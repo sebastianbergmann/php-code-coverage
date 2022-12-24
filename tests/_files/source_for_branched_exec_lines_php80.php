@@ -33,3 +33,10 @@ $var2                               // +1
 // Nullsafe Operator
 $ymd = $date?->format('Ymd');       // +1
 ++$var;                             // +1
+
+// Union types
+interface MyUnion
+{
+    public function getNameIdentifier(): ?string;
+    public function hasClaim(bool|string $type, mixed $value): bool;
+}

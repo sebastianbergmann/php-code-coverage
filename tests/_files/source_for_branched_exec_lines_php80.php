@@ -39,4 +39,5 @@ interface MyUnion
 {
     public function getNameIdentifier(): ?string;
     public function hasClaim(bool|string $type, mixed $value): bool;
+    public function getClaims($type1 = null): array;
 }

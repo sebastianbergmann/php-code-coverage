@@ -111,11 +111,9 @@ final class File extends Renderer
     /**
      * @psalm-var array<int,true>
      */
-    private static array $keywordTokens = [];
-
+    private static array $keywordTokens        = [];
     private static array $formattedSourceCache = [];
-
-    private int $htmlSpecialCharsFlags = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+    private int $htmlSpecialCharsFlags         = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
 
     public function render(FileNode $node, string $file): void
     {

@@ -28,15 +28,10 @@ use SebastianBergmann\Template\Template;
 abstract class Renderer
 {
     protected string $templatePath;
-
     protected string $generator;
-
     protected string $date;
-
     protected Thresholds $thresholds;
-
     protected bool $hasBranchCoverage;
-
     protected string $version;
 
     public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)

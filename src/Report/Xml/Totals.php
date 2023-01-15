@@ -20,15 +20,10 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 final class Totals
 {
     private DOMNode $container;
-
     private DOMElement $linesNode;
-
     private DOMElement $methodsNode;
-
     private DOMElement $functionsNode;
-
     private DOMElement $classesNode;
-
     private DOMElement $traitsNode;
 
     public function __construct(DOMElement $container)

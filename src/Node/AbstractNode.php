@@ -23,13 +23,9 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 abstract class AbstractNode implements Countable
 {
     private string $name;
-
     private string $pathAsString;
-
     private array $pathAsArray;
-
     private ?AbstractNode $parent;
-
     private string $id;
 
     public function __construct(string $name, self $parent = null)

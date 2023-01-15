@@ -19,49 +19,30 @@ use function range;
 final class File extends AbstractNode
 {
     private array $lineCoverageData;
-
     private array $functionCoverageData;
-
     private array $testData;
-
-    private int $numExecutableLines = 0;
-
-    private int $numExecutedLines = 0;
-
+    private int $numExecutableLines    = 0;
+    private int $numExecutedLines      = 0;
     private int $numExecutableBranches = 0;
-
-    private int $numExecutedBranches = 0;
-
-    private int $numExecutablePaths = 0;
-
-    private int $numExecutedPaths = 0;
-
-    private array $classes = [];
-
-    private array $traits = [];
-
-    private array $functions = [];
+    private int $numExecutedBranches   = 0;
+    private int $numExecutablePaths    = 0;
+    private int $numExecutedPaths      = 0;
+    private array $classes             = [];
+    private array $traits              = [];
+    private array $functions           = [];
 
     /**
      * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
      */
     private array $linesOfCode;
-
-    private ?int $numClasses = null;
-
-    private int $numTestedClasses = 0;
-
-    private ?int $numTraits = null;
-
-    private int $numTestedTraits = 0;
-
-    private ?int $numMethods = null;
-
-    private ?int $numTestedMethods = null;
-
+    private ?int $numClasses         = null;
+    private int $numTestedClasses    = 0;
+    private ?int $numTraits          = null;
+    private int $numTestedTraits     = 0;
+    private ?int $numMethods         = null;
+    private ?int $numTestedMethods   = null;
     private ?int $numTestedFunctions = null;
-
-    private array $codeUnitsByLine = [];
+    private array $codeUnitsByLine   = [];
 
     /**
      * @psalm-param array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int} $linesOfCode

@@ -35,23 +35,17 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
  */
 final class ParsingFileAnalyser implements FileAnalyser
 {
-    private array $classes = [];
-
-    private array $traits = [];
-
+    private array $classes   = [];
+    private array $traits    = [];
     private array $functions = [];
 
     /**
      * @var array<string,array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}>
      */
-    private array $linesOfCode = [];
-
-    private array $ignoredLines = [];
-
+    private array $linesOfCode     = [];
+    private array $ignoredLines    = [];
     private array $executableLines = [];
-
     private bool $useAnnotationsForIgnoringCode;
-
     private bool $ignoreDeprecatedCode;
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)

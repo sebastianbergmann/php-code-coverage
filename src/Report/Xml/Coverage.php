@@ -19,9 +19,7 @@ use XMLWriter;
 final class Coverage
 {
     private XMLWriter $writer;
-
     private DOMElement $contextNode;
-
     private bool $finalized = false;
 
     public function __construct(DOMElement $context, string $line)

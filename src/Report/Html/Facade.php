@@ -23,13 +23,9 @@ use SebastianBergmann\Template\Template;
 final class Facade
 {
     private string $templatePath;
-
     private string $generator;
-
     private Colors $colors;
-
     private Thresholds $thresholds;
-
     private CustomCssFile $customCssFile;
 
     public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null)

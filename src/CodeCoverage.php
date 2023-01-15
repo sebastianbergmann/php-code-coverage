@@ -39,37 +39,24 @@ use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 final class CodeCoverage
 {
     private const UNCOVERED_FILES = 'UNCOVERED_FILES';
-
     private Driver $driver;
-
     private Filter $filter;
-
     private Wizard $wizard;
-
     private bool $checkForUnintentionallyCoveredCode = false;
-
-    private bool $includeUncoveredFiles = true;
-
-    private bool $ignoreDeprecatedCode = false;
-
-    private ?string $currentId = null;
-
-    private ?TestSize $currentSize = null;
-
+    private bool $includeUncoveredFiles              = true;
+    private bool $ignoreDeprecatedCode               = false;
+    private ?string $currentId                       = null;
+    private ?TestSize $currentSize                   = null;
     private ProcessedCodeCoverageData $data;
-
     private bool $useAnnotationsForIgnoringCode = true;
-
-    private array $tests = [];
+    private array $tests                        = [];
 
     /**
      * @psalm-var list<class-string>
      */
     private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
-
-    private ?FileAnalyser $analyser = null;
-
-    private ?string $cacheDirectory = null;
+    private ?FileAnalyser $analyser                                         = null;
+    private ?string $cacheDirectory                                         = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {

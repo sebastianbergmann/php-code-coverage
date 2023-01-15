@@ -18,7 +18,6 @@ use DOMElement;
 abstract class Node
 {
     private DOMDocument $dom;
-
     private DOMElement $contextNode;
 
     public function __construct(DOMElement $context)

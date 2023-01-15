@@ -15,13 +15,9 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 final class Colors
 {
     private string $successLow;
-
     private string $successMedium;
-
     private string $successHigh;
-
     private string $warning;
-
     private string $danger;
 
     public static function default(): self

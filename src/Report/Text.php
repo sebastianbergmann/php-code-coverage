@@ -47,11 +47,8 @@ final class Text
      * @var string
      */
     private const COLOR_RESET = "\x1b[0m";
-
     private Thresholds $thresholds;
-
     private bool $showUncoveredFiles;
-
     private bool $showOnlySummary;
 
     public function __construct(Thresholds $thresholds, bool $showUncoveredFiles = false, bool $showOnlySummary = false)

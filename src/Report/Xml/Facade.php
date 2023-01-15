@@ -41,9 +41,7 @@ use SebastianBergmann\Environment\Runtime;
 final class Facade
 {
     private string $target;
-
     private Project $project;
-
     private string $phpUnitVersion;
 
     public function __construct(string $version)

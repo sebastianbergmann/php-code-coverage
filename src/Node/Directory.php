@@ -32,48 +32,30 @@ final class Directory extends AbstractNode implements IteratorAggregate
     /**
      * @var list<File>
      */
-    private array $files = [];
-
-    private ?array $classes = null;
-
-    private ?array $traits = null;
-
+    private array $files      = [];
+    private ?array $classes   = null;
+    private ?array $traits    = null;
     private ?array $functions = null;
 
     /**
      * @psalm-var null|array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
      */
-    private ?array $linesOfCode = null;
-
-    private int $numFiles = -1;
-
-    private int $numExecutableLines = -1;
-
-    private int $numExecutedLines = -1;
-
+    private ?array $linesOfCode        = null;
+    private int $numFiles              = -1;
+    private int $numExecutableLines    = -1;
+    private int $numExecutedLines      = -1;
     private int $numExecutableBranches = -1;
-
-    private int $numExecutedBranches = -1;
-
-    private int $numExecutablePaths = -1;
-
-    private int $numExecutedPaths = -1;
-
-    private int $numClasses = -1;
-
-    private int $numTestedClasses = -1;
-
-    private int $numTraits = -1;
-
-    private int $numTestedTraits = -1;
-
-    private int $numMethods = -1;
-
-    private int $numTestedMethods = -1;
-
-    private int $numFunctions = -1;
-
-    private int $numTestedFunctions = -1;
+    private int $numExecutedBranches   = -1;
+    private int $numExecutablePaths    = -1;
+    private int $numExecutedPaths      = -1;
+    private int $numClasses            = -1;
+    private int $numTestedClasses      = -1;
+    private int $numTraits             = -1;
+    private int $numTestedTraits       = -1;
+    private int $numMethods            = -1;
+    private int $numTestedMethods      = -1;
+    private int $numFunctions          = -1;
+    private int $numTestedFunctions    = -1;
 
     public function count(): int
     {

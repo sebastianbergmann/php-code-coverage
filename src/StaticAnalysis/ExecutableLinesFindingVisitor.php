@@ -30,7 +30,6 @@ use PhpParser\NodeVisitorAbstract;
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
     private int $nextBranch = 0;
-
     private string $source;
 
     /**

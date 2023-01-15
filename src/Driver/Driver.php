@@ -52,11 +52,9 @@ abstract class Driver
      *
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const BRANCH_HIT = 1;
-
+    public const BRANCH_HIT                    = 1;
     private bool $collectBranchAndPathCoverage = false;
-
-    private bool $detectDeadCode = false;
+    private bool $detectDeadCode               = false;
 
     public function canCollectBranchAndPathCoverage(): bool
     {

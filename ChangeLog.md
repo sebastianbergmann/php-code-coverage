@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [10.0.0] - 2023-MM-DD
+## [10.0.0] - 2023-02-03
 
 ### Added
 

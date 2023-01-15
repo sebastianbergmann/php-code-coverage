@@ -62,7 +62,7 @@ $config->setFinder($finder)
             'elements' => [
                 'const' => 'one',
                 'method' => 'one',
-                'property' => 'one'
+                'property' => 'only_if_meta'
             ]
         ],
         'class_definition' => true,
@@ -88,6 +88,7 @@ $config->setFinder($finder)
         'function_declaration' => true,
         'function_to_constant' => true,
         'function_typehint_space' => true,
+        'get_class_to_class_keyword' => true,
         'global_namespace_import' => [
             'import_classes' => true,
             'import_constants' => true,

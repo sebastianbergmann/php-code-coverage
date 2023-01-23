@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="dev-master@">
+<files psalm-version="5.5.0@b63061a27f2683ec0f3509012bb22daab3b65b61">
   <file src="src/CodeCoverage.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion>
       <code>$unit[0]</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction>
       <code>!is_array($linesToBeCovered) &amp;&amp; $linesToBeCovered !== false</code>
     </DocblockTypeContradiction>
-    <InternalClass occurrences="3">
+    <InternalClass>
       <code>Test::LARGE</code>
       <code>Test::MEDIUM</code>
       <code>Test::SMALL</code>
     </InternalClass>
-    <InternalMethod occurrences="5">
+    <InternalMethod>
       <code>getName</code>
       <code>getName</code>
       <code>getSize</code>
       <code>isLarge</code>
       <code>isMedium</code>
     </InternalMethod>
-    <RedundantCondition occurrences="2">
+    <RedundantCondition>
       <code>$class-&gt;isSubclassOf($parentClass)</code>
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>
-    <UnresolvableInclude occurrences="1">
+    <UnresolvableInclude>
       <code>include_once $uncoveredFile</code>
     </UnresolvableInclude>
   </file>
   <file src="src/Driver/PcovDriver.php">
-    <UndefinedConstant occurrences="1">
+    <UndefinedConstant>
       <code>inclusive</code>
     </UndefinedConstant>
-    <UndefinedFunction occurrences="5">
+    <UndefinedFunction>
       <code>clear()</code>
       <code>collect(inclusive, $filesToCollectCoverageFor)</code>
       <code>start()</code>
@@ -40,14 +40,14 @@
     </UndefinedFunction>
   </file>
   <file src="src/Driver/Xdebug2Driver.php">
-    <UndefinedConstant occurrences="3">
+    <UndefinedConstant>
       <code>XDEBUG_CC_BRANCH_CHECK</code>
       <code>XDEBUG_CC_DEAD_CODE</code>
       <code>XDEBUG_CC_UNUSED</code>
     </UndefinedConstant>
   </file>
   <file src="src/Driver/Xdebug3Driver.php">
-    <UndefinedConstant occurrences="5">
+    <UndefinedConstant>
       <code>XDEBUG_CC_BRANCH_CHECK</code>
       <code>XDEBUG_CC_DEAD_CODE</code>
       <code>XDEBUG_CC_UNUSED</code>
@@ -56,69 +56,69 @@
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">
-    <InvalidDocblockParamName occurrences="1">
+    <InvalidDocblockParamName>
       <code>$files</code>
     </InvalidDocblockParamName>
   </file>
   <file src="src/Node/AbstractNode.php">
-    <DocblockTypeContradiction occurrences="5">
+    <DocblockTypeContradiction>
       <code>$this-&gt;id === null</code>
       <code>$this-&gt;parent === null</code>
       <code>$this-&gt;parent === null</code>
       <code>$this-&gt;pathAsArray === null</code>
       <code>$this-&gt;pathAsString === null</code>
     </DocblockTypeContradiction>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
+    <PossiblyNullPropertyAssignmentValue>
       <code>$parent</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="3">
+    <PropertyNotSetInConstructor>
       <code>$id</code>
       <code>$pathAsArray</code>
       <code>$pathAsString</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Builder.php">
-    <UnsupportedReferenceUsage occurrences="1">
+    <UnsupportedReferenceUsage>
       <code>$pointer = &amp;$pointer[$path[$i] . $type]</code>
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
-    <DocblockTypeContradiction occurrences="3">
+    <DocblockTypeContradiction>
       <code>$this-&gt;classes === null</code>
       <code>$this-&gt;functions === null</code>
       <code>$this-&gt;traits === null</code>
     </DocblockTypeContradiction>
-    <MissingTemplateParam occurrences="1">
+    <MissingTemplateParam>
       <code>IteratorAggregate</code>
     </MissingTemplateParam>
-    <PropertyNotSetInConstructor occurrences="3">
+    <PropertyNotSetInConstructor>
       <code>$classes</code>
       <code>$functions</code>
       <code>$traits</code>
     </PropertyNotSetInConstructor>
-    <PropertyTypeCoercion occurrences="2">
+    <PropertyTypeCoercion>
       <code>$this-&gt;directories</code>
       <code>$this-&gt;files</code>
     </PropertyTypeCoercion>
-    <UnsupportedReferenceUsage occurrences="2">
+    <UnsupportedReferenceUsage>
       <code>$this-&gt;directories[] = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
       <code>$this-&gt;files[]    = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/File.php">
-    <DocblockTypeContradiction occurrences="5">
+    <DocblockTypeContradiction>
       <code>$this-&gt;numClasses === null</code>
       <code>$this-&gt;numMethods === null</code>
       <code>$this-&gt;numTestedFunctions === null</code>
       <code>$this-&gt;numTestedMethods === null</code>
       <code>$this-&gt;numTraits === null</code>
     </DocblockTypeContradiction>
-    <InvalidPropertyAssignmentValue occurrences="3">
+    <InvalidPropertyAssignmentValue>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
       <code>$this-&gt;codeUnitsByLine</code>
     </InvalidPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="5">
+    <PropertyNotSetInConstructor>
       <code>$numClasses</code>
       <code>$numMethods</code>
       <code>$numTestedFunctions</code>
@@ -127,31 +127,31 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Node/Iterator.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion>
       <code>$this-&gt;nodes[$this-&gt;position]</code>
     </ArgumentTypeCoercion>
-    <MissingTemplateParam occurrences="1">
+    <MissingTemplateParam>
       <code>RecursiveIterator</code>
     </MissingTemplateParam>
-    <PropertyNotSetInConstructor occurrences="1">
+    <PropertyNotSetInConstructor>
       <code>$position</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/ProcessedCodeCoverageData.php">
-    <PossiblyNullArgument occurrences="1">
+    <PossiblyNullArgument>
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
     </PossiblyNullArgument>
-    <PossiblyNullArrayAccess occurrences="3">
+    <PossiblyNullArrayAccess>
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]</code>
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
     </PossiblyNullArrayAccess>
-    <PossiblyNullArrayAssignment occurrences="1">
+    <PossiblyNullArrayAssignment>
       <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
     </PossiblyNullArrayAssignment>
   </file>
   <file src="src/Report/Html/Renderer.php">
-    <PossiblyUndefinedArrayOffset occurrences="4">
+    <PossiblyUndefinedArrayOffset>
       <code>$data['branchesExecutedPercentAsString']</code>
       <code>$data['linesExecutedPercentAsString']</code>
       <code>$data['pathsExecutedPercentAsString']</code>
@@ -159,7 +159,7 @@
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
-    <InternalClass occurrences="7">
+    <InternalClass>
       <code>BaseTestRunner::STATUS_ERROR</code>
       <code>BaseTestRunner::STATUS_FAILURE</code>
       <code>BaseTestRunner::STATUS_INCOMPLETE</code>
@@ -168,49 +168,49 @@
       <code>BaseTestRunner::STATUS_SKIPPED</code>
       <code>BaseTestRunner::STATUS_WARNING</code>
     </InternalClass>
-    <InvalidArrayOffset occurrences="1">
+    <InvalidArrayOffset>
       <code>$tokens[$j - 1]</code>
     </InvalidArrayOffset>
   </file>
   <file src="src/Report/Xml/BuildInformation.php">
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference>
       <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Coverage.php">
-    <PossiblyNullReference occurrences="2">
+    <PossiblyNullReference>
       <code>createDocumentFragment</code>
       <code>replaceChild</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Facade.php">
-    <PropertyNotSetInConstructor occurrences="2">
+    <PropertyNotSetInConstructor>
       <code>$project</code>
       <code>$target</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/File.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion>
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
+    <PossiblyNullPropertyAssignmentValue>
       <code>$context-&gt;ownerDocument</code>
     </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Report/Xml/Node.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion>
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
+    <PossiblyNullPropertyAssignmentValue>
       <code>$context-&gt;ownerDocument</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PropertyNotSetInConstructor occurrences="2">
+    <PropertyNotSetInConstructor>
       <code>$contextNode</code>
       <code>$dom</code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/Report.php">
-    <MissingParamType occurrences="4">
+    <MissingParamType>
       <code>$name</code>
       <code>$name</code>
       <code>$name</code>
@@ -218,35 +218,35 @@
     </MissingParamType>
   </file>
   <file src="src/Report/Xml/Source.php">
-    <PossiblyNullArgument occurrences="1">
+    <PossiblyNullArgument>
       <code>$context-&gt;namespaceURI</code>
     </PossiblyNullArgument>
-    <PossiblyNullReference occurrences="2">
+    <PossiblyNullReference>
       <code>importNode</code>
       <code>replaceChild</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Tests.php">
-    <MissingPropertyType occurrences="1">
+    <MissingPropertyType>
       <code>$codeMap</code>
     </MissingPropertyType>
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference>
       <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Totals.php">
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference>
       <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Unit.php">
-    <PossiblyNullReference occurrences="2">
+    <PossiblyNullReference>
       <code>createElementNS</code>
       <code>createElementNS</code>
     </PossiblyNullReference>
   </file>
   <file src="src/StaticAnalysis/CachingFileAnalyser.php">
-    <NullableReturnStatement occurrences="6">
+    <NullableReturnStatement>
       <code>$this-&gt;cache[$filename]['classesIn']</code>
       <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
       <code>$this-&gt;cache[$filename]['functionsIn']</code>
@@ -254,7 +254,7 @@
       <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
       <code>$this-&gt;cache[$filename]['traitsIn']</code>
     </NullableReturnStatement>
-    <PossiblyNullArrayAccess occurrences="6">
+    <PossiblyNullArrayAccess>
       <code>$this-&gt;cache[$filename]['classesIn']</code>
       <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
       <code>$this-&gt;cache[$filename]['functionsIn']</code>
@@ -262,7 +262,7 @@
       <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
       <code>$this-&gt;cache[$filename]['traitsIn']</code>
     </PossiblyNullArrayAccess>
-    <PossiblyUndefinedArrayOffset occurrences="6">
+    <PossiblyUndefinedArrayOffset>
       <code>$this-&gt;cache[$filename]</code>
       <code>$this-&gt;cache[$filename]</code>
       <code>$this-&gt;cache[$filename]</code>
@@ -272,19 +272,19 @@
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/StaticAnalysis/CodeUnitFindingVisitor.php">
-    <PossiblyInvalidOperand occurrences="1">
+    <PossiblyInvalidOperand>
       <code>$parameter-&gt;var-&gt;name</code>
     </PossiblyInvalidOperand>
-    <PossiblyNullReference occurrences="4">
+    <PossiblyNullReference>
       <code>toString</code>
       <code>toString</code>
       <code>toString</code>
       <code>toString</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="1">
+    <PossiblyUndefinedMethod>
       <code>toString</code>
     </PossiblyUndefinedMethod>
-    <RedundantConditionGivenDocblockType occurrences="9">
+    <RedundantConditionGivenDocblockType>
       <code>$node instanceof Function_</code>
       <code>$node instanceof Function_</code>
       <code>$type instanceof ComplexType</code>
@@ -297,7 +297,7 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Version.php">
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction>
       <code>self::$version === null</code>
     </DocblockTypeContradiction>
   </file>

@@ -39,9 +39,9 @@ use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 final class CodeCoverage
 {
     private const UNCOVERED_FILES = 'UNCOVERED_FILES';
-    private Driver $driver;
-    private Filter $filter;
-    private Wizard $wizard;
+    private readonly Driver $driver;
+    private readonly Filter $filter;
+    private readonly Wizard $wizard;
     private bool $checkForUnintentionallyCoveredCode = false;
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;

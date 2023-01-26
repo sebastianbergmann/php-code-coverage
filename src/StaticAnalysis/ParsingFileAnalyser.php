@@ -45,8 +45,8 @@ final class ParsingFileAnalyser implements FileAnalyser
     private array $linesOfCode     = [];
     private array $ignoredLines    = [];
     private array $executableLines = [];
-    private bool $useAnnotationsForIgnoringCode;
-    private bool $ignoreDeprecatedCode;
+    private readonly bool $useAnnotationsForIgnoringCode;
+    private readonly bool $ignoreDeprecatedCode;
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
     {

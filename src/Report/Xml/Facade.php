@@ -42,7 +42,7 @@ final class Facade
 {
     private string $target;
     private Project $project;
-    private string $phpUnitVersion;
+    private readonly string $phpUnitVersion;
 
     public function __construct(string $version)
     {

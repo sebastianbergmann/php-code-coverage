@@ -16,7 +16,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException impleme
     /**
      * @var list<string>
      */
-    private array $unintentionallyCoveredUnits;
+    private readonly array $unintentionallyCoveredUnits;
 
     /**
      * @param list<string> $unintentionallyCoveredUnits

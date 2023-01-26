@@ -30,7 +30,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  */
 final class Builder
 {
-    private FileAnalyser $analyser;
+    private readonly FileAnalyser $analyser;
 
     public function __construct(FileAnalyser $analyser)
     {

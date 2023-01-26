@@ -19,7 +19,7 @@ use SebastianBergmann\Environment\Runtime;
  */
 final class BuildInformation
 {
-    private DOMElement $contextNode;
+    private readonly DOMElement $contextNode;
 
     public function __construct(DOMElement $contextNode)
     {

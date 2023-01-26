@@ -16,8 +16,8 @@ use function sprintf;
  */
 final class CrapIndex
 {
-    private int $cyclomaticComplexity;
-    private float $codeCoverage;
+    private readonly int $cyclomaticComplexity;
+    private readonly float $codeCoverage;
 
     public function __construct(int $cyclomaticComplexity, float $codeCoverage)
     {

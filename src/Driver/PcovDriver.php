@@ -26,7 +26,7 @@ use SebastianBergmann\CodeCoverage\Filter;
  */
 final class PcovDriver extends Driver
 {
-    private Filter $filter;
+    private readonly Filter $filter;
 
     /**
      * @throws PcovNotAvailableException

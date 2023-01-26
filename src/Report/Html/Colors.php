@@ -14,11 +14,11 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
  */
 final class Colors
 {
-    private string $successLow;
-    private string $successMedium;
-    private string $successHigh;
-    private string $warning;
-    private string $danger;
+    private readonly string $successLow;
+    private readonly string $successMedium;
+    private readonly string $successHigh;
+    private readonly string $warning;
+    private readonly string $danger;
 
     public static function default(): self
     {

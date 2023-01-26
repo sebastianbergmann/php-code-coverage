@@ -23,7 +23,7 @@ use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
 final class Crap4j
 {
-    private int $threshold;
+    private readonly int $threshold;
 
     public function __construct(int $threshold = 30)
     {

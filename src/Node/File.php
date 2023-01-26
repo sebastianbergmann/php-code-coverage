@@ -20,7 +20,7 @@ final class File extends AbstractNode
 {
     private array $lineCoverageData;
     private array $functionCoverageData;
-    private array $testData;
+    private readonly array $testData;
     private int $numExecutableLines    = 0;
     private int $numExecutedLines      = 0;
     private int $numExecutableBranches = 0;
@@ -34,7 +34,7 @@ final class File extends AbstractNode
     /**
      * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
      */
-    private array $linesOfCode;
+    private readonly array $linesOfCode;
     private ?int $numClasses         = null;
     private int $numTestedClasses    = 0;
     private ?int $numTraits          = null;

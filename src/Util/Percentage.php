@@ -16,8 +16,8 @@ use function sprintf;
  */
 final class Percentage
 {
-    private float $fraction;
-    private float $total;
+    private readonly float $fraction;
+    private readonly float $total;
 
     public static function fromFractionAndTotal(float $fraction, float $total): self
     {

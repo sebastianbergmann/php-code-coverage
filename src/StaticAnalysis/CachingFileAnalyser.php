@@ -25,9 +25,9 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 final class CachingFileAnalyser implements FileAnalyser
 {
     private static ?string $cacheVersion = null;
-    private FileAnalyser $analyser;
+    private readonly FileAnalyser $analyser;
     private array $cache = [];
-    private string $directory;
+    private readonly string $directory;
 
     public function __construct(string $directory, FileAnalyser $analyser)
     {

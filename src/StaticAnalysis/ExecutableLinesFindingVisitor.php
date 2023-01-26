@@ -30,7 +30,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
     private int $nextBranch = 0;
-    private string $source;
+    private readonly string $source;
 
     /**
      * @psalm-var array<int, int>

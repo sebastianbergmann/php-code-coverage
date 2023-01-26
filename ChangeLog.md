@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [9.2.24] - 2023-MM-DD
+## [9.2.24] - 2023-01-26
 
 ### Changed
 
@@ -464,7 +464,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
-[9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2
+[9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24
 [9.2.23]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.22...9.2.23
 [9.2.22]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.21...9.2.22
 [9.2.21]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.20...9.2.21

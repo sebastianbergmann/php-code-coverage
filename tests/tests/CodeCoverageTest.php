@@ -62,7 +62,7 @@ final class CodeCoverageTest extends TestCase
         $this->coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
-            TEST_FILES_PATH . 'BankAccount.php'       => [
+            TEST_FILES_PATH . 'BankAccount.php' => [
                 29 => -1,
                 31 => -1,
             ],

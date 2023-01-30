@@ -85,16 +85,16 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                                 'hit'        => [],
                                 'out'        => [
                                 ],
-                                'out_hit'    => [
+                                'out_hit' => [
                                 ],
                             ],
                         ],
-                        'paths'    => [
+                        'paths' => [
                             0 => [
                                 'path' => [
                                     0 => 0,
                                 ],
-                                'hit'  => [],
+                                'hit' => [],
                             ],
                         ],
                     ],
@@ -106,7 +106,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $newCoverage->setFunctionCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    'SomeClass->firstFunction'  => [
+                    'SomeClass->firstFunction' => [
                         'branches' => [
                             0 => [
                                 'op_start'   => 0,
@@ -116,7 +116,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                                 'hit'        => [],
                                 'out'        => [
                                 ],
-                                'out_hit'    => [
+                                'out_hit' => [
                                 ],
                             ],
                             1 => [
@@ -127,22 +127,22 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                                 'hit'        => [],
                                 'out'        => [
                                 ],
-                                'out_hit'    => [
+                                'out_hit' => [
                                 ],
                             ],
                         ],
-                        'paths'    => [
+                        'paths' => [
                             0 => [
                                 'path' => [
                                     0 => 0,
                                 ],
-                                'hit'  => [],
+                                'hit' => [],
                             ],
                             1 => [
                                 'path' => [
                                     0 => 1,
                                 ],
-                                'hit'  => [],
+                                'hit' => [],
                             ],
                         ],
                     ],
@@ -156,16 +156,16 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                                 'hit'        => [],
                                 'out'        => [
                                 ],
-                                'out_hit'    => [
+                                'out_hit' => [
                                 ],
                             ],
                         ],
-                        'paths'    => [
+                        'paths' => [
                             0 => [
                                 'path' => [
                                     0 => 0,
                                 ],
-                                'hit'  => [],
+                                'hit' => [],
                             ],
                         ],
                     ],

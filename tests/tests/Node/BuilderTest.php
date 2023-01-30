@@ -101,8 +101,8 @@ final class BuilderTest extends TestCase
         $this->assertEquals(
             [
                 'BankAccount' => [
-                    'methods'            => [
-                        'getBalance'    => [
+                    'methods' => [
+                        'getBalance' => [
                             'signature'          => 'getBalance()',
                             'startLine'          => 6,
                             'endLine'            => 9,
@@ -119,7 +119,7 @@ final class BuilderTest extends TestCase
                             'methodName'         => 'getBalance',
                             'visibility'         => 'public',
                         ],
-                        'setBalance'    => [
+                        'setBalance' => [
                             'signature'          => 'setBalance($balance)',
                             'startLine'          => 11,
                             'endLine'            => 18,
@@ -136,7 +136,7 @@ final class BuilderTest extends TestCase
                             'methodName'         => 'setBalance',
                             'visibility'         => 'protected',
                         ],
-                        'depositMoney'  => [
+                        'depositMoney' => [
                             'signature'          => 'depositMoney($balance)',
                             'startLine'          => 20,
                             'endLine'            => 25,
@@ -206,7 +206,7 @@ final class BuilderTest extends TestCase
         $this->assertEquals(
             [
                 'src' => [
-                    'Money.php/f'    => [
+                    'Money.php/f' => [
                         'lineCoverage'     => [],
                         'functionCoverage' => [],
                     ],
@@ -214,7 +214,7 @@ final class BuilderTest extends TestCase
                         'lineCoverage'     => [],
                         'functionCoverage' => [],
                     ],
-                    'Foo'            => [
+                    'Foo' => [
                         'Bar' => [
                             'Baz' => [
                                 'Foo.php/f' => [

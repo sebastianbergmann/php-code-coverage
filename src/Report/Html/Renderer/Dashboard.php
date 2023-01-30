@@ -117,7 +117,7 @@ final class Dashboard extends Renderer
     private function coverageDistribution(array $classes): array
     {
         $result = [
-            'class'  => [
+            'class' => [
                 '0%'      => 0,
                 '0-10%'   => 0,
                 '10-20%'  => 0,

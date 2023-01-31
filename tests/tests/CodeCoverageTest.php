@@ -43,7 +43,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->data()->lineCoverage()
+            $coverage->getData()->lineCoverage()
         );
 
         $this->assertEquals(
@@ -53,7 +53,7 @@ final class CodeCoverageTest extends TestCase
                 'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => 'unknown'],
                 'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => 'unknown'],
             ],
-            $coverage->data()->tests()
+            $coverage->getTests()
         );
     }
 
@@ -73,8 +73,8 @@ final class CodeCoverageTest extends TestCase
         ]);
 
         $this->coverage->append($data, 'A test', true);
-        $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $this->coverage->data()->coveredFiles());
-        $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->data()->coveredFiles());
+        $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $this->coverage->getData()->coveredFiles());
+        $this->assertNotContains(TEST_FILES_PATH . 'CoverageClassTest.php', $this->coverage->getData()->coveredFiles());
     }
 
     public function testExcludeNonExecutableLines(): void
@@ -101,7 +101,7 @@ final class CodeCoverageTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expectedLineCoverage, $this->coverage->data()->lineCoverage());
+        $this->assertEquals($expectedLineCoverage, $this->coverage->getData()->lineCoverage());
     }
 
     public function testMerge(): void
@@ -111,7 +111,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->data()->lineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 
@@ -122,7 +122,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
-            $coverage->data()->lineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 
@@ -137,7 +137,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->data()->lineCoverage()
+            $coverage->getData()->lineCoverage()
         );
     }
 }

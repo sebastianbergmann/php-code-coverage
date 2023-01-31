@@ -51,6 +51,11 @@ final class CodeCoverage
     private bool $useAnnotationsForIgnoringCode = true;
 
     /**
+     * @psalm-var array<string, array{size: string, status: string}>
+     */
+    private array $tests = [];
+
+    /**
      * @psalm-var list<class-string>
      */
     private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
@@ -68,9 +73,12 @@ final class CodeCoverage
     /**
      * Returns the code coverage information as a graph of node objects.
      */
-    public function buildReport(): Directory
+    public function getReport(): Directory
     {
-        return (new Builder($this->analyser()))->build($this->data());
+        return (new Builder($this->analyser()))->build(
+            $this->getData(),
+            $this->getTests()
+        );
     }
 
     /**
@@ -81,6 +89,7 @@ final class CodeCoverage
         $this->currentId   = null;
         $this->currentSize = null;
         $this->data        = new ProcessedCodeCoverageData;
+        $this->tests       = [];
     }
 
     /**
@@ -94,7 +103,7 @@ final class CodeCoverage
     /**
      * Returns the collected code coverage data.
      */
-    public function data(bool $raw = false): ProcessedCodeCoverageData
+    public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
         if (!$raw) {
             if ($this->includeUncoveredFiles) {
@@ -103,6 +112,30 @@ final class CodeCoverage
         }
 
         return $this->data;
+    }
+
+    /**
+     * Sets the coverage data.
+     */
+    public function setData(ProcessedCodeCoverageData $data): void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @psalm-return array<string, array{size: string, status: string}>
+     */
+    public function getTests(): array
+    {
+        return $this->tests;
+    }
+
+    /**
+     * @psalm-param array<string, array{size: string, status: string}> $tests
+     */
+    public function setTests(array $tests): void
+    {
+        $this->tests = $tests;
     }
 
     public function start(string $id, TestSize $size = null, bool $clear = false): void
@@ -180,7 +213,11 @@ final class CodeCoverage
                 return;
             }
 
-            $this->data->recordTest($id, $size, $status);
+            $this->tests[$id] = [
+                'size'   => $size->asString(),
+                'status' => $status->asString(),
+            ];
+
             $this->data->markCodeAsExecutedByTestCase($id, $rawData);
         }
     }
@@ -195,6 +232,8 @@ final class CodeCoverage
         );
 
         $this->data->merge($that->data);
+
+        $this->tests = array_merge($this->tests, $that->getTests());
     }
 
     public function enableCheckForUnintentionallyCoveredCode(): void
@@ -409,7 +448,7 @@ final class CodeCoverage
      */
     private function performUnintentionallyCoveredCodeCheck(RawCodeCoverageData $data, array $linesToBeCovered, array $linesToBeUsed): void
     {
-        $allowedLines = $this->allowedLines(
+        $allowedLines = $this->getAllowedLines(
             $linesToBeCovered,
             $linesToBeUsed
         );
@@ -433,7 +472,7 @@ final class CodeCoverage
         }
     }
 
-    private function allowedLines(array $linesToBeCovered, array $linesToBeUsed): array
+    private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed): array
     {
         $allowedLines = [];
 

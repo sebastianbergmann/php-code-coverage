@@ -16,8 +16,8 @@ use function htmlspecialchars;
 use function is_string;
 use function round;
 use DOMDocument;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
-use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
@@ -33,7 +33,7 @@ final class Crap4j
     /**
      * @throws WriteOperationFailedException
      */
-    public function process(Directory $report, ?string $target = null, ?string $name = null): string
+    public function process(CodeCoverage $coverage, ?string $target = null, ?string $name = null): string
     {
         $document               = new DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
@@ -47,6 +47,9 @@ final class Crap4j
 
         $stats       = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
+
+        $report = $coverage->getReport();
+        unset($coverage);
 
         $fullMethodCount     = 0;
         $fullCrapMethodCount = 0;

@@ -41,7 +41,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getLineCoverageForBankAccount()->getReport(), false, self::$TEST_TMP_PATH);
+        $report->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -51,7 +51,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getPathCoverageForBankAccount()->getReport(), true, self::$TEST_TMP_PATH);
+        $report->process($this->getPathCoverageForBankAccount(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -61,7 +61,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
 
         $report = new Facade;
-        $report->process($this->getPathCoverageForSourceWithoutNamespace()->getReport(), true, self::$TEST_TMP_PATH);
+        $report->process($this->getPathCoverageForSourceWithoutNamespace(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -71,7 +71,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $report = new Facade;
-        $report->process($this->getCoverageForFileWithIgnoredLines()->getReport(), false, self::$TEST_TMP_PATH);
+        $report->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }
@@ -81,7 +81,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $report = new Facade;
-        $report->process($this->getCoverageForClassWithAnonymousFunction()->getReport(), false, self::$TEST_TMP_PATH);
+        $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
 
         $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
     }

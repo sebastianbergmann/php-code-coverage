@@ -27,6 +27,7 @@ use function strlen;
 use function substr;
 use DateTimeImmutable;
 use DOMDocument;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
@@ -49,11 +50,9 @@ final class Facade
     }
 
     /**
-     * @psalm-param array<string, array{size: string, status: string}> $tests
-     *
      * @throws XmlException
      */
-    public function process(DirectoryNode $report, array $tests, string $target): void
+    public function process(CodeCoverage $coverage, string $target): void
     {
         if (substr($target, -1, 1) !== DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
@@ -62,10 +61,14 @@ final class Facade
         $this->target = $target;
         $this->initTargetDirectory($target);
 
-        $this->project = new Project($report->name());
+        $report = $coverage->getReport();
+
+        $this->project = new Project(
+            $coverage->getReport()->name()
+        );
 
         $this->setBuildInformation();
-        $this->processTests($tests);
+        $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
 
         $this->saveDocument($this->project->asDom(), 'index');
@@ -212,9 +215,6 @@ final class Facade
         $functionObject->setTotals((string) $function['executableLines'], (string) $function['executedLines'], (string) $function['coverage']);
     }
 
-    /**
-     * @psalm-param array<string, array{size: string, status: string}> $tests
-     */
     private function processTests(array $tests): void
     {
         $testsObject = $this->project->tests();

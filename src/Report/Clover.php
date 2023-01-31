@@ -18,8 +18,8 @@ use function max;
 use function range;
 use function time;
 use DOMDocument;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
-use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
@@ -28,7 +28,7 @@ final class Clover
     /**
      * @throws WriteOperationFailedException
      */
-    public function process(Directory $report, ?string $target = null, ?string $name = null): string
+    public function process(CodeCoverage $coverage, ?string $target = null, ?string $name = null): string
     {
         $time = (string) time();
 
@@ -49,6 +49,7 @@ final class Clover
         $xmlCoverage->appendChild($xmlProject);
 
         $packages = [];
+        $report   = $coverage->getReport();
 
         foreach ($report as $item) {
             if (!$item instanceof File) {

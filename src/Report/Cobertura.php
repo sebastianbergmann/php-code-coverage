@@ -18,8 +18,8 @@ use function range;
 use function str_replace;
 use function time;
 use DOMImplementation;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
-use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
@@ -28,9 +28,11 @@ final class Cobertura
     /**
      * @throws WriteOperationFailedException
      */
-    public function process(Directory $report, ?string $target = null): string
+    public function process(CodeCoverage $coverage, ?string $target = null): string
     {
         $time = (string) time();
+
+        $report = $coverage->getReport();
 
         $implementation = new DOMImplementation;
 

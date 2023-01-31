@@ -75,7 +75,10 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        return (new Builder($this->analyser()))->build($this);
+        return (new Builder($this->analyser()))->build(
+            $this->getData(),
+            $this->getTests()
+        );
     }
 
     /**

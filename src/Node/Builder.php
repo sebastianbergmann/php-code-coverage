@@ -21,7 +21,6 @@ use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function substr;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
@@ -37,19 +36,20 @@ final class Builder
         $this->analyser = $analyser;
     }
 
-    public function build(CodeCoverage $coverage): Directory
+    /**
+     * @psalm-param array<string, array{size: string, status: string}> $tests
+     */
+    public function build(ProcessedCodeCoverageData $data, array $tests): Directory
     {
-        $data       = clone $coverage->getData(); // clone because path munging is destructive to the original data
+        // clone because path munging is destructive to the original data
+        $data       = clone $data;
         $commonPath = $this->reducePaths($data);
-        $root       = new Directory(
-            $commonPath,
-            null
-        );
+        $root       = new Directory($commonPath, null);
 
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($data),
-            $coverage->getTests()
+            $tests
         );
 
         return $root;

@@ -55,6 +55,9 @@ final class Builder
         return $root;
     }
 
+    /**
+     * @psalm-param array<string, array{size: string, status: string}> $tests
+     */
     private function addItems(Directory $root, array $items, array $tests): void
     {
         foreach ($items as $key => $value) {

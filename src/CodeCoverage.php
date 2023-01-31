@@ -49,7 +49,11 @@ final class CodeCoverage
     private ?TestSize $currentSize                   = null;
     private ProcessedCodeCoverageData $data;
     private bool $useAnnotationsForIgnoringCode = true;
-    private array $tests                        = [];
+
+    /**
+     * @psalm-var array<string, array{size: string, status: string}>
+     */
+    private array $tests = [];
 
     /**
      * @psalm-var list<class-string>
@@ -116,7 +120,7 @@ final class CodeCoverage
     }
 
     /**
-     * Returns the test data.
+     * @psalm-return array<string, array{size: string, status: string}>
      */
     public function getTests(): array
     {
@@ -124,7 +128,7 @@ final class CodeCoverage
     }
 
     /**
-     * Sets the test data.
+     * @psalm-param array<string, array{size: string, status: string}> $tests
      */
     public function setTests(array $tests): void
     {

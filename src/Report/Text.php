@@ -17,7 +17,7 @@ use function max;
 use function sprintf;
 use function str_pad;
 use function strlen;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
@@ -58,12 +58,9 @@ final class Text
         $this->showOnlySummary    = $showOnlySummary;
     }
 
-    public function process(CodeCoverage $coverage, bool $showColors = false): string
+    public function process(Directory $report, bool $pathCoverage, bool $showColors = false): string
     {
-        $hasBranchCoverage = !empty($coverage->getData(true)->functionCoverage());
-
         $output = PHP_EOL . PHP_EOL;
-        $report = $coverage->getReport();
 
         $colors = [
             'header'   => '',
@@ -128,7 +125,7 @@ final class Text
         $paths    = '';
         $branches = '';
 
-        if ($hasBranchCoverage) {
+        if ($pathCoverage) {
             $paths = sprintf(
                 '  Paths:   %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
@@ -180,10 +177,11 @@ final class Text
         $output .= $this->format($colors['classes'], $padding, $classes);
         $output .= $this->format($colors['methods'], $padding, $methods);
 
-        if ($hasBranchCoverage) {
+        if ($pathCoverage) {
             $output .= $this->format($colors['paths'], $padding, $paths);
             $output .= $this->format($colors['branches'], $padding, $branches);
         }
+
         $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
@@ -263,10 +261,11 @@ final class Text
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
                     . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' ';
 
-                if ($hasBranchCoverage) {
+                if ($pathCoverage) {
                     $output .= '  ' . $pathsColor . 'Paths: ' . $this->printCoverageCounts($classInfo['pathsCovered'], $classInfo['pathsCount'], 3) . $resetColor . ' '
                     . '  ' . $branchesColor . 'Branches: ' . $this->printCoverageCounts($classInfo['branchesCovered'], $classInfo['branchesCount'], 3) . $resetColor . ' ';
                 }
+
                 $output .= '  ' . $linesColor . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor;
             }
         }

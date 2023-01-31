@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * [#856](https://github.com/sebastianbergmann/php-code-coverage/issues/856): Do not include (and execute) uncovered files
+* The `SebastianBergmann\CodeCoverage\Report\Clover::process()`, `SebastianBergmann\CodeCoverage\Report\Cobertura::process()`, `SebastianBergmann\CodeCoverage\Report\Html\Facade::process()`, `SebastianBergmann\CodeCoverage\Report\Crapj::process()`, `SebastianBergmann\CodeCoverage\Report\Text::process()`, and `SebastianBergmann\CodeCoverage\Report\Xml\Facade::process()` methods now require a `SebastianBergmann\CodeCoverage\Node\Directory` object (returned by `SebastianBergmann\CodeCoverage\CodeCoverage::getReport()`) instead of an `SebastianBergmann\CodeCoverage\CodeCoverage` object
 
 ### Removed
 

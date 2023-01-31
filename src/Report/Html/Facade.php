@@ -14,8 +14,8 @@ use function copy;
 use function date;
 use function dirname;
 use function str_ends_with;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\Directory as NodeDirectory;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Template;
@@ -37,10 +37,9 @@ final class Facade
         $this->templatePath  = __DIR__ . '/Renderer/Template/';
     }
 
-    public function process(CodeCoverage $coverage, string $target): void
+    public function process(NodeDirectory $report, bool $pathCoverage, string $target): void
     {
         $target = $this->directory($target);
-        $report = $coverage->getReport();
         $date   = date('D M j G:i:s T Y');
 
         $dashboard = new Dashboard(
@@ -48,7 +47,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $pathCoverage
         );
 
         $directory = new Directory(
@@ -56,7 +55,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $pathCoverage
         );
 
         $file = new File(
@@ -64,7 +63,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $pathCoverage
         );
 
         $directory->render($report, $target . 'index.html');

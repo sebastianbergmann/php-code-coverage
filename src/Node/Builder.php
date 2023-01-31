@@ -36,10 +36,7 @@ final class Builder
         $this->analyser = $analyser;
     }
 
-    /**
-     * @psalm-param array<string, array{size: string, status: string}> $tests
-     */
-    public function build(ProcessedCodeCoverageData $data, array $tests): Directory
+    public function build(ProcessedCodeCoverageData $data): Directory
     {
         // clone because path munging is destructive to the original data
         $data       = clone $data;
@@ -49,7 +46,7 @@ final class Builder
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($data),
-            $tests
+            $data->tests()
         );
 
         return $root;

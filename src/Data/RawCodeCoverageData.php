@@ -222,13 +222,13 @@ final class RawCodeCoverageData
     private function skipEmptyLines(): void
     {
         foreach ($this->lineCoverage as $filename => $coverage) {
-            foreach ($this->getEmptyLinesForFile($filename) as $emptyLine) {
+            foreach ($this->emptyLinesForFile($filename) as $emptyLine) {
                 unset($this->lineCoverage[$filename][$emptyLine]);
             }
         }
     }
 
-    private function getEmptyLinesForFile(string $filename): array
+    private function emptyLinesForFile(string $filename): array
     {
         if (!isset(self::$emptyLineCache[$filename])) {
             self::$emptyLineCache[$filename] = [];

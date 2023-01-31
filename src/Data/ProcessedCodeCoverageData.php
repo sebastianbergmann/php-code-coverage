@@ -17,6 +17,8 @@ use function count;
 use function is_array;
 use function ksort;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
+use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -35,6 +37,11 @@ final class ProcessedCodeCoverageData
      * of testcase ids.
      */
     private array $functionCoverage = [];
+
+    /**
+     * @psalm-var array<string, array{size: string, status: string}>
+     */
+    private array $tests = [];
 
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
@@ -128,6 +135,22 @@ final class ProcessedCodeCoverageData
         unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile]);
     }
 
+    public function recordTest(string $id, TestSize $size, TestStatus $status): void
+    {
+        $this->tests[$id] = [
+            'size'   => $size->asString(),
+            'status' => $status->asString(),
+        ];
+    }
+
+    /**
+     * @psalm-return array<string, array{size: string, status: string}>
+     */
+    public function tests(): array
+    {
+        return $this->tests;
+    }
+
     public function merge(self $newData): void
     {
         foreach ($newData->lineCoverage as $file => $lines) {
@@ -182,6 +205,8 @@ final class ProcessedCodeCoverageData
                 }
             }
         }
+
+        $this->tests = array_merge($this->tests, $newData->tests());
     }
 
     /**

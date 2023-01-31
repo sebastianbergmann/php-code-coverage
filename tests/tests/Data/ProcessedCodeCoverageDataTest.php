@@ -15,9 +15,9 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 {
     public function testMergeWithLineCoverage(): void
     {
-        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();
+        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->data();
 
-        $coverage->merge($this->getLineCoverageForBankAccountForLastTwoTests()->getData());
+        $coverage->merge($this->getLineCoverageForBankAccountForLastTwoTests()->data());
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
@@ -27,9 +27,9 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
     public function testMergeWithPathCoverage(): void
     {
-        $coverage = $this->getPathCoverageForBankAccountForFirstTwoTests()->getData();
+        $coverage = $this->getPathCoverageForBankAccountForFirstTwoTests()->data();
 
-        $coverage->merge($this->getPathCoverageForBankAccountForLastTwoTests()->getData());
+        $coverage->merge($this->getPathCoverageForBankAccountForLastTwoTests()->data());
 
         $this->assertEquals(
             $this->getExpectedPathCoverageDataArrayForBankAccount(),
@@ -41,7 +41,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
     {
         $coverage = new ProcessedCodeCoverageData;
 
-        $coverage->merge($this->getPathCoverageForBankAccount()->getData());
+        $coverage->merge($this->getPathCoverageForBankAccount()->data());
 
         $this->assertEquals(
             $this->getExpectedPathCoverageDataArrayForBankAccount(),

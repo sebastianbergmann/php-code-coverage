@@ -12,11 +12,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * [#856](https://github.com/sebastianbergmann/php-code-coverage/issues/856): Do not include (and execute) uncovered files
+* The `SebastianBergmann\CodeCoverage\CodeCoverage::getData()` method has been renamed to `SebastianBergmann\CodeCoverage\CodeCoverage::data()`
+* The `SebastianBergmann\CodeCoverage\CodeCoverage::getReport()` method has been renamed to `SebastianBergmann\CodeCoverage\CodeCoverage::buildReport()`
 * The `SebastianBergmann\CodeCoverage\Report\Clover::process()`, `SebastianBergmann\CodeCoverage\Report\Cobertura::process()`, `SebastianBergmann\CodeCoverage\Report\Html\Facade::process()`, `SebastianBergmann\CodeCoverage\Report\Crapj::process()`, `SebastianBergmann\CodeCoverage\Report\Text::process()`, and `SebastianBergmann\CodeCoverage\Report\Xml\Facade::process()` methods now require a `SebastianBergmann\CodeCoverage\Node\Directory` object (returned by `SebastianBergmann\CodeCoverage\CodeCoverage::getReport()`) instead of an `SebastianBergmann\CodeCoverage\CodeCoverage` object
 
 ### Removed
 
-* The deprecated methods `SebastianBergmann\CodeCoverage\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver::forLineAndPathCoverage()` have been removed
+* The methods `SebastianBergmann\CodeCoverage\CodeCoverage::setData()`,`SebastianBergmann\CodeCoverage\CodeCoverage::setTests()`, and `SebastianBergmann\CodeCoverage\CodeCoverage::getTests()` have been removed
+* The methods `SebastianBergmann\CodeCoverage\Driver::forLineCoverage()` and `SebastianBergmann\CodeCoverage\Driver::forLineAndPathCoverage()` have been removed
 * This component is no longer supported on PHP 7.3, PHP 7.4 and PHP 8.0
 * This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2

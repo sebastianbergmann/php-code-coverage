@@ -482,8 +482,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
-[10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...main
-[9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2
+[10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...10.0.0
+[9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24
 [9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24
 [9.2.23]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.22...9.2.23
 [9.2.22]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.21...9.2.22

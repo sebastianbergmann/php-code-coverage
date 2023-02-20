@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.5.0@b63061a27f2683ec0f3509012bb22daab3b65b61">
+<files psalm-version="5.7.1@8e0fd880141f236847ab49a06f94f788d41a4292">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion>
       <code>$tmp[0]</code>
     </ArgumentTypeCoercion>
     <RedundantCondition>
-      <code>$class-&gt;isSubclassOf($parentClass)</code>
+      <code><![CDATA[$class->isSubclassOf($parentClass)]]></code>
       <code>is_array($linesToBeCovered)</code>
     </RedundantCondition>
   </file>
   <file src="src/Data/ProcessedCodeCoverageData.php">
     <PossiblyNullArgument>
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
+      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit']]]></code>
     </PossiblyNullArgument>
     <PossiblyNullArrayAccess>
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]</code>
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches'][$branchId]['hit']</code>
+      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches']]]></code>
+      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]]]></code>
+      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit']]]></code>
     </PossiblyNullArrayAccess>
     <PossiblyNullArrayAssignment>
-      <code>$this-&gt;functionCoverage[$file][$functionName]['branches']</code>
+      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches']]]></code>
     </PossiblyNullArrayAssignment>
   </file>
   <file src="src/Driver/PcovDriver.php">
@@ -50,32 +50,32 @@
   </file>
   <file src="src/Node/Builder.php">
     <UnsupportedReferenceUsage>
-      <code>$pointer = &amp;$pointer[$path[$i] . $type]</code>
+      <code><![CDATA[$pointer = &$pointer[$path[$i] . $type]]]></code>
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
     <InvalidPropertyAssignmentValue>
-      <code>$this-&gt;directories</code>
-      <code>$this-&gt;files</code>
+      <code><![CDATA[$this->directories]]></code>
+      <code><![CDATA[$this->files]]></code>
     </InvalidPropertyAssignmentValue>
     <MissingTemplateParam>
       <code>IteratorAggregate</code>
     </MissingTemplateParam>
     <UnsupportedReferenceUsage>
-      <code>$this-&gt;directories[] = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
-      <code>$this-&gt;files[]    = &amp;$this-&gt;children[count($this-&gt;children) - 1]</code>
+      <code><![CDATA[$this->directories[] = &$this->children[count($this->children) - 1]]]></code>
+      <code><![CDATA[$this->files[]    = &$this->children[count($this->children) - 1]]]></code>
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/File.php">
     <InvalidPropertyAssignmentValue>
-      <code>$this-&gt;codeUnitsByLine</code>
-      <code>$this-&gt;codeUnitsByLine</code>
-      <code>$this-&gt;codeUnitsByLine</code>
+      <code><![CDATA[$this->codeUnitsByLine]]></code>
+      <code><![CDATA[$this->codeUnitsByLine]]></code>
+      <code><![CDATA[$this->codeUnitsByLine]]></code>
     </InvalidPropertyAssignmentValue>
   </file>
   <file src="src/Node/Iterator.php">
     <ArgumentTypeCoercion>
-      <code>$this-&gt;nodes[$this-&gt;position]</code>
+      <code><![CDATA[$this->nodes[$this->position]]]></code>
     </ArgumentTypeCoercion>
     <MissingTemplateParam>
       <code>RecursiveIterator</code>
@@ -84,39 +84,39 @@
       <code>$position</code>
     </PropertyNotSetInConstructor>
     <PropertyTypeCoercion>
-      <code>$node-&gt;children()</code>
+      <code><![CDATA[$node->children()]]></code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/Report/Html/Renderer.php">
     <InvalidArgument>
-      <code>[
-                'id'               =&gt; $node-&gt;id(),
-                'full_path'        =&gt; $node-&gt;pathAsString(),
-                'path_to_root'     =&gt; $this-&gt;pathToRoot($node),
-                'breadcrumbs'      =&gt; $this-&gt;breadcrumbs($node),
-                'date'             =&gt; $this-&gt;date,
-                'version'          =&gt; $this-&gt;version,
-                'runtime'          =&gt; $this-&gt;runtimeString(),
-                'generator'        =&gt; $this-&gt;generator,
-                'low_upper_bound'  =&gt; $this-&gt;thresholds-&gt;lowUpperBound(),
-                'high_lower_bound' =&gt; $this-&gt;thresholds-&gt;highLowerBound(),
-            ]</code>
+      <code><![CDATA[[
+                'id'               => $node->id(),
+                'full_path'        => $node->pathAsString(),
+                'path_to_root'     => $this->pathToRoot($node),
+                'breadcrumbs'      => $this->breadcrumbs($node),
+                'date'             => $this->date,
+                'version'          => $this->version,
+                'runtime'          => $this->runtimeString(),
+                'generator'        => $this->generator,
+                'low_upper_bound'  => $this->thresholds->lowUpperBound(),
+                'high_lower_bound' => $this->thresholds->highLowerBound(),
+            ]]]></code>
     </InvalidArgument>
     <PossiblyUndefinedArrayOffset>
-      <code>$data['branchesExecutedPercentAsString']</code>
-      <code>$data['linesExecutedPercentAsString']</code>
-      <code>$data['pathsExecutedPercentAsString']</code>
-      <code>$data['testedMethodsPercentAsString']</code>
+      <code><![CDATA[$data['branchesExecutedPercentAsString']]]></code>
+      <code><![CDATA[$data['linesExecutedPercentAsString']]]></code>
+      <code><![CDATA[$data['pathsExecutedPercentAsString']]]></code>
+      <code><![CDATA[$data['testedMethodsPercentAsString']]]></code>
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <InvalidArgument>
-      <code>[
-                'lineNumber'  =&gt; $lineNumber,
-                'lineContent' =&gt; $lineContent,
-                'class'       =&gt; $class,
-                'popover'     =&gt; $popover,
-            ]</code>
+      <code><![CDATA[[
+                'lineNumber'  => $lineNumber,
+                'lineContent' => $lineContent,
+                'class'       => $class,
+                'popover'     => $popover,
+            ]]]></code>
     </InvalidArgument>
     <InvalidArrayOffset>
       <code>$tokens[$j - 1]</code>
@@ -144,7 +144,7 @@
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
     <PossiblyNullPropertyAssignmentValue>
-      <code>$context-&gt;ownerDocument</code>
+      <code><![CDATA[$context->ownerDocument]]></code>
     </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Report/Xml/Node.php">
@@ -152,7 +152,7 @@
       <code>$totalsContainer</code>
     </ArgumentTypeCoercion>
     <PossiblyNullPropertyAssignmentValue>
-      <code>$context-&gt;ownerDocument</code>
+      <code><![CDATA[$context->ownerDocument]]></code>
     </PossiblyNullPropertyAssignmentValue>
     <PropertyNotSetInConstructor>
       <code>$contextNode</code>
@@ -169,7 +169,7 @@
   </file>
   <file src="src/Report/Xml/Source.php">
     <PossiblyNullArgument>
-      <code>$context-&gt;namespaceURI</code>
+      <code><![CDATA[$context->namespaceURI]]></code>
     </PossiblyNullArgument>
     <PossiblyNullReference>
       <code>importNode</code>
@@ -194,33 +194,33 @@
   </file>
   <file src="src/StaticAnalysis/CachingFileAnalyser.php">
     <NullableReturnStatement>
-      <code>$this-&gt;cache[$filename]['classesIn']</code>
-      <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
-      <code>$this-&gt;cache[$filename]['functionsIn']</code>
-      <code>$this-&gt;cache[$filename]['ignoredLinesFor']</code>
-      <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
-      <code>$this-&gt;cache[$filename]['traitsIn']</code>
+      <code><![CDATA[$this->cache[$filename]['classesIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['executableLinesIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['functionsIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['ignoredLinesFor']]]></code>
+      <code><![CDATA[$this->cache[$filename]['linesOfCodeFor']]]></code>
+      <code><![CDATA[$this->cache[$filename]['traitsIn']]]></code>
     </NullableReturnStatement>
     <PossiblyNullArrayAccess>
-      <code>$this-&gt;cache[$filename]['classesIn']</code>
-      <code>$this-&gt;cache[$filename]['executableLinesIn']</code>
-      <code>$this-&gt;cache[$filename]['functionsIn']</code>
-      <code>$this-&gt;cache[$filename]['ignoredLinesFor']</code>
-      <code>$this-&gt;cache[$filename]['linesOfCodeFor']</code>
-      <code>$this-&gt;cache[$filename]['traitsIn']</code>
+      <code><![CDATA[$this->cache[$filename]['classesIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['executableLinesIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['functionsIn']]]></code>
+      <code><![CDATA[$this->cache[$filename]['ignoredLinesFor']]]></code>
+      <code><![CDATA[$this->cache[$filename]['linesOfCodeFor']]]></code>
+      <code><![CDATA[$this->cache[$filename]['traitsIn']]]></code>
     </PossiblyNullArrayAccess>
     <PossiblyUndefinedArrayOffset>
-      <code>$this-&gt;cache[$filename]</code>
-      <code>$this-&gt;cache[$filename]</code>
-      <code>$this-&gt;cache[$filename]</code>
-      <code>$this-&gt;cache[$filename]</code>
-      <code>$this-&gt;cache[$filename]</code>
-      <code>$this-&gt;cache[$filename]</code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
+      <code><![CDATA[$this->cache[$filename]]]></code>
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/StaticAnalysis/CodeUnitFindingVisitor.php">
     <PossiblyInvalidOperand>
-      <code>$parameter-&gt;var-&gt;name</code>
+      <code><![CDATA[$parameter->var->name]]></code>
     </PossiblyInvalidOperand>
     <PossiblyNullReference>
       <code>toString</code>
@@ -232,12 +232,12 @@
       <code>toString</code>
     </PossiblyUndefinedMethod>
     <RedundantConditionGivenDocblockType>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($node-&gt;namespacedName instanceof Name)</code>
-      <code>assert($parentNode-&gt;namespacedName instanceof Name)</code>
-      <code>assert(isset($node-&gt;name))</code>
-      <code>assert(isset($node-&gt;namespacedName))</code>
-      <code>assert(isset($parameter-&gt;var-&gt;name))</code>
+      <code><![CDATA[assert($node->namespacedName instanceof Name)]]></code>
+      <code><![CDATA[assert($node->namespacedName instanceof Name)]]></code>
+      <code><![CDATA[assert($parentNode->namespacedName instanceof Name)]]></code>
+      <code><![CDATA[assert(isset($node->name))]]></code>
+      <code><![CDATA[assert(isset($node->namespacedName))]]></code>
+      <code><![CDATA[assert(isset($parameter->var->name))]]></code>
     </RedundantConditionGivenDocblockType>
   </file>
 </files>

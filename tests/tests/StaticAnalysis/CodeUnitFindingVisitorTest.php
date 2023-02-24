@@ -98,9 +98,6 @@ final class CodeUnitFindingVisitorTest extends TestCase
         );
     }
 
-    /**
-     * @requires PHP 8.1
-     */
     public function testHandlesFunctionOrMethodWithIntersectionTypes(): void
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithIntersectionTypes.php');

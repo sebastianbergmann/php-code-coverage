@@ -28,25 +28,16 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines.php');
     }
 
-    /**
-     * @requires PHP 7.4
-     */
     public function testExecutableLinesAreGroupedByBranchPhp74(): void
     {
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php74.php');
     }
 
-    /**
-     * @requires PHP 8
-     */
     public function testExecutableLinesAreGroupedByBranchPhp80(): void
     {
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php80.php');
     }
 
-    /**
-     * @requires PHP 8.1
-     */
     public function testExecutableLinesAreGroupedByBranchPhp81(): void
     {
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');

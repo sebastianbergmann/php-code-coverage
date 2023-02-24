@@ -16,12 +16,11 @@ use function str_contains;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesFindingVisitor
- */
+#[CoversClass(ExecutableLinesFindingVisitor::class)]
 final class ExecutableLinesFindingVisitorTest extends TestCase
 {
     public function testExecutableLinesAreGroupedByBranch(): void

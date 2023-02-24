@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function explode;
 use function file_get_contents;
 use function preg_match;
-use function strpos;
+use function str_contains;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
@@ -73,7 +73,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $branch = 0;
 
         foreach ($linesFromSource as $lineNumber => $line) {
-            if (false !== strpos($line, 'LINE_ADDED_IN_TEST')) {
+            if (str_contains($line, 'LINE_ADDED_IN_TEST')) {
                 $expected[1 + $lineNumber] = $branch;
 
                 continue;

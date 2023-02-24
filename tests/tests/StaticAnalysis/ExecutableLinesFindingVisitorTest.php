@@ -16,6 +16,7 @@ use function str_contains;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,9 +44,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');
     }
 
-    /**
-     * @requires PHP 8.2
-     */
+    #[RequiresPhp('8.2')]
     public function testExecutableLinesAreGroupedByBranchPhp82(): void
     {
         $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');

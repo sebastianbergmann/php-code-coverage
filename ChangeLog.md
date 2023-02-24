@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.0.1] - 2023-MM-DD
+
+### Fixed
+
+* [#981](https://github.com/sebastianbergmann/php-code-coverage/issues/981): `CodeUnitFindingVisitor` does not support DNF types
+
 ## [10.0.0] - 2023-02-03
 
 ### Added
@@ -482,6 +488,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[10.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...10.0.0
 [9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24
 [9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24

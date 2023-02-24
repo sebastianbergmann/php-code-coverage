@@ -119,6 +119,33 @@ final class CodeUnitFindingVisitorTest extends TestCase
         );
     }
 
+    public function testHandlesFunctionOrMethodWithDisjunctiveNormalFormTypes(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithDisjunctiveNormalFormTypes.php');
+
+        $this->assertEmpty($codeUnitFindingVisitor->classes());
+        $this->assertEmpty($codeUnitFindingVisitor->traits());
+
+        $functions = $codeUnitFindingVisitor->functions();
+
+        $this->assertCount(3, $functions);
+
+        $this->assertSame(
+            'f((\SebastianBergmann\CodeCoverage\TestFixture\A&\SebastianBergmann\CodeCoverage\TestFixture\B)|\SebastianBergmann\CodeCoverage\TestFixture\D $x): void',
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\f']['signature']
+        );
+
+        $this->assertSame(
+            'g(\SebastianBergmann\CodeCoverage\TestFixture\C|(\SebastianBergmann\CodeCoverage\TestFixture\X&\SebastianBergmann\CodeCoverage\TestFixture\D)|null $x): void',
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\g']['signature']
+        );
+
+        $this->assertSame(
+            'h((\SebastianBergmann\CodeCoverage\TestFixture\A&\SebastianBergmann\CodeCoverage\TestFixture\B&\SebastianBergmann\CodeCoverage\TestFixture\D)|int|null $x): void',
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\h']['signature']
+        );
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(

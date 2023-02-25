@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\UnionType;
+use PhpParser\NodeAbstract;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
@@ -330,7 +331,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return implode('&', $types);
     }
 
-    private function typeAsString(Identifier|Name $node): string
+    /**
+     * @psalm-param Identifier|Name $node $node
+     */
+    private function typeAsString(NodeAbstract $node): string
     {
         if ($node instanceof Name) {
             return $node->toCodeString();

@@ -26,7 +26,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2
 
-## [9.2.25] - 2023-MM-DD
+## [9.2.25] - 2023-02-25
 
 ### Fixed
 
@@ -496,7 +496,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 [10.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...10.0.0
-[9.2.25]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...9.2
+[9.2.25]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...9.2.25
 [9.2.24]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.23...9.2.24
 [9.2.23]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.22...9.2.23
 [9.2.22]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.21...9.2.22

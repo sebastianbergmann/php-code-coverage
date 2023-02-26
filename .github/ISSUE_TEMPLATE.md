@@ -2,7 +2,7 @@
 | --------------------------| ---------------
 | php-code-coverage version | x.y.z
 | PHP version               | x.y.z
-| Driver                    | PCOV / Xdebug / PHPDBG
+| Driver                    | PCOV / Xdebug
 | PCOV version (if used)    | x.y.z
 | Xdebug version (if used)  | x.y.z
 | Installation Method       | Composer / PHPUnit PHAR

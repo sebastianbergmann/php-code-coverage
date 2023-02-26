@@ -147,11 +147,14 @@ final class CodeCoverage
         $this->driver->start();
     }
 
-    public function stop(bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
+    /**
+     * @psalm-param array<string,list<int>> $linesToBeIgnored
+     */
+    public function stop(bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): RawCodeCoverageData
     {
         $data = $this->driver->stop();
 
-        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed);
+        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed, $linesToBeIgnored);
 
         $this->currentId   = null;
         $this->currentSize = null;
@@ -160,11 +163,13 @@ final class CodeCoverage
     }
 
     /**
+     * @psalm-param array<string,list<int>> $linesToBeIgnored
+     *
      * @throws ReflectionException
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, string $id = null, bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
+    public function append(RawCodeCoverageData $rawData, string $id = null, bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -189,7 +194,7 @@ final class CodeCoverage
         $this->applyExecutableLinesFilter($rawData);
 
         if ($this->useAnnotationsForIgnoringCode) {
-            $this->applyIgnoredLinesFilter($rawData);
+            $this->applyIgnoredLinesFilter($rawData, $linesToBeIgnored);
         }
 
         $this->data->initializeUnseenData($rawData);
@@ -402,11 +407,21 @@ final class CodeCoverage
         }
     }
 
-    private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
+    /**
+     * @psalm-param array<string,list<int>> $linesToBeIgnored
+     */
+    private function applyIgnoredLinesFilter(RawCodeCoverageData $data, array $linesToBeIgnored): void
     {
         foreach (array_keys($data->lineCoverage()) as $filename) {
             if (!$this->filter->isFile($filename)) {
                 continue;
+            }
+
+            if (isset($linesToBeIgnored[$filename])) {
+                $data->removeCoverageDataForLines(
+                    $filename,
+                    $linesToBeIgnored[$filename]
+                );
             }
 
             $data->removeCoverageDataForLines(

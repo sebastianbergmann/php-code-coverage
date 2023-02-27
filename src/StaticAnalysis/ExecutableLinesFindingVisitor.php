@@ -88,12 +88,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($node instanceof Node\Stmt\Interface_) {
+            foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
+                $this->unsets[$line] = true;
+            }
+
+            return;
+        }
+
         if ($node instanceof Node\Stmt\Declare_ ||
             $node instanceof Node\Stmt\DeclareDeclare ||
             $node instanceof Node\Stmt\Else_ ||
             $node instanceof Node\Stmt\EnumCase ||
             $node instanceof Node\Stmt\Finally_ ||
-            $node instanceof Node\Stmt\Interface_ ||
             $node instanceof Node\Stmt\Label ||
             $node instanceof Node\Stmt\Namespace_ ||
             $node instanceof Node\Stmt\Nop ||

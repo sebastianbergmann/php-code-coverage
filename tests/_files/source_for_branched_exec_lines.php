@@ -562,6 +562,7 @@ LINE_ADDED_IN_TEST;                         // 0
 
 interface MyInterface
 {
+    public const MY_INTERFACE_CONST = 1;
     public function myMethod();
 }
 

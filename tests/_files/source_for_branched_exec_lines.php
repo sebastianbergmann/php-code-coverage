@@ -563,13 +563,17 @@ LINE_ADDED_IN_TEST;                         // 0
 interface MyInterface
 {
     public const MY_INTERFACE_CONST = 1;
+    public const MY_INTERFACE_COMPLEX_CONST = [
+        1,
+        'string',
+    ];
     public function myMethod();
 }
 
 trait MyTrait
 {
     public function myTrait()
-    {}                                      // +1
+    {}                                      // +3
 }
 
 abstract class MyAbstractClass implements MyInterface

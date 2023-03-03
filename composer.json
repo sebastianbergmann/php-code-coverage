@@ -46,8 +46,8 @@
         "phpunit/phpunit": "^9.3"
     },
     "suggest": {
-        "ext-pcov": "*",
-        "ext-xdebug": "*"
+        "ext-pcov": "PHP extension that provides line coverage",
+        "ext-xdebug": "PHP extension that provides line coverage as well as branch and path coverage"
     },
     "autoload": {
         "classmap": [

@@ -45,6 +45,7 @@ final class CodeCoverage
     private bool $checkForUnintentionallyCoveredCode = false;
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
+    private bool $ignoreCoversAnnotation             = false;
     private ?string $currentId                       = null;
     private ?TestSize $currentSize                   = null;
     private ProcessedCodeCoverageData $data;
@@ -278,6 +279,16 @@ final class CodeCoverage
         $this->ignoreDeprecatedCode = false;
     }
 
+    public function ignoreCoversAnnotation(): void
+    {
+        $this->ignoreCoversAnnotation = true;
+    }
+
+    public function doNotIgnoreCoversAnnotation(): void
+    {
+        $this->ignoreCoversAnnotation = false;
+    }
+
     /**
      * @psalm-assert-if-true !null $this->cacheDirectory
      */
@@ -344,6 +355,10 @@ final class CodeCoverage
      */
     private function applyCoversAndUsesFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size): void
     {
+        if ($this->ignoreCoversAnnotation) {
+            return;
+        }
+
         if ($linesToBeCovered === false) {
             $rawData->clear();
 

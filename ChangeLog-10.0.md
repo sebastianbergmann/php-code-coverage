@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [10.0.2] - 2023-MM-DD
+## [10.0.2] - 2023-03-06
 
 ### Changed
 
@@ -32,6 +32,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component no longer supports PHPDBG
 * This component no longer supports Xdebug 2
 
-[10.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.1...10.0
+[10.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.1...10.0.2
 [10.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...10.0.0

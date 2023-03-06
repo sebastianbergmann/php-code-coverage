@@ -138,21 +138,21 @@ table + .structure-heading {
 }
 
 .covered-by-small-tests {
- background-color: #99cb84;
+ background-color: {{success-high}};
 }
 
 .covered-by-medium-tests {
- background-color: #c3e3b5;
+ background-color: {{success-medium}};
 }
 
 .covered-by-large-tests {
- background-color: #dff0d8;
+ background-color: {{success-low}};
 }
 
 .not-covered {
- background-color: #f2dede;
+ background-color: {{danger}};
 }
 
 .not-coverable {
- background-color: #fcf8e3;
+ background-color: {{warning}};
 }

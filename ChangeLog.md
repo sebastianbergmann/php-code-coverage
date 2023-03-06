@@ -8,6 +8,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#982](https://github.com/sebastianbergmann/php-code-coverage/issues/982): Add option to ignore lines from code coverage
 
+## [10.0.2] - 2023-MM-DD
+
+### Changed
+
+* Improved the legend on the file pages of the HTML code coverage report
+
 ## [10.0.1] - 2023-02-25
 
 ### Fixed
@@ -33,5 +39,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component no longer supports Xdebug 2
 
 [10.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0...main
+[10.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.1...10.0
 [10.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2...10.0.0

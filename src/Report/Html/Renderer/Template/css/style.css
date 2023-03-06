@@ -128,3 +128,31 @@ table + .structure-heading {
  border-top: 1px solid lightgrey;
  padding-top: 0.5em;
 }
+
+.legend {
+ font-weight: bold;
+ margin-right: 2px;
+ padding-left: 10px;
+ padding-right: 10px;
+ text-align: center;
+}
+
+.covered-by-small-tests {
+ background-color: #99cb84;
+}
+
+.covered-by-medium-tests {
+ background-color: #c3e3b5;
+}
+
+.covered-by-large-tests {
+ background-color: #dff0d8;
+}
+
+.not-covered {
+ background-color: #f2dede;
+}
+
+.not-coverable {
+ background-color: #fcf8e3;
+}

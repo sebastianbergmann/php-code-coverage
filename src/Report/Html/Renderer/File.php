@@ -84,9 +84,7 @@ use function array_keys;
 use function array_merge;
 use function array_pop;
 use function array_unique;
-use function constant;
 use function count;
-use function defined;
 use function explode;
 use function file_get_contents;
 use function htmlspecialchars;
@@ -1069,11 +1067,13 @@ final class File extends Renderer
             T_ENDIF         => true,
             T_ENDSWITCH     => true,
             T_ENDWHILE      => true,
+            T_ENUM          => true,
             T_EVAL          => true,
             T_EXIT          => true,
             T_EXTENDS       => true,
             T_FINAL         => true,
             T_FINALLY       => true,
+            T_FN            => true,
             T_FOR           => true,
             T_FOREACH       => true,
             T_FUNCTION      => true,
@@ -1089,12 +1089,14 @@ final class File extends Renderer
             T_INTERFACE     => true,
             T_ISSET         => true,
             T_LIST          => true,
+            T_MATCH         => true,
             T_NAMESPACE     => true,
             T_NEW           => true,
             T_PRINT         => true,
             T_PRIVATE       => true,
             T_PROTECTED     => true,
             T_PUBLIC        => true,
+            T_READONLY      => true,
             T_REQUIRE       => true,
             T_REQUIRE_ONCE  => true,
             T_RETURN        => true,
@@ -1110,22 +1112,6 @@ final class File extends Renderer
             T_YIELD         => true,
             T_YIELD_FROM    => true,
         ];
-
-        if (defined('T_FN')) {
-            self::$keywordTokens[constant('T_FN')] = true;
-        }
-
-        if (defined('T_MATCH')) {
-            self::$keywordTokens[constant('T_MATCH')] = true;
-        }
-
-        if (defined('T_ENUM')) {
-            self::$keywordTokens[constant('T_ENUM')] = true;
-        }
-
-        if (defined('T_READONLY')) {
-            self::$keywordTokens[constant('T_READONLY')] = true;
-        }
 
         return self::$keywordTokens;
     }

@@ -84,9 +84,7 @@ use function array_keys;
 use function array_merge;
 use function array_pop;
 use function array_unique;
-use function constant;
 use function count;
-use function defined;
 use function explode;
 use function file_get_contents;
 use function htmlspecialchars;
@@ -111,7 +109,76 @@ final class File extends Renderer
     /**
      * @psalm-var array<int,true>
      */
-    private static array $keywordTokens        = [];
+    private const KEYWORD_TOKENS = [
+        T_ABSTRACT      => true,
+        T_ARRAY         => true,
+        T_AS            => true,
+        T_BREAK         => true,
+        T_CALLABLE      => true,
+        T_CASE          => true,
+        T_CATCH         => true,
+        T_CLASS         => true,
+        T_CLONE         => true,
+        T_CONST         => true,
+        T_CONTINUE      => true,
+        T_DECLARE       => true,
+        T_DEFAULT       => true,
+        T_DO            => true,
+        T_ECHO          => true,
+        T_ELSE          => true,
+        T_ELSEIF        => true,
+        T_EMPTY         => true,
+        T_ENDDECLARE    => true,
+        T_ENDFOR        => true,
+        T_ENDFOREACH    => true,
+        T_ENDIF         => true,
+        T_ENDSWITCH     => true,
+        T_ENDWHILE      => true,
+        T_ENUM          => true,
+        T_EVAL          => true,
+        T_EXIT          => true,
+        T_EXTENDS       => true,
+        T_FINAL         => true,
+        T_FINALLY       => true,
+        T_FN            => true,
+        T_FOR           => true,
+        T_FOREACH       => true,
+        T_FUNCTION      => true,
+        T_GLOBAL        => true,
+        T_GOTO          => true,
+        T_HALT_COMPILER => true,
+        T_IF            => true,
+        T_IMPLEMENTS    => true,
+        T_INCLUDE       => true,
+        T_INCLUDE_ONCE  => true,
+        T_INSTANCEOF    => true,
+        T_INSTEADOF     => true,
+        T_INTERFACE     => true,
+        T_ISSET         => true,
+        T_LIST          => true,
+        T_MATCH         => true,
+        T_NAMESPACE     => true,
+        T_NEW           => true,
+        T_PRINT         => true,
+        T_PRIVATE       => true,
+        T_PROTECTED     => true,
+        T_PUBLIC        => true,
+        T_READONLY      => true,
+        T_REQUIRE       => true,
+        T_REQUIRE_ONCE  => true,
+        T_RETURN        => true,
+        T_STATIC        => true,
+        T_SWITCH        => true,
+        T_THROW         => true,
+        T_TRAIT         => true,
+        T_TRY           => true,
+        T_UNSET         => true,
+        T_USE           => true,
+        T_VAR           => true,
+        T_WHILE         => true,
+        T_YIELD         => true,
+        T_YIELD_FROM    => true,
+    ];
     private static array $formattedSourceCache = [];
     private int $htmlSpecialCharsFlags         = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
 
@@ -1032,101 +1099,6 @@ final class File extends Renderer
 
     private function isKeyword(int $token): bool
     {
-        return isset(self::keywordTokens()[$token]);
-    }
-
-    /**
-     * @psalm-return array<int,true>
-     */
-    private static function keywordTokens(): array
-    {
-        if (self::$keywordTokens !== []) {
-            return self::$keywordTokens;
-        }
-
-        self::$keywordTokens = [
-            T_ABSTRACT      => true,
-            T_ARRAY         => true,
-            T_AS            => true,
-            T_BREAK         => true,
-            T_CALLABLE      => true,
-            T_CASE          => true,
-            T_CATCH         => true,
-            T_CLASS         => true,
-            T_CLONE         => true,
-            T_CONST         => true,
-            T_CONTINUE      => true,
-            T_DECLARE       => true,
-            T_DEFAULT       => true,
-            T_DO            => true,
-            T_ECHO          => true,
-            T_ELSE          => true,
-            T_ELSEIF        => true,
-            T_EMPTY         => true,
-            T_ENDDECLARE    => true,
-            T_ENDFOR        => true,
-            T_ENDFOREACH    => true,
-            T_ENDIF         => true,
-            T_ENDSWITCH     => true,
-            T_ENDWHILE      => true,
-            T_EVAL          => true,
-            T_EXIT          => true,
-            T_EXTENDS       => true,
-            T_FINAL         => true,
-            T_FINALLY       => true,
-            T_FOR           => true,
-            T_FOREACH       => true,
-            T_FUNCTION      => true,
-            T_GLOBAL        => true,
-            T_GOTO          => true,
-            T_HALT_COMPILER => true,
-            T_IF            => true,
-            T_IMPLEMENTS    => true,
-            T_INCLUDE       => true,
-            T_INCLUDE_ONCE  => true,
-            T_INSTANCEOF    => true,
-            T_INSTEADOF     => true,
-            T_INTERFACE     => true,
-            T_ISSET         => true,
-            T_LIST          => true,
-            T_NAMESPACE     => true,
-            T_NEW           => true,
-            T_PRINT         => true,
-            T_PRIVATE       => true,
-            T_PROTECTED     => true,
-            T_PUBLIC        => true,
-            T_REQUIRE       => true,
-            T_REQUIRE_ONCE  => true,
-            T_RETURN        => true,
-            T_STATIC        => true,
-            T_SWITCH        => true,
-            T_THROW         => true,
-            T_TRAIT         => true,
-            T_TRY           => true,
-            T_UNSET         => true,
-            T_USE           => true,
-            T_VAR           => true,
-            T_WHILE         => true,
-            T_YIELD         => true,
-            T_YIELD_FROM    => true,
-        ];
-
-        if (defined('T_FN')) {
-            self::$keywordTokens[constant('T_FN')] = true;
-        }
-
-        if (defined('T_MATCH')) {
-            self::$keywordTokens[constant('T_MATCH')] = true;
-        }
-
-        if (defined('T_ENUM')) {
-            self::$keywordTokens[constant('T_ENUM')] = true;
-        }
-
-        if (defined('T_READONLY')) {
-            self::$keywordTokens[constant('T_READONLY')] = true;
-        }
-
-        return self::$keywordTokens;
+        return isset(self::KEYWORD_TOKENS[$token]);
     }
 }

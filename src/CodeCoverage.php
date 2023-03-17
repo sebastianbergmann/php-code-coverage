@@ -203,25 +203,27 @@ final class CodeCoverage
             return;
         }
 
-        if ($id !== self::UNCOVERED_FILES) {
-            $this->applyCoversAndUsesFilter(
-                $rawData,
-                $linesToBeCovered,
-                $linesToBeUsed,
-                $size
-            );
-
-            if (empty($rawData->lineCoverage())) {
-                return;
-            }
-
-            $this->tests[$id] = [
-                'size'   => $size->asString(),
-                'status' => $status->asString(),
-            ];
-
-            $this->data->markCodeAsExecutedByTestCase($id, $rawData);
+        if ($id === self::UNCOVERED_FILES) {
+            return;
         }
+
+        $this->applyCoversAndUsesFilter(
+            $rawData,
+            $linesToBeCovered,
+            $linesToBeUsed,
+            $size
+        );
+
+        if (empty($rawData->lineCoverage())) {
+            return;
+        }
+
+        $this->tests[$id] = [
+            'size'   => $size->asString(),
+            'status' => $status->asString(),
+        ];
+
+        $this->data->markCodeAsExecutedByTestCase($id, $rawData);
     }
 
     /**

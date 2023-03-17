@@ -23,7 +23,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-          extensions: :apcu, :imagick
+          extensions: none, iconv, json, phar, tokenizer
           coverage: none
           tools: none
 
@@ -43,7 +43,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-          extensions: :apcu, :imagick
+          extensions: none, dom, iconv, mbstring, opcache, simplexml, tokenizer, xml, xmlwriter
           coverage: none
           tools: none
 
@@ -59,7 +59,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter, :apcu, :imagick
+      PHP_EXTENSIONS: none, dom, json, libxml, mbstring, openssl, pdo_sqlite, soap, tokenizer, xml, xmlwriter
       PHP_INI_VALUES: memory_limit=-1, assert.exception=1, zend.assertions=1, error_reporting=-1, log_errors_max_len=0, display_errors=On
 
     strategy:

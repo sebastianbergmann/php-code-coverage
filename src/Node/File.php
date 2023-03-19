@@ -32,7 +32,7 @@ final class File extends AbstractNode
     private array $functions           = [];
 
     /**
-     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     * @psalm-var array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
      */
     private readonly array $linesOfCode;
     private ?int $numClasses         = null;

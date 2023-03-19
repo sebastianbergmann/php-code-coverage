@@ -19,6 +19,11 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @psalm-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
+ * @psalm-import-type ProcessedFunctionType from \SebastianBergmann\CodeCoverage\Node\File
+ * @psalm-import-type ProcessedClassType from \SebastianBergmann\CodeCoverage\Node\File
+ * @psalm-import-type ProcessedTraitType from \SebastianBergmann\CodeCoverage\Node\File
  */
 abstract class AbstractNode implements Countable
 {
@@ -163,14 +168,23 @@ abstract class AbstractNode implements Countable
         return $this->numberOfTestedFunctions() + $this->numberOfTestedMethods();
     }
 
+    /**
+     * @psalm-return array<string, ProcessedClassType>
+     */
     abstract public function classes(): array;
 
+    /**
+     * @psalm-return array<string, ProcessedTraitType>
+     */
     abstract public function traits(): array;
 
+    /**
+     * @psalm-return array<string, ProcessedFunctionType>
+     */
     abstract public function functions(): array;
 
     /**
-     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     * @psalm-return LinesOfCodeType
      */
     abstract public function linesOfCode(): array;
 

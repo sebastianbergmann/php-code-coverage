@@ -16,6 +16,8 @@ use RecursiveIteratorIterator;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @psalm-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class Directory extends AbstractNode implements IteratorAggregate
 {
@@ -38,7 +40,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private ?array $functions = null;
 
     /**
-     * @psalm-var null|array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     * @psalm-var null|LinesOfCodeType
      */
     private ?array $linesOfCode        = null;
     private int $numFiles              = -1;
@@ -161,7 +163,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
     }
 
     /**
-     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
+     * @psalm-return LinesOfCodeType
      */
     public function linesOfCode(): array
     {

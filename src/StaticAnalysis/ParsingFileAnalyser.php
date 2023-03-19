@@ -32,18 +32,44 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @psalm-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @psalm-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @psalm-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @psalm-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @psalm-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
+ * @psalm-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class ParsingFileAnalyser implements FileAnalyser
 {
-    private array $classes   = [];
-    private array $traits    = [];
+    /**
+     * @psalm-var array<string, array<string, CodeUnitClassType>>
+     */
+    private array $classes = [];
+
+    /**
+     * @psalm-var array<string, array<string, CodeUnitTraitType>>
+     */
+    private array $traits = [];
+
+    /**
+     * @psalm-var array<string, array<string, CodeUnitFunctionType>>
+     */
     private array $functions = [];
 
     /**
-     * @var array<string,array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}>
+     * @var array<string, LinesOfCodeType>
      */
-    private array $linesOfCode     = [];
-    private array $ignoredLines    = [];
+    private array $linesOfCode = [];
+
+    /**
+     * @var array<string, LinesType>
+     */
+    private array $ignoredLines = [];
+
+    /**
+     * @var array<string, LinesType>
+     */
     private array $executableLines = [];
     private readonly bool $useAnnotationsForIgnoringCode;
     private readonly bool $ignoreDeprecatedCode;
@@ -75,9 +101,6 @@ final class ParsingFileAnalyser implements FileAnalyser
         return $this->functions[$filename];
     }
 
-    /**
-     * @psalm-return array{linesOfCode: int, commentLinesOfCode: int, nonCommentLinesOfCode: int}
-     */
     public function linesOfCodeFor(string $filename): array
     {
         $this->analyse($filename);

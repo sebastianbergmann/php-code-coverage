@@ -31,6 +31,34 @@ use SebastianBergmann\CodeCoverage\Filter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @see https://xdebug.org/docs/code_coverage#xdebug_get_code_coverage
+ *
+ * @psalm-type XdebugLinesCoverageType = array<int, int>
+ * @psalm-type XdebugBranchCoverageType = array{
+ *     op_start: int,
+ *     op_end: int,
+ *     line_start: int,
+ *     line_end: int,
+ *     hit: int,
+ *     out: array<int, int>,
+ *     out_hit: array<int, int>,
+ * }
+ * @psalm-type XdebugPathCoverageType = array{
+ *     path: array<int, int>,
+ *     hit: int,
+ * }
+ * @psalm-type XdebugFunctionCoverageType = array{
+ *     branches: array<int, XdebugBranchCoverageType>,
+ *     paths: array<int, XdebugPathCoverageType>,
+ * }
+ * @psalm-type XdebugFunctionsCoverageType = array<string, XdebugFunctionCoverageType>
+ * @psalm-type XdebugPathAndBranchesCoverageType = array{
+ *     lines: XdebugLinesCoverageType,
+ *     functions: XdebugFunctionsCoverageType,
+ * }
+ * @psalm-type XdebugCodeCoverageWithoutPathCoverageType = array<string, XdebugLinesCoverageType>
+ * @psalm-type XdebugCodeCoverageWithPathCoverageType = array<string, XdebugPathAndBranchesCoverageType>
  */
 final class XdebugDriver extends Driver
 {
@@ -84,9 +112,11 @@ final class XdebugDriver extends Driver
         xdebug_stop_code_coverage();
 
         if ($this->collectsBranchAndPathCoverage()) {
+            /* @var XdebugCodeCoverageWithPathCoverageType $data */
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
 
+        /* @var XdebugCodeCoverageWithoutPathCoverageType $data */
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
     }
 

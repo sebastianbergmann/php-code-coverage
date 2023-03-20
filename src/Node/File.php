@@ -92,6 +92,9 @@ use function range;
  */
 final class File extends AbstractNode
 {
+    /**
+     * @psalm-var array<int, ?list<non-empty-string>>
+     */
     private array $lineCoverageData;
     private array $functionCoverageData;
     private readonly array $testData;
@@ -135,6 +138,7 @@ final class File extends AbstractNode
     private array $codeUnitsByLine = [];
 
     /**
+     * @psalm-param array<int, ?list<non-empty-string>> $lineCoverageData
      * @psalm-param LinesOfCodeType $linesOfCode
      * @psalm-param array<string, CodeUnitClassType> $classes
      * @psalm-param array<string, CodeUnitTraitType> $traits
@@ -157,6 +161,9 @@ final class File extends AbstractNode
         return 1;
     }
 
+    /**
+     * @psalm-return array<int, ?list<non-empty-string>>
+     */
     public function lineCoverageData(): array
     {
         return $this->lineCoverageData;

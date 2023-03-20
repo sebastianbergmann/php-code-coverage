@@ -88,7 +88,7 @@ final class Clover
                     $methodCount = 0;
 
                     foreach (range($method['startLine'], $method['endLine']) as $line) {
-                        if (isset($coverageData[$line]) && ($coverageData[$line] !== null)) {
+                        if (isset($coverageData[$line])) {
                             $methodCount = max($methodCount, count($coverageData[$line]));
                         }
                     }

@@ -35,6 +35,11 @@ use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
  * Provides collection functionality for PHP code coverage information.
+ *
+ * @psalm-type TestType = array{
+ *     size: string,
+ *     status: string,
+ * }
  */
 final class CodeCoverage
 {
@@ -51,7 +56,7 @@ final class CodeCoverage
     private bool $useAnnotationsForIgnoringCode = true;
 
     /**
-     * @psalm-var array<string, array{size: string, status: string}>
+     * @psalm-var array<string, TestType>
      */
     private array $tests = [];
 
@@ -120,7 +125,7 @@ final class CodeCoverage
     }
 
     /**
-     * @psalm-return array<string, array{size: string, status: string}>
+     * @psalm-return array<string, TestType>
      */
     public function getTests(): array
     {
@@ -128,7 +133,7 @@ final class CodeCoverage
     }
 
     /**
-     * @psalm-param array<string, array{size: string, status: string}> $tests
+     * @psalm-param array<string, TestType> $tests
      */
     public function setTests(array $tests): void
     {

@@ -27,6 +27,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @psalm-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
  */
 final class Builder
 {
@@ -56,7 +58,7 @@ final class Builder
     }
 
     /**
-     * @psalm-param array<string, array{size: string, status: string}> $tests
+     * @psalm-param array<string, TestType> $tests
      */
     private function addItems(Directory $root, array $items, array $tests): void
     {
@@ -129,6 +131,8 @@ final class Builder
      *         )
      * )
      * </code>
+     *
+     * @psalm-return array<string, array<string, array{lineCoverage: array<int, int>, functionCoverage: array<string, array<int, int>>}>>
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {

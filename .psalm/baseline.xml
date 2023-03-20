@@ -10,17 +10,28 @@
     </RedundantCondition>
   </file>
   <file src="src/Data/ProcessedCodeCoverageData.php">
+    <InvalidArgument>
+      <code>$functionData</code>
+      <code>$functionData</code>
+    </InvalidArgument>
     <PossiblyNullArgument>
-      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit']]]></code>
+      <code><![CDATA[$newData->lineCoverage[$file][$line]]]></code>
     </PossiblyNullArgument>
-    <PossiblyNullArrayAccess>
-      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches']]]></code>
-      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]]]></code>
-      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit']]]></code>
-    </PossiblyNullArrayAccess>
-    <PossiblyNullArrayAssignment>
-      <code><![CDATA[$this->functionCoverage[$file][$functionName]['branches']]]></code>
-    </PossiblyNullArrayAssignment>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->functionCoverage]]></code>
+      <code><![CDATA[$this->lineCoverage]]></code>
+      <code><![CDATA[$this->lineCoverage]]></code>
+      <code><![CDATA[$this->lineCoverage]]></code>
+    </PropertyTypeCoercion>
   </file>
   <file src="src/Driver/PcovDriver.php">
     <UndefinedConstant>
@@ -67,11 +78,28 @@
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/File.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[$this->codeUnitsByLine]]></code>
-      <code><![CDATA[$this->codeUnitsByLine]]></code>
-      <code><![CDATA[$this->codeUnitsByLine]]></code>
-    </InvalidPropertyAssignmentValue>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->classes]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+      <code><![CDATA[$this->traits]]></code>
+    </PropertyTypeCoercion>
   </file>
   <file src="src/Node/Iterator.php">
     <ArgumentTypeCoercion>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
+<files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion>
       <code>$tmp[0]</code>
@@ -65,13 +65,13 @@
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[$this->directories]]></code>
-      <code><![CDATA[$this->files]]></code>
-    </InvalidPropertyAssignmentValue>
     <MissingTemplateParam>
       <code>IteratorAggregate</code>
     </MissingTemplateParam>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->directories]]></code>
+      <code><![CDATA[$this->files]]></code>
+    </PropertyTypeCoercion>
     <UnsupportedReferenceUsage>
       <code><![CDATA[$this->directories[] = &$this->children[count($this->children) - 1]]]></code>
       <code><![CDATA[$this->files[]    = &$this->children[count($this->children) - 1]]]></code>

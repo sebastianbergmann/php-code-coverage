@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [10.1.0] - 2023-04-07
+## [10.1.0] - 2023-04-14
 
 ### Added
 

@@ -55,6 +55,9 @@
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">
+    <DeprecatedMethod>
+      <code>excludeFile</code>
+    </DeprecatedMethod>
     <InvalidDocblockParamName>
       <code>$files</code>
     </InvalidDocblockParamName>

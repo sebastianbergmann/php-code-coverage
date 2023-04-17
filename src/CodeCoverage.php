@@ -14,6 +14,7 @@ use function array_diff_key;
 use function array_flip;
 use function array_keys;
 use function array_merge;
+use function array_merge_recursive;
 use function array_unique;
 use function count;
 use function explode;
@@ -54,6 +55,11 @@ final class CodeCoverage
     private ?TestSize $currentSize                   = null;
     private ProcessedCodeCoverageData $data;
     private bool $useAnnotationsForIgnoringCode = true;
+
+    /**
+     * @psalm-var array<string,list<int>>
+     */
+    private array $linesToBeIgnored = [];
 
     /**
      * @psalm-var array<string, TestType>
@@ -158,6 +164,11 @@ final class CodeCoverage
     public function stop(bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): RawCodeCoverageData
     {
         $data = $this->driver->stop();
+
+        $this->linesToBeIgnored = array_merge_recursive(
+            $this->linesToBeIgnored,
+            $linesToBeIgnored
+        );
 
         $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed, $linesToBeIgnored);
 
@@ -455,7 +466,8 @@ final class CodeCoverage
                         $uncoveredFile,
                         $this->analyser()
                     ),
-                    self::UNCOVERED_FILES
+                    self::UNCOVERED_FILES,
+                    linesToBeIgnored: $this->linesToBeIgnored
                 );
             }
         }

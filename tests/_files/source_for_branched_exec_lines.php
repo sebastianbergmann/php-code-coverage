@@ -6,6 +6,10 @@ namespace MyNamespace;
 
 use DateTimeInterface;
 
+use MyOtherNamespace\{ClassA, ClassB, ClassC as C};
+use function MyOtherNamespace\{fn_a, fn_b, fn_c};
+use const MyOtherNamespace\{ConstA, ConstB, ConstC};
+
 // Integer in comments represent the branch index difference
 // relative to the previous line
 

@@ -101,6 +101,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Else_ ||
             $node instanceof Node\Stmt\EnumCase ||
             $node instanceof Node\Stmt\Finally_ ||
+            $node instanceof Node\Stmt\GroupUse ||
             $node instanceof Node\Stmt\Label ||
             $node instanceof Node\Stmt\Namespace_ ||
             $node instanceof Node\Stmt\Nop ||

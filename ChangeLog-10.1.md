@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.1.2] - 2023-05-22
+
+### Fixed
+
+* [#998](https://github.com/sebastianbergmann/php-code-coverage/pull/998): Group Use Declarations are not handled properly
+
 ## [10.1.1] - 2023-04-17
 
 ### Fixed
@@ -18,5 +24,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
+[10.1.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.1...10.1.2
 [10.1.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.0...10.1.1
 [10.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.0.2...10.1.0

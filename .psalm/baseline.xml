@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
+<files psalm-version="5.12.0@f90118cdeacd0088e7215e64c0c99ceca819e176">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion>
       <code>$unit[0]</code>
@@ -295,6 +295,10 @@
       <code><![CDATA[assert(isset($node->namespacedName))]]></code>
       <code><![CDATA[assert(isset($parameter->var->name))]]></code>
     </RedundantConditionGivenDocblockType>
+    <UnsupportedPropertyReferenceUsage>
+      <code><![CDATA[$storage = &$this->classes]]></code>
+      <code><![CDATA[$storage = &$this->traits]]></code>
+    </UnsupportedPropertyReferenceUsage>
   </file>
   <file src="src/Version.php">
     <DocblockTypeContradiction>

@@ -31,7 +31,13 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlReport;
 
 $filter = new Filter;
-$filter->includeDirectory('/path/to/directory');
+
+$filter->includeFiles(
+    [
+        '/path/to/file.php',
+        '/path/to/another_file.php',
+    ]
+);
 
 $coverage = new CodeCoverage(
     (new Selector)->forLineCoverage($filter),

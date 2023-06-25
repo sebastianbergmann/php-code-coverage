@@ -673,7 +673,9 @@ final class CodeCoverage
         if ($this->cachesStaticAnalysis()) {
             $this->analyser = new CachingFileAnalyser(
                 $this->cacheDirectory,
-                $this->analyser
+                $this->analyser,
+                $this->useAnnotationsForIgnoringCode,
+                $this->ignoreDeprecatedCode
             );
         }
 

@@ -135,6 +135,7 @@ final class CodeCoverage
         if (!$this->cacheReport) {
             $this->cacheReport = (new Builder($this->analyser()))->build($this);
         }
+
         return clone $this->cacheReport;
     }
 

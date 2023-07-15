@@ -136,7 +136,7 @@ final class CodeCoverage
             $this->cachedReport = (new Builder($this->analyser()))->build($this);
         }
 
-        return clone $this->cachedReport;
+        return $this->cachedReport;
     }
 
     /**

@@ -117,7 +117,7 @@ final class CodeCoverage
     /**
      * @var ?Directory
      */
-    private $cacheReport;
+    private $cachedReport;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -132,11 +132,11 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        if (!$this->cacheReport) {
-            $this->cacheReport = (new Builder($this->analyser()))->build($this);
+        if (!$this->cachedReport) {
+            $this->cachedReport = (new Builder($this->analyser()))->build($this);
         }
 
-        return clone $this->cacheReport;
+        return clone $this->cachedReport;
     }
 
     /**

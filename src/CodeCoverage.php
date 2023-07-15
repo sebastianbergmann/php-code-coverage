@@ -144,9 +144,10 @@ final class CodeCoverage
      */
     public function clear(): void
     {
-        $this->currentId = null;
-        $this->data      = new ProcessedCodeCoverageData;
-        $this->tests     = [];
+        $this->currentId    = null;
+        $this->data         = new ProcessedCodeCoverageData;
+        $this->tests        = [];
+        $this->cachedReport = null;
     }
 
     /**
@@ -211,6 +212,8 @@ final class CodeCoverage
         $this->currentId = $id;
 
         $this->driver->start();
+
+        $this->cachedReport = null;
     }
 
     /**
@@ -229,7 +232,8 @@ final class CodeCoverage
         $data = $this->driver->stop();
         $this->append($data, null, $append, $linesToBeCovered, $linesToBeUsed);
 
-        $this->currentId = null;
+        $this->currentId    = null;
+        $this->cachedReport = null;
 
         return $data;
     }
@@ -253,6 +257,8 @@ final class CodeCoverage
         if ($id === null) {
             throw new TestIdMissingException;
         }
+
+        $this->cachedReport = null;
 
         $this->applyFilter($rawData);
 
@@ -321,6 +327,8 @@ final class CodeCoverage
         $this->data->merge($that->data);
 
         $this->tests = array_merge($this->tests, $that->getTests());
+
+        $this->cachedReport = null;
     }
 
     public function enableCheckForUnintentionallyCoveredCode(): void

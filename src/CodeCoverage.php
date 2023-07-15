@@ -72,6 +72,7 @@ final class CodeCoverage
     private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
     private ?FileAnalyser $analyser                                         = null;
     private ?string $cacheDirectory                                         = null;
+    private ?Directory $cachedReport                                        = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -86,7 +87,11 @@ final class CodeCoverage
      */
     public function getReport(): Directory
     {
-        return (new Builder($this->analyser()))->build($this);
+        if ($this->cachedReport === null) {
+            $this->cachedReport = (new Builder($this->analyser()))->build($this);
+        }
+
+        return $this->cachedReport;
     }
 
     /**
@@ -94,10 +99,11 @@ final class CodeCoverage
      */
     public function clear(): void
     {
-        $this->currentId   = null;
-        $this->currentSize = null;
-        $this->data        = new ProcessedCodeCoverageData;
-        $this->tests       = [];
+        $this->currentId    = null;
+        $this->currentSize  = null;
+        $this->data         = new ProcessedCodeCoverageData;
+        $this->tests        = [];
+        $this->cachedReport = null;
     }
 
     /**
@@ -156,6 +162,8 @@ final class CodeCoverage
         $this->currentSize = $size;
 
         $this->driver->start();
+
+        $this->cachedReport = null;
     }
 
     /**
@@ -172,8 +180,9 @@ final class CodeCoverage
 
         $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed, $linesToBeIgnored);
 
-        $this->currentId   = null;
-        $this->currentSize = null;
+        $this->currentId    = null;
+        $this->currentSize  = null;
+        $this->cachedReport = null;
 
         return $data;
     }
@@ -194,6 +203,8 @@ final class CodeCoverage
         if ($id === null) {
             throw new TestIdMissingException;
         }
+
+        $this->cachedReport = null;
 
         if ($status === null) {
             $status = TestStatus::unknown();
@@ -254,6 +265,8 @@ final class CodeCoverage
         $this->data->merge($that->data);
 
         $this->tests = array_merge($this->tests, $that->getTests());
+
+        $this->cachedReport = null;
     }
 
     public function enableCheckForUnintentionallyCoveredCode(): void

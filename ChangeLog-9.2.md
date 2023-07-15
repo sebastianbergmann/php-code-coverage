@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [9.2.27] - 2023-MM-DD
 
+### Changed
+
+* The result of `CodeCoverage::getReport()` is now cached
+
 ### Fixed
 
 * Static analysis cache keys do not include configuration settings that affect source code parsing

@@ -16,6 +16,7 @@ use function is_string;
 use function ksort;
 use function max;
 use function range;
+use function strpos;
 use function time;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;

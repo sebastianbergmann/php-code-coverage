@@ -15,6 +15,7 @@ use function file_put_contents;
 use function htmlspecialchars;
 use function is_string;
 use function round;
+use function strpos;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;

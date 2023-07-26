@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use function dirname;
 use function file_put_contents;
 use function serialize;
+use function strpos;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;

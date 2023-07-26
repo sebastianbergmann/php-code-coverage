@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * Static analysis cache keys do not include configuration settings that affect source code parsing
+* The Clover, Cobertura, Crap4j, and PHP report writers no longer create a `php:` directory when they should write to `php://stdout`, for instance
 
 ## [10.1.2] - 2023-05-22
 

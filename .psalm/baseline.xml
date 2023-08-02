@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.12.0@f90118cdeacd0088e7215e64c0c99ceca819e176">
+<files psalm-version="5.14.1@b9d355e0829c397b9b3b47d0c0ed042a8a70284d">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion>
       <code>$unit[0]</code>
@@ -157,6 +157,16 @@
       <code><![CDATA[$data['pathsExecutedPercentAsString']]]></code>
       <code><![CDATA[$data['testedMethodsPercentAsString']]]></code>
     </PossiblyUndefinedArrayOffset>
+  </file>
+  <file src="src/Report/Html/Renderer/Dashboard.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[str_replace($baseLink, '', $class['link'])]]></code>
+      <code><![CDATA[str_replace($baseLink, '', $classes[$className]['link'])]]></code>
+      <code><![CDATA[str_replace($baseLink, '', $classes[$className]['link'])]]></code>
+      <code><![CDATA[str_replace($baseLink, '', $classes[$class]['methods'][$method]['link'])]]></code>
+      <code><![CDATA[str_replace($baseLink, '', $classes[$class]['methods'][$method]['link'])]]></code>
+      <code><![CDATA[str_replace($baseLink, '', $method['link'])]]></code>
+    </PossiblyInvalidArgument>
   </file>
   <file src="src/Report/Html/Renderer/File.php">
     <InternalClass>

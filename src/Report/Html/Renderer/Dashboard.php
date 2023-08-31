@@ -18,9 +18,9 @@ use function floor;
 use function json_encode;
 use function sprintf;
 use function str_replace;
+use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Util\FileCouldNotBeWrittenException;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 

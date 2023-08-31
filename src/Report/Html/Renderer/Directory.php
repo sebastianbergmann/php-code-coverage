@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use function count;
 use function sprintf;
 use function str_repeat;
+use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Util\FileCouldNotBeWrittenException;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 

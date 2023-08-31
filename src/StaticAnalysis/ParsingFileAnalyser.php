@@ -138,6 +138,8 @@ final class ParsingFileAnalyser implements FileAnalyser
             $linesOfCode = 1;
         }
 
+        assert($linesOfCode > 0);
+
         $parser = (new ParserFactory)->create(
             ParserFactory::PREFER_PHP7,
             new Lexer

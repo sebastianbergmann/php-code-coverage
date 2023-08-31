@@ -14,6 +14,8 @@ use function sprintf;
 use function str_repeat;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Util\FileCouldNotBeWrittenException;
+use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
@@ -45,7 +47,15 @@ final class Directory extends Renderer
             ]
         );
 
-        $template->renderTo($file);
+        try {
+            $template->renderTo($file);
+        } catch (Exception $e) {
+            throw new FileCouldNotBeWrittenException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     private function renderItem(Node $node, bool $total = false): string

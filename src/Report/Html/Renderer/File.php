@@ -98,7 +98,9 @@ use function str_replace;
 use function token_get_all;
 use function trim;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\Util\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
+use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
@@ -197,7 +199,15 @@ final class File extends Renderer
             ]
         );
 
-        $template->renderTo($file . '.html');
+        try {
+            $template->renderTo($file . '.html');
+        } catch (Exception $e) {
+            throw new FileCouldNotBeWrittenException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
 
         if ($this->hasBranchCoverage) {
             $template->setVar(
@@ -209,7 +219,15 @@ final class File extends Renderer
                 ]
             );
 
-            $template->renderTo($file . '_branch.html');
+            try {
+                $template->renderTo($file . '_branch.html');
+            } catch (Exception $e) {
+                throw new FileCouldNotBeWrittenException(
+                    $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+            }
 
             $template->setVar(
                 [
@@ -220,7 +238,15 @@ final class File extends Renderer
                 ]
             );
 
-            $template->renderTo($file . '_path.html');
+            try {
+                $template->renderTo($file . '_path.html');
+            } catch (Exception $e) {
+                throw new FileCouldNotBeWrittenException(
+                    $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+            }
         }
     }
 

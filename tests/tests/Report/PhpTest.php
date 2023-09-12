@@ -53,6 +53,7 @@ final class PhpTest extends TestCase
         $coverage->getReport();
 
         $refProperty = new ReflectionProperty($coverage, 'cachedReport');
+        $refProperty->setAccessible(true);
 
         $this->assertNotNull($refProperty->getValue($coverage));
 

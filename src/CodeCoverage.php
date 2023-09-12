@@ -151,6 +151,14 @@ final class CodeCoverage
     }
 
     /**
+     * @internal
+     */
+    public function clearCache(): void
+    {
+        $this->cachedReport = null;
+    }
+
+    /**
      * Returns the filter object used.
      */
     public function filter(): Filter

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.28] - 2023-MM-DD
+
+### Changed
+
+* [#1011](https://github.com/sebastianbergmann/php-code-coverage/pull/1011): Avoid serialization of cache data in PHP report
+
 ## [9.2.27] - 2023-07-26
 
 ### Changed
@@ -487,6 +493,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.28]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.27...9.2
 [9.2.27]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.26...9.2.27
 [9.2.26]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.25...9.2.26
 [9.2.25]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.24...9.2.25

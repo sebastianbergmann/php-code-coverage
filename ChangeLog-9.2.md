@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.29] - 2023-09-19
+
+### Fixed
+
+* [#1012](https://github.com/sebastianbergmann/php-code-coverage/issues/1012): Cobertura report pulls functions from report scope, not the individual element
+
 ## [9.2.28] - 2023-09-12
 
 ### Changed
@@ -493,6 +499,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.29]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.28...9.2.29
 [9.2.28]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.27...9.2.28
 [9.2.27]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.26...9.2.27
 [9.2.26]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.25...9.2.26

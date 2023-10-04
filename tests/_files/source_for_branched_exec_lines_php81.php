@@ -32,3 +32,54 @@ interface MyIntersection
     public function check(MyIntOne&MyIntTwo $intersection);
     public function neverReturn(): never;
 }
+
+// New in initializers
+class NewInInit_NoInit
+{
+    public function __construct(private DateTimeInterface $dateTime) {
+    }                                                                                   // +1
+    public function noinit(DateTimeInterface $dateTime) {
+    }                                                                                   // +1
+}
+class NewInInit_OneLineNewLine
+{
+    public function __construct(private DateTimeInterface $dateTime = new DateTime()) {
+    }                                                                                   // +1
+    public function onelinenewline(DateTimeInterface $dateTime = new DateTime()) {
+    }                                                                                   // +2
+}
+class NewInInit_OneLineSameLine
+{
+    public function __construct(private DateTimeInterface $dateTime = new DateTime()) {}    // +2
+    public function onelinesameline(DateTimeInterface $dateTime = new DateTime()) {}    // +1
+}
+class NewInInit_MultiLine
+{
+    public function __construct(
+        private
+        DateTimeInterface
+        $dateTime
+        =
+        new
+        DateTime()
+        ,
+        private
+        bool
+        $var
+        =
+        true
+    )
+    {
+    }                                                                                   // +1
+    public function multiline(
+        DateTimeInterface $dateTime = new DateTime()
+    ) {
+    }                                                                                   // +2
+}
+function newInInit_OneLineNewLine(DateTimeInterface $dateTime = new DateTime()) {
+} // +2
+function newInInit_OneLineSameLine(DateTimeInterface $dateTime = new DateTime()) {} // +2
+function newInInit_multiline(
+    DateTimeInterface $dateTime = new DateTime()
+) {
+} // +1

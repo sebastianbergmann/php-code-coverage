@@ -134,6 +134,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                         $this->unsets[$line] = true;
                     }
                 }
+
                 unset($this->unsets[$node->getEndLine()]);
             }
 

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.1.8] - 2023-11-15
+
+### Fixed
+
+* [#1018](https://github.com/sebastianbergmann/php-code-coverage/issues/1018): Interface methods are not ignored when their signature is split over multiple lines
+
 ## [10.1.7] - 2023-10-04
 
 ### Fixed
@@ -59,6 +65,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
+[10.1.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.7...10.1.8
 [10.1.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.6...10.1.7
 [10.1.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.5...10.1.6
 [10.1.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.4...10.1.5

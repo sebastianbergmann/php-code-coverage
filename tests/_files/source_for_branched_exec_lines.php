@@ -572,12 +572,17 @@ interface MyInterface
         'string',
     ];
     public function myMethod();
+    public function multiline(
+        \stdClass $var
+    ): \stdClass;
+    public function multilineVoid(
+    ): void;
 }
 
 trait MyTrait
 {
     public function myTrait()
-    {}                                      // +3
+    {}                                      // +5
 }
 
 abstract class MyAbstractClass implements MyInterface

@@ -175,7 +175,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 );
 
             if ($hasEmptyBody) {
-                if ($node->getEndLine() === $node->getStartLine()) {
+                if ($node->getEndLine() === $node->getStartLine() && isset($this->executableLinesGroupedByBranch[$node->getStartLine()])) {
                     return;
                 }
 

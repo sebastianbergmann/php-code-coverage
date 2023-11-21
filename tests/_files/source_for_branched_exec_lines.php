@@ -460,12 +460,18 @@ class MyClass
                 {
                     return;                 // +3
                 }
-            }                               // -3
+
+                public function m1(): void {} // +1
+                public function m2(): void {
+                }                           // +1
+                public function m3(): void
+                {}                          // +1
+            }                               // -6
         ;                                   // 0
     }
     public function withComments()
     {
-        $var = 1;                           // +4
+        $var = 1;                           // +7
         /** @var int $var */
         $var = 2;                           // +1
         // C3
@@ -582,7 +588,7 @@ interface MyInterface
 trait MyTrait
 {
     public function myTrait()
-    {}                                      // +5
+    {}                                      // +6
 }
 
 abstract class MyAbstractClass implements MyInterface

@@ -600,7 +600,12 @@ final class MyFinalClass extends MyAbstractClass
         'foo' => 'bar',
     ];
     private string $var;
-    public function myMethod(): void
+    public function m1(): void {}   // +4
+    public function m2(): void {
+    }                               // +1
+    public function m3(): void
+    {}                              // +1
+    public function m4(): void
     {
-    }                                       // +4
+    }                               // +1
 }

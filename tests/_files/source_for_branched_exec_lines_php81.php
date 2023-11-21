@@ -37,7 +37,7 @@ interface MyIntersection
 class NewInInit_NoInit
 {
     public function __construct(private DateTimeInterface $dateTime) {
-    }                                                                                   // +1
+    }                                                                                   // +3
     public function noinit(DateTimeInterface $dateTime) {
     }                                                                                   // +1
 }

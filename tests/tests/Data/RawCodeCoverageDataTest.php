@@ -403,4 +403,201 @@ final class RawCodeCoverageDataTest extends TestCase
             $coverage->functionCoverage()[$filename]
         );
     }
+
+    /**
+     * Xdebug annotates function names inside trait classes.
+     */
+    public function testTraitFunctionNamesDecodedPathCoverageXDebugFormat(): void
+    {
+        $rawDataFromDriver = [
+            '/some/path/FooTrait.php' => [
+                'lines' => [
+                    11 => 1,
+                    12 => -1,
+                    15 => 1,
+                    16 => -2,
+                    18 => 1,
+                ],
+                'functions' => [
+                    'App\\FooTrait->returnsTrue{trait-method:/some/path/FooTrait.php:9-16}' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 5,
+                                'line_start' => 11,
+                                'line_end'   => 11,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 6,
+                                    1 => 8,
+                                ],
+                                'out_hit' => [
+                                    0 => 0,
+                                    1 => 1,
+                                ],
+                            ],
+                            6 => [
+                                'op_start'   => 6,
+                                'op_end'     => 7,
+                                'line_start' => 12,
+                                'line_end'   => 12,
+                                'hit'        => 0,
+                                'out'        => [
+                                    0 => 2147483645,
+                                ],
+                                'out_hit' => [
+                                    0 => 0,
+                                ],
+                            ],
+                            8 => [
+                                'op_start'   => 8,
+                                'op_end'     => 12,
+                                'line_start' => 15,
+                                'line_end'   => 16,
+                                'hit'        => 1,
+                                'out'        => [
+                                ],
+                                'out_hit' => [
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                    1 => 6,
+                                ],
+                                'hit' => 0,
+                            ],
+                            1 => [
+                                'path' => [
+                                    0 => 0,
+                                    1 => 8,
+                                ],
+                                'hit' => 1,
+                            ],
+                        ],
+                    ],
+                    '{main}' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 2,
+                                'line_start' => 3,
+                                'line_end'   => 18,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 2147483645,
+                                ],
+                                'out_hit' => [
+                                    0 => 0,
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                ],
+                                'hit' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $functionData = [
+            '/some/path/FooTrait.php' => [
+                'App\\FooTrait->returnsTrue' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 5,
+                            'line_start' => 11,
+                            'line_end'   => 11,
+                            'hit'        => 1,
+                            'out'        => [
+                                0 => 6,
+                                1 => 8,
+                            ],
+                            'out_hit' => [
+                                0 => 0,
+                                1 => 1,
+                            ],
+                        ],
+                        6 => [
+                            'op_start'   => 6,
+                            'op_end'     => 7,
+                            'line_start' => 12,
+                            'line_end'   => 12,
+                            'hit'        => 0,
+                            'out'        => [
+                                0 => 2147483645,
+                            ],
+                            'out_hit' => [
+                                0 => 0,
+                            ],
+                        ],
+                        8 => [
+                            'op_start'   => 8,
+                            'op_end'     => 12,
+                            'line_start' => 15,
+                            'line_end'   => 16,
+                            'hit'        => 1,
+                            'out'        => [
+                            ],
+                            'out_hit' => [
+                            ],
+                        ],
+                    ],
+                    'paths' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                                1 => 6,
+                            ],
+                            'hit' => 0,
+                        ],
+                        1 => [
+                            'path' => [
+                                0 => 0,
+                                1 => 8,
+                            ],
+                            'hit' => 1,
+                        ],
+                    ],
+                ],
+                '{main}' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 2,
+                            'line_start' => 3,
+                            'line_end'   => 18,
+                            'hit'        => 1,
+                            'out'        => [
+                                0 => 2147483645,
+                            ],
+                            'out_hit' => [
+                                0 => 0,
+                            ],
+                        ],
+                    ],
+                    'paths' => [
+                        0 => [
+                            'path' => [
+                                0 => 0,
+                            ],
+                            'hit' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+
+        $this->assertEquals($functionData, $dataObject->functionCoverage());
+    }
 }

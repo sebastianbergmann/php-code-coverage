@@ -116,8 +116,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if ($node instanceof Node\Stmt\Throw_) {
-            $this->setLineBranch($node->expr->getEndLine(), $node->expr->getEndLine(), ++$this->nextBranch);
+        if ($node instanceof Node\Stmt\Expression && $node->expr instanceof Node\Expr\Throw_) {
+            $this->setLineBranch($node->expr->expr->getEndLine(), $node->expr->expr->getEndLine(), ++$this->nextBranch);
 
             return;
         }

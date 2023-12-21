@@ -117,7 +117,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        /**
+        /*
          * nikic/php-parser ^4.18 represents <code>throw</code> statements
          * as <code>Stmt\Throw_</code> objects
          */
@@ -127,7 +127,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        /**
+        /*
          * nikic/php-parser ^5 represents <code>throw</code> statements
          * as <code>Stmt\Expression</code> objects that contain an
          * <code>Expr\Throw_</code> object

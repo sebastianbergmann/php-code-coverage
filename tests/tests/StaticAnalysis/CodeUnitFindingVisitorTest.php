@@ -148,7 +148,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
-        $nodes = (new ParserFactory)->create(ParserFactory::PREFER_PHP7)->parse(
+        $nodes = (new ParserFactory)->createForHostVersion()->parse(
             file_get_contents($filename)
         );
 

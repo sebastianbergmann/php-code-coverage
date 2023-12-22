@@ -13,7 +13,6 @@ use function explode;
 use function file_get_contents;
 use function preg_match;
 use function strpos;
-use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
@@ -62,11 +61,8 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
     private function doTestSelfDescribingAsset(string $filename): void
     {
-        $source = file_get_contents($filename);
-        $parser = (new ParserFactory)->create(
-            ParserFactory::PREFER_PHP7,
-            new Lexer
-        );
+        $source                        = file_get_contents($filename);
+        $parser                        = (new ParserFactory)->createForHostVersion();
         $nodes                         = $parser->parse($source);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 

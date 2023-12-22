@@ -7,7 +7,7 @@ on:
 name: CI
 
 env:
-  COMPOSER_ROOT_VERSION: "10.1-dev"
+  COMPOSER_ROOT_VERSION: "11.0-dev"
 
 jobs:
   coding-guidelines:
@@ -70,7 +70,6 @@ jobs:
           - windows-latest
 
         php-version:
-          - "8.1"
           - "8.2"
           - "8.3"
           - "8.4"

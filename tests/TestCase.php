@@ -1013,7 +1013,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(...$data));
+             ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1080,7 +1080,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(...$data));
+             ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1147,7 +1147,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
 
         $stub->method('stop')
-            ->will($this->onConsecutiveCalls(...$data));
+            ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'source_without_namespace.php');
@@ -1224,7 +1224,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(...$data));
+             ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
@@ -1289,7 +1289,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(...$data));
+             ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1328,7 +1328,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls($data[2], $data[3]));
+             ->willReturn($data[2], $data[3]);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1431,7 +1431,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls(...$data));
+             ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1470,7 +1470,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-             ->will($this->onConsecutiveCalls($data[2], $data[3]));
+             ->willReturn($data[2], $data[3]);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1875,7 +1875,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-            ->will($this->onConsecutiveCalls(...$data));
+            ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1942,7 +1942,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub->method('stop')
-            ->will($this->onConsecutiveCalls(...$data));
+            ->willReturn(...$data);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');

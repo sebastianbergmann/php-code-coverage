@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage;
 
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Filter::class)]
@@ -122,9 +123,7 @@ final class FilterTest extends TestCase
         $this->assertTrue($this->filter->isExcluded('regexp code'));
     }
 
-    /**
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/664
-     */
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/664')]
     public function testTryingToAddFileThatDoesNotExistDoesNotChangeFilter(): void
     {
         $this->filter->includeFile('does_not_exist');

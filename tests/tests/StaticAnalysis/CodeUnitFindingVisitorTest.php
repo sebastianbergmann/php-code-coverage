@@ -16,6 +16,7 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassThatUsesAnonymousClass;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName\ClassWithNameThatIsPartOfItsNamespacesName;
@@ -23,9 +24,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNames
 #[CoversClass(CodeUnitFindingVisitor::class)]
 final class CodeUnitFindingVisitorTest extends TestCase
 {
-    /**
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/786
-     */
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/786')]
     public function testDoesNotFindAnonymousClass(): void
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassThatUsesAnonymousClass.php');
@@ -59,9 +58,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame(1, $method['ccn']);
     }
 
-    /**
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/pull/797
-     */
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/pull/797')]
     public function testHandlesClassWithNameThatIsPartOfItsNamespacesName(): void
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php');

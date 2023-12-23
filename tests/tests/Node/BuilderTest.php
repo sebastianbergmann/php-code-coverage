@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use const DIRECTORY_SEPARATOR;
 use function rtrim;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
@@ -237,9 +238,7 @@ final class BuilderTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider reducePathsProvider
-     */
+    #[DataProvider('reducePathsProvider')]
     public function testReducePaths(array $reducedPaths, string $commonPath, ProcessedCodeCoverageData $paths): void
     {
         $method = new ReflectionMethod(

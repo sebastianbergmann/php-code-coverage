@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(CodeUnitFindingVisitor::class)]
@@ -70,10 +71,8 @@ final class ParsingFileAnalyserTest extends TestCase
         );
     }
 
-    /**
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/793
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/794
-     */
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/793')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/794')]
     public function testLineWithFullyQualifiedClassNameConstantIsNotIgnored(): void
     {
         $this->assertSame(
@@ -127,9 +126,7 @@ final class ParsingFileAnalyserTest extends TestCase
         );
     }
 
-    /**
-     * @ticket https://github.com/sebastianbergmann/php-code-coverage/issues/885
-     */
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/885')]
     public function testGetLinesOfCodeForFileCrLineEndings(): void
     {
         $result = (new ParsingFileAnalyser(false, false))->linesOfCodeFor(

@@ -55,13 +55,6 @@
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">
-    <ArgumentTypeCoercion>
-      <code>$directory</code>
-      <code>$directory</code>
-    </ArgumentTypeCoercion>
-    <DeprecatedMethod>
-      <code>excludeFile</code>
-    </DeprecatedMethod>
     <InvalidDocblockParamName>
       <code>$files</code>
     </InvalidDocblockParamName>

@@ -14,7 +14,6 @@ use function is_file;
 use function realpath;
 use function str_contains;
 use function str_starts_with;
-use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
 final class Filter
 {
@@ -27,16 +26,6 @@ final class Filter
      * @psalm-var array<string,bool>
      */
     private array $isFileCache = [];
-
-    /**
-     * @deprecated
-     */
-    public function includeDirectory(string $directory, string $suffix = '.php', string $prefix = ''): void
-    {
-        foreach ((new FileIteratorFacade)->getFilesAsArray($directory, $suffix, $prefix) as $file) {
-            $this->includeFile($file);
-        }
-    }
 
     /**
      * @psalm-param list<string> $files
@@ -57,30 +46,6 @@ final class Filter
         }
 
         $this->files[$filename] = true;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function excludeDirectory(string $directory, string $suffix = '.php', string $prefix = ''): void
-    {
-        foreach ((new FileIteratorFacade)->getFilesAsArray($directory, $suffix, $prefix) as $file) {
-            $this->excludeFile($file);
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    public function excludeFile(string $filename): void
-    {
-        $filename = realpath($filename);
-
-        if (!$filename || !isset($this->files[$filename])) {
-            return;
-        }
-
-        unset($this->files[$filename]);
     }
 
     public function isFile(string $filename): bool

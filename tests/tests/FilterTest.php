@@ -57,37 +57,6 @@ final class FilterTest extends TestCase
         $this->assertSame($files, $this->filter->files());
     }
 
-    public function testDirectoryCanBeAdded(): void
-    {
-        $this->filter->includeDirectory(__DIR__ . '/../_files/filter');
-
-        $this->assertSame(
-            [
-                realpath(__DIR__ . '/../_files/filter/a.php'),
-                realpath(__DIR__ . '/../_files/filter/b.php'),
-            ],
-            $this->filter->files()
-        );
-    }
-
-    public function testSingleFileCanBeRemoved(): void
-    {
-        $this->filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
-        $this->filter->excludeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
-
-        $this->assertTrue($this->filter->isEmpty());
-        $this->assertSame([], $this->filter->files());
-    }
-
-    public function testDirectoryCanBeRemoved(): void
-    {
-        $this->filter->includeDirectory(__DIR__ . '/../_files/filter');
-        $this->filter->excludeDirectory(__DIR__ . '/../_files/filter');
-
-        $this->assertTrue($this->filter->isEmpty());
-        $this->assertSame([], $this->filter->files());
-    }
-
     public function testDeterminesWhetherStringContainsNameOfRealFileThatExists(): void
     {
         $this->assertFalse($this->filter->isFile('vfs://root/a/path'));

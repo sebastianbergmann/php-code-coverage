@@ -131,7 +131,7 @@ abstract class AbstractNode implements Countable
     {
         return Percentage::fromFractionAndTotal(
             $this->numberOfExecutedBranches(),
-            $this->numberOfExecutableBranches()
+            $this->numberOfExecutableBranches(),
         );
     }
 
@@ -139,7 +139,7 @@ abstract class AbstractNode implements Countable
     {
         return Percentage::fromFractionAndTotal(
             $this->numberOfExecutedPaths(),
-            $this->numberOfExecutablePaths()
+            $this->numberOfExecutablePaths(),
         );
     }
 

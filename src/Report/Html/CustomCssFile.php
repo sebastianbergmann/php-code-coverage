@@ -31,7 +31,7 @@ final class CustomCssFile
     {
         if (!is_file($path)) {
             throw new InvalidArgumentException(
-                '$path does not exist'
+                '$path does not exist',
             );
         }
 

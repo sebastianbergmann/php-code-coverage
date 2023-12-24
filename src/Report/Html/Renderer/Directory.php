@@ -44,7 +44,7 @@ final class Directory extends Renderer
             [
                 'id'    => $node->id(),
                 'items' => $items,
-            ]
+            ],
         );
 
         try {
@@ -53,7 +53,7 @@ final class Directory extends Renderer
             throw new FileCouldNotBeWrittenException(
                 $e->getMessage(),
                 $e->getCode(),
-                $e
+                $e,
             );
         }
     }
@@ -93,7 +93,7 @@ final class Directory extends Renderer
                 $data['name'] = sprintf(
                     '<a href="%s/index.html">%s</a>',
                     $node->name(),
-                    $node->name()
+                    $node->name(),
                 );
                 $data['icon'] = sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
             } elseif ($this->hasBranchCoverage) {
@@ -102,13 +102,13 @@ final class Directory extends Renderer
                     $node->name(),
                     $node->name(),
                     $node->name(),
-                    $node->name()
+                    $node->name(),
                 );
             } else {
                 $data['name'] = sprintf(
                     '<a href="%s.html">%s</a>',
                     $node->name(),
-                    $node->name()
+                    $node->name(),
                 );
             }
         }
@@ -117,7 +117,7 @@ final class Directory extends Renderer
 
         return $this->renderItemTemplate(
             new Template($templateName, '{{', '}}'),
-            $data
+            $data,
         );
     }
 }

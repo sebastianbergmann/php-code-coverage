@@ -41,7 +41,7 @@ final class FilterTest extends TestCase
             [
                 $file,
             ],
-            $this->filter->files()
+            $this->filter->files(),
         );
     }
 

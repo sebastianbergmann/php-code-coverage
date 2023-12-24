@@ -44,8 +44,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 42,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
+                TEST_FILES_PATH . 'source_with_ignore.php',
+            ),
         );
     }
 
@@ -54,8 +54,8 @@ final class ParsingFileAnalyserTest extends TestCase
         $this->assertEquals(
             [],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_without_ignore.php'
-            )
+                TEST_FILES_PATH . 'source_without_ignore.php',
+            ),
         );
     }
 
@@ -66,8 +66,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 3,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'
-            )
+                TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
+            ),
         );
     }
 
@@ -80,8 +80,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 2,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php'
-            )
+                TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php',
+            ),
         );
     }
 
@@ -97,8 +97,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 33,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_oneline_annotations.php'
-            )
+                TEST_FILES_PATH . 'source_with_oneline_annotations.php',
+            ),
         );
     }
 
@@ -111,8 +111,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 33,
             ],
             (new ParsingFileAnalyser(false, false))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_ignore.php'
-            )
+                TEST_FILES_PATH . 'source_with_ignore.php',
+            ),
         );
     }
 
@@ -121,8 +121,8 @@ final class ParsingFileAnalyserTest extends TestCase
         $this->assertSame(
             1,
             (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
-                TEST_FILES_PATH . 'source_without_newline.php'
-            )['linesOfCode']
+                TEST_FILES_PATH . 'source_without_newline.php',
+            )['linesOfCode'],
         );
     }
 
@@ -130,7 +130,7 @@ final class ParsingFileAnalyserTest extends TestCase
     public function testGetLinesOfCodeForFileCrLineEndings(): void
     {
         $result = (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
-            TEST_FILES_PATH . 'source_without_lf_only_cr.php'
+            TEST_FILES_PATH . 'source_without_lf_only_cr.php',
         );
 
         $this->assertSame(4, $result['linesOfCode']);
@@ -158,8 +158,8 @@ final class ParsingFileAnalyserTest extends TestCase
                 19,
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
-                TEST_FILES_PATH . 'source_with_ignore_attributes.php'
-            )
+                TEST_FILES_PATH . 'source_with_ignore_attributes.php',
+            ),
         );
     }
 }

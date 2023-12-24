@@ -316,7 +316,7 @@ final class RawCodeCoverageDataTest extends TestCase
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
         $coverage->removeCoverageDataForLines(
@@ -326,7 +326,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 31,
                 32,
                 33,
-            ]
+            ],
         );
 
         $this->assertEquals(
@@ -338,7 +338,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 35 => -1,
                 36 => -1,
             ],
-            $coverage->lineCoverage()[$filename]
+            $coverage->lineCoverage()[$filename],
         );
 
         $this->assertEquals(
@@ -400,7 +400,7 @@ final class RawCodeCoverageDataTest extends TestCase
                     ],
                 ],
             ],
-            $coverage->functionCoverage()[$filename]
+            $coverage->functionCoverage()[$filename],
         );
     }
 

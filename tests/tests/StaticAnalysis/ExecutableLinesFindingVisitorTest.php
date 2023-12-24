@@ -74,7 +74,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            $executableLinesGroupedByBranch
+            $executableLinesGroupedByBranch,
         );
     }
 }

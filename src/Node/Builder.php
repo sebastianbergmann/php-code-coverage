@@ -45,13 +45,13 @@ final class Builder
         $commonPath = $this->reducePaths($data);
         $root       = new Directory(
             $commonPath,
-            null
+            null,
         );
 
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($data),
-            $coverage->getTests()
+            $coverage->getTests(),
         );
 
         return $root;
@@ -80,8 +80,8 @@ final class Builder
                             $this->analyser->classesIn($filename),
                             $this->analyser->traitsIn($filename),
                             $this->analyser->functionsIn($filename),
-                            $this->analyser->linesOfCodeFor($filename)
-                        )
+                            $this->analyser->linesOfCodeFor($filename),
+                        ),
                     );
                 }
             } else {

@@ -33,8 +33,8 @@ final class Tests
         $node = $this->contextNode->appendChild(
             $this->contextNode->ownerDocument->createElementNS(
                 'https://schema.phpunit.de/coverage/1.0',
-                'test'
-            )
+                'test',
+            ),
         );
 
         $node->setAttribute('name', $test);

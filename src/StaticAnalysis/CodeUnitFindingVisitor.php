@@ -193,7 +193,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $signature;
     }
 
-    private function type(Identifier|Name|ComplexType $type): string
+    private function type(ComplexType|Identifier|Name $type): string
     {
         if ($type instanceof NullableType) {
             return '?' . $type->type;

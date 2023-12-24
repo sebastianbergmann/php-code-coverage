@@ -50,7 +50,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $coverage->collectsBranchAndPathCoverage(),
         );
 
         $directory = new Directory(
@@ -58,7 +58,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $coverage->collectsBranchAndPathCoverage(),
         );
 
         $file = new File(
@@ -66,7 +66,7 @@ final class Facade
             $this->generator,
             $date,
             $this->thresholds,
-            $coverage->collectsBranchAndPathCoverage()
+            $coverage->collectsBranchAndPathCoverage(),
         );
 
         $directory->render($report, $target . 'index.html');
@@ -126,7 +126,7 @@ final class Facade
                 'success-high'   => $this->colors->successHigh(),
                 'warning'        => $this->colors->warning(),
                 'danger'         => $this->colors->danger(),
-            ]
+            ],
         );
 
         try {
@@ -135,7 +135,7 @@ final class Facade
             throw new FileCouldNotBeWrittenException(
                 $e->getMessage(),
                 $e->getCode(),
-                $e
+                $e,
             );
         }
     }

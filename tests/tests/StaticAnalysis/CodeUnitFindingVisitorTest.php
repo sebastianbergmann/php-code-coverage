@@ -94,7 +94,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame(
             'functionWithUnionTypes(string|bool $x): string|bool',
-            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithUnionTypes']['signature']
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithUnionTypes']['signature'],
         );
     }
 
@@ -111,7 +111,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame(
             'functionWithIntersectionTypes(\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo $x): \SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo',
-            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithIntersectionTypes']['signature']
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithIntersectionTypes']['signature'],
         );
     }
 
@@ -128,24 +128,24 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame(
             'f((\SebastianBergmann\CodeCoverage\TestFixture\A&\SebastianBergmann\CodeCoverage\TestFixture\B)|\SebastianBergmann\CodeCoverage\TestFixture\D $x): void',
-            $functions['SebastianBergmann\CodeCoverage\TestFixture\f']['signature']
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\f']['signature'],
         );
 
         $this->assertSame(
             'g(\SebastianBergmann\CodeCoverage\TestFixture\C|(\SebastianBergmann\CodeCoverage\TestFixture\X&\SebastianBergmann\CodeCoverage\TestFixture\D)|null $x): void',
-            $functions['SebastianBergmann\CodeCoverage\TestFixture\g']['signature']
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\g']['signature'],
         );
 
         $this->assertSame(
             'h((\SebastianBergmann\CodeCoverage\TestFixture\A&\SebastianBergmann\CodeCoverage\TestFixture\B&\SebastianBergmann\CodeCoverage\TestFixture\D)|int|null $x): void',
-            $functions['SebastianBergmann\CodeCoverage\TestFixture\h']['signature']
+            $functions['SebastianBergmann\CodeCoverage\TestFixture\h']['signature'],
         );
     }
 
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->createForHostVersion()->parse(
-            file_get_contents($filename)
+            file_get_contents($filename),
         );
 
         assert($nodes !== null);

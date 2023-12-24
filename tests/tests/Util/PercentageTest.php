@@ -19,7 +19,7 @@ final class PercentageTest extends TestCase
     {
         $this->assertSame(
             50.0,
-            Percentage::fromFractionAndTotal(1, 2)->asFloat()
+            Percentage::fromFractionAndTotal(1, 2)->asFloat(),
         );
     }
 
@@ -27,7 +27,7 @@ final class PercentageTest extends TestCase
     {
         $this->assertSame(
             '50.00%',
-            Percentage::fromFractionAndTotal(1, 2)->asString()
+            Percentage::fromFractionAndTotal(1, 2)->asString(),
         );
     }
 
@@ -35,7 +35,7 @@ final class PercentageTest extends TestCase
     {
         $this->assertSame(
             ' 50.00%',
-            Percentage::fromFractionAndTotal(1, 2)->asFixedWidthString()
+            Percentage::fromFractionAndTotal(1, 2)->asFixedWidthString(),
         );
     }
 
@@ -43,12 +43,12 @@ final class PercentageTest extends TestCase
     {
         $this->assertSame(
             '',
-            Percentage::fromFractionAndTotal(0, 0)->asString()
+            Percentage::fromFractionAndTotal(0, 0)->asString(),
         );
 
         $this->assertSame(
             '',
-            Percentage::fromFractionAndTotal(0, 0)->asFixedWidthString()
+            Percentage::fromFractionAndTotal(0, 0)->asFixedWidthString(),
         );
     }
 
@@ -56,7 +56,7 @@ final class PercentageTest extends TestCase
     {
         $this->assertSame(
             100.0,
-            Percentage::fromFractionAndTotal(0, 0)->asFloat()
+            Percentage::fromFractionAndTotal(0, 0)->asFloat(),
         );
     }
 }

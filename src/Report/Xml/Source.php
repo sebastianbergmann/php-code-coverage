@@ -35,7 +35,7 @@ final class Source
 
         $context->parentNode->replaceChild(
             $context->ownerDocument->importNode($srcDom->documentElement, true),
-            $context
+            $context,
         );
     }
 }

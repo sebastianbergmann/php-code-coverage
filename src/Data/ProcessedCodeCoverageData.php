@@ -164,8 +164,8 @@ final class ProcessedCodeCoverageData
             $compareLineNumbers = array_unique(
                 array_merge(
                     array_keys($this->lineCoverage[$file]),
-                    array_keys($newData->lineCoverage[$file])
-                )
+                    array_keys($newData->lineCoverage[$file]),
+                ),
             );
 
             foreach ($compareLineNumbers as $line) {
@@ -176,7 +176,7 @@ final class ProcessedCodeCoverageData
                     $this->lineCoverage[$file][$line] = $newData->lineCoverage[$file][$line];
                 } elseif ($thatPriority === $thisPriority && is_array($this->lineCoverage[$file][$line])) {
                     $this->lineCoverage[$file][$line] = array_unique(
-                        array_merge($this->lineCoverage[$file][$line], $newData->lineCoverage[$file][$line])
+                        array_merge($this->lineCoverage[$file][$line], $newData->lineCoverage[$file][$line]),
                     );
                 }
             }

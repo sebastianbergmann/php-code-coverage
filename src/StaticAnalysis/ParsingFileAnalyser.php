@@ -167,10 +167,10 @@ final class ParsingFileAnalyser implements FileAnalyser
                 sprintf(
                     'Cannot parse %s: %s',
                     $filename,
-                    $error->getMessage()
+                    $error->getMessage(),
                 ),
                 $error->getCode(),
-                $error
+                $error,
             );
         }
         // @codeCoverageIgnoreEnd
@@ -186,8 +186,8 @@ final class ParsingFileAnalyser implements FileAnalyser
         $this->ignoredLines[$filename] = array_unique(
             array_merge(
                 $this->ignoredLines[$filename],
-                $ignoredLinesFindingVisitor->ignoredLines()
-            )
+                $ignoredLinesFindingVisitor->ignoredLines(),
+            ),
         );
 
         sort($this->ignoredLines[$filename]);
@@ -239,7 +239,7 @@ final class ParsingFileAnalyser implements FileAnalyser
 
                 $this->ignoredLines[$filename] = array_merge(
                     $this->ignoredLines[$filename],
-                    range($start, $token[2])
+                    range($start, $token[2]),
                 );
             }
         }

@@ -33,7 +33,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->coverage = new CodeCoverage(
             (new Selector)->forLineCoverage($filter),
-            $filter
+            $filter,
         );
     }
 
@@ -43,7 +43,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage()
+            $coverage->getData()->lineCoverage(),
         );
 
         $this->assertEquals(
@@ -53,7 +53,7 @@ final class CodeCoverageTest extends TestCase
                 'BankAccountTest::testBalanceCannotBecomeNegative2' => ['size' => 'unknown', 'status' => 'unknown'],
                 'BankAccountTest::testDepositWithdrawMoney'         => ['size' => 'unknown', 'status' => 'unknown'],
             ],
-            $coverage->getTests()
+            $coverage->getTests(),
         );
     }
 
@@ -111,7 +111,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage()
+            $coverage->getData()->lineCoverage(),
         );
     }
 
@@ -122,7 +122,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
-            $coverage->getData()->lineCoverage()
+            $coverage->getData()->lineCoverage(),
         );
     }
 
@@ -130,14 +130,14 @@ final class CodeCoverageTest extends TestCase
     {
         $coverage = new CodeCoverage(
             $this->createStub(Driver::class),
-            new Filter
+            new Filter,
         );
 
         $coverage->merge($this->getLineCoverageForBankAccount());
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage()
+            $coverage->getData()->lineCoverage(),
         );
     }
 }

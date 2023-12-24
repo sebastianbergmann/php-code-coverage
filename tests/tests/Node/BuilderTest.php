@@ -95,8 +95,8 @@ final class BuilderTest extends TestCase
         $this->assertEquals(0, $root->numberOfTestedFunctions());
         $this->assertNull($root->parent());
         $this->assertEquals([], $root->directories());
-        #$this->assertEquals(array(), $root->getFiles());
-        #$this->assertEquals(array(), $root->getChildNodes());
+        # $this->assertEquals(array(), $root->getFiles());
+        # $this->assertEquals(array(), $root->getChildNodes());
 
         $this->assertEquals(
             [
@@ -186,7 +186,7 @@ final class BuilderTest extends TestCase
                     'namespace'          => '',
                 ],
             ],
-            $root->classes()
+            $root->classes(),
         );
 
         $this->assertEquals([], $root->functions());
@@ -198,7 +198,7 @@ final class BuilderTest extends TestCase
 
         $method = new ReflectionMethod(
             Builder::class,
-            'buildDirectoryStructure'
+            'buildDirectoryStructure',
         );
 
         $method->setAccessible(true);
@@ -232,8 +232,8 @@ final class BuilderTest extends TestCase
                     "src{$s}Money.php"                    => [],
                     "src{$s}MoneyBag.php"                 => [],
                     "src{$s}Foo{$s}Bar{$s}Baz{$s}Foo.php" => [],
-                ])
-            )
+                ]),
+            ),
         );
     }
 
@@ -244,7 +244,7 @@ final class BuilderTest extends TestCase
     {
         $method = new ReflectionMethod(
             Builder::class,
-            'reducePaths'
+            'reducePaths',
         );
 
         $method->setAccessible(true);

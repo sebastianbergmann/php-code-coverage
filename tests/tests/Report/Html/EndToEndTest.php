@@ -94,7 +94,7 @@ final class EndToEndTest extends TestCase
         $this->assertEquals(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
-            'Generated files and expected files not match'
+            'Generated files and expected files not match',
         );
 
         foreach ($expectedFilesIterator as $path => $fileInfo) {
@@ -108,7 +108,7 @@ final class EndToEndTest extends TestCase
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
                 str_replace(PHP_EOL, "\n", file_get_contents($actualFile)),
-                "{$filename} not match"
+                "{$filename} not match",
             );
         }
     }

@@ -75,7 +75,7 @@ final class XdebugDriver extends Driver
             xdebug_set_filter(
                 XDEBUG_FILTER_CODE_COVERAGE,
                 XDEBUG_PATH_INCLUDE,
-                $filter->files()
+                $filter->files(),
             );
         }
     }

@@ -55,7 +55,7 @@ final class Coverage
 
         $this->contextNode->parentNode->replaceChild(
             $fragment,
-            $this->contextNode
+            $this->contextNode,
         );
 
         $this->finalized = true;

@@ -183,7 +183,7 @@ final class CodeCoverage
 
         $this->linesToBeIgnored = array_merge_recursive(
             $this->linesToBeIgnored,
-            $linesToBeIgnored
+            $linesToBeIgnored,
         );
 
         $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed, $linesToBeIgnored);
@@ -246,7 +246,7 @@ final class CodeCoverage
             $rawData,
             $linesToBeCovered,
             $linesToBeUsed,
-            $size
+            $size,
         );
 
         if (empty($rawData->lineCoverage())) {
@@ -267,7 +267,7 @@ final class CodeCoverage
     public function merge(self $that): void
     {
         $this->filter->includeFiles(
-            $that->filter()->files()
+            $that->filter()->files(),
         );
 
         $this->data->merge($that->data);
@@ -342,7 +342,7 @@ final class CodeCoverage
     {
         if (!$this->cachesStaticAnalysis()) {
             throw new StaticAnalysisCacheNotConfiguredException(
-                'The static analysis cache is not configured'
+                'The static analysis cache is not configured',
             );
         }
 
@@ -436,12 +436,12 @@ final class CodeCoverage
 
             $data->keepLineCoverageDataOnlyForLines(
                 $filename,
-                array_keys($linesToBranchMap)
+                array_keys($linesToBranchMap),
             );
 
             $data->markExecutableLineByBranch(
                 $filename,
-                $linesToBranchMap
+                $linesToBranchMap,
             );
         }
     }
@@ -459,13 +459,13 @@ final class CodeCoverage
             if (isset($linesToBeIgnored[$filename])) {
                 $data->removeCoverageDataForLines(
                     $filename,
-                    $linesToBeIgnored[$filename]
+                    $linesToBeIgnored[$filename],
                 );
             }
 
             $data->removeCoverageDataForLines(
                 $filename,
-                $this->analyser()->ignoredLinesFor($filename)
+                $this->analyser()->ignoredLinesFor($filename),
             );
         }
     }
@@ -477,7 +477,7 @@ final class CodeCoverage
     {
         $uncoveredFiles = array_diff(
             $this->filter->files(),
-            $this->data->coveredFiles()
+            $this->data->coveredFiles(),
         );
 
         foreach ($uncoveredFiles as $uncoveredFile) {
@@ -485,10 +485,10 @@ final class CodeCoverage
                 $this->append(
                     RawCodeCoverageData::fromUncoveredFile(
                         $uncoveredFile,
-                        $this->analyser()
+                        $this->analyser(),
                     ),
                     self::UNCOVERED_FILES,
-                    linesToBeIgnored: $this->linesToBeIgnored
+                    linesToBeIgnored: $this->linesToBeIgnored,
                 );
             }
         }
@@ -502,7 +502,7 @@ final class CodeCoverage
     {
         $allowedLines = $this->getAllowedLines(
             $linesToBeCovered,
-            $linesToBeUsed
+            $linesToBeUsed,
         );
 
         $unintentionallyCoveredUnits = [];
@@ -519,7 +519,7 @@ final class CodeCoverage
 
         if (!empty($unintentionallyCoveredUnits)) {
             throw new UnintentionallyCoveredCodeException(
-                $unintentionallyCoveredUnits
+                $unintentionallyCoveredUnits,
             );
         }
     }
@@ -535,7 +535,7 @@ final class CodeCoverage
 
             $allowedLines[$file] = array_merge(
                 $allowedLines[$file],
-                $linesToBeCovered[$file]
+                $linesToBeCovered[$file],
             );
         }
 
@@ -546,13 +546,13 @@ final class CodeCoverage
 
             $allowedLines[$file] = array_merge(
                 $allowedLines[$file],
-                $linesToBeUsed[$file]
+                $linesToBeUsed[$file],
             );
         }
 
         foreach (array_keys($allowedLines) as $file) {
             $allowedLines[$file] = array_flip(
-                array_unique($allowedLines[$file])
+                array_unique($allowedLines[$file]),
             );
         }
 
@@ -592,7 +592,7 @@ final class CodeCoverage
                 throw new ReflectionException(
                     $e->getMessage(),
                     $e->getCode(),
-                    $e
+                    $e,
                 );
             }
 
@@ -614,7 +614,7 @@ final class CodeCoverage
 
         $this->analyser = new ParsingFileAnalyser(
             $this->useAnnotationsForIgnoringCode,
-            $this->ignoreDeprecatedCode
+            $this->ignoreDeprecatedCode,
         );
 
         if ($this->cachesStaticAnalysis()) {
@@ -622,7 +622,7 @@ final class CodeCoverage
                 $this->cacheDirectory,
                 $this->analyser,
                 $this->useAnnotationsForIgnoringCode,
-                $this->ignoreDeprecatedCode
+                $this->ignoreDeprecatedCode,
             );
         }
 

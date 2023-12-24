@@ -40,7 +40,7 @@ final class FilterTest extends TestCase
             [
                 $file,
             ],
-            $this->filter->files()
+            $this->filter->files(),
         );
     }
 
@@ -65,7 +65,7 @@ final class FilterTest extends TestCase
                 realpath(__DIR__ . '/../_files/filter/a.php'),
                 realpath(__DIR__ . '/../_files/filter/b.php'),
             ],
-            $this->filter->files()
+            $this->filter->files(),
         );
     }
 

@@ -75,7 +75,7 @@ final class XmlTest extends TestCase
         $this->assertEquals(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
-            'Generated files and expected files not match'
+            'Generated files and expected files not match',
         );
 
         foreach ($expectedFilesIterator as $path => $fileInfo) {
@@ -89,7 +89,7 @@ final class XmlTest extends TestCase
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
                 file_get_contents($actualFile),
-                "{$filename} not match"
+                "{$filename} not match",
             );
         }
     }

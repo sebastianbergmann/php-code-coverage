@@ -26,5 +26,24 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
             $decodedJson['line_coverage'],
         );
     }
+
+    public function testFromJson(): void
+    {
+        // Doing it this way while the JSON format is being developed, though
+        // I expect we'd have a fixture file in the future
+        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $json = $dataMapper->toJson($coverage);
+
+        // Instantiate a new data mapper to ensure we have no persisted state
+        // from the setup step
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $unserializedCoverage = $dataMapper->fromJson($json);
+
+        $this->assertEquals(
+            $coverage->lineCoverage(),
+            $unserializedCoverage->lineCoverage(),
+        );
+    }
 }
 

@@ -26,5 +26,16 @@ final class ProcessedCodeCoverageDataMapper
 
         return json_encode($arrayMapping);
     }
+
+    public function fromJson(string $json): ProcessedCodeCoverageData
+    {
+        $unserializedData = json_decode($json, true);
+        
+        $processedCodeCoverageData = new ProcessedCodeCoverageData();
+
+        $processedCodeCoverageData->setLineCoverage($unserializedData['line_coverage']);
+
+        return $processedCodeCoverageData;
+    }
 }
 

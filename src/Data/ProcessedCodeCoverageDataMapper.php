@@ -18,10 +18,12 @@ namespace SebastianBergmann\CodeCoverage\Data;
  */
 final class ProcessedCodeCoverageDataMapper
 {
+    const KEY_LINE_COVERAGE = 'line_coverage';
+
     public function toJson(ProcessedCodeCoverageData $processedCodeCoverageData): string
     {
         $arrayMapping = [
-            'line_coverage' => $processedCodeCoverageData->lineCoverage(),
+            self::KEY_LINE_COVERAGE => $processedCodeCoverageData->lineCoverage(),
         ];
 
         return json_encode($arrayMapping);
@@ -33,7 +35,7 @@ final class ProcessedCodeCoverageDataMapper
         
         $processedCodeCoverageData = new ProcessedCodeCoverageData();
 
-        $processedCodeCoverageData->setLineCoverage($unserializedData['line_coverage']);
+        $processedCodeCoverageData->setLineCoverage($unserializedData[self::KEY_LINE_COVERAGE]);
 
         return $processedCodeCoverageData;
     }

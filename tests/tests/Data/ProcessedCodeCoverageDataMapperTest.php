@@ -13,7 +13,7 @@ use SebastianBergmann\CodeCoverage\TestCase;
 
 final class ProcessedCodeCoverageDataMapperTest extends TestCase
 {
-    public function testToJson(): void
+    public function testToJsonCoverageForBankAccount(): void
     {
         $coverage = $this->getLineCoverageForBankAccount()->getData();
         $dataMapper = new ProcessedCodeCoverageDataMapper();
@@ -27,7 +27,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
         );
     }
 
-    public function testFromJson(): void
+    public function testFromJsonCoverageForBankAccount(): void
     {
         // Doing it this way while the JSON format is being developed, though
         // I expect we'd have a fixture file in the future

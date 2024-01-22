@@ -18,7 +18,7 @@ namespace SebastianBergmann\CodeCoverage\Data;
  */
 final class ProcessedCodeCoverageDataMapper
 {
-    const KEY_LINE_COVERAGE = 'line_coverage';
+    const KEY_LINE_COVERAGE = 'lineCoverage';
 
     public function toJson(ProcessedCodeCoverageData $processedCodeCoverageData): string
     {

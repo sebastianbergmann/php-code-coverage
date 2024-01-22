@@ -19,11 +19,13 @@ namespace SebastianBergmann\CodeCoverage\Data;
 final class ProcessedCodeCoverageDataMapper
 {
     const KEY_LINE_COVERAGE = 'lineCoverage';
+    const KEY_FUNCTION_COVERAGE = 'functionCoverage';
 
     public function toJson(ProcessedCodeCoverageData $processedCodeCoverageData): string
     {
         $arrayMapping = [
             self::KEY_LINE_COVERAGE => $processedCodeCoverageData->lineCoverage(),
+            self::KEY_FUNCTION_COVERAGE => $processedCodeCoverageData->functionCoverage(),
         ];
 
         return json_encode($arrayMapping);

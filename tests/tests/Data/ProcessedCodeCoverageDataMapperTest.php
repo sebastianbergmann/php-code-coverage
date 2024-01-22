@@ -25,6 +25,11 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
             $coverage->lineCoverage(),
             $decodedJson[ProcessedCodeCoverageDataMapper::KEY_LINE_COVERAGE],
         );
+
+        $this->assertEquals(
+            $coverage->functionCoverage(),
+            $decodedJson[ProcessedCodeCoverageDataMapper::KEY_FUNCTION_COVERAGE],
+        );
     }
 
     public function testFromJsonCoverageForBankAccount(): void
@@ -43,6 +48,11 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
         $this->assertEquals(
             $coverage->lineCoverage(),
             $unserializedCoverage->lineCoverage(),
+        );
+
+        $this->assertEquals(
+            $coverage->functionCoverage(),
+            $unserializedCoverage->functionCoverage(),
         );
     }
 }

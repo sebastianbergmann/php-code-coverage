@@ -23,7 +23,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
 
         $this->assertEquals(
             $coverage->lineCoverage(),
-            $decodedJson['line_coverage'],
+            $decodedJson[ProcessedCodeCoverageDataMapper::KEY_LINE_COVERAGE],
         );
     }
 

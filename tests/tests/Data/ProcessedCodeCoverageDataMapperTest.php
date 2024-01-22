@@ -15,7 +15,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
 {
     public function testToJson(): void
     {
-        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();
+        $coverage = $this->getLineCoverageForBankAccount()->getData();
         $dataMapper = new ProcessedCodeCoverageDataMapper();
         $json = $dataMapper->toJson($coverage);
 
@@ -31,7 +31,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
     {
         // Doing it this way while the JSON format is being developed, though
         // I expect we'd have a fixture file in the future
-        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();
+        $coverage = $this->getLineCoverageForBankAccount()->getData();
         $dataMapper = new ProcessedCodeCoverageDataMapper();
         $json = $dataMapper->toJson($coverage);
 

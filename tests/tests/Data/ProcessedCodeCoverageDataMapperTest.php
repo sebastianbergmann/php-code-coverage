@@ -47,16 +47,8 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
 
     public function testFromJsonCoverageForBankAccount(): void
     {
-        // Doing it this way while the JSON format is being developed, though
-        // I expect we'd have a fixture file in the future
-        $coverage = $this->getLineCoverageForBankAccount()->getData();
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $json = $dataMapper->toJson($coverage);
-
-        // Instantiate a new data mapper to ensure we have no persisted state
-        // from the setup step
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $unserializedCoverage = $dataMapper->fromJson($json);
+        $coverage = $this->getPathCoverageForBankAccount()->getData();
+        $unserializedCoverage = $this->serializeAndUnserializeToJson($coverage);
 
         $this->assertEquals(
             $coverage->lineCoverage(),
@@ -71,16 +63,8 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
 
     public function testFromJsonPathCoverageForBankAccount(): void
     {
-        // Doing it this way while the JSON format is being developed, though
-        // I expect we'd have a fixture file in the future
         $coverage = $this->getPathCoverageForBankAccount()->getData();
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $json = $dataMapper->toJson($coverage);
-
-        // Instantiate a new data mapper to ensure we have no persisted state
-        // from the setup step
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $unserializedCoverage = $dataMapper->fromJson($json);
+        $unserializedCoverage = $this->serializeAndUnserializeToJson($coverage);
 
         $this->assertEquals(
             $coverage->lineCoverage(),
@@ -99,6 +83,22 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
         $json = $dataMapper->toJson($processedCodeCoverage);
 
         return json_decode($json, true);
+    }
+
+    /**
+    * Doing it this way while the JSON format is being developed, though I expect we'd have a
+    * fixture file in the future
+    **/
+    private function serializeAndUnserializeToJson(ProcessedCodeCoverageData $processedCodeCoverage): ProcessedCodeCoverageData
+    {
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $json = $dataMapper->toJson($processedCodeCoverage);
+
+        // Instantiate a new data mapper out of an abundance of caution to ensure we have no 
+        // persisted state from the serializing instance.
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+
+        return $dataMapper->fromJson($json);
     }
 }
 

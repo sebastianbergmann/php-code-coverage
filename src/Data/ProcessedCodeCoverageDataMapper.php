@@ -33,6 +33,7 @@ final class ProcessedCodeCoverageDataMapper
 
     public function fromJson(string $json): ProcessedCodeCoverageData
     {
+        /** @var array<array-key, array<array-key, mixed>> */
         $unserializedData = json_decode($json, true);
         
         $processedCodeCoverageData = new ProcessedCodeCoverageData();

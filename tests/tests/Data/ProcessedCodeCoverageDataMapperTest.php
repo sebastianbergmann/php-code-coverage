@@ -13,9 +13,28 @@ use SebastianBergmann\CodeCoverage\TestCase;
 
 final class ProcessedCodeCoverageDataMapperTest extends TestCase
 {
-    public function testToJsonCoverageForBankAccount(): void
+    public function testToJsonLineCoverageForBankAccount(): void
     {
         $coverage = $this->getLineCoverageForBankAccount()->getData();
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $json = $dataMapper->toJson($coverage);
+
+        $decodedJson = json_decode($json, true);
+
+        $this->assertEquals(
+            $coverage->lineCoverage(),
+            $decodedJson[ProcessedCodeCoverageDataMapper::KEY_LINE_COVERAGE],
+        );
+
+        $this->assertEquals(
+            $coverage->functionCoverage(),
+            $decodedJson[ProcessedCodeCoverageDataMapper::KEY_FUNCTION_COVERAGE],
+        );
+    }
+
+    public function testToJsonPathCoverageForBankAccount(): void
+    {
+        $coverage = $this->getPathCoverageForBankAccount()->getData();
         $dataMapper = new ProcessedCodeCoverageDataMapper();
         $json = $dataMapper->toJson($coverage);
 
@@ -37,6 +56,30 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
         // Doing it this way while the JSON format is being developed, though
         // I expect we'd have a fixture file in the future
         $coverage = $this->getLineCoverageForBankAccount()->getData();
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $json = $dataMapper->toJson($coverage);
+
+        // Instantiate a new data mapper to ensure we have no persisted state
+        // from the setup step
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $unserializedCoverage = $dataMapper->fromJson($json);
+
+        $this->assertEquals(
+            $coverage->lineCoverage(),
+            $unserializedCoverage->lineCoverage(),
+        );
+
+        $this->assertEquals(
+            $coverage->functionCoverage(),
+            $unserializedCoverage->functionCoverage(),
+        );
+    }
+
+    public function testFromJsonPathCoverageForBankAccount(): void
+    {
+        // Doing it this way while the JSON format is being developed, though
+        // I expect we'd have a fixture file in the future
+        $coverage = $this->getPathCoverageForBankAccount()->getData();
         $dataMapper = new ProcessedCodeCoverageDataMapper();
         $json = $dataMapper->toJson($coverage);
 

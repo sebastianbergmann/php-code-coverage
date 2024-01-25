@@ -38,6 +38,7 @@ final class ProcessedCodeCoverageDataMapper
         $processedCodeCoverageData = new ProcessedCodeCoverageData();
 
         $processedCodeCoverageData->setLineCoverage($unserializedData[self::KEY_LINE_COVERAGE]);
+        $processedCodeCoverageData->setFunctionCoverage($unserializedData[self::KEY_FUNCTION_COVERAGE]);
 
         return $processedCodeCoverageData;
     }

@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function json_decode;
+use function json_encode;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
@@ -18,13 +21,13 @@ namespace SebastianBergmann\CodeCoverage\Data;
  */
 final class ProcessedCodeCoverageDataMapper
 {
-    const KEY_LINE_COVERAGE = 'lineCoverage';
-    const KEY_FUNCTION_COVERAGE = 'functionCoverage';
+    public const KEY_LINE_COVERAGE     = 'lineCoverage';
+    public const KEY_FUNCTION_COVERAGE = 'functionCoverage';
 
     public function toJson(ProcessedCodeCoverageData $processedCodeCoverageData): string
     {
         $arrayMapping = [
-            self::KEY_LINE_COVERAGE => $processedCodeCoverageData->lineCoverage(),
+            self::KEY_LINE_COVERAGE     => $processedCodeCoverageData->lineCoverage(),
             self::KEY_FUNCTION_COVERAGE => $processedCodeCoverageData->functionCoverage(),
         ];
 
@@ -35,8 +38,8 @@ final class ProcessedCodeCoverageDataMapper
     {
         /** @var array<array-key, array<array-key, mixed>> */
         $unserializedData = json_decode($json, true);
-        
-        $processedCodeCoverageData = new ProcessedCodeCoverageData();
+
+        $processedCodeCoverageData = new ProcessedCodeCoverageData;
 
         $processedCodeCoverageData->setLineCoverage($unserializedData[self::KEY_LINE_COVERAGE]);
         $processedCodeCoverageData->setFunctionCoverage($unserializedData[self::KEY_FUNCTION_COVERAGE]);
@@ -44,4 +47,3 @@ final class ProcessedCodeCoverageDataMapper
         return $processedCodeCoverageData;
     }
 }
-

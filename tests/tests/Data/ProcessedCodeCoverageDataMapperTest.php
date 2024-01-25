@@ -16,10 +16,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
     public function testToJsonLineCoverageForBankAccount(): void
     {
         $coverage = $this->getLineCoverageForBankAccount()->getData();
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $json = $dataMapper->toJson($coverage);
-
-        $decodedJson = json_decode($json, true);
+        $decodedJson = $this->getDecodedJsonForProcessedCodeCoverage($coverage);
 
         $this->assertEquals(
             $coverage->lineCoverage(),
@@ -35,10 +32,7 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
     public function testToJsonPathCoverageForBankAccount(): void
     {
         $coverage = $this->getPathCoverageForBankAccount()->getData();
-        $dataMapper = new ProcessedCodeCoverageDataMapper();
-        $json = $dataMapper->toJson($coverage);
-
-        $decodedJson = json_decode($json, true);
+        $decodedJson = $this->getDecodedJsonForProcessedCodeCoverage($coverage);
 
         $this->assertEquals(
             $coverage->lineCoverage(),
@@ -97,6 +91,14 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
             $coverage->functionCoverage(),
             $unserializedCoverage->functionCoverage(),
         );
+    }
+
+    private function getDecodedJsonForProcessedCodeCoverage(ProcessedCodeCoverageData $processedCodeCoverage): array
+    {
+        $dataMapper = new ProcessedCodeCoverageDataMapper();
+        $json = $dataMapper->toJson($processedCodeCoverage);
+
+        return json_decode($json, true);
     }
 }
 

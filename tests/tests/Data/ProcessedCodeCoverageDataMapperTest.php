@@ -32,7 +32,11 @@ final class ProcessedCodeCoverageDataMapperTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (new FilesystemIterator(self::$TEST_TMP_PATH) as $fileInfo) {
+        if (!file_exists(self::$TEST_TMP_PATH)) {
+            return;
+        }
+
+        foreach (new FilesystemIterator(self::$TEST_TMP_PATH) as $path => $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             unlink($fileInfo->getPathname());
         }

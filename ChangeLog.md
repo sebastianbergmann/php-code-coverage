@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [7.0.17] - 2024-03-02
+
+### Changed
+
+* Do not use implicitly nullable parameters
+
 ## [7.0.16] - 2024-03-01
 
 * No code changes, only updated `.gitattributes` to not export non-essential files.
@@ -146,6 +152,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Class names are now abbreviated (unqualified name shown, fully qualified name shown on hover) in the file view of the HTML report
 * Update HTML report to Bootstrap 4
 
+[7.0.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.16...7.0.17
 [7.0.16]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.15...7.0.16
 [7.0.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.14...7.0.15
 [7.0.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/7.0.13...7.0.14

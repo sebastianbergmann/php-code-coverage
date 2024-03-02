@@ -137,7 +137,7 @@ final class CodeCoverage
     /**
      * @throws RuntimeException
      */
-    public function __construct(Driver $driver = null, Filter $filter = null)
+    public function __construct(?Driver $driver = null, ?Filter $filter = null)
     {
         if ($filter === null) {
             $filter = new Filter;

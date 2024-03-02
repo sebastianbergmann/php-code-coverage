@@ -32,7 +32,7 @@ final class Xdebug implements Driver
     /**
      * @throws RuntimeException
      */
-    public function __construct(Filter $filter = null)
+    public function __construct(?Filter $filter = null)
     {
         if (!\extension_loaded('xdebug')) {
             throw new RuntimeException('This driver requires Xdebug');

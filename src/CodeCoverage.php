@@ -160,7 +160,7 @@ final class CodeCoverage
         $this->tests = $tests;
     }
 
-    public function start(string $id, TestSize $size = null, bool $clear = false): void
+    public function start(string $id, ?TestSize $size = null, bool $clear = false): void
     {
         if ($clear) {
             $this->clear();
@@ -177,7 +177,7 @@ final class CodeCoverage
     /**
      * @psalm-param array<string,list<int>> $linesToBeIgnored
      */
-    public function stop(bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): RawCodeCoverageData
+    public function stop(bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): RawCodeCoverageData
     {
         $data = $this->driver->stop();
 
@@ -202,7 +202,7 @@ final class CodeCoverage
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, string $id = null, bool $append = true, TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): void
+    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): void
     {
         if ($id === null) {
             $id = $this->currentId;

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.1.13] - 2024-03-09
+
+### Changed
+
+* [#1032](https://github.com/sebastianbergmann/php-code-coverage/pull/1032): Pad lines in code coverage report only when colors are shown
+
 ## [10.1.12] - 2024-03-02
 
 ### Changed
@@ -89,6 +95,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
+[10.1.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.12...10.1.13
 [10.1.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.11...10.1.12
 [10.1.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.10...10.1.11
 [10.1.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.9...10.1.10

@@ -10,9 +10,13 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use const PHP_EOL;
+use function array_map;
 use function date;
 use function ksort;
+use function max;
 use function sprintf;
+use function str_pad;
+use function strlen;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
@@ -156,28 +160,31 @@ final class Text
             $report->numberOfExecutableLines(),
         );
 
-        if ($this->showOnlySummary) {
-            $title = 'Code Coverage Report Summary:';
+        $padding = max(array_map('strlen', [$classes, $methods, $lines]));
 
-            $output .= $this->format($colors['header'], $title);
+        if ($this->showOnlySummary) {
+            $title   = 'Code Coverage Report Summary:';
+            $padding = max($padding, strlen($title));
+
+            $output .= $this->format($colors['header'], $padding, $title);
         } else {
             $date  = date('  Y-m-d H:i:s');
             $title = 'Code Coverage Report:';
 
-            $output .= $this->format($colors['header'], $title);
-            $output .= $this->format($colors['header'], $date);
-            $output .= $this->format($colors['header'], '');
-            $output .= $this->format($colors['header'], ' Summary:');
+            $output .= $this->format($colors['header'], $padding, $title);
+            $output .= $this->format($colors['header'], $padding, $date);
+            $output .= $this->format($colors['header'], $padding, '');
+            $output .= $this->format($colors['header'], $padding, ' Summary:');
         }
 
-        $output .= $this->format($colors['classes'], $classes);
-        $output .= $this->format($colors['methods'], $methods);
+        $output .= $this->format($colors['classes'], $padding, $classes);
+        $output .= $this->format($colors['methods'], $padding, $methods);
 
         if ($hasBranchCoverage) {
-            $output .= $this->format($colors['paths'], $paths);
-            $output .= $this->format($colors['branches'], $branches);
+            $output .= $this->format($colors['paths'], $padding, $paths);
+            $output .= $this->format($colors['branches'], $padding, $branches);
         }
-        $output .= $this->format($colors['lines'], $lines);
+        $output .= $this->format($colors['lines'], $padding, $lines);
 
         if ($this->showOnlySummary) {
             return $output . PHP_EOL;
@@ -297,10 +304,12 @@ final class Text
         sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    private function format(string $color, false|string $string): string
+    private function format(string $color, int $padding, false|string $string): string
     {
-        $reset = $color ? self::COLOR_RESET : '';
+        if ($color === '') {
+            return (string) $string . PHP_EOL;
+        }
 
-        return $color . (string) $string . $reset . PHP_EOL;
+        return $color . str_pad((string) $string, $padding) . self::COLOR_RESET . PHP_EOL;
     }
 }

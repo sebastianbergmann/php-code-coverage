@@ -57,6 +57,16 @@ final class TextTest extends TestCase
         );
     }
 
+    public function testTextForNamespacedBankAccountTestWhenColorsAreEnabled(): void
+    {
+        $text = new Text(Thresholds::default(), true, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'NamespacedBankAccount-text-with-colors.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount(), true)),
+        );
+    }
+
     public function testTextForFileWithIgnoredLines(): void
     {
         $text = new Text(Thresholds::default(), false, false);

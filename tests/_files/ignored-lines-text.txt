@@ -1,10 +1,10 @@
 
 
-Code Coverage Report:%w
+Code Coverage Report:
   %s
-%w
- Summary:%w
-  Classes:        (0/0) 
-  Methods:        (0/0) 
+
+ Summary:
+  Classes:        (0/0)
+  Methods:        (0/0)
   Lines:   100.00% (1/1)
 

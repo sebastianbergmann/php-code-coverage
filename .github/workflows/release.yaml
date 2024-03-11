@@ -13,6 +13,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +37,7 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          bodyFile: release-notes.md
-          tag: ${{ env.RELEASE_TAG }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.RELEASE_TAG }}
+          name: phpunit/php-code-coverage ${{ env.RELEASE_TAG }}
+          bodyFile: release-notes.md

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function range;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
@@ -159,6 +160,28 @@ final class ParsingFileAnalyserTest extends TestCase
             ],
             (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
                 TEST_FILES_PATH . 'source_with_ignore_attributes.php',
+            ),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1033')]
+    public function testEnumWithEnumLevelIgnore(): void
+    {
+        $this->assertSame(
+            range(5, 13),
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_enum_and_enum_level_ignore_annotation.php',
+            ),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1033')]
+    public function testEnumWithMethodLevelIgnore(): void
+    {
+        $this->assertSame(
+            range(9, 12),
+            (new ParsingFileAnalyser(true, true))->ignoredLinesFor(
+                TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php',
             ),
         );
     }

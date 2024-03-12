@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [11.0.3] - 2024-MM-DD
+
+### Fixed
+
+* [#1033](https://github.com/sebastianbergmann/php-code-coverage/issues/1033): `@codeCoverageIgnore` annotation does not work on `enum`
+
 ## [11.0.2] - 2024-03-09
 
 ### Changed
@@ -22,6 +28,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component now requires PHP-Parser 5
 * This component is no longer supported on PHP 8.1
 
+[11.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.2...main
 [11.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.1...11.0.2
 [11.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.0...11.0.1
 [11.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1...11.0.0

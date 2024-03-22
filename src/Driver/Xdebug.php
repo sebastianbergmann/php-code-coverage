@@ -47,10 +47,10 @@ final class Xdebug implements Driver
 
             if ($mode === false ||
                 !\in_array('coverage', \explode(',', $mode), true)) {
-                throw new RuntimeException('XDEBUG_MODE=coverage or xdebug.mode=coverage has to be set');
+                throw new RuntimeException('XDEBUG_MODE=coverage (environment variable) or xdebug.mode=coverage (PHP configuration setting) has to be set');
             }
         } elseif (!\ini_get('xdebug.coverage_enable')) {
-            throw new RuntimeException('xdebug.coverage_enable=On has to be set');
+            throw new RuntimeException('xdebug.coverage_enable=On (PHP configuration setting) has to be set');
         }
 
         if ($filter === null) {

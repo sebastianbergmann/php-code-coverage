@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
  <head>
   <meta charset="UTF-8">
   <title>Code Coverage for {{full_path}}</title>
@@ -60,8 +60,7 @@
    </footer>
   </div>
   <script src="{{path_to_root}}_js/jquery.min.js?v={{version}}" type="text/javascript"></script>
-  <script src="{{path_to_root}}_js/popper.min.js?v={{version}}" type="text/javascript"></script>
-  <script src="{{path_to_root}}_js/bootstrap.min.js?v={{version}}" type="text/javascript"></script>
+  <script src="{{path_to_root}}_js/bootstrap.bundle.min.js?v={{version}}" type="text/javascript"></script>
   <script src="{{path_to_root}}_js/file.js?v={{version}}" type="text/javascript"></script>
  </body>
 </html>

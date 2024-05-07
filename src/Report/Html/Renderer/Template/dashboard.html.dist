@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
  <head>
   <meta charset="UTF-8">
   <title>Dashboard for {{full_path}}</title>

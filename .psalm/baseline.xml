@@ -104,6 +104,7 @@
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => $this->thresholds->highLowerBound(),
+                'theme'            => $this->theme,
             ]]]></code>
     </InvalidArgument>
     <PossiblyUndefinedArrayOffset>

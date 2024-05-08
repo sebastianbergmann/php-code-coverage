@@ -21,21 +21,23 @@ final class ColorsTest extends TestCase
     {
         $colors = Colors::default();
 
-        $this->assertSame('#dff0d8', $colors->successLow());
-        $this->assertSame('#c3e3b5', $colors->successMedium());
-        $this->assertSame('#99cb84', $colors->successHigh());
-        $this->assertSame('#fcf8e3', $colors->warning());
-        $this->assertSame('#f2dede', $colors->danger());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.25)', $colors->successLow());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.5)', $colors->successMedium());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.75)', $colors->successHigh());
+        $this->assertSame('rgb(from var(--bs-warning) r g b / 0.25)', $colors->warning());
+        $this->assertSame('rgb(from var(--bs-danger) r g b / 0.25)', $colors->danger());
+        $this->assertSame('', $colors->theme());
     }
 
     public function testCanBeCreatedFromCustomValues(): void
     {
-        $colors = Colors::from('successLow', 'successMedium', 'successHigh', 'warning', 'danger');
+        $colors = Colors::from('successLow', 'successMedium', 'successHigh', 'warning', 'danger', 'dark');
 
         $this->assertSame('successLow', $colors->successLow());
         $this->assertSame('successMedium', $colors->successMedium());
         $this->assertSame('successHigh', $colors->successHigh());
         $this->assertSame('warning', $colors->warning());
         $this->assertSame('danger', $colors->danger());
+        $this->assertSame('dark', $colors->theme());
     }
 }

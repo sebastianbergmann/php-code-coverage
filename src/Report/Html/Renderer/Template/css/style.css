@@ -40,38 +40,27 @@ body {
 }
 
 .table tbody tr.covered-by-large-tests td, li.covered-by-large-tests, tr.success, td.success, li.success, span.success {
- /* background-color: {{success-low}}; */
- /* background-color: var(--bs-success-border-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.25);
+ background-color: {{success-low}};
 }
 
 .table tbody tr.covered-by-medium-tests td, li.covered-by-medium-tests {
- /* background-color: {{success-medium}}; */
- /* background-color: var(--bs-success-bg-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.5);
+ background-color: {{success-medium}};
 }
 
 .table tbody tr.covered-by-small-tests td, li.covered-by-small-tests {
- /* background-color: {{success-high}}; */
- /* background-color: var(--bs-success-bg-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.75);
+ background-color: {{success-high}};
 }
 
 .table tbody tr.warning td, .table tbody td.warning, li.warning, span.warning {
- /* background-color: {{warning}}; */
- /* background-color: var(--bs-warning-bg-subtle); */
- background-color: rgb(from var(--bs-warning) r g b / 0.25);
+ background-color: {{warning}};
 }
 
 .table tbody tr.danger td, .table tbody td.danger, li.danger, span.danger {
- /* background-color: {{danger}}; */
- /* background-color: var(--bs-danger-bg-subtle); */
- background-color: rgb(from var(--bs-danger) r g b / 0.25);
+ background-color: {{danger}};
 }
 
 .table tbody td.info {
  /* background-color: #d9edf7; */
- /* background-color: var(--bs-info-bg-subtle); */
  background-color: rgb(from var(--bs-info) r g b / 0.25);
 }
 
@@ -160,31 +149,21 @@ table + .structure-heading {
 }
 
 .covered-by-small-tests, tr.covered-by-small-tests td {
- /* background-color: {{success-high}}; */
- /* background-color: var(--bs-success-bg-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.75);
+ background-color: {{success-high}};
 }
 
 .covered-by-medium-tests, tr.covered-by-medium-tests td {
- /* background-color: {{success-medium}}; */
- /* background-color: var(--bs-success-bg-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.5);
+ background-color: {{success-medium}};
 }
 
 .covered-by-large-tests, tr.covered-by-large-tests td {
- /* background-color: {{success-low}}; */
- /* background-color: var(--bs-success-border-subtle); */
- background-color: rgb(from var(--bs-success) r g b / 0.25);
+ background-color: {{success-low}};
 }
 
 .not-covered, tr.not-covered td {
- /* background-color: {{danger}}; */
- /* background-color: var(--bs-danger-bg-subtle); */
- background-color: rgb(from var(--bs-danger) r g b / 0.25);
+ background-color: {{danger}};
 }
 
 .not-coverable, tr.not-coverable td {
- /* background-color: {{warning}}; */
- /* background-color: var(--bs-warning-bg-subtle); */
- background-color: rgb(from var(--bs-warning) r g b / 0.25);
+ background-color: {{warning}};
 }

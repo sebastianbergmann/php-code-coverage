@@ -51,6 +51,7 @@ final class Facade
             $date,
             $this->thresholds,
             $coverage->collectsBranchAndPathCoverage(),
+            $this->colors->theme(),
         );
 
         $directory = new Directory(
@@ -59,6 +60,7 @@ final class Facade
             $date,
             $this->thresholds,
             $coverage->collectsBranchAndPathCoverage(),
+            $this->colors->theme(),
         );
 
         $file = new File(
@@ -67,6 +69,7 @@ final class Facade
             $date,
             $this->thresholds,
             $coverage->collectsBranchAndPathCoverage(),
+            $this->colors->theme(),
         );
 
         $directory->render($report, $target . 'index.html');

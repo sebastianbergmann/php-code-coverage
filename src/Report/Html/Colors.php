@@ -19,24 +19,33 @@ final class Colors
     private readonly string $successHigh;
     private readonly string $warning;
     private readonly string $danger;
+    private readonly string $theme;
 
     public static function default(): self
     {
-        return new self('#dff0d8', '#c3e3b5', '#99cb84', '#fcf8e3', '#f2dede');
+        return new self(
+            'rgb(from var(--bs-success) r g b / 0.25)',
+            'rgb(from var(--bs-success) r g b / 0.5)',
+            'rgb(from var(--bs-success) r g b / 0.75)',
+            'rgb(from var(--bs-warning) r g b / 0.25)',
+            'rgb(from var(--bs-danger) r g b / 0.25)',
+            // 'dark', // or any other theme name defined in customCssFile
+        );
     }
 
-    public static function from(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger): self
+    public static function from(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger, string $theme = ''): self
     {
-        return new self($successLow, $successMedium, $successHigh, $warning, $danger);
+        return new self($successLow, $successMedium, $successHigh, $warning, $danger, $theme);
     }
 
-    private function __construct(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger)
+    private function __construct(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger, string $theme = '')
     {
         $this->successLow    = $successLow;
         $this->successMedium = $successMedium;
         $this->successHigh   = $successHigh;
         $this->warning       = $warning;
         $this->danger        = $danger;
+        $this->theme         = $theme;
     }
 
     public function successLow(): string
@@ -62,5 +71,10 @@ final class Colors
     public function danger(): string
     {
         return $this->danger;
+    }
+
+    public function theme(): string
+    {
+        return $this->theme;
     }
 }

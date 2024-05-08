@@ -33,8 +33,9 @@ abstract class Renderer
     protected Thresholds $thresholds;
     protected bool $hasBranchCoverage;
     protected string $version;
+    protected string $theme;
 
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, string $theme)
     {
         $this->templatePath      = $templatePath;
         $this->generator         = $generator;
@@ -42,6 +43,7 @@ abstract class Renderer
         $this->thresholds        = $thresholds;
         $this->version           = Version::id();
         $this->hasBranchCoverage = $hasBranchCoverage;
+        $this->theme             = $theme;
     }
 
     protected function renderItemTemplate(Template $template, array $data): string
@@ -173,6 +175,7 @@ abstract class Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => $this->thresholds->highLowerBound(),
+                'theme'            => $this->theme,
             ],
         );
     }

@@ -22,13 +22,7 @@ final class Colors
 
     public static function default(): self
     {
-        return new self(
-            'rgb(from var(--bs-success) r g b / 0.1)',
-            'rgb(from var(--bs-success) r g b / 0.33)',
-            'rgb(from var(--bs-success) r g b / 0.67)',
-            'rgb(from var(--bs-warning) r g b / 0.1)',
-            'rgb(from var(--bs-danger) r g b / 0.1)',
-        );
+        return new self('#dff0d8', '#c3e3b5', '#99cb84', '#fcf8e3', '#f2dede');
     }
 
     public static function from(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger): self

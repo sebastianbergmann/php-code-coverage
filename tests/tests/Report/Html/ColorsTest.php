@@ -21,11 +21,11 @@ final class ColorsTest extends TestCase
     {
         $colors = Colors::default();
 
-        $this->assertSame('#dff0d8', $colors->successLow());
-        $this->assertSame('#c3e3b5', $colors->successMedium());
-        $this->assertSame('#99cb84', $colors->successHigh());
-        $this->assertSame('#fcf8e3', $colors->warning());
-        $this->assertSame('#f2dede', $colors->danger());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.1)', $colors->successLow());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.33)', $colors->successMedium());
+        $this->assertSame('rgb(from var(--bs-success) r g b / 0.67)', $colors->successHigh());
+        $this->assertSame('rgb(from var(--bs-warning) r g b / 0.1)', $colors->warning());
+        $this->assertSame('rgb(from var(--bs-danger) r g b / 0.1)', $colors->danger());
     }
 
     public function testCanBeCreatedFromCustomValues(): void

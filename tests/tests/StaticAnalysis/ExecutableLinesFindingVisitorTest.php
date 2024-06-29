@@ -24,22 +24,22 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 {
     public function testExecutableLinesAreGroupedByBranch(): void
     {
-        $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines.php');
+        $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines.php');
     }
 
     #[RequiresPhp('>=8.1')]
     public function testExecutableLinesAreGroupedByBranchPhp81(): void
     {
-        $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');
+        $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');
     }
 
     #[RequiresPhp('>=8.2')]
     public function testExecutableLinesAreGroupedByBranchPhp82(): void
     {
-        $this->doTestSelfDescribingAsset(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');
+        $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');
     }
 
-    private function doTestSelfDescribingAsset(string $filename): void
+    private function doTestSelfDescribingAssert(string $filename): void
     {
         $source                        = file_get_contents($filename);
         $parser                        = (new ParserFactory)->createForHostVersion();

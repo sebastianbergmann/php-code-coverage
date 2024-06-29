@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use PHPUnit\Framework\Attributes\Ticket;
 use function explode;
 use function file_get_contents;
 use function preg_match;
@@ -37,6 +38,32 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     public function testExecutableLinesAreGroupedByBranchPhp82(): void
     {
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
+    public function testMatchArmsAreProcessedCorrectly(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../_files/source_match_expression.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $this->assertSame(
+            [
+                8  => 2,
+                9  => 3,
+                10 => 4,
+                11 => 5,
+                12 => 6,
+                13 => 7,
+                14 => 2,
+            ],
+            $executableLinesFindingVisitor->executableLinesGroupedByBranch(),
+        );
     }
 
     private function doTestSelfDescribingAssert(string $filename): void

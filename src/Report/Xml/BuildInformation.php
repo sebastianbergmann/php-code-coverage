@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function assert;
 use function phpversion;
 use DateTimeImmutable;
 use DOMElement;
@@ -73,6 +74,8 @@ final class BuildInformation
                 ),
             );
         }
+
+        assert($node instanceof DOMElement);
 
         return $node;
     }

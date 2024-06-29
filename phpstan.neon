@@ -1,0 +1,46 @@
+parameters:
+    level: 3
+    paths:
+        - src
+        - tests/tests
+        - tests/bootstrap.php
+    ignoreErrors:
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\CodeUnitFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitor\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/CodeUnitFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\CodeUnitFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitorAbstract\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/CodeUnitFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\ExecutableLinesFindingVisitor\\:\\:afterTraverse\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|null\\) of method PhpParser\\\\NodeVisitor\\:\\:afterTraverse\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/ExecutableLinesFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\ExecutableLinesFindingVisitor\\:\\:afterTraverse\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|null\\) of method PhpParser\\\\NodeVisitorAbstract\\:\\:afterTraverse\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/ExecutableLinesFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\ExecutableLinesFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitor\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/ExecutableLinesFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\ExecutableLinesFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitorAbstract\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/ExecutableLinesFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\IgnoredLinesFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitor\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/IgnoredLinesFindingVisitor.php
+
+        -
+            message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\IgnoredLinesFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitorAbstract\\:\\:enterNode\\(\\)$#"
+            count: 1
+            path: src/StaticAnalysis/IgnoredLinesFindingVisitor.php

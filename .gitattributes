@@ -1,14 +1,14 @@
-/.gitattributes export-ignore
-/.gitignore     export-ignore
-/.github        export-ignore
-/.phive         export-ignore
-/.php-cs-fixer.dist.php   export-ignore
-/.psalm         export-ignore
-/build          export-ignore
-/build.xml      export-ignore
-/phpunit.xml    export-ignore
-/tests          export-ignore
-/tools          export-ignore
-/tools/*        binary
+/.gitattributes         export-ignore
+/.gitignore             export-ignore
+/.github                export-ignore
+/.phive                 export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/build                  export-ignore
+/build.xml              export-ignore
+/phpstan.neon           export-ignore
+/phpunit.xml            export-ignore
+/tests                  export-ignore
+/tools                  export-ignore
+/tools/*                binary
 
 *.php diff=php

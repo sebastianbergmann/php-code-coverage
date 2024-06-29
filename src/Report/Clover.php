@@ -73,6 +73,11 @@ final class Clover
                 $coveredMethods         = 0;
                 $classMethods           = 0;
 
+                // Assumption: one namespace per file
+                if ($class['namespace'] !== '') {
+                    $namespace = $class['namespace'];
+                }
+
                 foreach ($class['methods'] as $methodName => $method) {
                     if ($method['executableLines'] == 0) {
                         continue;
@@ -104,41 +109,9 @@ final class Clover
                     ];
                 }
 
-                if (!empty($class['package']['namespace'])) {
-                    $namespace = $class['package']['namespace'];
-                }
-
                 $xmlClass = $xmlDocument->createElement('class');
                 $xmlClass->setAttribute('name', $className);
                 $xmlClass->setAttribute('namespace', $namespace);
-
-                if (!empty($class['package']['fullPackage'])) {
-                    $xmlClass->setAttribute(
-                        'fullPackage',
-                        $class['package']['fullPackage'],
-                    );
-                }
-
-                if (!empty($class['package']['category'])) {
-                    $xmlClass->setAttribute(
-                        'category',
-                        $class['package']['category'],
-                    );
-                }
-
-                if (!empty($class['package']['package'])) {
-                    $xmlClass->setAttribute(
-                        'package',
-                        $class['package']['package'],
-                    );
-                }
-
-                if (!empty($class['package']['subpackage'])) {
-                    $xmlClass->setAttribute(
-                        'subpackage',
-                        $class['package']['subpackage'],
-                    );
-                }
 
                 $xmlFile->appendChild($xmlClass);
 

@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [10.1.15] - 2024-MM-DD
+## [10.1.15] - 2024-06-29
 
 ### Fixed
 
@@ -107,7 +107,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
-[10.1.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.14...10.1
+[10.1.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.14...10.1.15
 [10.1.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.13...10.1.14
 [10.1.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.12...10.1.13
 [10.1.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.11...10.1.12

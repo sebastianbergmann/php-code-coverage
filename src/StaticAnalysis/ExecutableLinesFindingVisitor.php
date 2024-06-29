@@ -105,7 +105,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Stmt\Use_ ||
             $node instanceof Node\Stmt\UseUse ||
             $node instanceof Node\Expr\ConstFetch ||
-            $node instanceof Node\Expr\Match_ ||
             $node instanceof Node\Expr\Variable ||
             $node instanceof Node\Expr\Throw_ ||
             $node instanceof Node\ComplexType ||
@@ -114,6 +113,18 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node instanceof Node\Name ||
             $node instanceof Node\Param ||
             $node instanceof Node\Scalar) {
+            return;
+        }
+
+        if ($node instanceof Node\Expr\Match_) {
+            foreach ($node->arms as $arm) {
+                $this->setLineBranch(
+                    $arm->body->getStartLine(),
+                    $arm->body->getEndLine(),
+                    ++$this->nextBranch,
+                );
+            }
+
             return;
         }
 

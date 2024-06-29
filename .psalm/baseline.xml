@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.18.0@b113f3ed0259fd6e212d87c3df80eec95a6abf19">
+<files psalm-version="5.25.0@01a8eb06b9e9cc6cfb6a320bf9fb14331919d505">
   <file src="src/CodeCoverage.php">
     <ArgumentTypeCoercion>
-      <code>$tmp[0]</code>
+      <code><![CDATA[$tmp[0]]]></code>
     </ArgumentTypeCoercion>
     <RedundantCondition>
       <code><![CDATA[$class->isSubclassOf($parentClass)]]></code>
-      <code>is_array($linesToBeCovered)</code>
+      <code><![CDATA[is_array($linesToBeCovered)]]></code>
     </RedundantCondition>
   </file>
   <file src="src/Data/ProcessedCodeCoverageData.php">
     <InvalidArgument>
-      <code>$functionData</code>
-      <code>$functionData</code>
+      <code><![CDATA[$functionData]]></code>
+      <code><![CDATA[$functionData]]></code>
     </InvalidArgument>
     <PossiblyNullArgument>
       <code><![CDATA[$newData->lineCoverage[$file][$line]]]></code>
@@ -35,45 +35,52 @@
   </file>
   <file src="src/Driver/PcovDriver.php">
     <UndefinedConstant>
-      <code>inclusive</code>
+      <code><![CDATA[inclusive]]></code>
     </UndefinedConstant>
     <UndefinedFunction>
-      <code>clear()</code>
-      <code>collect(inclusive, $filesToCollectCoverageFor)</code>
-      <code>start()</code>
-      <code>stop()</code>
-      <code>waiting()</code>
+      <code><![CDATA[clear()]]></code>
+      <code><![CDATA[collect(inclusive, $filesToCollectCoverageFor)]]></code>
+      <code><![CDATA[start()]]></code>
+      <code><![CDATA[stop()]]></code>
+      <code><![CDATA[waiting()]]></code>
     </UndefinedFunction>
   </file>
   <file src="src/Driver/XdebugDriver.php">
     <UndefinedConstant>
-      <code>XDEBUG_CC_BRANCH_CHECK</code>
-      <code>XDEBUG_CC_DEAD_CODE</code>
-      <code>XDEBUG_CC_UNUSED</code>
-      <code>XDEBUG_FILTER_CODE_COVERAGE</code>
-      <code>XDEBUG_PATH_INCLUDE</code>
+      <code><![CDATA[XDEBUG_CC_BRANCH_CHECK]]></code>
+      <code><![CDATA[XDEBUG_CC_DEAD_CODE]]></code>
+      <code><![CDATA[XDEBUG_CC_UNUSED]]></code>
+      <code><![CDATA[XDEBUG_FILTER_CODE_COVERAGE]]></code>
+      <code><![CDATA[XDEBUG_PATH_INCLUDE]]></code>
     </UndefinedConstant>
   </file>
   <file src="src/Filter.php">
     <ArgumentTypeCoercion>
-      <code>$directory</code>
-      <code>$directory</code>
+      <code><![CDATA[$directory]]></code>
+      <code><![CDATA[$directory]]></code>
     </ArgumentTypeCoercion>
     <DeprecatedMethod>
-      <code>excludeFile</code>
+      <code><![CDATA[excludeFile]]></code>
     </DeprecatedMethod>
     <InvalidDocblockParamName>
-      <code>$files</code>
+      <code><![CDATA[$files]]></code>
     </InvalidDocblockParamName>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[!$filename]]></code>
+      <code><![CDATA[!$filename]]></code>
+    </RiskyTruthyFalsyComparison>
   </file>
   <file src="src/Node/Builder.php">
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($paths[$i][0])]]></code>
+    </RiskyTruthyFalsyComparison>
     <UnsupportedReferenceUsage>
       <code><![CDATA[$pointer = &$pointer[$path[$i] . $type]]]></code>
     </UnsupportedReferenceUsage>
   </file>
   <file src="src/Node/Directory.php">
     <MissingTemplateParam>
-      <code>IteratorAggregate</code>
+      <code><![CDATA[IteratorAggregate]]></code>
     </MissingTemplateParam>
     <PropertyTypeCoercion>
       <code><![CDATA[$this->directories]]></code>
@@ -89,10 +96,10 @@
       <code><![CDATA[$this->nodes[$this->position]]]></code>
     </ArgumentTypeCoercion>
     <MissingTemplateParam>
-      <code>RecursiveIterator</code>
+      <code><![CDATA[RecursiveIterator]]></code>
     </MissingTemplateParam>
     <PropertyNotSetInConstructor>
-      <code>$position</code>
+      <code><![CDATA[$position]]></code>
     </PropertyNotSetInConstructor>
     <PropertyTypeCoercion>
       <code><![CDATA[$node->children()]]></code>
@@ -140,52 +147,43 @@
             ]]]></code>
     </InvalidArgument>
     <InvalidArrayOffset>
-      <code>$tokens[$j - 1]</code>
+      <code><![CDATA[$tokens[$j - 1]]]></code>
     </InvalidArrayOffset>
-  </file>
-  <file src="src/Report/Xml/BuildInformation.php">
-    <PossiblyNullReference>
-      <code>createElementNS</code>
-    </PossiblyNullReference>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$coverageData[$i]]]></code>
+    </RiskyTruthyFalsyComparison>
   </file>
   <file src="src/Report/Xml/Coverage.php">
     <PossiblyNullReference>
-      <code>createDocumentFragment</code>
-      <code>replaceChild</code>
+      <code><![CDATA[replaceChild]]></code>
     </PossiblyNullReference>
   </file>
   <file src="src/Report/Xml/Facade.php">
     <PropertyNotSetInConstructor>
-      <code>$project</code>
-      <code>$target</code>
+      <code><![CDATA[$project]]></code>
+      <code><![CDATA[$target]]></code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/File.php">
     <ArgumentTypeCoercion>
-      <code>$totalsContainer</code>
+      <code><![CDATA[$totalsContainer]]></code>
     </ArgumentTypeCoercion>
-    <PossiblyNullPropertyAssignmentValue>
-      <code><![CDATA[$context->ownerDocument]]></code>
-    </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Report/Xml/Node.php">
     <ArgumentTypeCoercion>
-      <code>$totalsContainer</code>
+      <code><![CDATA[$totalsContainer]]></code>
     </ArgumentTypeCoercion>
-    <PossiblyNullPropertyAssignmentValue>
-      <code><![CDATA[$context->ownerDocument]]></code>
-    </PossiblyNullPropertyAssignmentValue>
     <PropertyNotSetInConstructor>
-      <code>$contextNode</code>
-      <code>$dom</code>
+      <code><![CDATA[$contextNode]]></code>
+      <code><![CDATA[$dom]]></code>
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Report/Xml/Report.php">
     <MissingParamType>
-      <code>$name</code>
-      <code>$name</code>
-      <code>$name</code>
-      <code>$name</code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$name]]></code>
     </MissingParamType>
   </file>
   <file src="src/Report/Xml/Source.php">
@@ -193,24 +191,7 @@
       <code><![CDATA[$context->namespaceURI]]></code>
     </PossiblyNullArgument>
     <PossiblyNullReference>
-      <code>importNode</code>
-      <code>replaceChild</code>
-    </PossiblyNullReference>
-  </file>
-  <file src="src/Report/Xml/Tests.php">
-    <PossiblyNullReference>
-      <code>createElementNS</code>
-    </PossiblyNullReference>
-  </file>
-  <file src="src/Report/Xml/Totals.php">
-    <PossiblyNullReference>
-      <code>createElementNS</code>
-    </PossiblyNullReference>
-  </file>
-  <file src="src/Report/Xml/Unit.php">
-    <PossiblyNullReference>
-      <code>createElementNS</code>
-      <code>createElementNS</code>
+      <code><![CDATA[replaceChild]]></code>
     </PossiblyNullReference>
   </file>
   <file src="src/StaticAnalysis/CachingFileAnalyser.php">
@@ -244,13 +225,13 @@
       <code><![CDATA[$parameter->var->name]]></code>
     </PossiblyInvalidOperand>
     <PossiblyNullReference>
-      <code>toString</code>
-      <code>toString</code>
-      <code>toString</code>
-      <code>toString</code>
+      <code><![CDATA[toString]]></code>
+      <code><![CDATA[toString]]></code>
+      <code><![CDATA[toString]]></code>
+      <code><![CDATA[toString]]></code>
     </PossiblyNullReference>
     <PossiblyUndefinedMethod>
-      <code>toString</code>
+      <code><![CDATA[toString]]></code>
     </PossiblyUndefinedMethod>
     <RedundantCondition>
       <code><![CDATA[assert($node->namespacedName instanceof Name)]]></code>
@@ -269,7 +250,12 @@
   </file>
   <file src="src/StaticAnalysis/ExecutableLinesFindingVisitor.php">
     <UndefinedClass>
-      <code>Node\Stmt\Throw_</code>
+      <code><![CDATA[Node\Stmt\Throw_]]></code>
     </UndefinedClass>
+  </file>
+  <file src="src/StaticAnalysis/ParsingFileAnalyser.php">
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($source)]]></code>
+    </RiskyTruthyFalsyComparison>
   </file>
 </files>

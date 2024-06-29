@@ -96,6 +96,9 @@ jobs:
           - php-version: "8.3"
             coverage-driver: "xdebug"
 
+          - php-version: "8.4"
+            coverage-driver: "xdebug"
+
     steps:
       - name: Configure Git to avoid issues with line endings
         if: matrix.os == 'windows-latest'

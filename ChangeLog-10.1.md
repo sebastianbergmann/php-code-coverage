@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.1.15] - 2024-MM-DD
+
+### Fixed
+
+* [#967](https://github.com/sebastianbergmann/php-code-coverage/issues/967): Identification of executable lines for `match` expressions does not work correctly
+
 ## [10.1.14] - 2024-03-12
 
 ### Fixed
@@ -101,6 +107,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
+[10.1.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.14...10.1
 [10.1.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.13...10.1.14
 [10.1.13]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.12...10.1.13
 [10.1.12]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.11...10.1.12

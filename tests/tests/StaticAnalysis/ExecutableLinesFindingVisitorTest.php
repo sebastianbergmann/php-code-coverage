@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use PHPUnit\Framework\Attributes\Ticket;
 use function explode;
 use function file_get_contents;
 use function preg_match;
@@ -18,6 +17,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresPhp;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ExecutableLinesFindingVisitor::class)]

@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [11.0.4] - 2024-MM-DD
+## [11.0.4] - 2024-06-29
 
 ### Fixed
 
@@ -34,7 +34,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component now requires PHP-Parser 5
 * This component is no longer supported on PHP 8.1
 
-[11.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.3...main
+[11.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.3...11.0.4
 [11.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.2...11.0.3
 [11.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.1...11.0.2
 [11.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.0...11.0.1

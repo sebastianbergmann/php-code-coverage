@@ -315,4 +315,6 @@ $config->setFinder($finder)
         'whitespace_after_comma_in_array' => true,
     ]);
 
+$config->setCacheFile(__DIR__ . '/.php-cs-fixer.cache/' . sha1(@trim((string) @shell_exec('git rev-parse --abbrev-ref HEAD'))));
+
 return $config;

@@ -33,18 +33,18 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
-        "nikic/php-parser": "^4.18 || ^5.0",
-        "phpunit/php-file-iterator": "^4.0",
-        "phpunit/php-text-template": "^3.0",
-        "sebastian/code-unit-reverse-lookup": "^3.0",
-        "sebastian/complexity": "^3.0",
-        "sebastian/environment": "^6.0",
-        "sebastian/lines-of-code": "^2.0",
-        "sebastian/version": "^4.0",
-        "theseer/tokenizer": "^1.2.0"
+        "nikic/php-parser": "^4.19.1 || ^5.1.0",
+        "phpunit/php-file-iterator": "^4.1.0",
+        "phpunit/php-text-template": "^3.0.1",
+        "sebastian/code-unit-reverse-lookup": "^3.0.0",
+        "sebastian/complexity": "^3.2.0",
+        "sebastian/environment": "^6.1.0",
+        "sebastian/lines-of-code": "^2.0.2",
+        "sebastian/version": "^4.0.1",
+        "theseer/tokenizer": "^1.2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^10.5.27"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",

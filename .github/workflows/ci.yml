@@ -6,6 +6,9 @@ on:
 
 name: CI
 
+env:
+  COMPOSER_ROOT_VERSION: "9.2.x-dev"
+
 jobs:
   coding-guidelines:
     name: Coding Guidelines

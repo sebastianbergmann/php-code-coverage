@@ -1,5 +1,5 @@
 :root {
- --phpunit-breadcrumbs: #e9ecef;
+ --phpunit-breadcrumbs: var(--bs-gray-200);
  --phpunit-success-bar: #28a745;
  --phpunit-success-high: {{success-high}};
  --phpunit-success-medium: {{success-medium}};

@@ -1,4 +1,5 @@
 :root {
+ --phpunit-breadcrumbs: #e9ecef;
  --phpunit-success-bar: #28a745;
  --phpunit-success-high: {{success-high}};
  --phpunit-success-medium: {{success-medium}};
@@ -16,6 +17,12 @@ body {
  font-variant-ligatures: common-ligatures;
  text-rendering: optimizeLegibility;
  padding-top: 10px;
+}
+
+nav .breadcrumb {
+  border-radius: var(--bs-border-radius);
+  background-color: var(--phpunit-breadcrumbs);
+  padding: .75rem 1rem;
 }
 
 .popover {

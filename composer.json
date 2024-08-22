@@ -33,15 +33,15 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
-        "nikic/php-parser": "^4.18 || ^5.0",
-        "phpunit/php-file-iterator": "^3.0.3",
-        "phpunit/php-text-template": "^2.0.2",
-        "sebastian/code-unit-reverse-lookup": "^2.0.2",
-        "sebastian/complexity": "^2.0",
-        "sebastian/environment": "^5.1.2",
-        "sebastian/lines-of-code": "^1.0.3",
-        "sebastian/version": "^3.0.1",
-        "theseer/tokenizer": "^1.2.0"
+        "nikic/php-parser": "^4.19.1 || ^5.1.0",
+        "phpunit/php-file-iterator": "^3.0.6",
+        "phpunit/php-text-template": "^2.0.4",
+        "sebastian/code-unit-reverse-lookup": "^2.0.3",
+        "sebastian/complexity": "^2.0.3",
+        "sebastian/environment": "^5.1.5",
+        "sebastian/lines-of-code": "^1.0.4",
+        "sebastian/version": "^3.0.2",
+        "theseer/tokenizer": "^1.2.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6"

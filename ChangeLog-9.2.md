@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.32] - 2024-08-22
+
+### Changed
+
+* Updated dependencies (so that users that install using Composer's `--prefer-lowest` CLI option also get recent versions)
+
 ## [9.2.31] - 2024-03-02
 
 ### Changed
@@ -511,6 +517,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.32]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.31...9.2.32
 [9.2.31]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.30...9.2.31
 [9.2.30]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.29...9.2.30
 [9.2.29]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.28...9.2.29

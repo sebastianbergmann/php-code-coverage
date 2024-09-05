@@ -147,6 +147,16 @@ table + .structure-heading {
  padding-top: 0.5em;
 }
 
+table#code {
+  td:nth-child(1) {
+    padding-left: .75em;
+    padding-right: .75em;
+    a {
+      text-decoration: none;
+     }
+  }
+}
+
 .legend {
  font-weight: bold;
  margin-right: 2px;

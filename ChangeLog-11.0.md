@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [11.0.7] - 2024-MM-DD
+
+### Changed
+
+* [#1037](https://github.com/sebastianbergmann/php-code-coverage/pull/1037): Upgrade Bootstrap to version 5.3.3 for HTML report
+* [#1046](https://github.com/sebastianbergmann/php-code-coverage/pull/1046): CSS fixes for HTML report
+
 ## [11.0.6] - 2024-08-22
 
 ### Changed
@@ -46,6 +53,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component now requires PHP-Parser 5
 * This component is no longer supported on PHP 8.1
 
+[11.0.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.6...main
 [11.0.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.5...11.0.6
 [11.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.4...11.0.5
 [11.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.3...11.0.4

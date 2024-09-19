@@ -9,6 +9,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#1037](https://github.com/sebastianbergmann/php-code-coverage/pull/1037): Upgrade Bootstrap to version 5.3.3 for HTML report
 * [#1046](https://github.com/sebastianbergmann/php-code-coverage/pull/1046): CSS fixes for HTML report
 
+### Deprecated
+
+* The `SebastianBergmann\CodeCoverage\Filter::includeUncoveredFiles()`, `SebastianBergmann\CodeCoverage\Filter::excludeUncoveredFiles()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods have been deprecated
+
 ## [11.0.6] - 2024-08-22
 
 ### Changed

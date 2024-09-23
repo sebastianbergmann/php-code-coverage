@@ -139,6 +139,89 @@ final class CodeUnitFindingVisitorTest extends TestCase
         );
     }
 
+    public function testDetailsAboutExtendedClassesImplementedInterfacesAndUsedTraitsAreAvailable(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/source_with_interfaces_classes_and_traits.php');
+
+        $interfaces = $codeUnitFindingVisitor->interfaces();
+
+        $this->assertCount(3, $interfaces);
+
+        $a = 'SebastianBergmann\CodeCoverage\StaticAnalysis\A';
+        $b = 'SebastianBergmann\CodeCoverage\StaticAnalysis\B';
+        $c = 'SebastianBergmann\CodeCoverage\StaticAnalysis\C';
+
+        $this->assertArrayHasKey($a, $interfaces);
+        $this->assertArrayHasKey($b, $interfaces);
+        $this->assertArrayHasKey($c, $interfaces);
+
+        $this->assertSame('A', $interfaces[$a]['name']);
+        $this->assertSame($a, $interfaces[$a]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $interfaces[$a]['namespace']);
+        $this->assertSame(4, $interfaces[$a]['startLine']);
+        $this->assertSame(6, $interfaces[$a]['endLine']);
+        $this->assertSame([], $interfaces[$a]['parentInterfaces']);
+
+        $this->assertSame('B', $interfaces[$b]['name']);
+        $this->assertSame($b, $interfaces[$b]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $interfaces[$b]['namespace']);
+        $this->assertSame(8, $interfaces[$b]['startLine']);
+        $this->assertSame(10, $interfaces[$b]['endLine']);
+        $this->assertSame([], $interfaces[$b]['parentInterfaces']);
+
+        $this->assertSame('C', $interfaces[$c]['name']);
+        $this->assertSame($c, $interfaces[$c]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $interfaces[$c]['namespace']);
+        $this->assertSame(12, $interfaces[$c]['startLine']);
+        $this->assertSame(14, $interfaces[$c]['endLine']);
+        $this->assertSame([$a, $b], $interfaces[$c]['parentInterfaces']);
+
+        $traits = $codeUnitFindingVisitor->traits();
+
+        $this->assertCount(1, $traits);
+
+        $t = 'SebastianBergmann\CodeCoverage\StaticAnalysis\T';
+
+        $this->assertArrayHasKey($t, $traits);
+
+        $this->assertSame('T', $traits[$t]['name']);
+        $this->assertSame($t, $traits[$t]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $traits[$t]['namespace']);
+        $this->assertSame(16, $traits[$t]['startLine']);
+        $this->assertSame(18, $traits[$t]['endLine']);
+        $this->assertSame([], $traits[$t]['methods']);
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(2, $classes);
+
+        $parentClass = 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass';
+        $childClass  = 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass';
+
+        $this->assertArrayHasKey($parentClass, $classes);
+        $this->assertArrayHasKey($childClass, $classes);
+
+        $this->assertSame('ParentClass', $classes[$parentClass]['name']);
+        $this->assertSame($parentClass, $classes[$parentClass]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $classes[$parentClass]['namespace']);
+        $this->assertSame(20, $classes[$parentClass]['startLine']);
+        $this->assertSame(22, $classes[$parentClass]['endLine']);
+        $this->assertNull($classes[$parentClass]['parentClass']);
+        $this->assertSame([$c], $classes[$parentClass]['interfaces']);
+        $this->assertSame([], $classes[$parentClass]['traits']);
+        $this->assertSame([], $classes[$parentClass]['methods']);
+
+        $this->assertSame('ChildClass', $classes[$childClass]['name']);
+        $this->assertSame($childClass, $classes[$childClass]['namespacedName']);
+        $this->assertSame('SebastianBergmann\CodeCoverage\StaticAnalysis', $classes[$childClass]['namespace']);
+        $this->assertSame(24, $classes[$childClass]['startLine']);
+        $this->assertSame(27, $classes[$childClass]['endLine']);
+        $this->assertSame($parentClass, $classes[$childClass]['parentClass']);
+        $this->assertSame([$a, $b], $classes[$childClass]['interfaces']);
+        $this->assertSame([$t], $classes[$childClass]['traits']);
+        $this->assertSame([], $classes[$childClass]['methods']);
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->createForHostVersion()->parse(

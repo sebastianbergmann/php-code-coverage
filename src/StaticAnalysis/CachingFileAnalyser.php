@@ -25,6 +25,7 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
  *
  * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
@@ -47,6 +48,18 @@ final class CachingFileAnalyser implements FileAnalyser
         $this->directory                     = $directory;
         $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
         $this->ignoreDeprecatedCode          = $ignoreDeprecatedCode;
+    }
+
+    /**
+     * @return array<string, CodeUnitInterfaceType>
+     */
+    public function interfacesIn(string $filename): array
+    {
+        if (!isset($this->cache[$filename])) {
+            $this->process($filename);
+        }
+
+        return $this->cache[$filename]['interfacesIn'];
     }
 
     /**
@@ -132,6 +145,7 @@ final class CachingFileAnalyser implements FileAnalyser
         }
 
         $this->cache[$filename] = [
+            'interfacesIn'      => $this->analyser->interfacesIn($filename),
             'classesIn'         => $this->analyser->classesIn($filename),
             'traitsIn'          => $this->analyser->traitsIn($filename),
             'functionsIn'       => $this->analyser->functionsIn($filename),

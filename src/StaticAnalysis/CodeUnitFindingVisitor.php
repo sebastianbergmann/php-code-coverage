@@ -50,13 +50,24 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
  *     endLine: int,
  *     ccn: int
  * }
+ * @phpstan-type CodeUnitInterfaceType = array{
+ *     name: string,
+ *     namespacedName: string,
+ *     namespace: string,
+ *     startLine: int,
+ *     endLine: int,
+ *     parentInterfaces: list<non-empty-string>,
+ * }
  * @phpstan-type CodeUnitClassType = array{
  *     name: string,
  *     namespacedName: string,
  *     namespace: string,
  *     startLine: int,
  *     endLine: int,
- *     methods: array<string, CodeUnitMethodType>
+ *     parentClass: ?non-empty-string,
+ *     interfaces: list<non-empty-string>,
+ *     traits: list<non-empty-string>,
+ *     methods: array<string, CodeUnitMethodType>,
  * }
  * @phpstan-type CodeUnitTraitType = array{
  *     name: string,
@@ -69,6 +80,11 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
  */
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @var array<string, CodeUnitInterfaceType>
+     */
+    private array $interfaces = [];
+
     /**
      * @var array<string, CodeUnitClassType>
      */
@@ -86,6 +102,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): void
     {
+        if ($node instanceof Interface_) {
+            $this->processInterface($node);
+        }
+
         if ($node instanceof Class_) {
             if ($node->isAnonymous()) {
                 return;
@@ -115,6 +135,37 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         }
 
         $this->processFunction($node);
+    }
+
+    public function leaveNode(Node $node): void
+    {
+        if (!$node instanceof Class_) {
+            return;
+        }
+
+        if ($node->isAnonymous()) {
+            return;
+        }
+
+        $traits = [];
+
+        foreach ($node->getTraitUses() as $traitUse) {
+            foreach ($traitUse->traits as $trait) {
+                $traits[] = $trait->toString();
+            }
+        }
+
+        assert(isset($this->classes[$node->namespacedName->toString()]));
+
+        $this->classes[$node->namespacedName->toString()]['traits'] = $traits;
+    }
+
+    /**
+     * @return array<string, CodeUnitInterfaceType>
+     */
+    public function interfaces(): array
+    {
+        return $this->interfaces;
     }
 
     /**
@@ -223,10 +274,40 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return 'public';
     }
 
+    private function processInterface(Interface_ $node): void
+    {
+        $name             = $node->name->toString();
+        $namespacedName   = $node->namespacedName->toString();
+        $parentInterfaces = [];
+
+        foreach ($node->extends as $parentInterface) {
+            $parentInterfaces[] = $parentInterface->toString();
+        }
+
+        $this->interfaces[$namespacedName] = [
+            'name'             => $name,
+            'namespacedName'   => $namespacedName,
+            'namespace'        => $this->namespace($namespacedName, $name),
+            'startLine'        => $node->getStartLine(),
+            'endLine'          => $node->getEndLine(),
+            'parentInterfaces' => $parentInterfaces,
+        ];
+    }
+
     private function processClass(Class_ $node): void
     {
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
+        $parentClass    = null;
+        $interfaces     = [];
+
+        if ($node->extends instanceof Name) {
+            $parentClass = $node->extends->toString();
+        }
+
+        foreach ($node->implements as $interface) {
+            $interfaces[] = $interface->toString();
+        }
 
         $this->classes[$namespacedName] = [
             'name'           => $name,
@@ -234,6 +315,9 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             'namespace'      => $this->namespace($namespacedName, $name),
             'startLine'      => $node->getStartLine(),
             'endLine'        => $node->getEndLine(),
+            'parentClass'    => $parentClass,
+            'interfaces'     => $interfaces,
+            'traits'         => [],
             'methods'        => [],
         ];
     }

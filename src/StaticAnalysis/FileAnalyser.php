@@ -14,6 +14,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  *
  * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  *
@@ -26,6 +27,11 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 interface FileAnalyser
 {
+    /**
+     * @return array<string, CodeUnitInterfaceType>
+     */
+    public function interfacesIn(string $filename): array;
+
     /**
      * @return array<string, CodeUnitClassType>
      */

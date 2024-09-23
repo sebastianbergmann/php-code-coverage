@@ -34,6 +34,7 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
  *
  * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
+ * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
@@ -41,6 +42,11 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
  */
 final class ParsingFileAnalyser implements FileAnalyser
 {
+    /**
+     * @var array<string, array<string, CodeUnitInterfaceType>>
+     */
+    private array $interfaces = [];
+
     /**
      * @var array<string, array<string, CodeUnitClassType>>
      */
@@ -77,6 +83,16 @@ final class ParsingFileAnalyser implements FileAnalyser
     {
         $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
         $this->ignoreDeprecatedCode          = $ignoreDeprecatedCode;
+    }
+
+    /**
+     * @return array<string, CodeUnitInterfaceType>
+     */
+    public function interfacesIn(string $filename): array
+    {
+        $this->analyse($filename);
+
+        return $this->interfaces[$filename];
     }
 
     /**
@@ -144,7 +160,7 @@ final class ParsingFileAnalyser implements FileAnalyser
      */
     private function analyse(string $filename): void
     {
-        if (isset($this->classes[$filename])) {
+        if (isset($this->interfaces[$filename])) {
             return;
         }
 
@@ -193,6 +209,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         }
         // @codeCoverageIgnoreEnd
 
+        $this->interfaces[$filename]      = $codeUnitFindingVisitor->interfaces();
         $this->classes[$filename]         = $codeUnitFindingVisitor->classes();
         $this->traits[$filename]          = $codeUnitFindingVisitor->traits();
         $this->functions[$filename]       = $codeUnitFindingVisitor->functions();

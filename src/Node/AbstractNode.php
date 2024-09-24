@@ -15,12 +15,12 @@ use function str_ends_with;
 use function str_replace;
 use function substr;
 use Countable;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  * @phpstan-import-type ProcessedFunctionType from \SebastianBergmann\CodeCoverage\Node\File
  * @phpstan-import-type ProcessedClassType from \SebastianBergmann\CodeCoverage\Node\File
  * @phpstan-import-type ProcessedTraitType from \SebastianBergmann\CodeCoverage\Node\File
@@ -186,10 +186,7 @@ abstract class AbstractNode implements Countable
      */
     abstract public function functions(): array;
 
-    /**
-     * @return LinesOfCodeType
-     */
-    abstract public function linesOfCode(): array;
+    abstract public function linesOfCode(): LinesOfCode;
 
     abstract public function numberOfExecutableLines(): int;
 

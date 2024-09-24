@@ -123,7 +123,7 @@ final class ParsingFileAnalyserTest extends TestCase
             1,
             (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
                 TEST_FILES_PATH . 'source_without_newline.php',
-            )['linesOfCode'],
+            )->linesOfCode(),
         );
     }
 
@@ -134,9 +134,9 @@ final class ParsingFileAnalyserTest extends TestCase
             TEST_FILES_PATH . 'source_without_lf_only_cr.php',
         );
 
-        $this->assertSame(4, $result['linesOfCode']);
-        $this->assertSame(2, $result['commentLinesOfCode']);
-        $this->assertSame(2, $result['nonCommentLinesOfCode']);
+        $this->assertSame(4, $result->linesOfCode());
+        $this->assertSame(2, $result->commentLinesOfCode());
+        $this->assertSame(2, $result->nonCommentLinesOfCode());
     }
 
     public function testLinesCanBeIgnoredUsingAttribute(): void

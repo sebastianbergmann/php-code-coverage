@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use function array_filter;
 use function count;
 use function range;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -20,7 +21,6 @@ use function range;
  * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  *
  * @phpstan-type ProcessedFunctionType = array{
@@ -119,11 +119,7 @@ final class File extends AbstractNode
      * @var array<string, ProcessedFunctionType>
      */
     private array $functions = [];
-
-    /**
-     * @var LinesOfCodeType
-     */
-    private readonly array $linesOfCode;
+    private readonly LinesOfCode $linesOfCode;
     private ?int $numClasses         = null;
     private int $numTestedClasses    = 0;
     private ?int $numTraits          = null;
@@ -142,9 +138,8 @@ final class File extends AbstractNode
      * @param array<string, CodeUnitClassType>    $classes
      * @param array<string, CodeUnitTraitType>    $traits
      * @param array<string, CodeUnitFunctionType> $functions
-     * @param LinesOfCodeType                     $linesOfCode
      */
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, array $linesOfCode)
+    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
     {
         parent::__construct($name, $parent);
 
@@ -203,7 +198,7 @@ final class File extends AbstractNode
         return $this->functions;
     }
 
-    public function linesOfCode(): array
+    public function linesOfCode(): LinesOfCode
     {
         return $this->linesOfCode;
     }
@@ -366,7 +361,7 @@ final class File extends AbstractNode
      */
     private function calculateStatistics(array $classes, array $traits, array $functions): void
     {
-        foreach (range(1, $this->linesOfCode['linesOfCode']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
@@ -374,7 +369,7 @@ final class File extends AbstractNode
         $this->processTraits($traits);
         $this->processFunctions($functions);
 
-        foreach (range(1, $this->linesOfCode['linesOfCode']) as $lineNumber) {
+        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                     $codeUnit['executableLines']++;

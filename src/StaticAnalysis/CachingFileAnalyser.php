@@ -28,7 +28,6 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
  * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class CachingFileAnalyser implements FileAnalyser
@@ -98,10 +97,7 @@ final class CachingFileAnalyser implements FileAnalyser
         return $this->cache[$filename]['functionsIn'];
     }
 
-    /**
-     * @return LinesOfCodeType
-     */
-    public function linesOfCodeFor(string $filename): array
+    public function linesOfCodeFor(string $filename): LinesOfCode
     {
         if (!isset($this->cache[$filename])) {
             $this->process($filename);
@@ -167,7 +163,11 @@ final class CachingFileAnalyser implements FileAnalyser
 
         return unserialize(
             file_get_contents($cacheFile),
-            ['allowed_classes' => false],
+            [
+                'allowed_classes' => [
+                    LinesOfCode::class,
+                ],
+            ],
         );
     }
 

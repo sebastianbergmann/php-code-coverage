@@ -18,11 +18,6 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  *
- * @phpstan-type LinesOfCodeType = array{
- *     linesOfCode: int,
- *     commentLinesOfCode: int,
- *     nonCommentLinesOfCode: int
- * }
  * @phpstan-type LinesType = array<int, int>
  */
 interface FileAnalyser
@@ -47,10 +42,7 @@ interface FileAnalyser
      */
     public function functionsIn(string $filename): array;
 
-    /**
-     * @return LinesOfCodeType
-     */
-    public function linesOfCodeFor(string $filename): array;
+    public function linesOfCodeFor(string $filename): LinesOfCode;
 
     /**
      * @return LinesType

@@ -39,7 +39,6 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
  * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type LinesOfCodeType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class ParsingFileAnalyser implements FileAnalyser
@@ -65,7 +64,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     private array $functions = [];
 
     /**
-     * @var array<string, LinesOfCodeType>
+     * @var array<string, LinesOfCode>
      */
     private array $linesOfCode = [];
 
@@ -127,10 +126,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         return $this->functions[$filename];
     }
 
-    /**
-     * @return LinesOfCodeType
-     */
-    public function linesOfCodeFor(string $filename): array
+    public function linesOfCodeFor(string $filename): LinesOfCode
     {
         $this->analyse($filename);
 
@@ -231,11 +227,11 @@ final class ParsingFileAnalyser implements FileAnalyser
 
         $result = $lineCountingVisitor->result();
 
-        $this->linesOfCode[$filename] = [
-            'linesOfCode'           => $result->linesOfCode(),
-            'commentLinesOfCode'    => $result->commentLinesOfCode(),
-            'nonCommentLinesOfCode' => $result->nonCommentLinesOfCode(),
-        ];
+        $this->linesOfCode[$filename] = new LinesOfCode(
+            $result->linesOfCode(),
+            $result->commentLinesOfCode(),
+            $result->nonCommentLinesOfCode(),
+        );
     }
 
     private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): void

@@ -12,15 +12,15 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use function array_filter;
 use function count;
 use function range;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  *
  * @phpstan-type ProcessedFunctionType = array{
@@ -129,15 +129,15 @@ final class File extends AbstractNode
     private ?int $numTestedFunctions = null;
 
     /**
-     * @var array<int, array|array{0: CodeUnitClassType, 1: string}|array{0: CodeUnitFunctionType}|array{0: CodeUnitTraitType, 1: string}>
+     * @var array<int, array|array{0: Class_, 1: string}|array{0: Function_}|array{0: Trait_, 1: string}>
      */
     private array $codeUnitsByLine = [];
 
     /**
      * @param array<int, ?list<non-empty-string>> $lineCoverageData
-     * @param array<string, CodeUnitClassType>    $classes
-     * @param array<string, CodeUnitTraitType>    $traits
-     * @param array<string, CodeUnitFunctionType> $functions
+     * @param array<string, Class_>               $classes
+     * @param array<string, Trait_>               $traits
+     * @param array<string, Function_>            $functions
      */
     public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
     {
@@ -355,9 +355,9 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param array<string, CodeUnitClassType>    $classes
-     * @param array<string, CodeUnitTraitType>    $traits
-     * @param array<string, CodeUnitFunctionType> $functions
+     * @param array<string, Class_>    $classes
+     * @param array<string, Trait_>    $traits
+     * @param array<string, Function_> $functions
      */
     private function calculateStatistics(array $classes, array $traits, array $functions): void
     {
@@ -462,7 +462,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param array<string, CodeUnitClassType> $classes
+     * @param array<string, Class_> $classes
      */
     private function processClasses(array $classes): void
     {
@@ -471,9 +471,9 @@ final class File extends AbstractNode
         foreach ($classes as $className => $class) {
             $this->classes[$className] = [
                 'className'          => $className,
-                'namespace'          => $class['namespace'],
+                'namespace'          => $class->namespace(),
                 'methods'            => [],
-                'startLine'          => $class['startLine'],
+                'startLine'          => $class->startLine(),
                 'executableLines'    => 0,
                 'executedLines'      => 0,
                 'executableBranches' => 0,
@@ -483,11 +483,11 @@ final class File extends AbstractNode
                 'ccn'                => 0,
                 'coverage'           => 0,
                 'crap'               => 0,
-                'link'               => $link . $class['startLine'],
+                'link'               => $link . $class->startLine(),
             ];
 
-            foreach ($class['methods'] as $methodName => $method) {
-                $methodData                                        = $this->newMethod($className, $methodName, $method, $link);
+            foreach ($class->methods() as $methodName => $method) {
+                $methodData                                        = $this->newMethod($className, $method, $link);
                 $this->classes[$className]['methods'][$methodName] = $methodData;
 
                 $this->classes[$className]['executableBranches'] += $methodData['executableBranches'];
@@ -500,7 +500,7 @@ final class File extends AbstractNode
                 $this->numExecutablePaths    += $methodData['executablePaths'];
                 $this->numExecutedPaths      += $methodData['executedPaths'];
 
-                foreach (range($method['startLine'], $method['endLine']) as $lineNumber) {
+                foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->classes[$className],
                         &$this->classes[$className]['methods'][$methodName],
@@ -511,7 +511,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param array<string, CodeUnitTraitType> $traits
+     * @param array<string, Trait_> $traits
      */
     private function processTraits(array $traits): void
     {
@@ -520,9 +520,9 @@ final class File extends AbstractNode
         foreach ($traits as $traitName => $trait) {
             $this->traits[$traitName] = [
                 'traitName'          => $traitName,
-                'namespace'          => $trait['namespace'],
+                'namespace'          => $trait->namespace(),
                 'methods'            => [],
-                'startLine'          => $trait['startLine'],
+                'startLine'          => $trait->startLine(),
                 'executableLines'    => 0,
                 'executedLines'      => 0,
                 'executableBranches' => 0,
@@ -532,11 +532,11 @@ final class File extends AbstractNode
                 'ccn'                => 0,
                 'coverage'           => 0,
                 'crap'               => 0,
-                'link'               => $link . $trait['startLine'],
+                'link'               => $link . $trait->startLine(),
             ];
 
-            foreach ($trait['methods'] as $methodName => $method) {
-                $methodData                                       = $this->newMethod($traitName, $methodName, $method, $link);
+            foreach ($trait->methods() as $methodName => $method) {
+                $methodData                                       = $this->newMethod($traitName, $method, $link);
                 $this->traits[$traitName]['methods'][$methodName] = $methodData;
 
                 $this->traits[$traitName]['executableBranches'] += $methodData['executableBranches'];
@@ -549,7 +549,7 @@ final class File extends AbstractNode
                 $this->numExecutablePaths    += $methodData['executablePaths'];
                 $this->numExecutedPaths      += $methodData['executedPaths'];
 
-                foreach (range($method['startLine'], $method['endLine']) as $lineNumber) {
+                foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->traits[$traitName],
                         &$this->traits[$traitName]['methods'][$methodName],
@@ -560,7 +560,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param array<string, CodeUnitFunctionType> $functions
+     * @param array<string, Function_> $functions
      */
     private function processFunctions(array $functions): void
     {
@@ -569,23 +569,23 @@ final class File extends AbstractNode
         foreach ($functions as $functionName => $function) {
             $this->functions[$functionName] = [
                 'functionName'       => $functionName,
-                'namespace'          => $function['namespace'],
-                'signature'          => $function['signature'],
-                'startLine'          => $function['startLine'],
-                'endLine'            => $function['endLine'],
+                'namespace'          => $function->namespace(),
+                'signature'          => $function->signature(),
+                'startLine'          => $function->startLine(),
+                'endLine'            => $function->endLine(),
                 'executableLines'    => 0,
                 'executedLines'      => 0,
                 'executableBranches' => 0,
                 'executedBranches'   => 0,
                 'executablePaths'    => 0,
                 'executedPaths'      => 0,
-                'ccn'                => $function['ccn'],
+                'ccn'                => $function->cyclomaticComplexity(),
                 'coverage'           => 0,
                 'crap'               => 0,
-                'link'               => $link . $function['startLine'],
+                'link'               => $link . $function->startLine(),
             ];
 
-            foreach (range($function['startLine'], $function['endLine']) as $lineNumber) {
+            foreach (range($function->startLine(), $function->endLine()) as $lineNumber) {
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
 
@@ -629,31 +629,29 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param CodeUnitMethodType $method
-     *
      * @return ProcessedMethodType
      */
-    private function newMethod(string $className, string $methodName, array $method, string $link): array
+    private function newMethod(string $className, Method $method, string $link): array
     {
         $methodData = [
-            'methodName'         => $methodName,
-            'visibility'         => $method['visibility'],
-            'signature'          => $method['signature'],
-            'startLine'          => $method['startLine'],
-            'endLine'            => $method['endLine'],
+            'methodName'         => $method->name(),
+            'visibility'         => $method->visibility(),
+            'signature'          => $method->signature(),
+            'startLine'          => $method->startLine(),
+            'endLine'            => $method->endLine(),
             'executableLines'    => 0,
             'executedLines'      => 0,
             'executableBranches' => 0,
             'executedBranches'   => 0,
             'executablePaths'    => 0,
             'executedPaths'      => 0,
-            'ccn'                => $method['ccn'],
+            'ccn'                => $method->cyclomaticComplexity(),
             'coverage'           => 0,
             'crap'               => 0,
-            'link'               => $link . $method['startLine'],
+            'link'               => $link . $method->startLine(),
         ];
 
-        $key = $className . '->' . $methodName;
+        $key = $className . '->' . $method->name();
 
         if (isset($this->functionCoverageData[$key]['branches'])) {
             $methodData['executableBranches'] = count(

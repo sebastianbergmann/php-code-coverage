@@ -1,0 +1,92 @@
+<?php declare(strict_types=1);
+/*
+ * This file is part of phpunit/php-code-coverage.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\TestCase;
+
+#[CoversClass(Class_::class)]
+#[Small]
+final class ClassTest extends TestCase
+{
+    public function testHasName(): void
+    {
+        $this->assertSame('Example', $this->class()->name());
+    }
+
+    public function testHasNamespacedName(): void
+    {
+        $this->assertSame('example\Example', $this->class()->namespacedName());
+    }
+
+    public function testHasNamespaced(): void
+    {
+        $this->assertSame('example', $this->class()->namespace());
+    }
+
+    public function testHasStartLine(): void
+    {
+        $this->assertSame(1, $this->class()->startLine());
+    }
+
+    public function testHasEndLine(): void
+    {
+        $this->assertSame(2, $this->class()->endLine());
+    }
+
+    public function testMayHaveParentClass(): void
+    {
+        $parentClass = 'example\ParentClass';
+
+        $this->assertSame($parentClass, $this->class(parentClass: $parentClass)->parentClass());
+    }
+
+    public function testMayNotHaveParentClass(): void
+    {
+        $this->assertNull($this->class()->parentClass());
+    }
+
+    public function testMayImplementInterfaces(): void
+    {
+        $interfaces = ['example\AnInterface'];
+
+        $this->assertSame($interfaces, $this->class(interfaces: $interfaces)->interfaces());
+    }
+
+    public function testMayUseTraits(): void
+    {
+        $traits = ['example\ATrait'];
+
+        $this->assertSame($traits, $this->class(traits: $traits)->traits());
+    }
+
+    public function testMayHaveMethods(): void
+    {
+        $methods = [new Method('', 0, 0, '', '', 0)];
+
+        $this->assertSame($methods, $this->class(methods: $methods)->methods());
+    }
+
+    private function class(?string $parentClass = null, array $interfaces = [], array $traits = [], array $methods = []): Class_
+    {
+        return new Class_(
+            'Example',
+            'example\Example',
+            'example',
+            1,
+            2,
+            $parentClass,
+            $interfaces,
+            $traits,
+            $methods,
+        );
+    }
+}

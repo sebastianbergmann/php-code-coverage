@@ -11,12 +11,14 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function range;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(CodeUnitFindingVisitor::class)]
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
 #[CoversClass(ParsingFileAnalyser::class)]
+#[Small]
 final class ParsingFileAnalyserTest extends TestCase
 {
     public function testGetLinesToBeIgnored(): void
@@ -184,5 +186,34 @@ final class ParsingFileAnalyserTest extends TestCase
                 TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php',
             ),
         );
+    }
+
+    public function testCodeUnitsAreFound(): void
+    {
+        $analyser = new ParsingFileAnalyser(true, true);
+        $file     = __DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php';
+
+        $interfaces = $analyser->interfacesIn($file);
+
+        $this->assertCount(3, $interfaces);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\A', $interfaces);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\B', $interfaces);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\C', $interfaces);
+
+        $classes = $analyser->classesIn($file);
+
+        $this->assertCount(2, $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass', $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass', $classes);
+
+        $traits = $analyser->traitsIn($file);
+
+        $this->assertCount(1, $traits);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\T', $traits);
+
+        $functions = $analyser->functionsIn($file);
+
+        $this->assertCount(1, $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\f', $functions);
     }
 }

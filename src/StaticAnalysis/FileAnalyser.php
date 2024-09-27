@@ -12,33 +12,27 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- *
  * @phpstan-type LinesType = array<int, int>
  */
 interface FileAnalyser
 {
     /**
-     * @return array<string, CodeUnitInterfaceType>
+     * @return array<string, Interface_>
      */
     public function interfacesIn(string $filename): array;
 
     /**
-     * @return array<string, CodeUnitClassType>
+     * @return array<string, Class_>
      */
     public function classesIn(string $filename): array;
 
     /**
-     * @return array<string, CodeUnitTraitType>
+     * @return array<string, Trait_>
      */
     public function traitsIn(string $filename): array;
 
     /**
-     * @return array<string, CodeUnitFunctionType>
+     * @return array<string, Function_>
      */
     public function functionsIn(string $filename): array;
 

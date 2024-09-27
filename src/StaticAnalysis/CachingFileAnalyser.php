@@ -22,11 +22,6 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class CachingFileAnalyser implements FileAnalyser
@@ -49,7 +44,7 @@ final class CachingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitInterfaceType>
+     * @return array<string, Interface_>
      */
     public function interfacesIn(string $filename): array
     {
@@ -61,7 +56,7 @@ final class CachingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitClassType>
+     * @return array<string, Class_>
      */
     public function classesIn(string $filename): array
     {
@@ -73,7 +68,7 @@ final class CachingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitTraitType>
+     * @return array<string, Trait_>
      */
     public function traitsIn(string $filename): array
     {
@@ -85,7 +80,7 @@ final class CachingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitFunctionType>
+     * @return array<string, Function_>
      */
     public function functionsIn(string $filename): array
     {
@@ -164,7 +159,12 @@ final class CachingFileAnalyser implements FileAnalyser
             file_get_contents($cacheFile),
             [
                 'allowed_classes' => [
+                    Class_::class,
+                    Function_::class,
+                    Interface_::class,
                     LinesOfCode::class,
+                    Method::class,
+                    Trait_::class,
                 ],
             ],
         );

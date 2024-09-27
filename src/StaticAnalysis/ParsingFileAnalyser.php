@@ -32,32 +32,27 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type CodeUnitFunctionType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitMethodType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitInterfaceType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitClassType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
- * @phpstan-import-type CodeUnitTraitType from \SebastianBergmann\CodeCoverage\StaticAnalysis\CodeUnitFindingVisitor
  * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
  */
 final class ParsingFileAnalyser implements FileAnalyser
 {
     /**
-     * @var array<string, array<string, CodeUnitInterfaceType>>
+     * @var array<string, array<string, Interface_>>
      */
     private array $interfaces = [];
 
     /**
-     * @var array<string, array<string, CodeUnitClassType>>
+     * @var array<string, array<string, Class_>>
      */
     private array $classes = [];
 
     /**
-     * @var array<string, array<string, CodeUnitTraitType>>
+     * @var array<string, array<string, Trait_>>
      */
     private array $traits = [];
 
     /**
-     * @var array<string, array<string, CodeUnitFunctionType>>
+     * @var array<string, array<string, Function_>>
      */
     private array $functions = [];
 
@@ -85,7 +80,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitInterfaceType>
+     * @return array<string, Interface_>
      */
     public function interfacesIn(string $filename): array
     {
@@ -95,7 +90,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitClassType>
+     * @return array<string, Class_>
      */
     public function classesIn(string $filename): array
     {
@@ -105,7 +100,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitTraitType>
+     * @return array<string, Trait_>
      */
     public function traitsIn(string $filename): array
     {
@@ -115,7 +110,7 @@ final class ParsingFileAnalyser implements FileAnalyser
     }
 
     /**
-     * @return array<string, CodeUnitFunctionType>
+     * @return array<string, Function_>
      */
     public function functionsIn(string $filename): array
     {

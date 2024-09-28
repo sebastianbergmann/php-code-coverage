@@ -80,6 +80,11 @@ final readonly class Function_
         return $this->namespacedName;
     }
 
+    public function isNamespaced(): bool
+    {
+        return $this->namespace !== '';
+    }
+
     public function namespace(): string
     {
         return $this->namespace;

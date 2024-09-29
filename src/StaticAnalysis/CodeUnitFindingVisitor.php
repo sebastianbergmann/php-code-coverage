@@ -35,6 +35,11 @@ use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
 final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 {
     /**
+     * @var non-empty-string
+     */
+    private string $file;
+
+    /**
      * @var array<string, \SebastianBergmann\CodeCoverage\StaticAnalysis\Interface_>
      */
     private array $interfaces = [];
@@ -53,6 +58,14 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
      * @var array<string, \SebastianBergmann\CodeCoverage\StaticAnalysis\Function_>
      */
     private array $functions = [];
+
+    /**
+     * @param non-empty-string $file
+     */
+    public function __construct(string $file)
+    {
+        $this->file = $file;
+    }
 
     public function enterNode(Node $node): void
     {
@@ -109,6 +122,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $this->classes[$namespacedClassName]->name(),
             $this->classes[$namespacedClassName]->namespacedName(),
             $this->classes[$namespacedClassName]->namespace(),
+            $this->classes[$namespacedClassName]->file(),
             $this->classes[$namespacedClassName]->startLine(),
             $this->classes[$namespacedClassName]->endLine(),
             $this->classes[$namespacedClassName]->parentClass(),
@@ -274,6 +288,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $name,
             $namespacedName,
             $this->namespace($namespacedName, $name),
+            $this->file,
             $node->getStartLine(),
             $node->getEndLine(),
             $parentClass,

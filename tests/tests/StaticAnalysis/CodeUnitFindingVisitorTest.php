@@ -264,7 +264,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         assert($nodes !== null);
 
         $traverser              = new NodeTraverser;
-        $codeUnitFindingVisitor = new CodeUnitFindingVisitor;
+        $codeUnitFindingVisitor = new CodeUnitFindingVisitor($filename);
 
         $traverser->addVisitor(new NameResolver);
         $traverser->addVisitor(new ParentConnectingVisitor);

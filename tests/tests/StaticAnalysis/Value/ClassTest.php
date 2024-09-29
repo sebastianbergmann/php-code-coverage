@@ -32,6 +32,11 @@ final class ClassTest extends TestCase
         $this->assertSame('example', $this->class()->namespace());
     }
 
+    public function testHasFile(): void
+    {
+        $this->assertSame('file.php', $this->class()->file());
+    }
+
     public function testHasStartLine(): void
     {
         $this->assertSame(1, $this->class()->startLine());
@@ -81,6 +86,7 @@ final class ClassTest extends TestCase
             'Example',
             'example\Example',
             'example',
+            'file.php',
             1,
             2,
             $parentClass,

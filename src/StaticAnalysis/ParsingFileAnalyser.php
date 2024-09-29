@@ -174,7 +174,7 @@ final class ParsingFileAnalyser implements FileAnalyser
             assert($nodes !== null);
 
             $traverser                     = new NodeTraverser;
-            $codeUnitFindingVisitor        = new CodeUnitFindingVisitor;
+            $codeUnitFindingVisitor        = new CodeUnitFindingVisitor($filename);
             $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
             $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($this->useAnnotationsForIgnoringCode, $this->ignoreDeprecatedCode);
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);

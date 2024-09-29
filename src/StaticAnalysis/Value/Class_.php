@@ -26,6 +26,11 @@ final readonly class Class_
     private string $namespace;
 
     /**
+     * @var non-empty-string
+     */
+    private string $file;
+
+    /**
      * @var non-negative-int
      */
     private int $startLine;
@@ -58,6 +63,7 @@ final readonly class Class_
     /**
      * @param non-empty-string                $name
      * @param non-empty-string                $namespacedName
+     * @param non-empty-string                $file
      * @param non-negative-int                $startLine
      * @param non-negative-int                $endLine
      * @param ?non-empty-string               $parentClass
@@ -65,11 +71,12 @@ final readonly class Class_
      * @param list<non-empty-string>          $traits
      * @param array<non-empty-string, Method> $methods
      */
-    public function __construct(string $name, string $namespacedName, string $namespace, int $startLine, int $endLine, ?string $parentClass, array $interfaces, array $traits, array $methods)
+    public function __construct(string $name, string $namespacedName, string $namespace, string $file, int $startLine, int $endLine, ?string $parentClass, array $interfaces, array $traits, array $methods)
     {
         $this->name           = $name;
         $this->namespacedName = $namespacedName;
         $this->namespace      = $namespace;
+        $this->file           = $file;
         $this->startLine      = $startLine;
         $this->endLine        = $endLine;
         $this->parentClass    = $parentClass;
@@ -102,6 +109,14 @@ final readonly class Class_
     public function namespace(): string
     {
         return $this->namespace;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function file(): string
+    {
+        return $this->file;
     }
 
     /**

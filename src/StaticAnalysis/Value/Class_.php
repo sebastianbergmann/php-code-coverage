@@ -135,6 +135,11 @@ final readonly class Class_
         return $this->endLine;
     }
 
+    public function hasParent(): bool
+    {
+        return $this->parentClass !== null;
+    }
+
     /**
      * @return ?non-empty-string
      */

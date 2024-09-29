@@ -51,11 +51,15 @@ final class ClassTest extends TestCase
     {
         $parentClass = 'example\ParentClass';
 
-        $this->assertSame($parentClass, $this->class(parentClass: $parentClass)->parentClass());
+        $class = $this->class(parentClass: $parentClass);
+
+        $this->assertTrue($class->hasParent());
+        $this->assertSame($parentClass, $class->parentClass());
     }
 
     public function testMayNotHaveParentClass(): void
     {
+        $this->assertFalse($this->class()->hasParent());
         $this->assertNull($this->class()->parentClass());
     }
 

@@ -137,7 +137,7 @@ final readonly class MapBuilder
     }
 
     /**
-     * @param-out array $namespaces
+     * @param-out array $data
      *
      * @param non-empty-string $unit
      * @param non-empty-string $file

@@ -2001,4 +2001,73 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         return $coverage;
     }
+
+    protected function getCoverageForFilesUseIgnoreCoversAnnotation(?bool $ignoreCoversAnnotation): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->will($this->onConsecutiveCalls(...$data));
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+        if ($ignoreCoversAnnotation !== null) {
+            $ignoreCoversAnnotation ? $coverage->ignoreCoversAnnotation() : $coverage->doNotIgnoreCoversAnnotation();
+        }
+
+        $coverage->start(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            null,
+            true
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative'
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative2'
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+        );
+
+        $coverage->start(
+            'BankAccountTest::testDepositWithdrawMoney'
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
+                    range(6, 9),
+                    range(20, 25),
+                    range(27, 32)
+                ),
+            ]
+        );
+
+        return $coverage;
+    }
 }

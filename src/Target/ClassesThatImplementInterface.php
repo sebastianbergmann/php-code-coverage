@@ -41,4 +41,12 @@ final class ClassesThatImplementInterface extends Target
     {
         return $this->interfaceName;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    public function asString(): string
+    {
+        return $this->interfaceName;
+    }
 }

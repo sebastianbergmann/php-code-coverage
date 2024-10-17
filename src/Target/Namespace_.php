@@ -41,4 +41,12 @@ final class Namespace_ extends Target
     {
         return $this->namespace;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    public function asString(): string
+    {
+        return $this->namespace;
+    }
 }

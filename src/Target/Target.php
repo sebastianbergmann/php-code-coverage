@@ -94,4 +94,9 @@ abstract class Target
     {
         return false;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    abstract public function asString(): string;
 }

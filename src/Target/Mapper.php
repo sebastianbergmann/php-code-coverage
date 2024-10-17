@@ -71,11 +71,21 @@ final readonly class Mapper
         if ($target->isClass()) {
             assert($target instanceof Class_);
 
-            if (!isset($this->map['classes'][$target->className()])) {
-                throw new InvalidCodeCoverageTargetException('Class ' . $target->className());
+            if (!isset($this->map['classes'][$target->asString()])) {
+                throw new InvalidCodeCoverageTargetException('Class ' . $target->asString());
             }
 
-            return $this->map['classes'][$target->className()];
+            return $this->map['classes'][$target->asString()];
+        }
+
+        if ($target->isMethod()) {
+            assert($target instanceof Method);
+
+            if (!isset($this->map['methods'][$target->asString()])) {
+                throw new InvalidCodeCoverageTargetException('Method ' . $target->asString());
+            }
+
+            return $this->map['methods'][$target->asString()];
         }
     }
 }

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
+use function array_merge;
 use function range;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -44,6 +45,29 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+            [
+                'single method',
+                [
+                    $file => range(37, 39),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass', 'six'),
+                    ],
+                ),
+            ],
+            [
+                'multiple methods',
+                [
+                    $file => array_merge(range(37, 39), range(41, 43)),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass', 'six'),
+                        Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass', 'one'),
+                    ],
+                ),
+            ],
         ];
     }
 
@@ -55,10 +79,19 @@ final class MapperTest extends TestCase
         return [
             [
                 'single class',
-                'Class SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass is not a valid target for code coverage',
+                'Class DoesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
-                        Target::forClass('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass'),
+                        Target::forClass('DoesNotExist'),
+                    ],
+                ),
+            ],
+            [
+                'single method',
+                'Method DoesNotExist::doesNotExist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forMethod('DoesNotExist', 'doesNotExist'),
                     ],
                 ),
             ],

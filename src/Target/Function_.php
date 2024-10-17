@@ -41,4 +41,12 @@ final class Function_ extends Target
     {
         return $this->functionName;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    public function asString(): string
+    {
+        return $this->functionName;
+    }
 }

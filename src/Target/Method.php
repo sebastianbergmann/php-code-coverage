@@ -56,4 +56,12 @@ final class Method extends Target
     {
         return $this->methodName;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    public function asString(): string
+    {
+        return $this->className . '::' . $this->methodName;
+    }
 }

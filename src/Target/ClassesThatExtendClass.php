@@ -41,4 +41,12 @@ final class ClassesThatExtendClass extends Target
     {
         return $this->className;
     }
+
+    /**
+     * @return non-empty-string
+     */
+    public function asString(): string
+    {
+        return $this->className;
+    }
 }

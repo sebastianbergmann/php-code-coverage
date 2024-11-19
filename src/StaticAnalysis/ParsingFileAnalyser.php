@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use const T_COMMENT;
+use const T_DOC_COMMENT;
 use function array_merge;
 use function array_unique;
 use function assert;

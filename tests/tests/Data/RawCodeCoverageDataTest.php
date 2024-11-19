@@ -44,7 +44,6 @@ final class RawCodeCoverageDataTest extends TestCase
                     13 => -1,
                 ],
                 'functions' => [
-
                 ],
             ],
             '/some/path/justAScript.php' => [
@@ -54,7 +53,6 @@ final class RawCodeCoverageDataTest extends TestCase
                     113 => -1,
                 ],
                 'functions' => [
-
                 ],
             ],
         ];

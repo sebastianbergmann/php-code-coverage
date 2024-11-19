@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use const DIRECTORY_SEPARATOR;
 use function basename;
 use function count;
 use function dirname;

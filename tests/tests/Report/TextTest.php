@@ -106,4 +106,24 @@ final class TextTest extends TestCase
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredExcluded())),
         );
     }
+
+    /**
+     * @dataProvider ignoreCoversAnnotationProvider
+     */
+    public function testWithIgnoreCoversAnnotationWhenConfiguredTest($isUseIgnoreCoversAnnotation, $file): void
+    {
+        $text = new Text(Thresholds::default(), false, false);
+        $codeCoverage = $this->getCoverageForFilesUseIgnoreCoversAnnotation($isUseIgnoreCoversAnnotation);
+
+        $this->assertStringMatchesFormatFile($file, str_replace(PHP_EOL, "\n", $text->process($codeCoverage)));
+    }
+
+    private function ignoreCoversAnnotationProvider(): array
+    {
+        return [
+            'with' => [true, TEST_FILES_PATH . 'BankAccountWithUncoveredAndIgnoreCoversAnnotation-text-line.txt'],
+            'without' => [false, TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt'],
+            'default' => [null, TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt'],
+        ];
+    }
 }

@@ -44,7 +44,7 @@ use SebastianBergmann\CodeUnitReverseLookup\Wizard;
  */
 final class CodeCoverage
 {
-    private const UNCOVERED_FILES = 'UNCOVERED_FILES';
+    private const string UNCOVERED_FILES = 'UNCOVERED_FILES';
     private readonly Driver $driver;
     private readonly Filter $filter;
     private readonly Wizard $wizard;

@@ -115,7 +115,7 @@ final class File extends Renderer
     /**
      * @var array<int,true>
      */
-    private const KEYWORD_TOKENS = [
+    private const array KEYWORD_TOKENS = [
         T_ABSTRACT      => true,
         T_ARRAY         => true,
         T_AS            => true,

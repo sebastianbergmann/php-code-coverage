@@ -18,6 +18,8 @@ use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
+ * @phpstan-import-type TargetMap from Mapper
+ *
  * @immutable
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -27,7 +29,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 final readonly class MapBuilder
 {
     /**
-     * @return array{namespaces: array<non-empty-string, list<positive-int>>, classes: array<non-empty-string, list<positive-int>>, classesThatExtendClass: array<non-empty-string, list<positive-int>>, classesThatImplementInterface: array<non-empty-string, list<positive-int>>, traits: array<non-empty-string, list<positive-int>>, methods: array<non-empty-string, list<positive-int>>, functions: array<non-empty-string, list<positive-int>>}
+     * @return TargetMap
      */
     public function build(Filter $filter, FileAnalyser $analyser): array
     {

@@ -42,7 +42,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           extensions: none, ctype, dom, iconv, mbstring, opcache, simplexml, tokenizer, xml, xmlwriter
           coverage: none
           tools: none
@@ -72,6 +72,7 @@ jobs:
         php-version:
           - "8.3"
           - "8.4"
+          - "8.5"
 
         coverage-driver:
           - "pcov"

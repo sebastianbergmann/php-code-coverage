@@ -29,6 +29,10 @@ use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingFileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\Test\Target\MapBuilder;
+use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
 use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
@@ -47,6 +51,7 @@ final class CodeCoverage
     private readonly Driver $driver;
     private readonly Filter $filter;
     private readonly Wizard $wizard;
+    private ?Mapper $targetMapper                    = null;
     private bool $checkForUnintentionallyCoveredCode = false;
     private bool $ignoreDeprecatedCode               = false;
     private ?string $currentId                       = null;
@@ -348,6 +353,11 @@ final class CodeCoverage
         return $this->driver->detectsDeadCode();
     }
 
+    public function validate(TargetCollection $targets): ValidationResult
+    {
+        return $targets->validate($this->targetMapper());
+    }
+
     /**
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
@@ -564,6 +574,19 @@ final class CodeCoverage
         sort($processed);
 
         return $processed;
+    }
+
+    private function targetMapper(): Mapper
+    {
+        if ($this->targetMapper !== null) {
+            return $this->targetMapper;
+        }
+
+        $this->targetMapper = new Mapper(
+            (new MapBuilder)->build($this->filter, $this->analyser()),
+        );
+
+        return $this->targetMapper;
     }
 
     private function analyser(): FileAnalyser

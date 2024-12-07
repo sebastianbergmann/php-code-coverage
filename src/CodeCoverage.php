@@ -14,7 +14,6 @@ use function array_diff_key;
 use function array_flip;
 use function array_keys;
 use function array_merge;
-use function array_merge_recursive;
 use function array_unique;
 use function count;
 use function explode;
@@ -55,11 +54,6 @@ final class CodeCoverage
     private ?TestSize $currentSize                   = null;
     private ProcessedCodeCoverageData $data;
     private bool $useAnnotationsForIgnoringCode = true;
-
-    /**
-     * @var array<string,list<int>>
-     */
-    private array $linesToBeIgnored = [];
 
     /**
      * @var array<string, TestType>
@@ -174,19 +168,11 @@ final class CodeCoverage
         $this->cachedReport = null;
     }
 
-    /**
-     * @param array<string,list<int>> $linesToBeIgnored
-     */
-    public function stop(bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): RawCodeCoverageData
+    public function stop(bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
     {
         $data = $this->driver->stop();
 
-        $this->linesToBeIgnored = array_merge_recursive(
-            $this->linesToBeIgnored,
-            $linesToBeIgnored,
-        );
-
-        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed, $linesToBeIgnored);
+        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed);
 
         $this->currentId    = null;
         $this->currentSize  = null;
@@ -196,13 +182,11 @@ final class CodeCoverage
     }
 
     /**
-     * @param array<string,list<int>> $linesToBeIgnored
-     *
      * @throws ReflectionException
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = [], array $linesToBeIgnored = []): void
+    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -229,7 +213,7 @@ final class CodeCoverage
         $this->applyExecutableLinesFilter($rawData);
 
         if ($this->useAnnotationsForIgnoringCode) {
-            $this->applyIgnoredLinesFilter($rawData, $linesToBeIgnored);
+            $this->applyIgnoredLinesFilter($rawData);
         }
 
         $this->data->initializeUnseenData($rawData);
@@ -452,21 +436,11 @@ final class CodeCoverage
         }
     }
 
-    /**
-     * @param array<string,list<int>> $linesToBeIgnored
-     */
-    private function applyIgnoredLinesFilter(RawCodeCoverageData $data, array $linesToBeIgnored): void
+    private function applyIgnoredLinesFilter(RawCodeCoverageData $data): void
     {
         foreach (array_keys($data->lineCoverage()) as $filename) {
             if (!$this->filter->isFile($filename)) {
                 continue;
-            }
-
-            if (isset($linesToBeIgnored[$filename])) {
-                $data->removeCoverageDataForLines(
-                    $filename,
-                    $linesToBeIgnored[$filename],
-                );
             }
 
             $data->removeCoverageDataForLines(
@@ -494,7 +468,6 @@ final class CodeCoverage
                         $this->analyser(),
                     ),
                     self::UNCOVERED_FILES,
-                    linesToBeIgnored: $this->linesToBeIgnored,
                 );
             }
         }

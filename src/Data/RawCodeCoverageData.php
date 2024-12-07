@@ -14,6 +14,7 @@ use function array_diff_key;
 use function array_flip;
 use function array_intersect;
 use function array_intersect_key;
+use function array_map;
 use function count;
 use function explode;
 use function file_get_contents;
@@ -86,11 +87,10 @@ final class RawCodeCoverageData
 
     public static function fromUncoveredFile(string $filename, FileAnalyser $analyser): self
     {
-        $lineCoverage = [];
-
-        foreach ($analyser->executableLinesIn($filename) as $line => $branch) {
-            $lineCoverage[$line] = Driver::LINE_NOT_EXECUTED;
-        }
+        $lineCoverage = array_map(
+            static fn (): int => Driver::LINE_NOT_EXECUTED,
+            $analyser->executableLinesIn($filename),
+        );
 
         return new self([$filename => $lineCoverage], []);
     }

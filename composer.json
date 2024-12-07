@@ -22,14 +22,15 @@
     },
     "config": {
         "platform": {
-            "php": "8.2.0"
+            "php": "8.3.0"
         },
         "optimize-autoloader": true,
         "sort-packages": true
     },
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
@@ -44,7 +45,7 @@
         "theseer/tokenizer": "^1.2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.4.1"
+        "phpunit/phpunit": "^12.0-dev"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",
@@ -62,7 +63,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "11.0.x-dev"
+            "dev-main": "12.0.x-dev"
         }
     }
 }

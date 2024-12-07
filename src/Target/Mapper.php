@@ -41,7 +41,7 @@ final readonly class Mapper
     /**
      * @return array<non-empty-string, list<positive-int>>
      */
-    public function map(TargetCollection $targets): array
+    public function mapTargets(TargetCollection $targets): array
     {
         $result = [];
 
@@ -67,7 +67,7 @@ final readonly class Mapper
      *
      * @return array<non-empty-string, list<positive-int>>
      */
-    private function mapTarget(Target $target): array
+    public function mapTarget(Target $target): array
     {
         if (!isset($this->map[$target->key()][$target->target()])) {
             throw new InvalidCodeCoverageTargetException($target);

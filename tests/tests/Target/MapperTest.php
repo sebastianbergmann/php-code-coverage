@@ -178,7 +178,7 @@ final class MapperTest extends TestCase
     {
         $this->assertSame(
             $expected,
-            $this->mapper(array_keys($expected))->map($targets),
+            $this->mapper(array_keys($expected))->mapTargets($targets),
         );
     }
 
@@ -189,7 +189,7 @@ final class MapperTest extends TestCase
         $this->expectException(InvalidCodeCoverageTargetException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
-        $this->mapper([])->map($targets);
+        $this->mapper([])->mapTargets($targets);
     }
 
     /**

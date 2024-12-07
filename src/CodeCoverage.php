@@ -170,11 +170,11 @@ final class CodeCoverage
         $this->cachedReport = null;
     }
 
-    public function stop(bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): RawCodeCoverageData
+    public function stop(bool $append = true, ?TestStatus $status = null, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null): RawCodeCoverageData
     {
         $data = $this->driver->stop();
 
-        $this->append($data, null, $append, $status, $linesToBeCovered, $linesToBeUsed);
+        $this->append($data, null, $append, $status, $covers, $uses);
 
         $this->currentId    = null;
         $this->currentSize  = null;
@@ -188,7 +188,7 @@ final class CodeCoverage
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, array|false $linesToBeCovered = [], array $linesToBeUsed = []): void
+    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -198,10 +198,16 @@ final class CodeCoverage
             throw new TestIdMissingException;
         }
 
-        $this->cachedReport = null;
-
         if ($status === null) {
             $status = TestStatus::unknown();
+        }
+
+        if ($covers === null) {
+            $covers = TargetCollection::fromArray([]);
+        }
+
+        if ($uses === null) {
+            $uses = TargetCollection::fromArray([]);
         }
 
         $size = $this->currentSize;
@@ -209,6 +215,8 @@ final class CodeCoverage
         if ($size === null) {
             $size = TestSize::unknown();
         }
+
+        $this->cachedReport = null;
 
         $this->applyFilter($rawData);
 
@@ -226,6 +234,17 @@ final class CodeCoverage
 
         if ($id === self::UNCOVERED_FILES) {
             return;
+        }
+
+        $linesToBeCovered = false;
+        $linesToBeUsed    = [];
+
+        if ($covers !== false) {
+            $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+        }
+
+        if ($linesToBeCovered !== false && $uses !== null) {
+            $linesToBeUsed = $this->targetMapper()->mapTargets($uses);
         }
 
         $this->applyCoversAndUsesFilter(

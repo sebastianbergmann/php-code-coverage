@@ -10,11 +10,13 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Test\Target\Target;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use function array_merge;
 use function range;
 use function rmdir;
 use function unlink;
-use BankAccountTest;
+use BankAccount;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -1029,7 +1031,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1039,7 +1045,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1049,7 +1059,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1059,13 +1073,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                ),
-            ]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;
@@ -1096,7 +1110,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1106,7 +1124,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1116,7 +1138,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1126,13 +1152,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                ),
-            ]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;
@@ -1188,7 +1214,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1198,7 +1228,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;
@@ -1225,7 +1259,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1235,13 +1273,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                ),
-            ]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;
@@ -1330,7 +1368,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1340,7 +1382,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;
@@ -1367,7 +1413,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                ]
+            )
         );
 
         $coverage->start(
@@ -1377,13 +1427,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $coverage->stop(
             true,
             null,
-            [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                ),
-            ]
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ]
+            )
         );
 
         return $coverage;

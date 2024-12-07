@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [12.0.0] - 2025-02-07
 
+### Changed
+
+* `CodeCoverage::stop()` and `CodeCoverage::append()` now expect arguments of type `TargetCollection` instead of `array` to configure code coverage targets
+
 ### Removed
 
 * Methods `CodeCoverage::includeUncoveredFiles()` and `CodeCoverage::excludeUncoveredFiles()`

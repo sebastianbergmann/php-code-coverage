@@ -18,9 +18,9 @@ use SebastianBergmann\Environment\Runtime;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class BuildInformation
+final readonly class BuildInformation
 {
-    private readonly DOMElement $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $contextNode)
     {

@@ -17,9 +17,9 @@ use DOMElement;
  *
  * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
  */
-final class Tests
+final readonly class Tests
 {
-    private readonly DOMElement $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {

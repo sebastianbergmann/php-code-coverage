@@ -14,9 +14,9 @@ use DOMElement;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class Method
+final readonly class Method
 {
-    private readonly DOMElement $contextNode;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $context, string $name)
     {

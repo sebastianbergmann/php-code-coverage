@@ -17,14 +17,14 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
-final class Totals
+final readonly class Totals
 {
-    private readonly DOMNode $container;
-    private readonly DOMElement $linesNode;
-    private readonly DOMElement $methodsNode;
-    private readonly DOMElement $functionsNode;
-    private readonly DOMElement $classesNode;
-    private readonly DOMElement $traitsNode;
+    private DOMNode $container;
+    private DOMElement $linesNode;
+    private DOMElement $methodsNode;
+    private DOMElement $functionsNode;
+    private DOMElement $classesNode;
+    private DOMElement $traitsNode;
 
     public function __construct(DOMElement $container)
     {

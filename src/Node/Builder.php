@@ -30,9 +30,9 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  *
  * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
  */
-final class Builder
+final readonly class Builder
 {
-    private readonly FileAnalyser $analyser;
+    private FileAnalyser $analyser;
 
     public function __construct(FileAnalyser $analyser)
     {

@@ -22,9 +22,9 @@ use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 
-final class Crap4j
+final readonly class Crap4j
 {
-    private readonly int $threshold;
+    private int $threshold;
 
     public function __construct(int $threshold = 30)
     {

@@ -22,13 +22,13 @@ use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
-final class Facade
+final readonly class Facade
 {
-    private readonly string $templatePath;
-    private readonly string $generator;
-    private readonly Colors $colors;
-    private readonly Thresholds $thresholds;
-    private readonly CustomCssFile $customCssFile;
+    private string $templatePath;
+    private string $generator;
+    private Colors $colors;
+    private Thresholds $thresholds;
+    private CustomCssFile $customCssFile;
 
     public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null)
     {

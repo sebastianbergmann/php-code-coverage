@@ -37,7 +37,9 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
 
         $this->assertSame($className, $target->className());
-        $this->assertSame($className, $target->asString());
+        $this->assertSame('classes', $target->key());
+        $this->assertSame($className, $target->target());
+        $this->assertSame('Class ' . $className, $target->description());
     }
 
     public function testCanBeClassesThatExtendClass(): void
@@ -54,7 +56,9 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
 
         $this->assertSame($className, $target->className());
-        $this->assertSame($className, $target->asString());
+        $this->assertSame('classesThatExtendClass', $target->key());
+        $this->assertSame($className, $target->target());
+        $this->assertSame('Classes that extend class ' . $className, $target->description());
     }
 
     public function testCanBeClassesThatImplementInterface(): void
@@ -71,7 +75,9 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
 
         $this->assertSame($interfaceName, $target->interfaceName());
-        $this->assertSame($interfaceName, $target->asString());
+        $this->assertSame('classesThatImplementInterface', $target->key());
+        $this->assertSame($interfaceName, $target->target());
+        $this->assertSame('Classes that implement interface ' . $interfaceName, $target->description());
     }
 
     public function testCanBeFunction(): void
@@ -88,7 +94,9 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
 
         $this->assertSame($functionName, $target->functionName());
-        $this->assertSame($functionName, $target->asString());
+        $this->assertSame('functions', $target->key());
+        $this->assertSame($functionName, $target->target());
+        $this->assertSame('Function ' . $functionName, $target->description());
     }
 
     public function testCanBeMethod(): void
@@ -107,7 +115,9 @@ final class TargetTest extends TestCase
 
         $this->assertSame($className, $target->className());
         $this->assertSame($methodName, $target->methodName());
-        $this->assertSame($className . '::' . $methodName, $target->asString());
+        $this->assertSame('methods', $target->key());
+        $this->assertSame($className . '::' . $methodName, $target->target());
+        $this->assertSame('Method ' . $className . '::' . $methodName, $target->description());
     }
 
     public function testCanBeNamespace(): void
@@ -124,6 +134,8 @@ final class TargetTest extends TestCase
         $this->assertTrue($target->isNamespace());
 
         $this->assertSame($namespace, $target->namespace());
-        $this->assertSame($namespace, $target->asString());
+        $this->assertSame('namespaces', $target->key());
+        $this->assertSame($namespace, $target->target());
+        $this->assertSame('Namespace ' . $namespace, $target->description());
     }
 }

@@ -19,7 +19,6 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\InvalidCodeCoverageTargetException;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 
 #[CoversClass(Mapper::class)]
@@ -27,15 +26,14 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 final class MapperTest extends TestCase
 {
     /**
-     * @return non-empty-list<array{0: non-empty-string, 1: array<non-empty-string, non-empty-list<positive-int>>, 2: TargetCollection}>
+     * @return non-empty-array<non-empty-string, array{0: array<non-empty-string, non-empty-list<positive-int>>, 1: TargetCollection}>
      */
     public static function provider(): array
     {
         $file = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
 
         return [
-            [
-                'single class',
+            'class' => [
                 [
                     $file => range(33, 52),
                 ],
@@ -45,8 +43,37 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
-            [
-                'single method',
+            'classes that extend class' => [
+                [
+                    $file => range(33, 52),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forClassesThatExtendClass('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass'),
+                    ],
+                ),
+            ],
+            'classes that implement interface' => [
+                [
+                    $file => range(26, 31),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forClassesThatImplementInterface('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\C'),
+                    ],
+                ),
+            ],
+            'function' => [
+                [
+                    $file => range(54, 56),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forFunction('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\f'),
+                    ],
+                ),
+            ],
+            'method' => [
                 [
                     $file => range(37, 39),
                 ],
@@ -56,8 +83,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
-            [
-                'multiple methods',
+            'methods' => [
                 [
                     $file => array_merge(range(37, 39), range(41, 43)),
                 ],
@@ -68,17 +94,31 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+            'namespace' => [
+                [
+                    $file => array_merge(
+                        range(19, 24),
+                        range(26, 31),
+                        range(33, 52),
+                        range(54, 56),
+                    ),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forNamespace('SebastianBergmann\\CodeCoverage\\StaticAnalysis'),
+                    ],
+                ),
+            ],
         ];
     }
 
     /**
-     * @return non-empty-list<array{0: non-empty-string, 1: non-empty-string, 2: TargetCollection}>
+     * @return non-empty-array<non-empty-string, array{0: non-empty-string, 1: TargetCollection}>
      */
     public static function invalidProvider(): array
     {
         return [
-            [
-                'single class',
+            'class' => [
                 'Class DoesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
@@ -86,12 +126,43 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
-            [
-                'single method',
+            'classes that extend class' => [
+                'Classes that extend class DoesNotExist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forClassesThatExtendClass('DoesNotExist'),
+                    ],
+                ),
+            ],
+            'classes that implement interface' => [
+                'Classes that implement interface DoesNotExist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forClassesThatImplementInterface('DoesNotExist'),
+                    ],
+                ),
+            ],
+            'function' => [
+                'Function does_not_exist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forFunction('does_not_exist'),
+                    ],
+                ),
+            ],
+            'method' => [
                 'Method DoesNotExist::doesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
                         Target::forMethod('DoesNotExist', 'doesNotExist'),
+                    ],
+                ),
+            ],
+            'namespace' => [
+                'Namespace DoesNotExist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forNamespace('DoesNotExist'),
                     ],
                 ),
             ],
@@ -102,8 +173,8 @@ final class MapperTest extends TestCase
      * @param array<non-empty-string, non-empty-list<positive-int>> $expected
      */
     #[DataProvider('provider')]
-    #[TestDox('Maps TargetCollection with $description to source locations')]
-    public function testMapsTargetValueObjectsToSourceLocations(string $description, array $expected, TargetCollection $targets): void
+    #[TestDox('Maps TargetCollection with $_dataName to source locations')]
+    public function testMapsTargetValueObjectsToSourceLocations(array $expected, TargetCollection $targets): void
     {
         $this->assertSame(
             $expected,
@@ -112,8 +183,8 @@ final class MapperTest extends TestCase
     }
 
     #[DataProvider('invalidProvider')]
-    #[TestDox('Cannot map $description that does not exist to source locations')]
-    public function testCannotMapInvalidTargets(string $description, string $exceptionMessage, TargetCollection $targets): void
+    #[TestDox('Cannot map $_dataName that does not exist to source location')]
+    public function testCannotMapInvalidTargets(string $exceptionMessage, TargetCollection $targets): void
     {
         $this->expectException(InvalidCodeCoverageTargetException::class);
         $this->expectExceptionMessage($exceptionMessage);
@@ -131,8 +202,6 @@ final class MapperTest extends TestCase
 
     /**
      * @param list<non-empty-string> $files
-     *
-     * @return array{namespaces: array<non-empty-string, list<positive-int>>, classes: array<non-empty-string, list<positive-int>>, classesThatExtendClass: array<non-empty-string, list<positive-int>>, classesThatImplementInterface: array<non-empty-string, list<positive-int>>, traits: array<non-empty-string, list<positive-int>>, methods: array<non-empty-string, list<positive-int>>, functions: array<non-empty-string, list<positive-int>>}
      */
     private function map(array $files): array
     {

@@ -45,8 +45,24 @@ final class Class_ extends Target
     /**
      * @return non-empty-string
      */
-    public function asString(): string
+    public function key(): string
+    {
+        return 'classes';
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function target(): string
     {
         return $this->className;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function description(): string
+    {
+        return 'Class ' . $this->target();
     }
 }

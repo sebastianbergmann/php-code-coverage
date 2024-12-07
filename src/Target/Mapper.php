@@ -11,12 +11,11 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_merge;
 use function array_unique;
-use function assert;
 use function sort;
-use SebastianBergmann\CodeCoverage\InvalidCodeCoverageTargetException;
 
 /**
- * @phpstan-type TargetMap = array{namespaces: array<non-empty-string, list<positive-int>>, classes: array<non-empty-string, list<positive-int>>, classesThatExtendClass: array<non-empty-string, list<positive-int>>, classesThatImplementInterface: array<non-empty-string, list<positive-int>>, traits: array<non-empty-string, list<positive-int>>, methods: array<non-empty-string, list<positive-int>>, functions: array<non-empty-string, list<positive-int>>}
+ * @phpstan-type TargetMap = array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart}
+ * @phpstan-type TargetMapPart = array<non-empty-string, array<non-empty-string, list<positive-int>>>
  *
  * @immutable
  *
@@ -70,24 +69,10 @@ final readonly class Mapper
      */
     private function mapTarget(Target $target): array
     {
-        if ($target->isClass()) {
-            assert($target instanceof Class_);
-
-            if (!isset($this->map['classes'][$target->asString()])) {
-                throw new InvalidCodeCoverageTargetException('Class ' . $target->asString());
-            }
-
-            return $this->map['classes'][$target->asString()];
+        if (!isset($this->map[$target->key()][$target->target()])) {
+            throw new InvalidCodeCoverageTargetException($target);
         }
 
-        if ($target->isMethod()) {
-            assert($target instanceof Method);
-
-            if (!isset($this->map['methods'][$target->asString()])) {
-                throw new InvalidCodeCoverageTargetException('Method ' . $target->asString());
-            }
-
-            return $this->map['methods'][$target->asString()];
-        }
+        return $this->map[$target->key()][$target->target()];
     }
 }

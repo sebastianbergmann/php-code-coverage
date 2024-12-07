@@ -45,8 +45,24 @@ final class ClassesThatExtendClass extends Target
     /**
      * @return non-empty-string
      */
-    public function asString(): string
+    public function key(): string
+    {
+        return 'classesThatExtendClass';
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function target(): string
     {
         return $this->className;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function description(): string
+    {
+        return 'Classes that extend class ' . $this->target();
     }
 }

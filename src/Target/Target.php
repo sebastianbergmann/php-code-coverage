@@ -98,5 +98,15 @@ abstract class Target
     /**
      * @return non-empty-string
      */
-    abstract public function asString(): string;
+    abstract public function key(): string;
+
+    /**
+     * @return non-empty-string
+     */
+    abstract public function target(): string;
+
+    /**
+     * @return non-empty-string
+     */
+    abstract public function description(): string;
 }

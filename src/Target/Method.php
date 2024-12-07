@@ -60,8 +60,24 @@ final class Method extends Target
     /**
      * @return non-empty-string
      */
-    public function asString(): string
+    public function key(): string
+    {
+        return 'methods';
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function target(): string
     {
         return $this->className . '::' . $this->methodName;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function description(): string
+    {
+        return 'Method ' . $this->target();
     }
 }

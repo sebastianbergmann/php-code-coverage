@@ -45,8 +45,24 @@ final class Namespace_ extends Target
     /**
      * @return non-empty-string
      */
-    public function asString(): string
+    public function key(): string
+    {
+        return 'namespaces';
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function target(): string
     {
         return $this->namespace;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function description(): string
+    {
+        return 'Namespace ' . $this->target();
     }
 }

@@ -7,22 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function sprintf;
 use RuntimeException;
+use SebastianBergmann\CodeCoverage\Exception;
 
 final class InvalidCodeCoverageTargetException extends RuntimeException implements Exception
 {
-    /**
-     * @param non-empty-string $target
-     */
-    public function __construct(string $target)
+    public function __construct(Target $target)
     {
         parent::__construct(
             sprintf(
                 '%s is not a valid target for code coverage',
-                $target,
+                $target->description(),
             ),
         );
     }

@@ -95,9 +95,6 @@ final class MapBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @return array{namespaces: array<non-empty-string, list<positive-int>>, classes: array<non-empty-string, list<positive-int>>, classesThatExtendClass: array<non-empty-string, list<positive-int>>, classesThatImplementInterface: array<non-empty-string, list<positive-int>>, traits: array<non-empty-string, list<positive-int>>, methods: array<non-empty-string, list<positive-int>>, functions: array<non-empty-string, list<positive-int>>}
-     */
     private function map(array $files): array
     {
         $filter = new Filter;

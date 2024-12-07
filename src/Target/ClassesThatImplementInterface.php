@@ -45,8 +45,24 @@ final class ClassesThatImplementInterface extends Target
     /**
      * @return non-empty-string
      */
-    public function asString(): string
+    public function key(): string
+    {
+        return 'classesThatImplementInterface';
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function target(): string
     {
         return $this->interfaceName;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function description(): string
+    {
+        return 'Classes that implement interface ' . $this->target();
     }
 }

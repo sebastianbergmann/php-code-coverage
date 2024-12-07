@@ -23,7 +23,7 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type LinesType from \SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser
+ * @phpstan-import-type LinesType from FileAnalyser
  */
 final class CachingFileAnalyser implements FileAnalyser
 {

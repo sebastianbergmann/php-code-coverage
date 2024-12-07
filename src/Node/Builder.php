@@ -28,7 +28,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
+ * @phpstan-import-type TestType from CodeCoverage
  */
 final readonly class Builder
 {

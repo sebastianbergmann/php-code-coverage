@@ -17,11 +17,12 @@ use function count;
 use function is_array;
 use function ksort;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type XdebugFunctionCoverageType from \SebastianBergmann\CodeCoverage\Driver\XdebugDriver
+ * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
  * @phpstan-type TestIdType = string
  */

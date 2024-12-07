@@ -26,14 +26,15 @@ use function str_ends_with;
 use function str_starts_with;
 use function trim;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type XdebugFunctionsCoverageType from \SebastianBergmann\CodeCoverage\Driver\XdebugDriver
- * @phpstan-import-type XdebugCodeCoverageWithoutPathCoverageType from \SebastianBergmann\CodeCoverage\Driver\XdebugDriver
- * @phpstan-import-type XdebugCodeCoverageWithPathCoverageType from \SebastianBergmann\CodeCoverage\Driver\XdebugDriver
+ * @phpstan-import-type XdebugFunctionsCoverageType from XdebugDriver
+ * @phpstan-import-type XdebugCodeCoverageWithoutPathCoverageType from XdebugDriver
+ * @phpstan-import-type XdebugCodeCoverageWithPathCoverageType from XdebugDriver
  */
 final class RawCodeCoverageData
 {

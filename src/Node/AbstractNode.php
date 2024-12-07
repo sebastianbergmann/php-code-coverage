@@ -21,9 +21,9 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type ProcessedFunctionType from \SebastianBergmann\CodeCoverage\Node\File
- * @phpstan-import-type ProcessedClassType from \SebastianBergmann\CodeCoverage\Node\File
- * @phpstan-import-type ProcessedTraitType from \SebastianBergmann\CodeCoverage\Node\File
+ * @phpstan-import-type ProcessedFunctionType from File
+ * @phpstan-import-type ProcessedClassType from File
+ * @phpstan-import-type ProcessedTraitType from File
  */
 abstract class AbstractNode implements Countable
 {

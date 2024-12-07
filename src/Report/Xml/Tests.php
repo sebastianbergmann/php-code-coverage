@@ -11,11 +11,12 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use function assert;
 use DOMElement;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
+ * @phpstan-import-type TestType from CodeCoverage
  */
 final readonly class Tests
 {

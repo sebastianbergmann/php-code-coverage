@@ -48,7 +48,6 @@ final class CodeCoverage
     private readonly Filter $filter;
     private readonly Wizard $wizard;
     private bool $checkForUnintentionallyCoveredCode = false;
-    private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
     private ?string $currentId                       = null;
     private ?TestSize $currentSize                   = null;
@@ -122,9 +121,7 @@ final class CodeCoverage
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
         if (!$raw) {
-            if ($this->includeUncoveredFiles) {
-                $this->addUncoveredFilesFromFilter();
-            }
+            $this->addUncoveredFilesFromFilter();
         }
 
         return $this->data;
@@ -269,22 +266,6 @@ final class CodeCoverage
     public function disableCheckForUnintentionallyCoveredCode(): void
     {
         $this->checkForUnintentionallyCoveredCode = false;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function includeUncoveredFiles(): void
-    {
-        $this->includeUncoveredFiles = true;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function excludeUncoveredFiles(): void
-    {
-        $this->includeUncoveredFiles = false;
     }
 
     public function enableAnnotationsForIgnoringCode(): void

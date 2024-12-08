@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function assert;
 use DOMDocument;
 use DOMElement;
 
@@ -42,6 +43,8 @@ abstract class Node
                 ),
             );
         }
+
+        assert($totalsContainer instanceof DOMElement);
 
         return new Totals($totalsContainer);
     }

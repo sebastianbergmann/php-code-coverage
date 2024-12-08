@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function assert;
 use DOMDocument;
+use DOMElement;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -43,6 +45,8 @@ final class Project extends Node
             );
         }
 
+        assert($buildNode instanceof DOMElement);
+
         return new BuildInformation($buildNode);
     }
 
@@ -61,6 +65,8 @@ final class Project extends Node
                 ),
             );
         }
+
+        assert($testsNode instanceof DOMElement);
 
         return new Tests($testsNode);
     }

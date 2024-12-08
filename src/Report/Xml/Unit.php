@@ -68,6 +68,8 @@ final readonly class Unit
             ),
         );
 
+        assert($node instanceof DOMElement);
+
         return new Method($node, $name);
     }
 

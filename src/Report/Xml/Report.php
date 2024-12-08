@@ -9,9 +9,11 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use function assert;
 use function basename;
 use function dirname;
 use DOMDocument;
+use DOMElement;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -47,6 +49,8 @@ final class Report extends File
             ),
         );
 
+        assert($node instanceof DOMElement);
+
         return new Method($node, $name);
     }
 
@@ -76,6 +80,8 @@ final class Report extends File
             );
         }
 
+        assert($source instanceof DOMElement);
+
         return new Source($source);
     }
 
@@ -93,6 +99,8 @@ final class Report extends File
                 $tagName,
             ),
         );
+
+        assert($node instanceof DOMElement);
 
         return new Unit($node, $name);
     }

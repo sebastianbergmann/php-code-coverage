@@ -239,7 +239,7 @@ final class CodeCoverage
             $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
         }
 
-        if ($linesToBeCovered !== false && $uses !== null) {
+        if ($linesToBeCovered !== false) {
             $linesToBeUsed = $this->targetMapper()->mapTargets($uses);
         }
 

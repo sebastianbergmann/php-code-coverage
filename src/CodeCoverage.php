@@ -17,7 +17,6 @@ use function array_merge;
 use function array_unique;
 use function count;
 use function explode;
-use function is_array;
 use function is_file;
 use function sort;
 use ReflectionClass;
@@ -401,11 +400,9 @@ final class CodeCoverage
             $rawData->removeCoverageDataForFile($fileWithNoCoverage);
         }
 
-        if (is_array($linesToBeCovered)) {
-            foreach ($linesToBeCovered as $fileToBeCovered => $includedLines) {
-                $rawData->keepLineCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
-                $rawData->keepFunctionCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
-            }
+        foreach ($linesToBeCovered as $fileToBeCovered => $includedLines) {
+            $rawData->keepLineCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
+            $rawData->keepFunctionCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
         }
     }
 

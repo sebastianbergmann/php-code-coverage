@@ -14,8 +14,9 @@ use function array_unique;
 use function sort;
 
 /**
- * @phpstan-type TargetMap = array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart}
+ * @phpstan-type TargetMap = array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
  * @phpstan-type TargetMapPart = array<non-empty-string, array<non-empty-string, list<positive-int>>>
+ * @phpstan-type ReverseLookup = array<non-empty-string, non-empty-string>
  *
  * @immutable
  *
@@ -74,5 +75,22 @@ final readonly class Mapper
         }
 
         return $this->map[$target->key()][$target->target()];
+    }
+
+    /**
+     * @param non-empty-string $file
+     * @param positive-int     $line
+     *
+     * @return non-empty-string
+     */
+    public function lookup(string $file, int $line): string
+    {
+        $key = $file . ':' . $line;
+
+        if (isset($this->map['reverseLookup'][$key])) {
+            return $this->map['reverseLookup'][$key];
+        }
+
+        return $key;
     }
 }

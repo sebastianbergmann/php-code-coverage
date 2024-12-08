@@ -41,6 +41,7 @@ final readonly class MapBuilder
         $traits                        = [];
         $methods                       = [];
         $functions                     = [];
+        $reverseLookup                 = [];
 
         foreach ($filter->files() as $file) {
             foreach ($analyser->interfacesIn($file) as $interface) {
@@ -55,7 +56,13 @@ final readonly class MapBuilder
                 $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
 
                 foreach ($class->methods() as $method) {
-                    $this->process($methods, $class->namespacedName() . '::' . $method->name(), $file, $method->startLine(), $method->endLine());
+                    $methodName = $class->namespacedName() . '::' . $method->name();
+
+                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
+
+                    foreach (range($method->startLine(), $method->endLine()) as $line) {
+                        $reverseLookup[$file . ':' . $line] = $methodName;
+                    }
                 }
 
                 $classesThatExtendClass[$class->namespacedName()] = [];
@@ -70,7 +77,13 @@ final readonly class MapBuilder
                 $this->process($traits, $trait->namespacedName(), $file, $trait->startLine(), $trait->endLine());
 
                 foreach ($trait->methods() as $method) {
-                    $this->process($methods, $trait->namespacedName() . '::' . $method->name(), $file, $method->startLine(), $method->endLine());
+                    $methodName = $trait->namespacedName() . '::' . $method->name();
+
+                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
+
+                    foreach (range($method->startLine(), $method->endLine()) as $line) {
+                        $reverseLookup[$file . ':' . $line] = $methodName;
+                    }
                 }
             }
 
@@ -80,6 +93,10 @@ final readonly class MapBuilder
                 }
 
                 $this->process($functions, $function->namespacedName(), $file, $function->startLine(), $function->endLine());
+
+                foreach (range($function->startLine(), $function->endLine()) as $line) {
+                    $reverseLookup[$file . ':' . $line] = $function->namespacedName();
+                }
             }
         }
 
@@ -135,6 +152,7 @@ final readonly class MapBuilder
             'traits'                        => $traits,
             'methods'                       => $methods,
             'functions'                     => $functions,
+            'reverseLookup'                 => $reverseLookup,
         ];
     }
 

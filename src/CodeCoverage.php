@@ -35,7 +35,6 @@ use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
 use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
-use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 
 /**
  * Provides collection functionality for PHP code coverage information.
@@ -50,7 +49,6 @@ final class CodeCoverage
     private const string UNCOVERED_FILES = 'UNCOVERED_FILES';
     private readonly Driver $driver;
     private readonly Filter $filter;
-    private readonly Wizard $wizard;
     private ?Mapper $targetMapper                    = null;
     private bool $checkForUnintentionallyCoveredCode = false;
     private bool $ignoreDeprecatedCode               = false;
@@ -77,7 +75,6 @@ final class CodeCoverage
         $this->driver = $driver;
         $this->filter = $filter;
         $this->data   = new ProcessedCodeCoverageData;
-        $this->wizard = new Wizard;
     }
 
     /**
@@ -499,7 +496,7 @@ final class CodeCoverage
         foreach ($data->lineCoverage() as $file => $_data) {
             foreach ($_data as $line => $flag) {
                 if ($flag === 1 && !isset($allowedLines[$file][$line])) {
-                    $unintentionallyCoveredUnits[] = $this->wizard->lookup($file, $line);
+                    $unintentionallyCoveredUnits[] = $this->targetMapper->lookup($file, $line);
                 }
             }
         }

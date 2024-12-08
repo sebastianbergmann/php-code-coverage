@@ -965,7 +965,7 @@ final class File extends Renderer
     {
         $template->setVar(
             [
-                'lineNumber'  => $lineNumber,
+                'lineNumber'  => (string) $lineNumber,
                 'lineContent' => $lineContent,
                 'class'       => $class,
                 'popover'     => $popover,

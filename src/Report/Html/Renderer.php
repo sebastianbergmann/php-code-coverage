@@ -171,8 +171,8 @@ abstract class Renderer
                 'version'          => $this->version,
                 'runtime'          => $this->runtimeString(),
                 'generator'        => $this->generator,
-                'low_upper_bound'  => $this->thresholds->lowUpperBound(),
-                'high_lower_bound' => $this->thresholds->highLowerBound(),
+                'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
+                'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
             ],
         );
     }

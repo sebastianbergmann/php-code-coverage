@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use function assert;
 use function count;
 use RecursiveIterator;
 
@@ -74,6 +75,8 @@ final class Iterator implements RecursiveIterator
      */
     public function getChildren(): self
     {
+        assert($this->nodes[$this->position] instanceof Directory);
+
         return new self($this->nodes[$this->position]);
     }
 

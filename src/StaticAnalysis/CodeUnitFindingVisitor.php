@@ -67,7 +67,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         $this->file = $file;
     }
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): null
     {
         if ($node instanceof Interface_) {
             $this->processInterface($node);
@@ -75,7 +75,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         if ($node instanceof Class_) {
             if ($node->isAnonymous()) {
-                return;
+                return null;
             }
 
             $this->processClass($node);
@@ -86,20 +86,22 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         }
 
         if (!$node instanceof Function_) {
-            return;
+            return null;
         }
 
         $this->processFunction($node);
+
+        return null;
     }
 
-    public function leaveNode(Node $node): void
+    public function leaveNode(Node $node): null
     {
         if (!$node instanceof Class_) {
-            return;
+            return null;
         }
 
         if ($node->isAnonymous()) {
-            return;
+            return null;
         }
 
         $traits = [];
@@ -111,7 +113,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         }
 
         if (empty($traits)) {
-            return;
+            return null;
         }
 
         $namespacedClassName = $node->namespacedName->toString();
@@ -130,6 +132,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $traits,
             $this->classes[$namespacedClassName]->methods(),
         );
+
+        return null;
     }
 
     /**

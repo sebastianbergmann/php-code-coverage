@@ -39,7 +39,7 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
         $this->ignoreDeprecated              = $ignoreDeprecated;
     }
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): null
     {
         if (!$node instanceof Class_ &&
             !$node instanceof Trait_ &&
@@ -48,11 +48,11 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             !$node instanceof ClassMethod &&
             !$node instanceof Function_ &&
             !$node instanceof Attribute) {
-            return;
+            return null;
         }
 
         if ($node instanceof Class_ && $node->isAnonymous()) {
-            return;
+            return null;
         }
 
         if ($node instanceof Class_ ||
@@ -68,11 +68,11 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if (!$this->useAnnotationsForIgnoringCode) {
-            return;
+            return null;
         }
 
         if ($node instanceof Interface_) {
-            return;
+            return null;
         }
 
         if ($node instanceof Attribute &&
@@ -84,10 +84,12 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
                 $this->ignoredLines[] = $line;
             }
 
-            return;
+            return null;
         }
 
         $this->processDocComment($node);
+
+        return null;
     }
 
     /**

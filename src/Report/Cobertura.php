@@ -153,7 +153,7 @@ final class Cobertura
 
                     $linesValid   = $method['executableLines'];
                     $linesCovered = $method['executedLines'];
-                    $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+                    $lineRate     = $linesCovered / $linesValid;
 
                     $branchesValid   = $method['executableBranches'];
                     $branchesCovered = $method['executedBranches'];
@@ -228,7 +228,7 @@ final class Cobertura
 
                 $linesValid   = $function['executableLines'];
                 $linesCovered = $function['executedLines'];
-                $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+                $lineRate     = $linesCovered / $linesValid;
 
                 $functionsLinesValid   += $linesValid;
                 $functionsLinesCovered += $linesCovered;

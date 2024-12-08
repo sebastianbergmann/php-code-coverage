@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 
 #[CoversClass(TargetCollection::class)]
 #[CoversClass(TargetCollectionIterator::class)]
@@ -31,7 +32,7 @@ final class TargetCollectionTest extends TestCase
 
     public function testCanBeCreatedFromArray(): void
     {
-        $target     = Target::forClass('className');
+        $target     = Target::forClass(TargetClass::class);
         $collection = TargetCollection::fromArray([$target]);
 
         $this->assertContains($target, $collection);
@@ -39,7 +40,7 @@ final class TargetCollectionTest extends TestCase
 
     public function testIsCountable(): void
     {
-        $target     = Target::forClass('className');
+        $target     = Target::forClass(TargetClass::class);
         $collection = TargetCollection::fromArray([$target]);
 
         $this->assertCount(1, $collection);
@@ -49,7 +50,7 @@ final class TargetCollectionTest extends TestCase
 
     public function testIsIterable(): void
     {
-        $target     = Target::forClass('className');
+        $target     = Target::forClass(TargetClass::class);
         $collection = TargetCollection::fromArray([$target]);
 
         foreach ($collection as $key => $value) {

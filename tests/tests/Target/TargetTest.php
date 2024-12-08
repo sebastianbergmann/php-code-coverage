@@ -12,6 +12,8 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetInterface;
 
 #[CoversClass(Target::class)]
 #[CoversClass(Class_::class)]
@@ -25,7 +27,7 @@ final class TargetTest extends TestCase
 {
     public function testCanBeClass(): void
     {
-        $className = 'className';
+        $className = TargetClass::class;
 
         $target = Target::forClass($className);
 
@@ -44,7 +46,7 @@ final class TargetTest extends TestCase
 
     public function testCanBeClassesThatExtendClass(): void
     {
-        $className = 'className';
+        $className = TargetClass::class;
 
         $target = Target::forClassesThatExtendClass($className);
 
@@ -63,7 +65,7 @@ final class TargetTest extends TestCase
 
     public function testCanBeClassesThatImplementInterface(): void
     {
-        $interfaceName = 'interfaceName';
+        $interfaceName = TargetInterface::class;
 
         $target = Target::forClassesThatImplementInterface($interfaceName);
 
@@ -101,8 +103,8 @@ final class TargetTest extends TestCase
 
     public function testCanBeMethod(): void
     {
-        $className  = 'className';
-        $methodName = 'methodName';
+        $className  = TargetClass::class;
+        $methodName = 'method';
 
         $target = Target::forMethod($className, $methodName);
 

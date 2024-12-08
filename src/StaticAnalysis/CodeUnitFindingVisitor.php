@@ -237,20 +237,17 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $type->toString();
     }
 
-    /**
-     * @return 'private'|'protected'|'public'
-     */
-    private function visibility(ClassMethod $node): string
+    private function visibility(ClassMethod $node): Visibility
     {
         if ($node->isPrivate()) {
-            return 'private';
+            return Visibility::Private;
         }
 
         if ($node->isProtected()) {
-            return 'protected';
+            return Visibility::Protected;
         }
 
-        return 'public';
+        return Visibility::Public;
     }
 
     private function processInterface(Interface_ $node): void

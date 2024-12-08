@@ -636,7 +636,7 @@ final class File extends AbstractNode
     {
         $methodData = [
             'methodName'         => $method->name(),
-            'visibility'         => $method->visibility(),
+            'visibility'         => $method->visibility()->value,
             'signature'          => $method->signature(),
             'startLine'          => $method->startLine(),
             'endLine'            => $method->endLine(),

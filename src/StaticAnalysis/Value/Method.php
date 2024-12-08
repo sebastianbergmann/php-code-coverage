@@ -28,11 +28,7 @@ final readonly class Method
      * @var non-negative-int
      */
     private int $endLine;
-
-    /**
-     * @var 'private'|'protected'|'public'
-     */
-    private string $visibility;
+    private Visibility $visibility;
 
     /**
      * @var non-empty-string
@@ -45,14 +41,13 @@ final readonly class Method
     private int $cyclomaticComplexity;
 
     /**
-     * @param non-empty-string               $name
-     * @param non-negative-int               $startLine
-     * @param non-negative-int               $endLine
-     * @param non-empty-string               $signature
-     * @param 'private'|'protected'|'public' $visibility
-     * @param positive-int                   $cyclomaticComplexity
+     * @param non-empty-string $name
+     * @param non-negative-int $startLine
+     * @param non-negative-int $endLine
+     * @param non-empty-string $signature
+     * @param positive-int     $cyclomaticComplexity
      */
-    public function __construct(string $name, int $startLine, int $endLine, string $signature, string $visibility, int $cyclomaticComplexity)
+    public function __construct(string $name, int $startLine, int $endLine, string $signature, Visibility $visibility, int $cyclomaticComplexity)
     {
         $this->name                 = $name;
         $this->startLine            = $startLine;
@@ -94,10 +89,7 @@ final readonly class Method
         return $this->signature;
     }
 
-    /**
-     * @return 'private'|'protected'|'public'
-     */
-    public function visibility(): string
+    public function visibility(): Visibility
     {
         return $this->visibility;
     }

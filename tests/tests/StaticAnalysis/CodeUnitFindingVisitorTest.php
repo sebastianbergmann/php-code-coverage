@@ -52,7 +52,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $this->assertSame('method', $method->name());
         $this->assertSame('method(): string', $method->signature());
-        $this->assertSame('public', $method->visibility());
+        $this->assertSame(Visibility::Public, $method->visibility());
         $this->assertSame(6, $method->startLine());
         $this->assertSame(16, $method->endLine());
         $this->assertSame(1, $method->cyclomaticComplexity());
@@ -200,7 +200,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame('four', $method->name());
         $this->assertSame(21, $method->startLine());
         $this->assertSame(23, $method->endLine());
-        $this->assertSame('public', $method->visibility());
+        $this->assertSame(Visibility::Public, $method->visibility());
         $this->assertSame('four(): void', $method->signature());
         $this->assertSame(1, $method->cyclomaticComplexity());
 
@@ -233,7 +233,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame('five', $method->name());
         $this->assertSame(28, $method->startLine());
         $this->assertSame(30, $method->endLine());
-        $this->assertSame('public', $method->visibility());
+        $this->assertSame(Visibility::Public, $method->visibility());
         $this->assertSame('five(A $a, B $b): void', $method->signature());
         $this->assertSame(1, $method->cyclomaticComplexity());
 

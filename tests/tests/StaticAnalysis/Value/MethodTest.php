@@ -39,7 +39,7 @@ final class MethodTest extends TestCase
 
     public function testHasVisibility(): void
     {
-        $this->assertSame('public', $this->method()->visibility());
+        $this->assertSame(Visibility::Public, $this->method()->visibility());
     }
 
     public function testHasCyclomaticComplexity(): void
@@ -54,7 +54,7 @@ final class MethodTest extends TestCase
             1,
             2,
             'the-signature',
-            'public',
+            Visibility::Public,
             3,
         );
     }

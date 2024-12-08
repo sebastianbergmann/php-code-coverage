@@ -4,3 +4,12 @@ parameters:
         - src
         - tests/tests
         - tests/bootstrap.php
+
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+        # Ignore errors caused by defensive programming
+        - '#Call to function assert\(\) with true will always evaluate to true.#'
+        - '#Call to method .* will always evaluate to true.#'
+        - '#Call to method .* will always evaluate to false.#'
+        - '#Instanceof between .* and .* will always evaluate to true.#'

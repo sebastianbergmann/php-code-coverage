@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-type LinesType = array<int, int>
+ * @phpstan-type LinesType array<int, int>
  */
 interface FileAnalyser
 {

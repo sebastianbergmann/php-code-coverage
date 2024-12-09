@@ -34,8 +34,8 @@ use SebastianBergmann\CodeCoverage\Filter;
  *
  * @see https://xdebug.org/docs/code_coverage#xdebug_get_code_coverage
  *
- * @phpstan-type XdebugLinesCoverageType = array<int, int>
- * @phpstan-type XdebugBranchCoverageType = array{
+ * @phpstan-type XdebugLinesCoverageType array<int, int>
+ * @phpstan-type XdebugBranchCoverageType array{
  *     op_start: int,
  *     op_end: int,
  *     line_start: int,
@@ -44,21 +44,21 @@ use SebastianBergmann\CodeCoverage\Filter;
  *     out: array<int, int>,
  *     out_hit: array<int, int>,
  * }
- * @phpstan-type XdebugPathCoverageType = array{
+ * @phpstan-type XdebugPathCoverageType array{
  *     path: array<int, int>,
  *     hit: int,
  * }
- * @phpstan-type XdebugFunctionCoverageType = array{
+ * @phpstan-type XdebugFunctionCoverageType array{
  *     branches: array<int, XdebugBranchCoverageType>,
  *     paths: array<int, XdebugPathCoverageType>,
  * }
- * @phpstan-type XdebugFunctionsCoverageType = array<string, XdebugFunctionCoverageType>
- * @phpstan-type XdebugPathAndBranchesCoverageType = array{
+ * @phpstan-type XdebugFunctionsCoverageType array<string, XdebugFunctionCoverageType>
+ * @phpstan-type XdebugPathAndBranchesCoverageType array{
  *     lines: XdebugLinesCoverageType,
  *     functions: XdebugFunctionsCoverageType,
  * }
- * @phpstan-type XdebugCodeCoverageWithoutPathCoverageType = array<string, XdebugLinesCoverageType>
- * @phpstan-type XdebugCodeCoverageWithPathCoverageType = array<string, XdebugPathAndBranchesCoverageType>
+ * @phpstan-type XdebugCodeCoverageWithoutPathCoverageType array<string, XdebugLinesCoverageType>
+ * @phpstan-type XdebugCodeCoverageWithPathCoverageType array<string, XdebugPathAndBranchesCoverageType>
  */
 final class XdebugDriver extends Driver
 {

@@ -84,6 +84,11 @@ final class ClassTest extends TestCase
         $this->assertSame($methods, $this->class(methods: $methods)->methods());
     }
 
+    /**
+     * @param list<non-empty-string>          $interfaces
+     * @param list<non-empty-string>          $traits
+     * @param array<non-empty-string, Method> $methods
+     */
     private function class(?string $parentClass = null, array $interfaces = [], array $traits = [], array $methods = []): Class_
     {
         return new Class_(

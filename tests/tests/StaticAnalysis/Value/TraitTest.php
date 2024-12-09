@@ -49,6 +49,9 @@ final class TraitTest extends TestCase
         $this->assertSame($methods, $this->trait(methods: $methods)->methods());
     }
 
+    /**
+     * @param array<non-empty-string, Method> $methods
+     */
     private function trait(array $methods = []): Trait_
     {
         return new Trait_(

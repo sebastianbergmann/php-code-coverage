@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 
+/**
+ * @phpstan-import-type TargetMap from Mapper
+ */
 #[CoversClass(MapBuilder::class)]
 #[Small]
 final class MapBuilderTest extends TestCase
@@ -120,6 +123,11 @@ final class MapBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @param list<string> $files
+     *
+     * @return TargetMap
+     */
     private function map(array $files): array
     {
         $filter = new Filter;

@@ -21,6 +21,9 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 
+/**
+ * @phpstan-import-type TargetMap from Mapper
+ */
 #[CoversClass(Mapper::class)]
 #[Small]
 final class MapperTest extends TestCase
@@ -206,6 +209,8 @@ final class MapperTest extends TestCase
 
     /**
      * @param list<non-empty-string> $files
+     *
+     * @return TargetMap
      */
     private function map(array $files): array
     {

@@ -49,6 +49,9 @@ final class InterfaceTest extends TestCase
         $this->assertSame($interfaces, $this->interface(parentInterfaces: $interfaces)->parentInterfaces());
     }
 
+    /**
+     * @param list<non-empty-string> $parentInterfaces
+     */
     private function interface(array $parentInterfaces = []): Interface_
     {
         return new Interface_(

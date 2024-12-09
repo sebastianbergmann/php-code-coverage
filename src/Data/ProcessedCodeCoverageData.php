@@ -25,6 +25,24 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
  * @phpstan-type TestIdType string
+ * @phpstan-type FunctionCoverageDataType array{
+ *      branches: array<int, array{
+ *          op_start: int,
+ *          op_end: int,
+ *          line_start: int,
+ *          line_end: int,
+ *          hit: list<TestIdType>,
+ *          out: array<int, int>,
+ *          out_hit: array<int, int>,
+ *      }>,
+ *      paths: array<int, array{
+ *          path: array<int, int>,
+ *          hit: list<TestIdType>,
+ *      }>,
+ *      hit: list<TestIdType>
+ *  }
+ *
+ * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
  */
 final class ProcessedCodeCoverageData
 {
@@ -41,22 +59,7 @@ final class ProcessedCodeCoverageData
      * Maintains base format of raw data (@see https://xdebug.org/docs/code_coverage), but each 'hit' entry is an array
      * of testcase ids.
      *
-     * @var array<string, array<string, array{
-     *     branches: array<int, array{
-     *         op_start: int,
-     *         op_end: int,
-     *         line_start: int,
-     *         line_end: int,
-     *         hit: list<TestIdType>,
-     *         out: array<int, int>,
-     *         out_hit: array<int, int>,
-     *     }>,
-     *     paths: array<int, array{
-     *         path: array<int, int>,
-     *         hit: list<TestIdType>,
-     *     }>,
-     *     hit: list<TestIdType>
-     * }>>
+     * @var FunctionCoverageType
      */
     private array $functionCoverage = [];
 
@@ -238,7 +241,7 @@ final class ProcessedCodeCoverageData
     /**
      * For a function we have never seen before, copy all data over and simply init the 'hit' array.
      *
-     * @param XdebugFunctionCoverageType $functionData
+     * @param XdebugFunctionCoverageType|FunctionCoverageDataType $functionData
      */
     private function initPreviouslyUnseenFunction(string $file, string $functionName, array $functionData): void
     {
@@ -258,7 +261,7 @@ final class ProcessedCodeCoverageData
      * Techniques such as mocking and where the contents of a file are different vary during tests (e.g. compiling
      * containers) mean that the functions inside a file cannot be relied upon to be static.
      *
-     * @param XdebugFunctionCoverageType $functionData
+     * @param XdebugFunctionCoverageType|FunctionCoverageDataType $functionData
      */
     private function initPreviouslySeenFunction(string $file, string $functionName, array $functionData): void
     {

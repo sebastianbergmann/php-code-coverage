@@ -122,6 +122,7 @@ final class MapperTest extends TestCase
                 'Class DoesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
+                        /** @phpstan-ignore argument.type */
                         Target::forClass('DoesNotExist'),
                     ],
                 ),
@@ -130,6 +131,7 @@ final class MapperTest extends TestCase
                 'Classes that extend class DoesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
+                        /** @phpstan-ignore argument.type */
                         Target::forClassesThatExtendClass('DoesNotExist'),
                     ],
                 ),
@@ -138,6 +140,7 @@ final class MapperTest extends TestCase
                 'Classes that implement interface DoesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
+                        /** @phpstan-ignore argument.type */
                         Target::forClassesThatImplementInterface('DoesNotExist'),
                     ],
                 ),
@@ -154,6 +157,7 @@ final class MapperTest extends TestCase
                 'Method DoesNotExist::doesNotExist is not a valid target for code coverage',
                 TargetCollection::fromArray(
                     [
+                        /** @phpstan-ignore argument.type */
                         Target::forMethod('DoesNotExist', 'doesNotExist'),
                     ],
                 ),

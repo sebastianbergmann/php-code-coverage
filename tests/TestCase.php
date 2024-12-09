@@ -9,27 +9,18 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\Test\Target\Target;
-use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
-use function array_merge;
-use function range;
 use function rmdir;
 use function unlink;
 use BankAccount;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Test\Target\Target;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected static $TEST_TMP_PATH;
-
-    public static function setUpBeforeClass(): void
-    {
-        self::$TEST_TMP_PATH = TEST_FILES_PATH . 'tmp';
-    }
-
     protected function getLineCoverageXdebugDataForBankAccount()
     {
         return [

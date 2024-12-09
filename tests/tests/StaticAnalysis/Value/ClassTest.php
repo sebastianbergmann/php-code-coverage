@@ -79,7 +79,16 @@ final class ClassTest extends TestCase
 
     public function testMayHaveMethods(): void
     {
-        $methods = [new Method('method', 0, 0, 'method(): void', Visibility::Public, 1)];
+        $methods = [
+            'method' => new Method(
+                'method',
+                0,
+                0,
+                'method(): void',
+                Visibility::Public,
+                1,
+            ),
+        ];
 
         $this->assertSame($methods, $this->class(methods: $methods)->methods());
     }

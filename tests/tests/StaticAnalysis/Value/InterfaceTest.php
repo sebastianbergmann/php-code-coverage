@@ -46,7 +46,7 @@ final class InterfaceTest extends TestCase
     {
         $interfaces = ['example\AnInterface'];
 
-        $this->assertSame($interfaces, $this->interface(parentInterfaces: $interfaces)->parentInterfaces());
+        $this->assertSame($interfaces, $this->interface($interfaces)->parentInterfaces());
     }
 
     /**

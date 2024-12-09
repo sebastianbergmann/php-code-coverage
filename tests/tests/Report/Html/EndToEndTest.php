@@ -20,30 +20,19 @@ use SebastianBergmann\CodeCoverage\TestCase;
 
 final class EndToEndTest extends TestCase
 {
-    private static $TEST_REPORT_PATH_SOURCE;
-
-    public static function setUpBeforeClass(): void
-    {
-        parent::setUpBeforeClass();
-
-        self::$TEST_REPORT_PATH_SOURCE = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML';
-    }
-
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         $this->removeTemporaryFiles();
     }
 
     public function testLineCoverageForBankAccountTest(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $report->process($this->getLineCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testPathCoverageForBankAccountTest(): void
@@ -51,42 +40,42 @@ final class EndToEndTest extends TestCase
         $this->markTestIncomplete('This test fails after https://github.com/sebastianbergmann/php-code-coverage/pull/1037 and I have not figured out how to update it.');
 
         /** @phpstan-ignore deadCode.unreachable */
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
 
         $report = new Facade;
-        $report->process($this->getPathCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $report->process($this->getPathCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testPathCoverageForSourceWithoutNamespace(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'PathCoverageForSourceWithoutNamespace';
 
         $report = new Facade;
-        $report->process($this->getPathCoverageForSourceWithoutNamespace(), self::$TEST_TMP_PATH);
+        $report->process($this->getPathCoverageForSourceWithoutNamespace(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForFileWithIgnoredLines(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $report = new Facade;
-        $report->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
+        $report->process($this->getCoverageForFileWithIgnoredLines(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForClassWithAnonymousFunction(): void
     {
-        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $report = new Facade;
-        $report->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
+        $report->process($this->getCoverageForClassWithAnonymousFunction(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void

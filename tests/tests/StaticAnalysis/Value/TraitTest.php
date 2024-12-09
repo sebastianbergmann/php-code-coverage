@@ -44,9 +44,18 @@ final class TraitTest extends TestCase
 
     public function testMayHaveMethods(): void
     {
-        $methods = [new Method('method', 0, 0, 'method(): void', Visibility::Public, 1)];
+        $methods = [
+            'method' => new Method(
+                'method',
+                0,
+                0,
+                'method(): void',
+                Visibility::Public,
+                1,
+            ),
+        ];
 
-        $this->assertSame($methods, $this->trait(methods: $methods)->methods());
+        $this->assertSame($methods, $this->trait($methods)->methods());
     }
 
     /**

@@ -31,7 +31,7 @@ final class XmlTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (new FilesystemIterator(self::$TEST_TMP_PATH) as $path => $fileInfo) {
+        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $path => $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             unlink($fileInfo->getPathname());
         }
@@ -42,9 +42,9 @@ final class XmlTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getLineCoverageForBankAccount(), self::$TEST_TMP_PATH);
+        $xml->process($this->getLineCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForFileWithIgnoredLines(): void
@@ -52,9 +52,9 @@ final class XmlTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForFileWithIgnoredLines(), self::$TEST_TMP_PATH);
+        $xml->process($this->getCoverageForFileWithIgnoredLines(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForClassWithAnonymousFunction(): void
@@ -62,9 +62,9 @@ final class XmlTest extends TestCase
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForClassWithAnonymousFunction(), self::$TEST_TMP_PATH);
+        $xml->process($this->getCoverageForClassWithAnonymousFunction(), TEST_FILES_PATH . 'tmp');
 
-        $this->assertFilesEquals($expectedFilesPath, self::$TEST_TMP_PATH);
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void

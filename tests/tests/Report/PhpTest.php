@@ -26,9 +26,9 @@ final class PhpTest extends TestCase
         $coverage = $this->getLineCoverageForBankAccount();
 
         /* @noinspection UnusedFunctionResultInspection */
-        (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
+        (new PHP)->process($coverage, TEST_FILES_PATH . 'tmp/serialized.php');
 
-        $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';
+        $unserialized = require TEST_FILES_PATH . 'tmp/serialized.php';
 
         $this->assertEquals($coverage, $unserialized);
     }
@@ -38,9 +38,9 @@ final class PhpTest extends TestCase
         $coverage = $this->getLineCoverageForFileWithEval();
 
         /* @noinspection UnusedFunctionResultInspection */
-        (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
+        (new PHP)->process($coverage, TEST_FILES_PATH . 'tmp/serialized.php');
 
-        $unserialized = require self::$TEST_TMP_PATH . '/serialized.php';
+        $unserialized = require TEST_FILES_PATH . 'tmp/serialized.php';
 
         $this->assertEquals($coverage, $unserialized);
     }
@@ -53,12 +53,11 @@ final class PhpTest extends TestCase
         $coverage->getReport();
 
         $refProperty = new ReflectionProperty($coverage, 'cachedReport');
-        $refProperty->setAccessible(true);
 
         $this->assertNotNull($refProperty->getValue($coverage));
 
         /* @noinspection UnusedFunctionResultInspection */
-        (new PHP)->process($coverage, self::$TEST_TMP_PATH . '/serialized.php');
+        (new PHP)->process($coverage, TEST_FILES_PATH . 'tmp/serialized.php');
 
         $this->assertNull($refProperty->getValue($coverage));
     }

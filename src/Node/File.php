@@ -24,7 +24,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  *
  * @phpstan-import-type LinesType from FileAnalyser
  *
- * @phpstan-type ProcessedFunctionType = array{
+ * @phpstan-type ProcessedFunctionType array{
  *     functionName: string,
  *     namespace: string,
  *     signature: string,
@@ -41,7 +41,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  *     crap: int|string,
  *     link: string
  * }
- * @phpstan-type ProcessedMethodType = array{
+ * @phpstan-type ProcessedMethodType array{
  *     methodName: string,
  *     visibility: string,
  *     signature: string,
@@ -58,7 +58,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  *     crap: int|string,
  *     link: string
  * }
- * @phpstan-type ProcessedClassType = array{
+ * @phpstan-type ProcessedClassType array{
  *     className: string,
  *     namespace: string,
  *     methods: array<string, ProcessedMethodType>,
@@ -74,7 +74,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  *     crap: int|string,
  *     link: string
  * }
- * @phpstan-type ProcessedTraitType = array{
+ * @phpstan-type ProcessedTraitType array{
  *     traitName: string,
  *     namespace: string,
  *     methods: array<string, ProcessedMethodType>,

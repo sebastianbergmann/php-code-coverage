@@ -38,7 +38,7 @@ use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 /**
  * Provides collection functionality for PHP code coverage information.
  *
- * @phpstan-type TestType = array{
+ * @phpstan-type TestType array{
  *     size: string,
  *     status: string,
  * }

@@ -14,9 +14,9 @@ use function array_unique;
 use function sort;
 
 /**
- * @phpstan-type TargetMap = array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
- * @phpstan-type TargetMapPart = array<non-empty-string, array<non-empty-string, list<positive-int>>>
- * @phpstan-type ReverseLookup = array<non-empty-string, non-empty-string>
+ * @phpstan-type TargetMap array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
+ * @phpstan-type TargetMapPart array<non-empty-string, array<non-empty-string, list<positive-int>>>
+ * @phpstan-type ReverseLookup array<non-empty-string, non-empty-string>
  *
  * @immutable
  *

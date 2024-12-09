@@ -23,6 +23,16 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
+ * @phpstan-type CachedDataForFile array{
+ *   interfacesIn: array<string, Interface_>,
+ *   classesIn: array<string, Class_>,
+ *   traitsIn: array<string, Trait_>,
+ *   functionsIn: array<string, Function_>,
+ *   linesOfCodeFor: LinesOfCode,
+ *   ignoredLinesFor: LinesType,
+ *   executableLinesIn: LinesType
+ * }
+ *
  * @phpstan-import-type LinesType from FileAnalyser
  */
 final class CachingFileAnalyser implements FileAnalyser
@@ -32,6 +42,10 @@ final class CachingFileAnalyser implements FileAnalyser
     private readonly FileAnalyser $analyser;
     private readonly bool $useAnnotationsForIgnoringCode;
     private readonly bool $ignoreDeprecatedCode;
+
+    /**
+     * @var array<non-empty-string, CachedDataForFile>
+     */
     private array $cache = [];
 
     public function __construct(string $directory, FileAnalyser $analyser, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
@@ -148,6 +162,9 @@ final class CachingFileAnalyser implements FileAnalyser
         $this->write($filename, $this->cache[$filename]);
     }
 
+    /**
+     * @return CachedDataForFile|false
+     */
     private function read(string $filename): array|false
     {
         $cacheFile = $this->cacheFile($filename);
@@ -171,6 +188,9 @@ final class CachingFileAnalyser implements FileAnalyser
         );
     }
 
+    /**
+     * @param CachedDataForFile $data
+     */
     private function write(string $filename, array $data): void
     {
         file_put_contents(

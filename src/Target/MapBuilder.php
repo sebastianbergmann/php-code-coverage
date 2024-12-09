@@ -19,6 +19,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
+ * @phpstan-import-type TargetMapPart from Mapper
  *
  * @immutable
  *
@@ -157,12 +158,13 @@ final readonly class MapBuilder
     }
 
     /**
-     * @param-out array $data
-     *
+     * @param TargetMapPart    $data
      * @param non-empty-string $unit
      * @param non-empty-string $file
      * @param positive-int     $startLine
      * @param positive-int     $endLine
+     *
+     * @param-out TargetMapPart $data
      */
     private function process(array &$data, string $unit, string $file, int $startLine, int $endLine): void
     {

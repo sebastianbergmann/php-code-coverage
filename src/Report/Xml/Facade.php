@@ -32,12 +32,19 @@ use SebastianBergmann\CodeCoverage\Driver\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Driver\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Filesystem as DirectoryUtil;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
 
+/**
+ * @phpstan-import-type ProcessedClassType from File
+ * @phpstan-import-type ProcessedTraitType from File
+ * @phpstan-import-type ProcessedFunctionType from File
+ * @phpstan-import-type TestType from CodeCoverage
+ */
 final class Facade
 {
     private string $target;
@@ -175,6 +182,9 @@ final class Facade
         $this->saveDocument($fileReport->asDom(), $file->id());
     }
 
+    /**
+     * @param ProcessedClassType|ProcessedTraitType $unit
+     */
     private function processUnit(array $unit, Report $report): void
     {
         if (isset($unit['className'])) {
@@ -205,6 +215,9 @@ final class Facade
         }
     }
 
+    /**
+     * @param ProcessedFunctionType $function
+     */
     private function processFunction(array $function, Report $report): void
     {
         $functionObject = $report->functionObject($function['functionName']);
@@ -215,6 +228,9 @@ final class Facade
         $functionObject->setTotals((string) $function['executableLines'], (string) $function['executedLines'], (string) $function['coverage']);
     }
 
+    /**
+     * @param array<string, TestType> $tests
+     */
     private function processTests(array $tests): void
     {
         $testsObject = $this->project->tests();

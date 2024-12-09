@@ -40,7 +40,7 @@ final class Report extends File
         return $this->dom();
     }
 
-    public function functionObject($name): Method
+    public function functionObject(string $name): Method
     {
         $node = $this->contextNode()->appendChild(
             $this->dom()->createElementNS(
@@ -54,12 +54,12 @@ final class Report extends File
         return new Method($node, $name);
     }
 
-    public function classObject($name): Unit
+    public function classObject(string $name): Unit
     {
         return $this->unitObject('class', $name);
     }
 
-    public function traitObject($name): Unit
+    public function traitObject(string $name): Unit
     {
         return $this->unitObject('trait', $name);
     }
@@ -91,7 +91,7 @@ final class Report extends File
         $this->contextNode()->setAttribute('path', dirname($name));
     }
 
-    private function unitObject(string $tagName, $name): Unit
+    private function unitObject(string $tagName, string $name): Unit
     {
         $node = $this->contextNode()->appendChild(
             $this->dom()->createElementNS(

@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use function array_filter;
 use function count;
 use function range;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
@@ -22,6 +23,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
+ * @phpstan-import-type TestType from CodeCoverage
  * @phpstan-import-type LinesType from FileAnalyser
  *
  * @phpstan-type ProcessedFunctionType array{
@@ -98,6 +100,10 @@ final class File extends AbstractNode
      */
     private array $lineCoverageData;
     private array $functionCoverageData;
+
+    /**
+     * @var array<string, TestType>
+     */
     private readonly array $testData;
     private int $numExecutableLines    = 0;
     private int $numExecutedLines      = 0;
@@ -136,6 +142,7 @@ final class File extends AbstractNode
 
     /**
      * @param array<int, ?list<non-empty-string>> $lineCoverageData
+     * @param array<string, TestType>             $testData
      * @param array<string, Class_>               $classes
      * @param array<string, Trait_>               $traits
      * @param array<string, Function_>            $functions
@@ -170,6 +177,9 @@ final class File extends AbstractNode
         return $this->functionCoverageData;
     }
 
+    /**
+     * @return array<string, TestType>
+     */
     public function testData(): array
     {
         return $this->testData;

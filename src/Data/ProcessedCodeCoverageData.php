@@ -219,6 +219,8 @@ final class ProcessedCodeCoverageData
      * 4 = the line has been tested
      *
      * During a merge, a higher number is better.
+     *
+     * @return 1|2|3|4
      */
     private function priorityForLine(array $data, int $line): int
     {

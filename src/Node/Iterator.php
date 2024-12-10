@@ -30,49 +30,31 @@ final class Iterator implements RecursiveIterator
         $this->nodes = $node->children();
     }
 
-    /**
-     * Rewinds the Iterator to the first element.
-     */
     public function rewind(): void
     {
         $this->position = 0;
     }
 
-    /**
-     * Checks if there is a current element after calls to rewind() or next().
-     */
     public function valid(): bool
     {
         return $this->position < count($this->nodes);
     }
 
-    /**
-     * Returns the key of the current element.
-     */
     public function key(): int
     {
         return $this->position;
     }
 
-    /**
-     * Returns the current element.
-     */
     public function current(): ?AbstractNode
     {
         return $this->valid() ? $this->nodes[$this->position] : null;
     }
 
-    /**
-     * Moves forward to next element.
-     */
     public function next(): void
     {
         $this->position++;
     }
 
-    /**
-     * Returns the sub iterator for the current element.
-     */
     public function getChildren(): self
     {
         assert($this->nodes[$this->position] instanceof Directory);
@@ -80,9 +62,6 @@ final class Iterator implements RecursiveIterator
         return new self($this->nodes[$this->position]);
     }
 
-    /**
-     * Checks whether the current element has children.
-     */
     public function hasChildren(): bool
     {
         return $this->nodes[$this->position] instanceof Directory;

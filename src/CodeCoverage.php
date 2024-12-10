@@ -38,10 +38,8 @@ use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 /**
  * Provides collection functionality for PHP code coverage information.
  *
- * @phpstan-type TestType array{
- *     size: string,
- *     status: string,
- * }
+ * @phpstan-type TestType array{size: string, status: string}
+ * @phpstan-type TargetedLines array<non-empty-string, list<positive-int>>
  */
 final class CodeCoverage
 {
@@ -374,6 +372,9 @@ final class CodeCoverage
     }
 
     /**
+     * @param false|TargetedLines $linesToBeCovered
+     * @param TargetedLines       $linesToBeUsed
+     *
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
@@ -478,6 +479,9 @@ final class CodeCoverage
     }
 
     /**
+     * @param TargetedLines $linesToBeCovered
+     * @param TargetedLines $linesToBeUsed
+     *
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
@@ -507,6 +511,12 @@ final class CodeCoverage
         }
     }
 
+    /**
+     * @param TargetedLines $linesToBeCovered
+     * @param TargetedLines $linesToBeUsed
+     *
+     * @return TargetedLines
+     */
     private function getAllowedLines(array $linesToBeCovered, array $linesToBeUsed): array
     {
         $allowedLines = [];

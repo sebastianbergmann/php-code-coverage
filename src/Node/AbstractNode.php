@@ -29,6 +29,10 @@ abstract class AbstractNode implements Countable
 {
     private readonly string $name;
     private string $pathAsString;
+
+    /**
+     * @var non-empty-list<self>
+     */
     private array $pathAsArray;
     private readonly ?AbstractNode $parent;
     private string $id;
@@ -61,6 +65,9 @@ abstract class AbstractNode implements Countable
         return $this->pathAsString;
     }
 
+    /**
+     * @return non-empty-list<self>
+     */
     public function pathAsArray(): array
     {
         return $this->pathAsArray;

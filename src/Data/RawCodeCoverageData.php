@@ -261,6 +261,9 @@ final class RawCodeCoverageData
         }
     }
 
+    /**
+     * @return array<int>
+     */
     private function getEmptyLinesForFile(string $filename): array
     {
         if (!isset(self::$emptyLineCache[$filename])) {

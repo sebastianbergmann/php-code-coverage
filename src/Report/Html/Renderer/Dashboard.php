@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use function array_values;
 use function arsort;
 use function asort;
+use function assert;
 use function count;
 use function explode;
 use function floor;
@@ -21,10 +22,14 @@ use function str_replace;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
+ * @phpstan-import-type ProcessedClassType from FileNode
+ * @phpstan-import-type ProcessedTraitType from FileNode
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Dashboard extends Renderer
@@ -81,7 +86,9 @@ final class Dashboard extends Renderer
     }
 
     /**
-     * Returns the data for the Class/Method Complexity charts.
+     * @param array<string, ProcessedClassType|ProcessedTraitType> $classes
+     *
+     * @return array{class: non-empty-string, method: non-empty-string}
      */
     private function complexity(array $classes, string $baseLink): array
     {
@@ -115,14 +122,21 @@ final class Dashboard extends Renderer
             ];
         }
 
-        return [
-            'class'  => json_encode($result['class']),
-            'method' => json_encode($result['method']),
-        ];
+        $class = json_encode($result['class']);
+
+        assert($class !== false);
+
+        $method = json_encode($result['method']);
+
+        assert($method !== false);
+
+        return ['class' => $class, 'method' => $method];
     }
 
     /**
-     * Returns the data for the Class / Method Coverage Distribution chart.
+     * @param array<string, ProcessedClassType|ProcessedTraitType> $classes
+     *
+     * @return array{class: non-empty-string, method: non-empty-string}
      */
     private function coverageDistribution(array $classes): array
     {
@@ -181,14 +195,21 @@ final class Dashboard extends Renderer
             }
         }
 
-        return [
-            'class'  => json_encode(array_values($result['class'])),
-            'method' => json_encode(array_values($result['method'])),
-        ];
+        $class = json_encode(array_values($result['class']));
+
+        assert($class !== false);
+
+        $method = json_encode(array_values($result['method']));
+
+        assert($method !== false);
+
+        return ['class' => $class, 'method' => $method];
     }
 
     /**
-     * Returns the classes / methods with insufficient coverage.
+     * @param array<string, ProcessedClassType|ProcessedTraitType> $classes
+     *
+     * @return array{class: string, method: string}
      */
     private function insufficientCoverage(array $classes, string $baseLink): array
     {
@@ -242,7 +263,9 @@ final class Dashboard extends Renderer
     }
 
     /**
-     * Returns the project risks according to the CRAP index.
+     * @param array<string, ProcessedClassType|ProcessedTraitType> $classes
+     *
+     * @return array{class: string, method: string}
      */
     private function projectRisks(array $classes, string $baseLink): array
     {

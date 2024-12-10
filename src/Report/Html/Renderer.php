@@ -44,6 +44,9 @@ abstract class Renderer
         $this->hasBranchCoverage = $hasBranchCoverage;
     }
 
+    /**
+     * @param array<non-empty-string, float|int|string> $data
+     */
     protected function renderItemTemplate(Template $template, array $data): string
     {
         $numSeparator = '&nbsp;/&nbsp;';

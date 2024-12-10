@@ -108,6 +108,11 @@ use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
+ * @phpstan-import-type ProcessedClassType from FileNode
+ * @phpstan-import-type ProcessedTraitType from FileNode
+ * @phpstan-import-type ProcessedMethodType from FileNode
+ * @phpstan-import-type ProcessedFunctionType from FileNode
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class File extends Renderer
@@ -185,8 +190,13 @@ final class File extends Renderer
         T_YIELD         => true,
         T_YIELD_FROM    => true,
     ];
+
+    private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+
+    /**
+     * @var array<non-empty-string, list<string>>
+     */
     private static array $formattedSourceCache = [];
-    private int $htmlSpecialCharsFlags         = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
 
     public function render(FileNode $node, string $file): void
     {
@@ -314,6 +324,9 @@ final class File extends Renderer
         return $items;
     }
 
+    /**
+     * @param array<string, ProcessedClassType|ProcessedTraitType> $items
+     */
     private function renderTraitOrClassItems(array $items, Template $template, Template $methodItemTemplate): string
     {
         $buffer = '';
@@ -418,6 +431,9 @@ final class File extends Renderer
         return $buffer;
     }
 
+    /**
+     * @param array<string, ProcessedFunctionType> $functions
+     */
     private function renderFunctionItems(array $functions, Template $template): string
     {
         if (empty($functions)) {
@@ -436,6 +452,9 @@ final class File extends Renderer
         return $buffer;
     }
 
+    /**
+     * @param ProcessedFunctionType|ProcessedMethodType $item
+     */
     private function renderFunctionOrMethodItem(Template $template, array $item, string $indent = ''): string
     {
         $numMethods       = 0;
@@ -476,7 +495,7 @@ final class File extends Renderer
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
                     $item['startLine'],
-                    htmlspecialchars($item['signature'], $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($item['signature'], self::HTML_SPECIAL_CHARS_FLAGS),
                     $item['functionName'] ?? $item['methodName'],
                 ),
                 'numMethods'                      => $numMethods,
@@ -554,7 +573,7 @@ final class File extends Renderer
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
-                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
                 );
             }
 
@@ -641,7 +660,7 @@ final class File extends Renderer
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
-                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
                 );
             }
 
@@ -731,7 +750,7 @@ final class File extends Renderer
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
-                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
                 );
             }
 
@@ -768,7 +787,7 @@ final class File extends Renderer
             }
 
             if ($branchStructure !== '') { // don't show empty branches
-                $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+                $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
                 $branches .= $branchStructure;
             }
         }
@@ -778,6 +797,9 @@ final class File extends Renderer
         return $branchesTemplate->render();
     }
 
+    /**
+     * @param list<string> $codeLines
+     */
     private function renderBranchLines(array $branch, array $codeLines, array $testData): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
@@ -829,7 +851,7 @@ final class File extends Renderer
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
-                    htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags),
+                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
                 );
             }
 
@@ -874,7 +896,7 @@ final class File extends Renderer
             }
 
             if ($pathStructure !== '') {
-                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, $this->htmlSpecialCharsFlags) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
                 $paths .= $pathStructure;
             }
         }
@@ -884,6 +906,9 @@ final class File extends Renderer
         return $pathsTemplate->render();
     }
 
+    /**
+     * @param list<string> $codeLines
+     */
     private function renderPathLines(array $path, array $branches, array $codeLines, array $testData): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
@@ -944,7 +969,7 @@ final class File extends Renderer
                     $popover = sprintf(
                         ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                         $popoverTitle,
-                        htmlspecialchars($popoverContent, $this->htmlSpecialCharsFlags),
+                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
                     );
                 }
 
@@ -975,6 +1000,11 @@ final class File extends Renderer
         return $template->render();
     }
 
+    /**
+     * @param non-empty-string $file
+     *
+     * @return list<string>
+     */
     private function loadFile(string $file): array
     {
         if (isset(self::$formattedSourceCache[$file])) {
@@ -995,14 +1025,14 @@ final class File extends Renderer
                 if ($token === '"' && $tokens[$j - 1] !== '\\') {
                     $result[$i] .= sprintf(
                         '<span class="string">%s</span>',
-                        htmlspecialchars($token, $this->htmlSpecialCharsFlags),
+                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
                     );
 
                     $stringFlag = !$stringFlag;
                 } else {
                     $result[$i] .= sprintf(
                         '<span class="keyword">%s</span>',
-                        htmlspecialchars($token, $this->htmlSpecialCharsFlags),
+                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
                     );
                 }
 
@@ -1014,7 +1044,7 @@ final class File extends Renderer
             $value = str_replace(
                 ["\t", ' '],
                 ['&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'],
-                htmlspecialchars($value, $this->htmlSpecialCharsFlags),
+                htmlspecialchars($value, self::HTML_SPECIAL_CHARS_FLAGS),
             );
 
             if ($value === "\n") {
@@ -1113,7 +1143,7 @@ final class File extends Renderer
         return sprintf(
             '<li%s>%s</li>',
             $testCSS,
-            htmlspecialchars($test, $this->htmlSpecialCharsFlags),
+            htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
         );
     }
 

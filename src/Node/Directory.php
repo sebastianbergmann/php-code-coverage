@@ -17,6 +17,12 @@ use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 
 /**
+ * @template-implements IteratorAggregate<int, AbstractNode>
+ *
+ * @phpstan-import-type ProcessedFunctionType from File
+ * @phpstan-import-type ProcessedClassType from File
+ * @phpstan-import-type ProcessedTraitType from File
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Directory extends AbstractNode implements IteratorAggregate
@@ -34,9 +40,21 @@ final class Directory extends AbstractNode implements IteratorAggregate
     /**
      * @var list<File>
      */
-    private array $files               = [];
-    private ?array $classes            = null;
-    private ?array $traits             = null;
+    private array $files = [];
+
+    /**
+     * @var ?array<string, ProcessedClassType>
+     */
+    private ?array $classes = null;
+
+    /**
+     * @var ?array<string, ProcessedTraitType>
+     */
+    private ?array $traits = null;
+
+    /**
+     * @var ?array<string, ProcessedFunctionType>
+     */
     private ?array $functions          = null;
     private ?LinesOfCode $linesOfCode  = null;
     private int $numFiles              = -1;
@@ -97,21 +115,33 @@ final class Directory extends AbstractNode implements IteratorAggregate
         $this->numExecutedLines   = -1;
     }
 
+    /**
+     * @return list<Directory>
+     */
     public function directories(): array
     {
         return $this->directories;
     }
 
+    /**
+     * @return list<File>
+     */
     public function files(): array
     {
         return $this->files;
     }
 
+    /**
+     * @return list<Directory|File>
+     */
     public function children(): array
     {
         return $this->children;
     }
 
+    /**
+     * @return array<string, ProcessedClassType>
+     */
     public function classes(): array
     {
         if ($this->classes === null) {
@@ -128,6 +158,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->classes;
     }
 
+    /**
+     * @return array<string, ProcessedTraitType>
+     */
     public function traits(): array
     {
         if ($this->traits === null) {
@@ -144,6 +177,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->traits;
     }
 
+    /**
+     * @return array<string, ProcessedFunctionType>
+     */
     public function functions(): array
     {
         if ($this->functions === null) {

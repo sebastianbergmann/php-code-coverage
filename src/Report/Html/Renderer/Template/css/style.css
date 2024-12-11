@@ -29,6 +29,11 @@ nav .breadcrumb {
  max-width: none;
 }
 
+.popover-body {
+ max-height: 90vh;
+ overflow-y: auto;
+}
+
 .octicon {
  margin-right:.25em;
  vertical-align: baseline;

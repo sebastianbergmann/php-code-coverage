@@ -4,6 +4,7 @@
     <totals>
       <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
       <branches count="7" tested="3" percent="42.86"/>
+      <paths count="5" tested="3" percent="60.00"/>
       <methods count="4" tested="3" percent="75.00"/>
       <functions count="0" tested="0" percent="0"/>
       <classes count="1" tested="0" percent="0.00"/>

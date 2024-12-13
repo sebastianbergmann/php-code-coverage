@@ -252,6 +252,11 @@ final class Facade
             $node->numberOfExecutedLines(),
         );
 
+        $totals->setNumBranches(
+            $node->numberOfExecutableBranches(),
+            $node->numberOfExecutedBranches(),
+        );
+
         $totals->setNumClasses(
             $node->numberOfClasses(),
             $node->numberOfTestedClasses(),

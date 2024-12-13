@@ -3,13 +3,13 @@
   <file name="BankAccount.php" path="%e">
     <totals>
       <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
-      <branches count="0" tested="0" percent="0"/>
+      <branches count="7" tested="3" percent="42.86"/>
       <methods count="4" tested="3" percent="75.00"/>
       <functions count="0" tested="0" percent="0"/>
       <classes count="1" tested="0" percent="0.00"/>
       <traits count="0" tested="0" percent="0"/>
     </totals>
-    <class name="BankAccount" start="2" executable="8" executed="5" crap="6.32">
+    <class name="BankAccount" start="2" executable="8" executed="5" crap="6.6">
       <namespace name=""/>
       <method name="getBalance" signature="getBalance()" start="6" end="9" crap="1" executable="1" executed="1" coverage="100"/>
       <method name="setBalance" signature="setBalance($balance)" start="11" end="18" crap="6" executable="3" executed="0" coverage="0"/>

@@ -27,7 +27,7 @@ final class InterfaceTest extends TestCase
         $this->assertSame('example\Example', $this->interface()->namespacedName());
     }
 
-    public function testHasNamespaced(): void
+    public function testHasNamespace(): void
     {
         $this->assertSame('example', $this->interface()->namespace());
     }

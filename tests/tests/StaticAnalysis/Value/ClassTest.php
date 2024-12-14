@@ -27,7 +27,7 @@ final class ClassTest extends TestCase
         $this->assertSame('example\Example', $this->class()->namespacedName());
     }
 
-    public function testHasNamespaced(): void
+    public function testHasNamespace(): void
     {
         $this->assertSame('example', $this->class()->namespace());
     }

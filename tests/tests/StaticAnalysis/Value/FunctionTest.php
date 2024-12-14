@@ -27,7 +27,7 @@ final class FunctionTest extends TestCase
         $this->assertSame('example\example', $this->function()->namespacedName());
     }
 
-    public function testHasNamespaced(): void
+    public function testHasNamespace(): void
     {
         $this->assertSame('example', $this->function()->namespace());
     }

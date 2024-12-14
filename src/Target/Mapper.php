@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_merge;
 use function array_unique;
-use function sort;
 
 /**
  * @phpstan-type TargetMap array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
@@ -55,8 +54,6 @@ final readonly class Mapper
                 }
 
                 $result[$file] = array_unique(array_merge($result[$file], $lines));
-
-                sort($result[$file]);
             }
         }
 

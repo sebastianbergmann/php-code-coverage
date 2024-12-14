@@ -13,7 +13,6 @@ use function array_keys;
 use function array_merge;
 use function array_unique;
 use function range;
-use function sort;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
@@ -104,8 +103,6 @@ final readonly class MapBuilder
         foreach (array_keys($namespaces) as $namespace) {
             foreach (array_keys($namespaces[$namespace]) as $file) {
                 $namespaces[$namespace][$file] = array_unique($namespaces[$namespace][$file]);
-
-                sort($namespaces[$namespace][$file]);
             }
         }
 

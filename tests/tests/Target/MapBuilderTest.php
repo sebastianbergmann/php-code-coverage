@@ -34,9 +34,9 @@ final class MapBuilderTest extends TestCase
                 'namespaces' => [
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis' => [
                         $file => array_merge(
-                            range(19, 24),
                             range(26, 31),
                             range(33, 52),
+                            range(19, 24),
                             range(54, 56),
                         ),
                     ],

@@ -100,9 +100,9 @@ final class MapperTest extends TestCase
             'namespace' => [
                 [
                     $file => array_merge(
-                        range(19, 24),
                         range(26, 31),
                         range(33, 52),
+                        range(19, 24),
                         range(54, 56),
                     ),
                 ],

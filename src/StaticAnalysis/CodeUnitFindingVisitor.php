@@ -96,11 +96,11 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     public function leaveNode(Node $node): null
     {
-        if (!$node instanceof Class_) {
+        if ($node instanceof Class_ && $node->isAnonymous()) {
             return null;
         }
 
-        if ($node->isAnonymous()) {
+        if (!$node instanceof Class_ && !$node instanceof Trait_) {
             return null;
         }
 
@@ -116,22 +116,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $namespacedClassName = $node->namespacedName->toString();
-
-        assert(isset($this->classes[$namespacedClassName]));
-
-        $this->classes[$namespacedClassName] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Class_(
-            $this->classes[$namespacedClassName]->name(),
-            $this->classes[$namespacedClassName]->namespacedName(),
-            $this->classes[$namespacedClassName]->namespace(),
-            $this->classes[$namespacedClassName]->file(),
-            $this->classes[$namespacedClassName]->startLine(),
-            $this->classes[$namespacedClassName]->endLine(),
-            $this->classes[$namespacedClassName]->parentClass(),
-            $this->classes[$namespacedClassName]->interfaces(),
-            $traits,
-            $this->classes[$namespacedClassName]->methods(),
-        );
+        $this->postProcessClassOrTrait($node, $traits);
 
         return null;
     }
@@ -308,8 +293,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $name,
             $namespacedName,
             $this->namespace($namespacedName, $name),
+            $this->file,
             $node->getStartLine(),
             $node->getEndLine(),
+            [],
             $this->processMethods($node->getMethods()),
         );
     }
@@ -397,5 +384,45 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         }
 
         return $node->toString();
+    }
+
+    /**
+     * @param list<non-empty-string> $traits
+     */
+    private function postProcessClassOrTrait(Class_|Trait_ $node, array $traits): void
+    {
+        $name = $node->namespacedName->toString();
+
+        if ($node instanceof Class_) {
+            assert(isset($this->classes[$name]));
+
+            $this->classes[$name] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Class_(
+                $this->classes[$name]->name(),
+                $this->classes[$name]->namespacedName(),
+                $this->classes[$name]->namespace(),
+                $this->classes[$name]->file(),
+                $this->classes[$name]->startLine(),
+                $this->classes[$name]->endLine(),
+                $this->classes[$name]->parentClass(),
+                $this->classes[$name]->interfaces(),
+                $traits,
+                $this->classes[$name]->methods(),
+            );
+
+            return;
+        }
+
+        assert(isset($this->traits[$name]));
+
+        $this->traits[$name] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_(
+            $this->traits[$name]->name(),
+            $this->traits[$name]->namespacedName(),
+            $this->traits[$name]->namespace(),
+            $this->traits[$name]->file(),
+            $this->traits[$name]->startLine(),
+            $this->traits[$name]->endLine(),
+            $traits,
+            $this->traits[$name]->methods(),
+        );
     }
 }

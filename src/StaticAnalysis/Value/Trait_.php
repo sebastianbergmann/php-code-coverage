@@ -26,6 +26,11 @@ final readonly class Trait_
     private string $namespace;
 
     /**
+     * @var non-empty-string
+     */
+    private string $file;
+
+    /**
      * @var non-negative-int
      */
     private int $startLine;
@@ -36,6 +41,11 @@ final readonly class Trait_
     private int $endLine;
 
     /**
+     * @var list<non-empty-string>
+     */
+    private array $traits;
+
+    /**
      * @var array<non-empty-string, Method>
      */
     private array $methods;
@@ -43,17 +53,21 @@ final readonly class Trait_
     /**
      * @param non-empty-string                $name
      * @param non-empty-string                $namespacedName
+     * @param non-empty-string                $file
      * @param non-negative-int                $startLine
      * @param non-negative-int                $endLine
+     * @param list<non-empty-string>          $traits
      * @param array<non-empty-string, Method> $methods
      */
-    public function __construct(string $name, string $namespacedName, string $namespace, int $startLine, int $endLine, array $methods)
+    public function __construct(string $name, string $namespacedName, string $namespace, string $file, int $startLine, int $endLine, array $traits, array $methods)
     {
         $this->name           = $name;
         $this->namespacedName = $namespacedName;
         $this->namespace      = $namespace;
+        $this->file           = $file;
         $this->startLine      = $startLine;
         $this->endLine        = $endLine;
+        $this->traits         = $traits;
         $this->methods        = $methods;
     }
 
@@ -84,6 +98,14 @@ final readonly class Trait_
     }
 
     /**
+     * @return non-empty-string
+     */
+    public function file(): string
+    {
+        return $this->file;
+    }
+
+    /**
      * @return non-negative-int
      */
     public function startLine(): int
@@ -97,6 +119,14 @@ final readonly class Trait_
     public function endLine(): int
     {
         return $this->endLine;
+    }
+
+    /**
+     * @return list<non-empty-string>
+     */
+    public function traits(): array
+    {
+        return $this->traits;
     }
 
     /**

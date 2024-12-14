@@ -34,9 +34,9 @@ final class MapBuilderTest extends TestCase
                 'namespaces' => [
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis' => [
                         $file => array_merge(
+                            range(19, 24),
                             range(26, 31),
                             range(33, 52),
-                            range(19, 24),
                             range(54, 56),
                         ),
                     ],
@@ -46,7 +46,10 @@ final class MapBuilderTest extends TestCase
                         $file => range(26, 31),
                     ],
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass' => [
-                        $file => range(33, 52),
+                        $file => array_merge(
+                            range(33, 52),
+                            range(19, 24),
+                        ),
                     ],
                 ],
                 'classesThatExtendClass' => [
@@ -71,6 +74,9 @@ final class MapBuilderTest extends TestCase
                     ],
                 ],
                 'methods' => [
+                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T::four' => [
+                        $file => range(21, 23),
+                    ],
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass::five' => [
                         $file => range(28, 30),
                     ],
@@ -86,9 +92,6 @@ final class MapBuilderTest extends TestCase
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::three' => [
                         $file => range(49, 51),
                     ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T::four' => [
-                        $file => range(21, 23),
-                    ],
                 ],
                 'functions' => [
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\f' => [
@@ -96,6 +99,9 @@ final class MapBuilderTest extends TestCase
                     ],
                 ],
                 'reverseLookup' => [
+                    $file . ':21' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
+                    $file . ':22' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
+                    $file . ':23' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
                     $file . ':28' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
                     $file . ':29' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
                     $file . ':30' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
@@ -111,9 +117,6 @@ final class MapBuilderTest extends TestCase
                     $file . ':49' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
                     $file . ':50' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
                     $file . ':51' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
-                    $file . ':21' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
-                    $file . ':22' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
-                    $file . ':23' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
                     $file . ':54' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
                     $file . ':55' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
                     $file . ':56' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',

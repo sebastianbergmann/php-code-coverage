@@ -32,6 +32,11 @@ final class TraitTest extends TestCase
         $this->assertSame('example', $this->trait()->namespace());
     }
 
+    public function testHasFile(): void
+    {
+        $this->assertSame('file.php', $this->trait()->file());
+    }
+
     public function testHasStartLine(): void
     {
         $this->assertSame(1, $this->trait()->startLine());
@@ -40,6 +45,13 @@ final class TraitTest extends TestCase
     public function testHasEndLine(): void
     {
         $this->assertSame(2, $this->trait()->endLine());
+    }
+
+    public function testMayHaveTraits(): void
+    {
+        $traits = ['trait'];
+
+        $this->assertSame($traits, $this->trait(traits: $traits)->traits());
     }
 
     public function testMayHaveMethods(): void
@@ -55,20 +67,23 @@ final class TraitTest extends TestCase
             ),
         ];
 
-        $this->assertSame($methods, $this->trait($methods)->methods());
+        $this->assertSame($methods, $this->trait(methods: $methods)->methods());
     }
 
     /**
+     * @param list<non-empty-string>          $traits
      * @param array<non-empty-string, Method> $methods
      */
-    private function trait(array $methods = []): Trait_
+    private function trait(array $traits = [], array $methods = []): Trait_
     {
         return new Trait_(
             'Example',
             'example\Example',
             'example',
+            'file.php',
             1,
             2,
+            $traits,
             $methods,
         );
     }

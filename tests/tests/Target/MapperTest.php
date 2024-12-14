@@ -38,7 +38,10 @@ final class MapperTest extends TestCase
         return [
             'class' => [
                 [
-                    $file => range(33, 52),
+                    $file => array_merge(
+                        range(33, 52),
+                        range(19, 24),
+                    ),
                 ],
                 TargetCollection::fromArray(
                     [
@@ -46,6 +49,20 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
+            'class (which uses traits)' => [
+                [
+                    realpath(__DIR__ . '/../../_files/Target/ClassUsingTraitUsingTrait.php') => range(4, 11),
+                    realpath(__DIR__ . '/../../_files/Target/TraitTwo.php')                  => range(4, 11),
+                    realpath(__DIR__ . '/../../_files/Target/TraitOne.php')                  => range(4, 9),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forClass('SebastianBergmann\\CodeCoverage\\TestFixture\\Target\\ClassUsingTraitUsingTrait'),
+                    ],
+                ),
+            ],
+
             'classes that extend class' => [
                 [
                     $file => range(33, 52),
@@ -100,9 +117,9 @@ final class MapperTest extends TestCase
             'namespace' => [
                 [
                     $file => array_merge(
+                        range(19, 24),
                         range(26, 31),
                         range(33, 52),
-                        range(19, 24),
                         range(54, 56),
                     ),
                 ],

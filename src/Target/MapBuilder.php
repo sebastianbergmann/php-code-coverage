@@ -44,31 +44,6 @@ final readonly class MapBuilder
         $reverseLookup                 = [];
 
         foreach ($filter->files() as $file) {
-            foreach ($analyser->interfacesIn($file) as $interface) {
-                $classesThatImplementInterface[$interface->namespacedName()] = [];
-            }
-
-            foreach ($analyser->classesIn($file) as $class) {
-                if ($class->isNamespaced()) {
-                    $this->process($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
-                }
-
-                $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
-
-                foreach ($class->methods() as $method) {
-                    $methodName = $class->namespacedName() . '::' . $method->name();
-
-                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
-
-                    foreach (range($method->startLine(), $method->endLine()) as $line) {
-                        $reverseLookup[$file . ':' . $line] = $methodName;
-                    }
-                }
-
-                $classesThatExtendClass[$class->namespacedName()] = [];
-                $classDetails[]                                   = $class;
-            }
-
             foreach ($analyser->traitsIn($file) as $trait) {
                 if ($trait->isNamespaced()) {
                     $this->process($namespaces, $trait->namespace(), $file, $trait->startLine(), $trait->endLine());
@@ -85,6 +60,79 @@ final readonly class MapBuilder
                         $reverseLookup[$file . ':' . $line] = $methodName;
                     }
                 }
+            }
+        }
+
+        foreach ($filter->files() as $file) {
+            foreach ($analyser->traitsIn($file) as $trait) {
+                foreach ($trait->traits() as $traitName) {
+                    if (!isset($traits[$traitName])) {
+                        continue;
+                    }
+
+                    $file = array_keys($traits[$traitName])[0];
+
+                    if (!isset($traits[$trait->namespacedName()][$file])) {
+                        $traits[$trait->namespacedName()][$file] = $traits[$traitName][$file];
+
+                        continue;
+                    }
+
+                    $traits[$trait->namespacedName()][$file] = array_unique(
+                        array_merge(
+                            $traits[$trait->namespacedName()][$file],
+                            $traits[$traitName][$file],
+                        ),
+                    );
+                }
+            }
+        }
+
+        foreach ($filter->files() as $file) {
+            foreach ($analyser->interfacesIn($file) as $interface) {
+                $classesThatImplementInterface[$interface->namespacedName()] = [];
+            }
+
+            foreach ($analyser->classesIn($file) as $class) {
+                if ($class->isNamespaced()) {
+                    $this->process($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
+                }
+
+                $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
+
+                foreach ($class->traits() as $traitName) {
+                    if (!isset($traits[$traitName])) {
+                        continue;
+                    }
+
+                    foreach ($traits[$traitName] as $file => $lines) {
+                        if (!isset($classes[$class->namespacedName()][$file])) {
+                            $classes[$class->namespacedName()][$file] = $lines;
+
+                            continue;
+                        }
+
+                        $classes[$class->namespacedName()][$file] = array_unique(
+                            array_merge(
+                                $classes[$class->namespacedName()][$file],
+                                $lines,
+                            ),
+                        );
+                    }
+                }
+
+                foreach ($class->methods() as $method) {
+                    $methodName = $class->namespacedName() . '::' . $method->name();
+
+                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
+
+                    foreach (range($method->startLine(), $method->endLine()) as $line) {
+                        $reverseLookup[$file . ':' . $line] = $methodName;
+                    }
+                }
+
+                $classesThatExtendClass[$class->namespacedName()] = [];
+                $classDetails[]                                   = $class;
             }
 
             foreach ($analyser->functionsIn($file) as $function) {

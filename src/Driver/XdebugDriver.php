@@ -14,11 +14,8 @@ use const XDEBUG_CC_DEAD_CODE;
 use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
-use function explode;
 use function extension_loaded;
-use function getenv;
 use function in_array;
-use function ini_get;
 use function phpversion;
 use function version_compare;
 use function xdebug_get_code_coverage;
@@ -65,11 +62,11 @@ final class XdebugDriver extends Driver
     /**
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
      */
     public function __construct(Filter $filter)
     {
         $this->ensureXdebugIsAvailable();
-        $this->ensureXdebugCodeCoverageFeatureIsEnabled();
 
         if (!$filter->isEmpty()) {
             xdebug_set_filter(
@@ -127,35 +124,20 @@ final class XdebugDriver extends Driver
 
     /**
      * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
      */
     private function ensureXdebugIsAvailable(): void
     {
         if (!extension_loaded('xdebug')) {
             throw new XdebugNotAvailableException;
         }
-    }
 
-    /**
-     * @throws XdebugNotEnabledException
-     */
-    private function ensureXdebugCodeCoverageFeatureIsEnabled(): void
-    {
-        if (version_compare(phpversion('xdebug'), '3.1', '>=')) {
-            if (!in_array('coverage', xdebug_info('mode'), true)) {
-                throw new XdebugNotEnabledException;
-            }
-
-            return;
+        if (!version_compare(phpversion('xdebug'), '3.1', '>=')) {
+            throw new XdebugVersionNotSupportedException(phpversion('xdebug'));
         }
 
-        $mode = getenv('XDEBUG_MODE');
-
-        if ($mode === false || $mode === '') {
-            $mode = ini_get('xdebug.mode');
-        }
-
-        if ($mode === false ||
-            !in_array('coverage', explode(',', $mode), true)) {
+        if (!in_array('coverage', xdebug_info('mode'), true)) {
             throw new XdebugNotEnabledException;
         }
     }

@@ -21,6 +21,7 @@ final class Selector
      * @throws PcovNotAvailableException
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
      */
     public function forLineCoverage(Filter $filter): Driver
     {
@@ -45,6 +46,7 @@ final class Selector
      * @throws NoCodeCoverageDriverWithPathCoverageSupportAvailableException
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
      */
     public function forLineAndPathCoverage(Filter $filter): Driver
     {

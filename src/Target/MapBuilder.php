@@ -14,7 +14,9 @@ use function array_merge;
 use function array_unique;
 use function range;
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
@@ -50,16 +52,7 @@ final readonly class MapBuilder
                 }
 
                 $this->process($traits, $trait->namespacedName(), $file, $trait->startLine(), $trait->endLine());
-
-                foreach ($trait->methods() as $method) {
-                    $methodName = $trait->namespacedName() . '::' . $method->name();
-
-                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
-
-                    foreach (range($method->startLine(), $method->endLine()) as $line) {
-                        $reverseLookup[$file . ':' . $line] = $methodName;
-                    }
-                }
+                $this->processMethods($trait, $file, $methods, $reverseLookup);
             }
         }
 
@@ -121,15 +114,7 @@ final readonly class MapBuilder
                     }
                 }
 
-                foreach ($class->methods() as $method) {
-                    $methodName = $class->namespacedName() . '::' . $method->name();
-
-                    $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
-
-                    foreach (range($method->startLine(), $method->endLine()) as $line) {
-                        $reverseLookup[$file . ':' . $line] = $methodName;
-                    }
-                }
+                $this->processMethods($class, $file, $methods, $reverseLookup);
 
                 $classesThatExtendClass[$class->namespacedName()] = [];
                 $classDetails[]                                   = $class;
@@ -199,6 +184,19 @@ final readonly class MapBuilder
             'functions'                     => $functions,
             'reverseLookup'                 => $reverseLookup,
         ];
+    }
+
+    private function processMethods(Class_|Trait_ $classOrTrait, string $file, array &$methods, array &$reverseLookup): void
+    {
+        foreach ($classOrTrait->methods() as $method) {
+            $methodName = $classOrTrait->namespacedName() . '::' . $method->name();
+
+            $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
+
+            foreach (range($method->startLine(), $method->endLine()) as $line) {
+                $reverseLookup[$file . ':' . $line] = $methodName;
+            }
+        }
     }
 
     /**

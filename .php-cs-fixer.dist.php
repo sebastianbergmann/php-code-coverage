@@ -11,6 +11,7 @@ EOF;
 $finder = PhpCsFixer\Finder::create()
     ->files()
     ->in(__DIR__ . '/src')
+    ->in(__DIR__ . '/tests/src')
     ->in(__DIR__ . '/tests/tests')
 ;
 

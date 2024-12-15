@@ -68,11 +68,6 @@ final class MapBuilderTest extends TestCase
                         $file => range(26, 31),
                     ],
                 ],
-                'traits' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T' => [
-                        $file => range(19, 24),
-                    ],
-                ],
                 'methods' => [
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T::four' => [
                         $file => range(21, 23),

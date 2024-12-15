@@ -13,7 +13,7 @@ use function array_merge;
 use function array_unique;
 
 /**
- * @phpstan-type TargetMap array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, traits: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
+ * @phpstan-type TargetMap array{namespaces: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
  * @phpstan-type TargetMapPart array<non-empty-string, array<non-empty-string, list<positive-int>>>
  * @phpstan-type ReverseLookup array<non-empty-string, non-empty-string>
  *

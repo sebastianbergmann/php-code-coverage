@@ -195,7 +195,6 @@ final readonly class MapBuilder
             'classes'                       => $classes,
             'classesThatExtendClass'        => $classesThatExtendClass,
             'classesThatImplementInterface' => $classesThatImplementInterface,
-            'traits'                        => $traits,
             'methods'                       => $methods,
             'functions'                     => $functions,
             'reverseLookup'                 => $reverseLookup,

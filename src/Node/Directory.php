@@ -86,6 +86,9 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->numFiles;
     }
 
+    /**
+     * @return RecursiveIteratorIterator<Iterator<AbstractNode>>
+     */
     public function getIterator(): RecursiveIteratorIterator
     {
         return new RecursiveIteratorIterator(

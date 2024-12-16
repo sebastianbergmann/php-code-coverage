@@ -16,10 +16,8 @@ use function array_intersect;
 use function array_intersect_key;
 use function array_map;
 use function count;
-use function explode;
-use function file_get_contents;
+use function file;
 use function in_array;
-use function is_file;
 use function preg_replace;
 use function range;
 use function str_ends_with;
@@ -269,13 +267,11 @@ final class RawCodeCoverageData
         if (!isset(self::$emptyLineCache[$filename])) {
             self::$emptyLineCache[$filename] = [];
 
-            if (is_file($filename)) {
-                $sourceLines = explode("\n", file_get_contents($filename));
+            $sourceLines = @file($filename) ?: [];
 
-                foreach ($sourceLines as $line => $source) {
-                    if (trim($source) === '') {
-                        self::$emptyLineCache[$filename][] = ($line + 1);
-                    }
+            foreach ($sourceLines as $line => $source) {
+                if (trim($source) === '') {
+                    self::$emptyLineCache[$filename][] = ($line + 1);
                 }
             }
         }

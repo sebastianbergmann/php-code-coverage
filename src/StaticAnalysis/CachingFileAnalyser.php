@@ -13,7 +13,6 @@ use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function file_put_contents;
 use function implode;
-use function is_file;
 use function md5;
 use function serialize;
 use function unserialize;
@@ -169,12 +168,14 @@ final class CachingFileAnalyser implements FileAnalyser
     {
         $cacheFile = $this->cacheFile($filename);
 
-        if (!is_file($cacheFile)) {
+        $contents = @file_get_contents($cacheFile);
+
+        if ($contents === false) {
             return false;
         }
 
         return unserialize(
-            file_get_contents($cacheFile),
+            $contents,
             [
                 'allowed_classes' => [
                     Class_::class,

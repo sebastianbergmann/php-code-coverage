@@ -11,7 +11,11 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
 use function array_merge;
+use function array_slice;
 use function array_unique;
+use function count;
+use function explode;
+use function implode;
 use function range;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
@@ -48,7 +52,7 @@ final readonly class MapBuilder
         foreach ($filter->files() as $file) {
             foreach ($analyser->traitsIn($file) as $trait) {
                 if ($trait->isNamespaced()) {
-                    $this->process($namespaces, $trait->namespace(), $file, $trait->startLine(), $trait->endLine());
+                    $this->processNamespace($namespaces, $trait->namespace(), $file, $trait->startLine(), $trait->endLine());
                 }
 
                 $this->process($traits, $trait->namespacedName(), $file, $trait->startLine(), $trait->endLine());
@@ -88,7 +92,7 @@ final readonly class MapBuilder
 
             foreach ($analyser->classesIn($file) as $class) {
                 if ($class->isNamespaced()) {
-                    $this->process($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
+                    $this->processNamespace($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
                 }
 
                 $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
@@ -122,7 +126,7 @@ final readonly class MapBuilder
 
             foreach ($analyser->functionsIn($file) as $function) {
                 if ($function->isNamespaced()) {
-                    $this->process($namespaces, $function->namespace(), $file, $function->startLine(), $function->endLine());
+                    $this->processNamespace($namespaces, $function->namespace(), $file, $function->startLine(), $function->endLine());
                 }
 
                 $this->process($functions, $function->namespacedName(), $file, $function->startLine(), $function->endLine());
@@ -196,6 +200,24 @@ final readonly class MapBuilder
             foreach (range($method->startLine(), $method->endLine()) as $line) {
                 $reverseLookup[$file . ':' . $line] = $methodName;
             }
+        }
+    }
+
+    /**
+     * @param TargetMapPart    $data
+     * @param non-empty-string $namespace
+     * @param non-empty-string $file
+     * @param positive-int     $startLine
+     * @param positive-int     $endLine
+     *
+     * @param-out TargetMapPart $data
+     */
+    private function processNamespace(array &$data, string $namespace, string $file, int $startLine, int $endLine): void
+    {
+        $parts = explode('\\', $namespace);
+
+        foreach (range(1, count($parts)) as $i) {
+            $this->process($data, implode('\\', array_slice($parts, 0, $i)), $file, $startLine, $endLine);
         }
     }
 

@@ -32,6 +32,22 @@ final class MapBuilderTest extends TestCase
         $this->assertSame(
             [
                 'namespaces' => [
+                    'SebastianBergmann' => [
+                        $file => array_merge(
+                            range(19, 24),
+                            range(26, 31),
+                            range(33, 52),
+                            range(54, 56),
+                        ),
+                    ],
+                    'SebastianBergmann\\CodeCoverage' => [
+                        $file => array_merge(
+                            range(19, 24),
+                            range(26, 31),
+                            range(33, 52),
+                            range(54, 56),
+                        ),
+                    ],
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis' => [
                         $file => array_merge(
                             range(19, 24),

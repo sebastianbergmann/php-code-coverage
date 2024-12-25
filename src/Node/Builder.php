@@ -223,6 +223,7 @@ final readonly class Builder
                 $paths[$i] = substr($paths[$i], 7);
                 $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
             }
+
             $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
 
             if (empty($paths[$i][0])) {

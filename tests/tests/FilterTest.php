@@ -19,87 +19,96 @@ use PHPUnit\Framework\TestCase;
 #[Small]
 final class FilterTest extends TestCase
 {
-    private Filter $filter;
-
-    protected function setUp(): void
-    {
-        $this->filter = new Filter;
-    }
-
     public function testIsInitiallyEmpty(): void
     {
-        $this->assertTrue($this->filter->isEmpty());
+        $filter = new Filter;
+
+        $this->assertTrue($filter->isEmpty());
     }
 
     public function testSingleFileCanBeAdded(): void
     {
+        $filter = new Filter;
+
         $file = realpath(__DIR__ . '/../_files/filter/a.php');
 
-        $this->filter->includeFile($file);
+        $filter->includeFile($file);
 
-        $this->assertFalse($this->filter->isEmpty());
+        $this->assertFalse($filter->isEmpty());
 
         $this->assertSame(
             [
                 $file,
             ],
-            $this->filter->files(),
+            $filter->files(),
         );
     }
 
     public function testMultipleFilesCanBeAdded(): void
     {
+        $filter = new Filter;
+
         $files = [
             realpath(__DIR__ . '/../_files/filter/a.php'),
             realpath(__DIR__ . '/../_files/filter/b.php'),
         ];
 
-        $this->filter->includeFiles($files);
+        $filter->includeFiles($files);
 
-        $this->assertSame($files, $this->filter->files());
+        $this->assertSame($files, $filter->files());
     }
 
     public function testDeterminesWhetherStringContainsNameOfRealFileThatExists(): void
     {
-        $this->assertFalse($this->filter->isFile('vfs://root/a/path'));
-        $this->assertFalse($this->filter->isFile('xdebug://debug-eval'));
-        $this->assertFalse($this->filter->isFile('eval()\'d code'));
-        $this->assertFalse($this->filter->isFile('runtime-created function'));
-        $this->assertFalse($this->filter->isFile('assert code'));
-        $this->assertFalse($this->filter->isFile('regexp code'));
-        $this->assertTrue($this->filter->isFile(__DIR__ . '/../_files/filter/a.php'));
+        $filter = new Filter;
+
+        $this->assertFalse($filter->isFile('vfs://root/a/path'));
+        $this->assertFalse($filter->isFile('xdebug://debug-eval'));
+        $this->assertFalse($filter->isFile('eval()\'d code'));
+        $this->assertFalse($filter->isFile('runtime-created function'));
+        $this->assertFalse($filter->isFile('assert code'));
+        $this->assertFalse($filter->isFile('regexp code'));
+        $this->assertTrue($filter->isFile(__DIR__ . '/../_files/filter/a.php'));
     }
 
     public function testIncludedFileIsNotFiltered(): void
     {
-        $this->filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+        $filter = new Filter;
 
-        $this->assertFalse($this->filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
+        $filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+
+        $this->assertFalse($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
     }
 
     public function testNotIncludedFileIsFiltered(): void
     {
-        $this->filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+        $filter = new Filter;
 
-        $this->assertTrue($this->filter->isExcluded(realpath(__DIR__ . '/../_files/filter/b.php')));
+        $filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+
+        $this->assertTrue($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/b.php')));
     }
 
     public function testNonFilesAreFiltered(): void
     {
-        $this->assertTrue($this->filter->isExcluded('vfs://root/a/path'));
-        $this->assertTrue($this->filter->isExcluded('xdebug://debug-eval'));
-        $this->assertTrue($this->filter->isExcluded('eval()\'d code'));
-        $this->assertTrue($this->filter->isExcluded('runtime-created function'));
-        $this->assertTrue($this->filter->isExcluded('assert code'));
-        $this->assertTrue($this->filter->isExcluded('regexp code'));
+        $filter = new Filter;
+
+        $this->assertTrue($filter->isExcluded('vfs://root/a/path'));
+        $this->assertTrue($filter->isExcluded('xdebug://debug-eval'));
+        $this->assertTrue($filter->isExcluded('eval()\'d code'));
+        $this->assertTrue($filter->isExcluded('runtime-created function'));
+        $this->assertTrue($filter->isExcluded('assert code'));
+        $this->assertTrue($filter->isExcluded('regexp code'));
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/664')]
     public function testTryingToAddFileThatDoesNotExistDoesNotChangeFilter(): void
     {
-        $this->filter->includeFile('does_not_exist');
+        $filter = new Filter;
 
-        $this->assertTrue($this->filter->isEmpty());
-        $this->assertSame([], $this->filter->files());
+        $filter->includeFile('does_not_exist');
+
+        $this->assertTrue($filter->isEmpty());
+        $this->assertSame([], $filter->files());
     }
 }

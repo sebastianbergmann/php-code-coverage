@@ -11,10 +11,12 @@ namespace SebastianBergmann\CodeCoverage;
 
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Filter::class)]
+#[Small]
 final class FilterTest extends TestCase
 {
     private Filter $filter;

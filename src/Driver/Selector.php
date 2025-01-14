@@ -32,11 +32,7 @@ final class Selector
         }
 
         if ($runtime->hasXdebug()) {
-            $driver = new XdebugDriver($filter);
-
-            $driver->enableDeadCodeDetection();
-
-            return $driver;
+            return new XdebugDriver($filter);
         }
 
         throw new NoCodeCoverageDriverAvailableException;
@@ -53,7 +49,6 @@ final class Selector
         if ((new Runtime)->hasXdebug()) {
             $driver = new XdebugDriver($filter);
 
-            $driver->enableDeadCodeDetection();
             $driver->enableBranchAndPathCoverage();
 
             return $driver;

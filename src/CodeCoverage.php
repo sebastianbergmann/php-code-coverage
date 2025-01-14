@@ -362,11 +362,6 @@ final class CodeCoverage
         return $this->driver->collectsBranchAndPathCoverage();
     }
 
-    public function detectsDeadCode(): bool
-    {
-        return $this->driver->detectsDeadCode();
-    }
-
     public function validate(TargetCollection $targets): ValidationResult
     {
         return (new TargetCollectionValidator)->validate($this->targetMapper(), $targets);

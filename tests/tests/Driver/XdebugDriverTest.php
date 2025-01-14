@@ -66,34 +66,6 @@ final class XdebugDriverTest extends TestCase
         $this->assertFalse($this->driver()->collectsBranchAndPathCoverage());
     }
 
-    public function testSupportsDeadCodeDetection(): void
-    {
-        $this->assertTrue($this->driver()->canDetectDeadCode());
-    }
-
-    public function testDeadCodeDetectionCanBeDisabled(): void
-    {
-        $driver = $this->driver();
-
-        $driver->disableDeadCodeDetection();
-
-        $this->assertFalse($driver->detectsDeadCode());
-    }
-
-    public function testDeadCodeDetectionCanBeEnabled(): void
-    {
-        $driver = $this->driver();
-
-        $driver->enableDeadCodeDetection();
-
-        $this->assertTrue($driver->detectsDeadCode());
-    }
-
-    public function testDeadCodeIsNotDetectedByDefault(): void
-    {
-        $this->assertFalse($this->driver()->detectsDeadCode());
-    }
-
     public function testHasNameAndVersion(): void
     {
         $this->assertStringMatchesFormat('Xdebug %s', $this->driver()->nameAndVersion());

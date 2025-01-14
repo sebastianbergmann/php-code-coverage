@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use function sprintf;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -54,7 +53,6 @@ abstract class Driver
      */
     public const int BRANCH_HIT                = 1;
     private bool $collectBranchAndPathCoverage = false;
-    private bool $detectDeadCode               = false;
 
     public function canCollectBranchAndPathCoverage(): bool
     {
@@ -86,38 +84,6 @@ abstract class Driver
     public function disableBranchAndPathCoverage(): void
     {
         $this->collectBranchAndPathCoverage = false;
-    }
-
-    public function canDetectDeadCode(): bool
-    {
-        return false;
-    }
-
-    public function detectsDeadCode(): bool
-    {
-        return $this->detectDeadCode;
-    }
-
-    /**
-     * @throws DeadCodeDetectionNotSupportedException
-     */
-    public function enableDeadCodeDetection(): void
-    {
-        if (!$this->canDetectDeadCode()) {
-            throw new DeadCodeDetectionNotSupportedException(
-                sprintf(
-                    '%s does not support dead code detection',
-                    $this->nameAndVersion(),
-                ),
-            );
-        }
-
-        $this->detectDeadCode = true;
-    }
-
-    public function disableDeadCodeDetection(): void
-    {
-        $this->detectDeadCode = false;
     }
 
     abstract public function nameAndVersion(): string;

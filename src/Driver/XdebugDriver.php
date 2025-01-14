@@ -82,18 +82,9 @@ final class XdebugDriver extends Driver
         return true;
     }
 
-    public function canDetectDeadCode(): bool
-    {
-        return true;
-    }
-
     public function start(): void
     {
-        $flags = XDEBUG_CC_UNUSED;
-
-        if ($this->detectsDeadCode() || $this->collectsBranchAndPathCoverage()) {
-            $flags |= XDEBUG_CC_DEAD_CODE;
-        }
+        $flags = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
 
         if ($this->collectsBranchAndPathCoverage()) {
             $flags |= XDEBUG_CC_BRANCH_CHECK;

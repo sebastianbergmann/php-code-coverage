@@ -13,7 +13,6 @@ use const PHP_SAPI;
 use function extension_loaded;
 use function ini_get;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
-use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
@@ -58,32 +57,6 @@ final class PcovDriverTest extends TestCase
     public function testBranchAndPathCoverageIsNotCollected(): void
     {
         $this->assertFalse($this->driver()->collectsBranchAndPathCoverage());
-    }
-
-    public function testDoesNotSupportDeadCodeDetection(): void
-    {
-        $this->assertFalse($this->driver()->canDetectDeadCode());
-    }
-
-    public function testDeadCodeDetectionCanBeDisabled(): void
-    {
-        $driver = $this->driver();
-
-        $driver->disableDeadCodeDetection();
-
-        $this->assertFalse($driver->detectsDeadCode());
-    }
-
-    public function testDeadCodeDetectionCannotBeEnabled(): void
-    {
-        $this->expectException(DeadCodeDetectionNotSupportedException::class);
-
-        $this->driver()->enableDeadCodeDetection();
-    }
-
-    public function testDeadCodeIsNotDetected(): void
-    {
-        $this->assertFalse($this->driver()->detectsDeadCode());
     }
 
     public function testHasNameAndVersion(): void

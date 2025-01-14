@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function count;
-use function implode;
 use Countable;
 use IteratorAggregate;
 
@@ -67,24 +66,5 @@ final readonly class TargetCollection implements Countable, IteratorAggregate
     public function getIterator(): TargetCollectionIterator
     {
         return new TargetCollectionIterator($this);
-    }
-
-    public function validate(Mapper $mapper): ValidationResult
-    {
-        $errors = [];
-
-        foreach ($this->targets as $target) {
-            try {
-                $mapper->mapTarget($target);
-            } catch (InvalidCodeCoverageTargetException $e) {
-                $errors[] = $e->getMessage();
-            }
-        }
-
-        if ($errors === []) {
-            return ValidationResult::success();
-        }
-
-        return ValidationResult::failure(implode("\n", $errors));
     }
 }

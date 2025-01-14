@@ -31,6 +31,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\MapBuilder;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollectionValidator;
 use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
 use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
@@ -368,7 +369,7 @@ final class CodeCoverage
 
     public function validate(TargetCollection $targets): ValidationResult
     {
-        return $targets->validate($this->targetMapper());
+        return (new TargetCollectionValidator)->validate($this->targetMapper(), $targets);
     }
 
     /**

@@ -57,6 +57,11 @@ final class MapBuilderTest extends TestCase
                         ),
                     ],
                 ],
+                'traits' => [
+                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T' => [
+                        $file => range(19, 24),
+                    ],
+                ],
                 'classes' => [
                     'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass' => [
                         $file => range(26, 31),

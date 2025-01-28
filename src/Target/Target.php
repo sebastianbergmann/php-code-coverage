@@ -65,6 +65,14 @@ abstract class Target
         return new Function_($functionName);
     }
 
+    /**
+     * @param trait-string $traitName
+     */
+    public static function forTrait(string $traitName): Trait_
+    {
+        return new Trait_($traitName);
+    }
+
     public function isNamespace(): bool
     {
         return false;
@@ -91,6 +99,11 @@ abstract class Target
     }
 
     public function isFunction(): bool
+    {
+        return false;
+    }
+
+    public function isTrait(): bool
     {
         return false;
     }

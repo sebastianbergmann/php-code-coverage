@@ -181,6 +181,7 @@ final readonly class MapBuilder
 
         return [
             'namespaces'                    => $namespaces,
+            'traits'                        => $traits,
             'classes'                       => $classes,
             'classesThatExtendClass'        => $classesThatExtendClass,
             'classesThatImplementInterface' => $classesThatImplementInterface,

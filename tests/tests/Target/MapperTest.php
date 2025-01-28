@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
@@ -83,6 +84,16 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+            'trait' => [
+                [
+                    realpath(__DIR__ . '/../../_files/Target/TraitOne.php') => range(4, 9),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forTrait(TraitOne::class),
+                    ],
+                ),
+            ],
             'function' => [
                 [
                     $file => range(54, 56),
@@ -93,7 +104,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
-            'method' => [
+            'method of class' => [
                 [
                     $file => range(37, 39),
                 ],
@@ -103,7 +114,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
-            'methods' => [
+            'methods of class' => [
                 [
                     $file => array_merge(range(37, 39), range(41, 43)),
                 ],
@@ -111,6 +122,16 @@ final class MapperTest extends TestCase
                     [
                         Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass', 'six'),
                         Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass', 'one'),
+                    ],
+                ),
+            ],
+            'method of trait' => [
+                [
+                    $file => range(21, 23),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forMethod('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T', 'four'),
                     ],
                 ),
             ],

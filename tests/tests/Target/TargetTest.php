@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetInterface;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 
 #[CoversClass(Target::class)]
 #[CoversClass(Class_::class)]
@@ -22,6 +23,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetInterface;
 #[CoversClass(Function_::class)]
 #[CoversClass(Method::class)]
 #[CoversClass(Namespace_::class)]
+#[CoversClass(Trait_::class)]
 #[Small]
 final class TargetTest extends TestCase
 {
@@ -37,6 +39,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($className, $target->className());
         $this->assertSame('classes', $target->key());
@@ -56,6 +59,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($className, $target->className());
         $this->assertSame('classesThatExtendClass', $target->key());
@@ -75,6 +79,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($interfaceName, $target->interfaceName());
         $this->assertSame('classesThatImplementInterface', $target->key());
@@ -94,6 +99,7 @@ final class TargetTest extends TestCase
         $this->assertTrue($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($functionName, $target->functionName());
         $this->assertSame('functions', $target->key());
@@ -114,6 +120,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isFunction());
         $this->assertTrue($target->isMethod());
         $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($className, $target->className());
         $this->assertSame($methodName, $target->methodName());
@@ -134,10 +141,31 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertTrue($target->isNamespace());
+        $this->assertFalse($target->isTrait());
 
         $this->assertSame($namespace, $target->namespace());
         $this->assertSame('namespaces', $target->key());
         $this->assertSame($namespace, $target->target());
         $this->assertSame('Namespace ' . $namespace, $target->description());
+    }
+
+    public function testCanBeTrait(): void
+    {
+        $traitName = TraitOne::class;
+
+        $target = Target::forTrait($traitName);
+
+        $this->assertTrue($target->isTrait());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+
+        $this->assertSame($traitName, $target->traitName());
+        $this->assertSame('traits', $target->key());
+        $this->assertSame($traitName, $target->target());
+        $this->assertSame('Trait ' . $traitName, $target->description());
     }
 }

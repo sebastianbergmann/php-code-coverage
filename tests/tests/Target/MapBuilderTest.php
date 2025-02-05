@@ -13,6 +13,7 @@ use function array_merge;
 use function range;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
@@ -25,121 +26,132 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 #[Small]
 final class MapBuilderTest extends TestCase
 {
-    public function testBuildsMap(): void
+    /**
+     * @return non-empty-list<array{0: TargetMap, 1: non-empty-list<non-empty-string>}>
+     */
+    public static function provider(): array
     {
         $file = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
 
-        $this->assertSame(
+        return [
             [
-                'namespaces' => [
-                    'SebastianBergmann' => [
-                        $file => array_merge(
-                            range(19, 24),
-                            range(26, 31),
-                            range(33, 52),
-                            range(54, 56),
-                        ),
+                [
+                    'namespaces' => [
+                        'SebastianBergmann' => [
+                            $file => array_merge(
+                                range(19, 24),
+                                range(26, 31),
+                                range(33, 52),
+                                range(54, 56),
+                            ),
+                        ],
+                        'SebastianBergmann\\CodeCoverage' => [
+                            $file => array_merge(
+                                range(19, 24),
+                                range(26, 31),
+                                range(33, 52),
+                                range(54, 56),
+                            ),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis' => [
+                            $file => array_merge(
+                                range(19, 24),
+                                range(26, 31),
+                                range(33, 52),
+                                range(54, 56),
+                            ),
+                        ],
                     ],
-                    'SebastianBergmann\\CodeCoverage' => [
-                        $file => array_merge(
-                            range(19, 24),
-                            range(26, 31),
-                            range(33, 52),
-                            range(54, 56),
-                        ),
+                    'traits' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T' => [
+                            $file => range(19, 24),
+                        ],
                     ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis' => [
-                        $file => array_merge(
-                            range(19, 24),
-                            range(26, 31),
-                            range(33, 52),
-                            range(54, 56),
-                        ),
+                    'classes' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass' => [
+                            $file => range(26, 31),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass' => [
+                            $file => array_merge(
+                                range(33, 52),
+                                range(19, 24),
+                            ),
+                        ],
+                    ],
+                    'classesThatExtendClass' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass' => [
+                            $file => range(33, 52),
+                        ],
+                    ],
+                    'classesThatImplementInterface' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\A' => [
+                            $file => range(33, 52),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\B' => [
+                            $file => range(33, 52),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\C' => [
+                            $file => range(26, 31),
+                        ],
+                    ],
+                    'methods' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T::four' => [
+                            $file => range(21, 23),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass::five' => [
+                            $file => range(28, 30),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::six' => [
+                            $file => range(37, 39),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::one' => [
+                            $file => range(41, 43),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::two' => [
+                            $file => range(45, 47),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::three' => [
+                            $file => range(49, 51),
+                        ],
+                    ],
+                    'functions' => [
+                        'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\f' => [
+                            $file => range(54, 56),
+                        ],
+                    ],
+                    'reverseLookup' => [
+                        $file . ':21' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
+                        $file . ':22' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
+                        $file . ':23' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
+                        $file . ':28' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
+                        $file . ':29' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
+                        $file . ':30' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
+                        $file . ':37' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
+                        $file . ':38' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
+                        $file . ':39' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
+                        $file . ':41' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
+                        $file . ':42' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
+                        $file . ':43' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
+                        $file . ':45' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
+                        $file . ':46' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
+                        $file . ':47' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
+                        $file . ':49' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
+                        $file . ':50' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
+                        $file . ':51' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
+                        $file . ':54' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
+                        $file . ':55' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
+                        $file . ':56' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
                     ],
                 ],
-                'traits' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T' => [
-                        $file => range(19, 24),
-                    ],
-                ],
-                'classes' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass' => [
-                        $file => range(26, 31),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass' => [
-                        $file => array_merge(
-                            range(33, 52),
-                            range(19, 24),
-                        ),
-                    ],
-                ],
-                'classesThatExtendClass' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass' => [
-                        $file => range(33, 52),
-                    ],
-                ],
-                'classesThatImplementInterface' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\A' => [
-                        $file => range(33, 52),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\B' => [
-                        $file => range(33, 52),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\C' => [
-                        $file => range(26, 31),
-                    ],
-                ],
-                'methods' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\T::four' => [
-                        $file => range(21, 23),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass::five' => [
-                        $file => range(28, 30),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::six' => [
-                        $file => range(37, 39),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::one' => [
-                        $file => range(41, 43),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::two' => [
-                        $file => range(45, 47),
-                    ],
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ChildClass::three' => [
-                        $file => range(49, 51),
-                    ],
-                ],
-                'functions' => [
-                    'SebastianBergmann\\CodeCoverage\\StaticAnalysis\\f' => [
-                        $file => range(54, 56),
-                    ],
-                ],
-                'reverseLookup' => [
-                    $file . ':21' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
-                    $file . ':22' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
-                    $file . ':23' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
-                    $file . ':28' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
-                    $file . ':29' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
-                    $file . ':30' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass::five',
-                    $file . ':37' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
-                    $file . ':38' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
-                    $file . ':39' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::six',
-                    $file . ':41' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
-                    $file . ':42' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
-                    $file . ':43' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::one',
-                    $file . ':45' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
-                    $file . ':46' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
-                    $file . ':47' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::two',
-                    $file . ':49' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
-                    $file . ':50' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
-                    $file . ':51' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass::three',
-                    $file . ':54' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
-                    $file . ':55' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
-                    $file . ':56' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\f',
-                ],
+                [$file],
             ],
-            $this->map([__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php']),
-        );
+        ];
+    }
+
+    #[DataProvider('provider')]
+    public function testBuildsMap(array $expected, array $files): void
+    {
+        $this->assertSame($expected, $this->map($files));
     }
 
     /**

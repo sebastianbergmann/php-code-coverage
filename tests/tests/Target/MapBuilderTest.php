@@ -18,6 +18,10 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\T1;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\T2;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitTwo;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
@@ -27,14 +31,17 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 final class MapBuilderTest extends TestCase
 {
     /**
-     * @return non-empty-list<array{0: TargetMap, 1: non-empty-list<non-empty-string>}>
+     * @return non-empty-array<non-empty-string, array{0: TargetMap, 1: non-empty-list<non-empty-string>}>
      */
     public static function provider(): array
     {
-        $file = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
+        $file      = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
+        $traitOne  = realpath(__DIR__ . '/../../_files/Target/TraitOne.php');
+        $traitTwo  = realpath(__DIR__ . '/../../_files/Target/TraitTwo.php');
+        $twoTraits = realpath(__DIR__ . '/../../_files/Target/two_traits.php');
 
         return [
-            [
+            'generic' => [
                 [
                     'namespaces' => [
                         'SebastianBergmann' => [
@@ -144,6 +151,133 @@ final class MapBuilderTest extends TestCase
                     ],
                 ],
                 [$file],
+            ],
+            'trait using trait declared in another file' => [
+                [
+                    'namespaces' => [
+                        'SebastianBergmann' => [
+                            $traitOne => range(4, 9),
+                            $traitTwo => range(4, 11),
+                        ],
+                        'SebastianBergmann\\CodeCoverage' => [
+                            $traitOne => range(4, 9),
+                            $traitTwo => range(4, 11),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture' => [
+                            $traitOne => range(4, 9),
+                            $traitTwo => range(4, 11),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture\\Target' => [
+                            $traitOne => range(4, 9),
+                            $traitTwo => range(4, 11),
+                        ],
+                    ],
+                    'traits' => [
+                        TraitOne::class => [
+                            $traitOne => range(4, 9),
+                        ],
+                        TraitTwo::class => [
+                            $traitTwo => range(4, 11),
+                            $traitOne => range(4, 9),
+                        ],
+                    ],
+                    'classes' => [
+                    ],
+                    'classesThatExtendClass' => [
+                    ],
+                    'classesThatImplementInterface' => [
+                    ],
+                    'methods' => [
+                        TraitOne::class . '::one' => [
+                            $traitOne => range(6, 8),
+                        ],
+                        TraitTwo::class . '::two' => [
+                            $traitTwo => range(8, 10),
+                        ],
+                    ],
+                    'functions' => [
+                    ],
+                    'reverseLookup' => [
+                        $traitOne . ':6'  => TraitOne::class . '::one',
+                        $traitOne . ':7'  => TraitOne::class . '::one',
+                        $traitOne . ':8'  => TraitOne::class . '::one',
+                        $traitTwo . ':8'  => TraitTwo::class . '::two',
+                        $traitTwo . ':9'  => TraitTwo::class . '::two',
+                        $traitTwo . ':10' => TraitTwo::class . '::two',
+                    ],
+                ],
+                [
+                    $traitOne,
+                    $traitTwo,
+                ],
+            ],
+            'trait using trait declared in same file' => [
+                [
+                    'namespaces' => [
+                        'SebastianBergmann' => [
+                            $twoTraits => array_merge(
+                                range(4, 9),
+                                range(11, 18),
+                            ),
+                        ],
+                        'SebastianBergmann\\CodeCoverage' => [
+                            $twoTraits => array_merge(
+                                range(4, 9),
+                                range(11, 18),
+                            ),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture' => [
+                            $twoTraits => array_merge(
+                                range(4, 9),
+                                range(11, 18),
+                            ),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture\\Target' => [
+                            $twoTraits => array_merge(
+                                range(4, 9),
+                                range(11, 18),
+                            ),
+                        ],
+                    ],
+                    'traits' => [
+                        T1::class => [
+                            $twoTraits => range(4, 9),
+                        ],
+                        T2::class => [
+                            $twoTraits => array_merge(
+                                range(11, 18),
+                                range(4, 9),
+                            ),
+                        ],
+                    ],
+                    'classes' => [
+                    ],
+                    'classesThatExtendClass' => [
+                    ],
+                    'classesThatImplementInterface' => [
+                    ],
+                    'methods' => [
+                        T1::class . '::one' => [
+                            $twoTraits => range(6, 8),
+                        ],
+                        T2::class . '::two' => [
+                            $twoTraits => range(15, 17),
+                        ],
+                    ],
+                    'functions' => [
+                    ],
+                    'reverseLookup' => [
+                        $twoTraits . ':6'  => T1::class . '::one',
+                        $twoTraits . ':7'  => T1::class . '::one',
+                        $twoTraits . ':8'  => T1::class . '::one',
+                        $twoTraits . ':15' => T2::class . '::two',
+                        $twoTraits . ':16' => T2::class . '::two',
+                        $twoTraits . ':17' => T2::class . '::two',
+                    ],
+                ],
+                [
+                    $twoTraits,
+                ],
             ],
         ];
     }

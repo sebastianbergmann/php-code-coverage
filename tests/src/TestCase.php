@@ -18,6 +18,7 @@ use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SomeNamespace\BankAccountTrait;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -1182,6 +1183,127 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $coverage;
     }
 
+    protected function getXdebugDataForNamespacedBankAccount()
+    {
+        return [
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    13 => 1,
+                    14 => -2,
+                    18 => -1,
+                    19 => -1,
+                    20 => -1,
+                    21 => -1,
+                    23 => -1,
+                    27 => -1,
+                    29 => -1,
+                    30 => -2,
+                    34 => -1,
+                    36 => -1,
+                    37 => -2,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    13 => 1,
+                    18 => 1,
+                    21 => 1,
+                    34 => 1,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    13 => 1,
+                    18 => 1,
+                    21 => 1,
+                    27 => 1,
+                ],
+            ]),
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
+                    13 => 1,
+                    18 => 1,
+                    19 => 1,
+                    20 => 1,
+                    23 => 1,
+                    27 => 1,
+                    29 => 1,
+                    34 => 1,
+                    36 => 1,
+                ],
+            ]),
+        ];
+    }
+
+    protected function getLineCoverageForNamespacedBankAccount(): CodeCoverage
+    {
+        $data = $this->getXdebugDataForNamespacedBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->willReturn(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->start(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            null,
+            true,
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccountTrait::class, 'getBalance'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccountTrait::class, 'withdrawMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative2',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccountTrait::class, 'depositMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testDepositWithdrawMoney',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccountTrait::class, 'getBalance'),
+                Target::forMethod(BankAccountTrait::class, 'depositMoney'),
+                Target::forMethod(BankAccountTrait::class, 'withdrawMoney'),
+            ]),
+        );
+
+        return $coverage;
+    }
+
     protected function getLineCoverageForBankAccountForFirstTwoTests(): CodeCoverage
     {
         $data = $this->getLineCoverageXdebugDataForBankAccount();
@@ -1790,5 +1912,147 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $pathname = $fileInfo->getPathname();
             $fileInfo->isDir() ? rmdir($pathname) : unlink($pathname);
         }
+    }
+
+    protected function getCoverageForFilesWithUncoveredIncluded(): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->willReturn(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+        $coverage->includeUncoveredFiles();
+
+        $coverage->start(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            null,
+            true,
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative2',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testDepositWithdrawMoney',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+        );
+
+        return $coverage;
+    }
+
+    protected function getCoverageForFilesWithUncoveredExcluded(): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')
+            ->willReturn(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+        $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+        $coverage->excludeUncoveredFiles();
+
+        $coverage->start(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            null,
+            true,
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative2',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+            ]),
+        );
+
+        $coverage->start(
+            'BankAccountTest::testDepositWithdrawMoney',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+        );
+
+        return $coverage;
     }
 }

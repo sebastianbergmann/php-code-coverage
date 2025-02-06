@@ -47,6 +47,26 @@ final class TextTest extends TestCase
         );
     }
 
+    public function testTextForNamespacedBankAccountTest(): void
+    {
+        $text = new Text(Thresholds::default(), true, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount())),
+        );
+    }
+
+    public function testTextForNamespacedBankAccountTestWhenColorsAreEnabled(): void
+    {
+        $text = new Text(Thresholds::default(), true, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'NamespacedBankAccount-text-with-colors.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount(), true)),
+        );
+    }
+
     public function testTextForFileWithIgnoredLines(): void
     {
         $text = new Text(Thresholds::default(), false, false);
@@ -64,6 +84,26 @@ final class TextTest extends TestCase
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction())),
+        );
+    }
+
+    public function testUncoveredFilesAreIncludedWhenConfiguredTest(): void
+    {
+        $text = new Text(Thresholds::default(), false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredIncluded())),
+        );
+    }
+
+    public function testUncoveredFilesAreExcludedWhenConfiguredTest(): void
+    {
+        $text = new Text(Thresholds::default(), false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'BankAccountWithoutUncovered-text-line.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredExcluded())),
         );
     }
 }

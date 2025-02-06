@@ -10,7 +10,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Removed
 
-* Methods `CodeCoverage::includeUncoveredFiles()` and `CodeCoverage::excludeUncoveredFiles()`
 * Method `CodeCoverage::detectsDeadCode()`
 * Optional argument `$linesToBeUsed` of `CodeCoverage::stop()` and `CodeCoverage::append()` methods
 * This component is no longer supported on PHP 8.2

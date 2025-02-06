@@ -287,17 +287,11 @@ final class CodeCoverage
         $this->checkForUnintentionallyCoveredCode = false;
     }
 
-    /**
-     * @deprecated
-     */
     public function includeUncoveredFiles(): void
     {
         $this->includeUncoveredFiles = true;
     }
 
-    /**
-     * @deprecated
-     */
     public function excludeUncoveredFiles(): void
     {
         $this->includeUncoveredFiles = false;

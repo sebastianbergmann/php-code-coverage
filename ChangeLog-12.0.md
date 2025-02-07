@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.0.1] - 2025-02-07
+
+### Fixed
+
+* [#1061](https://github.com/sebastianbergmann/php-code-coverage/issues/1061): Enumerations cannot be targeted for code coverage
+
 ## [12.0.0] - 2025-02-07
 
 ### Changed
@@ -15,4 +21,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 8.2
 * This component no longer supports Xdebug versions before Xdebug 3.1
 
+[12.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.0...12.0.1
 [12.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0...12.0.0

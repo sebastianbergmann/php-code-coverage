@@ -20,6 +20,7 @@ use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T1;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T2;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitTwo;
 
@@ -39,6 +40,7 @@ final class MapBuilderTest extends TestCase
         $traitOne  = realpath(__DIR__ . '/../../_files/Target/TraitOne.php');
         $traitTwo  = realpath(__DIR__ . '/../../_files/Target/TraitTwo.php');
         $twoTraits = realpath(__DIR__ . '/../../_files/Target/two_traits.php');
+        $enum      = realpath(__DIR__ . '/../../_files/Target/TargetEnumeration.php');
 
         return [
             'generic' => [
@@ -277,6 +279,44 @@ final class MapBuilderTest extends TestCase
                 ],
                 [
                     $twoTraits,
+                ],
+            ],
+            'enumeration' => [
+                [
+                    'namespaces' => [
+                        'SebastianBergmann' => [
+                            $enum => range(4, 8),
+                        ],
+                        'SebastianBergmann\\CodeCoverage' => [
+                            $enum => range(4, 8),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture' => [
+                            $enum => range(4, 8),
+                        ],
+                        'SebastianBergmann\\CodeCoverage\\TestFixture\\Target' => [
+                            $enum => range(4, 8),
+                        ],
+                    ],
+                    'traits' => [
+                    ],
+                    'classes' => [
+                        TargetEnumeration::class => [
+                            $enum => range(4, 8),
+                        ],
+                    ],
+                    'classesThatExtendClass' => [
+                    ],
+                    'classesThatImplementInterface' => [
+                    ],
+                    'methods' => [
+                    ],
+                    'functions' => [
+                    ],
+                    'reverseLookup' => [
+                    ],
+                ],
+                [
+                    $enum,
                 ],
             ],
         ];

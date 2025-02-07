@@ -21,6 +21,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
@@ -78,6 +79,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
                 return null;
             }
 
+            $this->processClass($node);
+        }
+
+        if ($node instanceof Enum_) {
             $this->processClass($node);
         }
 
@@ -255,19 +260,21 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         );
     }
 
-    private function processClass(Class_ $node): void
+    private function processClass(Class_|Enum_ $node): void
     {
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
         $parentClass    = null;
         $interfaces     = [];
 
-        if ($node->extends instanceof Name) {
-            $parentClass = $node->extends->toString();
-        }
+        if (!$node instanceof Enum_) {
+            if ($node->extends instanceof Name) {
+                $parentClass = $node->extends->toString();
+            }
 
-        foreach ($node->implements as $interface) {
-            $interfaces[] = $interface->toString();
+            foreach ($node->implements as $interface) {
+                $interfaces[] = $interface->toString();
+            }
         }
 
         $this->classes[$namespacedName] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Class_(

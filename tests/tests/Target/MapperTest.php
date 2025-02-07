@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 
 /**
@@ -154,6 +155,17 @@ final class MapperTest extends TestCase
                 TargetCollection::fromArray(
                     [
                         Target::forNamespace('SebastianBergmann\\CodeCoverage\\StaticAnalysis'),
+                    ],
+                ),
+            ],
+
+            'enumeration' => [
+                [
+                    realpath(__DIR__ . '/../../_files/Target/TargetEnumeration.php') => range(4, 8),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forClass(TargetEnumeration::class),
                     ],
                 ),
             ],

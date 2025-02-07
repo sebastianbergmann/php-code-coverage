@@ -74,6 +74,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'classes that implement interface' => [
                 [
                     $file => range(26, 31),
@@ -84,6 +85,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'trait' => [
                 [
                     realpath(__DIR__ . '/../../_files/Target/TraitOne.php') => range(4, 9),
@@ -94,6 +96,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'function' => [
                 [
                     $file => range(54, 56),
@@ -104,6 +107,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'method of class' => [
                 [
                     $file => range(37, 39),
@@ -114,6 +118,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'methods of class' => [
                 [
                     $file => array_merge(range(37, 39), range(41, 43)),
@@ -125,6 +130,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'method of trait' => [
                 [
                     $file => range(21, 23),
@@ -135,6 +141,7 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
             'namespace' => [
                 [
                     $file => array_merge(

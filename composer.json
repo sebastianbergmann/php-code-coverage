@@ -27,7 +27,6 @@
         "optimize-autoloader": true,
         "sort-packages": true
     },
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": ">=8.3",
@@ -35,16 +34,16 @@
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
         "nikic/php-parser": "^5.4.0",
-        "phpunit/php-file-iterator": "^6.0-dev",
-        "phpunit/php-text-template": "^5.0-dev",
-        "sebastian/complexity": "^5.0-dev",
-        "sebastian/environment": "^8.0-dev",
-        "sebastian/lines-of-code": "^4.0-dev",
-        "sebastian/version": "^6.0-dev",
+        "phpunit/php-file-iterator": "^6.0",
+        "phpunit/php-text-template": "^5.0",
+        "sebastian/complexity": "^5.0",
+        "sebastian/environment": "^8.0",
+        "sebastian/lines-of-code": "^4.0",
+        "sebastian/version": "^6.0",
         "theseer/tokenizer": "^1.2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^12.0-dev"
+        "phpunit/phpunit": "^12.0"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",

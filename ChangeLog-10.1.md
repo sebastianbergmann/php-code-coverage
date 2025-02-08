@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [10.1.17] - 2025-MM-DD
+
+### Changed
+
+* Changed version identifier for static analysis cache from "MD5 over source code" to `Version::id()`
+
 ## [10.1.16] - 2024-08-22
 
 ### Changed
@@ -113,6 +119,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Filter::includeDirectory()`, `SebastianBergmann\CodeCoverage\Filter::excludeDirectory()`, and `SebastianBergmann\CodeCoverage\Filter::excludeFile()` methods are now deprecated
 
+[10.1.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.16...10.1
 [10.1.16]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.15...10.1.16
 [10.1.15]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.14...10.1.15
 [10.1.14]: https://github.com/sebastianbergmann/php-code-coverage/compare/10.1.13...10.1.14

@@ -18,7 +18,7 @@ use function md5;
 use function serialize;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
-use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
+use SebastianBergmann\CodeCoverage\Version;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -32,7 +32,6 @@ use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
  */
 final class CachingFileAnalyser implements FileAnalyser
 {
-    private static ?string $cacheVersion = null;
     private readonly string $directory;
     private readonly FileAnalyser $analyser;
     private readonly bool $useAnnotationsForIgnoringCode;
@@ -173,7 +172,7 @@ final class CachingFileAnalyser implements FileAnalyser
                 [
                     $filename,
                     file_get_contents($filename),
-                    self::cacheVersion(),
+                    Version::id(),
                     $this->useAnnotationsForIgnoringCode,
                     $this->ignoreDeprecatedCode,
                 ],
@@ -181,23 +180,5 @@ final class CachingFileAnalyser implements FileAnalyser
         );
 
         return $this->directory . DIRECTORY_SEPARATOR . $cacheKey;
-    }
-
-    private static function cacheVersion(): string
-    {
-        if (self::$cacheVersion !== null) {
-            return self::$cacheVersion;
-        }
-
-        $buffer = [];
-
-        foreach ((new FileIteratorFacade)->getFilesAsArray(__DIR__, '.php') as $file) {
-            $buffer[] = $file;
-            $buffer[] = file_get_contents($file);
-        }
-
-        self::$cacheVersion = md5(implode("\0", $buffer));
-
-        return self::$cacheVersion;
     }
 }

@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* Changed version identifier for static analysis cache from "MD5 over source code" to `Version::id()`
 * The `SebastianBergmann\CodeCoverage\Filter::includeUncoveredFiles()` and `SebastianBergmann\CodeCoverage\Filter::excludeUncoveredFiles()` methods are no longer deprecated
 
 ## [11.0.8] - 2024-12-11

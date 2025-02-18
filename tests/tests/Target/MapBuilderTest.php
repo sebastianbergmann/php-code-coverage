@@ -18,6 +18,9 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T1;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T2;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
@@ -36,11 +39,14 @@ final class MapBuilderTest extends TestCase
      */
     public static function provider(): array
     {
-        $file      = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
-        $traitOne  = realpath(__DIR__ . '/../../_files/Target/TraitOne.php');
-        $traitTwo  = realpath(__DIR__ . '/../../_files/Target/TraitTwo.php');
-        $twoTraits = realpath(__DIR__ . '/../../_files/Target/two_traits.php');
-        $enum      = realpath(__DIR__ . '/../../_files/Target/TargetEnumeration.php');
+        $file             = realpath(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
+        $traitOne         = realpath(__DIR__ . '/../../_files/Target/TraitOne.php');
+        $traitTwo         = realpath(__DIR__ . '/../../_files/Target/TraitTwo.php');
+        $twoTraits        = realpath(__DIR__ . '/../../_files/Target/two_traits.php');
+        $enum             = realpath(__DIR__ . '/../../_files/Target/TargetEnumeration.php');
+        $grandParentClass = realpath(__DIR__ . '/../../_files/Target/GrandParentClass.php');
+        $parentClass      = realpath(__DIR__ . '/../../_files/Target/ParentClass.php');
+        $childClass       = realpath(__DIR__ . '/../../_files/Target/ChildClass.php');
 
         return [
             'generic' => [
@@ -84,6 +90,7 @@ final class MapBuilderTest extends TestCase
                             $file => array_merge(
                                 range(33, 52),
                                 range(19, 24),
+                                range(26, 31),
                             ),
                         ],
                     ],
@@ -317,6 +324,87 @@ final class MapBuilderTest extends TestCase
                 ],
                 [
                     $enum,
+                ],
+            ],
+            'class with parent classes' => [
+                [
+                    'namespaces' => [
+                        'SebastianBergmann' => [
+                            $grandParentClass => range(4, 9),
+                            $parentClass      => range(4, 9),
+                            $childClass       => range(4, 9),
+                        ],
+                        'SebastianBergmann\CodeCoverage' => [
+                            $grandParentClass => range(4, 9),
+                            $parentClass      => range(4, 9),
+                            $childClass       => range(4, 9),
+                        ],
+                        'SebastianBergmann\CodeCoverage\TestFixture' => [
+                            $grandParentClass => range(4, 9),
+                            $parentClass      => range(4, 9),
+                            $childClass       => range(4, 9),
+                        ],
+                        'SebastianBergmann\CodeCoverage\TestFixture\Target' => [
+                            $grandParentClass => range(4, 9),
+                            $parentClass      => range(4, 9),
+                            $childClass       => range(4, 9),
+                        ],
+                    ],
+                    'traits' => [
+                    ],
+                    'classes' => [
+                        GrandParentClass::class => [
+                            $grandParentClass => range(4, 9),
+                        ],
+                        ParentClass::class => [
+                            $parentClass      => range(4, 9),
+                            $grandParentClass => range(4, 9),
+                        ],
+                        ChildClass::class => [
+                            $childClass       => range(4, 9),
+                            $parentClass      => range(4, 9),
+                            $grandParentClass => range(4, 9),
+                        ],
+                    ],
+                    'classesThatExtendClass' => [
+                        GrandParentClass::class => [
+                            $parentClass => range(4, 9),
+                        ],
+                        ParentClass::class => [
+                            $childClass => range(4, 9),
+                        ],
+                    ],
+                    'classesThatImplementInterface' => [
+                    ],
+                    'methods' => [
+                        GrandParentClass::class . '::one' => [
+                            $grandParentClass => range(6, 8),
+                        ],
+                        ParentClass::class . '::two' => [
+                            $parentClass => range(6, 8),
+                        ],
+                        ChildClass::class . '::three' => [
+                            $childClass => range(6, 8),
+                        ],
+                    ],
+                    'functions' => [
+                    ],
+                    'reverseLookup' => [
+                        $grandParentClass . ':6' => 'SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass::one',
+                        $grandParentClass . ':7' => 'SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass::one',
+                        $grandParentClass . ':8' => 'SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass::one',
+                        $parentClass . ':6'      => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass::two',
+                        $parentClass . ':7'      => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass::two',
+                        $parentClass . ':8'      => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass::two',
+                        $childClass . ':6'       => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass::three',
+                        $childClass . ':7'       => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass::three',
+                        $childClass . ':8'       => 'SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass::three',
+                    ],
+                ],
+                [
+                    $grandParentClass,
+                    $parentClass,
+                    $childClass,
                 ],
             ],
         ];

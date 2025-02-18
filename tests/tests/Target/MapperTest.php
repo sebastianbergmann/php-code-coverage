@@ -43,6 +43,7 @@ final class MapperTest extends TestCase
                     $file => array_merge(
                         range(33, 52),
                         range(19, 24),
+                        range(26, 31),
                     ),
                 ],
                 TargetCollection::fromArray(

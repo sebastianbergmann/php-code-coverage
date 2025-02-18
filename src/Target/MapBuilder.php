@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
 use function array_merge;
+use function array_merge_recursive;
 use function array_slice;
 use function array_unique;
 use function count;
@@ -156,11 +157,16 @@ final readonly class MapBuilder
                 continue;
             }
 
-            if (!isset($classesThatExtendClass[$class->parentClass()])) {
-                continue;
+            if (isset($classes[$class->parentClass()])) {
+                $classes[$class->namespacedName()] = array_merge_recursive(
+                    $classes[$class->namespacedName()],
+                    $classes[$class->parentClass()],
+                );
             }
 
-            $this->process($classesThatExtendClass, $class->parentClass(), $class->file(), $class->startLine(), $class->endLine());
+            if (isset($classesThatExtendClass[$class->parentClass()])) {
+                $this->process($classesThatExtendClass, $class->parentClass(), $class->file(), $class->startLine(), $class->endLine());
+            }
         }
 
         foreach (array_keys($classesThatImplementInterface) as $className) {

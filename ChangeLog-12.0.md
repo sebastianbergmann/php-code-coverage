@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.0.4] - 2025-MM-DD
+
+### Fixed
+
+* [#1063](https://github.com/sebastianbergmann/php-code-coverage/issues/1063): HTML report highlights argument named `fn` differently than other named arguments
+
 ## [12.0.3] - 2025-02-18
 
 ### Fixed
@@ -33,6 +39,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 8.2
 * This component no longer supports Xdebug versions before Xdebug 3.1
 
+[12.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.3...main
 [12.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.2...12.0.3
 [12.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.1...12.0.2
 [12.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.0...12.0.1

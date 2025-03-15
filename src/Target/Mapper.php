@@ -9,8 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
+use function array_keys;
 use function array_merge;
 use function array_unique;
+use function strcasecmp;
 
 /**
  * @phpstan-type TargetMap array{namespaces: TargetMapPart, traits: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
@@ -69,6 +71,12 @@ final readonly class Mapper
     {
         if (isset($this->map[$target->key()][$target->target()])) {
             return $this->map[$target->key()][$target->target()];
+        }
+
+        foreach (array_keys($this->map[$target->key()]) as $key) {
+            if (strcasecmp($key, $target->target()) === 0) {
+                return $this->map[$target->key()][$key];
+            }
         }
 
         throw new InvalidCodeCoverageTargetException($target);

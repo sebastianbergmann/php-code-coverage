@@ -13,13 +13,16 @@ use function array_keys;
 use function array_merge;
 use function range;
 use function realpath;
+use function strtolower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 
@@ -255,6 +258,22 @@ final class MapperTest extends TestCase
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->mapper([])->mapTargets($targets);
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1064')]
+    public function testCodeUnitTargetingIsCaseInsensitive(): void
+    {
+        $path   = realpath(__DIR__ . '/../../_files/Target/TargetClass.php');
+        $mapper = $this->mapper([$path]);
+
+        $this->assertSame(
+            [
+                $path => range(4, 9),
+            ],
+            $mapper->mapTarget(
+                Target::forClass(strtolower(TargetClass::class)),
+            ),
+        );
     }
 
     /**

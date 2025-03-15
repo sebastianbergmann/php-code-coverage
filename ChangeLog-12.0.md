@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.0.5] - 2025-MM-DD
+
+### Fixed
+
+* [#1064](https://github.com/sebastianbergmann/php-code-coverage/issues/1064): Code Coverage targets are handled in case-sensitive manner
+
 ## [12.0.4] - 2025-02-25
 
 ### Fixed
@@ -39,6 +45,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 8.2
 * This component no longer supports Xdebug versions before Xdebug 3.1
 
+[12.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.4...main
 [12.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.3...12.0.4
 [12.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.2...12.0.3
 [12.0.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.1...12.0.2

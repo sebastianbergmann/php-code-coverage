@@ -67,11 +67,11 @@ final readonly class Mapper
      */
     public function mapTarget(Target $target): array
     {
-        if (!isset($this->map[$target->key()][$target->target()])) {
-            throw new InvalidCodeCoverageTargetException($target);
+        if (isset($this->map[$target->key()][$target->target()])) {
+            return $this->map[$target->key()][$target->target()];
         }
 
-        return $this->map[$target->key()][$target->target()];
+        throw new InvalidCodeCoverageTargetException($target);
     }
 
     /**

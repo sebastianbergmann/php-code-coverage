@@ -138,14 +138,20 @@ final class CachingFileAnalyser implements FileAnalyser
         return $this->cache[$filename]['ignoredLinesFor'];
     }
 
-    public function process(string $filename): void
+    /**
+     * @return array{cacheHits: non-negative-int, cacheMisses: non-negative-int}
+     */
+    public function process(string $filename): array
     {
         $cache = $this->read($filename);
 
         if ($cache !== false) {
             $this->cache[$filename] = $cache;
 
-            return;
+            return [
+                'cacheHits'   => 1,
+                'cacheMisses' => 0,
+            ];
         }
 
         $this->cache[$filename] = [
@@ -159,6 +165,11 @@ final class CachingFileAnalyser implements FileAnalyser
         ];
 
         $this->write($filename, $this->cache[$filename]);
+
+        return [
+            'cacheHits'   => 0,
+            'cacheMisses' => 1,
+        ];
     }
 
     /**

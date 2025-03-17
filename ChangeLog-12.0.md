@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.1.0] - 2025-MM-DD
+
+### Changed
+
+* `CacheWarmer::warmCache()` now returns the number of cache hits and cache misses
+
 ## [12.0.5] - 2025-03-15
 
 ### Fixed
@@ -45,6 +51,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 8.2
 * This component no longer supports Xdebug versions before Xdebug 3.1
 
+[12.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.5...main
 [12.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.4...12.0.5
 [12.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.3...12.0.4
 [12.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.2...12.0.3

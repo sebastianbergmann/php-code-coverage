@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [12.1.0] - 2025-MM-DD
+## [12.1.0] - 2025-03-17
 
 ### Changed
 
@@ -51,7 +51,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component is no longer supported on PHP 8.2
 * This component no longer supports Xdebug versions before Xdebug 3.1
 
-[12.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.5...main
+[12.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.5...12.1.0
 [12.0.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.4...12.0.5
 [12.0.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.3...12.0.4
 [12.0.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.0.2...12.0.3

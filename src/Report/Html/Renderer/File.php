@@ -599,7 +599,6 @@ final class File extends Renderer
 
         $lineData = [];
 
-        /** @var int $line */
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
                 'includedInBranches'    => 0,
@@ -686,7 +685,6 @@ final class File extends Renderer
 
         $lineData = [];
 
-        /** @var int $line */
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
                 'includedInPaths'    => [],

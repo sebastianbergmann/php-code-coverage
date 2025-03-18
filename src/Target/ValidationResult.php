@@ -29,10 +29,6 @@ abstract readonly class ValidationResult
         return new ValidationFailure($message);
     }
 
-    protected function __construct()
-    {
-    }
-
     /**
      * @phpstan-assert-if-true ValidationSuccess $this
      */

@@ -5,7 +5,45 @@ parameters:
         - tests/tests
         - tests/bootstrap.php
 
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    reportAlwaysTrueInLastCondition: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
     treatPhpDocTypesAsCertain: false
+
+    strictRules:
+        allRules: false
+        booleansInConditions: true
+        closureUsesThis: true
+        disallowedBacktick: true
+        disallowedEmpty: true
+        disallowedImplicitArrayCreation: true
+        disallowedLooseComparison: true
+        disallowedShortTernary: true
+        illegalConstructorMethodCall: true
+        matchingInheritedMethodNames: true
+        noVariableVariables: true
+        numericOperandsInArithmeticOperators: true
+        overwriteVariablesWithLoop: true
+        requireParentConstructorCall: true
+        strictArrayFilter: true
+        strictFunctionCalls: true
+        switchConditionsMatchingType: true
+        uselessCast: true
+
+    ergebnis:
+        allRules: false
+        final:
+            enabled: true
+            classesNotRequiredToBeAbstractOrFinal:
+                - SebastianBergmann\CodeCoverage\Report\Xml\File
+
+    type_coverage:
+        declare: 100
+        return: 100
+        param: 100
+        property: 100
+        constant: 100
 
     ignoreErrors:
         # Ignore errors caused by defensive programming
@@ -13,3 +51,7 @@ parameters:
         - '#Call to method .* will always evaluate to true.#'
         - '#Call to method .* will always evaluate to false.#'
         - '#Instanceof between .* and .* will always evaluate to true.#'
+        - '#SebastianBergmann\\CodeCoverage\\Node\\Iterator::current\(\) should be covariant with return type#'
+
+includes:
+	- phar://phpstan.phar/conf/bleedingEdge.neon

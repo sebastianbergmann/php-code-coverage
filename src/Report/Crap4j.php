@@ -83,7 +83,7 @@ final readonly class Crap4j
 
                     $methodNode = $document->createElement('method');
 
-                    if (!empty($class['namespace'])) {
+                    if ($class['namespace'] !== '') {
                         $namespace = $class['namespace'];
                     }
 

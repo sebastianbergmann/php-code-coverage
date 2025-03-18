@@ -160,7 +160,7 @@ final class ParsingFileAnalyser implements FileAnalyser
         $source      = file_get_contents($filename);
         $linesOfCode = max(substr_count($source, "\n") + 1, substr_count($source, "\r") + 1);
 
-        if ($linesOfCode === 0 && !empty($source)) {
+        if ($linesOfCode === 0 && $source !== false && $source !== '') {
             $linesOfCode = 1;
         }
 

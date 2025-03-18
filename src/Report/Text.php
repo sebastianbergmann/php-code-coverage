@@ -60,7 +60,7 @@ final class Text
 
     public function process(CodeCoverage $coverage, bool $showColors = false): string
     {
-        $hasBranchCoverage = !empty($coverage->getData(true)->functionCoverage());
+        $hasBranchCoverage = $coverage->getData(true)->functionCoverage() !== [];
 
         $output = PHP_EOL . PHP_EOL;
         $report = $coverage->getReport();

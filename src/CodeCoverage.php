@@ -252,7 +252,7 @@ final class CodeCoverage
             $size,
         );
 
-        if (empty($rawData->lineCoverage())) {
+        if ($rawData->lineCoverage() === []) {
             return;
         }
 
@@ -395,7 +395,7 @@ final class CodeCoverage
             return;
         }
 
-        if (empty($linesToBeCovered)) {
+        if ($linesToBeCovered === []) {
             return;
         }
 
@@ -513,7 +513,7 @@ final class CodeCoverage
 
         $unintentionallyCoveredUnits = $this->processUnintentionallyCoveredUnits($unintentionallyCoveredUnits);
 
-        if (!empty($unintentionallyCoveredUnits)) {
+        if ($unintentionallyCoveredUnits === []) {
             throw new UnintentionallyCoveredCodeException(
                 $unintentionallyCoveredUnits,
             );

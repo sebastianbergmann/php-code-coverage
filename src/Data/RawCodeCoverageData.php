@@ -214,7 +214,7 @@ final class RawCodeCoverageData
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
-        if (empty($lines)) {
+        if ($lines === []) {
             return;
         }
 

@@ -332,7 +332,7 @@ final class File extends Renderer
     {
         $buffer = '';
 
-        if (empty($items)) {
+        if ($items === []) {
             return $buffer;
         }
 
@@ -437,7 +437,7 @@ final class File extends Renderer
      */
     private function renderFunctionItems(array $functions, Template $template): string
     {
-        if (empty($functions)) {
+        if ($functions === []) {
             return '';
         }
 
@@ -570,7 +570,7 @@ final class File extends Renderer
 
             $popover = '';
 
-            if (!empty($popoverTitle)) {
+            if ($popoverTitle !== '') {
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
@@ -848,7 +848,7 @@ final class File extends Renderer
 
             $popover = '';
 
-            if (!empty($popoverTitle)) {
+            if ($popoverTitle !== '') {
                 $popover = sprintf(
                     ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                     $popoverTitle,
@@ -966,7 +966,7 @@ final class File extends Renderer
 
                 $popover = '';
 
-                if (!empty($popoverTitle)) {
+                if ($popoverTitle !== '') {
                     $popover = sprintf(
                         ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
                         $popoverTitle,

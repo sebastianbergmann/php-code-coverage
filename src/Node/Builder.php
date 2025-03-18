@@ -201,7 +201,7 @@ final readonly class Builder
      */
     private function reducePaths(ProcessedCodeCoverageData $coverage): string
     {
-        if (empty($coverage->coveredFiles())) {
+        if ($coverage->coveredFiles() === []) {
             return '.';
         }
 
@@ -226,7 +226,7 @@ final readonly class Builder
 
             $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
 
-            if (empty($paths[$i][0])) {
+            if ($paths[$i][0] === '') {
                 $paths[$i][0] = DIRECTORY_SEPARATOR;
             }
         }

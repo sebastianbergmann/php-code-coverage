@@ -117,7 +117,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             }
         }
 
-        if (empty($traits)) {
+        if ($traits === []) {
             return null;
         }
 

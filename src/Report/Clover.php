@@ -79,6 +79,7 @@ final class Clover
                 }
 
                 foreach ($class['methods'] as $methodName => $method) {
+                    /** @phpstan-ignore equal.notAllowed */
                     if ($method['executableLines'] == 0) {
                         continue;
                     }
@@ -87,6 +88,7 @@ final class Clover
                     $classStatements        += $method['executableLines'];
                     $coveredClassStatements += $method['executedLines'];
 
+                    /** @phpstan-ignore equal.notAllowed */
                     if ($method['coverage'] == 100) {
                         $coveredMethods++;
                     }

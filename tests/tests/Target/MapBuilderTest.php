@@ -15,11 +15,17 @@ use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\BaseDummy;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\Dummy;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\Dummy2;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\DummyWithTrait;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\SomeTrait;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T1;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T2;
@@ -414,6 +420,145 @@ final class MapBuilderTest extends TestCase
     public function testBuildsMap(array $expected, array $files): void
     {
         $this->assertSame($expected, $this->map($files));
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1066')]
+    public function testIssue1066(): void
+    {
+        $baseDummy      = realpath(__DIR__ . '/../../_files/Target/regression/1066/BaseDummy.php');
+        $dummy          = realpath(__DIR__ . '/../../_files/Target/regression/1066/Dummy.php');
+        $dummy2         = realpath(__DIR__ . '/../../_files/Target/regression/1066/Dummy2.php');
+        $dummyWithTrait = realpath(__DIR__ . '/../../_files/Target/regression/1066/DummyWithTrait.php');
+        $someTrait      = realpath(__DIR__ . '/../../_files/Target/regression/1066/SomeTrait.php');
+
+        $this->assertSame(
+            [
+                'namespaces' => [
+                    'SebastianBergmann' => [
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                        $dummy          => range(4, 15),
+                        $dummy2         => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                    'SebastianBergmann\CodeCoverage' => [
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                        $dummy          => range(4, 15),
+                        $dummy2         => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                    'SebastianBergmann\CodeCoverage\TestFixture' => [
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                        $dummy          => range(4, 15),
+                        $dummy2         => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                    'SebastianBergmann\CodeCoverage\TestFixture\Target' => [
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                        $dummy          => range(4, 15),
+                        $dummy2         => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                    'SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066' => [
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                        $dummy          => range(4, 15),
+                        $dummy2         => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                ],
+                'traits' => [
+                    SomeTrait::class => [
+                        $someTrait => range(4, 6),
+                    ],
+                ],
+                'classes' => [
+                    BaseDummy::class => [
+                        $baseDummy => range(4, 6),
+                    ],
+                    Dummy::class => [
+                        $dummy     => range(4, 15),
+                        $baseDummy => range(4, 6),
+                    ],
+                    Dummy2::class => [
+                        $dummy2 => range(4, 15),
+                    ],
+                    DummyWithTrait::class => [
+                        $dummyWithTrait => range(4, 17),
+                        $someTrait      => range(4, 6),
+                        $baseDummy      => range(4, 6),
+                    ],
+                ],
+                'classesThatExtendClass' => [
+                    BaseDummy::class => [
+                        $dummy          => range(4, 15),
+                        $dummyWithTrait => range(4, 17),
+                    ],
+                ],
+                'classesThatImplementInterface' => [
+                ],
+                'methods' => [
+                    Dummy::class . '::method1' => [
+                        $dummy => range(6, 9),
+                    ],
+                    Dummy::class . '::method2' => [
+                        $dummy => range(11, 14),
+                    ],
+                    Dummy2::class . '::method1' => [
+                        $dummy2 => range(6, 9),
+                    ],
+                    Dummy2::class . '::method2' => [
+                        $dummy2 => range(11, 14),
+                    ],
+                    DummyWithTrait::class . '::method1' => [
+                        $dummyWithTrait => range(8, 11),
+                    ],
+                    DummyWithTrait::class . '::method2' => [
+                        $dummyWithTrait => range(13, 16),
+                    ],
+                ],
+                'functions' => [
+                ],
+                'reverseLookup' => [
+                    $dummy . ':6'           => Dummy::class . '::method1',
+                    $dummy . ':7'           => Dummy::class . '::method1',
+                    $dummy . ':8'           => Dummy::class . '::method1',
+                    $dummy . ':9'           => Dummy::class . '::method1',
+                    $dummy . ':11'          => Dummy::class . '::method2',
+                    $dummy . ':12'          => Dummy::class . '::method2',
+                    $dummy . ':13'          => Dummy::class . '::method2',
+                    $dummy . ':14'          => Dummy::class . '::method2',
+                    $dummy2 . ':6'          => Dummy2::class . '::method1',
+                    $dummy2 . ':7'          => Dummy2::class . '::method1',
+                    $dummy2 . ':8'          => Dummy2::class . '::method1',
+                    $dummy2 . ':9'          => Dummy2::class . '::method1',
+                    $dummy2 . ':11'         => Dummy2::class . '::method2',
+                    $dummy2 . ':12'         => Dummy2::class . '::method2',
+                    $dummy2 . ':13'         => Dummy2::class . '::method2',
+                    $dummy2 . ':14'         => Dummy2::class . '::method2',
+                    $dummyWithTrait . ':8'  => DummyWithTrait::class . '::method1',
+                    $dummyWithTrait . ':9'  => DummyWithTrait::class . '::method1',
+                    $dummyWithTrait . ':10' => DummyWithTrait::class . '::method1',
+                    $dummyWithTrait . ':11' => DummyWithTrait::class . '::method1',
+                    $dummyWithTrait . ':13' => DummyWithTrait::class . '::method2',
+                    $dummyWithTrait . ':14' => DummyWithTrait::class . '::method2',
+                    $dummyWithTrait . ':15' => DummyWithTrait::class . '::method2',
+                    $dummyWithTrait . ':16' => DummyWithTrait::class . '::method2',
+                ],
+            ],
+            $this->map(
+                [
+                    $baseDummy,
+                    $dummy,
+                    $dummy2,
+                    $dummyWithTrait,
+                    $someTrait,
+                ],
+            ),
+        );
     }
 
     /**

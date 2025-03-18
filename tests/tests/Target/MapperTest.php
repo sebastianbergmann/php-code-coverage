@@ -22,6 +22,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\DummyWithTrait;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
@@ -272,6 +273,35 @@ final class MapperTest extends TestCase
             ],
             $mapper->mapTarget(
                 Target::forClass(strtolower(TargetClass::class)),
+            ),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1066')]
+    public function testIssue1066(): void
+    {
+        $baseDummy      = realpath(__DIR__ . '/../../_files/Target/regression/1066/BaseDummy.php');
+        $dummy          = realpath(__DIR__ . '/../../_files/Target/regression/1066/Dummy.php');
+        $dummy2         = realpath(__DIR__ . '/../../_files/Target/regression/1066/Dummy2.php');
+        $dummyWithTrait = realpath(__DIR__ . '/../../_files/Target/regression/1066/DummyWithTrait.php');
+        $someTrait      = realpath(__DIR__ . '/../../_files/Target/regression/1066/SomeTrait.php');
+
+        $mapper = $this->mapper(
+            [
+                $baseDummy,
+                $dummy,
+                $dummy2,
+                $dummyWithTrait,
+                $someTrait,
+            ],
+        );
+
+        $this->assertSame(
+            [
+                $dummyWithTrait => range(8, 11),
+            ],
+            $mapper->mapTarget(
+                Target::forMethod(DummyWithTrait::class, 'method1'),
             ),
         );
     }

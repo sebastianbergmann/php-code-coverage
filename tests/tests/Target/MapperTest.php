@@ -304,6 +304,11 @@ final class MapperTest extends TestCase
                 Target::forMethod(DummyWithTrait::class, 'method1'),
             ),
         );
+
+        $this->assertSame(
+            DummyWithTrait::class . '::method1',
+            $mapper->lookup($dummyWithTrait, 10),
+        );
     }
 
     /**

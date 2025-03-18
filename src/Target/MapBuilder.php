@@ -103,16 +103,16 @@ final readonly class MapBuilder
                         continue;
                     }
 
-                    foreach ($traits[$traitName] as $file => $lines) {
-                        if (!isset($classes[$class->namespacedName()][$file])) {
-                            $classes[$class->namespacedName()][$file] = $lines;
+                    foreach ($traits[$traitName] as $traitFile => $lines) {
+                        if (!isset($classes[$class->namespacedName()][$traitFile])) {
+                            $classes[$class->namespacedName()][$traitFile] = $lines;
 
                             continue;
                         }
 
-                        $classes[$class->namespacedName()][$file] = array_unique(
+                        $classes[$class->namespacedName()][$traitFile] = array_unique(
                             array_merge(
-                                $classes[$class->namespacedName()][$file],
+                                $classes[$class->namespacedName()][$traitFile],
                                 $lines,
                             ),
                         );

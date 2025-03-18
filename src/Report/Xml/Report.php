@@ -71,7 +71,7 @@ final class Report extends File
             'source',
         )->item(0);
 
-        if (!$source) {
+        if ($source === null) {
             $source = $this->contextNode()->appendChild(
                 $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',

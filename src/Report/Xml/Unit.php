@@ -45,7 +45,7 @@ final readonly class Unit
             'namespace',
         )->item(0);
 
-        if (!$node) {
+        if ($node === null) {
             $node = $this->contextNode->appendChild(
                 $this->contextNode->ownerDocument->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',

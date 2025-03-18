@@ -404,24 +404,24 @@ final class File extends AbstractNode
 
         foreach ($this->traits as &$trait) {
             foreach ($trait['methods'] as &$method) {
-                $methodLineCoverage   = $method['executableLines'] ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
-                $methodBranchCoverage = $method['executableBranches'] ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
-                $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+                $methodLineCoverage   = $method['executableLines'] > 0 ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
+                $methodBranchCoverage = $method['executableBranches'] > 0 ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
+                $methodPathCoverage   = $method['executablePaths'] > 0 ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
 
-                $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
-                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage ?: $methodLineCoverage))->asString();
+                $method['coverage'] = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
+                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
 
                 $trait['ccn'] += $method['ccn'];
             }
 
             unset($method);
 
-            $traitLineCoverage   = $trait['executableLines'] ? ($trait['executedLines'] / $trait['executableLines']) * 100 : 100;
-            $traitBranchCoverage = $trait['executableBranches'] ? ($trait['executedBranches'] / $trait['executableBranches']) * 100 : 0;
-            $traitPathCoverage   = $trait['executablePaths'] ? ($trait['executedPaths'] / $trait['executablePaths']) * 100 : 0;
+            $traitLineCoverage   = $trait['executableLines'] > 0 ? ($trait['executedLines'] / $trait['executableLines']) * 100 : 100;
+            $traitBranchCoverage = $trait['executableBranches'] > 0 ? ($trait['executedBranches'] / $trait['executableBranches']) * 100 : 0;
+            $traitPathCoverage   = $trait['executablePaths'] > 0 ? ($trait['executedPaths'] / $trait['executablePaths']) * 100 : 0;
 
-            $trait['coverage'] = $traitBranchCoverage ?: $traitLineCoverage;
-            $trait['crap']     = (new CrapIndex($trait['ccn'], $traitPathCoverage ?: $traitLineCoverage))->asString();
+            $trait['coverage'] = $traitBranchCoverage > 0 ? $traitBranchCoverage : $traitLineCoverage;
+            $trait['crap']     = (new CrapIndex($trait['ccn'], $traitPathCoverage > 0 ? $traitPathCoverage : $traitLineCoverage))->asString();
 
             if ($trait['executableLines'] > 0 && $trait['coverage'] === 100) {
                 $this->numTestedClasses++;
@@ -432,24 +432,24 @@ final class File extends AbstractNode
 
         foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
-                $methodLineCoverage   = $method['executableLines'] ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
-                $methodBranchCoverage = $method['executableBranches'] ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
-                $methodPathCoverage   = $method['executablePaths'] ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+                $methodLineCoverage   = $method['executableLines'] > 0 ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
+                $methodBranchCoverage = $method['executableBranches'] > 0 ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
+                $methodPathCoverage   = $method['executablePaths'] > 0 ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
 
-                $method['coverage'] = $methodBranchCoverage ?: $methodLineCoverage;
-                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage ?: $methodLineCoverage))->asString();
+                $method['coverage'] = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
+                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
 
                 $class['ccn'] += $method['ccn'];
             }
 
             unset($method);
 
-            $classLineCoverage   = $class['executableLines'] ? ($class['executedLines'] / $class['executableLines']) * 100 : 100;
-            $classBranchCoverage = $class['executableBranches'] ? ($class['executedBranches'] / $class['executableBranches']) * 100 : 0;
-            $classPathCoverage   = $class['executablePaths'] ? ($class['executedPaths'] / $class['executablePaths']) * 100 : 0;
+            $classLineCoverage   = $class['executableLines'] > 0 ? ($class['executedLines'] / $class['executableLines']) * 100 : 100;
+            $classBranchCoverage = $class['executableBranches'] > 0 ? ($class['executedBranches'] / $class['executableBranches']) * 100 : 0;
+            $classPathCoverage   = $class['executablePaths'] > 0 ? ($class['executedPaths'] / $class['executablePaths']) * 100 : 0;
 
-            $class['coverage'] = $classBranchCoverage ?: $classLineCoverage;
-            $class['crap']     = (new CrapIndex($class['ccn'], $classPathCoverage ?: $classLineCoverage))->asString();
+            $class['coverage'] = $classBranchCoverage > 0 ? $classBranchCoverage : $classLineCoverage;
+            $class['crap']     = (new CrapIndex($class['ccn'], $classPathCoverage > 0 ? $classPathCoverage : $classLineCoverage))->asString();
 
             if ($class['executableLines'] > 0 && $class['coverage'] === 100) {
                 $this->numTestedClasses++;
@@ -459,12 +459,12 @@ final class File extends AbstractNode
         unset($class);
 
         foreach ($this->functions as &$function) {
-            $functionLineCoverage   = $function['executableLines'] ? ($function['executedLines'] / $function['executableLines']) * 100 : 100;
-            $functionBranchCoverage = $function['executableBranches'] ? ($function['executedBranches'] / $function['executableBranches']) * 100 : 0;
-            $functionPathCoverage   = $function['executablePaths'] ? ($function['executedPaths'] / $function['executablePaths']) * 100 : 0;
+            $functionLineCoverage   = $function['executableLines'] > 0 ? ($function['executedLines'] / $function['executableLines']) * 100 : 100;
+            $functionBranchCoverage = $function['executableBranches'] > 0 ? ($function['executedBranches'] / $function['executableBranches']) * 100 : 0;
+            $functionPathCoverage   = $function['executablePaths'] > 0 ? ($function['executedPaths'] / $function['executablePaths']) * 100 : 0;
 
-            $function['coverage'] = $functionBranchCoverage ?: $functionLineCoverage;
-            $function['crap']     = (new CrapIndex($function['ccn'], $functionPathCoverage ?: $functionLineCoverage))->asString();
+            $function['coverage'] = $functionBranchCoverage > 0 ? $functionBranchCoverage : $functionLineCoverage;
+            $function['crap']     = (new CrapIndex($function['ccn'], $functionPathCoverage > 0 ? $functionPathCoverage : $functionLineCoverage))->asString();
 
             if ($function['coverage'] === 100) {
                 $this->numTestedFunctions++;

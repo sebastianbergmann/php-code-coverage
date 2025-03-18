@@ -31,7 +31,7 @@ class File
     {
         $totalsContainer = $this->contextNode->firstChild;
 
-        if (!$totalsContainer) {
+        if ($totalsContainer === null) {
             $totalsContainer = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
@@ -52,7 +52,7 @@ class File
             'coverage',
         )->item(0);
 
-        if (!$coverage) {
+        if ($coverage === null) {
             $coverage = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',

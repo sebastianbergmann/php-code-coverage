@@ -36,7 +36,7 @@ final class Project extends Node
             'build',
         )->item(0);
 
-        if (!$buildNode) {
+        if ($buildNode === null) {
             $buildNode = $this->dom()->documentElement->appendChild(
                 $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
@@ -57,7 +57,7 @@ final class Project extends Node
             'tests',
         )->item(0);
 
-        if (!$testsNode) {
+        if ($testsNode === null) {
             $testsNode = $this->contextNode()->appendChild(
                 $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',

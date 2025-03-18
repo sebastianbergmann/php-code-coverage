@@ -35,7 +35,7 @@ abstract class Node
     {
         $totalsContainer = $this->contextNode()->firstChild;
 
-        if (!$totalsContainer) {
+        if ($totalsContainer === null) {
             $totalsContainer = $this->contextNode()->appendChild(
                 $this->dom->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',

@@ -54,7 +54,7 @@ final class PcovDriver extends Driver
         $filesToCollectCoverageFor = waiting();
         $collected                 = [];
 
-        if ($filesToCollectCoverageFor) {
+        if ($filesToCollectCoverageFor !== []) {
             if (!$this->filter->isEmpty()) {
                 $filesToCollectCoverageFor = array_intersect($filesToCollectCoverageFor, $this->filter->files());
             }

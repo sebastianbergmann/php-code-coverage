@@ -513,7 +513,7 @@ final class CodeCoverage
 
         $unintentionallyCoveredUnits = $this->processUnintentionallyCoveredUnits($unintentionallyCoveredUnits);
 
-        if ($unintentionallyCoveredUnits === []) {
+        if ($unintentionallyCoveredUnits !== []) {
             throw new UnintentionallyCoveredCodeException(
                 $unintentionallyCoveredUnits,
             );

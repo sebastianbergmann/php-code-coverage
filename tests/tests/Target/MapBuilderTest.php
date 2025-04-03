@@ -375,6 +375,7 @@ final class MapBuilderTest extends TestCase
                     'classesThatExtendClass' => [
                         GrandParentClass::class => [
                             $parentClass => range(4, 9),
+                            $childClass  => range(4, 9),
                         ],
                         ParentClass::class => [
                             $childClass => range(4, 9),

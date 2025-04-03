@@ -40,9 +40,13 @@ final readonly class MapBuilder
      */
     public function build(Filter $filter, FileAnalyser $analyser): array
     {
+        /**
+         * @var array<non-empty-string, Class_> $classDetails
+         */
+        $classDetails = [];
+
         $namespaces                    = [];
         $classes                       = [];
-        $classDetails                  = [];
         $classesThatExtendClass        = [];
         $classesThatImplementInterface = [];
         $traits                        = [];
@@ -122,7 +126,7 @@ final readonly class MapBuilder
                 $this->processMethods($class, $file, $methods, $reverseLookup);
 
                 $classesThatExtendClass[$class->namespacedName()] = [];
-                $classDetails[]                                   = $class;
+                $classDetails[$class->namespacedName()]           = $class;
             }
 
             foreach ($analyser->functionsIn($file) as $function) {
@@ -153,19 +157,15 @@ final readonly class MapBuilder
                 $this->process($classesThatImplementInterface, $interfaceName, $class->file(), $class->startLine(), $class->endLine());
             }
 
-            if (!$class->hasParent()) {
-                continue;
-            }
-
-            if (isset($classes[$class->parentClass()])) {
+            foreach ($this->parentClasses($classDetails, $class) as $parentClass) {
                 $classes[$class->namespacedName()] = array_merge_recursive(
                     $classes[$class->namespacedName()],
-                    $classes[$class->parentClass()],
+                    $classes[$parentClass->namespacedName()],
                 );
-            }
 
-            if (isset($classesThatExtendClass[$class->parentClass()])) {
-                $this->process($classesThatExtendClass, $class->parentClass(), $class->file(), $class->startLine(), $class->endLine());
+                if (isset($classesThatExtendClass[$parentClass->namespacedName()])) {
+                    $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());
+                }
             }
         }
 
@@ -183,6 +183,15 @@ final readonly class MapBuilder
             }
 
             unset($classesThatExtendClass[$className]);
+        }
+
+        /**
+         * @todo Avoid duplication and remove this loop
+         */
+        foreach (array_keys($classes) as $className) {
+            foreach (array_keys($classes[$className]) as $file) {
+                $classes[$className][$file] = array_unique($classes[$className][$file]);
+            }
         }
 
         return [
@@ -250,6 +259,27 @@ final readonly class MapBuilder
         $data[$unit][$file] = array_merge(
             $data[$unit][$file],
             range($startLine, $endLine),
+        );
+    }
+
+    /**
+     * @param array<non-empty-string, Class_> $classDetails
+     *
+     * @return array<Class_>
+     */
+    private function parentClasses(array $classDetails, Class_ $class): array
+    {
+        if (!$class->hasParent()) {
+            return [];
+        }
+
+        if (!isset($classDetails[$class->parentClass()])) {
+            return [];
+        }
+
+        return array_merge(
+            [$classDetails[$class->parentClass()]],
+            $this->parentClasses($classDetails, $classDetails[$class->parentClass()]),
         );
     }
 }

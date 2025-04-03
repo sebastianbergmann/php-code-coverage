@@ -22,6 +22,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\DummyWithTrait;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
@@ -70,13 +71,27 @@ final class MapperTest extends TestCase
                 ),
             ],
 
-            'classes that extend class' => [
+            'classes that extend class (parent and child)' => [
                 [
                     $file => range(33, 52),
                 ],
                 TargetCollection::fromArray(
                     [
                         Target::forClassesThatExtendClass('SebastianBergmann\\CodeCoverage\\StaticAnalysis\\ParentClass'),
+                    ],
+                ),
+            ],
+
+            'classes that extend class (grand parent, parent, and child)' => [
+                [
+                    realpath(__DIR__ . '/../../_files/Target/GrandParentClass.php') => range(4, 9),
+                    realpath(__DIR__ . '/../../_files/Target/ParentClass.php')      => range(4, 9),
+                    realpath(__DIR__ . '/../../_files/Target/ChildClass.php')       => range(4, 9),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forClass(GrandParentClass::class),
+                        Target::forClassesThatExtendClass(GrandParentClass::class),
                     ],
                 ),
             ],

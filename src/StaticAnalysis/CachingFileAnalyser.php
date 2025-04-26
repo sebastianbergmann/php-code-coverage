@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function file_put_contents;
+use function hash;
 use function implode;
 use function is_file;
-use function md5;
 use function serialize;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -211,7 +211,8 @@ final class CachingFileAnalyser implements FileAnalyser
 
     private function cacheFile(string $filename): string
     {
-        $cacheKey = md5(
+        $cacheKey = hash(
+            'sha256',
             implode(
                 "\0",
                 [

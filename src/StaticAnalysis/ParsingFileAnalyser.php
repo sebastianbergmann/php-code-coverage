@@ -26,7 +26,6 @@ use function trim;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
@@ -180,7 +179,7 @@ final class ParsingFileAnalyser implements FileAnalyser
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
             $traverser->addVisitor(new NameResolver);
-            $traverser->addVisitor(new ParentConnectingVisitor);
+            $traverser->addVisitor(new AttributeParentConnectingVisitor);
             $traverser->addVisitor($codeUnitFindingVisitor);
             $traverser->addVisitor($lineCountingVisitor);
             $traverser->addVisitor($ignoredLinesFindingVisitor);

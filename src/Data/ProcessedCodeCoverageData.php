@@ -129,6 +129,9 @@ final class ProcessedCodeCoverageData
         $this->functionCoverage = $functionCoverage;
     }
 
+    /**
+     * @return FunctionCoverageType
+     */
     public function functionCoverage(): array
     {
         ksort($this->functionCoverage);

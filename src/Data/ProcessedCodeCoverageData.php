@@ -113,6 +113,9 @@ final class ProcessedCodeCoverageData
         }
     }
 
+    /**
+     * @param LineCoverageType $lineCoverage
+     */
     public function setLineCoverage(array $lineCoverage): void
     {
         $this->lineCoverage = $lineCoverage;

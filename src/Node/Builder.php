@@ -134,7 +134,7 @@ final readonly class Builder
      * )
      * </code>
      *
-     * @return array<string, array<string, array{lineCoverage: LineCoverageForFileType, functionCoverage: FunctionCoverageForFileType}>>
+     * @return array<string, array{lineCoverage: LineCoverageForFileType, functionCoverage: FunctionCoverageForFileType}>
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {

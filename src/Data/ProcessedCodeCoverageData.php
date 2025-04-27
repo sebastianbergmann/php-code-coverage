@@ -121,6 +121,9 @@ final class ProcessedCodeCoverageData
         $this->lineCoverage = $lineCoverage;
     }
 
+    /**
+     * @return LineCoverageType
+     */
     public function lineCoverage(): array
     {
         ksort($this->lineCoverage);

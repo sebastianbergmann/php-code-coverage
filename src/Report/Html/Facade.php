@@ -97,8 +97,8 @@ final readonly class Facade
     {
         $dir = $this->directory($target . '_css');
 
+        copy($this->templatePath . 'css/billboard.min.css', $dir . 'billboard.min.css');
         copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
-        copy($this->templatePath . 'css/nv.d3.min.css', $dir . 'nv.d3.min.css');
         copy($this->customCssFile->path(), $dir . 'custom.css');
         copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
 
@@ -107,10 +107,9 @@ final readonly class Facade
         copy($this->templatePath . 'icons/file-directory.svg', $dir . 'file-directory.svg');
 
         $dir = $this->directory($target . '_js');
+        copy($this->templatePath . 'js/billboard.pkgd.min.js', $dir . 'billboard.pkgd.min.js');
         copy($this->templatePath . 'js/bootstrap.bundle.min.js', $dir . 'bootstrap.bundle.min.js');
-        copy($this->templatePath . 'js/d3.min.js', $dir . 'd3.min.js');
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
-        copy($this->templatePath . 'js/nv.d3.min.js', $dir . 'nv.d3.min.js');
         copy($this->templatePath . 'js/file.js', $dir . 'file.js');
     }
 

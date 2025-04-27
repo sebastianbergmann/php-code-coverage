@@ -418,6 +418,7 @@ final class MapBuilderTest extends TestCase
     }
 
     /**
+     * @param TargetMap                        $expected
      * @param non-empty-list<non-empty-string> $files
      */
     #[DataProvider('provider')]

@@ -102,6 +102,7 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
@@ -113,7 +114,7 @@ use SebastianBergmann\Template\Template;
  * @phpstan-import-type ProcessedTraitType from FileNode
  * @phpstan-import-type ProcessedMethodType from FileNode
  * @phpstan-import-type ProcessedFunctionType from FileNode
- * @phpstan-import-type TestType from FileNode
+ * @phpstan-import-type TestType from CodeCoverage
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -907,7 +908,8 @@ final class File extends Renderer
     }
 
     /**
-     * @param list<string> $codeLines
+     * @param list<string>            $codeLines
+     * @param array<string, TestType> $testData
      */
     private function renderPathLines(array $path, array $branches, array $codeLines, array $testData): string
     {

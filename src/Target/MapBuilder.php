@@ -207,6 +207,7 @@ final readonly class MapBuilder
     }
 
     /**
+     * @param TargetMapPart                             $methods
      * @param array<non-empty-string, non-empty-string> $reverseLookup
      */
     private function processMethods(Class_|Trait_ $classOrTrait, string $file, array &$methods, array &$reverseLookup): void

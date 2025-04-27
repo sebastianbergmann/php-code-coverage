@@ -113,6 +113,7 @@ use SebastianBergmann\Template\Template;
  * @phpstan-import-type ProcessedTraitType from FileNode
  * @phpstan-import-type ProcessedMethodType from FileNode
  * @phpstan-import-type ProcessedFunctionType from FileNode
+ * @phpstan-import-type TestType from FileNode
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -1118,6 +1119,9 @@ final class File extends Renderer
         return $methodName;
     }
 
+    /**
+     * @param TestType $testData
+     */
     private function createPopoverContentForTest(string $test, array $testData): string
     {
         $testCSS = '';

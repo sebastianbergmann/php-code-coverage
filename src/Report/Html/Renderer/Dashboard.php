@@ -103,22 +103,16 @@ final class Dashboard extends Renderer
                 $result['method'][] = [
                     $method['coverage'],
                     $method['ccn'],
-                    sprintf(
-                        '<a href="%s">%s</a>',
-                        str_replace($baseLink, '', $method['link']),
-                        $methodName,
-                    ),
+                    str_replace($baseLink, '', $method['link']),
+                    $methodName,
                 ];
             }
 
             $result['class'][] = [
                 $class['coverage'],
                 $class['ccn'],
-                sprintf(
-                    '<a href="%s">%s</a>',
-                    str_replace($baseLink, '', $class['link']),
-                    $className,
-                ),
+                str_replace($baseLink, '', $class['link']),
+                $className,
             ];
         }
 

@@ -42,7 +42,8 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *      hit: list<TestIdType>
  *  }
  * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
- * @phpstan-type LineCoverageType array<string, array<int, null|list<TestIdType>>>
+ * @phpstan-type LineCoverageForFileType array<int, null|list<TestIdType>>
+ * @phpstan-type LineCoverageType array<string, LineCoverageForFileType>
  */
 final class ProcessedCodeCoverageData
 {

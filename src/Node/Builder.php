@@ -30,6 +30,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  *
  * @phpstan-import-type TestType from CodeCoverage
  * @phpstan-import-type FunctionCoverageForFileType from ProcessedCodeCoverageData
+ * @phpstan-import-type LineCoverageForFileType from ProcessedCodeCoverageData
  */
 final readonly class Builder
 {
@@ -133,7 +134,7 @@ final readonly class Builder
      * )
      * </code>
      *
-     * @return array<string, array<string, array{lineCoverage: array<int, int>, functionCoverage: FunctionCoverageForFileType}>>
+     * @return array<string, array<string, array{lineCoverage: LineCoverageForFileType, functionCoverage: FunctionCoverageForFileType}>>
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {

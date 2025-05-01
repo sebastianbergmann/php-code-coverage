@@ -14,7 +14,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
 
 /**
@@ -72,6 +73,13 @@ final class TargetCollectionValidatorTest extends TestCase
 
         $filter->includeFiles($files);
 
-        return (new MapBuilder)->build($filter, new ParsingFileAnalyser(false, false));
+        return (new MapBuilder)->build(
+            $filter,
+            new FileAnalyser(
+                new ParsingSourceAnalyser,
+                false,
+                false,
+            ),
+        );
     }
 }

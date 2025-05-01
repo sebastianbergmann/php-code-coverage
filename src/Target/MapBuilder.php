@@ -55,7 +55,7 @@ final readonly class MapBuilder
         $reverseLookup                 = [];
 
         foreach ($filter->files() as $file) {
-            foreach ($analyser->traitsIn($file) as $trait) {
+            foreach ($analyser->analyse($file)->traits() as $trait) {
                 if ($trait->isNamespaced()) {
                     $this->processNamespace($namespaces, $trait->namespace(), $file, $trait->startLine(), $trait->endLine());
                 }
@@ -66,7 +66,7 @@ final readonly class MapBuilder
         }
 
         foreach ($filter->files() as $file) {
-            foreach ($analyser->traitsIn($file) as $trait) {
+            foreach ($analyser->analyse($file)->traits() as $trait) {
                 foreach ($trait->traits() as $traitName) {
                     if (!isset($traits[$traitName])) {
                         continue;
@@ -91,11 +91,13 @@ final readonly class MapBuilder
         }
 
         foreach ($filter->files() as $file) {
-            foreach ($analyser->interfacesIn($file) as $interface) {
+            $analysisResult = $analyser->analyse($file);
+
+            foreach ($analysisResult->interfaces() as $interface) {
                 $classesThatImplementInterface[$interface->namespacedName()] = [];
             }
 
-            foreach ($analyser->classesIn($file) as $class) {
+            foreach ($analysisResult->classes() as $class) {
                 if ($class->isNamespaced()) {
                     $this->processNamespace($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
                 }
@@ -129,7 +131,7 @@ final readonly class MapBuilder
                 $classDetails[$class->namespacedName()]           = $class;
             }
 
-            foreach ($analyser->functionsIn($file) as $function) {
+            foreach ($analysisResult->functions() as $function) {
                 if ($function->isNamespaced()) {
                     $this->processNamespace($namespaces, $function->namespace(), $file, $function->startLine(), $function->endLine());
                 }

@@ -70,6 +70,8 @@ final readonly class Builder
                 $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
                 if (is_file($filename)) {
+                    $analysisResult = $this->analyser->analyse($filename);
+
                     $root->addFile(
                         new File(
                             $key,
@@ -77,10 +79,10 @@ final readonly class Builder
                             $value['lineCoverage'],
                             $value['functionCoverage'],
                             $tests,
-                            $this->analyser->classesIn($filename),
-                            $this->analyser->traitsIn($filename),
-                            $this->analyser->functionsIn($filename),
-                            $this->analyser->linesOfCodeFor($filename),
+                            $analysisResult->classes(),
+                            $analysisResult->traits(),
+                            $analysisResult->functions(),
+                            $analysisResult->linesOfCode(),
                         ),
                     );
                 }

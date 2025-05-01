@@ -13,8 +13,8 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
@@ -24,7 +24,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestType from CodeCoverage
- * @phpstan-import-type LinesType from FileAnalyser
+ * @phpstan-import-type LinesType from AnalysisResult
  *
  * @phpstan-type ProcessedFunctionType array{
  *     functionName: string,

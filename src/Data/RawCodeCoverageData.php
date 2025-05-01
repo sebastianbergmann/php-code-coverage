@@ -90,7 +90,7 @@ final class RawCodeCoverageData
     {
         $lineCoverage = array_map(
             static fn (): int => Driver::LINE_NOT_EXECUTED,
-            $analyser->executableLinesIn($filename),
+            $analyser->analyse($filename)->executableLines(),
         );
 
         return new self([$filename => $lineCoverage], []);

@@ -9,11 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function file_get_contents;
 use function range;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
-abstract class FileAnalyserTestCase extends TestCase
+abstract class SourceAnalyserTestCase extends TestCase
 {
     public function testGetLinesToBeIgnored(): void
     {
@@ -40,9 +41,12 @@ abstract class FileAnalyserTestCase extends TestCase
                 41,
                 42,
             ],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_ignore.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -50,9 +54,12 @@ abstract class FileAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             [],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_without_ignore.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_without_ignore.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -62,9 +69,12 @@ abstract class FileAnalyserTestCase extends TestCase
             [
                 3,
             ],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -76,9 +86,12 @@ abstract class FileAnalyserTestCase extends TestCase
             [
                 2,
             ],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -93,9 +106,12 @@ abstract class FileAnalyserTestCase extends TestCase
                 32,
                 33,
             ],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_oneline_annotations.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_oneline_annotations.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -107,9 +123,12 @@ abstract class FileAnalyserTestCase extends TestCase
                 18,
                 33,
             ],
-            (new ParsingFileAnalyser(false, false))->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_ignore.php'),
+                false,
+                false,
+            )->ignoredLines(),
         );
     }
 
@@ -117,18 +136,24 @@ abstract class FileAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             1,
-            (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_without_newline.php',
-            )->linesOfCode(),
+                file_get_contents(TEST_FILES_PATH . 'source_without_newline.php'),
+                false,
+                false,
+            )->linesOfCode()->linesOfCode(),
         );
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/885')]
     public function testGetLinesOfCodeForFileCrLineEndings(): void
     {
-        $result = (new ParsingFileAnalyser(false, false))->linesOfCodeFor(
+        $result = $this->analyser()->analyse(
             TEST_FILES_PATH . 'source_without_lf_only_cr.php',
-        );
+            file_get_contents(TEST_FILES_PATH . 'source_without_lf_only_cr.php'),
+            false,
+            false,
+        )->linesOfCode();
 
         $this->assertSame(4, $result->linesOfCode());
         $this->assertSame(2, $result->commentLinesOfCode());
@@ -154,9 +179,12 @@ abstract class FileAnalyserTestCase extends TestCase
                 18,
                 19,
             ],
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore_attributes.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_ignore_attributes.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -165,9 +193,12 @@ abstract class FileAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             range(5, 13),
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_enum_and_enum_level_ignore_annotation.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_enum_and_enum_level_ignore_annotation.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
@@ -176,40 +207,41 @@ abstract class FileAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             range(9, 12),
-            $this->analyser()->ignoredLinesFor(
+            $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php',
-            ),
+                file_get_contents(TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php'),
+                true,
+                true,
+            )->ignoredLines(),
         );
     }
 
     public function testCodeUnitsAreFound(): void
     {
-        $analyser = new ParsingFileAnalyser(true, true);
-        $file     = __DIR__ . '/../_files/source_with_interfaces_classes_traits_functions.php';
+        $analyser = new ParsingSourceAnalyser;
 
-        $interfaces = $analyser->interfacesIn($file);
+        $analysisResult = $analyser->analyse(
+            __DIR__ . '/../_files/source_with_interfaces_classes_traits_functions.php',
+            file_get_contents(__DIR__ . '/../_files/source_with_interfaces_classes_traits_functions.php'),
+            true,
+            true,
+        );
 
-        $this->assertCount(3, $interfaces);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\A', $interfaces);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\B', $interfaces);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\C', $interfaces);
+        $this->assertCount(3, $analysisResult->interfaces());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\A', $analysisResult->interfaces());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\B', $analysisResult->interfaces());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\C', $analysisResult->interfaces());
 
-        $classes = $analyser->classesIn($file);
+        $this->assertCount(2, $analysisResult->classes());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass', $analysisResult->classes());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass', $analysisResult->classes());
 
-        $this->assertCount(2, $classes);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ParentClass', $classes);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\ChildClass', $classes);
+        $this->assertCount(1, $analysisResult->traits());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\T', $analysisResult->traits());
 
-        $traits = $analyser->traitsIn($file);
-
-        $this->assertCount(1, $traits);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\T', $traits);
-
-        $functions = $analyser->functionsIn($file);
-
-        $this->assertCount(1, $functions);
-        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\f', $functions);
+        $this->assertCount(1, $analysisResult->functions());
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\f', $analysisResult->functions());
     }
 
-    abstract protected function analyser(): FileAnalyser;
+    abstract protected function analyser(): SourceAnalyser;
 }

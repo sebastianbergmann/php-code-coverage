@@ -15,20 +15,18 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 
-#[CoversClass(CachingFileAnalyser::class)]
-#[UsesClass(ParsingFileAnalyser::class)]
+#[CoversClass(CachingSourceAnalyser::class)]
+#[UsesClass(ParsingSourceAnalyser::class)]
 #[UsesClass(CodeUnitFindingVisitor::class)]
 #[UsesClass(IgnoredLinesFindingVisitor::class)]
 #[Small]
-final class CachingFileAnalyserTest extends FileAnalyserTestCase
+final class CachingSourceAnalyserTest extends SourceAnalyserTestCase
 {
-    protected function analyser(): FileAnalyser
+    protected function analyser(): SourceAnalyser
     {
-        return new CachingFileAnalyser(
+        return new CachingSourceAnalyser(
             sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-tests-for-static-analysis',
-            new ParsingFileAnalyser(true, true),
-            true,
-            true,
+            new ParsingSourceAnalyser,
         );
     }
 }

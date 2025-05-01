@@ -9,42 +9,45 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function file_get_contents;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
- *
- * @phpstan-type LinesType array<int, int>
  */
-interface FileAnalyser
+final class FileAnalyser
 {
-    /**
-     * @return array<string, Interface_>
-     */
-    public function interfacesIn(string $filename): array;
+    private readonly SourceAnalyser $sourceAnalyser;
+    private readonly bool $useAnnotationsForIgnoringCode;
+    private readonly bool $ignoreDeprecatedCode;
 
     /**
-     * @return array<string, Class_>
+     * @var array<non-empty-string, AnalysisResult>
      */
-    public function classesIn(string $filename): array;
+    private array $cache = [];
+
+    public function __construct(SourceAnalyser $sourceAnalyser, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
+    {
+        $this->sourceAnalyser                = $sourceAnalyser;
+        $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
+        $this->ignoreDeprecatedCode          = $ignoreDeprecatedCode;
+    }
 
     /**
-     * @return array<string, Trait_>
+     * @param non-empty-string $sourceCodeFile
      */
-    public function traitsIn(string $filename): array;
+    public function analyse(string $sourceCodeFile): AnalysisResult
+    {
+        if (isset($this->cache[$sourceCodeFile])) {
+            return $this->cache[$sourceCodeFile];
+        }
 
-    /**
-     * @return array<string, Function_>
-     */
-    public function functionsIn(string $filename): array;
+        $this->cache[$sourceCodeFile] = $this->sourceAnalyser->analyse(
+            $sourceCodeFile,
+            file_get_contents($sourceCodeFile),
+            $this->useAnnotationsForIgnoringCode,
+            $this->ignoreDeprecatedCode,
+        );
 
-    public function linesOfCodeFor(string $filename): LinesOfCode;
-
-    /**
-     * @return LinesType
-     */
-    public function executableLinesIn(string $filename): array;
-
-    /**
-     * @return LinesType
-     */
-    public function ignoredLinesFor(string $filename): array;
+        return $this->cache[$sourceCodeFile];
+    }
 }

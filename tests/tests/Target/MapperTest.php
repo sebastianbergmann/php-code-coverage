@@ -21,7 +21,8 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\DummyWithTrait;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
@@ -345,6 +346,13 @@ final class MapperTest extends TestCase
 
         $filter->includeFiles($files);
 
-        return (new MapBuilder)->build($filter, new ParsingFileAnalyser(false, false));
+        return (new MapBuilder)->build(
+            $filter,
+            new FileAnalyser(
+                new ParsingSourceAnalyser,
+                false,
+                false,
+            ),
+        );
     }
 }

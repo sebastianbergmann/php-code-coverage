@@ -12,14 +12,14 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 
-#[CoversClass(ParsingFileAnalyser::class)]
+#[CoversClass(ParsingSourceAnalyser::class)]
 #[CoversClass(CodeUnitFindingVisitor::class)]
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
 #[Small]
-final class ParsingFileAnalyserTest extends FileAnalyserTestCase
+final class ParsingSourceAnalyserTest extends SourceAnalyserTestCase
 {
-    protected function analyser(): FileAnalyser
+    protected function analyser(): SourceAnalyser
     {
-        return new ParsingFileAnalyser(true, true);
+        return new ParsingSourceAnalyser;
     }
 }

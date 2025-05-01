@@ -25,9 +25,9 @@ use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingFileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\MapBuilder;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
@@ -436,7 +436,7 @@ final class CodeCoverage
                 continue;
             }
 
-            $linesToBranchMap = $this->analyser()->executableLinesIn($filename);
+            $linesToBranchMap = $this->analyser()->analyse($filename)->executableLines();
 
             $data->keepLineCoverageDataOnlyForLines(
                 $filename,
@@ -459,7 +459,7 @@ final class CodeCoverage
 
             $data->removeCoverageDataForLines(
                 $filename,
-                $this->analyser()->ignoredLinesFor($filename),
+                $this->analyser()->analyse($filename)->ignoredLines(),
             );
         }
     }
@@ -627,19 +627,20 @@ final class CodeCoverage
             return $this->analyser;
         }
 
-        $this->analyser = new ParsingFileAnalyser(
+        $sourceAnalyser = new ParsingSourceAnalyser;
+
+        if ($this->cachesStaticAnalysis()) {
+            $sourceAnalyser = new CachingSourceAnalyser(
+                $this->cacheDirectory,
+                $sourceAnalyser,
+            );
+        }
+
+        $this->analyser = new FileAnalyser(
+            $sourceAnalyser,
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode,
         );
-
-        if ($this->cachesStaticAnalysis()) {
-            $this->analyser = new CachingFileAnalyser(
-                $this->cacheDirectory,
-                $this->analyser,
-                $this->useAnnotationsForIgnoringCode,
-                $this->ignoreDeprecatedCode,
-            );
-        }
 
         return $this->analyser;
     }

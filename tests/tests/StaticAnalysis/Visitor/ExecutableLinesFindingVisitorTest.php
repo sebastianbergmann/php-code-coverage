@@ -43,7 +43,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
     public function testMatchArmsAreProcessedCorrectly(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../_files/source_match_expression.php');
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_expression.php');
         $parser                        = (new ParserFactory)->createForHostVersion();
         $nodes                         = $parser->parse($source);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);

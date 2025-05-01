@@ -27,7 +27,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/786')]
     public function testDoesNotFindAnonymousClass(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassThatUsesAnonymousClass.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/ClassThatUsesAnonymousClass.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->functions());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -61,7 +61,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/pull/797')]
     public function testHandlesClassWithNameThatIsPartOfItsNamespacesName(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->functions());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -80,7 +80,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
     public function testHandlesFunctionOrMethodWithUnionTypes(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithUnionTypes.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithUnionTypes.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->classes());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -97,7 +97,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
     public function testHandlesFunctionOrMethodWithIntersectionTypes(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithIntersectionTypes.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithIntersectionTypes.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->classes());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -114,7 +114,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
     public function testHandlesFunctionOrMethodWithDisjunctiveNormalFormTypes(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/FunctionWithDisjunctiveNormalFormTypes.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithDisjunctiveNormalFormTypes.php');
 
         $this->assertEmpty($codeUnitFindingVisitor->classes());
         $this->assertEmpty($codeUnitFindingVisitor->traits());
@@ -141,7 +141,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
     public function testDetailsAboutExtendedClassesImplementedInterfacesAndUsedTraitsAreAvailable(): void
     {
-        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../_files/source_with_interfaces_classes_traits_functions.php');
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
 
         $interfaces = $codeUnitFindingVisitor->interfaces();
 

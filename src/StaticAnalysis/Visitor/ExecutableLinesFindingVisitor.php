@@ -27,7 +27,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type LinesType from FileAnalyser
+ * @phpstan-import-type LinesType from AnalysisResult
  */
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {

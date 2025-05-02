@@ -50,7 +50,6 @@ final class CachingSourceAnalyser implements SourceAnalyser
 
     /**
      * @param non-empty-string $sourceCodeFile
-     * @param non-empty-string $sourceCode
      */
     public function analyse(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): AnalysisResult
     {

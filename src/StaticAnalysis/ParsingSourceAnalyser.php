@@ -36,7 +36,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 {
     /**
      * @param non-empty-string $sourceCodeFile
-     * @param non-empty-string $sourceCode
      */
     public function analyse(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): AnalysisResult
     {

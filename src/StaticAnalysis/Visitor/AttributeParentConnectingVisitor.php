@@ -16,7 +16,7 @@ use PhpParser\Node;
 use PhpParser\NodeVisitor;
 
 /**
- * Visitor that connects a child node to its parent node optimzed for Attribute nodes.
+ * Visitor that connects a child node to its parent node optimized for Attribute nodes.
  *
  * On the child node, the parent node can be accessed through
  * <code>$node->getAttribute('parent')</code>.

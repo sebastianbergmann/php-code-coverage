@@ -137,7 +137,7 @@
     </p>
    </footer>
   </div>
-  <script src="_js/billboard.pkgd.min.js?v={{version}}" type="text/javascript"></script>
+  <script src="{{path_to_root}}_js/billboard.pkgd.min.js?v={{version}}" type="text/javascript"></script>
   <script type="application/json" id="complexity_class">{{complexity_class}}</script>
   <script type="application/json" id="complexity_method">{{complexity_method}}</script>
   <script type="text/javascript" defer>

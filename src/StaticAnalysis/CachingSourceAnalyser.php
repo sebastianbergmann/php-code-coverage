@@ -14,7 +14,6 @@ use function file_get_contents;
 use function file_put_contents;
 use function hash;
 use function implode;
-use function is_file;
 use function serialize;
 use function unserialize;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -104,12 +103,14 @@ final class CachingSourceAnalyser implements SourceAnalyser
      */
     private function read(string $cacheFile): AnalysisResult|false
     {
-        if (!is_file($cacheFile)) {
+        $buffer = @file_get_contents($cacheFile);
+
+        if ($buffer === false) {
             return false;
         }
 
         return unserialize(
-            file_get_contents($cacheFile),
+            $buffer,
             [
                 'allowed_classes' => [
                     AnalysisResult::class,

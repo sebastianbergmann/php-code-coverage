@@ -124,6 +124,9 @@ final class CachingSourceAnalyser implements SourceAnalyser
         );
     }
 
+    /**
+     * @param non-empty-string $cacheFile
+     */
     private function write(string $cacheFile, AnalysisResult $result): void
     {
         file_put_contents(

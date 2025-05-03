@@ -23,30 +23,11 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 final class Text
 {
-    /**
-     * @var string
-     */
-    private const string COLOR_GREEN = "\x1b[30;42m";
-
-    /**
-     * @var string
-     */
+    private const string COLOR_GREEN  = "\x1b[30;42m";
     private const string COLOR_YELLOW = "\x1b[30;43m";
-
-    /**
-     * @var string
-     */
-    private const string COLOR_RED = "\x1b[37;41m";
-
-    /**
-     * @var string
-     */
+    private const string COLOR_RED    = "\x1b[37;41m";
     private const string COLOR_HEADER = "\x1b[1;37;40m";
-
-    /**
-     * @var string
-     */
-    private const string COLOR_RESET = "\x1b[0m";
+    private const string COLOR_RESET  = "\x1b[0m";
     private readonly Thresholds $thresholds;
     private readonly bool $showUncoveredFiles;
     private readonly bool $showOnlySummary;

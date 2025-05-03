@@ -7,10 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage\tests\Exception;
+namespace SebastianBergmann\CodeCoverage;
 
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException;
 
 final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 {

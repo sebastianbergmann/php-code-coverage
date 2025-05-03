@@ -9,8 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(UnintentionallyCoveredCodeException::class)]
+#[Small]
 final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 {
     public function testCanConstructWithEmptyArray(): void

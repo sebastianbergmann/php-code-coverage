@@ -22,6 +22,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetClass;
  * @phpstan-import-type TargetMap from Mapper
  */
 #[CoversClass(TargetCollectionValidator::class)]
+#[CoversClass(InvalidCodeCoverageTargetException::class)]
 #[Small]
 final class TargetCollectionValidatorTest extends TestCase
 {

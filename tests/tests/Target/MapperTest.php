@@ -33,6 +33,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
  * @phpstan-import-type TargetMap from Mapper
  */
 #[CoversClass(Mapper::class)]
+#[CoversClass(InvalidCodeCoverageTargetException::class)]
 #[Small]
 final class MapperTest extends TestCase
 {

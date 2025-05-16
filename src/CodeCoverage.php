@@ -644,4 +644,9 @@ final class CodeCoverage
 
         return $this->analyser;
     }
+
+    public function clearAnalyser(): void
+    {
+        $this->analyser = null;
+    }
 }

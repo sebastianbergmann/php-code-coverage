@@ -83,6 +83,7 @@ final readonly class Builder
                             $analysisResult->traits(),
                             $analysisResult->functions(),
                             $analysisResult->linesOfCode(),
+                            $analysisResult->executableLines(),
                         ),
                     );
                 }

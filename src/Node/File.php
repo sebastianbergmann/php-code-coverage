@@ -141,20 +141,27 @@ final class File extends AbstractNode
     private array $codeUnitsByLine = [];
 
     /**
+     * @var array<int, int>
+     */
+    private array $executableLinesGroupedByBranch = [];
+
+    /**
      * @param array<int, ?list<non-empty-string>> $lineCoverageData
      * @param array<string, TestType>             $testData
      * @param array<string, Class_>               $classes
      * @param array<string, Trait_>               $traits
      * @param array<string, Function_>            $functions
+     * @param array<int, int>                     $executableLinesGroupedByBranch
      */
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
+    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLinesGroupedByBranch)
     {
         parent::__construct($name, $parent);
 
-        $this->lineCoverageData     = $lineCoverageData;
+        $this->lineCoverageData = $lineCoverageData;
         $this->functionCoverageData = $functionCoverageData;
-        $this->testData             = $testData;
-        $this->linesOfCode          = $linesOfCode;
+        $this->testData = $testData;
+        $this->linesOfCode = $linesOfCode;
+        $this->executableLinesGroupedByBranch = $executableLinesGroupedByBranch;
 
         $this->calculateStatistics($classes, $traits, $functions);
     }
@@ -374,8 +381,11 @@ final class File extends AbstractNode
         $this->processTraits($traits);
         $this->processFunctions($functions);
 
+        // Get executable lines from the ExecutableLinesFindingVisitor
+        $executableLines = $this->executableLinesGroupedByBranch();
+
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
-            if (isset($this->lineCoverageData[$lineNumber])) {
+            if (isset($executableLines[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                     if (isset($codeUnit['executableLines'])) {
                         $codeUnit['executableLines']++;
@@ -386,7 +396,7 @@ final class File extends AbstractNode
 
                 $this->numExecutableLines++;
 
-                if (count($this->lineCoverageData[$lineNumber]) > 0) {
+                if (isset($this->lineCoverageData[$lineNumber]) && count($this->lineCoverageData[$lineNumber] ?? []) > 0) {
                     foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                         if (isset($codeUnit['executedLines'])) {
                             $codeUnit['executedLines']++;
@@ -698,5 +708,13 @@ final class File extends AbstractNode
         }
 
         return $methodData;
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function executableLinesGroupedByBranch(): array
+    {
+        return $this->executableLinesGroupedByBranch;
     }
 }

@@ -36,7 +36,7 @@ final readonly class Percentage
             return ($this->fraction / $this->total) * 100;
         }
 
-        return 100.0;
+        return 0.0;
     }
 
     public function asString(): string

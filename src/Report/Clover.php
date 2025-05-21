@@ -59,8 +59,6 @@ final class Clover
                 continue;
             }
 
-            /* @var File $item */
-
             $xmlFile = $xmlDocument->createElement('file');
             $xmlFile->setAttribute('name', $item->pathAsString());
 

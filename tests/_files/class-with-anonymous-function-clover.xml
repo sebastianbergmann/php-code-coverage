@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="%i">
+<coverage clover="%s" generated="%i">
   <project timestamp="%i">
     <file name="%s%esource_with_class_and_anonymous_function.php">
       <class name="CoveredClassWithAnonymousFunctionInStaticMethod" namespace="global">

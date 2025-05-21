@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="%i">
+<coverage clover="%s" generated="%i">
   <project timestamp="%i" name="BankAccount">
     <file name="%s%eBankAccount.php">
       <class name="BankAccount" namespace="global">

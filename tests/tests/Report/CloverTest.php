@@ -68,6 +68,8 @@ final class CloverTest extends TestCase
      */
     private function validateAndAssert(string $expectationFile, string $cloverXml): void
     {
+        $this->assertStringMatchesFormatFile($expectationFile, $cloverXml);
+
         libxml_use_internal_errors(true);
 
         $document = new DOMDocument;
@@ -92,7 +94,5 @@ final class CloverTest extends TestCase
         if (isset($buffer)) {
             $this->fail($buffer);
         }
-
-        $this->assertStringMatchesFormatFile($expectationFile, $cloverXml);
     }
 }

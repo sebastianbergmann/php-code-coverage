@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    <xs:element name="coverage">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Top-most element describing the coverage report. Contains a
+                    project and a test project.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element ref="project"/>
+                <xs:element ref="testproject"/>
+            </xs:sequence>
+            <xs:attribute name="clover" use="required" type="xs:NMTOKEN"/>
+            <xs:attribute name="generated" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="project">
+        <xs:annotation>
+            <xs:documentation>
+                Project metrics relating to non-test source.
+                @name - project name (optional)
+                @timestamp - seconds since UTC
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metrics" type="projectMetrics"/>
+                <xs:element maxOccurs="unbounded" ref="package"/>
+            </xs:sequence>
+            <xs:attribute name="name"/>
+            <xs:attribute name="timestamp" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="testproject">
+        <xs:annotation>
+            <xs:documentation>
+                Project metrics relating to test source.
+                @name - project name (optional)
+                @timestamp - seconds since UTC
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metrics" type="projectMetrics"/>
+                <xs:element maxOccurs="unbounded" ref="package"/>
+            </xs:sequence>
+            <xs:attribute name="name"/>
+            <xs:attribute name="timestamp" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="package">
+        <xs:annotation>
+            <xs:documentation>
+                Package metrics.
+                @name - the.package.name
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metrics" type="packageMetrics"/>
+                <xs:element maxOccurs="unbounded" ref="file"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="file">
+        <xs:annotation>
+            <xs:documentation>
+                File metrics.
+                @name - the file name e.g. Foo.java or Bar.groovy
+                @path - the filesystem-specific original path to the file e.g. c:\path\to\Bar.groovy
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metrics" type="fileMetrics"/>
+                <xs:element maxOccurs="unbounded" ref="class"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded"
+                            ref="line"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required" type="xs:NCName"/>
+            <xs:attribute name="path" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="class">
+        <xs:annotation>
+            <xs:documentation>
+                Class metrics.
+                @name - the unqualified class name
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metrics" type="classMetrics"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <!-- class name have letters, digits (but not as first character), dollars and underscores -->
+                        <!-- extra: Clover names inner classes as "Outer.Inner" for java and "Outer$Inner" for groovy -->
+                        <xs:pattern value="[\p{L}$_][\p{L}\p{Nd}$_.]+"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="line">
+        <xs:annotation>
+            <xs:documentation>
+                Line-specific information.
+                @line - the line number
+                @type - the type of syntactic construct - one of method|stmt|cond
+                @complexity - only applicable if @type == 'method'; the cyclomatic complexity of the construct
+                @count - only applicable if @type == 'stmt' or 'method'; the number of times the construct was executed
+                @truecount - only applicable if @type == 'cond'; the number of times the true branch was executed
+                @falsecount - only applicable if @type == 'cond'; the number of times the false branch was executed
+                @signature - only applicable if @type == 'method'; the signature of the method
+                @testduration - only applicable if @type == 'method' and the method was identified as a test method; the duration of the test
+                @testsuccess - only applicable if @type == 'method' and the method was identified as a test method; true if the test passed, false otherwise
+                @visibility - only applicable if @type == 'method'
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="type" use="required" type="construct"/>
+            <xs:attribute name="complexity" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="falsecount" type="xs:integer"/>
+            <xs:attribute name="truecount" type="xs:integer"/>
+            <xs:attribute name="signature" type="xs:string"/>
+            <xs:attribute name="testduration" type="xs:decimal"/>
+            <xs:attribute name="testsuccess" type="xs:boolean"/>
+            <xs:attribute name="visibility" type="visibility"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="classMetrics">
+        <xs:annotation>
+            <xs:documentation>
+                Metrics information for projects/packages/files/classes.
+                @complexity - the cyclomatic complexity
+                @conditionals - the number of contained conditionals (2 * number of branches)
+                @coveredconditionals - the number of contained conditionals (2 * number of branches) with coverage
+                @elements - the number of contained statements, conditionals and methods
+                @coveredelements - the number of contained statements, conditionals and methods with coverage
+                @statements - the number of contained statements
+                @coveredstatements - the number of contained statements with coverage
+                @methods - the number of contained methods
+                @coveredmethods - the number of contained methods with coverage
+                @testduration - the total duration of all contained test methods
+                @testfailures - the total number of test method failures
+                @testpasses - the total number of test method passes
+                @testruns - the total number of test methods run
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="complexity" use="required" type="xs:integer"/>
+        <xs:attribute name="elements" use="required" type="xs:integer"/>
+        <xs:attribute name="coveredelements" use="required" type="xs:integer"/>
+        <xs:attribute name="conditionals" use="required" type="xs:integer"/>
+        <xs:attribute name="coveredconditionals" use="required"
+                      type="xs:integer"/>
+        <xs:attribute name="statements" use="required" type="xs:integer"/>
+        <xs:attribute name="coveredstatements" use="required"
+                      type="xs:integer"/>
+        <xs:attribute name="coveredmethods" use="required" type="xs:integer"/>
+        <xs:attribute name="methods" use="required" type="xs:integer"/>
+
+        <xs:attribute name="testduration" type="xs:decimal"/>
+        <xs:attribute name="testfailures" type="xs:integer"/>
+        <xs:attribute name="testpasses" type="xs:integer"/>
+        <xs:attribute name="testruns" type="xs:integer"/>
+    </xs:complexType>
+    <xs:complexType name="fileMetrics">
+        <xs:annotation>
+            <xs:documentation>
+                Metrics information for projects/packages/files.
+                @classes - the total number of contained classes
+                @loc - the total number of lines of code
+                @ncloc - the total number of non-comment lines of code
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="classMetrics">
+                <xs:attribute name="classes" type="xs:integer"/>
+                <xs:attribute name="loc" type="xs:integer"/>
+                <xs:attribute name="ncloc" type="xs:integer"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="packageMetrics">
+        <xs:annotation>
+            <xs:documentation>
+                Metrics information for projects/packages.
+                @files - the total number of contained files
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="fileMetrics">
+                <xs:attribute name="files" type="xs:integer"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="projectMetrics">
+        <xs:annotation>
+            <xs:documentation>
+                Metrics information for projects.
+                @files - the total number of packages
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="packageMetrics">
+                <xs:attribute name="packages" type="xs:integer"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="construct">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="method"/>
+            <xs:enumeration value="stmt"/>
+            <xs:enumeration value="cond"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="visibility">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="private"/>
+            <xs:enumeration value="protected"/>
+            <xs:enumeration value="package"/>
+            <xs:enumeration value="public"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

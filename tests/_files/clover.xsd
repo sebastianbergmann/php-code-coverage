@@ -11,7 +11,7 @@
             </xs:annotation>
             <xs:sequence>
                 <xs:element ref="project"/>
-                <xs:element ref="testproject"/>
+                <!--<xs:element ref="testproject"/>-->
             </xs:sequence>
             <xs:attribute name="clover" use="required" type="xs:NMTOKEN"/>
             <xs:attribute name="generated" use="required" type="xs:integer"/>

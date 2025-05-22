@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function basename;
 use function count;
 use function dirname;
 use function file_put_contents;
@@ -60,7 +61,8 @@ final class Clover
             }
 
             $xmlFile = $xmlDocument->createElement('file');
-            $xmlFile->setAttribute('name', $item->pathAsString());
+            $xmlFile->setAttribute('name', basename($item->pathAsString()));
+            $xmlFile->setAttribute('path', $item->pathAsString());
 
             $classes      = $item->classesAndTraits();
             $coverageData = $item->lineCoverageData();

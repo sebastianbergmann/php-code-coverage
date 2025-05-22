@@ -185,20 +185,16 @@ final class Clover
             $xmlMetrics->setAttribute('coveredelements', (string) ($item->numberOfTestedMethods() + $item->numberOfExecutedLines() + $item->numberOfExecutedBranches()));
             $xmlFile->insertBefore($xmlMetrics, $xmlFile->firstChild);
 
-            if ($namespace === 'global') {
-                $xmlProject->appendChild($xmlFile);
-            } else {
-                if (!isset($packages[$namespace])) {
-                    $packages[$namespace] = $xmlDocument->createElement(
-                        'package',
-                    );
+            if (!isset($packages[$namespace])) {
+                $packages[$namespace] = $xmlDocument->createElement(
+                    'package',
+                );
 
-                    $packages[$namespace]->setAttribute('name', $namespace);
-                    $xmlProject->appendChild($packages[$namespace]);
-                }
-
-                $packages[$namespace]->appendChild($xmlFile);
+                $packages[$namespace]->setAttribute('name', $namespace);
+                $xmlProject->appendChild($packages[$namespace]);
             }
+
+            $packages[$namespace]->appendChild($xmlFile);
         }
 
         $linesOfCode = $report->linesOfCode();

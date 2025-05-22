@@ -26,7 +26,7 @@ final class CloverTest extends TestCase
     {
         $clover = new Clover;
 
-        $this->validateAndAssert(
+        $this->assertAndValidate(
             TEST_FILES_PATH . 'BankAccount-clover-line.xml',
             $clover->process($this->getLineCoverageForBankAccount(), null, 'BankAccount'),
         );
@@ -36,7 +36,7 @@ final class CloverTest extends TestCase
     {
         $clover = new Clover;
 
-        $this->validateAndAssert(
+        $this->assertAndValidate(
             TEST_FILES_PATH . 'BankAccount-clover-path.xml',
             $clover->process($this->getPathCoverageForBankAccount(), null, 'BankAccount'),
         );
@@ -46,7 +46,7 @@ final class CloverTest extends TestCase
     {
         $clover = new Clover;
 
-        $this->validateAndAssert(
+        $this->assertAndValidate(
             TEST_FILES_PATH . 'ignored-lines-clover.xml',
             $clover->process($this->getCoverageForFileWithIgnoredLines()),
         );
@@ -56,7 +56,7 @@ final class CloverTest extends TestCase
     {
         $clover = new Clover;
 
-        $this->validateAndAssert(
+        $this->assertAndValidate(
             TEST_FILES_PATH . 'class-with-anonymous-function-clover.xml',
             $clover->process($this->getCoverageForClassWithAnonymousFunction()),
         );
@@ -66,7 +66,7 @@ final class CloverTest extends TestCase
      * @param non-empty-string $expectationFile
      * @param non-empty-string $cloverXml
      */
-    private function validateAndAssert(string $expectationFile, string $cloverXml): void
+    private function assertAndValidate(string $expectationFile, string $cloverXml): void
     {
         $this->assertStringMatchesFormatFile($expectationFile, $cloverXml);
 

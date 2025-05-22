@@ -117,7 +117,6 @@ final class Clover
 
                 $xmlClass = $xmlDocument->createElement('class');
                 $xmlClass->setAttribute('name', $className);
-                $xmlClass->setAttribute('namespace', $namespace);
 
                 $xmlFile->appendChild($xmlClass);
 

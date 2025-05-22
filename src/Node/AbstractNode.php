@@ -179,6 +179,24 @@ abstract class AbstractNode implements Countable
     }
 
     /**
+     * @return non-negative-int
+     */
+    public function cyclomaticComplexity(): int
+    {
+        $ccn = 0;
+
+        foreach ($this->classesAndTraits() as $classLike) {
+            $ccn += $classLike['ccn'];
+        }
+
+        foreach ($this->functions() as $function) {
+            $ccn += $function['ccn'];
+        }
+
+        return $ccn;
+    }
+
+    /**
      * @return array<string, ProcessedClassType>
      */
     abstract public function classes(): array;

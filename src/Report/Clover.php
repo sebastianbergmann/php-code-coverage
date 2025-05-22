@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function assert;
 use function basename;
 use function count;
 use function dirname;
@@ -189,7 +190,6 @@ final class Clover
                 $packages[$namespace]->setAttribute('name', $namespace);
 
                 $xmlPackageMetrics = $xmlDocument->createElement('metrics');
-                // @todo Set attributes to actual values
                 $xmlPackageMetrics->setAttribute('complexity', '0');
                 $xmlPackageMetrics->setAttribute('elements', '0');
                 $xmlPackageMetrics->setAttribute('coveredelements', '0');
@@ -203,6 +203,20 @@ final class Clover
 
                 $xmlProject->appendChild($packages[$namespace]);
             }
+
+            $xmlPackageMetrics = $packages[$namespace]->firstChild;
+
+            assert($xmlPackageMetrics instanceof DOMElement);
+
+            $xmlPackageMetrics->setAttribute('complexity', (string) ((int) $xmlPackageMetrics->getAttribute('complexity') + $item->cyclomaticComplexity()));
+            $xmlPackageMetrics->setAttribute('elements', (string) ((int) $xmlPackageMetrics->getAttribute('elements') + $item->numberOfMethods() + $item->numberOfExecutableLines() + $item->numberOfExecutableBranches()));
+            $xmlPackageMetrics->setAttribute('coveredelements', (string) ((int) $xmlPackageMetrics->getAttribute('coveredelements') + $item->numberOfTestedMethods() + $item->numberOfExecutedLines() + $item->numberOfExecutedBranches()));
+            $xmlPackageMetrics->setAttribute('conditionals', (string) ((int) $xmlPackageMetrics->getAttribute('conditionals') + $item->numberOfExecutableBranches()));
+            $xmlPackageMetrics->setAttribute('coveredconditionals', (string) ((int) $xmlPackageMetrics->getAttribute('coveredconditionals') + $item->numberOfExecutedBranches()));
+            $xmlPackageMetrics->setAttribute('statements', (string) ((int) $xmlPackageMetrics->getAttribute('statements') + $item->numberOfExecutableLines()));
+            $xmlPackageMetrics->setAttribute('coveredstatements', (string) ((int) $xmlPackageMetrics->getAttribute('coveredstatements') + $item->numberOfExecutedLines()));
+            $xmlPackageMetrics->setAttribute('methods', (string) ((int) $xmlPackageMetrics->getAttribute('methods') + $item->numberOfMethods()));
+            $xmlPackageMetrics->setAttribute('coveredmethods', (string) ((int) $xmlPackageMetrics->getAttribute('coveredmethods') + $item->numberOfTestedMethods()));
 
             $packages[$namespace]->appendChild($xmlFile);
         }

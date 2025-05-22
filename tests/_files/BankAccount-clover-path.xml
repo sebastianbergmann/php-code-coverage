@@ -3,7 +3,7 @@
   <project timestamp="%i" name="BankAccount">
     <metrics files="1" loc="35" ncloc="35" classes="1" complexity="5" elements="19" coveredelements="11" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
     <package name="global">
-      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+      <metrics complexity="5" elements="19" coveredelements="11" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
       <file name="BankAccount.php" path="%s%eBankAccount.php">
         <metrics loc="35" ncloc="35" classes="1" complexity="5" elements="19" coveredelements="11" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
         <class name="BankAccount">

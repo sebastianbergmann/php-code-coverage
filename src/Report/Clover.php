@@ -137,7 +137,8 @@ final class Clover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data), 'type' => 'stmt',
+                    'count' => count($data),
+                    'type'  => 'stmt',
                 ];
             }
 

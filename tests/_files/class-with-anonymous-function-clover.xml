@@ -9,7 +9,7 @@
         <class name="CoveredClassWithAnonymousFunctionInStaticMethod">
           <metrics complexity="1" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="1" coveredmethods="1"/>
         </class>
-        <line num="5" type="method" name="runAnonymous" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="5" type="method" visibility="public" complexity="1" count="1"/>
         <line num="7" type="stmt" count="1"/>
         <line num="9" type="stmt" count="1"/>
         <line num="10" type="stmt" count="1"/>

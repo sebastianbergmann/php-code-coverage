@@ -108,10 +108,8 @@ final class Clover
                     $lines[$method['startLine']] = [
                         'ccn'        => $method['ccn'],
                         'count'      => $methodCount,
-                        'crap'       => $method['crap'],
                         'type'       => 'method',
                         'visibility' => $method['visibility'],
-                        'name'       => $methodName,
                     ];
                 }
 
@@ -150,20 +148,12 @@ final class Clover
                 $xmlLine->setAttribute('num', (string) $line);
                 $xmlLine->setAttribute('type', $data['type']);
 
-                if (isset($data['name'])) {
-                    $xmlLine->setAttribute('name', $data['name']);
-                }
-
                 if (isset($data['visibility'])) {
                     $xmlLine->setAttribute('visibility', $data['visibility']);
                 }
 
                 if (isset($data['ccn'])) {
                     $xmlLine->setAttribute('complexity', (string) $data['ccn']);
-                }
-
-                if (isset($data['crap'])) {
-                    $xmlLine->setAttribute('crap', (string) $data['crap']);
                 }
 
                 $xmlLine->setAttribute('count', (string) $data['count']);

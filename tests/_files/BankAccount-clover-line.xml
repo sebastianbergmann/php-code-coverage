@@ -6,7 +6,7 @@
       <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
       <file name="BankAccount.php" path="%s%eBankAccount.php">
         <metrics loc="35" ncloc="35" classes="1" complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
-        <class name="BankAccount" namespace="global">
+        <class name="BankAccount">
           <metrics complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
         </class>
         <line num="6" type="method" name="getBalance" visibility="public" complexity="1" crap="1" count="2"/>

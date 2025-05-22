@@ -6,10 +6,10 @@
       <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
       <file name="source_with_ignore.php" path="%s%esource_with_ignore.php">
         <metrics loc="43" ncloc="32" classes="0" complexity="3" elements="1" coveredelements="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" methods="0" coveredmethods="0"/>
-        <class name="Foo" namespace="global">
+        <class name="Foo">
           <metrics complexity="1" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
         </class>
-        <class name="Bar" namespace="global">
+        <class name="Bar">
           <metrics complexity="1" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
         </class>
         <line num="2" type="stmt" count="1"/>

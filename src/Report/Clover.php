@@ -127,7 +127,7 @@ final class Clover
                 $xmlMetrics->setAttribute('coveredstatements', (string) $coveredClassStatements);
                 $xmlMetrics->setAttribute('elements', (string) ($classMethods + $classStatements + $class['executableBranches']));
                 $xmlMetrics->setAttribute('coveredelements', (string) ($coveredMethods + $coveredClassStatements + $class['executedBranches']));
-                $xmlClass->appendChild($xmlMetrics);
+                $xmlClass->insertBefore($xmlMetrics, $xmlClass->firstChild);
             }
 
             foreach ($coverageData as $line => $data) {
@@ -181,7 +181,7 @@ final class Clover
             $xmlMetrics->setAttribute('coveredstatements', (string) $item->numberOfExecutedLines());
             $xmlMetrics->setAttribute('elements', (string) ($item->numberOfMethods() + $item->numberOfExecutableLines() + $item->numberOfExecutableBranches()));
             $xmlMetrics->setAttribute('coveredelements', (string) ($item->numberOfTestedMethods() + $item->numberOfExecutedLines() + $item->numberOfExecutedBranches()));
-            $xmlFile->appendChild($xmlMetrics);
+            $xmlFile->insertBefore($xmlMetrics, $xmlFile->firstChild);
 
             if ($namespace === 'global') {
                 $xmlProject->appendChild($xmlFile);
@@ -214,7 +214,7 @@ final class Clover
         $xmlMetrics->setAttribute('coveredstatements', (string) $report->numberOfExecutedLines());
         $xmlMetrics->setAttribute('elements', (string) ($report->numberOfMethods() + $report->numberOfExecutableLines() + $report->numberOfExecutableBranches()));
         $xmlMetrics->setAttribute('coveredelements', (string) ($report->numberOfTestedMethods() + $report->numberOfExecutedLines() + $report->numberOfExecutedBranches()));
-        $xmlProject->appendChild($xmlMetrics);
+        $xmlProject->insertBefore($xmlMetrics, $xmlProject->firstChild);
 
         $buffer = $xmlDocument->saveXML();
 

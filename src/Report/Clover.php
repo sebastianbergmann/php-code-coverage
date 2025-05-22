@@ -20,6 +20,7 @@ use function range;
 use function str_contains;
 use function time;
 use DOMDocument;
+use DOMElement;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -52,6 +53,7 @@ final class Clover
 
         $xmlCoverage->appendChild($xmlProject);
 
+        /** @var array<non-empty-string, DOMElement> $packages */
         $packages = [];
         $report   = $coverage->getReport();
 

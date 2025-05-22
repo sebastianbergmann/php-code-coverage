@@ -206,6 +206,7 @@ final class Clover
         $xmlMetrics->setAttribute('classes', (string) $report->numberOfClassesAndTraits());
         $xmlMetrics->setAttribute('methods', (string) $report->numberOfMethods());
         $xmlMetrics->setAttribute('coveredmethods', (string) $report->numberOfTestedMethods());
+        $xmlMetrics->setAttribute('complexity', (string) $report->cyclomaticComplexity());
         $xmlMetrics->setAttribute('conditionals', (string) $report->numberOfExecutableBranches());
         $xmlMetrics->setAttribute('coveredconditionals', (string) $report->numberOfExecutedBranches());
         $xmlMetrics->setAttribute('statements', (string) $report->numberOfExecutableLines());

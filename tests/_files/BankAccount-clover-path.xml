@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage clover="%s" generated="%i">
   <project timestamp="%i" name="BankAccount">
-    <metrics files="1" loc="35" ncloc="35" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" elements="19" coveredelements="11"/>
+    <metrics files="1" loc="35" ncloc="35" classes="1" methods="4" coveredmethods="3" complexity="5" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" elements="19" coveredelements="11"/>
     <package name="global">
       <file name="BankAccount.php" path="%s%eBankAccount.php">
         <metrics loc="35" ncloc="35" classes="1" methods="4" coveredmethods="3" conditionals="7" coveredconditionals="3" statements="8" coveredstatements="5" elements="19" coveredelements="11"/>

@@ -109,6 +109,7 @@ final class Clover
                         'ccn'        => $method['ccn'],
                         'count'      => $methodCount,
                         'type'       => 'method',
+                        'signature'  => $method['signature'],
                         'visibility' => $method['visibility'],
                     ];
                 }
@@ -149,15 +150,20 @@ final class Clover
                 $xmlLine->setAttribute('num', (string) $line);
                 $xmlLine->setAttribute('type', $data['type']);
 
-                if (isset($data['visibility'])) {
-                    $xmlLine->setAttribute('visibility', $data['visibility']);
-                }
-
                 if (isset($data['ccn'])) {
                     $xmlLine->setAttribute('complexity', (string) $data['ccn']);
                 }
 
                 $xmlLine->setAttribute('count', (string) $data['count']);
+
+                if (isset($data['signature'])) {
+                    $xmlLine->setAttribute('signature', $data['signature']);
+                }
+
+                if (isset($data['visibility'])) {
+                    $xmlLine->setAttribute('visibility', $data['visibility']);
+                }
+
                 $xmlFile->appendChild($xmlLine);
             }
 

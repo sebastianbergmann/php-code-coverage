@@ -19,6 +19,7 @@ use function ksort;
 use function max;
 use function range;
 use function str_contains;
+use function str_replace;
 use function time;
 use DOMDocument;
 use DOMElement;
@@ -116,7 +117,7 @@ final class Clover
                 }
 
                 $xmlClass = $xmlDocument->createElement('class');
-                $xmlClass->setAttribute('name', $className);
+                $xmlClass->setAttribute('name', str_replace($class['namespace'] . '\\', '', $className));
 
                 $xmlFile->appendChild($xmlClass);
 

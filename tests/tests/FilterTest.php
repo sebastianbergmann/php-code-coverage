@@ -78,6 +78,11 @@ final class FilterTest extends TestCase
         $filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
 
         $this->assertFalse($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
+
+        /**
+         * Assertion is performed twice to test the is-cached path.
+         */
+        $this->assertFalse($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
     }
 
     public function testNotIncludedFileIsFiltered(): void

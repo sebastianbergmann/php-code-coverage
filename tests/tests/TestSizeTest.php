@@ -10,15 +10,13 @@
 namespace SebastianBergmann\CodeCoverage\Test\TestSize;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversClassesThatExtendClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(TestSize::class)]
-#[CoversClass(Unknown::class)]
-#[CoversClass(Known::class)]
-#[CoversClass(Small::class)]
-#[CoversClass(Medium::class)]
-#[CoversClass(Large::class)]
-#[\PHPUnit\Framework\Attributes\Small]
+#[CoversClassesThatExtendClass(TestSize::class)]
+#[Small]
 final class TestSizeTest extends TestCase
 {
     public function testCanBeUnknown(): void

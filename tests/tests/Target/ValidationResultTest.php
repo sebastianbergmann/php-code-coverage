@@ -10,12 +10,12 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversClassesThatExtendClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ValidationResult::class)]
-#[CoversClass(ValidationSuccess::class)]
-#[CoversClass(ValidationFailure::class)]
+#[CoversClassesThatExtendClass(ValidationResult::class)]
 #[Small]
 final class ValidationResultTest extends TestCase
 {

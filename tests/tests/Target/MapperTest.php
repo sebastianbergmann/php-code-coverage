@@ -328,6 +328,14 @@ final class MapperTest extends TestCase
         );
     }
 
+    public function testLineOfCodeInGlobalScopeDoesNotBelongToCodeUnit(): void
+    {
+        $file   = realpath(__DIR__ . '/../../_files/source_without_ignore.php');
+        $mapper = $this->mapper([$file]);
+
+        $this->assertSame($file . ':2', $mapper->lookup($file, 2));
+    }
+
     /**
      * @param list<non-empty-string> $files
      */

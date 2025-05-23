@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="%i">
+  <project timestamp="%i">
+    <file name="%s%esource_with_class_and_anonymous_function.php">
+      <class name="CoveredClassWithAnonymousFunctionInStaticMethod" namespace="global">
+        <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+      </class>
+      <line num="5" type="method" name="runAnonymous" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="7" type="stmt" count="1"/>
+      <line num="9" type="stmt" count="1"/>
+      <line num="10" type="stmt" count="1"/>
+      <line num="11" type="stmt" count="1"/>
+      <line num="12" type="stmt" count="1"/>
+      <line num="13" type="stmt" count="1"/>
+      <line num="14" type="stmt" count="1"/>
+      <line num="17" type="stmt" count="1"/>
+      <metrics loc="20" ncloc="19" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+    </file>
+    <metrics files="1" loc="20" ncloc="19" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+  </project>
+</coverage>

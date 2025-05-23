@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use function sprintf;
 use DOMElement;
-use DOMNode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
@@ -19,7 +18,6 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
  */
 final readonly class Totals
 {
-    private DOMNode $container;
     private DOMElement $linesNode;
     private DOMElement $methodsNode;
     private DOMElement $functionsNode;
@@ -28,8 +26,7 @@ final readonly class Totals
 
     public function __construct(DOMElement $container)
     {
-        $this->container = $container;
-        $dom             = $container->ownerDocument;
+        $dom = $container->ownerDocument;
 
         $this->linesNode = $dom->createElementNS(
             'https://schema.phpunit.de/coverage/1.0',
@@ -61,11 +58,6 @@ final readonly class Totals
         $container->appendChild($this->functionsNode);
         $container->appendChild($this->classesNode);
         $container->appendChild($this->traitsNode);
-    }
-
-    public function container(): DOMNode
-    {
-        return $this->container;
     }
 
     public function setNumLines(int $loc, int $cloc, int $ncloc, int $executable, int $executed): void

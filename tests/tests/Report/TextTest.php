@@ -24,7 +24,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-text-line.txt',
+            TEST_FILES_PATH . 'Report/Text/BankAccount-line.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount())),
         );
     }
@@ -34,7 +34,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-text-path.txt',
+            TEST_FILES_PATH . 'Report/Text/BankAccount-path.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getPathCoverageForBankAccount())),
         );
     }
@@ -44,7 +44,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, true);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-text-summary.txt',
+            TEST_FILES_PATH . 'Report/Text/BankAccount-summary.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForBankAccount())),
         );
     }
@@ -54,7 +54,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), true, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'NamespacedBankAccount-text.txt',
+            TEST_FILES_PATH . 'Report/Text/NamespacedBankAccount.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount())),
         );
     }
@@ -64,7 +64,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), true, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'NamespacedBankAccount-text-with-colors.txt',
+            TEST_FILES_PATH . 'Report/Text/NamespacedBankAccount-colors.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getLineCoverageForNamespacedBankAccount(), true)),
         );
     }
@@ -74,7 +74,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'ignored-lines-text.txt',
+            TEST_FILES_PATH . 'Report/Text/ignored-lines.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFileWithIgnoredLines())),
         );
     }
@@ -84,7 +84,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'class-with-anonymous-function-text.txt',
+            TEST_FILES_PATH . 'Report/Text/class-with-anonymous-function.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForClassWithAnonymousFunction())),
         );
     }
@@ -94,7 +94,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccountWithUncovered-text-line.txt',
+            TEST_FILES_PATH . 'Report/Text/BankAccountWithUncovered-line.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredIncluded())),
         );
     }
@@ -104,7 +104,7 @@ final class TextTest extends TestCase
         $text = new Text(Thresholds::default(), false, false);
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccountWithoutUncovered-text-line.txt',
+            TEST_FILES_PATH . 'Report/Text/BankAccountWithoutUncovered-line.txt',
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredExcluded())),
         );
     }

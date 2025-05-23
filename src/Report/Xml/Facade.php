@@ -96,6 +96,7 @@ final class Facade
     private function initTargetDirectory(string $directory): void
     {
         if (is_file($directory)) {
+            // @codeCoverageIgnoreStart
             if (!is_dir($directory)) {
                 throw new PathExistsButIsNotDirectoryException($directory);
             }
@@ -103,6 +104,7 @@ final class Facade
             if (!is_writable($directory)) {
                 throw new WriteOperationFailedException($directory);
             }
+            // @codeCoverageIgnoreEnd
         }
 
         DirectoryUtil::createDirectory($directory);
@@ -303,6 +305,7 @@ final class Facade
         $xml              = $document->saveXML();
 
         if ($xml === false) {
+            // @codeCoverageIgnoreStart
             $message = 'Unable to generate the XML';
 
             foreach (libxml_get_errors() as $error) {
@@ -310,6 +313,7 @@ final class Facade
             }
 
             throw new XmlException($message);
+            // @codeCoverageIgnoreEnd
         }
 
         libxml_clear_errors();

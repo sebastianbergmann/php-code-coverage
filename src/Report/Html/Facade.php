@@ -129,12 +129,14 @@ final readonly class Facade
 
         try {
             $template->renderTo($this->directory($target . '_css') . 'style.css');
+            // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             throw new FileCouldNotBeWrittenException(
                 $e->getMessage(),
                 $e->getCode(),
                 $e,
             );
+            // @codeCoverageIgnoreEnd
         }
     }
 

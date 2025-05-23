@@ -38,7 +38,9 @@ final class Coverage
     public function addTest(string $test): void
     {
         if ($this->finalized) {
+            // @codeCoverageIgnoreStart
             throw new ReportAlreadyFinalizedException;
+            // @codeCoverageIgnoreEnd
         }
 
         $this->writer->startElement('covered');

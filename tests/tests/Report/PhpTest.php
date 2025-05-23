@@ -9,13 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Small;
 use ReflectionProperty;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-#[CoversClass(PHP::class)]
-#[Small]
 final class PhpTest extends TestCase
 {
     protected function tearDown(): void

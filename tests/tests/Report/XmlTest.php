@@ -14,8 +14,12 @@ use function file_get_contents;
 use function iterator_count;
 use function unlink;
 use FilesystemIterator;
+use PHPUnit\Framework\Attributes\CoversNamespace;
+use PHPUnit\Framework\Attributes\Small;
 use SebastianBergmann\CodeCoverage\TestCase;
 
+#[CoversNamespace('SebastianBergmann\CodeCoverage\Report\Xml')]
+#[Small]
 final class XmlTest extends TestCase
 {
     private static string $TEST_REPORT_PATH_SOURCE;

@@ -20,7 +20,7 @@ final class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-cobertura-line.xml',
+            TEST_FILES_PATH . 'Report/Cobertura/BankAccount-line.xml',
             $cobertura->process($this->getLineCoverageForBankAccount(), null),
         );
     }
@@ -30,7 +30,7 @@ final class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'BankAccount-cobertura-path.xml',
+            TEST_FILES_PATH . 'Report/Cobertura/BankAccount-path.xml',
             $cobertura->process($this->getPathCoverageForBankAccount(), null),
         );
     }
@@ -40,7 +40,7 @@ final class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'ignored-lines-cobertura.xml',
+            TEST_FILES_PATH . 'Report/Cobertura/ignored-lines.xml',
             $cobertura->process($this->getCoverageForFileWithIgnoredLines()),
         );
     }
@@ -50,7 +50,7 @@ final class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'class-with-anonymous-function-cobertura.xml',
+            TEST_FILES_PATH . 'Report/Cobertura/class-with-anonymous-function.xml',
             $cobertura->process($this->getCoverageForClassWithAnonymousFunction()),
         );
     }
@@ -60,7 +60,7 @@ final class CoberturaTest extends TestCase
         $cobertura = new Cobertura;
 
         $this->assertStringMatchesFormatFile(
-            TEST_FILES_PATH . 'class-with-outside-function-cobertura.xml',
+            TEST_FILES_PATH . 'Report/Cobertura/class-with-outside-function.xml',
             $cobertura->process($this->getCoverageForClassWithOutsideFunction()),
         );
     }

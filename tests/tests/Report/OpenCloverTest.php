@@ -75,7 +75,7 @@ final class OpenCloverTest extends TestCase
         $document = new DOMDocument;
         $document->loadXML($cloverXml);
 
-        if (!$document->schemaValidate(__DIR__ . '/../../_files/clover.xsd')) {
+        if (!$document->schemaValidate(__DIR__ . '/../../_files/Report/OpenClover/clover.xsd')) {
             $buffer = 'Generated XML document does not validate against Clover schema:' . PHP_EOL . PHP_EOL;
 
             foreach (libxml_get_errors() as $error) {

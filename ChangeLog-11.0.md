@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [11.0.10] - 2025-06-18
+
+### Changed
+
+* Changed CSS for HTML report to not use common ligatures as this sometimes lead to hard-to-read code
+* Updated Bootstrap to version 5.3.6 for HTML report
+
 ## [11.0.9] - 2025-02-25
 
 ### Changed
@@ -74,6 +81,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component now requires PHP-Parser 5
 * This component is no longer supported on PHP 8.1
 
+[11.0.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.9...11.0.10
 [11.0.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.8...11.0.9
 [11.0.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.7...11.0.8
 [11.0.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.6...11.0.7

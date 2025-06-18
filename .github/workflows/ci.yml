@@ -99,7 +99,7 @@ jobs:
         run: php ./tools/composer update --no-ansi --no-interaction --no-progress
 
       - name: Run tests with PHPUnit
-        run: ./vendor/bin/phpunit --log-junit test-results.xml --coverage-clover=code-coverage.xml
+        run: ./vendor/bin/phpunit --log-junit test-results.xml --coverage-openclover=code-coverage.xml
 
       - name: Upload test results to Codecov.io
         if: ${{ !cancelled() }}

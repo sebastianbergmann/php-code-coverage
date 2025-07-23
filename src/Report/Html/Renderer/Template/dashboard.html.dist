@@ -67,6 +67,8 @@
        <thead>
         <tr>
          <th>Class</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right">Coverage</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
@@ -120,6 +122,8 @@
        <thead>
         <tr>
          <th>Method</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right">Coverage</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>

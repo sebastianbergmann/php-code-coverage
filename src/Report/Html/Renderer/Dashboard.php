@@ -279,37 +279,45 @@ final class Dashboard extends Renderer
                         $key = $className . '::' . $methodName;
                     }
 
-                    $methodRisks[$key] = $method['crap'];
+                    $methodRisks[$key] = $method;
                 }
             }
 
             if ($class['coverage'] < $this->thresholds->highLowerBound() &&
                 $class['ccn'] > count($class['methods'])) {
-                $classRisks[$className] = $class['crap'];
+                $classRisks[$className] = $class;
             }
         }
 
-        arsort($classRisks);
-        arsort($methodRisks);
+        uasort($classRisks, function($a, $b) {
+            return (intval($a['crap']) <=> intval($b['crap'])) * -1;
+        });
+        uasort($methodRisks, function($a, $b) {
+            return (intval($a['crap']) <=> intval($b['crap'])) * -1;
+        });
 
-        foreach ($classRisks as $className => $crap) {
+        foreach ($classRisks as $className => $class) {
             $result['class'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td><td class="text-right">%.1f%%</td><td class="text-right">%d</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$className]['link']),
                 $className,
-                $crap,
+                $class['ccn'],
+                $class['coverage'],
+                $class['crap']
             );
         }
 
-        foreach ($methodRisks as $methodName => $crap) {
+        foreach ($methodRisks as $methodName => $methodVals) {
             [$class, $method] = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-                '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d</td></tr>' . "\n",
+                '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d</td><td class="text-right">%.1f%%</td><td class="text-right">%d</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
                 $methodName,
                 $method,
-                $crap,
+                $methodVals['ccn'],
+                $methodVals['coverage'],
+                $methodVals['crap']
             );
         }
 

@@ -116,6 +116,8 @@ final class Dashboard extends Renderer
             ];
         }
 
+        usort($result['class'], fn($a, $b) => intval($a[0] - $b[0]));
+
         $class = json_encode($result['class']);
 
         assert($class !== false);

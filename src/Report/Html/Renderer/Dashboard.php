@@ -117,6 +117,7 @@ final class Dashboard extends Renderer
         }
 
         usort($result['class'], fn($a, $b) => ($a[0] <=> $b[0]));
+        usort($result['method'], fn($a, $b) => ($a[0] <=> $b[0]));
 
         $class = json_encode($result['class']);
 

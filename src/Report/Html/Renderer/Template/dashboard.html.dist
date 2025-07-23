@@ -275,10 +275,12 @@
         const coverage = Math.round(data[0].x);
         const complexity = data[0].value;
         const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
         return `<table class="bb-tooltip"><tbody>
             <tr><th colspan="2">${targetName}</th></tr>
             <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
             <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
           </tbody></table>`;
       },
       grouped: false,

@@ -105,6 +105,7 @@ final class Dashboard extends Renderer
                     $method['ccn'],
                     str_replace($baseLink, '', $method['link']),
                     $methodName,
+                    $method['crap'],
                 ];
             }
 
@@ -113,6 +114,7 @@ final class Dashboard extends Renderer
                 $class['ccn'],
                 str_replace($baseLink, '', $class['link']),
                 $className,
+                $class['crap'],
             ];
         }
 

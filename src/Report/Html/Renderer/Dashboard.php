@@ -300,11 +300,11 @@ final class Dashboard extends Renderer
 
         foreach ($classRisks as $className => $class) {
             $result['class'] .= sprintf(
-                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d</td><td class="text-right">%.1f%%</td><td class="text-right">%d</td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="text-right">%.1f%%</td><td class="text-right">%d</td><td class="text-right">%d</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$className]['link']),
                 $className,
-                $class['ccn'],
                 $class['coverage'],
+                $class['ccn'],
                 $class['crap']
             );
         }
@@ -313,12 +313,12 @@ final class Dashboard extends Renderer
             [$class, $method] = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-                '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d</td><td class="text-right">%.1f%%</td><td class="text-right">%d</td></tr>' . "\n",
+                '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%.1f%%</td><td class="text-right">%d</td><td class="text-right">%d</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
                 $methodName,
                 $method,
-                $methodVals['ccn'],
                 $methodVals['coverage'],
+                $methodVals['ccn'],
                 $methodVals['crap']
             );
         }

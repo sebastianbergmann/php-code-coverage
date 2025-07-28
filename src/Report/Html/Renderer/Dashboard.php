@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use function array_values;
-use function arsort;
 use function asort;
 use function assert;
 use function count;
@@ -19,6 +18,8 @@ use function floor;
 use function json_encode;
 use function sprintf;
 use function str_replace;
+use function uasort;
+use function usort;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
@@ -118,8 +119,8 @@ final class Dashboard extends Renderer
             ];
         }
 
-        usort($result['class'], fn($a, $b) => ($a[0] <=> $b[0]));
-        usort($result['method'], fn($a, $b) => ($a[0] <=> $b[0]));
+        usort($result['class'], static fn (mixed $a, mixed $b) => ($a[0] <=> $b[0]));
+        usort($result['method'], static fn (mixed $a, mixed $b) => ($a[0] <=> $b[0]));
 
         $class = json_encode($result['class']);
 
@@ -291,11 +292,13 @@ final class Dashboard extends Renderer
             }
         }
 
-        uasort($classRisks, function($a, $b) {
-            return (intval($a['crap']) <=> intval($b['crap'])) * -1;
+        uasort($classRisks, static function (array $a, array $b)
+        {
+            return ((int) ($a['crap']) <=> (int) ($b['crap'])) * -1;
         });
-        uasort($methodRisks, function($a, $b) {
-            return (intval($a['crap']) <=> intval($b['crap'])) * -1;
+        uasort($methodRisks, static function (array $a, array $b)
+        {
+            return ((int) ($a['crap']) <=> (int) ($b['crap'])) * -1;
         });
 
         foreach ($classRisks as $className => $class) {
@@ -305,7 +308,7 @@ final class Dashboard extends Renderer
                 $className,
                 $class['coverage'],
                 $class['ccn'],
-                $class['crap']
+                $class['crap'],
             );
         }
 
@@ -319,7 +322,7 @@ final class Dashboard extends Renderer
                 $method,
                 $methodVals['coverage'],
                 $methodVals['ccn'],
-                $methodVals['crap']
+                $methodVals['crap'],
             );
         }
 

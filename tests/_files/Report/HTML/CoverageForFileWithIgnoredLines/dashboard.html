@@ -69,6 +69,8 @@
        <thead>
         <tr>
          <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
@@ -122,6 +124,8 @@
        <thead>
         <tr>
          <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
@@ -139,9 +143,9 @@
     </p>
    </footer>
   </div>
-  <script src="_js/billboard.pkgd.min.js?v=%s" type="text/javascript"></script>
-  <script type="application/json" id="complexity_class">[[100,1,"source_with_ignore.php.html#11","Foo"],[100,1,"source_with_ignore.php.html#18","Bar"]]</script>
-  <script type="application/json" id="complexity_method">[[100,1,"source_with_ignore.php.html#13","Foo::bar"],[100,1,"source_with_ignore.php.html#23","Bar::foo"]]</script>
+  <script src="_js/billboard.pkgd.min.js?v=12.3.1" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[100,1,"source_with_ignore.php.html#11","Foo","1"],[100,1,"source_with_ignore.php.html#18","Bar","1"]]</script>
+  <script type="application/json" id="complexity_method">[[100,1,"source_with_ignore.php.html#13","Foo::bar","1"],[100,1,"source_with_ignore.php.html#23","Bar::foo","1"]]</script>
   <script type="text/javascript" defer>
   const barLabels = [
     '0%',
@@ -273,10 +277,12 @@
         const coverage = Math.round(data[0].x);
         const complexity = data[0].value;
         const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
         return `<table class="bb-tooltip"><tbody>
             <tr><th colspan="2">${targetName}</th></tr>
             <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
             <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
           </tbody></table>`;
       },
       grouped: false,

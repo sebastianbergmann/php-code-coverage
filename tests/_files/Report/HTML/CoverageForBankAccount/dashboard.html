@@ -70,11 +70,13 @@
        <thead>
         <tr>
          <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="BankAccount.php.html#2">BankAccount</a></td><td class="text-right">62.5%</td><td class="text-right">5</td><td class="text-right">6</td></tr>
 
        </tbody>
       </table>
@@ -125,11 +127,13 @@
        <thead>
         <tr>
          <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
          <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="BankAccount.php.html#11"><abbr title="BankAccount::setBalance">setBalance</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="BankAccount.php.html#11"><abbr title="BankAccount::setBalance">setBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
 
        </tbody>
       </table>
@@ -143,9 +147,9 @@
     </p>
    </footer>
   </div>
-  <script src="_js/billboard.pkgd.min.js?v=%s" type="text/javascript"></script>
-  <script type="application/json" id="complexity_class">[[62.5,5,"BankAccount.php.html#2","BankAccount"]]</script>
-  <script type="application/json" id="complexity_method">[[100,1,"BankAccount.php.html#6","BankAccount::getBalance"],[0,2,"BankAccount.php.html#11","BankAccount::setBalance"],[100,1,"BankAccount.php.html#20","BankAccount::depositMoney"],[100,1,"BankAccount.php.html#27","BankAccount::withdrawMoney"]]</script>
+  <script src="_js/billboard.pkgd.min.js?v=12.3.1" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[62.5,5,"BankAccount.php.html#2","BankAccount","6.32"]]</script>
+  <script type="application/json" id="complexity_method">[[0,2,"BankAccount.php.html#11","BankAccount::setBalance","6"],[100,1,"BankAccount.php.html#6","BankAccount::getBalance","1"],[100,1,"BankAccount.php.html#20","BankAccount::depositMoney","1"],[100,1,"BankAccount.php.html#27","BankAccount::withdrawMoney","1"]]</script>
   <script type="text/javascript" defer>
   const barLabels = [
     '0%',
@@ -277,10 +281,12 @@
         const coverage = Math.round(data[0].x);
         const complexity = data[0].value;
         const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
         return `<table class="bb-tooltip"><tbody>
             <tr><th colspan="2">${targetName}</th></tr>
             <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
             <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
           </tbody></table>`;
       },
       grouped: false,

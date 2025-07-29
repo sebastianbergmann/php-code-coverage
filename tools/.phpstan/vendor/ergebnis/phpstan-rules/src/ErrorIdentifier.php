@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ergebnis\PHPStan\Rules;
 
 /**
- * @internale
+ * @internal
  */
 final class ErrorIdentifier
 {
@@ -38,6 +38,11 @@ final class ErrorIdentifier
     public static function finalInAbstractClass(): self
     {
         return new self('finalInAbstractClass');
+    }
+
+    public static function invokeParentHookMethod(): self
+    {
+        return new self('invokeParentHookMethod');
     }
 
     public static function noCompact(): self
@@ -73,6 +78,11 @@ final class ErrorIdentifier
     public static function noIsset(): self
     {
         return new self('noIsset');
+    }
+
+    public static function noNamedArgument(): self
+    {
+        return new self('noNamedArgument');
     }
 
     public static function noParameterPassedByReference(): self

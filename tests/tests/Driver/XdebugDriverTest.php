@@ -11,9 +11,11 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use const PHP_SAPI;
 use function extension_loaded;
-use function ini_get;
-use function xdebug_code_coverage_started;
+use function in_array;
+use function phpversion;
+use function version_compare;
 use function xdebug_get_code_coverage;
+use function xdebug_info;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
@@ -25,16 +27,12 @@ final class XdebugDriverTest extends TestCase
             $this->markTestSkipped('This test requires the PHP commandline interpreter');
         }
 
-        if (!extension_loaded('xdebug')) {
-            $this->markTestSkipped('This test requires the Xdebug extension to be loaded');
+        if (!extension_loaded('xdebug') || !version_compare(phpversion('xdebug'), '3.1', '>=')) {
+            $this->markTestSkipped('This test requires the Xdebug extension (version >= 3.1) to be loaded');
         }
 
-        if (!ini_get('xdebug.mode') || ini_get('xdebug.mode') !== 'coverage') {
-            $this->markTestSkipped('This test requires the Xdebug extension\'s code coverage functionality to be enabled');
-        }
-
-        if (!xdebug_code_coverage_started()) {
-            $this->markTestSkipped('This test requires code coverage data collection using Xdebug to be active');
+        if (!in_array('coverage', xdebug_info('mode'), true)) {
+            $this->markTestSkipped('This test requires code coverage data collection using Xdebug to be enabled');
         }
     }
 

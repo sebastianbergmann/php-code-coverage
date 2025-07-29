@@ -16,12 +16,16 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config;
 $config->setFinder($finder)
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setRiskyAllowed(true)
     ->setRules([
         'align_multiline_comment' => true,
         'array_indentation' => true,
         'array_push' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'attribute_empty_parentheses' => [
+            'use_parentheses' => false,
+        ],
         'backtick_to_shell_exec' => true,
         'binary_operator_spaces' => [
             'operators' => [

@@ -41,7 +41,10 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *      }>,
  *      hit: list<TestIdType>
  *  }
- * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
+ * @phpstan-type FunctionCoverageForFileType array<string, FunctionCoverageDataType>
+ * @phpstan-type FunctionCoverageType array<string, FunctionCoverageForFileType>
+ * @phpstan-type LineCoverageForFileType array<int, null|list<TestIdType>>
+ * @phpstan-type LineCoverageType array<string, LineCoverageForFileType>
  */
 final class ProcessedCodeCoverageData
 {
@@ -49,7 +52,7 @@ final class ProcessedCodeCoverageData
      * Line coverage data.
      * An array of filenames, each having an array of linenumbers, each executable line having an array of testcase ids.
      *
-     * @var array<string, array<int, null|list<TestIdType>>>
+     * @var LineCoverageType
      */
     private array $lineCoverage = [];
 
@@ -112,11 +115,17 @@ final class ProcessedCodeCoverageData
         }
     }
 
+    /**
+     * @param LineCoverageType $lineCoverage
+     */
     public function setLineCoverage(array $lineCoverage): void
     {
         $this->lineCoverage = $lineCoverage;
     }
 
+    /**
+     * @return LineCoverageType
+     */
     public function lineCoverage(): array
     {
         ksort($this->lineCoverage);
@@ -124,11 +133,17 @@ final class ProcessedCodeCoverageData
         return $this->lineCoverage;
     }
 
+    /**
+     * @param FunctionCoverageType $functionCoverage
+     */
     public function setFunctionCoverage(array $functionCoverage): void
     {
         $this->functionCoverage = $functionCoverage;
     }
 
+    /**
+     * @return FunctionCoverageType
+     */
     public function functionCoverage(): array
     {
         ksort($this->functionCoverage);
@@ -136,6 +151,9 @@ final class ProcessedCodeCoverageData
         return $this->functionCoverage;
     }
 
+    /**
+     * @return list<non-empty-string>
+     */
     public function coveredFiles(): array
     {
         ksort($this->lineCoverage);
@@ -219,6 +237,8 @@ final class ProcessedCodeCoverageData
      * 4 = the line has been tested
      *
      * During a merge, a higher number is better.
+     *
+     * @param LineCoverageForFileType $data
      *
      * @return 1|2|3|4
      */

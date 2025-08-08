@@ -29,6 +29,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestType from CodeCoverage
+ * @phpstan-import-type FunctionCoverageForFileType from ProcessedCodeCoverageData
+ * @phpstan-import-type LineCoverageForFileType from ProcessedCodeCoverageData
  */
 final readonly class Builder
 {
@@ -134,7 +136,7 @@ final readonly class Builder
      * )
      * </code>
      *
-     * @return array<string, array<string, array{lineCoverage: array<int, int>, functionCoverage: array<string, array<int, int>>}>>
+     * @return array<string, array{lineCoverage: LineCoverageForFileType, functionCoverage: FunctionCoverageForFileType}>
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
     {

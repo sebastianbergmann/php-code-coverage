@@ -1,3 +1,8 @@
+---
+name: Generic issue
+about: Use this template for all issues.
+---
+
 | Q                         | A
 | --------------------------| ---------------
 | php-code-coverage version | x.y.z

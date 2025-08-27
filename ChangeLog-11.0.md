@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [11.0.11] - 2025-08-27
+
+### Changed
+
+* [#1085](https://github.com/sebastianbergmann/php-code-coverage/pull/1085): Improve performance by skipping empty lines after filter has been applied
+
 ## [11.0.10] - 2025-06-18
 
 ### Changed
@@ -81,6 +87,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * This component now requires PHP-Parser 5
 * This component is no longer supported on PHP 8.1
 
+[11.0.11]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.10...11.0.11
 [11.0.10]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.9...11.0.10
 [11.0.9]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.8...11.0.9
 [11.0.8]: https://github.com/sebastianbergmann/php-code-coverage/compare/11.0.7...11.0.8

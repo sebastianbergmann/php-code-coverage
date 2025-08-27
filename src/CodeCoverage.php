@@ -414,17 +414,14 @@ final class CodeCoverage
 
     private function applyFilter(RawCodeCoverageData $data): void
     {
-        if ($this->filter->isEmpty()) {
-            $data->skipEmptyLines();
-
-            return;
-        }
-
-        foreach (array_keys($data->lineCoverage()) as $filename) {
-            if ($this->filter->isExcluded($filename)) {
-                $data->removeCoverageDataForFile($filename);
+        if (!$this->filter->isEmpty()) {
+            foreach (array_keys($data->lineCoverage()) as $filename) {
+                if ($this->filter->isExcluded($filename)) {
+                    $data->removeCoverageDataForFile($filename);
+                }
             }
         }
+
         $data->skipEmptyLines();
     }
 

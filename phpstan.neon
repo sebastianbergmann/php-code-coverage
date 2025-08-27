@@ -1,9 +1,12 @@
 parameters:
     level: 5
+
     paths:
         - src
         - tests/tests
         - tests/bootstrap.php
+
+    resultCachePath: %tmpDir%/php-code-coverage-12.3.php
 
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     reportAlwaysTrueInLastCondition: true

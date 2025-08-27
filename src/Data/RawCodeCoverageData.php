@@ -104,8 +104,6 @@ final class RawCodeCoverageData
     {
         $this->lineCoverage     = $lineCoverage;
         $this->functionCoverage = $functionCoverage;
-
-        $this->skipEmptyLines();
     }
 
     public function clear(): void
@@ -252,7 +250,7 @@ final class RawCodeCoverageData
      *
      * @see https://github.com/sebastianbergmann/php-code-coverage/issues/799
      */
-    private function skipEmptyLines(): void
+    public function skipEmptyLines(): void
     {
         foreach ($this->lineCoverage as $filename => $coverage) {
             foreach ($this->getEmptyLinesForFile($filename) as $emptyLine) {

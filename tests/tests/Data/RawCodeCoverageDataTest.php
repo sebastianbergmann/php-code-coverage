@@ -326,6 +326,7 @@ final class RawCodeCoverageDataTest extends TestCase
                 33,
             ],
         );
+
         $coverage->skipEmptyLines();
 
         $this->assertEquals(

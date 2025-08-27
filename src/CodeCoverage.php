@@ -403,6 +403,7 @@ final class CodeCoverage
         foreach (array_keys($filesWithNoCoverage) as $fileWithNoCoverage) {
             $rawData->removeCoverageDataForFile($fileWithNoCoverage);
         }
+        $rawData->skipEmptyLines();
 
         if (is_array($linesToBeCovered)) {
             foreach ($linesToBeCovered as $fileToBeCovered => $includedLines) {

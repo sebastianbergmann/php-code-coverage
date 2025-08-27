@@ -1,9 +1,13 @@
 parameters:
     level: 3
+
     paths:
         - src
         - tests/tests
         - tests/bootstrap.php
+
+    resultCachePath: %tmpDir%/php-code-coverage-11.0.php
+
     ignoreErrors:
         -
             message: "#^Return type \\(void\\) of method SebastianBergmann\\\\CodeCoverage\\\\StaticAnalysis\\\\CodeUnitFindingVisitor\\:\\:enterNode\\(\\) should be compatible with return type \\(array\\<PhpParser\\\\Node\\>\\|int\\|PhpParser\\\\Node\\|null\\) of method PhpParser\\\\NodeVisitor\\:\\:enterNode\\(\\)$#"

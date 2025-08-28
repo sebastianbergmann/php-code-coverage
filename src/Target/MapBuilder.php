@@ -144,8 +144,8 @@ final readonly class MapBuilder
             }
         }
 
-        foreach (array_keys($namespaces) as $namespace) {
-            foreach (array_keys($namespaces[$namespace]) as $file) {
+        foreach ($namespaces as $namespace => $files) {
+            foreach (array_keys($files) as $file) {
                 $namespaces[$namespace][$file] = array_unique($namespaces[$namespace][$file]);
             }
         }
@@ -190,8 +190,8 @@ final readonly class MapBuilder
         /**
          * @todo Avoid duplication and remove this loop
          */
-        foreach (array_keys($classes) as $className) {
-            foreach (array_keys($classes[$className]) as $file) {
+        foreach ($classes as $className => $files) {
+            foreach (array_keys($files) as $file) {
                 $classes[$className][$file] = array_unique($classes[$className][$file]);
             }
         }

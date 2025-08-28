@@ -160,20 +160,20 @@ final readonly class MapBuilder
             }
 
             foreach ($this->parentClasses($classDetails, $class) as $parentClass) {
-                $merged = array_merge_recursive(
+                $classes[$class->namespacedName()] = array_merge_recursive(
                     $classes[$class->namespacedName()],
                     $classes[$parentClass->namespacedName()],
                 );
 
-                foreach ($merged as $mergedFile => $lines) {
-                    $merged[$mergedFile] = array_unique($lines);
+                if (!isset($classesThatExtendClass[$parentClass->namespacedName()])) {
+                    continue;
                 }
 
-                $classes[$class->namespacedName()] = $merged;
+                $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());
+            }
 
-                if (isset($classesThatExtendClass[$parentClass->namespacedName()])) {
-                    $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());
-                }
+            foreach ($classes[$class->namespacedName()] as $file => $lines) {
+                $classes[$class->namespacedName()][$file] = array_unique($lines);
             }
         }
 

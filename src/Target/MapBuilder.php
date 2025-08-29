@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
 use function array_merge;
-use function array_merge_recursive;
 use function array_slice;
 use function array_unique;
 use function count;
@@ -160,16 +159,28 @@ final readonly class MapBuilder
             }
 
             foreach ($this->parentClasses($classDetails, $class) as $parentClass) {
-                $merged = array_merge_recursive(
-                    $classes[$class->namespacedName()],
-                    $classes[$parentClass->namespacedName()],
-                );
+                // in big inheritance trees we might handle a lot of data.
+                // this inner loop needs to prevent unnecessary work whenever possible
+                foreach ($classes[$parentClass->namespacedName()] as $file => $lines) {
+                    if (!isset($classes[$class->namespacedName()][$file])) {
+                        $classes[$class->namespacedName()][$file] = $lines;
 
-                foreach ($merged as $mergedFile => $lines) {
-                    $merged[$mergedFile] = array_unique($lines);
+                        continue;
+                    }
+
+                    if (
+                        $classes[$class->namespacedName()][$file] === $lines
+                    ) {
+                        continue;
+                    }
+
+                    $classes[$class->namespacedName()][$file] = array_unique(
+                        array_merge(
+                            $classes[$class->namespacedName()][$file],
+                            $lines,
+                        ),
+                    );
                 }
-
-                $classes[$class->namespacedName()] = $merged;
 
                 if (isset($classesThatExtendClass[$parentClass->namespacedName()])) {
                     $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());

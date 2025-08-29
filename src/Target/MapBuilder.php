@@ -71,20 +71,7 @@ final readonly class MapBuilder
                         continue;
                     }
 
-                    $file = array_keys($traits[$traitName])[0];
-
-                    if (!isset($traits[$trait->namespacedName()][$file])) {
-                        $traits[$trait->namespacedName()][$file] = $traits[$traitName][$file];
-
-                        continue;
-                    }
-
-                    $traits[$trait->namespacedName()][$file] = array_unique(
-                        array_merge(
-                            $traits[$trait->namespacedName()][$file],
-                            $traits[$traitName][$file],
-                        ),
-                    );
+                    $this->mergeLines($trait->namespacedName(), $traits[$traitName], $traits);
                 }
             }
         }
@@ -108,20 +95,7 @@ final readonly class MapBuilder
                         continue;
                     }
 
-                    foreach ($traits[$traitName] as $traitFile => $lines) {
-                        if (!isset($classes[$class->namespacedName()][$traitFile])) {
-                            $classes[$class->namespacedName()][$traitFile] = $lines;
-
-                            continue;
-                        }
-
-                        $classes[$class->namespacedName()][$traitFile] = array_unique(
-                            array_merge(
-                                $classes[$class->namespacedName()][$traitFile],
-                                $lines,
-                            ),
-                        );
-                    }
+                    $this->mergeLines($class->namespacedName(), $traits[$traitName], $classes);
                 }
 
                 $this->processMethods($class, $file, $methods, $reverseLookup);
@@ -159,28 +133,7 @@ final readonly class MapBuilder
             }
 
             foreach ($this->parentClasses($classDetails, $class) as $parentClass) {
-                // in big inheritance trees we might handle a lot of data.
-                // this inner loop needs to prevent unnecessary work whenever possible
-                foreach ($classes[$parentClass->namespacedName()] as $file => $lines) {
-                    if (!isset($classes[$class->namespacedName()][$file])) {
-                        $classes[$class->namespacedName()][$file] = $lines;
-
-                        continue;
-                    }
-
-                    if (
-                        $classes[$class->namespacedName()][$file] === $lines
-                    ) {
-                        continue;
-                    }
-
-                    $classes[$class->namespacedName()][$file] = array_unique(
-                        array_merge(
-                            $classes[$class->namespacedName()][$file],
-                            $lines,
-                        ),
-                    );
-                }
+                $this->mergeLines($class->namespacedName(), $classes[$parentClass->namespacedName()], $classes);
 
                 if (isset($classesThatExtendClass[$parentClass->namespacedName()])) {
                     $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());
@@ -214,6 +167,33 @@ final readonly class MapBuilder
             'functions'                     => $functions,
             'reverseLookup'                 => $reverseLookup,
         ];
+    }
+
+    private function mergeLines(string $targetClass, array $sourceData, array &$data): void
+    {
+        // in big inheritance trees we might handle a lot of data.
+        // this loop needs to prevent unnecessary work whenever possible.
+
+        foreach ($sourceData as $file => $lines) {
+            if (!isset($data[$targetClass][$file])) {
+                $data[$targetClass][$file] = $lines;
+
+                continue;
+            }
+
+            if (
+                $data[$targetClass][$file] === $lines
+            ) {
+                continue;
+            }
+
+            $data[$targetClass][$file] = array_unique(
+                array_merge(
+                    $data[$targetClass][$file],
+                    $lines,
+                ),
+            );
+        }
     }
 
     private function processMethods(Class_|Trait_ $classOrTrait, string $file, array &$methods, array &$reverseLookup): void

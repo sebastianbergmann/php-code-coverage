@@ -171,9 +171,10 @@ final readonly class MapBuilder
 
     private function mergeLines(string $targetClass, array $sourceData, array &$data): void
     {
-        // in big inheritance trees we might handle a lot of data.
-        // this loop needs to prevent unnecessary work whenever possible.
-
+        /**
+         * In large inheritance trees we might handle a lot of data.
+         * This loop needs to prevent unnecessary work whenever possible.
+         */
         foreach ($sourceData as $file => $lines) {
             if (!isset($data[$targetClass][$file])) {
                 $data[$targetClass][$file] = $lines;
@@ -181,9 +182,7 @@ final readonly class MapBuilder
                 continue;
             }
 
-            if (
-                $data[$targetClass][$file] === $lines
-            ) {
+            if ($data[$targetClass][$file] === $lines) {
                 continue;
             }
 

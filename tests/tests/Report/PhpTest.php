@@ -16,8 +16,6 @@ final class PhpTest extends TestCase
 {
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         $this->removeTemporaryFiles();
     }
 

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use ReflectionProperty;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 final class PhpTest extends TestCase
@@ -28,7 +29,9 @@ final class PhpTest extends TestCase
 
         $unserialized = require TEST_FILES_PATH . 'tmp/serialized.php';
 
-        $this->assertEquals($coverage, $unserialized);
+        $this->assertInstanceOf(CodeCoverage::class, $unserialized);
+        $this->assertEquals($coverage->getData(), $unserialized->getData());
+        $this->assertEquals($coverage->getTests(), $unserialized->getTests());
     }
 
     public function testPHPSerialisationProducesValidCodeWhenOutputIncludesSingleQuote(): void
@@ -40,7 +43,9 @@ final class PhpTest extends TestCase
 
         $unserialized = require TEST_FILES_PATH . 'tmp/serialized.php';
 
-        $this->assertEquals($coverage, $unserialized);
+        $this->assertInstanceOf(CodeCoverage::class, $unserialized);
+        $this->assertEquals($coverage->getData(), $unserialized->getData());
+        $this->assertEquals($coverage->getTests(), $unserialized->getTests());
     }
 
     public function testCacheDataNeverGetSaved(): void

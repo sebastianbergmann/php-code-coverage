@@ -77,6 +77,27 @@ final class CodeCoverage
     }
 
     /**
+     * @return non-empty-list<non-empty-string>
+     */
+    public function __sleep(): array
+    {
+        return [
+            // Configuration
+            'cacheDirectory',
+            'checkForUnintentionallyCoveredCode',
+            'includeUncoveredFiles',
+            'ignoreDeprecatedCode',
+            'parentClassesExcludedFromUnintentionallyCoveredCodeCheck',
+            'useAnnotationsForIgnoringCode',
+            'filter',
+
+            // Data
+            'data',
+            'tests',
+        ];
+    }
+
+    /**
      * Returns the code coverage information as a graph of node objects.
      */
     public function getReport(): Directory

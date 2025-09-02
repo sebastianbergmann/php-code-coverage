@@ -47,28 +47,28 @@ final class CodeCoverage
     private const string UNCOVERED_FILES = 'UNCOVERED_FILES';
     private readonly Driver $driver;
     private readonly Filter $filter;
+    private ?FileAnalyser $analyser                  = null;
     private ?Mapper $targetMapper                    = null;
+    private ?string $cacheDirectory                  = null;
     private bool $checkForUnintentionallyCoveredCode = false;
+    private bool $collectBranchAndPathCoverage       = false;
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
-    private ?string $currentId                       = null;
-    private ?TestSize $currentSize                   = null;
-    private ProcessedCodeCoverageData $data;
-    private bool $useAnnotationsForIgnoringCode = true;
-
-    /**
-     * @var array<string, TestType>
-     */
-    private array $tests = [];
+    private bool $useAnnotationsForIgnoringCode      = true;
 
     /**
      * @var list<class-string>
      */
     private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
-    private ?FileAnalyser $analyser                                         = null;
-    private ?string $cacheDirectory                                         = null;
-    private ?Directory $cachedReport                                        = null;
-    private bool $collectBranchAndPathCoverage                              = false;
+    private ?string $currentId                                              = null;
+    private ?TestSize $currentSize                                          = null;
+    private ProcessedCodeCoverageData $data;
+
+    /**
+     * @var array<string, TestType>
+     */
+    private array $tests             = [];
+    private ?Directory $cachedReport = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {

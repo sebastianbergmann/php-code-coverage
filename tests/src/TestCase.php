@@ -1083,8 +1083,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
-
         $stub->method('stop')
             ->willReturn(...$data);
 
@@ -1092,6 +1090,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->enableBranchAndPathCoverage();
 
         $coverage->start(
             'BankAccountTest::testBalanceIsInitiallyZero',
@@ -1162,8 +1162,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('collectsBranchAndPathCoverage')->willReturn(true);
-
         $stub->method('stop')
             ->willReturn(...$data);
 
@@ -1171,6 +1169,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter->includeFile(TEST_FILES_PATH . 'source_without_namespace.php');
 
         $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->enableBranchAndPathCoverage();
 
         $coverage->start(
             'faketest',
@@ -1472,6 +1472,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $coverage = new CodeCoverage($stub, $filter);
 
+        $coverage->enableBranchAndPathCoverage();
+
         $coverage->start(
             'BankAccountTest::testBalanceIsInitiallyZero',
             null,
@@ -1518,6 +1520,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
         $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->enableBranchAndPathCoverage();
 
         $coverage->start(
             'BankAccountTest::testBalanceCannotBecomeNegative2',

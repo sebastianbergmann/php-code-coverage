@@ -68,6 +68,7 @@ final class CodeCoverage
     private ?FileAnalyser $analyser                                         = null;
     private ?string $cacheDirectory                                         = null;
     private ?Directory $cachedReport                                        = null;
+    private bool $collectBranchAndPathCoverage                              = false;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -384,16 +385,20 @@ final class CodeCoverage
     public function enableBranchAndPathCoverage(): void
     {
         $this->driver->enableBranchAndPathCoverage();
+
+        $this->collectBranchAndPathCoverage = true;
     }
 
     public function disableBranchAndPathCoverage(): void
     {
         $this->driver->disableBranchAndPathCoverage();
+
+        $this->collectBranchAndPathCoverage = false;
     }
 
     public function collectsBranchAndPathCoverage(): bool
     {
-        return $this->driver->collectsBranchAndPathCoverage();
+        return $this->collectBranchAndPathCoverage;
     }
 
     public function validate(TargetCollection $targets): ValidationResult

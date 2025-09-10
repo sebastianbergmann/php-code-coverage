@@ -77,18 +77,6 @@ final class CodeCoverage
         $this->data   = new ProcessedCodeCoverageData;
     }
 
-    /**
-     * @return array{
-     *     cacheDirectory: ?string,
-     *     checkForUnintentionallyCoveredCode: bool,
-     *     includeUncoveredFiles: bool,
-     *     ignoreDeprecatedCode: bool,
-     *     parentClassesExcludedFromUnintentionallyCoveredCodeCheck: list<class-string>,
-     *     filter: Filter,
-     *     data: ProcessedCodeCoverageData,
-     *     tests: array<string, TestType>
-     * }
-     */
     public function __serialize(): array
     {
         $prefix = "\x00" . self::class . "\x00";

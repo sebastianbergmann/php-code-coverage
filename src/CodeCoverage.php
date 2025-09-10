@@ -78,23 +78,34 @@ final class CodeCoverage
     }
 
     /**
-     * @return non-empty-list<non-empty-string>
+     * @return array{
+     *     cacheDirectory: ?string,
+     *     checkForUnintentionallyCoveredCode: bool,
+     *     includeUncoveredFiles: bool,
+     *     ignoreDeprecatedCode: bool,
+     *     parentClassesExcludedFromUnintentionallyCoveredCodeCheck: list<class-string>,
+     *     filter: Filter,
+     *     data: ProcessedCodeCoverageData,
+     *     tests: array<string, TestType>
+     * }
      */
-    public function __sleep(): array
+    public function __serialize(): array
     {
+        $prefix = "\x00" . self::class . "\x00";
+
         return [
             // Configuration
-            'cacheDirectory',
-            'checkForUnintentionallyCoveredCode',
-            'includeUncoveredFiles',
-            'ignoreDeprecatedCode',
-            'parentClassesExcludedFromUnintentionallyCoveredCodeCheck',
-            'useAnnotationsForIgnoringCode',
-            'filter',
+            $prefix . 'cacheDirectory'                                           => $this->cacheDirectory,
+            $prefix . 'checkForUnintentionallyCoveredCode'                       => $this->checkForUnintentionallyCoveredCode,
+            $prefix . 'includeUncoveredFiles'                                    => $this->includeUncoveredFiles,
+            $prefix . 'ignoreDeprecatedCode'                                     => $this->ignoreDeprecatedCode,
+            $prefix . 'parentClassesExcludedFromUnintentionallyCoveredCodeCheck' => $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
+            $prefix . 'useAnnotationsForIgnoringCode'                            => $this->useAnnotationsForIgnoringCode,
+            $prefix . 'filter'                                                   => $this->filter,
 
             // Data
-            'data',
-            'tests',
+            $prefix . 'data'  => $this->data,
+            $prefix . 'tests' => $this->tests,
         ];
     }
 

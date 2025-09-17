@@ -4,7 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [12.3.8] - 2025-MM-DD
 
+### Fixed
+
 * [#1092](https://github.com/sebastianbergmann/php-code-coverage/issues/1092): Error in `DOMDocument::saveXML()` is not handled
+* [#1094](https://github.com/sebastianbergmann/php-code-coverage/issues/1094): No branch and path coverage in HTML report
 
 ## [12.3.7] - 2025-09-10
 

@@ -68,6 +68,11 @@
     --bs-warning-text-emphasis: light-dark(#664d03, #ffda6a);
 }
 
+@media (prefers-color-scheme: dark) {
+ /* Invert icon's colors on dark mode to improve readability */
+ img.octicon { filter: invert(1); }
+}
+
 body {
  font-family: sans-serif;
  font-size: 1em;

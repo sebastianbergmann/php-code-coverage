@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [12.4.0] - 2025-MM-DD
+## [12.4.0] - 2025-09-24
 
 ### Added
 

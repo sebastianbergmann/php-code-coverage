@@ -7,7 +7,7 @@ on:
 name: CI
 
 env:
-  COMPOSER_ROOT_VERSION: 12.3.x-dev
+  COMPOSER_ROOT_VERSION: 12.4.x-dev
 
 jobs:
   coding-guidelines:

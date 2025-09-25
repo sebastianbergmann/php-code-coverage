@@ -3,7 +3,7 @@
     /* Implementing an auto-selection of dark/light theme via: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark */
     color-scheme: light dark;
  
-    /* PHPUnit ligh/dark colors */
+    /* PHPUnit light/dark colors */
     --phpunit-breadcrumbs: light-dark(var(--bs-gray-200), var(--bs-gray-800));
     --phpunit-success-bar: light-dark(#28a745 ,#1f8135);
     --phpunit-success-high: light-dark(#99cb84, #3d5c4e);
@@ -14,7 +14,7 @@
     --phpunit-danger: light-dark(#f2dede, #42221e);
     --phpunit-danger-bar: light-dark(#dc3545, #a62633);
 
-    /* Bootstrap v5.3 default colors (ligth, dark) */
+    /* Bootstrap v5.3 default colors (light, dark) */
     --bs-body-bg-rgb: light-dark((255, 255, 255), (33, 37, 41));
     --bs-body-bg: light-dark(#fff, #212529);
     --bs-body-color-rgb: light-dark(33, 37, 41, 222, 226, 230);

@@ -2,7 +2,7 @@
 :root {
     /* Implementing an auto-selection of dark/light theme via: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark */
     color-scheme: light dark;
- 
+
     /* PHPUnit light/dark colors */
     --phpunit-breadcrumbs: light-dark(var(--bs-gray-200), var(--bs-gray-800));
     --phpunit-success-bar: light-dark(#28a745 ,#1f8135);
@@ -15,7 +15,7 @@
     --phpunit-danger-bar: light-dark(#dc3545, #a62633);
 
     /* Bootstrap v5.3 default colors (light, dark) */
-    --bs-body-bg-rgb: light-dark((255, 255, 255), (33, 37, 41));
+    --bs-body-bg-rgb: 255, 255, 255;
     --bs-body-bg: light-dark(#fff, #212529);
     --bs-body-color-rgb: light-dark(33, 37, 41, 222, 226, 230);
     --bs-body-color: light-dark(#212529, #dee2e6);
@@ -28,7 +28,7 @@
     --bs-dark-bg-subtle: light-dark(#ced4da, #1a1d20);
     --bs-dark-border-subtle: light-dark(#adb5bd, #343a40);
     --bs-dark-text-emphasis: light-dark(#495057, #dee2e6);
-    --bs-emphasis-color-rgb: light-dark((0, 0, 0), (255, 255, 255));
+    --bs-emphasis-color-rgb: 0, 0, 0;
     --bs-emphasis-color: light-dark(#000, #fff);
     --bs-form-invalid-border-color: light-dark(#dc3545, #ea868f);
     --bs-form-invalid-color: light-dark(#dc3545, #ea868f);
@@ -42,18 +42,18 @@
     --bs-light-bg-subtle: light-dark(#fcfcfd, #343a40);
     --bs-light-border-subtle: light-dark(#e9ecef, #495057);
     --bs-light-text-emphasis: light-dark(#495057, #f8f9fa);
-    --bs-link-color-rgb: light-dark((13, 110, 253), (110, 168, 254));
+    --bs-link-color-rgb: 13, 110, 253;
     --bs-link-color: light-dark(#0d6efd, #6ea8fe);
-    --bs-link-hover-color-rgb: light-dark((10, 88, 202), (139, 185, 254));
+    --bs-link-hover-color-rgb: 10, 88, 202;
     --bs-link-hover-color: light-dark(#0a58ca, #8bb9fe);
     --bs-primary-bg-subtle: light-dark(#cfe2ff, #031633);
     --bs-primary-border-subtle: light-dark(#9ec5fe, #084298);
     --bs-primary-text-emphasis: light-dark(#052c65, #6ea8fe);
-    --bs-secondary-bg-rgb: light-dark((233, 236, 239), (52, 58, 64));
+    --bs-secondary-bg-rgb: 233, 236, 239;
     --bs-secondary-bg-subtle: light-dark(#e2e3e5, #161719);
     --bs-secondary-bg: light-dark(#e9ecef, #343a40);
     --bs-secondary-border-subtle: light-dark(#c4c8cb, #41464b);
-    --bs-secondary-color-rgb: light-dark((33, 37, 41), (222, 226, 230));
+    --bs-secondary-color-rgb: 33, 37, 41;
     --bs-secondary-color: light-dark(rgba(33, 37, 41, 0.75), rgba(222, 226, 230, 0.75));
     --bs-secondary-text-emphasis: light-dark(#2b2f32, #a7acb1);
     --bs-success-bg-subtle: light-dark(#d1e7dd, #051b11);
@@ -61,7 +61,7 @@
     --bs-success-text-emphasis: light-dark(#0a3622, #75b798);
     --bs-tertiary-bg-rgb: light-dark(248, 249, 250, 43, 48, 53);
     --bs-tertiary-bg: light-dark(#f8f9fa, #2b3035);
-    --bs-tertiary-color-rgb: light-dark((33, 37, 41), (222, 226, 230));
+    --bs-tertiary-color-rgb: 33, 37, 41;
     --bs-tertiary-color: light-dark(rgba(33, 37, 41, 0.5), rgba(222, 226, 230, 0.5));
     --bs-warning-bg-subtle: light-dark(#fff3cd, #332701);
     --bs-warning-border-subtle: light-dark(#ffe69c, #997404);
@@ -69,6 +69,16 @@
 }
 
 @media (prefers-color-scheme: dark) {
+ :root {
+  --bs-body-bg-rgb: 33, 37, 41;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-link-color-rgb: 110, 168, 254;
+  --bs-link-hover-color-rgb: 139, 185, 254;
+  --bs-secondary-bg-rgb: 52, 58, 64;
+  --bs-secondary-color-rgb: 222, 226, 230;
+  --bs-tertiary-color-rgb: 222, 226, 230;
+ }
+
  /* Invert icon's colors on dark mode to improve readability */
  img.octicon { filter: invert(1); }
 }

@@ -8,6 +8,7 @@ name: CI
 
 env:
   COMPOSER_ROOT_VERSION: 10.1.x-dev
+  PHP_VERSION: 8.4
 
 jobs:
   coding-guidelines:
@@ -22,7 +23,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: ${{ env.PHP_VERSION }}
           extensions: none, iconv, json, phar, tokenizer
           coverage: none
           tools: none

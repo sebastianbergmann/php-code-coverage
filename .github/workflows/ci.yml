@@ -8,6 +8,7 @@ name: CI
 
 env:
   COMPOSER_ROOT_VERSION: 12.4.x-dev
+  PHP_VERSION: 8.4
 
 jobs:
   coding-guidelines:
@@ -17,12 +18,23 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Use local branch
+        shell: bash
+        run: |
+          BRANCH=$([ "${{ github.event_name }}" == "pull_request" ] && echo "${{ github.head_ref }}" || echo "${{ github.ref_name }}")
+          git branch -D $BRANCH 2>/dev/null || true
+          git branch $BRANCH HEAD
+          git checkout $BRANCH
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: ${{ env.PHP_VERSION }}
           extensions: none, iconv, json, phar, tokenizer
           coverage: none
           tools: none
@@ -37,17 +49,41 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Use local branch
+        shell: bash
+        run: |
+          BRANCH=$([ "${{ github.event_name }}" == "pull_request" ] && echo "${{ github.head_ref }}" || echo "${{ github.ref_name }}")
+          git branch -D $BRANCH 2>/dev/null || true
+          git branch $BRANCH HEAD
+          git checkout $BRANCH
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: ${{ env.PHP_VERSION }}
           extensions: none, ctype, curl, dom, iconv, mbstring, opcache, simplexml, tokenizer, xml, xmlwriter
           coverage: none
           tools: none
 
-      - name: Install dependencies with Composer
+      - name: Get Composer cache directory
+        id: composer-cache
+        shell: bash
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer cache directory
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Update dependencies with composer
         run: ./tools/composer update --no-interaction --no-ansi --no-progress
 
       - name: Run PHPStan
@@ -84,7 +120,18 @@ jobs:
         run: git config --global core.autocrlf false
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Use local branch
+        shell: bash
+        run: |
+          BRANCH=$([ "${{ github.event_name }}" == "pull_request" ] && echo "${{ github.head_ref }}" || echo "${{ github.ref_name }}")
+          git branch -D $BRANCH 2>/dev/null || true
+          git branch $BRANCH HEAD
+          git checkout $BRANCH
 
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
@@ -95,11 +142,24 @@ jobs:
           ini-values: ${{ env.PHP_INI_VALUES }}
           tools: none
 
+      - name: Get Composer cache directory
+        id: composer-cache
+        shell: bash
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer cache directory
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies with Composer
         run: php ./tools/composer update --no-ansi --no-interaction --no-progress
 
       - name: Run tests with PHPUnit
-        run: ./vendor/bin/phpunit --log-junit test-results.xml --coverage-openclover=code-coverage.xml
+        run: vendor/bin/phpunit --log-junit test-results.xml --coverage-clover=code-coverage.xml
 
       - name: Upload test results to Codecov.io
         if: ${{ !cancelled() }}

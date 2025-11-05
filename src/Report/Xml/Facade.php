@@ -165,12 +165,7 @@ final class Facade
             }
 
             $coverage = $fileReport->lineCoverage((string) $line);
-
-            foreach ($tests as $test) {
-                $coverage->addTest($test);
-            }
-
-            $coverage->finalize();
+            $coverage->finalize($tests);
         }
 
         $fileReport->source()->setSourceCode(

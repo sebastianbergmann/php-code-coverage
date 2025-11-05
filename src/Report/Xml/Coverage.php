@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use DOMElement;
-use SebastianBergmann\CodeCoverage\ReportAlreadyFinalizedException;
 use XMLWriter;
 
 /**
@@ -18,48 +17,35 @@ use XMLWriter;
  */
 final class Coverage
 {
-    private readonly XMLWriter $writer;
     private readonly DOMElement $contextNode;
-    private bool $finalized = false;
+    private readonly string $line;
 
     public function __construct(DOMElement $context, string $line)
     {
         $this->contextNode = $context;
-
-        $this->writer = new XMLWriter;
-        $this->writer->openMemory();
-        $this->writer->startElementNs(null, $context->nodeName, 'https://schema.phpunit.de/coverage/1.0');
-        $this->writer->writeAttribute('nr', $line);
+        $this->line        = $line;
     }
 
-    /**
-     * @throws ReportAlreadyFinalizedException
-     */
-    public function addTest(string $test): void
+    public function finalize(array $tests): void
     {
-        if ($this->finalized) {
-            // @codeCoverageIgnoreStart
-            throw new ReportAlreadyFinalizedException;
-            // @codeCoverageIgnoreEnd
+        $writer = new XMLWriter;
+        $writer->openMemory();
+        $writer->startElementNs(null, $this->contextNode->nodeName, 'https://schema.phpunit.de/coverage/1.0');
+        $writer->writeAttribute('nr', $this->line);
+
+        foreach ($tests as $test) {
+            $writer->startElement('covered');
+            $writer->writeAttribute('by', $test);
+            $writer->endElement();
         }
-
-        $this->writer->startElement('covered');
-        $this->writer->writeAttribute('by', $test);
-        $this->writer->endElement();
-    }
-
-    public function finalize(): void
-    {
-        $this->writer->endElement();
+        $writer->endElement();
 
         $fragment = $this->contextNode->ownerDocument->createDocumentFragment();
-        $fragment->appendXML($this->writer->outputMemory());
+        $fragment->appendXML($writer->outputMemory());
 
         $this->contextNode->parentNode->replaceChild(
             $fragment,
             $this->contextNode,
         );
-
-        $this->finalized = true;
     }
 }

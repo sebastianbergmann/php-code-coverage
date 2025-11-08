@@ -25,8 +25,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
  * @phpstan-type TestIdType string
- * @phpstan-type FunctionCoverageDataType ProcessedFunctionCoverageData
- * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
+ * @phpstan-type FunctionCoverageType array<string, array<string, ProcessedFunctionCoverageData>>
  * @phpstan-type LineCoverageType array<string, array<int, null|list<TestIdType>>>
  */
 final class ProcessedCodeCoverageData
@@ -235,7 +234,7 @@ final class ProcessedCodeCoverageData
     /**
      * For a function we have never seen before, copy all data over and simply init the 'hit' array.
      *
-     * @param FunctionCoverageDataType|XdebugFunctionCoverageType $functionData
+     * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
     private function initPreviouslyUnseenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
     {
@@ -251,7 +250,7 @@ final class ProcessedCodeCoverageData
      * Techniques such as mocking and where the contents of a file are different vary during tests (e.g. compiling
      * containers) mean that the functions inside a file cannot be relied upon to be static.
      *
-     * @param FunctionCoverageDataType|XdebugFunctionCoverageType $functionData
+     * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
     private function initPreviouslySeenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
     {

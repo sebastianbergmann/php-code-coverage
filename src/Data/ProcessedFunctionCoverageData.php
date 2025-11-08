@@ -48,18 +48,20 @@ final class ProcessedFunctionCoverageData {
     {
         $branches = $this->branches;
         foreach($data->branches as $branchId => $branch) {
-            if (isset($branches[$branchId])) {
-                continue;
+            if (!isset($branches[$branchId])) {
+                $branches[$branchId] = $branch;
+            } else {
+                $branches[$branchId] = $branches[$branchId]->merge($branch);
             }
-            $branches[$branchId] = $branches[$branchId]->merge($branch);
         }
 
         $paths = $this->paths;
         foreach($data->paths as $pathId => $path) {
-            if (isset($paths[$pathId])) {
-                continue;
+            if (!isset($paths[$pathId])) {
+                $paths[$pathId] = $path;
+            } else {
+                $paths[$pathId] = $paths[$pathId]->merge($path);
             }
-            $paths[$pathId] = $paths[$pathId]->merge($path);
         }
 
         return new self(

@@ -123,11 +123,17 @@ final class ProcessedCodeCoverageData
         return $this->lineCoverage;
     }
 
+    /**
+     * @param FunctionCoverageType $functionCoverage
+     */
     public function setFunctionCoverage(array $functionCoverage): void
     {
         $this->functionCoverage = $functionCoverage;
     }
 
+    /**
+     * @return FunctionCoverageType
+     */
     public function functionCoverage(): array
     {
         ksort($this->functionCoverage);

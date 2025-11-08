@@ -148,6 +148,9 @@ final class ProcessedCodeCoverageData
         return $this->functionCoverage;
     }
 
+    /**
+     * @return array<string>
+     */
     public function coveredFiles(): array
     {
         ksort($this->lineCoverage);

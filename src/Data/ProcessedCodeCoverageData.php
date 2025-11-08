@@ -38,8 +38,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *      paths: array<int, array{
  *          path: array<int, int>,
  *          hit: list<TestIdType>,
- *      }>,
- *      hit: list<TestIdType>
+ *      }>
  *  }
  * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
  */

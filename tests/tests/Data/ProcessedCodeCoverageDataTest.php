@@ -75,29 +75,28 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setFunctionCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    'SomeClass->firstFunction' => [
-                        'branches' => [
-                            0 => [
-                                'op_start'   => 0,
-                                'op_end'     => 14,
-                                'line_start' => 20,
-                                'line_end'   => 25,
-                                'hit'        => [],
-                                'out'        => [
-                                ],
-                                'out_hit' => [
-                                ],
-                            ],
+                    'SomeClass->firstFunction' =>
+                    new ProcessedFunctionCoverageData(
+                        [
+                            new ProcessedBranchCoverageData(
+                                0,
+                                14,
+                                20,
+                                25,
+                                [],
+                                [],
+                                []
+                            )
                         ],
-                        'paths' => [
-                            0 => [
-                                'path' => [
+                        [
+                            new ProcessedPathCoverageData(
+                                [
                                     0 => 0,
                                 ],
-                                'hit' => [],
-                            ],
-                        ],
-                    ],
+                                [],
+                            ),
+                        ]
+                    ),
                 ],
             ],
         );
@@ -106,69 +105,63 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $newCoverage->setFunctionCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    'SomeClass->firstFunction' => [
-                        'branches' => [
-                            0 => [
-                                'op_start'   => 0,
-                                'op_end'     => 14,
-                                'line_start' => 20,
-                                'line_end'   => 25,
-                                'hit'        => [],
-                                'out'        => [
-                                ],
-                                'out_hit' => [
-                                ],
-                            ],
-                            1 => [
-                                'op_start'   => 15,
-                                'op_end'     => 16,
-                                'line_start' => 26,
-                                'line_end'   => 27,
-                                'hit'        => [],
-                                'out'        => [
-                                ],
-                                'out_hit' => [
-                                ],
-                            ],
+                    'SomeClass->firstFunction' => new ProcessedFunctionCoverageData(
+                        [
+                            new ProcessedBranchCoverageData(
+                                0,
+                                14,
+                                20,
+                                25,
+                                [],
+                                [],
+                                []
+                            ),
+                            new ProcessedBranchCoverageData(
+                                15,
+                                16,
+                                26,
+                                27,
+                                [],
+                                [],
+                                []
+                            )
                         ],
-                        'paths' => [
-                            0 => [
-                                'path' => [
+                        [
+                            new ProcessedPathCoverageData(
+                                [
                                     0 => 0,
                                 ],
-                                'hit' => [],
-                            ],
-                            1 => [
-                                'path' => [
+                                []
+                            ),
+                            new ProcessedPathCoverageData(
+                                [
                                     0 => 1,
                                 ],
-                                'hit' => [],
-                            ],
+                                []
+                            ),
+                        ]
+                    ),
+                    'SomeClass->secondFunction' => new ProcessedFunctionCoverageData(
+                        [
+                            new ProcessedBranchCoverageData(
+                                0,
+                                24,
+                                30,
+                                35,
+                                [],
+                                [],
+                                []
+                            ),
                         ],
-                    ],
-                    'SomeClass->secondFunction' => [
-                        'branches' => [
-                            0 => [
-                                'op_start'   => 0,
-                                'op_end'     => 24,
-                                'line_start' => 30,
-                                'line_end'   => 35,
-                                'hit'        => [],
-                                'out'        => [
-                                ],
-                                'out_hit' => [
-                                ],
-                            ],
-                        ],
-                        'paths' => [
-                            0 => [
-                                'path' => [
+                        [
+                            new ProcessedPathCoverageData(
+                                [
                                     0 => 0,
                                 ],
-                                'hit' => [],
-                            ],
-                        ],
-                    ],
+                                []
+                            ),
+                        ]
+                    ),
                 ],
             ],
         );

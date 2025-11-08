@@ -140,6 +140,9 @@ final readonly class Builder
     {
         $result = [];
 
+        $lineCoverage     = $data->lineCoverage();
+        $functionCoverage = $data->functionCoverage();
+
         foreach ($data->coveredFiles() as $originalPath) {
             $path    = explode(DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
@@ -156,8 +159,8 @@ final readonly class Builder
             }
 
             $pointer = [
-                'lineCoverage'     => $data->lineCoverage()[$originalPath] ?? [],
-                'functionCoverage' => $data->functionCoverage()[$originalPath] ?? [],
+                'lineCoverage'     => $lineCoverage[$originalPath] ?? [],
+                'functionCoverage' => $functionCoverage[$originalPath] ?? [],
             ];
         }
 

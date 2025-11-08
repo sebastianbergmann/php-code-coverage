@@ -206,12 +206,14 @@ final readonly class Builder
      */
     private function reducePaths(ProcessedCodeCoverageData $coverage): string
     {
-        if ($coverage->coveredFiles() === []) {
+        $coveredFiles = $coverage->coveredFiles();
+
+        if ($coveredFiles === []) {
             return '.';
         }
 
         $commonPath = '';
-        $paths      = $coverage->coveredFiles();
+        $paths      = $coveredFiles;
 
         if (count($paths) === 1) {
             $commonPath = dirname($paths[0]) . DIRECTORY_SEPARATOR;
@@ -263,7 +265,7 @@ final readonly class Builder
             }
         }
 
-        $original = $coverage->coveredFiles();
+        $original = $coveredFiles;
         $max      = count($original);
 
         for ($i = 0; $i < $max; $i++) {

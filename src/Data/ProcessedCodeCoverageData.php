@@ -25,21 +25,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
  * @phpstan-type TestIdType string
- * @phpstan-type FunctionCoverageDataType array{
- *      branches: array<int, array{
- *          op_start: int,
- *          op_end: int,
- *          line_start: int,
- *          line_end: int,
- *          hit: list<TestIdType>,
- *          out: array<int, int>,
- *          out_hit: array<int, int>,
- *      }>,
- *      paths: array<int, array{
- *          path: array<int, int>,
- *          hit: list<TestIdType>,
- *      }>
- *  }
+ * @phpstan-type FunctionCoverageDataType ProcessedFunctionCoverageData
  * @phpstan-type FunctionCoverageType array<string, array<string, FunctionCoverageDataType>>
  * @phpstan-type LineCoverageType array<string, array<int, null|list<TestIdType>>>
  */
@@ -99,13 +85,13 @@ final class ProcessedCodeCoverageData
             foreach ($functions as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] === Driver::BRANCH_HIT) {
-                        $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'][] = $testCaseId;
+                        $this->functionCoverage[$file][$functionName]->recordBranchHit($branchId, $testCaseId);
                     }
                 }
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
                     if ($pathData['hit'] === Driver::BRANCH_HIT) {
-                        $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'][] = $testCaseId;
+                        $this->functionCoverage[$file][$functionName]->recordPathHit($pathId, $testCaseId);
                     }
                 }
             }
@@ -213,14 +199,6 @@ final class ProcessedCodeCoverageData
                 } else {
                     $this->initPreviouslyUnseenFunction($file, $functionName, $functionData);
                 }
-
-                foreach ($functionData['branches'] as $branchId => $branchData) {
-                    $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = array_unique(array_merge($this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'], $branchData['hit']));
-                }
-
-                foreach ($functionData['paths'] as $pathId => $pathData) {
-                    $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = array_unique(array_merge($this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'], $pathData['hit']));
-                }
             }
         }
     }
@@ -259,17 +237,13 @@ final class ProcessedCodeCoverageData
      *
      * @param FunctionCoverageDataType|XdebugFunctionCoverageType $functionData
      */
-    private function initPreviouslyUnseenFunction(string $file, string $functionName, array $functionData): void
+    private function initPreviouslyUnseenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
     {
+        if (is_array($functionData)) {
+            $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
+        }
+
         $this->functionCoverage[$file][$functionName] = $functionData;
-
-        foreach (array_keys($functionData['branches']) as $branchId) {
-            $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
-        }
-
-        foreach (array_keys($functionData['paths']) as $pathId) {
-            $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
-        }
     }
 
     /**
@@ -279,20 +253,14 @@ final class ProcessedCodeCoverageData
      *
      * @param FunctionCoverageDataType|XdebugFunctionCoverageType $functionData
      */
-    private function initPreviouslySeenFunction(string $file, string $functionName, array $functionData): void
+    private function initPreviouslySeenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
     {
-        foreach ($functionData['branches'] as $branchId => $branchData) {
-            if (!isset($this->functionCoverage[$file][$functionName]['branches'][$branchId])) {
-                $this->functionCoverage[$file][$functionName]['branches'][$branchId]        = $branchData;
-                $this->functionCoverage[$file][$functionName]['branches'][$branchId]['hit'] = [];
-            }
+        if (is_array($functionData)) {
+            $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
         }
 
-        foreach ($functionData['paths'] as $pathId => $pathData) {
-            if (!isset($this->functionCoverage[$file][$functionName]['paths'][$pathId])) {
-                $this->functionCoverage[$file][$functionName]['paths'][$pathId]        = $pathData;
-                $this->functionCoverage[$file][$functionName]['paths'][$pathId]['hit'] = [];
-            }
-        }
+        $this->functionCoverage[$file][$functionName] = $this->functionCoverage[$file][$functionName]->merge(
+            $functionData
+        );
     }
 }

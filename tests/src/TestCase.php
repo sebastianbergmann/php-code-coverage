@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function rmdir;
 use function unlink;
 use BankAccount;
@@ -1560,201 +1563,199 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         return [
             TEST_FILES_PATH . 'BankAccount.php' => [
-                'BankAccount->depositMoney' => [
-                    'branches' => [
-                        0 => [
-                            'op_start'   => 0,
-                            'op_end'     => 14,
-                            'line_start' => 20,
-                            'line_end'   => 25,
-                            'hit'        => [
+                'BankAccount->depositMoney' => new ProcessedFunctionCoverageData(
+                    [
+                        0 => new ProcessedBranchCoverageData(
+                            0,
+                            14,
+                            20,
+                            25,
+                            [
                                 0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                            'out' => [
-                            ],
-                            'out_hit' => [
-                            ],
-                        ],
+                            [],
+                            [],
+                        ),
                     ],
-                    'paths' => [
-                        0 => [
-                            'path' => [
+                    [
+                        0 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                             ],
-                            'hit' => [
+                            [
                                 0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                        ],
+                        ),
                     ],
-                ],
-                'BankAccount->getBalance' => [
-                    'branches' => [
-                        0 => [
-                            'op_start'   => 0,
-                            'op_end'     => 5,
-                            'line_start' => 6,
-                            'line_end'   => 9,
-                            'hit'        => [
+                ),
+                'BankAccount->getBalance' => new ProcessedFunctionCoverageData(
+                    [
+                        0 => new ProcessedBranchCoverageData(
+                            0,
+                            5,
+                            6,
+                            9,
+                            [
                                 0 => 'BankAccountTest::testBalanceIsInitiallyZero',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                            'out' => [
+                            [
                             ],
-                            'out_hit' => [
+                            [
                             ],
-                        ],
+                        ),
                     ],
-                    'paths' => [
-                        0 => [
-                            'path' => [
+                    [
+                        0 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                             ],
-                            'hit' => [
+                            [
                                 0 => 'BankAccountTest::testBalanceIsInitiallyZero',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                        ],
+                        ),
                     ],
-                ],
-                'BankAccount->withdrawMoney' => [
-                    'branches' => [
-                        0 => [
-                            'op_start'   => 0,
-                            'op_end'     => 14,
-                            'line_start' => 27,
-                            'line_end'   => 32,
-                            'hit'        => [
+                ),
+                'BankAccount->withdrawMoney' => new ProcessedFunctionCoverageData(
+                    [
+                        0 => new ProcessedBranchCoverageData(
+                            0,
+                            14,
+                            27,
+                            32,
+                            [
                                 0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                            'out' => [
+                            [
                             ],
-                            'out_hit' => [
+                            [
                             ],
-                        ],
+                        ),
                     ],
-                    'paths' => [
-                        0 => [
-                            'path' => [
+                    [
+                        0 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                             ],
-                            'hit' => [
+                            [
                                 0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
                                 1 => 'BankAccountTest::testDepositWithdrawMoney',
                             ],
-                        ],
+                        ),
                     ],
-                ],
-                '{main}' => [
-                    'branches' => [
-                        0 => [
-                            'op_start'   => 0,
-                            'op_end'     => 1,
-                            'line_start' => 34,
-                            'line_end'   => 34,
-                            'hit'        => [
+                ),
+                '{main}' => new ProcessedFunctionCoverageData(
+                    [
+                        0 => new ProcessedBranchCoverageData(
+                            0,
+                            1,
+                            34,
+                            34,
+                            [
                             ],
-                            'out' => [
+                            [
                                 0 => 2147483645,
                             ],
-                            'out_hit' => [
+                            [
                                 0 => 0,
                             ],
-                        ],
+                        ),
                     ],
-                    'paths' => [
-                        0 => [
-                            'path' => [
+                    [
+                        0 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                             ],
-                            'hit' => [
+                            [
                             ],
-                        ],
+                        ),
                     ],
-                ],
-                'BankAccount->setBalance' => [
-                    'branches' => [
-                        0 => [
-                            'op_start'   => 0,
-                            'op_end'     => 4,
-                            'line_start' => 11,
-                            'line_end'   => 13,
-                            'hit'        => [
+                ),
+                'BankAccount->setBalance' => new ProcessedFunctionCoverageData(
+                    [
+                        0 => new ProcessedBranchCoverageData(
+                            0,
+                            4,
+                            11,
+                            13,
+                            [
                             ],
-                            'out' => [
+                            [
                                 0 => 5,
                                 1 => 9,
                             ],
-                            'out_hit' => [
+                            [
                                 0 => 0,
                                 1 => 0,
                             ],
-                        ],
-                        5 => [
-                            'op_start'   => 5,
-                            'op_end'     => 8,
-                            'line_start' => 14,
-                            'line_end'   => 14,
-                            'hit'        => [
+                        ),
+                        5 => new ProcessedBranchCoverageData(
+                            5,
+                            8,
+                            14,
+                            14,
+                            [
                             ],
-                            'out' => [
+                            [
                                 0 => 13,
                             ],
-                            'out_hit' => [
+                            [
                                 0 => 0,
                             ],
-                        ],
-                        9 => [
-                            'op_start'   => 9,
-                            'op_end'     => 12,
-                            'line_start' => 16,
-                            'line_end'   => 16,
-                            'hit'        => [
+                        ),
+                        9 => new ProcessedBranchCoverageData(
+                            9,
+                            12,
+                            16,
+                            16,
+                            [
                             ],
-                            'out' => [
+                            [
                                 0 => 2147483645,
                             ],
-                            'out_hit' => [
+                            [
                                 0 => 0,
                             ],
-                        ],
-                        13 => [
-                            'op_start'   => 13,
-                            'op_end'     => 14,
-                            'line_start' => 18,
-                            'line_end'   => 18,
-                            'hit'        => [
+                        ),
+                        13 => new ProcessedBranchCoverageData(
+                            13,
+                            14,
+                            18,
+                            18,
+                            [
                             ],
-                            'out' => [
+                            [
                                 0 => 2147483645,
                             ],
-                            'out_hit' => [
+                            [
                                 0 => 0,
                             ],
-                        ],
+                        ),
                     ],
-                    'paths' => [
-                        0 => [
-                            'path' => [
+                    [
+                        0 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                                 1 => 5,
                                 2 => 13,
                             ],
-                            'hit' => [
+                            [
                             ],
-                        ],
-                        1 => [
-                            'path' => [
+                        ),
+                        1 => new ProcessedPathCoverageData(
+                            [
                                 0 => 0,
                                 1 => 9,
                             ],
-                            'hit' => [
+                            [
                             ],
-                        ],
+                        ),
                     ],
-                ],
+                ),
             ],
         ];
     }

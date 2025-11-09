@@ -9,8 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
-use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function array_filter;
 use function count;
 use function range;
@@ -19,6 +17,8 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;

@@ -167,6 +167,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $coverage->merge($newCoverage);
 
+        $this->assertIsArray($newCoverage->functionCoverage()['/some/path/SomeClass.php']);
         $this->assertArrayHasKey('SomeClass->secondFunction', $newCoverage->functionCoverage()['/some/path/SomeClass.php']);
     }
 }

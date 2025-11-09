@@ -82,8 +82,8 @@ final readonly class ProcessedFunctionCoverageData
         }
 
         return new self(
-            $branches,
-            $paths,
+            $branches ?? $this->branches,
+            $paths ?? $this->paths,
         );
     }
 

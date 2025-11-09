@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function array_filter;
 use function count;
 use function range;
@@ -583,17 +585,17 @@ final class File extends AbstractNode
         $executableBranches = 0;
         $executedBranches   = 0;
 
-        if (isset($this->functionCoverageData[$key]['branches'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $executableBranches = count(
-                $this->functionCoverageData[$key]['branches'],
+                $this->functionCoverageData[$key]->branches,
             );
 
             $executedBranches = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['branches'],
-                    static function (array $branch)
+                    $this->functionCoverageData[$key]->branches,
+                    static function (ProcessedBranchCoverageData $branch)
                     {
-                        return (bool) $branch['hit'];
+                        return (bool) $branch->hit;
                     },
                 ),
             );
@@ -602,17 +604,17 @@ final class File extends AbstractNode
         $executablePaths = 0;
         $executedPaths   = 0;
 
-        if (isset($this->functionCoverageData[$key]['paths'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $executablePaths = count(
-                $this->functionCoverageData[$key]['paths'],
+                $this->functionCoverageData[$key]->paths,
             );
 
             $executedPaths = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['paths'],
-                    static function (array $path)
+                    $this->functionCoverageData[$key]->paths,
+                    static function (ProcessedPathCoverageData $path)
                     {
-                        return (bool) $path['hit'];
+                        return (bool) $path->hit;
                     },
                 ),
             );

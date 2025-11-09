@@ -539,33 +539,33 @@ final class File extends AbstractNode
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
 
-            if (isset($this->functionCoverageData[$functionName]['branches'])) {
-                $this->functions[$functionName]->executableBranches = count(
-                    $this->functionCoverageData[$functionName]['branches'],
+            if (isset($this->functionCoverageData[$functionName])) {
+                $this->functions[$functionName]['executableBranches'] = count(
+                    $this->functionCoverageData[$functionName]->branches,
                 );
 
                 $this->functions[$functionName]->executedBranches = count(
                     array_filter(
-                        $this->functionCoverageData[$functionName]['branches'],
-                        static function (array $branch)
+                        $this->functionCoverageData[$functionName]->branches,
+                        static function (ProcessedBranchCoverageData $branch)
                         {
-                            return (bool) $branch['hit'];
+                            return (bool) $branch->hit;
                         },
                     ),
                 );
             }
 
-            if (isset($this->functionCoverageData[$functionName]['paths'])) {
-                $this->functions[$functionName]->executablePaths = count(
-                    $this->functionCoverageData[$functionName]['paths'],
+            if (isset($this->functionCoverageData[$functionName])) {
+                $this->functions[$functionName]['executablePaths'] = count(
+                    $this->functionCoverageData[$functionName]->paths,
                 );
 
                 $this->functions[$functionName]->executedPaths = count(
                     array_filter(
-                        $this->functionCoverageData[$functionName]['paths'],
-                        static function (array $path)
+                        $this->functionCoverageData[$functionName]->paths,
+                        static function (ProcessedPathCoverageData $path)
                         {
-                            return (bool) $path['hit'];
+                            return (bool) $path->hit;
                         },
                     ),
                 );

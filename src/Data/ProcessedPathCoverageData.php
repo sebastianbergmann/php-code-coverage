@@ -42,6 +42,10 @@ final class ProcessedPathCoverageData
     #[\NoDiscard]
     public function merge(self $data): self
     {
+        if ($data->hit === []) {
+            return $this;
+        }
+        
         return new self(
             $this->path,
             array_unique(array_merge($this->hit, $data->hit)),

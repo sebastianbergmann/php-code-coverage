@@ -52,6 +52,10 @@ final class ProcessedBranchCoverageData
     #[\NoDiscard]
     public function merge(self $data): self
     {
+        if ($data->hit === []) {
+            return $this;
+        }
+
         return new self(
             $this->op_start,
             $this->op_end,

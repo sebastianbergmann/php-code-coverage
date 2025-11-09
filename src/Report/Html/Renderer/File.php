@@ -781,14 +781,12 @@ final class File extends Renderer
 
         ksort($coverageData);
 
+        /** @var ProcessedFunctionCoverageData $methodData */
         foreach ($coverageData as $methodName => $methodData) {
-            if (!$methodData['branches']) {
-                continue;
-            }
-
             $branchStructure = '';
 
-            foreach ($methodData['branches'] as $branch) {
+            /** @var ProcessedBranchCoverageData $branch */
+            foreach ($methodData->branches as $branch) {
                 $branchStructure .= $this->renderBranchLines($branch, $codeLines, $testData);
             }
 
@@ -806,14 +804,14 @@ final class File extends Renderer
     /**
      * @param list<string> $codeLines
      */
-    private function renderBranchLines(array $branch, array $codeLines, array $testData): string
+    private function renderBranchLines(ProcessedBranchCoverageData $branch, array $codeLines, array $testData): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
 
         $lines = '';
 
-        $branchLines = range($branch['line_start'], $branch['line_end']);
+        $branchLines = range($branch->line_start, $branch->line_end);
         sort($branchLines); // sometimes end_line < start_line
 
         /** @var int $line */
@@ -825,7 +823,7 @@ final class File extends Renderer
             $popoverContent = '';
             $popoverTitle   = '';
 
-            $numTests = count($branch['hit']);
+            $numTests = count($branch->hit);
 
             if ($numTests === 0) {
                 $trClass = 'danger';
@@ -839,7 +837,7 @@ final class File extends Renderer
                     $popoverTitle = '1 test covers this branch';
                 }
 
-                foreach ($branch['hit'] as $test) {
+                foreach ($branch->hit as $test) {
                     if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
                         $lineCss = 'covered-by-medium-tests';
                     } elseif ($testData[$test]['size'] === 'small') {

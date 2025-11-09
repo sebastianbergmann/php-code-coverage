@@ -15,7 +15,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  */
-final class ProcessedFunctionCoverageData
+final readonly class ProcessedFunctionCoverageData
 {
     /**
      * @param XdebugFunctionCoverageType $xdebugCoverageData

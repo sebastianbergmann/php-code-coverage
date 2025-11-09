@@ -17,7 +17,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugBranchCoverageType from XdebugDriver
  */
-final readonly class ProcessedBranchCoverageData
+final class ProcessedBranchCoverageData
 {
     /**
      * @param XdebugBranchCoverageType $xdebugCoverageData
@@ -36,19 +36,20 @@ final readonly class ProcessedBranchCoverageData
     }
 
     public function __construct(
-        public int $op_start,
-        public int $op_end,
-        public int $line_start,
-        public int $line_end,
+        readonly public int $op_start,
+        readonly public int $op_end,
+        readonly public int $line_start,
+        readonly public int $line_end,
         /** @var list<TestIdType> */
         public array $hit,
         /** @var array<int, int> */
-        public array $out,
+        readonly public array $out,
         /** @var array<int, int> */
-        public array $out_hit,
+        readonly public array $out_hit,
     ) {
     }
 
+    #[\NoDiscard]
     public function merge(self $data): self
     {
         return new self(
@@ -65,19 +66,8 @@ final readonly class ProcessedBranchCoverageData
     /**
      * @param TestIdType $testCaseId
      */
-    public function recordHit(string $testCaseId): self
+    public function recordHit(string $testCaseId): void
     {
-        $hit   = $this->hit;
-        $hit[] = $testCaseId;
-
-        return new self(
-            $this->op_start,
-            $this->op_end,
-            $this->line_start,
-            $this->line_end,
-            $hit,
-            $this->out,
-            $this->out_hit,
-        );
+        $this->hit[] = $testCaseId;
     }
 }

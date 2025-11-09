@@ -50,8 +50,10 @@ final readonly class ProcessedFunctionCoverageData
     public function merge(self $data): self
     {
         $branches = null;
+
         if ($data->branches !== $this->branches) {
             $branches = $this->branches;
+
             foreach ($data->branches as $branchId => $branch) {
                 if (!isset($branches[$branchId])) {
                     $branches[$branchId] = $branch;
@@ -62,8 +64,10 @@ final readonly class ProcessedFunctionCoverageData
         }
 
         $paths = null;
+
         if ($data->paths !== $this->paths) {
             $paths = $this->paths;
+
             foreach ($data->paths as $pathId => $path) {
                 if (!isset($paths[$pathId])) {
                     $paths[$pathId] = $path;

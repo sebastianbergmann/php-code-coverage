@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_merge;
 use function array_unique;
+use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
@@ -36,20 +37,20 @@ final class ProcessedBranchCoverageData
     }
 
     public function __construct(
-        readonly public int $op_start,
-        readonly public int $op_end,
-        readonly public int $line_start,
-        readonly public int $line_end,
+        public readonly int $op_start,
+        public readonly int $op_end,
+        public readonly int $line_start,
+        public readonly int $line_end,
         /** @var list<TestIdType> */
         public array $hit,
         /** @var array<int, int> */
-        readonly public array $out,
+        public readonly array $out,
         /** @var array<int, int> */
-        readonly public array $out_hit,
+        public readonly array $out_hit,
     ) {
     }
 
-    #[\NoDiscard]
+    #[NoDiscard]
     public function merge(self $data): self
     {
         if ($data->hit === []) {

@@ -9,9 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
-use NoDiscard;
 use function array_merge;
 use function array_unique;
+use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
@@ -39,7 +39,7 @@ final class ProcessedPathCoverageData
     ) {
     }
 
-    #[\NoDiscard]
+    #[NoDiscard]
     public function merge(self $data): self
     {
         if ($data->hit === []) {

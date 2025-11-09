@@ -9,12 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
-use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;

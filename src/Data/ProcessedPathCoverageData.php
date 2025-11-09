@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use NoDiscard;
 use function array_merge;
 use function array_unique;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
@@ -17,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugPathCoverageType from XdebugDriver
  */
-final readonly class ProcessedPathCoverageData
+final class ProcessedPathCoverageData
 {
     /**
      * @param XdebugPathCoverageType $xdebugCoverageData
@@ -32,12 +33,13 @@ final readonly class ProcessedPathCoverageData
 
     public function __construct(
         /** @var array<int, int> */
-        public array $path,
+        public readonly array $path,
         /** @var list<TestIdType> */
         public array $hit,
     ) {
     }
 
+    #[\NoDiscard]
     public function merge(self $data): self
     {
         return new self(
@@ -49,14 +51,8 @@ final readonly class ProcessedPathCoverageData
     /**
      * @param TestIdType $testCaseId
      */
-    public function recordHit(string $testCaseId): self
+    public function recordHit(string $testCaseId): void
     {
-        $hit   = $this->hit;
-        $hit[] = $testCaseId;
-
-        return new self(
-            $this->path,
-            $hit,
-        );
+        $this->hit[] = $testCaseId;
     }
 }

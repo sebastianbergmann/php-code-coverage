@@ -75,29 +75,27 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setFunctionCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    'SomeClass->firstFunction' => [
-                        new ProcessedFunctionCoverageData(
-                            [
-                                new ProcessedBranchCoverageData(
-                                    0,
-                                    14,
-                                    20,
-                                    25,
-                                    [],
-                                    [],
-                                    [],
-                                ),
-                            ],
-                            [
-                                new ProcessedPathCoverageData(
-                                    [
-                                        0 => 0,
-                                    ],
-                                    [],
-                                ),
-                            ],
-                        ),
-                    ],
+                    'SomeClass->firstFunction' => new ProcessedFunctionCoverageData(
+                        [
+                            new ProcessedBranchCoverageData(
+                                0,
+                                14,
+                                20,
+                                25,
+                                [],
+                                [],
+                                [],
+                            ),
+                        ],
+                        [
+                            new ProcessedPathCoverageData(
+                                [
+                                    0 => 0,
+                                ],
+                                [],
+                            ),
+                        ],
+                    ),
                 ],
             ],
         );
@@ -106,7 +104,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $newCoverage->setFunctionCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    'SomeClass->firstFunction' => [new ProcessedFunctionCoverageData(
+                    'SomeClass->firstFunction' => new ProcessedFunctionCoverageData(
                         [
                             new ProcessedBranchCoverageData(
                                 0,
@@ -142,27 +140,27 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                             ),
                         ],
                     ),
-                        'SomeClass->secondFunction' => new ProcessedFunctionCoverageData(
-                            [
-                                new ProcessedBranchCoverageData(
-                                    0,
-                                    24,
-                                    30,
-                                    35,
-                                    [],
-                                    [],
-                                    [],
-                                ),
-                            ],
-                            [
-                                new ProcessedPathCoverageData(
-                                    [
-                                        0 => 0,
-                                    ],
-                                    [],
-                                ),
-                            ],
-                        )],
+                    'SomeClass->secondFunction' => new ProcessedFunctionCoverageData(
+                        [
+                            new ProcessedBranchCoverageData(
+                                0,
+                                24,
+                                30,
+                                35,
+                                [],
+                                [],
+                                [],
+                            ),
+                        ],
+                        [
+                            new ProcessedPathCoverageData(
+                                [
+                                    0 => 0,
+                                ],
+                                [],
+                            ),
+                        ],
+                    ),
                 ],
             ],
         );

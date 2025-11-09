@@ -45,7 +45,7 @@ final class ProcessedPathCoverageData
         if ($data->hit === []) {
             return $this;
         }
-        
+
         return new self(
             $this->path,
             array_unique(array_merge($this->hit, $data->hit)),

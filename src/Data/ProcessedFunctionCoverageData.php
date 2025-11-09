@@ -49,24 +49,32 @@ final readonly class ProcessedFunctionCoverageData
 
     public function merge(self $data): self
     {
-        $branches = $this->branches;
-
-        foreach ($data->branches as $branchId => $branch) {
-            if (!isset($branches[$branchId])) {
-                $branches[$branchId] = $branch;
-            } else {
-                $branches[$branchId] = $branches[$branchId]->merge($branch);
+        $branches = null;
+        if ($data->branches !== $this->branches) {
+            $branches = $this->branches;
+            foreach ($data->branches as $branchId => $branch) {
+                if (!isset($branches[$branchId])) {
+                    $branches[$branchId] = $branch;
+                } else {
+                    $branches[$branchId] = $branches[$branchId]->merge($branch);
+                }
             }
         }
 
-        $paths = $this->paths;
-
-        foreach ($data->paths as $pathId => $path) {
-            if (!isset($paths[$pathId])) {
-                $paths[$pathId] = $path;
-            } else {
-                $paths[$pathId] = $paths[$pathId]->merge($path);
+        $paths = null;
+        if ($data->paths !== $this->paths) {
+            $paths = $this->paths;
+            foreach ($data->paths as $pathId => $path) {
+                if (!isset($paths[$pathId])) {
+                    $paths[$pathId] = $path;
+                } else {
+                    $paths[$pathId] = $paths[$pathId]->merge($path);
+                }
             }
+        }
+
+        if ($branches === null && $paths === null) {
+            return $this;
         }
 
         return new self(
@@ -83,6 +91,9 @@ final readonly class ProcessedFunctionCoverageData
         $this->branches[$branchId]->recordHit($testCaseId);
     }
 
+    /**
+     * @param TestIdType $testCaseId
+     */
     public function recordPathHit(int $pathId, string $testCaseId): void
     {
         $this->paths[$pathId]->recordHit($testCaseId);

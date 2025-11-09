@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function array_merge;
+use function array_unique;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
@@ -17,26 +19,10 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  */
 final readonly class ProcessedBranchCoverageData
 {
-    public function __construct(
-        public int   $op_start,
-        public int   $op_end,
-        public int   $line_start,
-        public int   $line_end,
-        /** @var list<TestIdType> */
-        public array $hit,
-        /** @var array<int, int> */
-        public array $out,
-        /** @var array<int, int> */
-        public array $out_hit,
-
-    )
-    {
-    }
-
     /**
      * @param XdebugBranchCoverageType $xdebugCoverageData
      */
-    static public function fromXdebugCoverage(array $xdebugCoverageData): self
+    public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
         return new self(
             $xdebugCoverageData['op_start'],
@@ -47,6 +33,20 @@ final readonly class ProcessedBranchCoverageData
             $xdebugCoverageData['out'],
             $xdebugCoverageData['out_hit'],
         );
+    }
+
+    public function __construct(
+        public int $op_start,
+        public int $op_end,
+        public int $line_start,
+        public int $line_end,
+        /** @var list<TestIdType> */
+        public array $hit,
+        /** @var array<int, int> */
+        public array $out,
+        /** @var array<int, int> */
+        public array $out_hit,
+    ) {
     }
 
     public function merge(self $data): self
@@ -65,8 +65,9 @@ final readonly class ProcessedBranchCoverageData
     /**
      * @param TestIdType $testCaseId
      */
-    public function recordHit(string $testCaseId): self {
-        $hit = $this->hit;
+    public function recordHit(string $testCaseId): self
+    {
+        $hit   = $this->hit;
         $hit[] = $testCaseId;
 
         return new self(
@@ -78,6 +79,5 @@ final readonly class ProcessedBranchCoverageData
             $this->out,
             $this->out_hit,
         );
-
     }
 }

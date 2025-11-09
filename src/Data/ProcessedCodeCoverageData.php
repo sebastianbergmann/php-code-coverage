@@ -236,7 +236,7 @@ final class ProcessedCodeCoverageData
      *
      * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
-    private function initPreviouslyUnseenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
+    private function initPreviouslyUnseenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
     {
         if (is_array($functionData)) {
             $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
@@ -252,14 +252,14 @@ final class ProcessedCodeCoverageData
      *
      * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
-    private function initPreviouslySeenFunction(string $file, string $functionName, ProcessedFunctionCoverageData|array $functionData): void
+    private function initPreviouslySeenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
     {
         if (is_array($functionData)) {
             $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
         }
 
         $this->functionCoverage[$file][$functionName] = $this->functionCoverage[$file][$functionName]->merge(
-            $functionData
+            $functionData,
         );
     }
 }

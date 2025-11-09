@@ -15,39 +15,43 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  */
-final class ProcessedFunctionCoverageData {
-    public function __construct(
-        /** @var array<int, ProcessedBranchCoverageData> */
-        public array $branches,
-        /** @var array<int, ProcessedPathCoverageData> */
-        public array $paths,
-
-    ) {}
-
+final class ProcessedFunctionCoverageData
+{
     /**
      * @param XdebugFunctionCoverageType $xdebugCoverageData
      */
-    static public function fromXdebugCoverage(array $xdebugCoverageData): self
+    public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
         $branches = [];
-        foreach($xdebugCoverageData['branches'] as $branchId => $branch) {
+
+        foreach ($xdebugCoverageData['branches'] as $branchId => $branch) {
             $branches[$branchId] = ProcessedBranchCoverageData::fromXdebugCoverage($branch);
         }
         $paths = [];
-        foreach($xdebugCoverageData['paths'] as $pathId => $path) {
+
+        foreach ($xdebugCoverageData['paths'] as $pathId => $path) {
             $paths[$pathId] = ProcessedPathCoverageData::fromXdebugCoverage($path);
         }
 
         return new self(
             $branches,
-            $paths
+            $paths,
         );
+    }
+
+    public function __construct(
+        /** @var array<int, ProcessedBranchCoverageData> */
+        public array $branches,
+        /** @var array<int, ProcessedPathCoverageData> */
+        public array $paths,
+    ) {
     }
 
     public function merge(self $data): self
     {
         $branches = $this->branches;
-        foreach($data->branches as $branchId => $branch) {
+
+        foreach ($data->branches as $branchId => $branch) {
             if (!isset($branches[$branchId])) {
                 $branches[$branchId] = $branch;
             } else {
@@ -56,7 +60,8 @@ final class ProcessedFunctionCoverageData {
         }
 
         $paths = $this->paths;
-        foreach($data->paths as $pathId => $path) {
+
+        foreach ($data->paths as $pathId => $path) {
             if (!isset($paths[$pathId])) {
                 $paths[$pathId] = $path;
             } else {
@@ -66,18 +71,20 @@ final class ProcessedFunctionCoverageData {
 
         return new self(
             $branches,
-            $paths
+            $paths,
         );
     }
 
     /**
      * @param TestIdType $testCaseId
      */
-    public function recordBranchHit(int $branchId, string $testCaseId): void {
+    public function recordBranchHit(int $branchId, string $testCaseId): void
+    {
         $this->branches[$branchId]->recordHit($testCaseId);
     }
 
-    public function recordPathHit(int $pathId, string $testCaseId): void {
+    public function recordPathHit(int $pathId, string $testCaseId): void
+    {
         $this->paths[$pathId]->recordHit($testCaseId);
     }
 }

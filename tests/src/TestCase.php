@@ -9,14 +9,14 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function rmdir;
 use function unlink;
 use BankAccount;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;

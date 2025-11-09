@@ -77,7 +77,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                 '/some/path/SomeClass.php' => [
                     'SomeClass->firstFunction' => new ProcessedFunctionCoverageData(
                         [
-                            new ProcessedBranchCoverageData(
+                            0 => new ProcessedBranchCoverageData(
                                 0,
                                 14,
                                 20,
@@ -88,7 +88,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                             ),
                         ],
                         [
-                            new ProcessedPathCoverageData(
+                            0 => new ProcessedPathCoverageData(
                                 [
                                     0 => 0,
                                 ],
@@ -106,7 +106,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                 '/some/path/SomeClass.php' => [
                     'SomeClass->firstFunction' => new ProcessedFunctionCoverageData(
                         [
-                            new ProcessedBranchCoverageData(
+                            0 => new ProcessedBranchCoverageData(
                                 0,
                                 14,
                                 20,
@@ -115,7 +115,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                                 [],
                                 [],
                             ),
-                            new ProcessedBranchCoverageData(
+                            1 => new ProcessedBranchCoverageData(
                                 15,
                                 16,
                                 26,
@@ -126,13 +126,13 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                             ),
                         ],
                         [
-                            new ProcessedPathCoverageData(
+                            0 => new ProcessedPathCoverageData(
                                 [
                                     0 => 0,
                                 ],
                                 [],
                             ),
-                            new ProcessedPathCoverageData(
+                            1 => new ProcessedPathCoverageData(
                                 [
                                     0 => 1,
                                 ],
@@ -142,7 +142,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                     ),
                     'SomeClass->secondFunction' => new ProcessedFunctionCoverageData(
                         [
-                            new ProcessedBranchCoverageData(
+                            0 => new ProcessedBranchCoverageData(
                                 0,
                                 24,
                                 30,
@@ -153,7 +153,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
                             ),
                         ],
                         [
-                            new ProcessedPathCoverageData(
+                            0 => new ProcessedPathCoverageData(
                                 [
                                     0 => 0,
                                 ],

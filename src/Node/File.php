@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use function array_filter;
 use function count;
 use function range;
@@ -664,33 +666,33 @@ final class File extends AbstractNode
 
         $key = $className . '->' . $method->name();
 
-        if (isset($this->functionCoverageData[$key]['branches'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $methodData['executableBranches'] = count(
-                $this->functionCoverageData[$key]['branches'],
+                $this->functionCoverageData[$key]->branches,
             );
 
             $methodData['executedBranches'] = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['branches'],
-                    static function (array $branch)
+                    $this->functionCoverageData[$key]->branches,
+                    static function (ProcessedBranchCoverageData $branch)
                     {
-                        return (bool) $branch['hit'];
+                        return (bool) $branch->hit;
                     },
                 ),
             );
         }
 
-        if (isset($this->functionCoverageData[$key]['paths'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $methodData['executablePaths'] = count(
-                $this->functionCoverageData[$key]['paths'],
+                $this->functionCoverageData[$key]->paths,
             );
 
             $methodData['executedPaths'] = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['paths'],
-                    static function (array $path)
+                    $this->functionCoverageData[$key]->paths,
+                    static function (ProcessedPathCoverageData $path)
                     {
-                        return (bool) $path['hit'];
+                        return (bool) $path->hit;
                     },
                 ),
             );

@@ -9,9 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
-use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use const ENT_COMPAT;
 use const ENT_HTML401;
 use const ENT_SUBSTITUTE;
@@ -105,6 +102,9 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
@@ -911,7 +911,7 @@ final class File extends Renderer
 
     /**
      * @param array<int, ProcessedBranchCoverageData> $branches
-     * @param list<string> $codeLines
+     * @param list<string>                            $codeLines
      */
     private function renderPathLines(ProcessedPathCoverageData $path, array $branches, array $codeLines, array $testData): string
     {

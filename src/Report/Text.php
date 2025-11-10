@@ -190,7 +190,7 @@ final class Text
                 $coveredMethods          = 0;
                 $classMethods            = 0;
 
-                foreach ($class['methods'] as $method) {
+                foreach ($class->methods as $method) {
                     /** @phpstan-ignore equal.notAllowed */
                     if ($method->executableLines == 0) {
                         continue;
@@ -211,7 +211,7 @@ final class Text
                 }
 
                 $classCoverage[$className] = [
-                    'namespace'         => $class['namespace'],
+                    'namespace'         => $class->namespace,
                     'className'         => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,

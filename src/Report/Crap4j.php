@@ -70,7 +70,7 @@ final readonly class Crap4j
             $classes = $item->classesAndTraits();
 
             foreach ($classes as $className => $class) {
-                foreach ($class['methods'] as $methodName => $method) {
+                foreach ($class->methods as $methodName => $method) {
                     $crapLoad = $this->crapLoad((float) $method->crap, $method->ccn, $method->coverage);
 
                     $fullCrap     += $method->crap;
@@ -83,8 +83,8 @@ final readonly class Crap4j
 
                     $methodNode = $document->createElement('method');
 
-                    if ($class['namespace'] !== '') {
-                        $namespace = $class['namespace'];
+                    if ($class->namespace !== '') {
+                        $namespace = $class->namespace;
                     }
 
                     $methodNode->appendChild($document->createElement('package', $namespace));

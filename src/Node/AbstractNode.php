@@ -15,13 +15,13 @@ use function str_ends_with;
 use function str_replace;
 use function substr;
 use Countable;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type ProcessedFunctionType from File
  * @phpstan-import-type ProcessedClassType from File
  * @phpstan-import-type ProcessedTraitType from File
  */
@@ -190,7 +190,7 @@ abstract class AbstractNode implements Countable
         }
 
         foreach ($this->functions() as $function) {
-            $ccn += $function['ccn'];
+            $ccn += $function->ccn;
         }
 
         return $ccn;

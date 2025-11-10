@@ -20,6 +20,7 @@ use function sprintf;
 use function str_replace;
 use function uasort;
 use function usort;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
@@ -102,11 +103,11 @@ final class Dashboard extends Renderer
                 }
 
                 $result['method'][] = [
-                    $method['coverage'],
-                    $method['ccn'],
-                    str_replace($baseLink, '', $method['link']),
+                    $method->coverage,
+                    $method->ccn,
+                    str_replace($baseLink, '', $method->link),
                     $methodName,
-                    $method['crap'],
+                    $method->crap,
                 ];
             }
 
@@ -173,12 +174,12 @@ final class Dashboard extends Renderer
 
         foreach ($classes as $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] === 0) {
+                if ($method->coverage === 0) {
                     $result['method']['0%']++;
-                } elseif ($method['coverage'] === 100) {
+                } elseif ($method->coverage === 100) {
                     $result['method']['100%']++;
                 } else {
-                    $key = floor($method['coverage'] / 10) * 10;
+                    $key = floor($method->coverage / 10) * 10;
                     $key = $key . '-' . ($key + 10) . '%';
                     $result['method'][$key]++;
                 }
@@ -219,14 +220,14 @@ final class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->thresholds->highLowerBound()) {
+                if ($method->coverage < $this->thresholds->highLowerBound()) {
                     $key = $methodName;
 
                     if ($className !== '*') {
                         $key = $className . '::' . $methodName;
                     }
 
-                    $leastTestedMethods[$key] = $method['coverage'];
+                    $leastTestedMethods[$key] = $method->coverage;
                 }
             }
 
@@ -252,7 +253,7 @@ final class Dashboard extends Renderer
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d%%</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
+                str_replace($baseLink, '', $classes[$class]['methods'][$method]->link),
                 $methodName,
                 $method,
                 $coverage,
@@ -275,7 +276,7 @@ final class Dashboard extends Renderer
 
         foreach ($classes as $className => $class) {
             foreach ($class['methods'] as $methodName => $method) {
-                if ($method['coverage'] < $this->thresholds->highLowerBound() && $method['ccn'] > 1) {
+                if ($method->coverage < $this->thresholds->highLowerBound() && $method->ccn > 1) {
                     $key = $methodName;
 
                     if ($className !== '*') {
@@ -296,9 +297,9 @@ final class Dashboard extends Renderer
         {
             return ((int) ($a['crap']) <=> (int) ($b['crap'])) * -1;
         });
-        uasort($methodRisks, static function (array $a, array $b)
+        uasort($methodRisks, static function (ProcessedMethodType $a, ProcessedMethodType $b)
         {
-            return ((int) ($a['crap']) <=> (int) ($b['crap'])) * -1;
+            return ((int) ($a->crap) <=> (int) ($b->crap)) * -1;
         });
 
         foreach ($classRisks as $className => $class) {
@@ -317,12 +318,12 @@ final class Dashboard extends Renderer
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%.1f%%</td><td class="text-right">%d</td><td class="text-right">%d</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
+                str_replace($baseLink, '', $classes[$class]['methods'][$method]->link),
                 $methodName,
                 $method,
-                $methodVals['coverage'],
-                $methodVals['ccn'],
-                $methodVals['crap'],
+                $methodVals->coverage,
+                $methodVals->ccn,
+                $methodVals->crap,
             );
         }
 

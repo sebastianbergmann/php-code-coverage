@@ -102,6 +102,8 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
@@ -111,8 +113,6 @@ use SebastianBergmann\Template\Template;
 /**
  * @phpstan-import-type ProcessedClassType from FileNode
  * @phpstan-import-type ProcessedTraitType from FileNode
- * @phpstan-import-type ProcessedMethodType from FileNode
- * @phpstan-import-type ProcessedFunctionType from FileNode
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -341,10 +341,10 @@ final class File extends Renderer
             $numTestedMethods = 0;
 
             foreach ($item['methods'] as $method) {
-                if ($method['executableLines'] > 0) {
+                if ($method->executableLines > 0) {
                     $numMethods++;
 
-                    if ($method['executedLines'] === $method['executableLines']) {
+                    if ($method->executedLines === $method->executableLines) {
                         $numTestedMethods++;
                     }
                 }
@@ -453,35 +453,32 @@ final class File extends Renderer
         return $buffer;
     }
 
-    /**
-     * @param ProcessedFunctionType|ProcessedMethodType $item
-     */
-    private function renderFunctionOrMethodItem(Template $template, array $item, string $indent = ''): string
+    private function renderFunctionOrMethodItem(Template $template, ProcessedFunctionType|ProcessedMethodType $item, string $indent = ''): string
     {
         $numMethods       = 0;
         $numTestedMethods = 0;
 
-        if ($item['executableLines'] > 0) {
+        if ($item->executableLines > 0) {
             $numMethods = 1;
 
-            if ($item['executedLines'] === $item['executableLines']) {
+            if ($item->executedLines === $item->executableLines) {
                 $numTestedMethods = 1;
             }
         }
 
         $executedLinesPercentage = Percentage::fromFractionAndTotal(
-            $item['executedLines'],
-            $item['executableLines'],
+            $item->executedLines,
+            $item->executableLines,
         );
 
         $executedBranchesPercentage = Percentage::fromFractionAndTotal(
-            $item['executedBranches'],
-            $item['executableBranches'],
+            $item->executedBranches,
+            $item->executableBranches,
         );
 
         $executedPathsPercentage = Percentage::fromFractionAndTotal(
-            $item['executedPaths'],
-            $item['executablePaths'],
+            $item->executedPaths,
+            $item->executablePaths,
         );
 
         $testedMethodsPercentage = Percentage::fromFractionAndTotal(
@@ -495,27 +492,27 @@ final class File extends Renderer
                 'name' => sprintf(
                     '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
-                    $item['startLine'],
-                    htmlspecialchars($item['signature'], self::HTML_SPECIAL_CHARS_FLAGS),
-                    $item['functionName'] ?? $item['methodName'],
+                    $item->startLine,
+                    htmlspecialchars($item->signature, self::HTML_SPECIAL_CHARS_FLAGS),
+                    $item instanceof ProcessedFunctionType ? $item->functionName : $item->methodName,
                 ),
                 'numMethods'                      => $numMethods,
                 'numTestedMethods'                => $numTestedMethods,
                 'linesExecutedPercent'            => $executedLinesPercentage->asFloat(),
                 'linesExecutedPercentAsString'    => $executedLinesPercentage->asString(),
-                'numExecutedLines'                => $item['executedLines'],
-                'numExecutableLines'              => $item['executableLines'],
+                'numExecutedLines'                => $item->executedLines,
+                'numExecutableLines'              => $item->executableLines,
                 'branchesExecutedPercent'         => $executedBranchesPercentage->asFloat(),
                 'branchesExecutedPercentAsString' => $executedBranchesPercentage->asString(),
-                'numExecutedBranches'             => $item['executedBranches'],
-                'numExecutableBranches'           => $item['executableBranches'],
+                'numExecutedBranches'             => $item->executedBranches,
+                'numExecutableBranches'           => $item->executableBranches,
                 'pathsExecutedPercent'            => $executedPathsPercentage->asFloat(),
                 'pathsExecutedPercentAsString'    => $executedPathsPercentage->asString(),
-                'numExecutedPaths'                => $item['executedPaths'],
-                'numExecutablePaths'              => $item['executablePaths'],
+                'numExecutedPaths'                => $item->executedPaths,
+                'numExecutablePaths'              => $item->executablePaths,
                 'testedMethodsPercent'            => $testedMethodsPercentage->asFloat(),
                 'testedMethodsPercentAsString'    => $testedMethodsPercentage->asString(),
-                'crap'                            => $item['crap'],
+                'crap'                            => $item->crap,
             ],
         );
     }

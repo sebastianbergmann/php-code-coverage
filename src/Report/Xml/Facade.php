@@ -23,9 +23,11 @@ use function substr;
 use DateTimeImmutable;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -36,9 +38,6 @@ use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
 
 /**
- * @phpstan-import-type ProcessedClassType from File
- * @phpstan-import-type ProcessedTraitType from File
- * @phpstan-import-type ProcessedFunctionType from File
  * @phpstan-import-type TestType from CodeCoverage
  */
 final class Facade
@@ -175,50 +174,44 @@ final class Facade
         $this->saveDocument($fileReport->asDom(), $file->id());
     }
 
-    /**
-     * @param ProcessedClassType|ProcessedTraitType $unit
-     */
-    private function processUnit(array $unit, Report $report): void
+    private function processUnit(ProcessedClassType|ProcessedTraitType $unit, Report $report): void
     {
-        if (isset($unit['className'])) {
-            $unitObject = $report->classObject($unit['className']);
+        if ($unit instanceof ProcessedClassType) {
+            $unitObject = $report->classObject($unit->className);
         } else {
-            $unitObject = $report->traitObject($unit['traitName']);
+            $unitObject = $report->traitObject($unit->traitName);
         }
 
         $unitObject->setLines(
-            $unit['startLine'],
-            $unit['executableLines'],
-            $unit['executedLines'],
+            $unit->startLine,
+            $unit->executableLines,
+            $unit->executedLines,
         );
 
-        $unitObject->setCrap((float) $unit['crap']);
-        $unitObject->setNamespace($unit['namespace']);
+        $unitObject->setCrap((float) $unit->crap);
+        $unitObject->setNamespace($unit->namespace);
 
-        foreach ($unit['methods'] as $method) {
-            $methodObject = $unitObject->addMethod($method['methodName']);
-            $methodObject->setSignature($method['signature']);
-            $methodObject->setLines((string) $method['startLine'], (string) $method['endLine']);
-            $methodObject->setCrap($method['crap']);
+        foreach ($unit->methods as $method) {
+            $methodObject = $unitObject->addMethod($method->methodName);
+            $methodObject->setSignature($method->signature);
+            $methodObject->setLines((string) $method->startLine, (string) $method->endLine);
+            $methodObject->setCrap($method->crap);
             $methodObject->setTotals(
-                (string) $method['executableLines'],
-                (string) $method['executedLines'],
-                (string) $method['coverage'],
+                (string) $method->executableLines,
+                (string) $method->executedLines,
+                (string) $method->coverage,
             );
         }
     }
 
-    /**
-     * @param ProcessedFunctionType $function
-     */
-    private function processFunction(array $function, Report $report): void
+    private function processFunction(ProcessedFunctionType $function, Report $report): void
     {
-        $functionObject = $report->functionObject($function['functionName']);
+        $functionObject = $report->functionObject($function->functionName);
 
-        $functionObject->setSignature($function['signature']);
-        $functionObject->setLines((string) $function['startLine']);
-        $functionObject->setCrap($function['crap']);
-        $functionObject->setTotals((string) $function['executableLines'], (string) $function['executedLines'], (string) $function['coverage']);
+        $functionObject->setSignature($function->signature);
+        $functionObject->setLines((string) $function->startLine);
+        $functionObject->setCrap($function->crap);
+        $functionObject->setTotals((string) $function->executableLines, (string) $function->executedLines, (string) $function->coverage);
     }
 
     /**

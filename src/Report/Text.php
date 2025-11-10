@@ -190,28 +190,28 @@ final class Text
                 $coveredMethods          = 0;
                 $classMethods            = 0;
 
-                foreach ($class['methods'] as $method) {
+                foreach ($class->methods as $method) {
                     /** @phpstan-ignore equal.notAllowed */
-                    if ($method['executableLines'] == 0) {
+                    if ($method->executableLines == 0) {
                         continue;
                     }
 
                     $classMethods++;
-                    $classExecutableLines    += $method['executableLines'];
-                    $classExecutedLines      += $method['executedLines'];
-                    $classExecutableBranches += $method['executableBranches'];
-                    $classExecutedBranches   += $method['executedBranches'];
-                    $classExecutablePaths    += $method['executablePaths'];
-                    $classExecutedPaths      += $method['executedPaths'];
+                    $classExecutableLines    += $method->executableLines;
+                    $classExecutedLines      += $method->executedLines;
+                    $classExecutableBranches += $method->executableBranches;
+                    $classExecutedBranches   += $method->executedBranches;
+                    $classExecutablePaths    += $method->executablePaths;
+                    $classExecutedPaths      += $method->executedPaths;
 
                     /** @phpstan-ignore equal.notAllowed */
-                    if ($method['coverage'] == 100) {
+                    if ($method->coverage == 100) {
                         $coveredMethods++;
                     }
                 }
 
                 $classCoverage[$className] = [
-                    'namespace'         => $class['namespace'],
+                    'namespace'         => $class->namespace,
                     'className'         => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,

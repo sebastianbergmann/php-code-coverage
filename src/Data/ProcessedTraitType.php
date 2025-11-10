@@ -12,13 +12,13 @@ namespace SebastianBergmann\CodeCoverage\Data;
 final class ProcessedTraitType
 {
     public function __construct(
-        public string $traitName,
-        public string $namespace,
+        public readonly string $traitName,
+        public readonly string $namespace,
         /**
          * @var array<string, ProcessedMethodType>
          */
         public array $methods,
-        public int $startLine,
+        public readonly int $startLine,
         public int $executableLines,
         public int $executedLines,
         public int $executableBranches,
@@ -28,7 +28,7 @@ final class ProcessedTraitType
         public int $ccn,
         public float|int $coverage,
         public int|string $crap,
-        public string $link,
+        public readonly string $link,
     ) {
     }
 }

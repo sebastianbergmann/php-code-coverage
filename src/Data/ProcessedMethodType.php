@@ -12,11 +12,11 @@ namespace SebastianBergmann\CodeCoverage\Data;
 final class ProcessedMethodType
 {
     public function __construct(
-        public string $methodName,
-        public string $visibility,
-        public string $signature,
-        public int $startLine,
-        public int $endLine,
+        public readonly string $methodName,
+        public readonly string $visibility,
+        public readonly string $signature,
+        public readonly int $startLine,
+        public readonly int $endLine,
         public int $executableLines,
         public int $executedLines,
         public int $executableBranches,
@@ -26,7 +26,7 @@ final class ProcessedMethodType
         public int $ccn,
         public float|int $coverage,
         public int|string $crap,
-        public string $link,
+        public readonly string $link,
     ) {
     }
 }

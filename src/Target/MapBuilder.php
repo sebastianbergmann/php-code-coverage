@@ -111,7 +111,7 @@ final readonly class MapBuilder
 
                 $this->process($functions, $function->namespacedName(), $file, $function->startLine(), $function->endLine());
 
-                foreach (range($function->startLine(), $function->endLine()) as $line) {
+                for ($line = $function->startLine(); $line <= $function->endLine(); $line++) {
                     $reverseLookup[$file . ':' . $line] = $function->namespacedName();
                 }
             }
@@ -202,7 +202,7 @@ final readonly class MapBuilder
 
             $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
 
-            foreach (range($method->startLine(), $method->endLine()) as $line) {
+            for ($line = $method->startLine(); $line <= $method->endLine(); $line++) {
                 $reverseLookup[$file . ':' . $line] = $methodName;
             }
         }
@@ -221,7 +221,7 @@ final readonly class MapBuilder
     {
         $parts = explode('\\', $namespace);
 
-        foreach (range(1, count($parts)) as $i) {
+        for ($i = 1; $i <= count($parts); $i++) {
             $this->process($data, implode('\\', array_slice($parts, 0, $i)), $file, $startLine, $endLine);
         }
     }

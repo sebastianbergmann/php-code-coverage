@@ -13,7 +13,6 @@ use const DIRECTORY_SEPARATOR;
 use function basename;
 use function count;
 use function preg_match;
-use function range;
 use function str_replace;
 use function time;
 use DOMImplementation;
@@ -170,7 +169,7 @@ final class Cobertura
 
                     $methodElement->appendChild($methodLinesElement);
 
-                    foreach (range($method['startLine'], $method['endLine']) as $line) {
+                    for ($line = $method['startLine']; $line <= $method['endLine']; $line++) {
                         if (!isset($coverageData[$line])) {
                             continue;
                         }
@@ -251,7 +250,7 @@ final class Cobertura
 
                 $methodElement->appendChild($methodLinesElement);
 
-                foreach (range($function['startLine'], $function['endLine']) as $line) {
+                for ($line = $function['startLine']; $line <= $function['endLine']; $line++) {
                     if (!isset($coverageData[$line])) {
                         continue;
                     }

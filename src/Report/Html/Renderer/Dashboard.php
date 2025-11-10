@@ -20,18 +20,16 @@ use function sprintf;
 use function str_replace;
 use function uasort;
 use function usort;
+use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
- * @phpstan-import-type ProcessedClassType from FileNode
- * @phpstan-import-type ProcessedTraitType from FileNode
- *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Dashboard extends Renderer
@@ -97,7 +95,7 @@ final class Dashboard extends Renderer
         $result = ['class' => [], 'method' => []];
 
         foreach ($classes as $className => $class) {
-            foreach ($class['methods'] as $methodName => $method) {
+            foreach ($class->methods as $methodName => $method) {
                 if ($className !== '*') {
                     $methodName = $className . '::' . $methodName;
                 }
@@ -112,11 +110,11 @@ final class Dashboard extends Renderer
             }
 
             $result['class'][] = [
-                $class['coverage'],
-                $class['ccn'],
-                str_replace($baseLink, '', $class['link']),
+                $class->coverage,
+                $class->ccn,
+                str_replace($baseLink, '', $class->link),
                 $className,
-                $class['crap'],
+                $class->crap,
             ];
         }
 
@@ -173,7 +171,7 @@ final class Dashboard extends Renderer
         ];
 
         foreach ($classes as $class) {
-            foreach ($class['methods'] as $methodName => $method) {
+            foreach ($class->methods as $method) {
                 if ($method->coverage === 0) {
                     $result['method']['0%']++;
                 } elseif ($method->coverage === 100) {
@@ -185,12 +183,12 @@ final class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] === 0) {
+            if ($class->coverage === 0) {
                 $result['class']['0%']++;
-            } elseif ($class['coverage'] === 100) {
+            } elseif ($class->coverage === 100) {
                 $result['class']['100%']++;
             } else {
-                $key = floor($class['coverage'] / 10) * 10;
+                $key = floor($class->coverage / 10) * 10;
                 $key = $key . '-' . ($key + 10) . '%';
                 $result['class'][$key]++;
             }
@@ -219,7 +217,7 @@ final class Dashboard extends Renderer
         $result             = ['class' => '', 'method' => ''];
 
         foreach ($classes as $className => $class) {
-            foreach ($class['methods'] as $methodName => $method) {
+            foreach ($class->methods as $methodName => $method) {
                 if ($method->coverage < $this->thresholds->highLowerBound()) {
                     $key = $methodName;
 
@@ -231,8 +229,8 @@ final class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] < $this->thresholds->highLowerBound()) {
-                $leastTestedClasses[$className] = $class['coverage'];
+            if ($class->coverage < $this->thresholds->highLowerBound()) {
+                $leastTestedClasses[$className] = $class->coverage;
             }
         }
 
@@ -242,7 +240,7 @@ final class Dashboard extends Renderer
         foreach ($leastTestedClasses as $className => $coverage) {
             $result['class'] .= sprintf(
                 '       <tr><td><a href="%s">%s</a></td><td class="text-right">%d%%</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$className]['link']),
+                str_replace($baseLink, '', $classes[$className]->link),
                 $className,
                 $coverage,
             );
@@ -253,7 +251,7 @@ final class Dashboard extends Renderer
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d%%</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$class]['methods'][$method]->link),
+                str_replace($baseLink, '', $classes[$class]->methods[$method]->link),
                 $methodName,
                 $method,
                 $coverage,
@@ -275,7 +273,7 @@ final class Dashboard extends Renderer
         $result      = ['class' => '', 'method' => ''];
 
         foreach ($classes as $className => $class) {
-            foreach ($class['methods'] as $methodName => $method) {
+            foreach ($class->methods as $methodName => $method) {
                 if ($method->coverage < $this->thresholds->highLowerBound() && $method->ccn > 1) {
                     $key = $methodName;
 
@@ -287,15 +285,15 @@ final class Dashboard extends Renderer
                 }
             }
 
-            if ($class['coverage'] < $this->thresholds->highLowerBound() &&
-                $class['ccn'] > count($class['methods'])) {
+            if ($class->coverage < $this->thresholds->highLowerBound() &&
+                $class->ccn > count($class->methods)) {
                 $classRisks[$className] = $class;
             }
         }
 
-        uasort($classRisks, static function (array $a, array $b)
+        uasort($classRisks, static function (ProcessedClassType|ProcessedTraitType $a, ProcessedClassType|ProcessedTraitType $b)
         {
-            return ((int) ($a['crap']) <=> (int) ($b['crap'])) * -1;
+            return ((int) ($a->crap) <=> (int) ($b->crap)) * -1;
         });
         uasort($methodRisks, static function (ProcessedMethodType $a, ProcessedMethodType $b)
         {
@@ -305,11 +303,11 @@ final class Dashboard extends Renderer
         foreach ($classRisks as $className => $class) {
             $result['class'] .= sprintf(
                 '       <tr><td><a href="%s">%s</a></td><td class="text-right">%.1f%%</td><td class="text-right">%d</td><td class="text-right">%d</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$className]['link']),
+                str_replace($baseLink, '', $classes[$className]->link),
                 $className,
-                $class['coverage'],
-                $class['ccn'],
-                $class['crap'],
+                $class->coverage,
+                $class->ccn,
+                $class->crap,
             );
         }
 
@@ -318,7 +316,7 @@ final class Dashboard extends Renderer
 
             $result['method'] .= sprintf(
                 '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%.1f%%</td><td class="text-right">%d</td><td class="text-right">%d</td></tr>' . "\n",
-                str_replace($baseLink, '', $classes[$class]['methods'][$method]->link),
+                str_replace($baseLink, '', $classes[$class]->methods[$method]->link),
                 $methodName,
                 $method,
                 $methodVals->coverage,

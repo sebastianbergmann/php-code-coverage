@@ -102,8 +102,10 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
@@ -111,9 +113,6 @@ use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
- * @phpstan-import-type ProcessedClassType from FileNode
- * @phpstan-import-type ProcessedTraitType from FileNode
- *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class File extends Renderer
@@ -340,7 +339,7 @@ final class File extends Renderer
             $numMethods       = 0;
             $numTestedMethods = 0;
 
-            foreach ($item['methods'] as $method) {
+            foreach ($item->methods as $method) {
                 if ($method->executableLines > 0) {
                     $numMethods++;
 
@@ -350,20 +349,20 @@ final class File extends Renderer
                 }
             }
 
-            if ($item['executableLines'] > 0) {
+            if ($item->executableLines > 0) {
                 $numClasses                   = 1;
                 $numTestedClasses             = $numTestedMethods === $numMethods ? 1 : 0;
                 $linesExecutedPercentAsString = Percentage::fromFractionAndTotal(
-                    $item['executedLines'],
-                    $item['executableLines'],
+                    $item->executedLines,
+                    $item->executableLines,
                 )->asString();
                 $branchesExecutedPercentAsString = Percentage::fromFractionAndTotal(
-                    $item['executedBranches'],
-                    $item['executableBranches'],
+                    $item->executedBranches,
+                    $item->executableBranches,
                 )->asString();
                 $pathsExecutedPercentAsString = Percentage::fromFractionAndTotal(
-                    $item['executedPaths'],
-                    $item['executablePaths'],
+                    $item->executedPaths,
+                    $item->executablePaths,
                 )->asString();
             } else {
                 $numClasses                      = 0;
@@ -392,35 +391,35 @@ final class File extends Renderer
                     'numMethods'           => $numMethods,
                     'numTestedMethods'     => $numTestedMethods,
                     'linesExecutedPercent' => Percentage::fromFractionAndTotal(
-                        $item['executedLines'],
-                        $item['executableLines'],
+                        $item->executedLines,
+                        $item->executableLines,
                     )->asFloat(),
                     'linesExecutedPercentAsString' => $linesExecutedPercentAsString,
-                    'numExecutedLines'             => $item['executedLines'],
-                    'numExecutableLines'           => $item['executableLines'],
+                    'numExecutedLines'             => $item->executedLines,
+                    'numExecutableLines'           => $item->executableLines,
                     'branchesExecutedPercent'      => Percentage::fromFractionAndTotal(
-                        $item['executedBranches'],
-                        $item['executableBranches'],
+                        $item->executedBranches,
+                        $item->executableBranches,
                     )->asFloat(),
                     'branchesExecutedPercentAsString' => $branchesExecutedPercentAsString,
-                    'numExecutedBranches'             => $item['executedBranches'],
-                    'numExecutableBranches'           => $item['executableBranches'],
+                    'numExecutedBranches'             => $item->executedBranches,
+                    'numExecutableBranches'           => $item->executableBranches,
                     'pathsExecutedPercent'            => Percentage::fromFractionAndTotal(
-                        $item['executedPaths'],
-                        $item['executablePaths'],
+                        $item->executedPaths,
+                        $item->executablePaths,
                     )->asFloat(),
                     'pathsExecutedPercentAsString' => $pathsExecutedPercentAsString,
-                    'numExecutedPaths'             => $item['executedPaths'],
-                    'numExecutablePaths'           => $item['executablePaths'],
+                    'numExecutedPaths'             => $item->executedPaths,
+                    'numExecutablePaths'           => $item->executablePaths,
                     'testedMethodsPercent'         => $testedMethodsPercentage->asFloat(),
                     'testedMethodsPercentAsString' => $testedMethodsPercentage->asString(),
                     'testedClassesPercent'         => $testedClassesPercentage->asFloat(),
                     'testedClassesPercentAsString' => $testedClassesPercentage->asString(),
-                    'crap'                         => $item['crap'],
+                    'crap'                         => $item->crap,
                 ],
             );
 
-            foreach ($item['methods'] as $method) {
+            foreach ($item->methods as $method) {
                 $buffer .= $this->renderFunctionOrMethodItem(
                     $methodItemTemplate,
                     $method,

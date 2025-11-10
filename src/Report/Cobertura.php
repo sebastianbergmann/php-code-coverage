@@ -114,15 +114,15 @@ final class Cobertura
             $coverageData = $item->lineCoverageData();
 
             foreach ($classes as $className => $class) {
-                $complexity        += $class['ccn'];
-                $packageComplexity += $class['ccn'];
+                $complexity        += $class->ccn;
+                $packageComplexity += $class->ccn;
 
-                $linesValid   = $class['executableLines'];
-                $linesCovered = $class['executedLines'];
+                $linesValid   = $class->executableLines;
+                $linesCovered = $class->executedLines;
                 $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
 
-                $branchesValid   = $class['executableBranches'];
-                $branchesCovered = $class['executedBranches'];
+                $branchesValid   = $class->executableBranches;
+                $branchesCovered = $class->executedBranches;
                 $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
                 $classElement = $document->createElement('class');
@@ -131,7 +131,7 @@ final class Cobertura
                 $classElement->setAttribute('filename', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
                 $classElement->setAttribute('line-rate', (string) $lineRate);
                 $classElement->setAttribute('branch-rate', (string) $branchRate);
-                $classElement->setAttribute('complexity', (string) $class['ccn']);
+                $classElement->setAttribute('complexity', (string) $class->ccn);
 
                 $classesElement->appendChild($classElement);
 
@@ -143,7 +143,7 @@ final class Cobertura
 
                 $classElement->appendChild($classLinesElement);
 
-                foreach ($class['methods'] as $methodName => $method) {
+                foreach ($class->methods as $methodName => $method) {
                     if ($method->executableLines === 0) {
                         continue;
                     }

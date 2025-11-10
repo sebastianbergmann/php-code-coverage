@@ -23,10 +23,11 @@ use function substr;
 use DateTimeImmutable;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -37,8 +38,6 @@ use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
 
 /**
- * @phpstan-import-type ProcessedClassType from File
- * @phpstan-import-type ProcessedTraitType from File
  * @phpstan-import-type TestType from CodeCoverage
  */
 final class Facade
@@ -176,10 +175,7 @@ final class Facade
         $this->saveDocument($fileReport->asDom(), $file->id());
     }
 
-    /**
-     * @param ProcessedClassType|ProcessedTraitType $unit
-     */
-    private function processUnit(array $unit, Report $report): void
+    private function processUnit(ProcessedClassType|ProcessedTraitType $unit, Report $report): void
     {
         if (isset($unit['className'])) {
             $unitObject = $report->classObject(
@@ -201,7 +197,7 @@ final class Facade
             );
         }
 
-        foreach ($unit['methods'] as $method) {
+        foreach ($unit->methods as $method) {
             $methodObject = $unitObject->addMethod($method->methodName);
             $methodObject->setSignature($method->signature);
             $methodObject->setLines((string) $method->startLine, (string) $method->endLine);

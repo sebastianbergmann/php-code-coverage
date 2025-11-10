@@ -74,11 +74,11 @@ final class Clover
                 $classMethods           = 0;
 
                 // Assumption: one namespace per file
-                if ($class['namespace'] !== '') {
-                    $namespace = $class['namespace'];
+                if ($class->namespace !== '') {
+                    $namespace = $class->namespace;
                 }
 
-                foreach ($class['methods'] as $methodName => $method) {
+                foreach ($class->methods as $methodName => $method) {
                     /** @phpstan-ignore equal.notAllowed */
                     if ($method->executableLines == 0) {
                         continue;
@@ -118,15 +118,15 @@ final class Clover
                 $xmlFile->appendChild($xmlClass);
 
                 $xmlMetrics = $xmlDocument->createElement('metrics');
-                $xmlMetrics->setAttribute('complexity', (string) $class['ccn']);
+                $xmlMetrics->setAttribute('complexity', (string) $class->ccn);
                 $xmlMetrics->setAttribute('methods', (string) $classMethods);
                 $xmlMetrics->setAttribute('coveredmethods', (string) $coveredMethods);
-                $xmlMetrics->setAttribute('conditionals', (string) $class['executableBranches']);
-                $xmlMetrics->setAttribute('coveredconditionals', (string) $class['executedBranches']);
+                $xmlMetrics->setAttribute('conditionals', (string) $class->executableBranches);
+                $xmlMetrics->setAttribute('coveredconditionals', (string) $class->executedBranches);
                 $xmlMetrics->setAttribute('statements', (string) $classStatements);
                 $xmlMetrics->setAttribute('coveredstatements', (string) $coveredClassStatements);
-                $xmlMetrics->setAttribute('elements', (string) ($classMethods + $classStatements + $class['executableBranches']));
-                $xmlMetrics->setAttribute('coveredelements', (string) ($coveredMethods + $coveredClassStatements + $class['executedBranches']));
+                $xmlMetrics->setAttribute('elements', (string) ($classMethods + $classStatements + $class->executableBranches));
+                $xmlMetrics->setAttribute('coveredelements', (string) ($coveredMethods + $coveredClassStatements + $class->executedBranches));
                 $xmlClass->appendChild($xmlMetrics);
             }
 

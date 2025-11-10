@@ -13,6 +13,8 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
@@ -26,40 +28,6 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  * @phpstan-import-type TestType from CodeCoverage
  * @phpstan-import-type LinesType from AnalysisResult
  *
- * @phpstan-type ProcessedFunctionType array{
- *     functionName: string,
- *     namespace: string,
- *     signature: string,
- *     startLine: int,
- *     endLine: int,
- *     executableLines: int,
- *     executedLines: int,
- *     executableBranches: int,
- *     executedBranches: int,
- *     executablePaths: int,
- *     executedPaths: int,
- *     ccn: int,
- *     coverage: int|float,
- *     crap: int|string,
- *     link: string
- * }
- * @phpstan-type ProcessedMethodType array{
- *     methodName: string,
- *     visibility: string,
- *     signature: string,
- *     startLine: int,
- *     endLine: int,
- *     executableLines: int,
- *     executedLines: int,
- *     executableBranches: int,
- *     executedBranches: int,
- *     executablePaths: int,
- *     executedPaths: int,
- *     ccn: int,
- *     coverage: float|int,
- *     crap: int|string,
- *     link: string
- * }
  * @phpstan-type ProcessedClassType array{
  *     className: string,
  *     namespace: string,
@@ -136,7 +104,7 @@ final class File extends AbstractNode
     private ?int $numTestedFunctions = null;
 
     /**
-     * @var array<int, array|array{0: Class_, 1: string}|array{0: Function_}|array{0: Trait_, 1: string}>
+     * @var array<int, array|array{0: Class_, 1: string}|array{0: Function_|ProcessedFunctionType|ProcessedMethodType}|array{0: Trait_, 1: string}>
      */
     private array $codeUnitsByLine = [];
 
@@ -251,7 +219,7 @@ final class File extends AbstractNode
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
-                    if ($method['executableLines'] > 0) {
+                    if ($method->executableLines > 0) {
                         $this->numClasses++;
 
                         continue 2;
@@ -275,7 +243,7 @@ final class File extends AbstractNode
 
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
-                    if ($method['executableLines'] > 0) {
+                    if ($method->executableLines > 0) {
                         $this->numTraits++;
 
                         continue 2;
@@ -299,7 +267,7 @@ final class File extends AbstractNode
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
-                    if ($method['executableLines'] > 0) {
+                    if ($method->executableLines > 0) {
                         $this->numMethods++;
                     }
                 }
@@ -307,7 +275,7 @@ final class File extends AbstractNode
 
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
-                    if ($method['executableLines'] > 0) {
+                    if ($method->executableLines > 0) {
                         $this->numMethods++;
                     }
                 }
@@ -324,8 +292,8 @@ final class File extends AbstractNode
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
-                    if ($method['executableLines'] > 0 &&
-                        $method['coverage'] === 100) {
+                    if ($method->executableLines > 0 &&
+                        $method->coverage === 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -333,8 +301,8 @@ final class File extends AbstractNode
 
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
-                    if ($method['executableLines'] > 0 &&
-                        $method['coverage'] === 100) {
+                    if ($method->executableLines > 0 &&
+                        $method->coverage === 100) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -355,8 +323,8 @@ final class File extends AbstractNode
             $this->numTestedFunctions = 0;
 
             foreach ($this->functions as $function) {
-                if ($function['executableLines'] > 0 &&
-                    $function['coverage'] === 100) {
+                if ($function->executableLines > 0 &&
+                    $function->coverage === 100) {
                     $this->numTestedFunctions++;
                 }
             }
@@ -383,7 +351,11 @@ final class File extends AbstractNode
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
-                    $codeUnit['executableLines']++;
+                    if ($codeUnit instanceof ProcessedMethodType || $codeUnit instanceof ProcessedFunctionType) {
+                        $codeUnit->executableLines++;
+                    } else {
+                        $codeUnit['executableLines']++;
+                    }
                 }
 
                 unset($codeUnit);
@@ -392,7 +364,11 @@ final class File extends AbstractNode
 
                 if (count($this->lineCoverageData[$lineNumber]) > 0) {
                     foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
-                        $codeUnit['executedLines']++;
+                        if ($codeUnit instanceof ProcessedMethodType || $codeUnit instanceof ProcessedFunctionType) {
+                            $codeUnit->executedLines++;
+                        } else {
+                            $codeUnit['executedLines']++;
+                        }
                     }
 
                     unset($codeUnit);
@@ -404,14 +380,14 @@ final class File extends AbstractNode
 
         foreach ($this->traits as &$trait) {
             foreach ($trait['methods'] as &$method) {
-                $methodLineCoverage   = $method['executableLines'] > 0 ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
-                $methodBranchCoverage = $method['executableBranches'] > 0 ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
-                $methodPathCoverage   = $method['executablePaths'] > 0 ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+                $methodLineCoverage   = $method->executableLines > 0 ? ($method->executedLines / $method->executableLines) * 100 : 100;
+                $methodBranchCoverage = $method->executableBranches > 0 ? ($method->executedBranches / $method->executableBranches) * 100 : 0;
+                $methodPathCoverage   = $method->executablePaths > 0 ? ($method->executedPaths / $method->executablePaths) * 100 : 0;
 
-                $method['coverage'] = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
-                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
+                $method->coverage = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
+                $method->crap     = (new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
 
-                $trait['ccn'] += $method['ccn'];
+                $trait['ccn'] += $method->ccn;
             }
 
             unset($method);
@@ -432,14 +408,14 @@ final class File extends AbstractNode
 
         foreach ($this->classes as &$class) {
             foreach ($class['methods'] as &$method) {
-                $methodLineCoverage   = $method['executableLines'] > 0 ? ($method['executedLines'] / $method['executableLines']) * 100 : 100;
-                $methodBranchCoverage = $method['executableBranches'] > 0 ? ($method['executedBranches'] / $method['executableBranches']) * 100 : 0;
-                $methodPathCoverage   = $method['executablePaths'] > 0 ? ($method['executedPaths'] / $method['executablePaths']) * 100 : 0;
+                $methodLineCoverage   = $method->executableLines > 0 ? ($method->executedLines / $method->executableLines) * 100 : 100;
+                $methodBranchCoverage = $method->executableBranches > 0 ? ($method->executedBranches / $method->executableBranches) * 100 : 0;
+                $methodPathCoverage   = $method->executablePaths > 0 ? ($method->executedPaths / $method->executablePaths) * 100 : 0;
 
-                $method['coverage'] = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
-                $method['crap']     = (new CrapIndex($method['ccn'], $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
+                $method->coverage = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
+                $method->crap     = (new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
 
-                $class['ccn'] += $method['ccn'];
+                $class['ccn'] += $method->ccn;
             }
 
             unset($method);
@@ -459,14 +435,14 @@ final class File extends AbstractNode
         unset($class);
 
         foreach ($this->functions as &$function) {
-            $functionLineCoverage   = $function['executableLines'] > 0 ? ($function['executedLines'] / $function['executableLines']) * 100 : 100;
-            $functionBranchCoverage = $function['executableBranches'] > 0 ? ($function['executedBranches'] / $function['executableBranches']) * 100 : 0;
-            $functionPathCoverage   = $function['executablePaths'] > 0 ? ($function['executedPaths'] / $function['executablePaths']) * 100 : 0;
+            $functionLineCoverage   = $function->executableLines > 0 ? ($function->executedLines / $function->executableLines) * 100 : 100;
+            $functionBranchCoverage = $function->executableBranches > 0 ? ($function->executedBranches / $function->executableBranches) * 100 : 0;
+            $functionPathCoverage   = $function->executablePaths > 0 ? ($function->executedPaths / $function->executablePaths) * 100 : 0;
 
-            $function['coverage'] = $functionBranchCoverage > 0 ? $functionBranchCoverage : $functionLineCoverage;
-            $function['crap']     = (new CrapIndex($function['ccn'], $functionPathCoverage > 0 ? $functionPathCoverage : $functionLineCoverage))->asString();
+            $function->coverage = $functionBranchCoverage > 0 ? $functionBranchCoverage : $functionLineCoverage;
+            $function->crap     = (new CrapIndex($function->ccn, $functionPathCoverage > 0 ? $functionPathCoverage : $functionLineCoverage))->asString();
 
-            if ($function['coverage'] === 100) {
+            if ($function->coverage === 100) {
                 $this->numTestedFunctions++;
             }
         }
@@ -501,15 +477,15 @@ final class File extends AbstractNode
                 $methodData                                        = $this->newMethod($className, $method, $link);
                 $this->classes[$className]['methods'][$methodName] = $methodData;
 
-                $this->classes[$className]['executableBranches'] += $methodData['executableBranches'];
-                $this->classes[$className]['executedBranches']   += $methodData['executedBranches'];
-                $this->classes[$className]['executablePaths']    += $methodData['executablePaths'];
-                $this->classes[$className]['executedPaths']      += $methodData['executedPaths'];
+                $this->classes[$className]['executableBranches'] += $methodData->executableBranches;
+                $this->classes[$className]['executedBranches']   += $methodData->executedBranches;
+                $this->classes[$className]['executablePaths']    += $methodData->executablePaths;
+                $this->classes[$className]['executedPaths']      += $methodData->executedPaths;
 
-                $this->numExecutableBranches += $methodData['executableBranches'];
-                $this->numExecutedBranches   += $methodData['executedBranches'];
-                $this->numExecutablePaths    += $methodData['executablePaths'];
-                $this->numExecutedPaths      += $methodData['executedPaths'];
+                $this->numExecutableBranches += $methodData->executableBranches;
+                $this->numExecutedBranches   += $methodData->executedBranches;
+                $this->numExecutablePaths    += $methodData->executablePaths;
+                $this->numExecutedPaths      += $methodData->executedPaths;
 
                 foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
@@ -550,15 +526,15 @@ final class File extends AbstractNode
                 $methodData                                       = $this->newMethod($traitName, $method, $link);
                 $this->traits[$traitName]['methods'][$methodName] = $methodData;
 
-                $this->traits[$traitName]['executableBranches'] += $methodData['executableBranches'];
-                $this->traits[$traitName]['executedBranches']   += $methodData['executedBranches'];
-                $this->traits[$traitName]['executablePaths']    += $methodData['executablePaths'];
-                $this->traits[$traitName]['executedPaths']      += $methodData['executedPaths'];
+                $this->traits[$traitName]['executableBranches'] += $methodData->executableBranches;
+                $this->traits[$traitName]['executedBranches']   += $methodData->executedBranches;
+                $this->traits[$traitName]['executablePaths']    += $methodData->executablePaths;
+                $this->traits[$traitName]['executedPaths']      += $methodData->executedPaths;
 
-                $this->numExecutableBranches += $methodData['executableBranches'];
-                $this->numExecutedBranches   += $methodData['executedBranches'];
-                $this->numExecutablePaths    += $methodData['executablePaths'];
-                $this->numExecutedPaths      += $methodData['executedPaths'];
+                $this->numExecutableBranches += $methodData->executableBranches;
+                $this->numExecutedBranches   += $methodData->executedBranches;
+                $this->numExecutablePaths    += $methodData->executablePaths;
+                $this->numExecutedPaths      += $methodData->executedPaths;
 
                 foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
                     $this->codeUnitsByLine[$lineNumber] = [
@@ -578,34 +554,34 @@ final class File extends AbstractNode
         $link = $this->id() . '.html#';
 
         foreach ($functions as $functionName => $function) {
-            $this->functions[$functionName] = [
-                'functionName'       => $functionName,
-                'namespace'          => $function->namespace(),
-                'signature'          => $function->signature(),
-                'startLine'          => $function->startLine(),
-                'endLine'            => $function->endLine(),
-                'executableLines'    => 0,
-                'executedLines'      => 0,
-                'executableBranches' => 0,
-                'executedBranches'   => 0,
-                'executablePaths'    => 0,
-                'executedPaths'      => 0,
-                'ccn'                => $function->cyclomaticComplexity(),
-                'coverage'           => 0,
-                'crap'               => 0,
-                'link'               => $link . $function->startLine(),
-            ];
+            $this->functions[$functionName] = new ProcessedFunctionType(
+                $functionName,
+                $function->namespace(),
+                $function->signature(),
+                $function->startLine(),
+                $function->endLine(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                $function->cyclomaticComplexity(),
+                0,
+                0,
+                $link . $function->startLine(),
+            );
 
             foreach (range($function->startLine(), $function->endLine()) as $lineNumber) {
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
 
             if (isset($this->functionCoverageData[$functionName]['branches'])) {
-                $this->functions[$functionName]['executableBranches'] = count(
+                $this->functions[$functionName]->executableBranches = count(
                     $this->functionCoverageData[$functionName]['branches'],
                 );
 
-                $this->functions[$functionName]['executedBranches'] = count(
+                $this->functions[$functionName]->executedBranches = count(
                     array_filter(
                         $this->functionCoverageData[$functionName]['branches'],
                         static function (array $branch)
@@ -617,11 +593,11 @@ final class File extends AbstractNode
             }
 
             if (isset($this->functionCoverageData[$functionName]['paths'])) {
-                $this->functions[$functionName]['executablePaths'] = count(
+                $this->functions[$functionName]->executablePaths = count(
                     $this->functionCoverageData[$functionName]['paths'],
                 );
 
-                $this->functions[$functionName]['executedPaths'] = count(
+                $this->functions[$functionName]->executedPaths = count(
                     array_filter(
                         $this->functionCoverageData[$functionName]['paths'],
                         static function (array $path)
@@ -632,44 +608,26 @@ final class File extends AbstractNode
                 );
             }
 
-            $this->numExecutableBranches += $this->functions[$functionName]['executableBranches'];
-            $this->numExecutedBranches   += $this->functions[$functionName]['executedBranches'];
-            $this->numExecutablePaths    += $this->functions[$functionName]['executablePaths'];
-            $this->numExecutedPaths      += $this->functions[$functionName]['executedPaths'];
+            $this->numExecutableBranches += $this->functions[$functionName]->executableBranches;
+            $this->numExecutedBranches   += $this->functions[$functionName]->executedBranches;
+            $this->numExecutablePaths    += $this->functions[$functionName]->executablePaths;
+            $this->numExecutedPaths      += $this->functions[$functionName]->executedPaths;
         }
     }
 
-    /**
-     * @return ProcessedMethodType
-     */
-    private function newMethod(string $className, Method $method, string $link): array
+    private function newMethod(string $className, Method $method, string $link): ProcessedMethodType
     {
-        $methodData = [
-            'methodName'         => $method->name(),
-            'visibility'         => $method->visibility()->value,
-            'signature'          => $method->signature(),
-            'startLine'          => $method->startLine(),
-            'endLine'            => $method->endLine(),
-            'executableLines'    => 0,
-            'executedLines'      => 0,
-            'executableBranches' => 0,
-            'executedBranches'   => 0,
-            'executablePaths'    => 0,
-            'executedPaths'      => 0,
-            'ccn'                => $method->cyclomaticComplexity(),
-            'coverage'           => 0,
-            'crap'               => 0,
-            'link'               => $link . $method->startLine(),
-        ];
-
         $key = $className . '->' . $method->name();
 
+        $executableBranches = 0;
+        $executedBranches   = 0;
+
         if (isset($this->functionCoverageData[$key]['branches'])) {
-            $methodData['executableBranches'] = count(
+            $executableBranches = count(
                 $this->functionCoverageData[$key]['branches'],
             );
 
-            $methodData['executedBranches'] = count(
+            $executedBranches = count(
                 array_filter(
                     $this->functionCoverageData[$key]['branches'],
                     static function (array $branch)
@@ -680,12 +638,15 @@ final class File extends AbstractNode
             );
         }
 
+        $executablePaths = 0;
+        $executedPaths   = 0;
+
         if (isset($this->functionCoverageData[$key]['paths'])) {
-            $methodData['executablePaths'] = count(
+            $executablePaths = count(
                 $this->functionCoverageData[$key]['paths'],
             );
 
-            $methodData['executedPaths'] = count(
+            $executedPaths = count(
                 array_filter(
                     $this->functionCoverageData[$key]['paths'],
                     static function (array $path)
@@ -696,6 +657,22 @@ final class File extends AbstractNode
             );
         }
 
-        return $methodData;
+        return new ProcessedMethodType(
+            $method->name(),
+            $method->visibility()->value,
+            $method->signature(),
+            $method->startLine(),
+            $method->endLine(),
+            0,
+            0,
+            $executableBranches,
+            $executedBranches,
+            $executablePaths,
+            $executedPaths,
+            $method->cyclomaticComplexity(),
+            0,
+            0,
+            $link . $method->startLine(),
+        );
     }
 }

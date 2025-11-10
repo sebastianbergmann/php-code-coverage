@@ -13,6 +13,8 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
@@ -600,33 +602,33 @@ final class File extends AbstractNode
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
 
-            if (isset($this->functionCoverageData[$functionName]['branches'])) {
+            if (isset($this->functionCoverageData[$functionName])) {
                 $this->functions[$functionName]['executableBranches'] = count(
-                    $this->functionCoverageData[$functionName]['branches'],
+                    $this->functionCoverageData[$functionName]->branches,
                 );
 
                 $this->functions[$functionName]['executedBranches'] = count(
                     array_filter(
-                        $this->functionCoverageData[$functionName]['branches'],
-                        static function (array $branch)
+                        $this->functionCoverageData[$functionName]->branches,
+                        static function (ProcessedBranchCoverageData $branch)
                         {
-                            return (bool) $branch['hit'];
+                            return (bool) $branch->hit;
                         },
                     ),
                 );
             }
 
-            if (isset($this->functionCoverageData[$functionName]['paths'])) {
+            if (isset($this->functionCoverageData[$functionName])) {
                 $this->functions[$functionName]['executablePaths'] = count(
-                    $this->functionCoverageData[$functionName]['paths'],
+                    $this->functionCoverageData[$functionName]->paths,
                 );
 
                 $this->functions[$functionName]['executedPaths'] = count(
                     array_filter(
-                        $this->functionCoverageData[$functionName]['paths'],
-                        static function (array $path)
+                        $this->functionCoverageData[$functionName]->paths,
+                        static function (ProcessedPathCoverageData $path)
                         {
-                            return (bool) $path['hit'];
+                            return (bool) $path->hit;
                         },
                     ),
                 );
@@ -664,33 +666,33 @@ final class File extends AbstractNode
 
         $key = $className . '->' . $method->name();
 
-        if (isset($this->functionCoverageData[$key]['branches'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $methodData['executableBranches'] = count(
-                $this->functionCoverageData[$key]['branches'],
+                $this->functionCoverageData[$key]->branches,
             );
 
             $methodData['executedBranches'] = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['branches'],
-                    static function (array $branch)
+                    $this->functionCoverageData[$key]->branches,
+                    static function (ProcessedBranchCoverageData $branch)
                     {
-                        return (bool) $branch['hit'];
+                        return (bool) $branch->hit;
                     },
                 ),
             );
         }
 
-        if (isset($this->functionCoverageData[$key]['paths'])) {
+        if (isset($this->functionCoverageData[$key])) {
             $methodData['executablePaths'] = count(
-                $this->functionCoverageData[$key]['paths'],
+                $this->functionCoverageData[$key]->paths,
             );
 
             $methodData['executedPaths'] = count(
                 array_filter(
-                    $this->functionCoverageData[$key]['paths'],
-                    static function (array $path)
+                    $this->functionCoverageData[$key]->paths,
+                    static function (ProcessedPathCoverageData $path)
                     {
-                        return (bool) $path['hit'];
+                        return (bool) $path->hit;
                     },
                 ),
             );

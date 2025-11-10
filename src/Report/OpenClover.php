@@ -15,7 +15,6 @@ use function count;
 use function is_string;
 use function ksort;
 use function max;
-use function range;
 use function str_replace;
 use function time;
 use DOMDocument;
@@ -99,7 +98,7 @@ final class OpenClover
 
                     $methodCount = 0;
 
-                    foreach (range($method['startLine'], $method['endLine']) as $line) {
+                    for ($line = $method['startLine']; $line <= $method['endLine']; $line++) {
                         if (isset($coverageData[$line])) {
                             $methodCount = max($methodCount, count($coverageData[$line]));
                         }

@@ -609,7 +609,7 @@ final class File extends Renderer
 
         foreach ($functionCoverageData as $method) {
             foreach ($method['branches'] as $branch) {
-                foreach (range($branch['line_start'], $branch['line_end']) as $line) {
+                for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
                     if (!isset($lineData[$line])) { // blank line at end of file is sometimes included here
                         continue;
                     }
@@ -696,7 +696,7 @@ final class File extends Renderer
         foreach ($functionCoverageData as $method) {
             foreach ($method['paths'] as $pathId => $path) {
                 foreach ($path['path'] as $branchTaken) {
-                    foreach (range($method['branches'][$branchTaken]['line_start'], $method['branches'][$branchTaken]['line_end']) as $line) {
+                    for ($line = $method['branches'][$branchTaken]['line_start']; $line <= $method['branches'][$branchTaken]['line_end']; $line++) {
                         if (!isset($lineData[$line])) {
                             continue;
                         }

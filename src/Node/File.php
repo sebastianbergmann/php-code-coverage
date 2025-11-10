@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_filter;
 use function count;
-use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
@@ -372,7 +371,7 @@ final class File extends AbstractNode
      */
     private function calculateStatistics(array $classes, array $traits, array $functions): void
     {
-        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
+        for ($lineNumber = 1; $lineNumber <= $this->linesOfCode->linesOfCode(); $lineNumber++) {
             $this->codeUnitsByLine[$lineNumber] = [];
         }
 
@@ -380,7 +379,7 @@ final class File extends AbstractNode
         $this->processTraits($traits);
         $this->processFunctions($functions);
 
-        foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
+        for ($lineNumber = 1; $lineNumber <= $this->linesOfCode->linesOfCode(); $lineNumber++) {
             if (isset($this->lineCoverageData[$lineNumber])) {
                 foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
                     $codeUnit['executableLines']++;
@@ -511,7 +510,7 @@ final class File extends AbstractNode
                 $this->numExecutablePaths    += $methodData['executablePaths'];
                 $this->numExecutedPaths      += $methodData['executedPaths'];
 
-                foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
+                for ($lineNumber = $method->startLine(); $lineNumber <= $method->endLine(); $lineNumber++) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->classes[$className],
                         &$this->classes[$className]['methods'][$methodName],
@@ -560,7 +559,7 @@ final class File extends AbstractNode
                 $this->numExecutablePaths    += $methodData['executablePaths'];
                 $this->numExecutedPaths      += $methodData['executedPaths'];
 
-                foreach (range($method->startLine(), $method->endLine()) as $lineNumber) {
+                for ($lineNumber = $method->startLine(); $lineNumber <= $method->endLine(); $lineNumber++) {
                     $this->codeUnitsByLine[$lineNumber] = [
                         &$this->traits[$traitName],
                         &$this->traits[$traitName]['methods'][$methodName],
@@ -596,7 +595,7 @@ final class File extends AbstractNode
                 'link'               => $link . $function->startLine(),
             ];
 
-            foreach (range($function->startLine(), $function->endLine()) as $lineNumber) {
+            for ($lineNumber = $function->startLine(); $lineNumber <= $function->endLine(); $lineNumber++) {
                 $this->codeUnitsByLine[$lineNumber] = [&$this->functions[$functionName]];
             }
 

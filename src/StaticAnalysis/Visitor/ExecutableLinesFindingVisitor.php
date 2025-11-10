@@ -18,7 +18,6 @@ use function explode;
 use function max;
 use function preg_match;
 use function preg_quote;
-use function range;
 use function reset;
 use function sprintf;
 use PhpParser\Node;
@@ -75,7 +74,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $endLine   = $node->getEndLine() - 1;
 
             if ($startLine <= $endLine) {
-                foreach (range($startLine, $endLine) as $line) {
+                for ($line = $startLine; $line <= $endLine; $line++) {
                     unset($this->executableLinesGroupedByBranch[$line]);
                 }
             }
@@ -84,7 +83,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Stmt\Interface_) {
-            foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
+            for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
                 $this->unsets[$line] = true;
             }
 
@@ -144,7 +143,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 $unsets = [];
 
                 foreach ($node->getParams() as $param) {
-                    foreach (range($param->getStartLine(), $param->getEndLine()) as $line) {
+                    for ($line = $param->getStartLine(); $line <= $param->getEndLine(); $line++) {
                         $unsets[$line] = true;
                     }
                 }
@@ -162,7 +161,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                         continue;
                     }
 
-                    foreach (range($stmt->getStartLine(), $stmt->getEndLine()) as $line) {
+                    for ($line = $stmt->getStartLine(); $line <= $stmt->getEndLine(); $line++) {
                         unset($this->executableLinesGroupedByBranch[$line]);
 
                         if (
@@ -395,7 +394,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     private function setLineBranch(int $start, int $end, int $branch): void
     {
-        foreach (range($start, $end) as $line) {
+        for ($line = $start; $line <= $end; $line++) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
         }
     }

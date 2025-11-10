@@ -14,12 +14,12 @@ use function assert;
 use function count;
 use IteratorAggregate;
 use RecursiveIteratorIterator;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 
 /**
  * @template-implements IteratorAggregate<int, AbstractNode>
  *
- * @phpstan-import-type ProcessedFunctionType from File
  * @phpstan-import-type ProcessedClassType from File
  * @phpstan-import-type ProcessedTraitType from File
  *

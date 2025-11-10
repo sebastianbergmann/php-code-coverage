@@ -23,6 +23,7 @@ use function substr;
 use DateTimeImmutable;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File;
@@ -38,7 +39,6 @@ use SebastianBergmann\Environment\Runtime;
 /**
  * @phpstan-import-type ProcessedClassType from File
  * @phpstan-import-type ProcessedTraitType from File
- * @phpstan-import-type ProcessedFunctionType from File
  * @phpstan-import-type TestType from CodeCoverage
  */
 final class Facade
@@ -202,29 +202,26 @@ final class Facade
         }
 
         foreach ($unit['methods'] as $method) {
-            $methodObject = $unitObject->addMethod($method['methodName']);
-            $methodObject->setSignature($method['signature']);
-            $methodObject->setLines((string) $method['startLine'], (string) $method['endLine']);
-            $methodObject->setCrap($method['crap']);
+            $methodObject = $unitObject->addMethod($method->methodName);
+            $methodObject->setSignature($method->signature);
+            $methodObject->setLines((string) $method->startLine, (string) $method->endLine);
+            $methodObject->setCrap($method->crap);
             $methodObject->setTotals(
-                (string) $method['executableLines'],
-                (string) $method['executedLines'],
-                (string) $method['coverage'],
+                (string) $method->executableLines,
+                (string) $method->executedLines,
+                (string) $method->coverage,
             );
         }
     }
 
-    /**
-     * @param ProcessedFunctionType $function
-     */
-    private function processFunction(array $function, Report $report): void
+    private function processFunction(ProcessedFunctionType $function, Report $report): void
     {
-        $functionObject = $report->functionObject($function['functionName']);
+        $functionObject = $report->functionObject($function->functionName);
 
-        $functionObject->setSignature($function['signature']);
-        $functionObject->setLines((string) $function['startLine']);
-        $functionObject->setCrap($function['crap']);
-        $functionObject->setTotals((string) $function['executableLines'], (string) $function['executedLines'], (string) $function['coverage']);
+        $functionObject->setSignature($function->signature);
+        $functionObject->setLines((string) $function->startLine);
+        $functionObject->setCrap($function->crap);
+        $functionObject->setTotals((string) $function->executableLines, (string) $function->executedLines, (string) $function->coverage);
     }
 
     /**

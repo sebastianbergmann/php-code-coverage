@@ -350,7 +350,7 @@ $config->setFinder($finder)
         ],
         'types_spaces' => true,
         'unary_operator_spaces' => true,
-        'visibility_required' => [
+        'modifier_keywords' => [
             'elements' => [
                 'const',
                 'method',

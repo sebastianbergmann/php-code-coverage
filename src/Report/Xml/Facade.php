@@ -43,6 +43,7 @@ use SebastianBergmann\Environment\Runtime;
  */
 final class Facade
 {
+    public const string XML_NAMESPACE = 'https://schema.phpunit.de/coverage/1.0';
     private string $target;
     private Project $project;
     private readonly string $phpUnitVersion;

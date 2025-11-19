@@ -30,7 +30,7 @@ final class Coverage
     {
         $writer = new XMLWriter;
         $writer->openMemory();
-        $writer->startElementNs(null, $this->contextNode->nodeName, 'https://schema.phpunit.de/coverage/1.0');
+        $writer->startElementNs(null, $this->contextNode->nodeName, Facade::XML_NAMESPACE);
         $writer->writeAttribute('nr', $this->line);
 
         foreach ($tests as $test) {

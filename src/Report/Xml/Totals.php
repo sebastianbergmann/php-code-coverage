@@ -29,27 +29,27 @@ final readonly class Totals
         $dom = $container->ownerDocument;
 
         $this->linesNode = $dom->createElementNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'lines',
         );
 
         $this->methodsNode = $dom->createElementNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'methods',
         );
 
         $this->functionsNode = $dom->createElementNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'functions',
         );
 
         $this->classesNode = $dom->createElementNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'classes',
         );
 
         $this->traitsNode = $dom->createElementNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'traits',
         );
 

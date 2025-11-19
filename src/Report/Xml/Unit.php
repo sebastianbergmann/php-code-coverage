@@ -41,14 +41,14 @@ final readonly class Unit
     public function setNamespace(string $namespace): void
     {
         $node = $this->contextNode->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'namespace',
         )->item(0);
 
         if ($node === null) {
             $node = $this->contextNode->appendChild(
                 $this->contextNode->ownerDocument->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'namespace',
                 ),
             );
@@ -63,7 +63,7 @@ final readonly class Unit
     {
         $node = $this->contextNode->appendChild(
             $this->contextNode->ownerDocument->createElementNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 'method',
             ),
         );

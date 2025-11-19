@@ -35,14 +35,14 @@ final class Project extends Node
     public function buildInformation(): BuildInformation
     {
         $buildNode = $this->dom()->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'build',
         )->item(0);
 
         if ($buildNode === null) {
             $buildNode = $this->dom()->documentElement->appendChild(
                 $this->dom()->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'build',
                 ),
             );
@@ -56,14 +56,14 @@ final class Project extends Node
     public function tests(): Tests
     {
         $testsNode = $this->contextNode()->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'tests',
         )->item(0);
 
         if ($testsNode === null) {
             $testsNode = $this->contextNode()->appendChild(
                 $this->dom()->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'tests',
                 ),
             );
@@ -86,7 +86,7 @@ final class Project extends Node
 
         $this->setContextNode(
             $dom->getElementsByTagNameNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 'project',
             )->item(0),
         );

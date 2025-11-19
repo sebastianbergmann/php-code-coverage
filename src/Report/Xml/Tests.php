@@ -34,7 +34,7 @@ final readonly class Tests
     {
         $node = $this->contextNode->appendChild(
             $this->contextNode->ownerDocument->createElementNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 'test',
             ),
         );

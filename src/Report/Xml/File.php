@@ -34,7 +34,7 @@ class File
         if ($totalsContainer === null) {
             $totalsContainer = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'totals',
                 ),
             );
@@ -48,14 +48,14 @@ class File
     public function lineCoverage(string $line): Coverage
     {
         $coverage = $this->contextNode->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'coverage',
         )->item(0);
 
         if ($coverage === null) {
             $coverage = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'coverage',
                 ),
             );
@@ -63,7 +63,7 @@ class File
 
         $lineNode = $coverage->appendChild(
             $this->dom->createElementNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 'line',
             ),
         );

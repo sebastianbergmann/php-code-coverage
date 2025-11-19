@@ -26,7 +26,7 @@ final class Report extends File
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
 
         $contextNode = $dom->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'file',
         )->item(0);
 
@@ -44,7 +44,7 @@ final class Report extends File
     {
         $node = $this->contextNode()->appendChild(
             $this->dom()->createElementNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 'function',
             ),
         );
@@ -67,14 +67,14 @@ final class Report extends File
     public function source(): Source
     {
         $source = $this->contextNode()->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             'source',
         )->item(0);
 
         if ($source === null) {
             $source = $this->contextNode()->appendChild(
                 $this->dom()->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     'source',
                 ),
             );
@@ -95,7 +95,7 @@ final class Report extends File
     {
         $node = $this->contextNode()->appendChild(
             $this->dom()->createElementNS(
-                'https://schema.phpunit.de/coverage/1.0',
+                Facade::XML_NAMESPACE,
                 $tagName,
             ),
         );

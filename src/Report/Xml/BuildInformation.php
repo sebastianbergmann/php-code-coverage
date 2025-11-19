@@ -62,14 +62,14 @@ final readonly class BuildInformation
     private function nodeByName(string $name): DOMElement
     {
         $node = $this->contextNode->getElementsByTagNameNS(
-            'https://schema.phpunit.de/coverage/1.0',
+            Facade::XML_NAMESPACE,
             $name,
         )->item(0);
 
         if ($node === null) {
             $node = $this->contextNode->appendChild(
                 $this->contextNode->ownerDocument->createElementNS(
-                    'https://schema.phpunit.de/coverage/1.0',
+                    Facade::XML_NAMESPACE,
                     $name,
                 ),
             );

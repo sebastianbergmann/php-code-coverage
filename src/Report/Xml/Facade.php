@@ -79,10 +79,12 @@ final class Facade
 
     private function setBuildInformation(): void
     {
-        $buildNode = $this->project->buildInformation();
-        $buildNode->setRuntimeInformation(new Runtime);
-        $buildNode->setBuildTime(new DateTimeImmutable);
-        $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
+        $this->project->buildInformation(
+            new Runtime,
+            new DateTimeImmutable,
+            $this->phpUnitVersion,
+            Version::id(),
+        );
     }
 
     /**

@@ -9,11 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
 use function basename;
 use function dirname;
 use DOMDocument;
-use DOMElement;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -22,8 +21,9 @@ final class Report extends File
 {
     private readonly string $name;
 
-    public function __construct(string $name)
+    public function __construct(XMLWriter $xmlWriter, string $name)
     {
+        /*
         $dom = new DOMDocument;
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
 
@@ -31,18 +31,26 @@ final class Report extends File
             Facade::XML_NAMESPACE,
             'file',
         )->item(0);
-
-        parent::__construct($contextNode);
+*/
+        parent::__construct($xmlWriter);
 
         $this->name = $name;
+
+        $xmlWriter->startDocument();
+        $xmlWriter->startElement('phpunit');
+        $xmlWriter->writeAttribute('xmlns', Facade::XML_NAMESPACE);
+        $xmlWriter->startElement('file');
+        $xmlWriter->writeAttribute('name', basename($this->name));
+        $xmlWriter->writeAttribute('path', dirname($this->name));
     }
 
-    public function asDom(): DOMDocument
+    public function finalize(): void
     {
-        $this->contextNode()->setAttribute('name', basename($this->name));
-        $this->contextNode()->setAttribute('path', dirname($this->name));
+        $this->xmlWriter->endElement();
+        $this->xmlWriter->endElement();
 
-        return $this->dom;
+        $this->xmlWriter->endDocument();
+        $this->xmlWriter->flush();
     }
 
     public function functionObject(
@@ -55,17 +63,8 @@ final class Report extends File
         string $coverage,
         string $crap
     ): void {
-        $node = $this->contextNode()->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'function',
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
         new Method(
-            $node,
+            $this->xmlWriter,
             $name,
             $signature,
             $start,
@@ -85,16 +84,7 @@ final class Report extends File
         int $executed,
         float $crap
     ): Unit {
-        $node = $this->contextNode()->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'class',
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
-        return new Unit($node, $name, $namespace, $start, $executable, $executed, $crap);
+        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap);
     }
 
     public function traitObject(
@@ -105,29 +95,11 @@ final class Report extends File
         int $executed,
         float $crap
     ): Unit {
-        $node = $this->contextNode()->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'trait',
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
-        return new Unit($node, $name, $namespace, $start, $executable, $executed, $crap);
+        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap);
     }
 
     public function source(): Source
     {
-        $source = $this->contextNode()->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'source',
-            ),
-        );
-
-        assert($source instanceof DOMElement);
-
-        return new Source($source);
+        return new Source($this->xmlWriter);
     }
 }

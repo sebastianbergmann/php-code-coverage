@@ -9,63 +9,47 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
 use function phpversion;
 use DateTimeImmutable;
-use DOMElement;
 use SebastianBergmann\Environment\Runtime;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final readonly class BuildInformation
 {
-    private DOMElement $contextNode;
-
     public function __construct(
-        DOMElement $contextNode,
+        XMLWriter $xmlWriter,
         Runtime $runtime,
         DateTimeImmutable $buildDate,
         string $phpUnitVersion,
         string $coverageVersion
     ) {
-        $this->contextNode = $contextNode;
+        $xmlWriter->startElement('build');
+        $xmlWriter->writeAttribute('time', $buildDate->format('D M j G:i:s T Y'));
+        $xmlWriter->writeAttribute('phpunit', $phpUnitVersion);
+        $xmlWriter->writeAttribute('coverage', $coverageVersion);
 
-        $runtimeNode = $this->nodeByName('runtime');
+        $xmlWriter->startElement('runtime');
+        $xmlWriter->writeAttribute('name', $runtime->getName());
+        $xmlWriter->writeAttribute('version', $runtime->getVersion());
+        $xmlWriter->writeAttribute('url', $runtime->getVendorUrl());
+        $xmlWriter->endElement();
 
-        $runtimeNode->setAttribute('name', $runtime->getName());
-        $runtimeNode->setAttribute('version', $runtime->getVersion());
-        $runtimeNode->setAttribute('url', $runtime->getVendorUrl());
-
-        $driverNode = $this->nodeByName('driver');
+        $xmlWriter->startElement('driver');
 
         if ($runtime->hasXdebug()) {
-            $driverNode->setAttribute('name', 'xdebug');
-            $driverNode->setAttribute('version', phpversion('xdebug'));
+            $xmlWriter->writeAttribute('name', 'xdebug');
+            $xmlWriter->writeAttribute('version', phpversion('xdebug'));
         }
 
         if ($runtime->hasPCOV()) {
-            $driverNode->setAttribute('name', 'pcov');
-            $driverNode->setAttribute('version', phpversion('pcov'));
+            $xmlWriter->writeAttribute('name', 'pcov');
+            $xmlWriter->writeAttribute('version', phpversion('pcov'));
         }
+        $xmlWriter->endElement();
 
-        $this->contextNode->setAttribute('time', $buildDate->format('D M j G:i:s T Y'));
-
-        $this->contextNode->setAttribute('phpunit', $phpUnitVersion);
-        $this->contextNode->setAttribute('coverage', $coverageVersion);
-    }
-
-    private function nodeByName(string $name): DOMElement
-    {
-        $node = $this->contextNode->appendChild(
-            $this->contextNode->ownerDocument->createElementNS(
-                Facade::XML_NAMESPACE,
-                $name,
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
-        return $node;
+        $xmlWriter->endElement();
     }
 }

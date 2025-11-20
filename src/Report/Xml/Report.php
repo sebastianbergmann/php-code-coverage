@@ -20,6 +20,8 @@ use DOMElement;
  */
 final class Report extends File
 {
+    private readonly string $name;
+
     public function __construct(string $name)
     {
         $dom = new DOMDocument;
@@ -32,11 +34,14 @@ final class Report extends File
 
         parent::__construct($contextNode);
 
-        $this->setName($name);
+        $this->name = $name;
     }
 
     public function asDom(): DOMDocument
     {
+        $this->contextNode()->setAttribute('name', basename($this->name));
+        $this->contextNode()->setAttribute('path', dirname($this->name));
+
         return $this->dom();
     }
 
@@ -83,12 +88,6 @@ final class Report extends File
         assert($source instanceof DOMElement);
 
         return new Source($source);
-    }
-
-    private function setName(string $name): void
-    {
-        $this->contextNode()->setAttribute('name', basename($name));
-        $this->contextNode()->setAttribute('path', dirname($name));
     }
 
     private function unitObject(string $tagName, string $name): Unit

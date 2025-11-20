@@ -42,7 +42,7 @@ final class Report extends File
         $this->contextNode()->setAttribute('name', basename($this->name));
         $this->contextNode()->setAttribute('path', dirname($this->name));
 
-        return $this->dom();
+        return $this->dom;
     }
 
     public function functionObject(
@@ -56,7 +56,7 @@ final class Report extends File
         string $crap
     ): void {
         $node = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
+            $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'function',
             ),
@@ -86,7 +86,7 @@ final class Report extends File
         float $crap
     ): Unit {
         $node = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
+            $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'class',
             ),
@@ -106,7 +106,7 @@ final class Report extends File
         float $crap
     ): Unit {
         $node = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
+            $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'trait',
             ),
@@ -120,7 +120,7 @@ final class Report extends File
     public function source(): Source
     {
         $source = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
+            $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'source',
             ),

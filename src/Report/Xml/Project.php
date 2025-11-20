@@ -48,14 +48,14 @@ final class Project extends Node
         string $phpUnitVersion,
         string $coverageVersion
     ): void {
-        $buildNode = $this->dom()->getElementsByTagNameNS(
+        $buildNode = $this->dom->getElementsByTagNameNS(
             Facade::XML_NAMESPACE,
             'build',
         )->item(0);
 
         if ($buildNode === null) {
-            $buildNode = $this->dom()->documentElement->appendChild(
-                $this->dom()->createElementNS(
+            $buildNode = $this->dom->documentElement->appendChild(
+                $this->dom->createElementNS(
                     Facade::XML_NAMESPACE,
                     'build',
                 ),
@@ -76,7 +76,7 @@ final class Project extends Node
     public function tests(): Tests
     {
         $testsNode = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
+            $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'tests',
             ),
@@ -91,6 +91,6 @@ final class Project extends Node
     {
         $this->contextNode()->setAttribute('source', $this->directory);
 
-        return $this->dom();
+        return $this->dom;
     }
 }

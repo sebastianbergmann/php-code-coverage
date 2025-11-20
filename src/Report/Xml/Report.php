@@ -45,8 +45,16 @@ final class Report extends File
         return $this->dom();
     }
 
-    public function functionObject(string $name): Method
-    {
+    public function functionObject(
+        string $name,
+        string $signature,
+        string $start,
+        ?string $end,
+        string $executable,
+        string $executed,
+        string $coverage,
+        string $crap
+    ): void {
         $node = $this->contextNode()->appendChild(
             $this->dom()->createElementNS(
                 Facade::XML_NAMESPACE,
@@ -56,7 +64,17 @@ final class Report extends File
 
         assert($node instanceof DOMElement);
 
-        return new Method($node, $name);
+        new Method(
+            $node,
+            $name,
+            $signature,
+            $start,
+            $end,
+            $executable,
+            $executed,
+            $coverage,
+            $crap,
+        );
     }
 
     public function classObject(

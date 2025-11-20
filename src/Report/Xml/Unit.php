@@ -47,8 +47,16 @@ final readonly class Unit
         $node->setAttribute('name', $namespace);
     }
 
-    public function addMethod(string $name): Method
-    {
+    public function addMethod(
+        string $name,
+        string $signature,
+        string $start,
+        ?string $end,
+        string $executable,
+        string $executed,
+        string $coverage,
+        string $crap
+    ): void {
         $node = $this->contextNode->appendChild(
             $this->contextNode->ownerDocument->createElementNS(
                 Facade::XML_NAMESPACE,
@@ -58,6 +66,16 @@ final readonly class Unit
 
         assert($node instanceof DOMElement);
 
-        return new Method($node, $name);
+        new Method(
+            $node,
+            $name,
+            $signature,
+            $start,
+            $end,
+            $executable,
+            $executed,
+            $coverage,
+            $crap,
+        );
     }
 }

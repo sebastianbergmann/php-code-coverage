@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 use function assert;
 use DOMDocument;
 use DOMElement;
+use DOMNode;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -20,6 +21,7 @@ class File
 {
     private readonly DOMDocument $dom;
     private readonly DOMElement $contextNode;
+    private ?DOMNode $lineCoverage = null;
 
     public function __construct(DOMElement $context)
     {
@@ -47,21 +49,17 @@ class File
 
     public function lineCoverage(string $line): Coverage
     {
-        $coverage = $this->contextNode->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            'coverage',
-        )->item(0);
-
-        if ($coverage === null) {
-            $coverage = $this->contextNode->appendChild(
+        if ($this->lineCoverage === null) {
+            $this->lineCoverage = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
                     Facade::XML_NAMESPACE,
                     'coverage',
                 ),
             );
         }
+        assert($this->lineCoverage instanceof DOMElement);
 
-        $lineNode = $coverage->appendChild(
+        $lineNode = $this->lineCoverage->appendChild(
             $this->dom->createElementNS(
                 Facade::XML_NAMESPACE,
                 'line',

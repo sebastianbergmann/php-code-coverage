@@ -22,6 +22,20 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  */
 final class ProcessedBranchCoverageData
 {
+    public readonly int $op_start;
+    public readonly int $op_end;
+    public readonly int $line_start;
+    public readonly int $line_end;
+
+    /** @var list<TestIdType> */
+    public array $hit;
+
+    /** @var array<int, int> */
+    public readonly array $out;
+
+    /** @var array<int, int> */
+    public readonly array $out_hit;
+
     /**
      * @param XdebugBranchCoverageType $xdebugCoverageData
      */
@@ -38,18 +52,27 @@ final class ProcessedBranchCoverageData
         );
     }
 
+    /**
+     * @param list<TestIdType> $hit
+     * @param array<int, int>  $out
+     * @param array<int, int>  $out_hit
+     */
     public function __construct(
-        public readonly int $op_start,
-        public readonly int $op_end,
-        public readonly int $line_start,
-        public readonly int $line_end,
-        /** @var list<TestIdType> */
-        public array $hit,
-        /** @var array<int, int> */
-        public readonly array $out,
-        /** @var array<int, int> */
-        public readonly array $out_hit,
+        int $op_start,
+        int $op_end,
+        int $line_start,
+        int $line_end,
+        array $hit,
+        array $out,
+        array $out_hit,
     ) {
+        $this->out_hit    = $out_hit;
+        $this->out        = $out;
+        $this->hit        = $hit;
+        $this->line_end   = $line_end;
+        $this->line_start = $line_start;
+        $this->op_end     = $op_end;
+        $this->op_start   = $op_start;
     }
 
     #[NoDiscard]

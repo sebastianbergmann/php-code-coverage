@@ -20,6 +20,12 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  */
 final readonly class ProcessedFunctionCoverageData
 {
+    /** @var array<int, ProcessedBranchCoverageData> */
+    public array $branches;
+
+    /** @var array<int, ProcessedPathCoverageData> */
+    public array $paths;
+
     /**
      * @param XdebugFunctionCoverageType $xdebugCoverageData
      */
@@ -42,12 +48,16 @@ final readonly class ProcessedFunctionCoverageData
         );
     }
 
+    /**
+     * @param array<int, ProcessedBranchCoverageData> $branches
+     * @param array<int, ProcessedPathCoverageData>   $paths
+     */
     public function __construct(
-        /** @var array<int, ProcessedBranchCoverageData> */
-        public array $branches,
-        /** @var array<int, ProcessedPathCoverageData> */
-        public array $paths,
+        array $branches,
+        array $paths,
     ) {
+        $this->paths    = $paths;
+        $this->branches = $branches;
     }
 
     #[NoDiscard]

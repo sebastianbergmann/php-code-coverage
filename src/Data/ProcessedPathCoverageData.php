@@ -22,6 +22,12 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  */
 final class ProcessedPathCoverageData
 {
+    /** @var array<int, int> */
+    public readonly array $path;
+
+    /** @var list<TestIdType> */
+    public array $hit;
+
     /**
      * @param XdebugPathCoverageType $xdebugCoverageData
      */
@@ -33,12 +39,16 @@ final class ProcessedPathCoverageData
         );
     }
 
+    /**
+     * @param array<int, int>  $path
+     * @param list<TestIdType> $hit
+     */
     public function __construct(
-        /** @var array<int, int> */
-        public readonly array $path,
-        /** @var list<TestIdType> */
-        public array $hit,
+        array $path,
+        array $hit,
     ) {
+        $this->hit  = $hit;
+        $this->path = $path;
     }
 
     #[NoDiscard]

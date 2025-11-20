@@ -19,7 +19,7 @@ use DOMNode;
  */
 class File
 {
-    private readonly DOMDocument $dom;
+    protected readonly DOMDocument $dom;
     private readonly DOMElement $contextNode;
     private ?DOMNode $lineCoverage = null;
 
@@ -70,10 +70,5 @@ class File
     protected function contextNode(): DOMElement
     {
         return $this->contextNode;
-    }
-
-    protected function dom(): DOMDocument
-    {
-        return $this->dom;
     }
 }

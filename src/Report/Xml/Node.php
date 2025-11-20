@@ -18,18 +18,13 @@ use DOMElement;
  */
 abstract class Node
 {
-    private readonly DOMDocument $dom;
+    protected readonly DOMDocument $dom;
     private readonly DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {
         $this->dom         = $context->ownerDocument;
         $this->contextNode = $context;
-    }
-
-    public function dom(): DOMDocument
-    {
-        return $this->dom;
     }
 
     public function totals(): Totals
@@ -52,7 +47,7 @@ abstract class Node
 
     public function addDirectory(string $name): Directory
     {
-        $dirNode = $this->dom()->createElementNS(
+        $dirNode = $this->dom->createElementNS(
             Facade::XML_NAMESPACE,
             'directory',
         );
@@ -65,7 +60,7 @@ abstract class Node
 
     public function addFile(string $name, string $href): File
     {
-        $fileNode = $this->dom()->createElementNS(
+        $fileNode = $this->dom->createElementNS(
             Facade::XML_NAMESPACE,
             'file',
         );

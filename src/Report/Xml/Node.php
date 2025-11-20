@@ -18,12 +18,13 @@ use DOMElement;
  */
 abstract class Node
 {
-    private DOMDocument $dom;
-    private DOMElement $contextNode;
+    private readonly DOMDocument $dom;
+    private readonly DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {
-        $this->setContextNode($context);
+        $this->dom         = $context->ownerDocument;
+        $this->contextNode = $context;
     }
 
     public function dom(): DOMDocument
@@ -74,12 +75,6 @@ abstract class Node
         $this->contextNode()->appendChild($fileNode);
 
         return new File($fileNode);
-    }
-
-    protected function setContextNode(DOMElement $context): void
-    {
-        $this->dom         = $context->ownerDocument;
-        $this->contextNode = $context;
     }
 
     protected function contextNode(): DOMElement

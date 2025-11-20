@@ -18,9 +18,6 @@ use DOMElement;
  */
 final class Project extends Node
 {
-    /**
-     * @phpstan-ignore constructor.missingParentCall
-     */
     public function __construct(string $directory)
     {
         $dom = new DOMDocument;

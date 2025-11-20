@@ -31,16 +31,12 @@ class File
 
     public function totals(): Totals
     {
-        $totalsContainer = $this->contextNode->firstChild;
-
-        if ($totalsContainer === null) {
-            $totalsContainer = $this->contextNode->appendChild(
-                $this->dom->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'totals',
-                ),
-            );
-        }
+        $totalsContainer = $this->contextNode->appendChild(
+            $this->dom->createElementNS(
+                Facade::XML_NAMESPACE,
+                'totals',
+            ),
+        );
 
         assert($totalsContainer instanceof DOMElement);
 

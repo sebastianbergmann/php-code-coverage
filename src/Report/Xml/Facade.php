@@ -198,26 +198,31 @@ final class Facade
         }
 
         foreach ($unit->methods as $method) {
-            $methodObject = $unitObject->addMethod($method->methodName);
-            $methodObject->setSignature($method->signature);
-            $methodObject->setLines((string) $method->startLine, (string) $method->endLine);
-            $methodObject->setCrap($method->crap);
-            $methodObject->setTotals(
+            $unitObject->addMethod(
+                $method->methodName,
+                $method->signature,
+                (string) $method->startLine,
+                (string) $method->endLine,
                 (string) $method->executableLines,
                 (string) $method->executedLines,
                 (string) $method->coverage,
+                $method->crap,
             );
         }
     }
 
     private function processFunction(ProcessedFunctionType $function, Report $report): void
     {
-        $functionObject = $report->functionObject($function->functionName);
-
-        $functionObject->setSignature($function->signature);
-        $functionObject->setLines((string) $function->startLine);
-        $functionObject->setCrap($function->crap);
-        $functionObject->setTotals((string) $function->executableLines, (string) $function->executedLines, (string) $function->coverage);
+        $report->functionObject(
+            $function->functionName,
+            $function->signature,
+            (string) $function->startLine,
+            null,
+            (string) $function->executableLines,
+            (string) $function->executedLines,
+            (string) $function->coverage,
+            $function->crap,
+        );
     }
 
     /**

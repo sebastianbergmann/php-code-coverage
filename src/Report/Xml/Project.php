@@ -18,6 +18,8 @@ use DOMElement;
  */
 final class Project extends Node
 {
+    private readonly string $directory;
+
     public function __construct(string $directory)
     {
         $dom = new DOMDocument;
@@ -30,12 +32,12 @@ final class Project extends Node
             )->item(0),
         );
 
-        $this->setProjectSourceDirectory($directory);
+        $this->directory = $directory;
     }
 
     public function projectSourceDirectory(): string
     {
-        return $this->contextNode()->getAttribute('source');
+        return $this->directory;
     }
 
     public function buildInformation(): BuildInformation
@@ -82,11 +84,8 @@ final class Project extends Node
 
     public function asDom(): DOMDocument
     {
-        return $this->dom();
-    }
+        $this->contextNode()->setAttribute('source', $this->directory);
 
-    private function setProjectSourceDirectory(string $name): void
-    {
-        $this->contextNode()->setAttribute('source', $name);
+        return $this->dom();
     }
 }

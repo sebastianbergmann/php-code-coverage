@@ -59,14 +59,44 @@ final class Report extends File
         return new Method($node, $name);
     }
 
-    public function classObject(string $name): Unit
-    {
-        return $this->unitObject('class', $name);
+    public function classObject(
+        string $name,
+        string $namespace,
+        int $start,
+        int $executable,
+        int $executed,
+        float $crap
+    ): Unit {
+        $node = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
+                Facade::XML_NAMESPACE,
+                'class',
+            ),
+        );
+
+        assert($node instanceof DOMElement);
+
+        return new Unit($node, $name, $namespace, $start, $executable, $executed, $crap);
     }
 
-    public function traitObject(string $name): Unit
-    {
-        return $this->unitObject('trait', $name);
+    public function traitObject(
+        string $name,
+        string $namespace,
+        int $start,
+        int $executable,
+        int $executed,
+        float $crap
+    ): Unit {
+        $node = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
+                Facade::XML_NAMESPACE,
+                'trait',
+            ),
+        );
+
+        assert($node instanceof DOMElement);
+
+        return new Unit($node, $name, $namespace, $start, $executable, $executed, $crap);
     }
 
     public function source(): Source
@@ -88,19 +118,5 @@ final class Report extends File
         assert($source instanceof DOMElement);
 
         return new Source($source);
-    }
-
-    private function unitObject(string $tagName, string $name): Unit
-    {
-        $node = $this->contextNode()->appendChild(
-            $this->dom()->createElementNS(
-                Facade::XML_NAMESPACE,
-                $tagName,
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
-        return new Unit($node, $name);
     }
 }

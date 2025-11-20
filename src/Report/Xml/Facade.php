@@ -182,19 +182,24 @@ final class Facade
     private function processUnit(array $unit, Report $report): void
     {
         if (isset($unit['className'])) {
-            $unitObject = $report->classObject($unit['className']);
+            $unitObject = $report->classObject(
+                $unit['className'],
+                $unit['namespace'],
+                $unit['startLine'],
+                $unit['executableLines'],
+                $unit['executedLines'],
+                (float) $unit['crap'],
+            );
         } else {
-            $unitObject = $report->traitObject($unit['traitName']);
+            $unitObject = $report->traitObject(
+                $unit['traitName'],
+                $unit['namespace'],
+                $unit['startLine'],
+                $unit['executableLines'],
+                $unit['executedLines'],
+                (float) $unit['crap'],
+            );
         }
-
-        $unitObject->setLines(
-            $unit['startLine'],
-            $unit['executableLines'],
-            $unit['executedLines'],
-        );
-
-        $unitObject->setCrap((float) $unit['crap']);
-        $unitObject->setNamespace($unit['namespace']);
 
         foreach ($unit['methods'] as $method) {
             $methodObject = $unitObject->addMethod($method['methodName']);

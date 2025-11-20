@@ -19,41 +19,29 @@ final readonly class Unit
 {
     private DOMElement $contextNode;
 
-    public function __construct(DOMElement $context, string $name)
-    {
+    public function __construct(
+        DOMElement $context,
+        string $name,
+        string $namespace,
+        int $start,
+        int $executable,
+        int $executed,
+        float $crap
+    ) {
         $this->contextNode = $context;
 
-        $this->setName($name);
-    }
-
-    public function setLines(int $start, int $executable, int $executed): void
-    {
+        $this->contextNode->setAttribute('name', $name);
         $this->contextNode->setAttribute('start', (string) $start);
         $this->contextNode->setAttribute('executable', (string) $executable);
         $this->contextNode->setAttribute('executed', (string) $executed);
-    }
-
-    public function setCrap(float $crap): void
-    {
         $this->contextNode->setAttribute('crap', (string) $crap);
-    }
 
-    public function setNamespace(string $namespace): void
-    {
-        $node = $this->contextNode->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            'namespace',
-        )->item(0);
-
-        if ($node === null) {
-            $node = $this->contextNode->appendChild(
-                $this->contextNode->ownerDocument->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'namespace',
-                ),
-            );
-        }
-
+        $node = $this->contextNode->appendChild(
+            $this->contextNode->ownerDocument->createElementNS(
+                Facade::XML_NAMESPACE,
+                'namespace',
+            ),
+        );
         assert($node instanceof DOMElement);
 
         $node->setAttribute('name', $namespace);
@@ -71,10 +59,5 @@ final readonly class Unit
         assert($node instanceof DOMElement);
 
         return new Method($node, $name);
-    }
-
-    private function setName(string $name): void
-    {
-        $this->contextNode->setAttribute('name', $name);
     }
 }

@@ -119,19 +119,12 @@ final class Report extends File
 
     public function source(): Source
     {
-        $source = $this->contextNode()->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            'source',
-        )->item(0);
-
-        if ($source === null) {
-            $source = $this->contextNode()->appendChild(
-                $this->dom()->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'source',
-                ),
-            );
-        }
+        $source = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
+                Facade::XML_NAMESPACE,
+                'source',
+            ),
+        );
 
         assert($source instanceof DOMElement);
 

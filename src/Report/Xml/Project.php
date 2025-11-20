@@ -63,19 +63,12 @@ final class Project extends Node
 
     public function tests(): Tests
     {
-        $testsNode = $this->contextNode()->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            'tests',
-        )->item(0);
-
-        if ($testsNode === null) {
-            $testsNode = $this->contextNode()->appendChild(
-                $this->dom()->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'tests',
-                ),
-            );
-        }
+        $testsNode = $this->contextNode()->appendChild(
+            $this->dom()->createElementNS(
+                Facade::XML_NAMESPACE,
+                'tests',
+            ),
+        );
 
         assert($testsNode instanceof DOMElement);
 

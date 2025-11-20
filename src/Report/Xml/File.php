@@ -9,66 +9,32 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
-use DOMDocument;
-use DOMElement;
-use DOMNode;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 class File
 {
-    protected readonly DOMDocument $dom;
-    private readonly DOMElement $contextNode;
-    private ?DOMNode $lineCoverage = null;
+    protected XMLWriter $xmlWriter;
 
-    public function __construct(DOMElement $context)
+    public function __construct(XMLWriter $xmlWriter)
     {
-        $this->dom         = $context->ownerDocument;
-        $this->contextNode = $context;
+        $this->xmlWriter = $xmlWriter;
+    }
+
+    public function getWriter(): XMLWriter
+    {
+        return $this->xmlWriter;
     }
 
     public function totals(): Totals
     {
-        $totalsContainer = $this->contextNode->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'totals',
-            ),
-        );
-
-        assert($totalsContainer instanceof DOMElement);
-
-        return new Totals($totalsContainer);
+        return new Totals($this->xmlWriter);
     }
 
     public function lineCoverage(string $line): Coverage
     {
-        if ($this->lineCoverage === null) {
-            $this->lineCoverage = $this->contextNode->appendChild(
-                $this->dom->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'coverage',
-                ),
-            );
-        }
-        assert($this->lineCoverage instanceof DOMElement);
-
-        $lineNode = $this->lineCoverage->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'line',
-            ),
-        );
-
-        assert($lineNode instanceof DOMElement);
-
-        return new Coverage($lineNode, $line);
-    }
-
-    protected function contextNode(): DOMElement
-    {
-        return $this->contextNode;
+        return new Coverage($this->xmlWriter, $line);
     }
 }

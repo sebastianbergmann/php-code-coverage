@@ -177,23 +177,23 @@ final class Facade
 
     private function processUnit(ProcessedClassType|ProcessedTraitType $unit, Report $report): void
     {
-        if (isset($unit['className'])) {
+        if ($unit instanceof ProcessedClassType) {
             $unitObject = $report->classObject(
-                $unit['className'],
-                $unit['namespace'],
-                $unit['startLine'],
-                $unit['executableLines'],
-                $unit['executedLines'],
-                (float) $unit['crap'],
+                $unit->className,
+                $unit->namespace,
+                $unit->startLine,
+                $unit->executableLines,
+                $unit->executedLines,
+                (float) $unit->crap,
             );
         } else {
             $unitObject = $report->traitObject(
-                $unit['traitName'],
-                $unit['namespace'],
-                $unit['startLine'],
-                $unit['executableLines'],
-                $unit['executedLines'],
-                (float) $unit['crap'],
+                $unit->traitName,
+                $unit->namespace,
+                $unit->startLine,
+                $unit->executableLines,
+                $unit->executedLines,
+                (float) $unit->crap,
             );
         }
 

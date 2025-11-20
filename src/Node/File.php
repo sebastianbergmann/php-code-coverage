@@ -13,12 +13,12 @@ use function array_filter;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
-use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
-use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
@@ -540,7 +540,7 @@ final class File extends AbstractNode
             }
 
             if (isset($this->functionCoverageData[$functionName])) {
-                $this->functions[$functionName]['executableBranches'] = count(
+                $this->functions[$functionName]->executableBranches = count(
                     $this->functionCoverageData[$functionName]->branches,
                 );
 
@@ -556,7 +556,7 @@ final class File extends AbstractNode
             }
 
             if (isset($this->functionCoverageData[$functionName])) {
-                $this->functions[$functionName]['executablePaths'] = count(
+                $this->functions[$functionName]->executablePaths = count(
                     $this->functionCoverageData[$functionName]->paths,
                 );
 

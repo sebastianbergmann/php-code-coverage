@@ -23,7 +23,16 @@ final class Project extends Node
      */
     public function __construct(string $directory)
     {
-        $this->init();
+        $dom = new DOMDocument;
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
+
+        parent::__construct(
+            $dom->getElementsByTagNameNS(
+                Facade::XML_NAMESPACE,
+                'project',
+            )->item(0),
+        );
+
         $this->setProjectSourceDirectory($directory);
     }
 
@@ -77,19 +86,6 @@ final class Project extends Node
     public function asDom(): DOMDocument
     {
         return $this->dom();
-    }
-
-    private function init(): void
-    {
-        $dom = new DOMDocument;
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
-
-        $this->setContextNode(
-            $dom->getElementsByTagNameNS(
-                Facade::XML_NAMESPACE,
-                'project',
-            )->item(0),
-        );
     }
 
     private function setProjectSourceDirectory(string $name): void

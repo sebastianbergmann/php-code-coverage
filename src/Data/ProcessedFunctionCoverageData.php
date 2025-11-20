@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
@@ -49,6 +50,7 @@ final readonly class ProcessedFunctionCoverageData
     ) {
     }
 
+    #[NoDiscard]
     public function merge(self $data): self
     {
         $branches = null;

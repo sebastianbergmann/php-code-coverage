@@ -57,19 +57,12 @@ final readonly class BuildInformation
 
     private function nodeByName(string $name): DOMElement
     {
-        $node = $this->contextNode->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            $name,
-        )->item(0);
-
-        if ($node === null) {
-            $node = $this->contextNode->appendChild(
-                $this->contextNode->ownerDocument->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    $name,
-                ),
-            );
-        }
+        $node = $this->contextNode->appendChild(
+            $this->contextNode->ownerDocument->createElementNS(
+                Facade::XML_NAMESPACE,
+                $name,
+            ),
+        );
 
         assert($node instanceof DOMElement);
 

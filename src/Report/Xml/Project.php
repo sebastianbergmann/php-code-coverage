@@ -10,8 +10,10 @@
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use function assert;
+use DateTimeImmutable;
 use DOMDocument;
 use DOMElement;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -40,8 +42,12 @@ final class Project extends Node
         return $this->directory;
     }
 
-    public function buildInformation(): BuildInformation
-    {
+    public function buildInformation(
+        Runtime $runtime,
+        DateTimeImmutable $buildDate,
+        string $phpUnitVersion,
+        string $coverageVersion
+    ): void {
         $buildNode = $this->dom()->getElementsByTagNameNS(
             Facade::XML_NAMESPACE,
             'build',
@@ -58,7 +64,13 @@ final class Project extends Node
 
         assert($buildNode instanceof DOMElement);
 
-        return new BuildInformation($buildNode);
+        new BuildInformation(
+            $buildNode,
+            $runtime,
+            $buildDate,
+            $phpUnitVersion,
+            $coverageVersion,
+        );
     }
 
     public function tests(): Tests

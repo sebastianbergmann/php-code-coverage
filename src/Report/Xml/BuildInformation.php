@@ -22,13 +22,15 @@ final readonly class BuildInformation
 {
     private DOMElement $contextNode;
 
-    public function __construct(DOMElement $contextNode)
-    {
+    public function __construct(
+        DOMElement $contextNode,
+        Runtime $runtime,
+        DateTimeImmutable $buildDate,
+        string $phpUnitVersion,
+        string $coverageVersion
+    ) {
         $this->contextNode = $contextNode;
-    }
 
-    public function setRuntimeInformation(Runtime $runtime): void
-    {
         $runtimeNode = $this->nodeByName('runtime');
 
         $runtimeNode->setAttribute('name', $runtime->getName());
@@ -46,15 +48,9 @@ final readonly class BuildInformation
             $driverNode->setAttribute('name', 'pcov');
             $driverNode->setAttribute('version', phpversion('pcov'));
         }
-    }
 
-    public function setBuildTime(DateTimeImmutable $date): void
-    {
-        $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
-    }
+        $this->contextNode->setAttribute('time', $buildDate->format('D M j G:i:s T Y'));
 
-    public function setGeneratorVersions(string $phpUnitVersion, string $coverageVersion): void
-    {
         $this->contextNode->setAttribute('phpunit', $phpUnitVersion);
         $this->contextNode->setAttribute('coverage', $coverageVersion);
     }

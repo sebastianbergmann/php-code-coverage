@@ -31,7 +31,7 @@ final readonly class Source
         $context = $this->context;
 
         $tokens = (new Tokenizer)->parse($source);
-        $srcDom = (new XMLSerializer(new NamespaceUri($context->namespaceURI)))->toDom($tokens);
+        $srcDom = (new XMLSerializer(new NamespaceUri(Facade::XML_NAMESPACE)))->toDom($tokens);
 
         $context->parentNode->replaceChild(
             $context->ownerDocument->importNode($srcDom->documentElement, true),

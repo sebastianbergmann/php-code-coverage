@@ -277,15 +277,20 @@ final class Facade
         return $this->target;
     }
 
-    /**
-     * @throws XmlException
-     */
-    private function saveDocument(DOMDocument $document, string $name): void
+    private function targetFilePath(string $name): string
     {
         $filename = sprintf('%s/%s.xml', $this->targetDirectory(), $name);
 
         $this->initTargetDirectory(dirname($filename));
 
-        Filesystem::write($filename, Xml::asString($document));
+        return $filename;
+    }
+
+    /**
+     * @throws XmlException
+     */
+    private function saveDocument(DOMDocument $document, string $name): void
+    {
+        Filesystem::write($this->targetFilePath($name), Xml::asString($document));
     }
 }

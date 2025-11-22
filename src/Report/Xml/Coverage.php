@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use DOMElement;
 use XMLWriter;
 
 /**
@@ -17,20 +16,21 @@ use XMLWriter;
  */
 final class Coverage
 {
-    private readonly DOMElement $contextNode;
+    private readonly XMLWriter $xmlWriter;
     private readonly string $line;
 
-    public function __construct(DOMElement $context, string $line)
-    {
-        $this->contextNode = $context;
-        $this->line        = $line;
+    public function __construct(
+        XMLWriter $xmlWriter,
+        string $line
+    ) {
+        $this->xmlWriter = $xmlWriter;
+        $this->line      = $line;
     }
 
     public function finalize(array $tests): void
     {
-        $writer = new XMLWriter;
-        $writer->openMemory();
-        $writer->startElementNs(null, $this->contextNode->nodeName, Facade::XML_NAMESPACE);
+        $writer = $this->xmlWriter;
+        $writer->startElement('line');
         $writer->writeAttribute('nr', $this->line);
 
         foreach ($tests as $test) {
@@ -39,13 +39,5 @@ final class Coverage
             $writer->endElement();
         }
         $writer->endElement();
-
-        $fragment = $this->contextNode->ownerDocument->createDocumentFragment();
-        $fragment->appendXML($writer->outputMemory());
-
-        $this->contextNode->parentNode->replaceChild(
-            $fragment,
-            $this->contextNode,
-        );
     }
 }

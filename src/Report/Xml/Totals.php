@@ -19,6 +19,8 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
 final readonly class Totals
 {
     private DOMElement $linesNode;
+    private DOMElement $branchesNode;
+    private DOMElement $pathsNode;
     private DOMElement $methodsNode;
     private DOMElement $functionsNode;
     private DOMElement $classesNode;
@@ -31,6 +33,16 @@ final readonly class Totals
         $this->linesNode = $dom->createElementNS(
             Facade::XML_NAMESPACE,
             'lines',
+        );
+
+        $this->branchesNode = $dom->createElementNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'branches',
+        );
+
+        $this->pathsNode = $dom->createElementNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'paths',
         );
 
         $this->methodsNode = $dom->createElementNS(
@@ -54,6 +66,8 @@ final readonly class Totals
         );
 
         $container->appendChild($this->linesNode);
+        $container->appendChild($this->branchesNode);
+        $container->appendChild($this->pathsNode);
         $container->appendChild($this->methodsNode);
         $container->appendChild($this->functionsNode);
         $container->appendChild($this->classesNode);
@@ -70,6 +84,26 @@ final readonly class Totals
         $this->linesNode->setAttribute(
             'percent',
             $executable === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($executed, $executable)->asFloat()),
+        );
+    }
+
+    public function setNumBranches(int $count, int $tested): void
+    {
+        $this->branchesNode->setAttribute('count', (string) $count);
+        $this->branchesNode->setAttribute('tested', (string) $tested);
+        $this->branchesNode->setAttribute(
+            'percent',
+            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
+        );
+    }
+
+    public function setNumPaths(int $count, int $tested): void
+    {
+        $this->pathsNode->setAttribute('count', (string) $count);
+        $this->pathsNode->setAttribute('tested', (string) $tested);
+        $this->pathsNode->setAttribute(
+            'percent',
+            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
         );
     }
 

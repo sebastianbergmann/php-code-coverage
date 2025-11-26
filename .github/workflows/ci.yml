@@ -77,6 +77,8 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
+          - "8.5"
+          - "8.6"
 
         coverage-driver:
           - "pcov"
@@ -97,6 +99,12 @@ jobs:
             coverage-driver: "xdebug"
 
           - php-version: "8.4"
+            coverage-driver: "xdebug"
+
+          - php-version: "8.5"
+            coverage-driver: "xdebug"
+
+          - php-version: "8.6"
             coverage-driver: "xdebug"
 
     steps:

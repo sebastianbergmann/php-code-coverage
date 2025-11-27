@@ -47,6 +47,16 @@ final class XmlTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
+    public function testForBankAccountTestWithoutSource(): void
+    {
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithoutSource';
+
+        $xml = new Facade('1.0.0', false);
+        $xml->process($this->getLineCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
+
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+    }
+
     public function testForFileWithIgnoredLines(): void
     {
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';

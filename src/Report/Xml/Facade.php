@@ -46,10 +46,12 @@ final class Facade
     private string $target;
     private Project $project;
     private readonly string $phpUnitVersion;
+    private readonly bool $includeSource;
 
-    public function __construct(string $version)
+    public function __construct(string $version, bool $includeSource = true)
     {
         $this->phpUnitVersion = $version;
+        $this->includeSource  = $includeSource;
     }
 
     /**
@@ -170,9 +172,11 @@ final class Facade
             $coverage->finalize($tests);
         }
 
-        $fileReport->source()->setSourceCode(
-            file_get_contents($file->pathAsString()),
-        );
+        if ($this->includeSource) {
+            $fileReport->source()->setSourceCode(
+                file_get_contents($file->pathAsString()),
+            );
+        }
 
         $this->saveDocument($fileReport->asDom(), $file->id());
     }

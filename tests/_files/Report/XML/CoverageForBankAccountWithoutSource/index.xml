@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <build time="%s" phpunit="%s" coverage="%s">
+    <runtime name="%s" version="%s" url="%s"/>
+    <driver%S/>
+  </build>
+  <project source="%s">
+    <tests>
+      <test name="BankAccountTest::testBalanceIsInitiallyZero" size="unknown" status="unknown"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative" size="unknown" status="unknown"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative2" size="unknown" status="unknown"/>
+      <test name="BankAccountTest::testDepositWithdrawMoney" size="unknown" status="unknown"/>
+    </tests>
+    <directory name="%s">
+      <totals>
+        <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
+        <methods count="4" tested="3" percent="75.00"/>
+        <functions count="0" tested="0" percent="0"/>
+        <classes count="1" tested="0" percent="0.00"/>
+        <traits count="0" tested="0" percent="0"/>
+      </totals>
+      <file name="BankAccount.php" href="BankAccount.php.xml">
+        <totals>
+          <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
+          <methods count="4" tested="3" percent="75.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="0" percent="0.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>

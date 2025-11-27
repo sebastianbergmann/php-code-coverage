@@ -2,7 +2,11 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [12.4.1] - 2025-MM-DD
+## [12.5.0] - 2025-MM-DD
+
+### Added
+
+* Option to not generate the `<source>` element for the XML report
 
 ### Changed
 
@@ -11,11 +15,4 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#1108](https://github.com/sebastianbergmann/php-code-coverage/pull/1108): Do not sort covered files data over and over
 * [#1109](https://github.com/sebastianbergmann/php-code-coverage/pull/1109): Represent line coverage data using objects
 
-## [12.4.0] - 2025-09-24
-
-### Added
-
-* [#1095](https://github.com/sebastianbergmann/php-code-coverage/pull/1095): Support for light/dark mode in HTML report
-
-[12.4.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.4.0...main
-[12.4.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.3.8...12.4.0
+[12.5.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.4.0...main

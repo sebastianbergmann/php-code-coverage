@@ -21,7 +21,6 @@ use function sprintf;
 use function strlen;
 use function substr;
 use DateTimeImmutable;
-use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
@@ -31,11 +30,11 @@ use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
-use SebastianBergmann\CodeCoverage\Util\Xml;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
+use XMLWriter;
 
 /**
  * @phpstan-import-type TestType from CodeCoverage
@@ -66,15 +65,21 @@ final class Facade
 
         $report = $coverage->getReport();
 
+        $writer = new XMLWriter;
+        $writer->openUri($this->targetFilePath('index'));
+        $writer->setIndent(true);
+        $writer->setIndentString('  ');
         $this->project = new Project(
+            $writer,
             $coverage->getReport()->name(),
         );
 
         $this->setBuildInformation();
+
+        $this->project->startProject();
         $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
-
-        $this->saveDocument($this->project->asDom(), 'index');
+        $this->project->finalize();
     }
 
     private function setBuildInformation(): void
@@ -119,7 +124,10 @@ final class Facade
             $directoryName = '/';
         }
 
-        $directoryObject = $context->addDirectory($directoryName);
+        $writer = $this->project->getWriter();
+        $writer->startElement('directory');
+        $writer->writeAttribute('name', $directoryName);
+        $directoryObject = $context->addDirectory();
 
         $this->setTotals($directory, $directoryObject->totals());
 
@@ -130,6 +138,7 @@ final class Facade
         foreach ($directory->files() as $node) {
             $this->processFile($node, $directoryObject);
         }
+        $writer->endElement();
     }
 
     /**
@@ -137,19 +146,26 @@ final class Facade
      */
     private function processFile(FileNode $file, Directory $context): void
     {
-        $fileObject = $context->addFile(
-            $file->name(),
-            $file->id() . '.xml',
-        );
+        $context->getWriter()->startElement('file');
+        $context->getWriter()->writeAttribute('name', $file->name());
+        $context->getWriter()->writeAttribute('href', $file->id() . '.xml');
+
+        $fileObject = $context->addFile();
 
         $this->setTotals($file, $fileObject->totals());
+
+        $context->getWriter()->endElement();
 
         $path = substr(
             $file->pathAsString(),
             strlen($this->project->projectSourceDirectory()),
         );
 
-        $fileReport = new Report($path);
+        $writer = new XMLWriter;
+        $writer->openUri($this->targetFilePath($file->id()));
+        $writer->setIndent(true);
+        $writer->setIndentString('  ');
+        $fileReport = new Report($writer, $path);
 
         $this->setTotals($file, $fileReport->totals());
 
@@ -161,6 +177,8 @@ final class Facade
             $this->processFunction($function, $fileReport);
         }
 
+        $fileReport->getWriter()->startElement('coverage');
+
         foreach ($file->lineCoverageData() as $line => $tests) {
             if (!is_array($tests) || count($tests) === 0) {
                 continue;
@@ -169,17 +187,20 @@ final class Facade
             $coverage = $fileReport->lineCoverage((string) $line);
             $coverage->finalize($tests);
         }
+        $fileReport->getWriter()->endElement();
 
         $fileReport->source()->setSourceCode(
             file_get_contents($file->pathAsString()),
         );
 
-        $this->saveDocument($fileReport->asDom(), $file->id());
+        $fileReport->finalize();
     }
 
     private function processUnit(ProcessedClassType|ProcessedTraitType $unit, Report $report): void
     {
         if ($unit instanceof ProcessedClassType) {
+            $report->getWriter()->startElement('class');
+
             $unitObject = $report->classObject(
                 $unit->className,
                 $unit->namespace,
@@ -189,6 +210,8 @@ final class Facade
                 (float) $unit->crap,
             );
         } else {
+            $report->getWriter()->startElement('trait');
+
             $unitObject = $report->traitObject(
                 $unit->traitName,
                 $unit->namespace,
@@ -200,6 +223,8 @@ final class Facade
         }
 
         foreach ($unit->methods as $method) {
+            $report->getWriter()->startElement('method');
+
             $unitObject->addMethod(
                 $method->methodName,
                 $method->signature,
@@ -210,11 +235,17 @@ final class Facade
                 (string) $method->coverage,
                 $method->crap,
             );
+
+            $report->getWriter()->endElement();
         }
+
+        $report->getWriter()->endElement();
     }
 
     private function processFunction(ProcessedFunctionType $function, Report $report): void
     {
+        $report->getWriter()->startElement('function');
+
         $report->functionObject(
             $function->functionName,
             $function->signature,
@@ -225,6 +256,8 @@ final class Facade
             (string) $function->coverage,
             $function->crap,
         );
+
+        $report->getWriter()->endElement();
     }
 
     /**
@@ -232,15 +265,21 @@ final class Facade
      */
     private function processTests(array $tests): void
     {
+        $this->project->getWriter()->startElement('tests');
+
         $testsObject = $this->project->tests();
 
         foreach ($tests as $test => $result) {
             $testsObject->addTest($test, $result);
         }
+
+        $this->project->getWriter()->endElement();
     }
 
     private function setTotals(AbstractNode $node, Totals $totals): void
     {
+        $totals->getWriter()->startElement('totals');
+
         $loc = $node->linesOfCode();
 
         $totals->setNumLines(
@@ -249,6 +288,16 @@ final class Facade
             $loc->nonCommentLinesOfCode(),
             $node->numberOfExecutableLines(),
             $node->numberOfExecutedLines(),
+        );
+
+        $totals->setNumMethods(
+            $node->numberOfMethods(),
+            $node->numberOfTestedMethods(),
+        );
+
+        $totals->setNumFunctions(
+            $node->numberOfFunctions(),
+            $node->numberOfTestedFunctions(),
         );
 
         $totals->setNumClasses(
@@ -261,15 +310,7 @@ final class Facade
             $node->numberOfTestedTraits(),
         );
 
-        $totals->setNumMethods(
-            $node->numberOfMethods(),
-            $node->numberOfTestedMethods(),
-        );
-
-        $totals->setNumFunctions(
-            $node->numberOfFunctions(),
-            $node->numberOfTestedFunctions(),
-        );
+        $totals->getWriter()->endElement();
     }
 
     private function targetDirectory(): string
@@ -284,13 +325,5 @@ final class Facade
         $this->initTargetDirectory(dirname($filename));
 
         return $filename;
-    }
-
-    /**
-     * @throws XmlException
-     */
-    private function saveDocument(DOMDocument $document, string $name): void
-    {
-        Filesystem::write($this->targetFilePath($name), Xml::asString($document));
     }
 }

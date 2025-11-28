@@ -1031,6 +1031,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'getBalance'),
                 ],
             ),
+            time: 0.1,
         );
 
         $coverage->start(
@@ -1045,6 +1046,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 0.2,
         );
 
         $coverage->start(
@@ -1059,6 +1061,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'depositMoney'),
                 ],
             ),
+            time: 0.3,
         );
 
         $coverage->start(
@@ -1075,6 +1078,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 0.4,
         );
 
         return $coverage;
@@ -1110,6 +1114,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'getBalance'),
                 ],
             ),
+            time: 0.5,
         );
 
         $coverage->start(
@@ -1124,6 +1129,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 0.6,
         );
 
         $coverage->start(
@@ -1138,6 +1144,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'depositMoney'),
                 ],
             ),
+            time: 0.7,
         );
 
         $coverage->start(
@@ -1154,6 +1161,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 0.8,
         );
 
         return $coverage;
@@ -1276,6 +1284,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccountTrait::class, 'withdrawMoney'),
             ]),
+            time: 0.9,
         );
 
         $coverage->start(
@@ -1288,6 +1297,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccountTrait::class, 'depositMoney'),
             ]),
+            time: 1.0,
         );
 
         $coverage->start(
@@ -1302,6 +1312,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 Target::forMethod(BankAccountTrait::class, 'depositMoney'),
                 Target::forMethod(BankAccountTrait::class, 'withdrawMoney'),
             ]),
+            time: 1.1,
         );
 
         return $coverage;
@@ -1335,6 +1346,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'getBalance'),
                 ],
             ),
+            time: 1.2,
         );
 
         $coverage->start(
@@ -1349,6 +1361,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 1.3,
         );
 
         return $coverage;
@@ -1380,6 +1393,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'depositMoney'),
                 ],
             ),
+            time: 1.4,
         );
 
         $coverage->start(
@@ -1396,6 +1410,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 1.5,
         );
 
         return $coverage;
@@ -1491,6 +1506,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'getBalance'),
                 ],
             ),
+            time: 1.6,
         );
 
         $coverage->start(
@@ -1505,6 +1521,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 1.7,
         );
 
         return $coverage;
@@ -1538,6 +1555,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'depositMoney'),
                 ],
             ),
+            time: 1.8,
         );
 
         $coverage->start(
@@ -1554,6 +1572,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     Target::forMethod(BankAccount::class, 'withdrawMoney'),
                 ],
             ),
+            time: 1.9,
         );
 
         return $coverage;
@@ -1947,6 +1966,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'getBalance'),
             ]),
+            time: 2.0,
         );
 
         $coverage->start(
@@ -1959,6 +1979,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
+            time: 2.1,
         );
 
         $coverage->start(
@@ -1971,6 +1992,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'depositMoney'),
             ]),
+            time: 2.2,
         );
 
         $coverage->start(
@@ -1985,6 +2007,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 Target::forMethod(BankAccount::class, 'depositMoney'),
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
+            time: 2.3,
         );
 
         return $coverage;
@@ -2018,6 +2041,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'getBalance'),
             ]),
+            time: 2.4,
         );
 
         $coverage->start(
@@ -2030,6 +2054,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
+            time: 2.5,
         );
 
         $coverage->start(
@@ -2042,6 +2067,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             TargetCollection::fromArray([
                 Target::forMethod(BankAccount::class, 'depositMoney'),
             ]),
+            time: 2.6,
         );
 
         $coverage->start(
@@ -2056,6 +2082,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 Target::forMethod(BankAccount::class, 'depositMoney'),
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
+            time: 2.7,
         );
 
         return $coverage;

@@ -6,7 +6,7 @@
   </build>
   <project source="%s">
     <tests>
-      <test name="ClassWithAnonymousFunction" size="unknown" status="unknown"/>
+      <test name="ClassWithAnonymousFunction" size="unknown" status="unknown" time="0.000000"/>
     </tests>
     <directory name="%s">
       <totals>

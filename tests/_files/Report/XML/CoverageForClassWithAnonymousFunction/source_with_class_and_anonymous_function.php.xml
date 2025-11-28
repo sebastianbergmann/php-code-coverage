@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
-  <file name="source_with_class_and_anonymous_function.php" path="%e">
+  <file name="source_with_class_and_anonymous_function.php" path="%e" hash="e716063329abad36891e4edd3fa3506fcb57ef8f">
     <totals>
       <lines total="20" comments="1" code="19" executable="8" executed="8" percent="100.00"/>
       <methods count="1" tested="1" percent="100.00"/>

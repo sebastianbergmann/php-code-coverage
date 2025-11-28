@@ -16,7 +16,7 @@
         <classes count="0" tested="0" percent="0"/>
         <traits count="0" tested="0" percent="0"/>
       </totals>
-      <file name="source_with_ignore.php" href="source_with_ignore.php.xml">
+      <file name="source_with_ignore.php" href="source_with_ignore.php.xml" hash="b23c7656b144370fea562dee7a542d8d643ba2f4">
         <totals>
           <lines total="43" comments="11" code="32" executable="1" executed="1" percent="100.00"/>
           <methods count="0" tested="0" percent="0"/>

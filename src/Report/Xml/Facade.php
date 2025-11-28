@@ -142,6 +142,7 @@ final class Facade
         $fileObject = $context->addFile(
             $file->name(),
             $file->id() . '.xml',
+            $file->sha1(),
         );
 
         $this->setTotals($file, $fileObject->totals());
@@ -151,7 +152,7 @@ final class Facade
             strlen($this->project->projectSourceDirectory()),
         );
 
-        $fileReport = new Report($path);
+        $fileReport = new Report($path, $file->sha1());
 
         $this->setTotals($file, $fileReport->totals());
 

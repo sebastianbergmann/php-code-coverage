@@ -58,7 +58,7 @@ abstract class Node
         return new Directory($dirNode);
     }
 
-    public function addFile(string $name, string $href): File
+    public function addFile(string $name, string $href, string $hash): File
     {
         $fileNode = $this->dom->createElementNS(
             Facade::XML_NAMESPACE,
@@ -67,6 +67,7 @@ abstract class Node
 
         $fileNode->setAttribute('name', $name);
         $fileNode->setAttribute('href', $href);
+        $fileNode->setAttribute('hash', $hash);
         $this->contextNode()->appendChild($fileNode);
 
         return new File($fileNode);

@@ -17,6 +17,7 @@ use function dirname;
 use function explode;
 use function implode;
 use function is_file;
+use function sha1_file;
 use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
@@ -76,6 +77,7 @@ final readonly class Builder
                         new File(
                             $key,
                             $root,
+                            sha1_file($filename),
                             $value['lineCoverage'],
                             $value['functionCoverage'],
                             $tests,

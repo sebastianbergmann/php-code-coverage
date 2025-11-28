@@ -19,7 +19,7 @@
         <classes count="1" tested="0" percent="0.00"/>
         <traits count="0" tested="0" percent="0"/>
       </totals>
-      <file name="BankAccount.php" href="BankAccount.php.xml">
+      <file name="BankAccount.php" href="BankAccount.php.xml" hash="efd997ec85ed298e59743e5c354216b0ff22e2e5">
         <totals>
           <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
           <methods count="4" tested="3" percent="75.00"/>

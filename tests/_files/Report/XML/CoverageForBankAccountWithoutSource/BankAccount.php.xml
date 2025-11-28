@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
-  <file name="BankAccount.php" path="%e">
+  <file name="BankAccount.php" path="%e" hash="efd997ec85ed298e59743e5c354216b0ff22e2e5">
     <totals>
       <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
       <methods count="4" tested="3" percent="75.00"/>

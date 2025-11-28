@@ -35,6 +35,11 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 final class File extends AbstractNode
 {
     /**
+     * @var non-empty-string
+     */
+    private string $sha1;
+
+    /**
      * @var array<int, ?list<non-empty-string>>
      */
     private array $lineCoverageData;
@@ -80,16 +85,18 @@ final class File extends AbstractNode
     private array $codeUnitsByLine = [];
 
     /**
+     * @param non-empty-string                    $sha1
      * @param array<int, ?list<non-empty-string>> $lineCoverageData
      * @param array<string, TestType>             $testData
      * @param array<string, Class_>               $classes
      * @param array<string, Trait_>               $traits
      * @param array<string, Function_>            $functions
      */
-    public function __construct(string $name, AbstractNode $parent, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
+    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
     {
         parent::__construct($name, $parent);
 
+        $this->sha1                 = $sha1;
         $this->lineCoverageData     = $lineCoverageData;
         $this->functionCoverageData = $functionCoverageData;
         $this->testData             = $testData;
@@ -101,6 +108,14 @@ final class File extends AbstractNode
     public function count(): int
     {
         return 1;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function sha1(): string
+    {
+        return $this->sha1;
     }
 
     /**

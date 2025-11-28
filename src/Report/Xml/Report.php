@@ -21,8 +21,9 @@ use DOMElement;
 final class Report extends File
 {
     private readonly string $name;
+    private readonly string $sha1;
 
-    public function __construct(string $name)
+    public function __construct(string $name, string $sha1)
     {
         $dom = new DOMDocument;
         $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
@@ -35,12 +36,14 @@ final class Report extends File
         parent::__construct($contextNode);
 
         $this->name = $name;
+        $this->sha1 = $sha1;
     }
 
     public function asDom(): DOMDocument
     {
         $this->contextNode()->setAttribute('name', basename($this->name));
         $this->contextNode()->setAttribute('path', dirname($this->name));
+        $this->contextNode()->setAttribute('hash', $this->sha1);
 
         return $this->dom;
     }

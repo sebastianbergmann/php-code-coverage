@@ -3,6 +3,8 @@
   <file name="source_with_class_and_anonymous_function.php" path="%e" hash="e716063329abad36891e4edd3fa3506fcb57ef8f">
     <totals>
       <lines total="20" comments="1" code="19" executable="8" executed="8" percent="100.00"/>
+      <branches count="0" tested="0" percent="0"/>
+      <paths count="0" tested="0" percent="0"/>
       <methods count="1" tested="1" percent="100.00"/>
       <functions count="0" tested="0" percent="0"/>
       <classes count="1" tested="1" percent="100.00"/>

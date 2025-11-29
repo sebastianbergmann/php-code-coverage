@@ -3,6 +3,8 @@
   <file name="source_with_ignore.php" path="%e" hash="b23c7656b144370fea562dee7a542d8d643ba2f4">
     <totals>
       <lines total="43" comments="11" code="32" executable="1" executed="1" percent="100.00"/>
+      <branches count="0" tested="0" percent="0"/>
+      <paths count="0" tested="0" percent="0"/>
       <methods count="0" tested="0" percent="0"/>
       <functions count="1" tested="1" percent="100.00"/>
       <classes count="0" tested="0" percent="0"/>

@@ -9,72 +9,37 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
-use DOMDocument;
-use DOMElement;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class Node
 {
-    protected readonly DOMDocument $dom;
-    private readonly DOMElement $contextNode;
+    protected readonly XMLWriter $xmlWriter;
 
-    public function __construct(DOMElement $context)
+    public function __construct(XMLWriter $xmlWriter)
     {
-        $this->dom         = $context->ownerDocument;
-        $this->contextNode = $context;
+        $this->xmlWriter = $xmlWriter;
     }
 
     public function totals(): Totals
     {
-        $totalsContainer = $this->contextNode()->firstChild;
-
-        if ($totalsContainer === null) {
-            $totalsContainer = $this->contextNode()->appendChild(
-                $this->dom->createElementNS(
-                    Facade::XML_NAMESPACE,
-                    'totals',
-                ),
-            );
-        }
-
-        assert($totalsContainer instanceof DOMElement);
-
-        return new Totals($totalsContainer);
+        return new Totals($this->xmlWriter);
     }
 
-    public function addDirectory(string $name): Directory
+    public function addDirectory(): Directory
     {
-        $dirNode = $this->dom->createElementNS(
-            Facade::XML_NAMESPACE,
-            'directory',
-        );
-
-        $dirNode->setAttribute('name', $name);
-        $this->contextNode()->appendChild($dirNode);
-
-        return new Directory($dirNode);
+        return new Directory($this->xmlWriter);
     }
 
-    public function addFile(string $name, string $href, string $hash): File
+    public function addFile(): File
     {
-        $fileNode = $this->dom->createElementNS(
-            Facade::XML_NAMESPACE,
-            'file',
-        );
-
-        $fileNode->setAttribute('name', $name);
-        $fileNode->setAttribute('href', $href);
-        $fileNode->setAttribute('hash', $hash);
-        $this->contextNode()->appendChild($fileNode);
-
-        return new File($fileNode);
+        return new File($this->xmlWriter);
     }
 
-    protected function contextNode(): DOMElement
+    public function getWriter(): XMLWriter
     {
-        return $this->contextNode;
+        return $this->xmlWriter;
     }
 }

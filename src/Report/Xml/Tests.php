@@ -9,10 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
 use function sprintf;
-use DOMElement;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -21,11 +20,11 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
  */
 final readonly class Tests
 {
-    private DOMElement $contextNode;
+    private readonly XMLWriter $xmlWriter;
 
-    public function __construct(DOMElement $context)
+    public function __construct(XMLWriter $xmlWriter)
     {
-        $this->contextNode = $context;
+        $this->xmlWriter = $xmlWriter;
     }
 
     /**
@@ -33,18 +32,13 @@ final readonly class Tests
      */
     public function addTest(string $test, array $result): void
     {
-        $node = $this->contextNode->appendChild(
-            $this->contextNode->ownerDocument->createElementNS(
-                Facade::XML_NAMESPACE,
-                'test',
-            ),
-        );
+        $this->xmlWriter->startElement('test');
 
-        assert($node instanceof DOMElement);
+        $this->xmlWriter->writeAttribute('name', $test);
+        $this->xmlWriter->writeAttribute('size', $result['size']);
+        $this->xmlWriter->writeAttribute('status', $result['status']);
+        $this->xmlWriter->writeAttribute('time', sprintf('%F', $result['time']));
 
-        $node->setAttribute('name', $test);
-        $node->setAttribute('size', $result['size']);
-        $node->setAttribute('status', $result['status']);
-        $node->setAttribute('time', sprintf('%F', $result['time']));
+        $this->xmlWriter->endElement();
     }
 }

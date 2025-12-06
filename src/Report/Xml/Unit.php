@@ -9,18 +9,17 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
-use DOMElement;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final readonly class Unit
 {
-    private DOMElement $contextNode;
+    private XMLWriter $xmlWriter;
 
     public function __construct(
-        DOMElement $context,
+        XMLWriter $xmlWriter,
         string $name,
         string $namespace,
         int $start,
@@ -28,23 +27,17 @@ final readonly class Unit
         int $executed,
         float $crap
     ) {
-        $this->contextNode = $context;
+        $this->xmlWriter = $xmlWriter;
 
-        $this->contextNode->setAttribute('name', $name);
-        $this->contextNode->setAttribute('start', (string) $start);
-        $this->contextNode->setAttribute('executable', (string) $executable);
-        $this->contextNode->setAttribute('executed', (string) $executed);
-        $this->contextNode->setAttribute('crap', (string) $crap);
+        $this->xmlWriter->writeAttribute('name', $name);
+        $this->xmlWriter->writeAttribute('start', (string) $start);
+        $this->xmlWriter->writeAttribute('executable', (string) $executable);
+        $this->xmlWriter->writeAttribute('executed', (string) $executed);
+        $this->xmlWriter->writeAttribute('crap', (string) $crap);
 
-        $node = $this->contextNode->appendChild(
-            $this->contextNode->ownerDocument->createElementNS(
-                Facade::XML_NAMESPACE,
-                'namespace',
-            ),
-        );
-        assert($node instanceof DOMElement);
-
-        $node->setAttribute('name', $namespace);
+        $this->xmlWriter->startElement('namespace');
+        $this->xmlWriter->writeAttribute('name', $namespace);
+        $this->xmlWriter->endElement();
     }
 
     public function addMethod(
@@ -57,17 +50,8 @@ final readonly class Unit
         string $coverage,
         string $crap
     ): void {
-        $node = $this->contextNode->appendChild(
-            $this->contextNode->ownerDocument->createElementNS(
-                Facade::XML_NAMESPACE,
-                'method',
-            ),
-        );
-
-        assert($node instanceof DOMElement);
-
         new Method(
-            $node,
+            $this->xmlWriter,
             $name,
             $signature,
             $start,

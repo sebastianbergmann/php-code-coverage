@@ -9,17 +9,17 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use DOMElement;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final readonly class Method
 {
-    private DOMElement $contextNode;
+    private XMLWriter $xmlWriter;
 
     public function __construct(
-        DOMElement $context,
+        XMLWriter $xmlWriter,
         string $name,
         string $signature,
         string $start,
@@ -29,21 +29,21 @@ final readonly class Method
         string $coverage,
         string $crap
     ) {
-        $this->contextNode = $context;
+        $this->xmlWriter = $xmlWriter;
 
-        $this->contextNode->setAttribute('name', $name);
-        $this->contextNode->setAttribute('signature', $signature);
+        $this->xmlWriter->writeAttribute('name', $name);
+        $this->xmlWriter->writeAttribute('signature', $signature);
 
-        $this->contextNode->setAttribute('start', $start);
+        $this->xmlWriter->writeAttribute('start', $start);
 
         if ($end !== null) {
-            $this->contextNode->setAttribute('end', $end);
+            $this->xmlWriter->writeAttribute('end', $end);
         }
 
-        $this->contextNode->setAttribute('crap', $crap);
+        $this->xmlWriter->writeAttribute('crap', $crap);
 
-        $this->contextNode->setAttribute('executable', $executable);
-        $this->contextNode->setAttribute('executed', $executed);
-        $this->contextNode->setAttribute('coverage', $coverage);
+        $this->xmlWriter->writeAttribute('executable', $executable);
+        $this->xmlWriter->writeAttribute('executed', $executed);
+        $this->xmlWriter->writeAttribute('coverage', $coverage);
     }
 }

@@ -22,7 +22,7 @@
         <covered by="FileWithIgnoredLines"/>
       </line>
     </coverage>
-    <source>
+    <source xmlns="https://schema.phpunit.de/coverage/1.0">
       <line no="1">
         <token name="T_OPEN_TAG">&lt;?php</token>
       </line>

@@ -9,11 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function assert;
 use DateTimeImmutable;
-use DOMDocument;
-use DOMElement;
 use SebastianBergmann\Environment\Runtime;
+use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -22,19 +20,16 @@ final class Project extends Node
 {
     private readonly string $directory;
 
-    public function __construct(string $directory)
+    public function __construct(XMLWriter $xmlWriter, string $directory)
     {
-        $dom = new DOMDocument;
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
-
-        parent::__construct(
-            $dom->getElementsByTagNameNS(
-                Facade::XML_NAMESPACE,
-                'project',
-            )->item(0),
-        );
-
         $this->directory = $directory;
+
+        parent::__construct($xmlWriter);
+
+        $this->xmlWriter->startDocument();
+
+        $this->xmlWriter->startElement('phpunit');
+        $this->xmlWriter->writeAttribute('xmlns', Facade::XML_NAMESPACE);
     }
 
     public function projectSourceDirectory(): string
@@ -48,15 +43,8 @@ final class Project extends Node
         string $phpUnitVersion,
         string $coverageVersion
     ): void {
-        $buildNode = $this->dom->getElementsByTagNameNS(
-            Facade::XML_NAMESPACE,
-            'build',
-        )->item(0);
-
-        assert($buildNode instanceof DOMElement);
-
         new BuildInformation(
-            $buildNode,
+            $this->xmlWriter,
             $runtime,
             $buildDate,
             $phpUnitVersion,
@@ -66,22 +54,24 @@ final class Project extends Node
 
     public function tests(): Tests
     {
-        $testsNode = $this->contextNode()->appendChild(
-            $this->dom->createElementNS(
-                Facade::XML_NAMESPACE,
-                'tests',
-            ),
-        );
-
-        assert($testsNode instanceof DOMElement);
-
-        return new Tests($testsNode);
+        return new Tests($this->xmlWriter);
     }
 
-    public function asDom(): DOMDocument
+    public function getWriter(): XMLWriter
     {
-        $this->contextNode()->setAttribute('source', $this->directory);
+        return $this->xmlWriter;
+    }
 
-        return $this->dom;
+    public function startProject(): void
+    {
+        $this->xmlWriter->startElement('project');
+        $this->xmlWriter->writeAttribute('source', $this->directory);
+    }
+
+    public function finalize(): void
+    {
+        $this->xmlWriter->endElement();
+        $this->xmlWriter->endDocument();
+        $this->xmlWriter->flush();
     }
 }

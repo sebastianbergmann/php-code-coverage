@@ -100,7 +100,7 @@
         <token name="T_FUNCTION">function</token>
         <token name="T_WHITESPACE"> </token>
         <token name="T_OPEN_BRACKET">(</token>
-        <token name="T_AMPERSAND">&amp;</token>
+        <token name="T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG">&amp;</token>
         <token name="T_VARIABLE">$val</token>
         <token name="T_COMMA">,</token>
         <token name="T_WHITESPACE"> </token>

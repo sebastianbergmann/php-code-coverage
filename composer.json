@@ -40,7 +40,7 @@
         "sebastian/environment": "^8.0.3",
         "sebastian/lines-of-code": "^4.0",
         "sebastian/version": "^6.0",
-        "theseer/tokenizer": "^2.0"
+        "theseer/tokenizer": "^2.0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.5.1"

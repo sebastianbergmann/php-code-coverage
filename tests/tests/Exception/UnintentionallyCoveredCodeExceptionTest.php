@@ -43,7 +43,6 @@ final class UnintentionallyCoveredCodeExceptionTest extends TestCase
 - foo
 - bar
 - baz
-
 TXT;
 
         $this->assertSame($expected, $exception->getMessage());

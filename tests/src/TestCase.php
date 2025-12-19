@@ -1013,10 +1013,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->method('stop')
             ->willReturn(...$data);
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
@@ -1098,10 +1094,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub
             ->method('stop')
             ->willReturn(...$data);
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1187,10 +1179,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->method('stop')
             ->willReturn(...$data);
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'source_without_namespace.php');
 
@@ -1271,10 +1259,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->method('stop')
             ->willReturn(...$data);
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
 
@@ -1348,10 +1332,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->method('stop')
             ->willReturn(...$data);
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
@@ -1401,10 +1381,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub
             ->method('stop')
             ->willReturn($data[2], $data[3]);
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1516,10 +1492,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->method('stop')
             ->willReturn(...$data);
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
@@ -1571,10 +1543,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub
             ->method('stop')
             ->willReturn($data[2], $data[3]);
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1851,10 +1819,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
             ));
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         return $stub;
     }
 
@@ -1891,10 +1855,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                 ],
             ));
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         return $stub;
     }
@@ -1937,10 +1897,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
             ));
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         return $stub;
     }
 
@@ -1977,10 +1933,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
             ));
 
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
-
         return $stub;
     }
 
@@ -2007,10 +1959,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub
             ->method('stop')
             ->willReturn(...$data);
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -2087,10 +2035,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub
             ->method('stop')
             ->willReturn(...$data);
-
-        $stub
-            ->method('isXdebug')
-            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');

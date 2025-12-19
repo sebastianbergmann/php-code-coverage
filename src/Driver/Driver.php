@@ -86,16 +86,6 @@ abstract class Driver
         return false;
     }
 
-    public function isPcov(): bool
-    {
-        return false;
-    }
-
-    public function isXdebug(): bool
-    {
-        return false;
-    }
-
     abstract public function nameAndVersion(): string;
 
     abstract public function start(): void;

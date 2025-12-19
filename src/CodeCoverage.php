@@ -384,7 +384,7 @@ final class CodeCoverage
      */
     public function driverIsPcov(): bool
     {
-        return $this->driver instanceof PcovDriver;
+        return $this->driver->isPcov();
     }
 
     /**
@@ -392,7 +392,7 @@ final class CodeCoverage
      */
     public function driverIsXdebug(): bool
     {
-        return $this->driver instanceof XdebugDriver;
+        return $this->driver->isXdebug();
     }
 
     /**

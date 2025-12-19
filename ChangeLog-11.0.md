@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#1092](https://github.com/sebastianbergmann/php-code-coverage/issues/1092): Error in `DOMDocument::saveXML()` is not handled
+* [#1131](https://github.com/sebastianbergmann/php-code-coverage/issues/1131): Invalid XML generated when both PCOV and Xdebug are loaded
 
 ## [11.0.11] - 2025-08-27
 

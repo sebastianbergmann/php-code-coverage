@@ -64,17 +64,17 @@ final class Facade
             $coverage->getReport()->name(),
         );
 
-        $this->setBuildInformation();
+        $this->setBuildInformation($coverage);
         $this->processTests($coverage->getTests());
         $this->processDirectory($report, $this->project);
 
         $this->saveDocument($this->project->asDom(), 'index');
     }
 
-    private function setBuildInformation(): void
+    private function setBuildInformation(CodeCoverage $coverage): void
     {
         $buildNode = $this->project->buildInformation();
-        $buildNode->setRuntimeInformation(new Runtime);
+        $buildNode->setRuntimeInformation(new Runtime, $coverage);
         $buildNode->setBuildTime(new DateTimeImmutable);
         $buildNode->setGeneratorVersions($this->phpUnitVersion, Version::id());
     }

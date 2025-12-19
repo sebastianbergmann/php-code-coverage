@@ -39,14 +39,12 @@ final readonly class BuildInformation
 
         $xmlWriter->startElement('driver');
 
-        if ($runtime->hasXdebug()) {
-            $xmlWriter->writeAttribute('name', 'xdebug');
-            $xmlWriter->writeAttribute('version', phpversion('xdebug'));
-        }
-
         if ($runtime->hasPCOV()) {
             $xmlWriter->writeAttribute('name', 'pcov');
             $xmlWriter->writeAttribute('version', phpversion('pcov'));
+        } elseif ($runtime->hasXdebug()) {
+            $xmlWriter->writeAttribute('name', 'xdebug');
+            $xmlWriter->writeAttribute('version', phpversion('xdebug'));
         }
         $xmlWriter->endElement();
 

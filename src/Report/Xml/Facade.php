@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use const DIRECTORY_SEPARATOR;
-use function assert;
 use function count;
 use function dirname;
 use function file_get_contents;
@@ -94,10 +93,12 @@ final class Facade
         } elseif ($coverage->driverIsXdebug()) {
             $driverExtensionName    = 'xdebug';
             $driverExtensionVersion = phpversion('xdebug');
+        } else {
+            // @codeCoverageIgnoreStart
+            $driverExtensionName    = 'unknown';
+            $driverExtensionVersion = 'unknown';
+            // @codeCoverageIgnoreEnd
         }
-
-        assert(isset($driverExtensionName));
-        assert(isset($driverExtensionVersion));
 
         $this->project->buildInformation(
             new Runtime,

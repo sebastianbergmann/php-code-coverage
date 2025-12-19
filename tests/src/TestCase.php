@@ -1009,8 +1009,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1090,8 +1095,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1173,8 +1183,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'source_without_namespace.php');
@@ -1252,8 +1267,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'NamespacedBankAccount.php');
@@ -1324,8 +1344,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1373,8 +1398,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn($data[2], $data[3]);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1482,8 +1512,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1533,8 +1568,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn($data[2], $data[3]);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -1799,7 +1839,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_ignore.php' => [
@@ -1809,6 +1850,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                 ],
             ));
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         return $stub;
     }
@@ -1833,7 +1878,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_eval.php' => [
@@ -1845,6 +1891,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                 ],
             ));
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         return $stub;
     }
@@ -1869,7 +1919,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
@@ -1885,6 +1936,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                 ],
             ));
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         return $stub;
     }
@@ -1909,7 +1964,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_class_and_outside_function.php' => [
@@ -1920,6 +1976,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                 ],
             ));
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         return $stub;
     }
@@ -1944,8 +2004,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
@@ -2019,8 +2084,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub = $this->createStub(Driver::class);
 
-        $stub->method('stop')
+        $stub
+            ->method('stop')
             ->willReturn(...$data);
+
+        $stub
+            ->method('isXdebug')
+            ->willReturn(true);
 
         $filter = new Filter;
         $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');

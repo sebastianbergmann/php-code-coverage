@@ -41,7 +41,9 @@ final class Project extends Node
         Runtime $runtime,
         DateTimeImmutable $buildDate,
         string $phpUnitVersion,
-        string $coverageVersion
+        string $coverageVersion,
+        string $driverExtensionName,
+        string $driverExtensionVersion,
     ): void {
         new BuildInformation(
             $this->xmlWriter,
@@ -49,6 +51,8 @@ final class Project extends Node
             $buildDate,
             $phpUnitVersion,
             $coverageVersion,
+            $driverExtensionName,
+            $driverExtensionVersion,
         );
     }
 

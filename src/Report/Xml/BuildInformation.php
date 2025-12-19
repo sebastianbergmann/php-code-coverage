@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function phpversion;
 use DateTimeImmutable;
 use SebastianBergmann\Environment\Runtime;
 use XMLWriter;
@@ -24,7 +23,9 @@ final readonly class BuildInformation
         Runtime $runtime,
         DateTimeImmutable $buildDate,
         string $phpUnitVersion,
-        string $coverageVersion
+        string $coverageVersion,
+        string $driverExtensionName,
+        string $driverExtensionVersion,
     ) {
         $xmlWriter->startElement('build');
         $xmlWriter->writeAttribute('time', $buildDate->format('D M j G:i:s T Y'));
@@ -38,16 +39,8 @@ final readonly class BuildInformation
         $xmlWriter->endElement();
 
         $xmlWriter->startElement('driver');
-
-        if ($runtime->hasXdebug()) {
-            $xmlWriter->writeAttribute('name', 'xdebug');
-            $xmlWriter->writeAttribute('version', phpversion('xdebug'));
-        }
-
-        if ($runtime->hasPCOV()) {
-            $xmlWriter->writeAttribute('name', 'pcov');
-            $xmlWriter->writeAttribute('version', phpversion('pcov'));
-        }
+        $xmlWriter->writeAttribute('name', $driverExtensionName);
+        $xmlWriter->writeAttribute('version', $driverExtensionVersion);
         $xmlWriter->endElement();
 
         $xmlWriter->endElement();

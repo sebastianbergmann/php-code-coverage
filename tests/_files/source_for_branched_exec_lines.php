@@ -454,7 +454,7 @@ class MyClass
             implements                      // 0
             \Throwable                      // 0
             {                               // 0
-                private const MY_CONST = 1;
+                private const int MY_CONST = 1;
                 private $var = 1;
                 public function myMethod()
                 {
@@ -596,7 +596,7 @@ abstract class MyAbstractClass implements MyInterface
 final class MyFinalClass extends MyAbstractClass
 {
     use MyTrait;
-    public const STRUCT = [
+    public const array STRUCT = [
         'foo' => 'bar',
     ];
     private string $var;

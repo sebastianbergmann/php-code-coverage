@@ -363,7 +363,7 @@ final class File extends AbstractNode
                 $methodPathCoverage   = $method->executablePaths > 0 ? ($method->executedPaths / $method->executablePaths) * 100 : 0;
 
                 $method->coverage = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
-                $method->crap     = (new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
+                $method->crap     = new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage)->asString();
 
                 $trait->ccn += $method->ccn;
             }
@@ -375,7 +375,7 @@ final class File extends AbstractNode
             $traitPathCoverage   = $trait->executablePaths > 0 ? ($trait->executedPaths / $trait->executablePaths) * 100 : 0;
 
             $trait->coverage = $traitBranchCoverage > 0 ? $traitBranchCoverage : $traitLineCoverage;
-            $trait->crap     = (new CrapIndex($trait->ccn, $traitPathCoverage > 0 ? $traitPathCoverage : $traitLineCoverage))->asString();
+            $trait->crap     = new CrapIndex($trait->ccn, $traitPathCoverage > 0 ? $traitPathCoverage : $traitLineCoverage)->asString();
 
             if ($trait->executableLines > 0 && $trait->coverage === 100) {
                 $this->numTestedClasses++;
@@ -391,7 +391,7 @@ final class File extends AbstractNode
                 $methodPathCoverage   = $method->executablePaths > 0 ? ($method->executedPaths / $method->executablePaths) * 100 : 0;
 
                 $method->coverage = $methodBranchCoverage > 0 ? $methodBranchCoverage : $methodLineCoverage;
-                $method->crap     = (new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage))->asString();
+                $method->crap     = new CrapIndex($method->ccn, $methodPathCoverage > 0 ? $methodPathCoverage : $methodLineCoverage)->asString();
 
                 $class->ccn += $method->ccn;
             }
@@ -403,7 +403,7 @@ final class File extends AbstractNode
             $classPathCoverage   = $class->executablePaths > 0 ? ($class->executedPaths / $class->executablePaths) * 100 : 0;
 
             $class->coverage = $classBranchCoverage > 0 ? $classBranchCoverage : $classLineCoverage;
-            $class->crap     = (new CrapIndex($class->ccn, $classPathCoverage > 0 ? $classPathCoverage : $classLineCoverage))->asString();
+            $class->crap     = new CrapIndex($class->ccn, $classPathCoverage > 0 ? $classPathCoverage : $classLineCoverage)->asString();
 
             if ($class->executableLines > 0 && $class->coverage === 100) {
                 $this->numTestedClasses++;
@@ -418,7 +418,7 @@ final class File extends AbstractNode
             $functionPathCoverage   = $function->executablePaths > 0 ? ($function->executedPaths / $function->executablePaths) * 100 : 0;
 
             $function->coverage = $functionBranchCoverage > 0 ? $functionBranchCoverage : $functionLineCoverage;
-            $function->crap     = (new CrapIndex($function->ccn, $functionPathCoverage > 0 ? $functionPathCoverage : $functionLineCoverage))->asString();
+            $function->crap     = new CrapIndex($function->ccn, $functionPathCoverage > 0 ? $functionPathCoverage : $functionLineCoverage)->asString();
 
             if ($function->coverage === 100) {
                 $this->numTestedFunctions++;

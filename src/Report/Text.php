@@ -21,16 +21,16 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
-final class Text
+final readonly class Text
 {
     private const string COLOR_GREEN  = "\x1b[30;42m";
     private const string COLOR_YELLOW = "\x1b[30;43m";
     private const string COLOR_RED    = "\x1b[37;41m";
     private const string COLOR_HEADER = "\x1b[1;37;40m";
     private const string COLOR_RESET  = "\x1b[0m";
-    private readonly Thresholds $thresholds;
-    private readonly bool $showUncoveredFiles;
-    private readonly bool $showOnlySummary;
+    private Thresholds $thresholds;
+    private bool $showUncoveredFiles;
+    private bool $showOnlySummary;
 
     public function __construct(Thresholds $thresholds, bool $showUncoveredFiles = false, bool $showOnlySummary = false)
     {
@@ -141,7 +141,7 @@ final class Text
             $report->numberOfExecutableLines(),
         );
 
-        $padding = max(array_map('strlen', [$classes, $methods, $lines]));
+        $padding = max(array_map(strlen(...), [$classes, $methods, $lines]));
 
         if ($this->showOnlySummary) {
             $title   = 'Code Coverage Report Summary:';

@@ -29,6 +29,6 @@ final readonly class Source
     public function setSourceCode(string $source): void
     {
         $tokens = (new Tokenizer)->parse($source);
-        (new XMLSerializer(new NamespaceUri(Facade::XML_NAMESPACE)))->appendToWriter($this->xmlWriter, $tokens);
+        new XMLSerializer(new NamespaceUri(Facade::XML_NAMESPACE))->appendToWriter($this->xmlWriter, $tokens);
     }
 }

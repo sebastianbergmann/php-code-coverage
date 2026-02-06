@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.5.3] - 2026-02-06
+
+### Fixed
+
+* [#1135](https://github.com/sebastianbergmann/php-code-coverage/issues/1135): Internal methods `driverIs*()` must not assume that `CodeCoverage::$driver` is set
+
 ## [12.5.2] - 2025-12-24
 
 ### Fixed
@@ -29,6 +35,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#1126](https://github.com/sebastianbergmann/php-code-coverage/issues/1126): Add test execution time to `<test>` elements under `projects/tests` in the XML reports index file
 * [#1127](https://github.com/sebastianbergmann/php-code-coverage/issues/1127): Add SHA-1 hash of content of SUT source file to XML report
 
+[12.5.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.2...12.5.3
 [12.5.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.1...12.5.2
 [12.5.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.0...12.5.1
 [12.5.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.4.0...12.5.0

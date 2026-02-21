@@ -15,7 +15,7 @@ use function array_unique;
 use function strcasecmp;
 
 /**
- * @phpstan-type TargetMap array{namespaces: TargetMapPart, traits: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
+ * @phpstan-type TargetMap array{namespaces: TargetMapPart, traits: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, files: TargetMapPart, directories: TargetMapPart, reverseLookup: ReverseLookup}
  * @phpstan-type TargetMapPart array<non-empty-string, array<non-empty-string, list<positive-int>>>
  * @phpstan-type ReverseLookup array<non-empty-string, non-empty-string>
  *

@@ -14,6 +14,7 @@ use function array_merge;
 use function array_slice;
 use function array_unique;
 use function count;
+use function dirname;
 use function explode;
 use function implode;
 use function range;
@@ -157,6 +158,31 @@ final readonly class MapBuilder
             unset($classesThatExtendClass[$className]);
         }
 
+        $files = [];
+
+        foreach ($filter->files() as $file) {
+            $lines = array_keys($analyser->analyse($file)->executableLines());
+
+            if ($lines !== []) {
+                $files[$file] = [$file => $lines];
+            }
+        }
+
+        $directories = [];
+
+        foreach ($files as $file => $fileData) {
+            $lines = $fileData[$file];
+            $dir   = dirname($file);
+
+            while ($dir !== dirname($dir)) {
+                if (!isset($directories[$dir][$file])) {
+                    $directories[$dir][$file] = $lines;
+                }
+
+                $dir = dirname($dir);
+            }
+        }
+
         return [
             'namespaces'                    => $namespaces,
             'traits'                        => $traits,
@@ -165,6 +191,8 @@ final readonly class MapBuilder
             'classesThatImplementInterface' => $classesThatImplementInterface,
             'methods'                       => $methods,
             'functions'                     => $functions,
+            'files'                         => $files,
+            'directories'                   => $directories,
             'reverseLookup'                 => $reverseLookup,
         ];
     }

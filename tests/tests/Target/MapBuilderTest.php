@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_merge;
+use function dirname;
 use function range;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -142,6 +143,14 @@ final class MapBuilderTest extends TestCase
                             $file => range(54, 56),
                         ],
                     ],
+                    'files' => [
+                        $file => [
+                            $file => [23, 30, 39, 43, 47, 51, 56],
+                        ],
+                    ],
+                    'directories' => self::buildDirectories([
+                        $file => [23, 30, 39, 43, 47, 51, 56],
+                    ]),
                     'reverseLookup' => [
                         $file . ':21' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
                         $file . ':22' => 'SebastianBergmann\CodeCoverage\StaticAnalysis\T::four',
@@ -213,6 +222,18 @@ final class MapBuilderTest extends TestCase
                     ],
                     'functions' => [
                     ],
+                    'files' => [
+                        $traitOne => [
+                            $traitOne => [8],
+                        ],
+                        $traitTwo => [
+                            $traitTwo => [10],
+                        ],
+                    ],
+                    'directories' => self::buildDirectories([
+                        $traitOne => [8],
+                        $traitTwo => [10],
+                    ]),
                     'reverseLookup' => [
                         $traitOne . ':6'  => TraitOne::class . '::one',
                         $traitOne . ':7'  => TraitOne::class . '::one',
@@ -282,6 +303,14 @@ final class MapBuilderTest extends TestCase
                     ],
                     'functions' => [
                     ],
+                    'files' => [
+                        $twoTraits => [
+                            $twoTraits => [8, 17],
+                        ],
+                    ],
+                    'directories' => self::buildDirectories([
+                        $twoTraits => [8, 17],
+                    ]),
                     'reverseLookup' => [
                         $twoTraits . ':6'  => T1::class . '::one',
                         $twoTraits . ':7'  => T1::class . '::one',
@@ -325,6 +354,10 @@ final class MapBuilderTest extends TestCase
                     'methods' => [
                     ],
                     'functions' => [
+                    ],
+                    'files' => [
+                    ],
+                    'directories' => [
                     ],
                     'reverseLookup' => [
                     ],
@@ -397,6 +430,22 @@ final class MapBuilderTest extends TestCase
                     ],
                     'functions' => [
                     ],
+                    'files' => [
+                        $grandParentClass => [
+                            $grandParentClass => [8],
+                        ],
+                        $parentClass => [
+                            $parentClass => [8],
+                        ],
+                        $childClass => [
+                            $childClass => [8],
+                        ],
+                    ],
+                    'directories' => self::buildDirectories([
+                        $grandParentClass => [8],
+                        $parentClass      => [8],
+                        $childClass       => [8],
+                    ]),
                     'reverseLookup' => [
                         $grandParentClass . ':6' => 'SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass::one',
                         $grandParentClass . ':7' => 'SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass::one',
@@ -528,6 +577,22 @@ final class MapBuilderTest extends TestCase
                 ],
                 'functions' => [
                 ],
+                'files' => [
+                    $dummy => [
+                        $dummy => [8, 13],
+                    ],
+                    $dummy2 => [
+                        $dummy2 => [8, 13],
+                    ],
+                    $dummyWithTrait => [
+                        $dummyWithTrait => [10, 15],
+                    ],
+                ],
+                'directories' => self::buildDirectories([
+                    $dummy          => [8, 13],
+                    $dummy2         => [8, 13],
+                    $dummyWithTrait => [10, 15],
+                ]),
                 'reverseLookup' => [
                     $dummy . ':6'           => Dummy::class . '::method1',
                     $dummy . ':7'           => Dummy::class . '::method1',
@@ -586,5 +651,29 @@ final class MapBuilderTest extends TestCase
                 false,
             ),
         );
+    }
+
+    /**
+     * @param array<string, list<int>> $filesWithLines
+     *
+     * @return array<string, array<string, list<int>>>
+     */
+    private static function buildDirectories(array $filesWithLines): array
+    {
+        $directories = [];
+
+        foreach ($filesWithLines as $file => $lines) {
+            $dir = dirname($file);
+
+            while ($dir !== dirname($dir)) {
+                if (!isset($directories[$dir][$file])) {
+                    $directories[$dir][$file] = $lines;
+                }
+
+                $dir = dirname($dir);
+            }
+        }
+
+        return $directories;
     }
 }

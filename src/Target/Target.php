@@ -73,6 +73,22 @@ abstract class Target
         return new Trait_($traitName);
     }
 
+    /**
+     * @param non-empty-string $filename
+     */
+    public static function forFile(string $filename): File
+    {
+        return new File($filename);
+    }
+
+    /**
+     * @param non-empty-string $directory
+     */
+    public static function forDirectory(string $directory): Directory
+    {
+        return new Directory($directory);
+    }
+
     public function isNamespace(): bool
     {
         return false;
@@ -104,6 +120,16 @@ abstract class Target
     }
 
     public function isTrait(): bool
+    {
+        return false;
+    }
+
+    public function isFile(): bool
+    {
+        return false;
+    }
+
+    public function isDirectory(): bool
     {
         return false;
     }

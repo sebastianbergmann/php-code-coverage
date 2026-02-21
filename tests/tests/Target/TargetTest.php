@@ -20,6 +20,8 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 #[CoversClass(Class_::class)]
 #[CoversClass(ClassesThatExtendClass::class)]
 #[CoversClass(ClassesThatImplementInterface::class)]
+#[CoversClass(Directory::class)]
+#[CoversClass(File::class)]
 #[CoversClass(Function_::class)]
 #[CoversClass(Method::class)]
 #[CoversClass(Namespace_::class)]
@@ -159,6 +161,8 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isClass());
         $this->assertFalse($target->isClassesThatExtendClass());
         $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isDirectory());
+        $this->assertFalse($target->isFile());
         $this->assertFalse($target->isFunction());
         $this->assertFalse($target->isMethod());
         $this->assertFalse($target->isNamespace());
@@ -167,5 +171,49 @@ final class TargetTest extends TestCase
         $this->assertSame('traits', $target->key());
         $this->assertSame($traitName, $target->target());
         $this->assertSame('Trait ' . $traitName, $target->description());
+    }
+
+    public function testCanBeFile(): void
+    {
+        $path = '/some/path/file.php';
+
+        $target = Target::forFile($path);
+
+        $this->assertTrue($target->isFile());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isDirectory());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
+
+        $this->assertSame($path, $target->path());
+        $this->assertSame('files', $target->key());
+        $this->assertSame($path, $target->target());
+        $this->assertSame('File ' . $path, $target->description());
+    }
+
+    public function testCanBeDirectory(): void
+    {
+        $path = '/some/path';
+
+        $target = Target::forDirectory($path);
+
+        $this->assertTrue($target->isDirectory());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isFile());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
+
+        $this->assertSame($path, $target->path());
+        $this->assertSame('directories', $target->key());
+        $this->assertSame($path, $target->target());
+        $this->assertSame('Directory ' . $path, $target->description());
     }
 }

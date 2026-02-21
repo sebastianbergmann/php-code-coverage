@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
 use function array_merge;
+use function dirname;
 use function range;
 use function realpath;
 use function strtolower;
@@ -252,6 +253,22 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+            'file' => [
+                'File /does/not/exist.php is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forFile('/does/not/exist.php'),
+                    ],
+                ),
+            ],
+            'directory' => [
+                'Directory /does/not/exist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forDirectory('/does/not/exist'),
+                    ],
+                ),
+            ],
         ];
     }
 
@@ -334,6 +351,36 @@ final class MapperTest extends TestCase
         $mapper = $this->mapper([$file]);
 
         $this->assertSame($file . ':2', $mapper->lookup($file, 2));
+    }
+
+    public function testCanMapFileTarget(): void
+    {
+        $file     = realpath(__DIR__ . '/../../_files/source_without_ignore.php');
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+
+        $expectedLines = array_keys($analyser->analyse($file)->executableLines());
+
+        $this->assertNotEmpty($expectedLines);
+        $this->assertSame(
+            [$file => $expectedLines],
+            $this->mapper([$file])->mapTarget(Target::forFile($file)),
+        );
+    }
+
+    public function testCanMapDirectoryTarget(): void
+    {
+        $file     = realpath(__DIR__ . '/../../_files/source_without_ignore.php');
+        $dir      = dirname($file);
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+
+        $expectedLines = array_keys($analyser->analyse($file)->executableLines());
+
+        $this->assertNotEmpty($expectedLines);
+
+        $result = $this->mapper([$file])->mapTarget(Target::forDirectory($dir));
+
+        $this->assertArrayHasKey($file, $result);
+        $this->assertSame($expectedLines, $result[$file]);
     }
 
     /**

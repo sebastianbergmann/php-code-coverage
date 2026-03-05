@@ -19,5 +19,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Removed
 
 * The `SebastianBergmann\CodeCoverage\Report\PHP` class was removed, use the new `SebastianBergmann\CodeCoverage\Serializer` class instead
+* The `SebastianBergmann\CodeCoverage\CodeCoverage::merge()` method was removed, use `SebastianBergmann\CodeCoverage\Serialization\Merger` instead
 
 [14.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/13.0...14.0.0

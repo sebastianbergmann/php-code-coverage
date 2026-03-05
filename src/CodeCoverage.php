@@ -77,26 +77,6 @@ final class CodeCoverage
         $this->data   = new ProcessedCodeCoverageData;
     }
 
-    public function __serialize(): array
-    {
-        $prefix = "\x00" . self::class . "\x00";
-
-        return [
-            // Configuration
-            $prefix . 'cacheDirectory'                                           => $this->cacheDirectory,
-            $prefix . 'checkForUnintentionallyCoveredCode'                       => $this->checkForUnintentionallyCoveredCode,
-            $prefix . 'includeUncoveredFiles'                                    => $this->includeUncoveredFiles,
-            $prefix . 'ignoreDeprecatedCode'                                     => $this->ignoreDeprecatedCode,
-            $prefix . 'parentClassesExcludedFromUnintentionallyCoveredCodeCheck' => $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
-            $prefix . 'useAnnotationsForIgnoringCode'                            => $this->useAnnotationsForIgnoringCode,
-            $prefix . 'filter'                                                   => $this->filter,
-
-            // Data
-            $prefix . 'data'  => $this->data,
-            $prefix . 'tests' => $this->tests,
-        ];
-    }
-
     /**
      * Returns the code coverage information as a graph of node objects.
      */
@@ -404,42 +384,6 @@ final class CodeCoverage
     public function validate(TargetCollection $targets): ValidationResult
     {
         return (new TargetCollectionValidator)->validate($this->targetMapper(), $targets);
-    }
-
-    /**
-     * @internal
-     */
-    public function driverIsPcov(): bool
-    {
-        /** @phpstan-ignore isset.initializedProperty */
-        return isset($this->driver) && $this->driver->isPcov();
-    }
-
-    /**
-     * @internal
-     */
-    public function driverIsXdebug(): bool
-    {
-        /** @phpstan-ignore isset.initializedProperty */
-        return isset($this->driver) && $this->driver->isXdebug();
-    }
-
-    /**
-     * @return array<non-empty-string, mixed>
-     *
-     * @internal
-     */
-    public function configuration(): array
-    {
-        return [
-            'cacheDirectory'                                           => $this->cacheDirectory,
-            'checkForUnintentionallyCoveredCode'                       => $this->checkForUnintentionallyCoveredCode,
-            'includeUncoveredFiles'                                    => $this->includeUncoveredFiles,
-            'ignoreDeprecatedCode'                                     => $this->ignoreDeprecatedCode,
-            'parentClassesExcludedFromUnintentionallyCoveredCodeCheck' => $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
-            'useAnnotationsForIgnoringCode'                            => $this->useAnnotationsForIgnoringCode,
-            'filter'                                                   => $this->filter,
-        ];
     }
 
     /**

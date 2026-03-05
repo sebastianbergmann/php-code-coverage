@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage;
 use function array_fill;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;
 
@@ -101,5 +102,42 @@ final class CodeCoverageTest extends TestCase
         ];
 
         $this->assertEquals($expectedLineCoverage, $this->coverage->getData()->lineCoverage());
+    }
+
+    public function testMerge(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests();
+        $coverage->merge($this->getLineCoverageForBankAccountForLastTwoTests());
+
+        $this->assertEquals(
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
+            $coverage->getData()->lineCoverage(),
+        );
+    }
+
+    public function testMergeReverseOrder(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccountForLastTwoTests();
+        $coverage->merge($this->getLineCoverageForBankAccountForFirstTwoTests());
+
+        $this->assertEquals(
+            $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
+            $coverage->getData()->lineCoverage(),
+        );
+    }
+
+    public function testMerge2(): void
+    {
+        $coverage = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $coverage->merge($this->getLineCoverageForBankAccount());
+
+        $this->assertEquals(
+            $this->getExpectedLineCoverageDataArrayForBankAccount(),
+            $coverage->getData()->lineCoverage(),
+        );
     }
 }

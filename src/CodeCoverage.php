@@ -266,6 +266,19 @@ final class CodeCoverage
         $this->data->markCodeAsExecutedByTestCase($id, $rawData);
     }
 
+    public function merge(self $that): void
+    {
+        $this->filter->includeFiles(
+            $that->filter()->files(),
+        );
+
+        $this->data->merge($that->data);
+
+        $this->tests = array_merge($this->tests, $that->getTests());
+
+        $this->cachedReport = null;
+    }
+
     public function enableCheckForUnintentionallyCoveredCode(): void
     {
         $this->checkForUnintentionallyCoveredCode = true;

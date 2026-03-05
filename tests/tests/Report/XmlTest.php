@@ -45,7 +45,7 @@ final class XmlTest extends TestCase
 
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
-        $xml = new Facade('1.0.0');
+        $xml = new Facade;
 
         $xml->process(
             TEST_FILES_PATH . 'tmp',
@@ -68,7 +68,7 @@ final class XmlTest extends TestCase
 
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithoutSource';
 
-        $xml = new Facade('1.0.0', false);
+        $xml = new Facade(false);
 
         $xml->process(
             TEST_FILES_PATH . 'tmp',
@@ -91,7 +91,7 @@ final class XmlTest extends TestCase
 
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
-        $xml = new Facade('1.0.0');
+        $xml = new Facade;
 
         $xml->process(
             TEST_FILES_PATH . 'tmp',
@@ -114,7 +114,7 @@ final class XmlTest extends TestCase
 
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
-        $xml = new Facade('1.0.0');
+        $xml = new Facade;
 
         $xml->process(
             TEST_FILES_PATH . 'tmp',

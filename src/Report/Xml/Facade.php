@@ -44,13 +44,11 @@ final class Facade
     public const string XML_NAMESPACE = 'https://schema.phpunit.de/coverage/1.0';
     private string $target;
     private Project $project;
-    private readonly string $phpUnitVersion;
     private readonly bool $includeSource;
 
-    public function __construct(string $version, bool $includeSource = true)
+    public function __construct(bool $includeSource = true)
     {
-        $this->phpUnitVersion = $version;
-        $this->includeSource  = $includeSource;
+        $this->includeSource = $includeSource;
     }
 
     /**
@@ -117,9 +115,9 @@ final class Facade
         }
 
         $this->project->buildInformation(
-            new Runtime,
-            new DateTimeImmutable,
-            $this->phpUnitVersion,
+            $runtime,
+            $buildDate,
+            $phpUnitVersion,
             Version::id(),
             $driverExtensionName,
             $driverExtensionVersion,

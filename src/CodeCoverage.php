@@ -425,6 +425,24 @@ final class CodeCoverage
     }
 
     /**
+     * @return array<non-empty-string, mixed>
+     *
+     * @internal
+     */
+    public function configuration(): array
+    {
+        return [
+            'cacheDirectory'                                           => $this->cacheDirectory,
+            'checkForUnintentionallyCoveredCode'                       => $this->checkForUnintentionallyCoveredCode,
+            'includeUncoveredFiles'                                    => $this->includeUncoveredFiles,
+            'ignoreDeprecatedCode'                                     => $this->ignoreDeprecatedCode,
+            'parentClassesExcludedFromUnintentionallyCoveredCodeCheck' => $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
+            'useAnnotationsForIgnoringCode'                            => $this->useAnnotationsForIgnoringCode,
+            'filter'                                                   => $this->filter,
+        ];
+    }
+
+    /**
      * @param false|TargetedLines $linesToBeCovered
      * @param TargetedLines       $linesToBeUsed
      *

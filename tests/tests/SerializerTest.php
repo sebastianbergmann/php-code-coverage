@@ -110,4 +110,24 @@ final class SerializerTest extends TestCase
 
         $this->assertEquals($coverage->getData(), $data['codeCoverage']);
     }
+
+    public function testSerializedDataIncludesGitInformationWhenRequested(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+        $target   = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        (new Serializer)->serialize($target, $coverage, true);
+
+        $data = require $target;
+
+        $this->assertIsArray($data['buildInformation']);
+
+        if (isset($data['buildInformation']['git'])) {
+            $this->assertArrayHasKey('originUrl', $data['buildInformation']['git']);
+            $this->assertArrayHasKey('branch', $data['buildInformation']['git']);
+            $this->assertArrayHasKey('commit', $data['buildInformation']['git']);
+            $this->assertArrayHasKey('isClean', $data['buildInformation']['git']);
+            $this->assertArrayHasKey('status', $data['buildInformation']['git']);
+        }
+    }
 }

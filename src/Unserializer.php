@@ -14,6 +14,7 @@ use function fclose;
 use function fgets;
 use function fopen;
 use function is_array;
+use function is_bool;
 use function is_string;
 use function preg_match;
 use function trim;
@@ -45,6 +46,13 @@ final readonly class Unserializer
      *                 name: non-empty-string,
      *                 version: non-empty-string,
      *             },
+     *         },
+     *         git?: array{
+     *             originUrl: string,
+     *             branch: string,
+     *             commit: string,
+     *             isClean: bool,
+     *             status: string,
      *         },
      *     },
      *     codeCoverage: ProcessedCodeCoverageData,
@@ -134,6 +142,24 @@ final readonly class Unserializer
         foreach (['name', 'version'] as $key) {
             if (!array_key_exists($key, $driverInformation) || !is_string($driverInformation[$key]) || $driverInformation[$key] === '') {
                 throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.driverInformation.' . $key . '\' key');
+            }
+        }
+
+        if (array_key_exists('git', $buildInformation)) {
+            if (!is_array($buildInformation['git'])) {
+                throw new InvalidCoverageDataException('Coverage data has invalid \'buildInformation.git\' key');
+            }
+
+            $git = $buildInformation['git'];
+
+            foreach (['originUrl', 'branch', 'commit', 'status'] as $key) {
+                if (!array_key_exists($key, $git) || !is_string($git[$key])) {
+                    throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.git.' . $key . '\' key');
+                }
+            }
+
+            if (!array_key_exists('isClean', $git) || !is_bool($git['isClean'])) {
+                throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.git.isClean\' key');
             }
         }
 

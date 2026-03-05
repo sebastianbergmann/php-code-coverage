@@ -37,7 +37,8 @@
         "nikic/php-parser": "^5.7.0",
         "phpunit/php-text-template": "^6.0",
         "sebastian/complexity": "^6.0",
-        "sebastian/environment": "^9.0",
+        "sebastian/environment": "^9.1",
+        "sebastian/git-state": "^1.0",
         "sebastian/lines-of-code": "^5.0",
         "sebastian/version": "^7.0",
         "theseer/tokenizer": "^2.0.1"

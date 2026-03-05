@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_key_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function preg_replace;
@@ -245,6 +246,121 @@ final class UnserializerTest extends TestCase
 
         $this->expectException(InvalidCoverageDataException::class);
         $this->expectExceptionMessage("missing valid 'codeCoverage' key");
+
+        (new Unserializer)->unserialize($target);
+    }
+
+    public function testRoundTripWithGitInformationIncludesGitKey(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+        $target   = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        (new Serializer)->serialize($target, $coverage, true);
+
+        $result = (new Unserializer)->unserialize($target);
+
+        // Git information may or may not be available in the test environment,
+        // but if present it must have the expected shape.
+        if (array_key_exists('git', $result['buildInformation'])) {
+            $git = $result['buildInformation']['git'];
+            $this->assertArrayHasKey('originUrl', $git);
+            $this->assertArrayHasKey('branch', $git);
+            $this->assertArrayHasKey('commit', $git);
+            $this->assertArrayHasKey('isClean', $git);
+            $this->assertArrayHasKey('status', $git);
+            $this->assertIsString($git['originUrl']);
+            $this->assertIsString($git['branch']);
+            $this->assertIsString($git['commit']);
+            $this->assertIsBool($git['isClean']);
+            $this->assertIsString($git['status']);
+        } else {
+            $this->assertArrayNotHasKey('git', $result['buildInformation']);
+        }
+    }
+
+    public function testThrowsExceptionWhenGitIsNotAnArray(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        $data = [
+            'buildInformation' => [
+                'timestamp'       => '2024-01-01',
+                'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'git'             => 'not-an-array',
+            ],
+            'codeCoverage' => new ProcessedCodeCoverageData,
+            'testResults'  => [],
+        ];
+
+        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        file_put_contents(
+            $target,
+            $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
+            serialize($data) . "\n" .
+            "END_OF_COVERAGE_SERIALIZATION\n);",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage("invalid 'buildInformation.git' key");
+
+        (new Unserializer)->unserialize($target);
+    }
+
+    public function testThrowsExceptionWhenGitSubkeyIsMissing(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        $data = [
+            'buildInformation' => [
+                'timestamp'       => '2024-01-01',
+                'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'git'             => [],
+            ],
+            'codeCoverage' => new ProcessedCodeCoverageData,
+            'testResults'  => [],
+        ];
+
+        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        file_put_contents(
+            $target,
+            $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
+            serialize($data) . "\n" .
+            "END_OF_COVERAGE_SERIALIZATION\n);",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage("missing valid 'buildInformation.git.originUrl' key");
+
+        (new Unserializer)->unserialize($target);
+    }
+
+    public function testThrowsExceptionWhenGitIsCleanIsNotBool(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        $data = [
+            'buildInformation' => [
+                'timestamp'       => '2024-01-01',
+                'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'git'             => ['originUrl' => 'https://example.com', 'branch' => 'main', 'commit' => 'abc123', 'isClean' => 'yes', 'status' => ''],
+            ],
+            'codeCoverage' => new ProcessedCodeCoverageData,
+            'testResults'  => [],
+        ];
+
+        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        file_put_contents(
+            $target,
+            $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
+            serialize($data) . "\n" .
+            "END_OF_COVERAGE_SERIALIZATION\n);",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage("missing valid 'buildInformation.git.isClean' key");
 
         (new Unserializer)->unserialize($target);
     }

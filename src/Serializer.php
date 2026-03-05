@@ -14,6 +14,7 @@ use function serialize;
 use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Environment\Runtime;
+use SebastianBergmann\GitState\Builder as GitStateBuilder;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -23,25 +24,41 @@ final readonly class Serializer
     /**
      * @param non-empty-string $target
      */
-    public function serialize(string $target, CodeCoverage $codeCoverage): void
+    public function serialize(string $target, CodeCoverage $codeCoverage, bool $includeGitInformation = false): void
     {
         $runtime = new Runtime;
 
-        $data = [
-            'buildInformation' => [
-                'timestamp' => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
-                'runtime'   => [
-                    'name'      => $runtime->getName(),
-                    'version'   => $runtime->getVersion(),
-                    'vendorUrl' => $runtime->getVendorUrl(),
-                ],
-                'phpCodeCoverage' => [
-                    'version'           => Version::id(),
-                    'driverInformation' => $codeCoverage->driverInformation(),
-                ],
+        $buildInformation = [
+            'timestamp' => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
+            'runtime'   => [
+                'name'      => $runtime->getName(),
+                'version'   => $runtime->getVersion(),
+                'vendorUrl' => $runtime->getVendorUrl(),
             ],
-            'codeCoverage' => $codeCoverage->getData(),
-            'testResults'  => $codeCoverage->getTests(),
+            'phpCodeCoverage' => [
+                'version'           => Version::id(),
+                'driverInformation' => $codeCoverage->driverInformation(),
+            ],
+        ];
+
+        if ($includeGitInformation) {
+            $gitInformation = (new GitStateBuilder)->build();
+
+            if ($gitInformation !== false) {
+                $buildInformation['git'] = [
+                    'originUrl' => $gitInformation->originUrl(),
+                    'branch'    => $gitInformation->branch(),
+                    'commit'    => $gitInformation->commit(),
+                    'isClean'   => $gitInformation->isClean(),
+                    'status'    => $gitInformation->status(),
+                ];
+            }
+        }
+
+        $data = [
+            'buildInformation' => $buildInformation,
+            'codeCoverage'     => $codeCoverage->getData(),
+            'testResults'      => $codeCoverage->getTests(),
         ];
 
         Filesystem::write(

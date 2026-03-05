@@ -40,19 +40,22 @@ final readonly class Builder
         $this->analyser = $analyser;
     }
 
-    public function build(CodeCoverage $coverage): Directory
+    /**
+     * @param array<string, TestType> $testResults
+     */
+    public function build(ProcessedCodeCoverageData $codeCoverage, array $testResults): Directory
     {
-        $data       = clone $coverage->getData(); // clone because path munging is destructive to the original data
-        $commonPath = $this->reducePaths($data);
-        $root       = new Directory(
-            $commonPath,
-            null,
-        );
+        // Clone because path munging is destructive to the original data
+        $codeCoverage = clone $codeCoverage;
+
+        $commonPath = $this->reducePaths($codeCoverage);
+
+        $root = new Directory($commonPath, null);
 
         $this->addItems(
             $root,
-            $this->buildDirectoryStructure($data),
-            $coverage->getTests(),
+            $this->buildDirectoryStructure($codeCoverage),
+            $testResults,
         );
 
         return $root;
@@ -138,14 +141,14 @@ final readonly class Builder
      *
      * @return array<string, array<string, array{lineCoverage: array<int, int>, functionCoverage: array<string, array<int, int>>}>>
      */
-    private function buildDirectoryStructure(ProcessedCodeCoverageData $data): array
+    private function buildDirectoryStructure(ProcessedCodeCoverageData $codeCoverage): array
     {
         $result = [];
 
-        $lineCoverage     = $data->lineCoverage();
-        $functionCoverage = $data->functionCoverage();
+        $lineCoverage     = $codeCoverage->lineCoverage();
+        $functionCoverage = $codeCoverage->functionCoverage();
 
-        foreach ($data->coveredFiles() as $originalPath) {
+        foreach ($codeCoverage->coveredFiles() as $originalPath) {
             $path    = explode(DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
             $max     = count($path);
@@ -206,9 +209,9 @@ final readonly class Builder
      * )
      * </code>
      */
-    private function reducePaths(ProcessedCodeCoverageData $coverage): string
+    private function reducePaths(ProcessedCodeCoverageData $codeCoverage): string
     {
-        $coveredFiles = $coverage->coveredFiles();
+        $coveredFiles = $codeCoverage->coveredFiles();
 
         if ($coveredFiles === []) {
             return '.';
@@ -219,7 +222,8 @@ final readonly class Builder
 
         if (count($paths) === 1) {
             $commonPath = dirname($paths[0]) . DIRECTORY_SEPARATOR;
-            $coverage->renameFile($paths[0], basename($paths[0]));
+
+            $codeCoverage->renameFile($paths[0], basename($paths[0]));
 
             return $commonPath;
         }
@@ -227,7 +231,6 @@ final readonly class Builder
         $max = count($paths);
 
         for ($i = 0; $i < $max; $i++) {
-            // strip phar:// prefixes
             if (str_starts_with($paths[$i], 'phar://')) {
                 $paths[$i] = substr($paths[$i], 7);
                 $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
@@ -271,7 +274,7 @@ final readonly class Builder
         $max      = count($original);
 
         for ($i = 0; $i < $max; $i++) {
-            $coverage->renameFile($original[$i], implode(DIRECTORY_SEPARATOR, $paths[$i]));
+            $codeCoverage->renameFile($original[$i], implode(DIRECTORY_SEPARATOR, $paths[$i]));
         }
 
         return substr($commonPath, 0, -1);

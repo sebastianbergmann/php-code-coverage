@@ -83,7 +83,7 @@ final class CodeCoverage
     public function getReport(): Directory
     {
         if ($this->cachedReport === null) {
-            $this->cachedReport = new Builder($this->analyser())->build($this);
+            $this->cachedReport = new Builder($this->analyser())->build($this->getData(), $this->tests);
         }
 
         return $this->cachedReport;

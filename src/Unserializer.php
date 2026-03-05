@@ -16,6 +16,9 @@ use function preg_match;
 use function trim;
 use SebastianBergmann\CodeCoverage\Driver\NullDriver;
 
+/**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final readonly class Unserializer
 {
     /**

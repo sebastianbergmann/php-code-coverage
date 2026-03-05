@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use function array_key_exists;
 use function file_get_contents;
@@ -17,6 +17,8 @@ use function serialize;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCoverage\Version;
 
 #[CoversClass(Unserializer::class)]
 #[Medium]

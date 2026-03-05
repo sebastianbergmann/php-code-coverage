@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use function array_key_exists;
 use function fclose;
@@ -19,6 +19,7 @@ use function is_string;
 use function preg_match;
 use function trim;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Version;
 
 /**
  * @phpstan-import-type SerializedCoverage from Serializer

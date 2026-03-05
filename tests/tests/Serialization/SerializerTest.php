@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\CodeCoverage;
+namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use function fclose;
 use function fgets;
@@ -16,6 +16,8 @@ use function trim;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(Serializer::class)]
 #[CoversMethod(CodeCoverage::class, 'driverInformation')]

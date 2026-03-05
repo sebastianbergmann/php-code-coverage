@@ -27,6 +27,7 @@
         "optimize-autoloader": true,
         "sort-packages": true
     },
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": ">=8.4",
@@ -42,7 +43,7 @@
         "theseer/tokenizer": "^2.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^13.0"
+        "phpunit/phpunit": "^13.1"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",
@@ -60,7 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "13.0.x-dev"
+            "dev-main": "14.0.x-dev"
         }
     }
 }

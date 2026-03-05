@@ -1010,6 +1010,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $stub = $this->createStub(Driver::class);
 
         $stub
+            ->method('name')
+            ->willReturn('Xdebug');
+
+        $stub
+            ->method('version')
+            ->willReturn('3.0.0');
+
+        $stub
             ->method('stop')
             ->willReturn(...$data);
 

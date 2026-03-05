@@ -9,12 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_key_exists;
 use function fclose;
 use function fgets;
 use function fopen;
+use function is_array;
+use function is_string;
 use function preg_match;
 use function trim;
-use SebastianBergmann\CodeCoverage\Driver\NullDriver;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -23,8 +26,32 @@ final readonly class Unserializer
 {
     /**
      * @param non-empty-string $path
+     *
+     * @throws FileCouldNotBeReadException
+     * @throws InvalidCoverageDataException
+     * @throws VersionMismatchException
+     *
+     * @return array{
+     *     buildInformation: array{
+     *         timestamp: string,
+     *         runtime: array{
+     *             name: string,
+     *             version: string,
+     *             vendorUrl: string,
+     *         },
+     *         phpCodeCoverage: array{
+     *             version: string,
+     *             driverInformation: array{
+     *                 name: non-empty-string,
+     *                 version: non-empty-string,
+     *             },
+     *         },
+     *     },
+     *     codeCoverage: ProcessedCodeCoverageData,
+     *     testResults: array<string, array{size: string, status: string, time: float}>,
+     * }
      */
-    public function unserialize(string $path): CodeCoverage
+    public function unserialize(string $path): array
     {
         $file = @fopen($path, 'r');
 
@@ -52,37 +79,70 @@ final readonly class Unserializer
 
         $data = require $path;
 
-        $configuration = $data['configuration'];
+        $this->validate($data);
 
-        $codeCoverage = new CodeCoverage(new NullDriver, $configuration['filter']);
+        return $data;
+    }
 
-        if ($configuration['cacheDirectory'] !== null) {
-            $codeCoverage->cacheStaticAnalysis($configuration['cacheDirectory']);
+    /**
+     * @throws InvalidCoverageDataException
+     */
+    private function validate(mixed $data): void
+    {
+        if (!is_array($data)) {
+            throw new InvalidCoverageDataException('Coverage data is not an array');
         }
 
-        if ($configuration['checkForUnintentionallyCoveredCode'] === true) {
-            $codeCoverage->enableCheckForUnintentionallyCoveredCode();
+        if (!array_key_exists('buildInformation', $data) || !is_array($data['buildInformation'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation\' key');
         }
 
-        if ($configuration['includeUncoveredFiles'] === false) {
-            $codeCoverage->excludeUncoveredFiles();
+        $buildInformation = $data['buildInformation'];
+
+        if (!array_key_exists('timestamp', $buildInformation) || !is_string($buildInformation['timestamp'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.timestamp\' key');
         }
 
-        if ($configuration['ignoreDeprecatedCode'] === true) {
-            $codeCoverage->ignoreDeprecatedCode();
+        if (!array_key_exists('runtime', $buildInformation) || !is_array($buildInformation['runtime'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.runtime\' key');
         }
 
-        if ($configuration['useAnnotationsForIgnoringCode'] === false) {
-            $codeCoverage->disableAnnotationsForIgnoringCode();
+        $runtime = $buildInformation['runtime'];
+
+        foreach (['name', 'version', 'vendorUrl'] as $key) {
+            if (!array_key_exists($key, $runtime) || !is_string($runtime[$key])) {
+                throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.runtime.' . $key . '\' key');
+            }
         }
 
-        foreach ($configuration['parentClassesExcludedFromUnintentionallyCoveredCodeCheck'] as $className) {
-            $codeCoverage->excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck($className);
+        if (!array_key_exists('phpCodeCoverage', $buildInformation) || !is_array($buildInformation['phpCodeCoverage'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage\' key');
         }
 
-        $codeCoverage->setData($data['codeCoverage']);
-        $codeCoverage->setTests($data['testResults']);
+        $phpCodeCoverage = $buildInformation['phpCodeCoverage'];
 
-        return $codeCoverage;
+        if (!array_key_exists('version', $phpCodeCoverage) || !is_string($phpCodeCoverage['version'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.version\' key');
+        }
+
+        if (!array_key_exists('driverInformation', $phpCodeCoverage) || !is_array($phpCodeCoverage['driverInformation'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.driverInformation\' key');
+        }
+
+        $driverInformation = $phpCodeCoverage['driverInformation'];
+
+        foreach (['name', 'version'] as $key) {
+            if (!array_key_exists($key, $driverInformation) || !is_string($driverInformation[$key]) || $driverInformation[$key] === '') {
+                throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.driverInformation.' . $key . '\' key');
+            }
+        }
+
+        if (!array_key_exists('codeCoverage', $data) || !$data['codeCoverage'] instanceof ProcessedCodeCoverageData) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'codeCoverage\' key');
+        }
+
+        if (!array_key_exists('testResults', $data) || !is_array($data['testResults'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'testResults\' key');
+        }
     }
 }

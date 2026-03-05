@@ -11,7 +11,9 @@ namespace SebastianBergmann\CodeCoverage;
 
 use const PHP_EOL;
 use function serialize;
+use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -23,10 +25,23 @@ final readonly class Serializer
      */
     public function serialize(string $target, CodeCoverage $codeCoverage): void
     {
+        $runtime = new Runtime;
+
         $data = [
-            'configuration' => $codeCoverage->configuration(),
-            'codeCoverage'  => $codeCoverage->getData(),
-            'testResults'   => $codeCoverage->getTests(),
+            'buildInformation' => [
+                'timestamp' => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
+                'runtime'   => [
+                    'name'      => $runtime->getName(),
+                    'version'   => $runtime->getVersion(),
+                    'vendorUrl' => $runtime->getVendorUrl(),
+                ],
+                'phpCodeCoverage' => [
+                    'version'           => Version::id(),
+                    'driverInformation' => $codeCoverage->driverInformation(),
+                ],
+            ],
+            'codeCoverage' => $codeCoverage->getData(),
+            'testResults'  => $codeCoverage->getTests(),
         ];
 
         Filesystem::write(

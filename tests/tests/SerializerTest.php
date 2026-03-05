@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Medium;
 
 #[CoversClass(Serializer::class)]
-#[CoversMethod(CodeCoverage::class, 'configuration')]
+#[CoversMethod(CodeCoverage::class, 'driverInformation')]
 #[Medium]
 final class SerializerTest extends TestCase
 {
@@ -54,7 +54,7 @@ final class SerializerTest extends TestCase
         $data = require $target;
 
         $this->assertIsArray($data);
-        $this->assertArrayHasKey('configuration', $data);
+        $this->assertArrayHasKey('buildInformation', $data);
         $this->assertArrayHasKey('codeCoverage', $data);
         $this->assertArrayHasKey('testResults', $data);
     }
@@ -83,7 +83,7 @@ final class SerializerTest extends TestCase
         $this->assertEquals($coverage->getTests(), $data['testResults']);
     }
 
-    public function testSerializedDataPreservesConfiguration(): void
+    public function testSerializedDataPreservesBuildInformation(): void
     {
         $coverage = $this->getLineCoverageForBankAccount();
         $target   = TEST_FILES_PATH . 'tmp/serialized.php';
@@ -92,7 +92,11 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
-        $this->assertEquals($coverage->configuration(), $data['configuration']);
+        $this->assertIsArray($data['buildInformation']);
+        $this->assertArrayHasKey('timestamp', $data['buildInformation']);
+        $this->assertArrayHasKey('runtime', $data['buildInformation']);
+        $this->assertArrayHasKey('phpCodeCoverage', $data['buildInformation']);
+        $this->assertEquals($coverage->driverInformation(), $data['buildInformation']['phpCodeCoverage']['driverInformation']);
     }
 
     public function testSerializationWorksWhenDataContainsSingleQuotes(): void

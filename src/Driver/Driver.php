@@ -86,7 +86,14 @@ abstract class Driver
         return false;
     }
 
-    abstract public function nameAndVersion(): string;
+    abstract public function name(): string;
+
+    abstract public function version(): string;
+
+    public function nameAndVersion(): string
+    {
+        return $this->name() . ' ' . $this->version();
+    }
 
     abstract public function start(): void;
 

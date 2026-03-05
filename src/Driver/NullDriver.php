@@ -22,7 +22,15 @@ final class NullDriver extends Driver
     /**
      * @throws MethodNotImplementedException
      */
-    public function nameAndVersion(): string
+    public function name(): string
+    {
+        throw new MethodNotImplementedException;
+    }
+
+    /**
+     * @throws MethodNotImplementedException
+     */
+    public function version(): string
     {
         throw new MethodNotImplementedException;
     }

@@ -68,9 +68,14 @@ final class PcovDriver extends Driver
         // @codeCoverageIgnoreEnd
     }
 
-    public function nameAndVersion(): string
+    public function name(): string
     {
-        return 'PCOV ' . phpversion('pcov');
+        return 'PCOV';
+    }
+
+    public function version(): string
+    {
+        return phpversion('pcov');
     }
 
     public function isPcov(): true

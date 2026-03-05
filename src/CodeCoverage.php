@@ -443,6 +443,17 @@ final class CodeCoverage
     }
 
     /**
+     * @return array{name: non-empty-string, version: non-empty-string}
+     */
+    public function driverInformation(): array
+    {
+        return [
+            'name'    => $this->driver->name(),
+            'version' => $this->driver->version(),
+        ];
+    }
+
+    /**
      * @param false|TargetedLines $linesToBeCovered
      * @param TargetedLines       $linesToBeUsed
      *

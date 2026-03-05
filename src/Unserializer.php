@@ -21,6 +21,8 @@ use function trim;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 
 /**
+ * @phpstan-import-type SerializedCoverage from Serializer
+ *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final readonly class Unserializer
@@ -32,32 +34,7 @@ final readonly class Unserializer
      * @throws InvalidCoverageDataException
      * @throws VersionMismatchException
      *
-     * @return array{
-     *     buildInformation: array{
-     *         timestamp: string,
-     *         runtime: array{
-     *             name: string,
-     *             version: string,
-     *             vendorUrl: string,
-     *         },
-     *         phpCodeCoverage: array{
-     *             version: string,
-     *             driverInformation: array{
-     *                 name: non-empty-string,
-     *                 version: non-empty-string,
-     *             },
-     *         },
-     *         git?: array{
-     *             originUrl: string,
-     *             branch: string,
-     *             commit: string,
-     *             isClean: bool,
-     *             status: string,
-     *         },
-     *     },
-     *     codeCoverage: ProcessedCodeCoverageData,
-     *     testResults: array<string, array{size: string, status: string, time: float}>,
-     * }
+     * @return SerializedCoverage
      */
     public function unserialize(string $path): array
     {

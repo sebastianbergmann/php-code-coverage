@@ -12,11 +12,39 @@ namespace SebastianBergmann\CodeCoverage;
 use const PHP_EOL;
 use function serialize;
 use DateTimeImmutable;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\GitState\Builder as GitStateBuilder;
 
 /**
+ * @phpstan-type SerializedCoverage array{
+ *     buildInformation: array{
+ *         timestamp: string,
+ *         runtime: array{
+ *             name: string,
+ *             version: string,
+ *             vendorUrl: string,
+ *         },
+ *         phpCodeCoverage: array{
+ *             version: string,
+ *             driverInformation: array{
+ *                 name: non-empty-string,
+ *                 version: non-empty-string,
+ *             },
+ *         },
+ *         git?: array{
+ *             originUrl: string,
+ *             branch: string,
+ *             commit: string,
+ *             isClean: bool,
+ *             status: string,
+ *         },
+ *     },
+ *     codeCoverage: ProcessedCodeCoverageData,
+ *     testResults: array<string, array{size: string, status: string, time: float}>,
+ * }
+ *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final readonly class Serializer

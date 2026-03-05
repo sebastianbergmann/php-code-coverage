@@ -14,7 +14,6 @@ use function copy;
 use function date;
 use function dirname;
 use function str_ends_with;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
@@ -39,12 +38,11 @@ final readonly class Facade
         $this->templatePath  = __DIR__ . '/Renderer/Template/';
     }
 
-    public function process(CodeCoverage $coverage, string $target): void
+    public function process(DirectoryNode $report, string $target): void
     {
         $target            = $this->directory($target);
-        $report            = $coverage->getReport();
         $date              = date('D M j G:i:s T Y');
-        $hasBranchCoverage = $coverage->getData(true)->functionCoverage() !== [];
+        $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
 
         $dashboard = new Dashboard(
             $this->templatePath,

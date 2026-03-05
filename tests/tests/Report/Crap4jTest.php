@@ -21,7 +21,7 @@ final class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Crap4j/BankAccount.xml',
-            $crap4j->process($this->getLineCoverageForBankAccount(), null, 'BankAccount'),
+            $crap4j->process($this->getLineCoverageForBankAccount()->getReport(), null, 'BankAccount'),
         );
     }
 
@@ -31,7 +31,7 @@ final class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Crap4j/ignored-lines.xml',
-            $crap4j->process($this->getCoverageForFileWithIgnoredLines(), null, 'CoverageForFileWithIgnoredLines'),
+            $crap4j->process($this->getCoverageForFileWithIgnoredLines()->getReport(), null, 'CoverageForFileWithIgnoredLines'),
         );
     }
 
@@ -41,7 +41,7 @@ final class Crap4jTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Crap4j/class-with-anonymous-function.xml',
-            $crap4j->process($this->getCoverageForClassWithAnonymousFunction(), null, 'CoverageForClassWithAnonymousFunction'),
+            $crap4j->process($this->getCoverageForClassWithAnonymousFunction()->getReport(), null, 'CoverageForClassWithAnonymousFunction'),
         );
     }
 }

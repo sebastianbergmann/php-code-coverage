@@ -13,8 +13,10 @@ use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function iterator_count;
 use function unlink;
+use DateTimeImmutable;
 use FilesystemIterator;
 use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\Environment\Runtime;
 
 final class XmlTest extends TestCase
 {
@@ -39,40 +41,92 @@ final class XmlTest extends TestCase
 
     public function testForBankAccountTest(): void
     {
+        $codeCoverage = $this->getLineCoverageForBankAccount();
+
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccount';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getLineCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
+
+        $xml->process(
+            TEST_FILES_PATH . 'tmp',
+            $codeCoverage->getReport(),
+            $codeCoverage->getTests(),
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForBankAccountTestWithoutSource(): void
     {
+        $codeCoverage = $this->getLineCoverageForBankAccount();
+
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithoutSource';
 
         $xml = new Facade('1.0.0', false);
-        $xml->process($this->getLineCoverageForBankAccount(), TEST_FILES_PATH . 'tmp');
+
+        $xml->process(
+            TEST_FILES_PATH . 'tmp',
+            $codeCoverage->getReport(),
+            $codeCoverage->getTests(),
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForFileWithIgnoredLines(): void
     {
+        $codeCoverage = $this->getCoverageForFileWithIgnoredLines();
+
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForFileWithIgnoredLines';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForFileWithIgnoredLines(), TEST_FILES_PATH . 'tmp');
+
+        $xml->process(
+            TEST_FILES_PATH . 'tmp',
+            $codeCoverage->getReport(),
+            $codeCoverage->getTests(),
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
     public function testForClassWithAnonymousFunction(): void
     {
+        $codeCoverage = $this->getCoverageForClassWithAnonymousFunction();
+
         $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'CoverageForClassWithAnonymousFunction';
 
         $xml = new Facade('1.0.0');
-        $xml->process($this->getCoverageForClassWithAnonymousFunction(), TEST_FILES_PATH . 'tmp');
+
+        $xml->process(
+            TEST_FILES_PATH . 'tmp',
+            $codeCoverage->getReport(),
+            $codeCoverage->getTests(),
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }

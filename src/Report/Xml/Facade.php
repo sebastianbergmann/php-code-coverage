@@ -17,7 +17,6 @@ use function is_array;
 use function is_dir;
 use function is_file;
 use function is_writable;
-use function phpversion;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -55,9 +54,12 @@ final class Facade
     }
 
     /**
+     * @param non-empty-string        $target
+     * @param array<string, TestType> $tests
+     *
      * @throws XmlException
      */
-    public function process(CodeCoverage $coverage, string $target): void
+    public function process(string $target, DirectoryNode $report, array $tests, ?Runtime $runtime = null, ?DateTimeImmutable $buildDate = null, ?string $phpUnitVersion = null, ?string $coverageVersion = null, ?string $driverExtensionName = null, ?string $driverExtensionVersion = null): void
     {
         if (substr($target, -1, 1) !== DIRECTORY_SEPARATOR) {
             $target .= DIRECTORY_SEPARATOR;
@@ -66,38 +68,52 @@ final class Facade
         $this->target = $target;
         $this->initTargetDirectory($target);
 
-        $report = $coverage->getReport();
-
         $writer = new XMLWriter;
         $writer->openUri($this->targetFilePath('index'));
         $writer->setIndent(true);
         $writer->setIndentString('  ');
-        $this->project = new Project(
-            $writer,
-            $coverage->getReport()->name(),
+
+        $this->project = new Project($writer, $report->name());
+
+        $this->setBuildInformation(
+            $runtime,
+            $buildDate,
+            $phpUnitVersion,
+            $coverageVersion,
+            $driverExtensionName,
+            $driverExtensionVersion,
         );
 
-        $this->setBuildInformation($coverage);
-
         $this->project->startProject();
-        $this->processTests($coverage->getTests());
+        $this->processTests($tests);
         $this->processDirectory($report, $this->project);
         $this->project->finalize();
     }
 
-    private function setBuildInformation(CodeCoverage $coverage): void
+    private function setBuildInformation(?Runtime $runtime, ?DateTimeImmutable $buildDate, ?string $phpUnitVersion, ?string $coverageVersion, ?string $driverExtensionName, ?string $driverExtensionVersion): void
     {
-        if ($coverage->driverIsPcov()) {
-            $driverExtensionName    = 'pcov';
-            $driverExtensionVersion = phpversion('pcov');
-        } elseif ($coverage->driverIsXdebug()) {
-            $driverExtensionName    = 'xdebug';
-            $driverExtensionVersion = phpversion('xdebug');
-        } else {
-            // @codeCoverageIgnoreStart
-            $driverExtensionName    = 'unknown';
+        if ($runtime === null) {
+            return;
+        }
+
+        if ($buildDate === null) {
+            return;
+        }
+
+        if ($phpUnitVersion === null) {
+            return;
+        }
+
+        if ($coverageVersion === null) {
+            return;
+        }
+
+        if ($driverExtensionName === null) {
+            $driverExtensionName = 'unknown';
+        }
+
+        if ($driverExtensionVersion === null) {
             $driverExtensionVersion = 'unknown';
-            // @codeCoverageIgnoreEnd
         }
 
         $this->project->buildInformation(

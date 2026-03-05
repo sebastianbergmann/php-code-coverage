@@ -21,7 +21,7 @@ final class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Clover/BankAccount-line.xml',
-            $clover->process($this->getLineCoverageForBankAccount(), null, 'BankAccount'),
+            $clover->process($this->getLineCoverageForBankAccount()->getReport(), null, 'BankAccount'),
         );
     }
 
@@ -31,7 +31,7 @@ final class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Clover/BankAccount-path.xml',
-            $clover->process($this->getPathCoverageForBankAccount(), null, 'BankAccount'),
+            $clover->process($this->getPathCoverageForBankAccount()->getReport(), null, 'BankAccount'),
         );
     }
 
@@ -41,7 +41,7 @@ final class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Clover/ignored-lines.xml',
-            $clover->process($this->getCoverageForFileWithIgnoredLines()),
+            $clover->process($this->getCoverageForFileWithIgnoredLines()->getReport()),
         );
     }
 
@@ -51,7 +51,7 @@ final class CloverTest extends TestCase
 
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Clover/class-with-anonymous-function.xml',
-            $clover->process($this->getCoverageForClassWithAnonymousFunction()),
+            $clover->process($this->getCoverageForClassWithAnonymousFunction()->getReport()),
         );
     }
 }

@@ -28,7 +28,7 @@ final class OpenCloverTest extends TestCase
 
         $this->assertAndValidate(
             TEST_FILES_PATH . 'Report/OpenClover/BankAccount-line.xml',
-            $clover->process($this->getLineCoverageForBankAccount(), null, 'BankAccount'),
+            $clover->process($this->getLineCoverageForBankAccount()->getReport(), null, 'BankAccount'),
         );
     }
 
@@ -38,7 +38,7 @@ final class OpenCloverTest extends TestCase
 
         $this->assertAndValidate(
             TEST_FILES_PATH . 'Report/OpenClover/BankAccount-path.xml',
-            $clover->process($this->getPathCoverageForBankAccount(), null, 'BankAccount'),
+            $clover->process($this->getPathCoverageForBankAccount()->getReport(), null, 'BankAccount'),
         );
     }
 
@@ -48,7 +48,7 @@ final class OpenCloverTest extends TestCase
 
         $this->assertAndValidate(
             TEST_FILES_PATH . 'Report/OpenClover/ignored-lines.xml',
-            $clover->process($this->getCoverageForFileWithIgnoredLines()),
+            $clover->process($this->getCoverageForFileWithIgnoredLines()->getReport()),
         );
     }
 
@@ -58,7 +58,7 @@ final class OpenCloverTest extends TestCase
 
         $this->assertAndValidate(
             TEST_FILES_PATH . 'Report/OpenClover/class-with-anonymous-function.xml',
-            $clover->process($this->getCoverageForClassWithAnonymousFunction()),
+            $clover->process($this->getCoverageForClassWithAnonymousFunction()->getReport()),
         );
     }
 

@@ -57,6 +57,8 @@ final readonly class Serializer
 {
     /**
      * @param non-empty-string $target
+     *
+     * @throws PharPrefixCouldNotBeStrippedException
      */
     public function serialize(string $target, CodeCoverage $codeCoverage, bool $includeGitInformation = false): void
     {
@@ -120,11 +122,13 @@ final readonly class Serializer
     /**
      * @param non-empty-string $serialized
      *
+     * @throws PharPrefixCouldNotBeStrippedException
+     *
      * @return non-empty-string
      */
     private function stripPharPrefix(string $serialized): string
     {
-        return preg_replace_callback(
+        $result = preg_replace_callback(
             '/([OCs]):(\d+):"(\x00?)PHPUnitPHAR\\\\/',
             static function (array $matches): string
             {
@@ -132,5 +136,11 @@ final readonly class Serializer
             },
             $serialized,
         );
+
+        if ($result === null) {
+            throw new PharPrefixCouldNotBeStrippedException;
+        }
+
+        return $result;
     }
 }

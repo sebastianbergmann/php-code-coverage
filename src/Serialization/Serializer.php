@@ -102,7 +102,9 @@ final readonly class Serializer
         $serializedData = serialize($data);
 
         if (str_starts_with(self::class, 'PHPUnitPHAR\\')) {
+            // @codeCoverageIgnoreStart
             $serializedData = $this->stripPharPrefix($serializedData);
+            // @codeCoverageIgnoreEnd
         }
 
         Filesystem::write(

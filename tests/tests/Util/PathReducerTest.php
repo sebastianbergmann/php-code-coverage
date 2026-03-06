@@ -10,12 +10,14 @@
 namespace SebastianBergmann\CodeCoverage\Util;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 
 #[CoversClass(PathReducer::class)]
 #[Small]
+#[RequiresOperatingSystemFamily('Linux')]
 final class PathReducerTest extends TestCase
 {
     public function testReduceWithNoFilesReturnsEmptyString(): void

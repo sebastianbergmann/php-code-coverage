@@ -6,7 +6,7 @@ parameters:
         - tests/tests
         - tests/bootstrap.php
 
-    resultCachePath: %tmpDir%/php-code-coverage-12.3.php
+    resultCachePath: %tmpDir%/php-code-coverage-12.5.php
 
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     reportAlwaysTrueInLastCondition: true

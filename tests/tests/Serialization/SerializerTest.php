@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Serialization;
 
+use const DIRECTORY_SEPARATOR;
+use function count;
 use function fclose;
 use function fgets;
 use function fopen;
@@ -57,8 +59,22 @@ final class SerializerTest extends TestCase
 
         $this->assertIsArray($data);
         $this->assertArrayHasKey('buildInformation', $data);
+        $this->assertArrayHasKey('basePath', $data);
         $this->assertArrayHasKey('codeCoverage', $data);
         $this->assertArrayHasKey('testResults', $data);
+    }
+
+    public function testSerializedDataHasBasePath(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+        $target   = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        (new Serializer)->serialize($target, $coverage);
+
+        $data = require $target;
+
+        $this->assertIsString($data['basePath']);
+        $this->assertNotEmpty($data['basePath']);
     }
 
     public function testSerializedDataPreservesCoverageData(): void
@@ -70,7 +86,17 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
-        $this->assertEquals($coverage->getData(), $data['codeCoverage']);
+        $originalFiles   = $coverage->getData()->coveredFiles();
+        $serialisedFiles = $data['codeCoverage']->coveredFiles();
+
+        $this->assertCount(count($originalFiles), $serialisedFiles);
+
+        foreach ($serialisedFiles as $i => $relativeFile) {
+            $this->assertSame(
+                $originalFiles[$i],
+                $data['basePath'] . DIRECTORY_SEPARATOR . $relativeFile,
+            );
+        }
     }
 
     public function testSerializedDataPreservesTestResults(): void
@@ -110,7 +136,9 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
-        $this->assertEquals($coverage->getData(), $data['codeCoverage']);
+        $this->assertIsString($data['basePath']);
+        $this->assertNotEmpty($data['basePath']);
+        $this->assertCount(count($coverage->getData()->coveredFiles()), $data['codeCoverage']->coveredFiles());
     }
 
     public function testSerializedDataIncludesGitInformationWhenRequested(): void

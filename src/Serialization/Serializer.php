@@ -17,6 +17,7 @@ use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\CodeCoverage\Util\PathReducer;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\GitState\Builder as GitStateBuilder;
@@ -45,6 +46,7 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  *             status: string,
  *         },
  *     },
+ *     basePath: string,
  *     codeCoverage: ProcessedCodeCoverageData,
  *     testResults: array<string, array{size: string, status: string, time: float}>,
  * }
@@ -87,9 +89,13 @@ final readonly class Serializer
             }
         }
 
+        $coverageData = clone $codeCoverage->getData();
+        $basePath     = (new PathReducer)->reduce($coverageData);
+
         $data = [
             'buildInformation' => $buildInformation,
-            'codeCoverage'     => $codeCoverage->getData(),
+            'basePath'         => $basePath,
+            'codeCoverage'     => $coverageData,
             'testResults'      => $codeCoverage->getTests(),
         ];
 

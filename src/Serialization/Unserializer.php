@@ -141,6 +141,10 @@ final readonly class Unserializer
             }
         }
 
+        if (!array_key_exists('basePath', $data) || !is_string($data['basePath'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'basePath\' key');
+        }
+
         if (!array_key_exists('codeCoverage', $data) || !$data['codeCoverage'] instanceof ProcessedCodeCoverageData) {
             throw new InvalidCoverageDataException('Coverage data is missing valid \'codeCoverage\' key');
         }

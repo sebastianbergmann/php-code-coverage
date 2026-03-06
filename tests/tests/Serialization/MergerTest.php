@@ -47,9 +47,20 @@ final class MergerTest extends TestCase
         $result = (new Merger)->merge([$path]);
 
         $this->assertArrayHasKey('buildInformation', $result);
+        $this->assertArrayHasKey('basePath', $result);
         $this->assertArrayHasKey('codeCoverage', $result);
         $this->assertArrayHasKey('testResults', $result);
         $this->assertInstanceOf(ProcessedCodeCoverageData::class, $result['codeCoverage']);
+    }
+
+    public function testMergedResultPreservesBasePathFromFirstItem(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['basePath' => '/home/user/project']));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['basePath' => '/home/user/project']));
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame('/home/user/project', $result['basePath']);
     }
 
     public function testMergedResultHasFreshTimestamp(): void
@@ -257,6 +268,7 @@ final class MergerTest extends TestCase
                     ],
                 ],
             ],
+            'basePath'     => '',
             'codeCoverage' => $coverage ?? new ProcessedCodeCoverageData,
             'testResults'  => $testResults,
         ];

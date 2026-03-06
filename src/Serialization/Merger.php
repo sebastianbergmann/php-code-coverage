@@ -114,6 +114,7 @@ final readonly class Merger
 
         return [
             'buildInformation' => $buildInformation,
+            'basePath'         => $first['basePath'],
             'codeCoverage'     => $mergedCoverage,
             'testResults'      => $mergedTestResults,
         ];

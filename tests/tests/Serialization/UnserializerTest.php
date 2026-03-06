@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Serialization;
 
+use const DIRECTORY_SEPARATOR;
 use function array_key_exists;
+use function count;
 use function file_get_contents;
 use function file_put_contents;
 use function preg_replace;
@@ -40,10 +42,24 @@ final class UnserializerTest extends TestCase
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('buildInformation', $result);
+        $this->assertArrayHasKey('basePath', $result);
         $this->assertArrayHasKey('codeCoverage', $result);
         $this->assertArrayHasKey('testResults', $result);
         $this->assertInstanceOf(ProcessedCodeCoverageData::class, $result['codeCoverage']);
-        $this->assertEquals($coverage->getData(), $result['codeCoverage']);
+        $this->assertIsString($result['basePath']);
+
+        $originalFiles   = $coverage->getData()->coveredFiles();
+        $serialisedFiles = $result['codeCoverage']->coveredFiles();
+
+        $this->assertCount(count($originalFiles), $serialisedFiles);
+
+        foreach ($serialisedFiles as $i => $relativeFile) {
+            $this->assertSame(
+                $originalFiles[$i],
+                $result['basePath'] . DIRECTORY_SEPARATOR . $relativeFile,
+            );
+        }
+
         $this->assertEquals($coverage->getTests(), $result['testResults']);
     }
 
@@ -243,11 +259,39 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']]], 'codeCoverage' => null, 'testResults' => []];",
+            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']]], 'basePath' => '', 'codeCoverage' => null, 'testResults' => []];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
         $this->expectExceptionMessage("missing valid 'codeCoverage' key");
+
+        (new Unserializer)->unserialize($target);
+    }
+
+    public function testThrowsExceptionWhenBasePathIsMissing(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        $data = [
+            'buildInformation' => [
+                'timestamp'       => '2024-01-01',
+                'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+            ],
+            'codeCoverage' => new ProcessedCodeCoverageData,
+            'testResults'  => [],
+        ];
+
+        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        file_put_contents(
+            $target,
+            $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
+            serialize($data) . "\n" .
+            "END_OF_COVERAGE_SERIALIZATION\n);",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage("missing valid 'basePath' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -377,6 +421,7 @@ final class UnserializerTest extends TestCase
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
                 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
             ],
+            'basePath'     => '',
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => 'not an array',
         ];

@@ -10,7 +10,9 @@
 namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use const PHP_EOL;
+use function preg_replace_callback;
 use function serialize;
+use function str_starts_with;
 use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -91,13 +93,36 @@ final readonly class Serializer
             'testResults'      => $codeCoverage->getTests(),
         ];
 
+        $serializedData = serialize($data);
+
+        if (str_starts_with(self::class, 'PHPUnitPHAR\\')) {
+            $serializedData = $this->stripPharPrefix($serializedData);
+        }
+
         Filesystem::write(
             $target,
             '<?php // phpunit/php-code-coverage version ' . Version::id() . PHP_EOL .
             "return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'" . PHP_EOL .
-            serialize($data) . PHP_EOL .
+            $serializedData . PHP_EOL .
             'END_OF_COVERAGE_SERIALIZATION' . PHP_EOL .
             ');',
+        );
+    }
+
+    /**
+     * @param non-empty-string $serialized
+     *
+     * @return non-empty-string
+     */
+    private function stripPharPrefix(string $serialized): string
+    {
+        return preg_replace_callback(
+            '/([OC]):(\d+):"PHPUnitPHAR\\\\/',
+            static function (array $matches): string
+            {
+                return $matches[1] . ':' . ((int) $matches[2] - 12) . ':"';
+            },
+            $serialized,
         );
     }
 }

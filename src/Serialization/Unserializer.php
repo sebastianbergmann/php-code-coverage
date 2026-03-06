@@ -17,6 +17,8 @@ use function is_array;
 use function is_bool;
 use function is_string;
 use function preg_match;
+use function restore_error_handler;
+use function set_error_handler;
 use function trim;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Version;
@@ -63,7 +65,20 @@ final readonly class Unserializer
             throw new VersionMismatchException($storedVersion, Version::id());
         }
 
-        $data = require $path;
+        set_error_handler(
+            static function (int $errno, string $errstr) use ($path): never
+            {
+                throw new InvalidCoverageDataException(
+                    'Failed to unserialize coverage data from ' . $path . ': ' . $errstr,
+                );
+            },
+        );
+
+        try {
+            $data = require $path;
+        } finally {
+            restore_error_handler();
+        }
 
         $this->validate($data);
 

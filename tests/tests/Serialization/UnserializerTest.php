@@ -109,6 +109,21 @@ final class UnserializerTest extends TestCase
         (new Unserializer)->unserialize($target);
     }
 
+    public function testThrowsExceptionWhenFileTriggersPhpWarning(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        file_put_contents(
+            $target,
+            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\ntrigger_error('corrupted data', E_USER_WARNING);\nreturn [];",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage('Failed to unserialize coverage data from ' . $target);
+
+        (new Unserializer)->unserialize($target);
+    }
+
     public function testThrowsExceptionWhenDataHasInvalidShape(): void
     {
         $target = TEST_FILES_PATH . 'tmp/serialized.php';

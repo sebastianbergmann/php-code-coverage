@@ -122,11 +122,20 @@ final readonly class Serializer
      */
     private function stripPharPrefix(string $serialized): string
     {
-        return preg_replace_callback(
+        $serialized = preg_replace_callback(
             '/([OC]):(\d+):"PHPUnitPHAR\\\\/',
             static function (array $matches): string
             {
                 return $matches[1] . ':' . ((int) $matches[2] - 12) . ':"';
+            },
+            $serialized,
+        );
+
+        return preg_replace_callback(
+            '/s:(\d+):"(\x00)PHPUnitPHAR\\\\/',
+            static function (array $matches): string
+            {
+                return 's:' . ((int) $matches[1] - 12) . ':"' . $matches[2];
             },
             $serialized,
         );

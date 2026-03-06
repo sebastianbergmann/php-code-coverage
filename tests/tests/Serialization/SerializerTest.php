@@ -15,10 +15,12 @@ use function fclose;
 use function fgets;
 use function fopen;
 use function trim;
+use function unserialize;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(Serializer::class)]
@@ -139,6 +141,34 @@ final class SerializerTest extends TestCase
         $this->assertIsString($data['basePath']);
         $this->assertNotEmpty($data['basePath']);
         $this->assertCount(count($coverage->getData()->coveredFiles()), $data['codeCoverage']->coveredFiles());
+    }
+
+    public function testStripPharPrefixRemovesPharPrefixFromObjectClassNamesAndPrivatePropertyKeys(): void
+    {
+        // When Serializer runs inside a PHAR, PHP serializes class names with a PHAR prefix
+        // (e.g. PHPUnitPHAR\SebastianBergmann\...). Serializer::stripPharPrefix() removes those
+        // prefixes so the resulting coverage file can be deserialized outside the PHAR.
+        $pharPrefixedSerialized = 'O:73:"PHPUnitPHAR\SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData":2:{'
+            . 's:87:"' . "\x00" . 'PHPUnitPHAR\SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData' . "\x00" . 'lineCoverage";a:0:{}'
+            . 's:91:"' . "\x00" . 'PHPUnitPHAR\SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData' . "\x00" . 'functionCoverage";a:0:{}'
+            . '}';
+
+        $strippedSerialized = 'O:61:"SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData":2:{'
+            . 's:75:"' . "\x00" . 'SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData' . "\x00" . 'lineCoverage";a:0:{}'
+            . 's:79:"' . "\x00" . 'SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData' . "\x00" . 'functionCoverage";a:0:{}'
+            . '}';
+
+        $allowedClasses = ['allowed_classes' => [ProcessedCodeCoverageData::class]];
+
+        $this->assertNotInstanceOf(
+            ProcessedCodeCoverageData::class,
+            unserialize($pharPrefixedSerialized, $allowedClasses),
+        );
+
+        $this->assertInstanceOf(
+            ProcessedCodeCoverageData::class,
+            unserialize($strippedSerialized, $allowedClasses),
+        );
     }
 
     public function testSerializedDataIncludesGitInformationWhenRequested(): void

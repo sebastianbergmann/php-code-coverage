@@ -8,6 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * `SebastianBergmann\CodeCoverage\Serialization\Serializer` class for serializing `SebastianBergmann\CodeCoverage\CodeCoverage` objects in a versioned format to a file
 * `SebastianBergmann\CodeCoverage\Serialization\Unserializer` class for unserializing `SebastianBergmann\CodeCoverage\CodeCoverage` objects from a file creating using `SebastianBergmann\CodeCoverage\Serialization\Serializer`
+* [#925](https://github.com/sebastianbergmann/php-code-coverage/issues/925): Serialized code coverage data (generated using PHPUnit's `--coverage-php`, for example) should use relative paths
 
 ### Changed
 

@@ -41,19 +41,17 @@ final readonly class Merger
 
         $unserializer = new Unserializer;
 
-        $items = [];
-
-        foreach ($paths as $path) {
-            $items[] = $unserializer->unserialize($path);
-        }
-
-        $first      = $items[0];
+        $first      = $unserializer->unserialize($paths[0]);
         $refRuntime = $first['buildInformation']['runtime'];
         $refDriver  = $first['buildInformation']['phpCodeCoverage']['driverInformation'];
         $refHasGit  = array_key_exists('git', $first['buildInformation']);
         $refGit     = $first['buildInformation']['git'] ?? null;
 
-        foreach (array_slice($items, 1) as $item) {
+        $mergedCoverage    = clone $first['codeCoverage'];
+        $mergedTestResults = [$first['testResults']];
+
+        foreach (array_slice($paths, 1) as $path) {
+            $item    = $unserializer->unserialize($path);
             $runtime = $item['buildInformation']['runtime'];
 
             if ($runtime['name'] !== $refRuntime['name'] || $runtime['version'] !== $refRuntime['version']) {
@@ -89,14 +87,10 @@ final readonly class Merger
                     );
                 }
             }
-        }
 
-        $mergedCoverage    = clone $first['codeCoverage'];
-        $mergedTestResults = $first['testResults'];
-
-        foreach (array_slice($items, 1) as $item) {
             $mergedCoverage->merge($item['codeCoverage']);
-            $mergedTestResults = array_merge($mergedTestResults, $item['testResults']);
+
+            $mergedTestResults[] = $item['testResults'];
         }
 
         $buildInformation = [
@@ -116,7 +110,7 @@ final readonly class Merger
             'buildInformation' => $buildInformation,
             'basePath'         => $first['basePath'],
             'codeCoverage'     => $mergedCoverage,
-            'testResults'      => $mergedTestResults,
+            'testResults'      => array_merge(...$mergedTestResults),
         ];
     }
 }

@@ -36,6 +36,7 @@ final readonly class Xml
         $buffer = $document->saveXML();
 
         if ($buffer === false) {
+            // @codeCoverageIgnoreStart
             $message = 'Unable to generate the XML';
 
             foreach (libxml_get_errors() as $error) {
@@ -43,6 +44,7 @@ final readonly class Xml
             }
 
             throw new XmlException($message);
+            // @codeCoverageIgnoreEnd
         }
 
         libxml_clear_errors();

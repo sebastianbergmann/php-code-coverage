@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use const DIRECTORY_SEPARATOR;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
@@ -139,7 +140,7 @@ final class AbstractNodeTest extends TestCase
 
     public function testNameStripsTrailingDirectorySeparator(): void
     {
-        $root = new Directory('root/');
+        $root = new Directory('root' . DIRECTORY_SEPARATOR);
 
         $this->assertSame('root', $root->name());
     }

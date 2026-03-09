@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Util;
 
+use const PHP_OS_FAMILY;
 use function file_get_contents;
 use function is_dir;
 use function rmdir;
@@ -66,9 +67,16 @@ final class FilesystemTest extends TestCase
 
     public function testCreateDirectoryThrowsExceptionWhenDirectoryCannotBeCreated(): void
     {
+        if (PHP_OS_FAMILY === 'Windows') {
+            // Characters like < and > are invalid in Windows paths
+            $directory = sys_get_temp_dir() . '\\<invalid>\\this-cannot-be-created';
+        } else {
+            $directory = '/proc/this-cannot-be-created';
+        }
+
         $this->expectException(DirectoryCouldNotBeCreatedException::class);
 
-        Filesystem::createDirectory('/proc/this-cannot-be-created');
+        Filesystem::createDirectory($directory);
     }
 
     public function testWriteWritesContentToFile(): void
@@ -119,9 +127,16 @@ final class FilesystemTest extends TestCase
 
     public function testWriteThrowsExceptionWhenFileCannotBeWritten(): void
     {
+        if (PHP_OS_FAMILY === 'Windows') {
+            // Character < is invalid in Windows file names, and dirname() returns the existing temp dir
+            $target = sys_get_temp_dir() . '\\file<invalid';
+        } else {
+            $target = '/proc/this-cannot-be-written';
+        }
+
         $this->expectException(WriteOperationFailedException::class);
 
-        Filesystem::write('/proc/this-cannot-be-written', 'content');
+        Filesystem::write($target, 'content');
     }
 
     private function removeDirectory(string $directory): void

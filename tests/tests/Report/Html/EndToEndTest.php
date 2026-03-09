@@ -37,9 +37,6 @@ final class EndToEndTest extends TestCase
 
     public function testPathCoverageForBankAccountTest(): void
     {
-        $this->markTestIncomplete('This test fails after https://github.com/sebastianbergmann/php-code-coverage/pull/1037 and I have not figured out how to update it.');
-
-        /** @phpstan-ignore deadCode.unreachable */
         $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
 
         $report = new Facade;

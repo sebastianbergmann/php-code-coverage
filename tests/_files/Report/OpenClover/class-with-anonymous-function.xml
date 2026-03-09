@@ -4,7 +4,7 @@
     <metrics files="1" loc="20" ncloc="19" classes="1" complexity="1" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="1" coveredmethods="1"/>
     <package name="global">
       <metrics complexity="1" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="1" coveredmethods="1"/>
-      <file name="source_with_class_and_anonymous_function.php" path="%s%esource_with_class_and_anonymous_function.php">
+      <file name="source_with_class_and_anonymous_function.php" path="%ssource_with_class_and_anonymous_function.php">
         <metrics loc="20" ncloc="19" classes="1" complexity="1" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="1" coveredmethods="1"/>
         <class name="CoveredClassWithAnonymousFunctionInStaticMethod">
           <metrics complexity="1" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="1" coveredmethods="1"/>

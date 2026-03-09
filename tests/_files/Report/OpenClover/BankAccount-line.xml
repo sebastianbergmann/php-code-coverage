@@ -4,7 +4,7 @@
     <metrics files="1" loc="35" ncloc="35" classes="1" complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
     <package name="global">
       <metrics complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
-      <file name="BankAccount.php" path="%s%eBankAccount.php">
+      <file name="BankAccount.php" path="%sBankAccount.php">
         <metrics loc="35" ncloc="35" classes="1" complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
         <class name="BankAccount">
           <metrics complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>

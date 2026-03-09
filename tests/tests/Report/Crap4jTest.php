@@ -11,8 +11,10 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCoverage\Util\Xml;
 
 #[CoversClass(Crap4j::class)]
+#[CoversClass(Xml::class)]
 final class Crap4jTest extends TestCase
 {
     public function testForBankAccountTest(): void

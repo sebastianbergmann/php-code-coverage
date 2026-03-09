@@ -11,8 +11,10 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCoverage\Util\Xml;
 
 #[CoversClass(Clover::class)]
+#[CoversClass(Xml::class)]
 final class CloverTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

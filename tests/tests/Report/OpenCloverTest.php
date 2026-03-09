@@ -18,8 +18,10 @@ use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\TestCase;
+use SebastianBergmann\CodeCoverage\Util\Xml;
 
 #[CoversClass(OpenClover::class)]
+#[CoversClass(Xml::class)]
 final class OpenCloverTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

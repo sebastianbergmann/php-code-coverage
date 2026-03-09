@@ -244,6 +244,46 @@ final class MergerTest extends TestCase
         (new Merger)->merge([$pathA, $pathB]);
     }
 
+    public function testDoesNotThrowExceptionWhenRuntimeDiffersAndCheckIsDisabled(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['runtime' => ['name' => 'PHP', 'version' => '8.3.0']]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['runtime' => ['name' => 'HHVM', 'version' => '8.2.0']]]));
+
+        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingPhpVersion: false);
+
+        $this->assertArrayHasKey('codeCoverage', $result);
+    }
+
+    public function testDoesNotThrowExceptionWhenDriverDiffersAndCheckIsDisabled(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['name' => 'Xdebug', 'version' => '3.1.0']]]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['name' => 'PCOV', 'version' => '3.2.0']]]]));
+
+        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingCodeCoverageDriver: false);
+
+        $this->assertArrayHasKey('codeCoverage', $result);
+    }
+
+    public function testDoesNotThrowExceptionWhenGitInformationDiffersAndCheckIsDisabled(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['commit' => 'aaaaaaa'])]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['commit' => 'bbbbbbb'])]]));
+
+        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingGitInformation: false);
+
+        $this->assertArrayHasKey('codeCoverage', $result);
+    }
+
+    public function testDoesNotThrowExceptionWhenMixedGitInformationAndCheckIsDisabled(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit()]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem());
+
+        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingGitInformation: false);
+
+        $this->assertArrayHasKey('codeCoverage', $result);
+    }
+
     /**
      * @param array<mixed>                                                    $overrides
      * @param array<string, array{size: string, status: string, time: float}> $testResults

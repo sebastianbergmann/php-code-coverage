@@ -33,7 +33,7 @@ final readonly class Merger
      *
      * @return SerializedCoverage
      */
-    public function merge(array $paths): array
+    public function merge(array $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
     {
         if ($paths === []) {
             throw new EmptyPathListException;
@@ -54,37 +54,43 @@ final readonly class Merger
             $item    = $unserializer->unserialize($path);
             $runtime = $item['buildInformation']['runtime'];
 
-            if ($runtime['name'] !== $refRuntime['name'] || $runtime['version'] !== $refRuntime['version']) {
-                throw new RuntimeMismatchException;
+            if ($requireMatchingPhpVersion) {
+                if ($runtime['name'] !== $refRuntime['name'] || $runtime['version'] !== $refRuntime['version']) {
+                    throw new RuntimeMismatchException;
+                }
             }
 
-            $driver = $item['buildInformation']['phpCodeCoverage']['driverInformation'];
+            if ($requireMatchingCodeCoverageDriver) {
+                $driver = $item['buildInformation']['phpCodeCoverage']['driverInformation'];
 
-            if ($driver['name'] !== $refDriver['name'] || $driver['version'] !== $refDriver['version']) {
-                throw new DriverMismatchException;
+                if ($driver['name'] !== $refDriver['name'] || $driver['version'] !== $refDriver['version']) {
+                    throw new DriverMismatchException;
+                }
             }
 
-            $hasGit = array_key_exists('git', $item['buildInformation']);
+            if ($requireMatchingGitInformation) {
+                $hasGit = array_key_exists('git', $item['buildInformation']);
 
-            if ($hasGit !== $refHasGit) {
-                throw new MixedGitInformationException;
-            }
-
-            if ($hasGit) {
-                $git = $item['buildInformation']['git'];
-
-                foreach (['originUrl', 'branch', 'commit', 'status'] as $field) {
-                    if ($git[$field] !== $refGit[$field]) {
-                        throw new GitInformationMismatchException($field, (string) $refGit[$field], (string) $git[$field]);
-                    }
+                if ($hasGit !== $refHasGit) {
+                    throw new MixedGitInformationException;
                 }
 
-                if ($git['isClean'] !== $refGit['isClean']) {
-                    throw new GitInformationMismatchException(
-                        'isClean',
-                        $refGit['isClean'] ? 'true' : 'false',
-                        $git['isClean'] ? 'true' : 'false',
-                    );
+                if ($hasGit) {
+                    $git = $item['buildInformation']['git'];
+
+                    foreach (['originUrl', 'branch', 'commit', 'status'] as $field) {
+                        if ($git[$field] !== $refGit[$field]) {
+                            throw new GitInformationMismatchException($field, (string) $refGit[$field], (string) $git[$field]);
+                        }
+                    }
+
+                    if ($git['isClean'] !== $refGit['isClean']) {
+                        throw new GitInformationMismatchException(
+                            'isClean',
+                            $refGit['isClean'] ? 'true' : 'false',
+                            $git['isClean'] ? 'true' : 'false',
+                        );
+                    }
                 }
             }
 

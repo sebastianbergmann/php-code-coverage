@@ -76,16 +76,6 @@ abstract class Driver
         $this->collectBranchAndPathCoverage = false;
     }
 
-    public function isPcov(): bool
-    {
-        return false;
-    }
-
-    public function isXdebug(): bool
-    {
-        return false;
-    }
-
     abstract public function name(): string;
 
     abstract public function version(): string;

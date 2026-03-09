@@ -78,11 +78,6 @@ final class PcovDriver extends Driver
         return phpversion('pcov');
     }
 
-    public function isPcov(): true
-    {
-        return true;
-    }
-
     /**
      * @throws PcovNotAvailableException
      */

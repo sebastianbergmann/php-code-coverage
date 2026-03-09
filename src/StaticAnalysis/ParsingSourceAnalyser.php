@@ -41,10 +41,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
     {
         $linesOfCode = max(substr_count($sourceCode, "\n") + 1, substr_count($sourceCode, "\r") + 1);
 
-        if ($linesOfCode === 0 && $sourceCode !== '') {
-            $linesOfCode = 1;
-        }
-
         assert($linesOfCode > 0);
 
         $parser = (new ParserFactory)->createForHostVersion();

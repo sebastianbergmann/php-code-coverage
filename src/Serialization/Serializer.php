@@ -138,7 +138,9 @@ final readonly class Serializer
         );
 
         if ($result === null) {
+            // @codeCoverageIgnoreStart
             throw new PharPrefixCouldNotBeStrippedException;
+            // @codeCoverageIgnoreEnd
         }
 
         return $result;

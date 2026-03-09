@@ -378,7 +378,7 @@ final class File extends AbstractNode
             $trait->crap     = (new CrapIndex($trait->ccn, $traitPathCoverage > 0 ? $traitPathCoverage : $traitLineCoverage))->asString();
 
             if ($trait->executableLines > 0 && $trait->coverage === 100) {
-                $this->numTestedClasses++;
+                $this->numTestedTraits++;
             }
         }
 

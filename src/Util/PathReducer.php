@@ -97,7 +97,11 @@ final class PathReducer
         }
 
         for ($i = 0; $i < $max; $i++) {
-            $data->renameFile($original[$i], implode(DIRECTORY_SEPARATOR, $paths[$i]));
+            $newPath = implode(DIRECTORY_SEPARATOR, $paths[$i]);
+
+            if ($newPath !== $original[$i]) {
+                $data->renameFile($original[$i], $newPath);
+            }
         }
 
         return substr($commonPath, 0, -1);

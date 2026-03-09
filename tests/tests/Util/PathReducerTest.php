@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Util;
 
+use function sort;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\Attributes\Small;
@@ -84,6 +85,22 @@ final class PathReducerTest extends TestCase
 
         $this->assertSame('', $result);
         $this->assertSame(['alpha/x.php', 'beta/y.php'], $data->coveredFiles());
+    }
+
+    public function testReduceDoesNotDestroyCoverageDataWhenFilesShareNoCommonPrefix(): void
+    {
+        $data = $this->dataWithFiles([
+            'src/a.php',
+            'lib/b.php',
+        ]);
+
+        $result = (new PathReducer)->reduce($data);
+
+        $this->assertSame('', $result);
+        $coveredFiles = $data->coveredFiles();
+        sort($coveredFiles);
+
+        $this->assertSame(['lib/b.php', 'src/a.php'], $coveredFiles);
     }
 
     /**

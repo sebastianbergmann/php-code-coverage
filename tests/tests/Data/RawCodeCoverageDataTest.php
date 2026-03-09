@@ -9,8 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 
+#[CoversClass(RawCodeCoverageData::class)]
 final class RawCodeCoverageDataTest extends TestCase
 {
     /**
@@ -599,5 +603,116 @@ final class RawCodeCoverageDataTest extends TestCase
         $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
 
         $this->assertEquals($functionData, $dataObject->functionCoverage());
+    }
+
+    public function testFromUncoveredFile(): void
+    {
+        $filename = TEST_FILES_PATH . 'BankAccount.php';
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+
+        $dataObject = RawCodeCoverageData::fromUncoveredFile($filename, $analyser);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey($filename, $lineCoverage);
+        $this->assertNotEmpty($lineCoverage[$filename]);
+
+        foreach ($lineCoverage[$filename] as $status) {
+            $this->assertSame(-1, $status);
+        }
+
+        $this->assertEmpty($dataObject->functionCoverage());
+    }
+
+    public function testKeepLineCoverageDataOnlyForLinesWithUnknownFile(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -2,
+                13 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/UnknownFile.php', [8]);
+
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
+    }
+
+    public function testMarkExecutableLineByBranchWithUnknownFile(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -2,
+                13 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->markExecutableLineByBranch('/some/path/UnknownFile.php', [8 => 0]);
+
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
+    }
+
+    public function testMarkExecutableLineByBranchSkipsLinesNotInBranchMap(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -1,
+                13 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        // Only map line 8 to branch 0 - lines 9 and 13 are not in the map
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        // Line 8 was in the map and should still be present
+        $this->assertArrayHasKey(8, $lineCoverage['/some/path/SomeClass.php']);
+        // Lines 9 and 13 were not in the map and should have been skipped (continue)
+        $this->assertArrayHasKey(9, $lineCoverage['/some/path/SomeClass.php']);
+        $this->assertArrayHasKey(13, $lineCoverage['/some/path/SomeClass.php']);
+    }
+
+    public function testRemoveCoverageDataForLinesWithEmptyLines(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -2,
+                13 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->removeCoverageDataForLines('/some/path/SomeClass.php', []);
+
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
+    }
+
+    public function testRemoveCoverageDataForLinesWithUnknownFile(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -2,
+                13 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->removeCoverageDataForLines('/some/path/UnknownFile.php', [8]);
+
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }
 }

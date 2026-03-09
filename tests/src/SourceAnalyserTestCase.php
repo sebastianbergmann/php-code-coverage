@@ -216,6 +216,20 @@ abstract class SourceAnalyserTestCase extends TestCase
         );
     }
 
+    public function testIgnoreEndWithoutStartIsHandledGracefully(): void
+    {
+        $ignoredLines = $this->analyser()->analyse(
+            TEST_FILES_PATH . 'source_with_codeCoverageIgnoreEnd_without_start.php',
+            file_get_contents(TEST_FILES_PATH . 'source_with_codeCoverageIgnoreEnd_without_start.php'),
+            true,
+            true,
+        )->ignoredLines();
+
+        // Line 5 has the @codeCoverageIgnoreEnd without a prior start,
+        // so it should still be included in ignored lines (start defaults to the token line)
+        $this->assertContains(5, $ignoredLines);
+    }
+
     public function testCodeUnitsAreFound(): void
     {
         $analyser = new ParsingSourceAnalyser;

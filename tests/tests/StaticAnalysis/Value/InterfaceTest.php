@@ -42,6 +42,25 @@ final class InterfaceTest extends TestCase
         $this->assertSame(2, $this->interface()->endLine());
     }
 
+    public function testIsNamespacedWhenNamespaceIsNotEmpty(): void
+    {
+        $this->assertTrue($this->interface()->isNamespaced());
+    }
+
+    public function testIsNotNamespacedWhenNamespaceIsEmpty(): void
+    {
+        $interface = new Interface_(
+            'Example',
+            'Example',
+            '',
+            1,
+            2,
+            [],
+        );
+
+        $this->assertFalse($interface->isNamespaced());
+    }
+
     public function testMayHaveParentInterfaces(): void
     {
         $interfaces = ['example\AnInterface'];

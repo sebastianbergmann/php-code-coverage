@@ -40,6 +40,43 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');
     }
 
+    public function testArrowFunctionIsProcessedCorrectly(): void
+    {
+        $source = file_get_contents(TEST_FILES_PATH . 'source_with_arrow_function.php');
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $result = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        // The multi-line arrow function body should be an executable line
+        $this->assertArrayHasKey(5, $result);
+    }
+
+    public function testEmptyForLoopIsProcessedCorrectly(): void
+    {
+        $source = file_get_contents(TEST_FILES_PATH . 'source_with_empty_for_loops.php');
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $result = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        // for(;;) has no init/cond/loop, so no branch is set for the for statement
+        // for(;; ++$i) has only loop part
+        $this->assertNotEmpty($result);
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
     public function testMatchArmsAreProcessedCorrectly(): void
     {

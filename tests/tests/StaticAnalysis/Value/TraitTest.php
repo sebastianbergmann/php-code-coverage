@@ -47,6 +47,27 @@ final class TraitTest extends TestCase
         $this->assertSame(2, $this->trait()->endLine());
     }
 
+    public function testIsNamespacedWhenNamespaceIsNotEmpty(): void
+    {
+        $this->assertTrue($this->trait()->isNamespaced());
+    }
+
+    public function testIsNotNamespacedWhenNamespaceIsEmpty(): void
+    {
+        $trait = new Trait_(
+            'Example',
+            'Example',
+            '',
+            'file.php',
+            1,
+            2,
+            [],
+            [],
+        );
+
+        $this->assertFalse($trait->isNamespaced());
+    }
+
     public function testMayHaveTraits(): void
     {
         $traits = ['trait'];

@@ -249,7 +249,7 @@ final class MergerTest extends TestCase
         $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['runtime' => ['name' => 'PHP', 'version' => '8.3.0']]]));
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['runtime' => ['name' => 'HHVM', 'version' => '8.2.0']]]));
 
-        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingPhpVersion: false);
+        $result = (new Merger)->merge([$pathA, $pathB], true, false);
 
         $this->assertArrayHasKey('codeCoverage', $result);
     }
@@ -259,7 +259,7 @@ final class MergerTest extends TestCase
         $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['name' => 'Xdebug', 'version' => '3.1.0']]]]));
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['name' => 'PCOV', 'version' => '3.2.0']]]]));
 
-        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingCodeCoverageDriver: false);
+        $result = (new Merger)->merge([$pathA, $pathB], true, true, false);
 
         $this->assertArrayHasKey('codeCoverage', $result);
     }
@@ -269,7 +269,7 @@ final class MergerTest extends TestCase
         $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['commit' => 'aaaaaaa'])]]));
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['commit' => 'bbbbbbb'])]]));
 
-        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingGitInformation: false);
+        $result = (new Merger)->merge([$pathA, $pathB], false);
 
         $this->assertArrayHasKey('codeCoverage', $result);
     }
@@ -279,7 +279,7 @@ final class MergerTest extends TestCase
         $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit()]]));
         $pathB = $this->writeFile('b.php', $this->makeItem());
 
-        $result = (new Merger)->merge([$pathA, $pathB], requireMatchingGitInformation: false);
+        $result = (new Merger)->merge([$pathA, $pathB], false);
 
         $this->assertArrayHasKey('codeCoverage', $result);
     }

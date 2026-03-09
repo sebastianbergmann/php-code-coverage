@@ -255,6 +255,55 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertArrayHasKey('six', $methods);
     }
 
+    public function testHandlesAbstractMethodWithNullBody(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_abstract_method.php');
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(1, $classes);
+
+        $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithAbstractMethod'];
+
+        $methods = $class->methods();
+
+        $this->assertArrayHasKey('abstractMethod', $methods);
+        $this->assertSame(0, $methods['abstractMethod']->cyclomaticComplexity());
+    }
+
+    public function testHandlesNullableTypesAndPrivateMethod(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_nullable_types_and_private_method.php');
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(1, $classes);
+
+        $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithNullableTypesAndPrivateMethod'];
+
+        $methods = $class->methods();
+
+        $this->assertArrayHasKey('privateMethod', $methods);
+        $this->assertSame(Visibility::Private, $methods['privateMethod']->visibility());
+        $this->assertSame('privateMethod(?string $value): ?int', $methods['privateMethod']->signature());
+    }
+
+    public function testHandlesTraitUsingTrait(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_trait_using_trait.php');
+
+        $traits = $codeUnitFindingVisitor->traits();
+
+        $this->assertCount(2, $traits);
+
+        $outerTrait = $traits['SebastianBergmann\CodeCoverage\TestFixture\OuterTrait'];
+
+        $this->assertSame(
+            ['SebastianBergmann\CodeCoverage\TestFixture\InnerTrait'],
+            $outerTrait->traits(),
+        );
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->createForHostVersion()->parse(

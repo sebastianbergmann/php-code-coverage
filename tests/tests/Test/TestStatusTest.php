@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Test\TestStatus;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\CodeCoverage\TestStatus;
+use SebastianBergmann\CodeCoverage\Test\TestStatus;
 
 #[CoversClass(TestStatus::class)]
 #[Small]

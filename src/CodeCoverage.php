@@ -23,6 +23,8 @@ use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollectionValidator;
 use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
+use SebastianBergmann\CodeCoverage\Test\TestSize;
+use SebastianBergmann\CodeCoverage\Test\TestStatus;
 
 /**
  * Provides collection functionality for PHP code coverage information.

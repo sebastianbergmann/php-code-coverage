@@ -21,6 +21,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\TestSize;
 
 #[CoversClass(FilterProcessor::class)]
 final class FilterProcessorTest extends TestCase

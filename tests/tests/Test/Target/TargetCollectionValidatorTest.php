@@ -29,7 +29,7 @@ final class TargetCollectionValidatorTest extends TestCase
     public function test_TargetCollection_is_valid_when_all_targets_can_be_mapped(): void
     {
         $targets   = TargetCollection::fromArray([Target::forClass(TargetClass::class)]);
-        $mapper    = $this->mapper([__DIR__ . '/../../_files/Target/TargetClass.php']);
+        $mapper    = $this->mapper([__DIR__ . '/../../../_files/Target/TargetClass.php']);
         $validator = new TargetCollectionValidator;
 
         $result = $validator->validate($mapper, $targets);

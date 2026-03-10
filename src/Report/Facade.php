@@ -142,17 +142,30 @@ final readonly class Facade
     }
 
     /**
-     * @param non-empty-string $target
+     * @param ?non-empty-string $target
      */
-    public function renderText(string $target, ?Thresholds $thresholds = null, bool $showUncoveredFiles = false, bool $showOnlySummary = false, bool $showColors = false): void
+    public function renderText(?string $target, ?Thresholds $thresholds = null, bool $showUncoveredFiles = false, bool $showOnlySummary = false, bool $showColors = false): string
     {
-        Filesystem::write(
-            $target,
-            new Text($thresholds ?? Thresholds::default(), $showUncoveredFiles, $showOnlySummary)->process(
-                $this->report,
-                $showColors,
-            ),
+        if ($thresholds === null) {
+            $thresholds = Thresholds::default();
+        }
+
+        $buffer = new Text($thresholds, $showUncoveredFiles, $showOnlySummary)->process(
+            $this->report,
+            $showColors,
         );
+
+        if ($target !== null) {
+            Filesystem::write(
+                $target,
+                new Text($thresholds, $showUncoveredFiles, $showOnlySummary)->process(
+                    $this->report,
+                    $showColors,
+                ),
+            );
+        }
+
+        return $buffer;
     }
 
     /**

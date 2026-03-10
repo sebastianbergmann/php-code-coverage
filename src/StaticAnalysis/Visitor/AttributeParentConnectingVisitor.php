@@ -22,6 +22,8 @@ use PhpParser\NodeVisitor;
  * <code>$node->getAttribute('parent')</code>.
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class AttributeParentConnectingVisitor implements NodeVisitor
 {

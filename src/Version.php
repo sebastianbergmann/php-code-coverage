@@ -12,6 +12,9 @@ namespace SebastianBergmann\CodeCoverage;
 use function dirname;
 use SebastianBergmann\Version as VersionId;
 
+/**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class Version
 {
     private static string $version = '';

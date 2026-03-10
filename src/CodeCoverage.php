@@ -31,6 +31,8 @@ use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
  *
  * @phpstan-type TestType array{size: string, status: string, time: float}
  * @phpstan-type TargetedLines array<non-empty-string, list<positive-int>>
+ *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class CodeCoverage
 {
@@ -68,7 +70,7 @@ final class CodeCoverage
     }
 
     /**
-     * Returns the code coverage information as a graph of node objects.
+     * @internal This method is not covered by the backward compatibility promise for phpunit/php-code-coverage
      */
     public function getReport(): Directory
     {
@@ -379,6 +381,8 @@ final class CodeCoverage
 
     /**
      * @return array{name: non-empty-string, version: non-empty-string}
+     *
+     * @internal This method is not covered by the backward compatibility promise for phpunit/php-code-coverage
      */
     public function driverInformation(): array
     {

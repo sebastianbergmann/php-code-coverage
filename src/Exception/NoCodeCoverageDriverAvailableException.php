@@ -11,6 +11,9 @@ namespace SebastianBergmann\CodeCoverage;
 
 use RuntimeException;
 
+/**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ */
 final class NoCodeCoverageDriverAvailableException extends RuntimeException implements Exception
 {
     public function __construct()

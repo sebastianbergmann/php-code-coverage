@@ -11,6 +11,8 @@ namespace SebastianBergmann\CodeCoverage\Test\TestStatus;
 
 /**
  * @immutable
+ *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class TestStatus
 {

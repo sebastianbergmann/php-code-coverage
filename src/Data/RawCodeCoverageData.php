@@ -32,6 +32,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
  * @phpstan-import-type XdebugFunctionsCoverageType from XdebugDriver
  * @phpstan-import-type XdebugCodeCoverageWithoutPathCoverageType from XdebugDriver
  * @phpstan-import-type XdebugCodeCoverageWithPathCoverageType from XdebugDriver

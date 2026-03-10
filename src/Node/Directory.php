@@ -23,6 +23,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
  * @template-implements IteratorAggregate<int, AbstractNode>
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 final class Directory extends AbstractNode implements IteratorAggregate
 {

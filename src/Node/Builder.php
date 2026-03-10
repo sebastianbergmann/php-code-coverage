@@ -24,6 +24,8 @@ use SebastianBergmann\CodeCoverage\Util\PathReducer;
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
  * @phpstan-import-type TestType from CodeCoverage
  */
 final readonly class Builder

@@ -23,7 +23,6 @@ use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollectionValidator;
 use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
-use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 
 /**
  * Provides collection functionality for PHP code coverage information.
@@ -203,7 +202,7 @@ final class CodeCoverage
         $size = $this->currentSize;
 
         if ($size === null) {
-            $size = TestSize::unknown();
+            $size = TestSize::Unknown;
         }
 
         $this->cachedReport = null;

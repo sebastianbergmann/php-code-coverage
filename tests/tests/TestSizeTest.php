@@ -10,18 +10,17 @@
 namespace SebastianBergmann\CodeCoverage\Test\TestSize;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversClassesThatExtendClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\TestSize;
 
 #[CoversClass(TestSize::class)]
-#[CoversClassesThatExtendClass(TestSize::class)]
 #[Small]
 final class TestSizeTest extends TestCase
 {
     public function testCanBeUnknown(): void
     {
-        $size = TestSize::unknown();
+        $size = TestSize::Unknown;
 
         $this->assertTrue($size->isUnknown());
         $this->assertFalse($size->isKnown());
@@ -33,7 +32,7 @@ final class TestSizeTest extends TestCase
 
     public function testCanBeSmall(): void
     {
-        $size = TestSize::small();
+        $size = TestSize::Small;
 
         $this->assertFalse($size->isUnknown());
         $this->assertTrue($size->isKnown());
@@ -45,7 +44,7 @@ final class TestSizeTest extends TestCase
 
     public function testCanBeMedium(): void
     {
-        $size = TestSize::medium();
+        $size = TestSize::Medium;
 
         $this->assertFalse($size->isUnknown());
         $this->assertTrue($size->isKnown());
@@ -57,7 +56,7 @@ final class TestSizeTest extends TestCase
 
     public function testCanBeLarge(): void
     {
-        $size = TestSize::large();
+        $size = TestSize::Large;
 
         $this->assertFalse($size->isUnknown());
         $this->assertTrue($size->isKnown());
@@ -69,11 +68,11 @@ final class TestSizeTest extends TestCase
 
     public function testCanBeCompared(): void
     {
-        $this->assertFalse(TestSize::small()->isGreaterThan(TestSize::small()));
-        $this->assertFalse(TestSize::medium()->isGreaterThan(TestSize::large()));
-        $this->assertTrue(TestSize::medium()->isGreaterThan(TestSize::small()));
-        $this->assertFalse(TestSize::large()->isGreaterThan(TestSize::large()));
-        $this->assertTrue(TestSize::large()->isGreaterThan(TestSize::small()));
-        $this->assertTrue(TestSize::large()->isGreaterThan(TestSize::medium()));
+        $this->assertFalse(TestSize::Small->isGreaterThan(TestSize::Small));
+        $this->assertFalse(TestSize::Medium->isGreaterThan(TestSize::Large));
+        $this->assertTrue(TestSize::Medium->isGreaterThan(TestSize::Small));
+        $this->assertFalse(TestSize::Large->isGreaterThan(TestSize::Large));
+        $this->assertTrue(TestSize::Large->isGreaterThan(TestSize::Small));
+        $this->assertTrue(TestSize::Large->isGreaterThan(TestSize::Medium));
     }
 }

@@ -52,7 +52,6 @@ parameters:
         # Ignore errors caused by defensive programming
         - '#Call to function assert\(\) with true will always evaluate to true.#'
         - '#Call to method .* will always evaluate to true.#'
-        - '#Call to method .* will always evaluate to false.#'
         - '#Instanceof between .* and .* will always evaluate to true.#'
         - '#SebastianBergmann\\CodeCoverage\\Node\\Iterator::current\(\) should be covariant with return type#'
 

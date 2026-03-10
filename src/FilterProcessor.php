@@ -17,7 +17,6 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
-use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage

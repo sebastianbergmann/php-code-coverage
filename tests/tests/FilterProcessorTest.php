@@ -21,7 +21,6 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
-use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
 
 #[CoversClass(FilterProcessor::class)]
 final class FilterProcessorTest extends TestCase
@@ -164,7 +163,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             false,
             [],
-            TestSize::small(),
+            TestSize::Small,
             false,
             new Mapper($this->emptyMap()),
             [],
@@ -183,7 +182,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             [],
             [],
-            TestSize::small(),
+            TestSize::Small,
             false,
             new Mapper($this->emptyMap()),
             [],
@@ -202,7 +201,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['file.php' => [1, 2]],
             [],
-            TestSize::small(),
+            TestSize::Small,
             false,
             new Mapper($this->emptyMap()),
             [],
@@ -222,7 +221,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['covered.php' => [1]],
             [],
-            TestSize::small(),
+            TestSize::Small,
             false,
             new Mapper($this->emptyMap()),
             [],
@@ -244,7 +243,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['file.php' => [1]],
             [],
-            TestSize::small(),
+            TestSize::Small,
             true,
             new Mapper($this->emptyMap()),
             [],
@@ -261,7 +260,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['file.php' => [1]],
             [],
-            TestSize::medium(),
+            TestSize::Medium,
             true,
             new Mapper($this->emptyMap()),
             [],
@@ -280,7 +279,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['file.php' => [1]],
             [],
-            TestSize::large(),
+            TestSize::Large,
             true,
             new Mapper($this->emptyMap()),
             [],
@@ -299,7 +298,7 @@ final class FilterProcessorTest extends TestCase
             $data,
             ['file.php' => [1]],
             [],
-            TestSize::small(),
+            TestSize::Small,
             false,
             new Mapper($this->emptyMap()),
             [],

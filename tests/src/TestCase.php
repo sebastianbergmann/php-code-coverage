@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function is_dir;
 use function rmdir;
 use function unlink;
 use BankAccount;
@@ -1946,8 +1947,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function removeTemporaryFiles(): void
     {
+        $tmpPath = TEST_FILES_PATH . 'tmp';
+
+        if (!is_dir($tmpPath)) {
+            return;
+        }
+
         $tmpFilesIterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(TEST_FILES_PATH . 'tmp', RecursiveDirectoryIterator::SKIP_DOTS),
+            new RecursiveDirectoryIterator($tmpPath, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST,
         );
 

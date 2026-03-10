@@ -10,18 +10,17 @@
 namespace SebastianBergmann\CodeCoverage\Test\TestStatus;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversClassesThatExtendClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\TestStatus;
 
 #[CoversClass(TestStatus::class)]
-#[CoversClassesThatExtendClass(TestStatus::class)]
 #[Small]
 final class TestStatusTest extends TestCase
 {
     public function testCanBeUnknown(): void
     {
-        $status = TestStatus::unknown();
+        $status = TestStatus::Unknown;
 
         $this->assertTrue($status->isUnknown());
         $this->assertFalse($status->isKnown());
@@ -32,7 +31,7 @@ final class TestStatusTest extends TestCase
 
     public function testCanBeSuccess(): void
     {
-        $status = TestStatus::success();
+        $status = TestStatus::Success;
 
         $this->assertFalse($status->isUnknown());
         $this->assertTrue($status->isKnown());
@@ -43,7 +42,7 @@ final class TestStatusTest extends TestCase
 
     public function testCanBeFailure(): void
     {
-        $status = TestStatus::failure();
+        $status = TestStatus::Failure;
 
         $this->assertFalse($status->isUnknown());
         $this->assertTrue($status->isKnown());

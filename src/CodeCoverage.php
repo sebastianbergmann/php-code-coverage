@@ -24,7 +24,6 @@ use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollectionValidator;
 use SebastianBergmann\CodeCoverage\Test\Target\ValidationResult;
 use SebastianBergmann\CodeCoverage\Test\TestSize\TestSize;
-use SebastianBergmann\CodeCoverage\Test\TestStatus\TestStatus;
 
 /**
  * Provides collection functionality for PHP code coverage information.
@@ -190,7 +189,7 @@ final class CodeCoverage
         }
 
         if ($status === null) {
-            $status = TestStatus::unknown();
+            $status = TestStatus::Unknown;
         }
 
         if ($covers === null) {

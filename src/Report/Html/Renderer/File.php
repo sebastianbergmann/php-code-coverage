@@ -9,9 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use const ENT_COMPAT;
-use const ENT_HTML401;
-use const ENT_SUBSTITUTE;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -33,7 +30,6 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -47,16 +43,6 @@ use SebastianBergmann\Template\Template;
  */
 final class File extends Renderer
 {
-    private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
-    private readonly SyntaxHighlighter $syntaxHighlighter;
-
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
-    {
-        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage, $hasPathCoverage);
-
-        $this->syntaxHighlighter = new SyntaxHighlighter;
-    }
-
     public function render(FileNode $node, string $file): void
     {
         $template = new Template($this->templateNameForTier('file'), '{{', '}}');
@@ -914,20 +900,6 @@ final class File extends Renderer
         return $linesTemplate->render();
     }
 
-    private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
-    {
-        $template->setVar(
-            [
-                'lineNumber'  => (string) $lineNumber,
-                'lineContent' => $lineContent,
-                'class'       => $class,
-                'popover'     => $popover,
-            ],
-        );
-
-        return $template->render();
-    }
-
     private function abbreviateClassName(string $className): string
     {
         $tmp = explode('\\', $className);
@@ -952,36 +924,5 @@ final class File extends Renderer
         }
 
         return $this->escapeHtml($methodName);
-    }
-
-    /**
-     * @param TestType $testData
-     */
-    private function createPopoverContentForTest(string $test, array $testData): string
-    {
-        $testCSS = '';
-
-        switch ($testData['status']) {
-            case 'success':
-                $testCSS = match ($testData['size']) {
-                    'small'  => ' class="covered-by-small-tests"',
-                    'medium' => ' class="covered-by-medium-tests"',
-                    // no break
-                    default => ' class="covered-by-large-tests"',
-                };
-
-                break;
-
-            case 'failure':
-                $testCSS = ' class="danger"';
-
-                break;
-        }
-
-        return sprintf(
-            '<li%s>%s</li>',
-            $testCSS,
-            htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
-        );
     }
 }

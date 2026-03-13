@@ -127,6 +127,10 @@ final class FilesystemTest extends TestCase
 
     public function testWriteThrowsExceptionWhenFileCannotBeWritten(): void
     {
+        if (PHP_OS_FAMILY === 'Darwin') {
+            $this->markTestSkipped('Cannot reliably trigger a write failure on macOS because /proc does not exist');
+        }
+
         if (PHP_OS_FAMILY === 'Windows') {
             // Character < is invalid in Windows file names, and dirname() returns the existing temp dir
             $target = sys_get_temp_dir() . '\\file<invalid';

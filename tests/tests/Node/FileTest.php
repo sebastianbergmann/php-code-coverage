@@ -397,6 +397,54 @@ final class FileTest extends TestCase
         $this->assertSame(2, $file->numberOfTestedMethods());
     }
 
+    public function testNumberOfTestedMethodsIncludesFullyCoveredTraitMethods(): void
+    {
+        $root = new Directory('root');
+
+        $method = new Method(
+            'traitMethod',
+            1,
+            5,
+            'public function traitMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $trait = new Trait_(
+            'MyTrait',
+            'MyTrait',
+            '',
+            'test.php',
+            1,
+            5,
+            [],
+            ['traitMethod' => $method],
+        );
+
+        $lineCoverageData = [
+            1 => ['test1'],
+            2 => ['test1'],
+            3 => ['test1'],
+            4 => ['test1'],
+            5 => ['test1'],
+        ];
+
+        $file = new File(
+            'test.php',
+            $root,
+            'abc123',
+            $lineCoverageData,
+            [],
+            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [],
+            ['MyTrait' => $trait],
+            [],
+            new LinesOfCode(5, 0, 5),
+        );
+
+        $this->assertSame(1, $file->numberOfTestedMethods());
+    }
+
     private function createFileNodeWithTestedClassAndTrait(): File
     {
         $root = new Directory('root');

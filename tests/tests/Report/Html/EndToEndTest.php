@@ -15,6 +15,7 @@ use const PHP_EOL;
 use function file_get_contents;
 use function file_put_contents;
 use function htmlspecialchars;
+use function is_dir;
 use function iterator_count;
 use function mkdir;
 use function str_replace;
@@ -241,8 +242,21 @@ final class EndToEndTest extends TestCase
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
-        $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
-        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/.html/');
+        $this->assertHtmlFilesEquals($expectedFilesPath, $actualFilesPath);
+
+        $expectedClassesPath = $expectedFilesPath . DIRECTORY_SEPARATOR . '_classes';
+        $actualClassesPath   = $actualFilesPath . DIRECTORY_SEPARATOR . '_classes';
+
+        if (is_dir($expectedClassesPath)) {
+            $this->assertDirectoryExists($actualClassesPath);
+            $this->assertHtmlFilesEquals($expectedClassesPath, $actualClassesPath);
+        }
+    }
+
+    private function assertHtmlFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
+    {
+        $expectedFilesIterator = new RegexIterator(new FilesystemIterator($expectedFilesPath), '/\.html$/');
+        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/\.html$/');
 
         $this->assertSame(
             iterator_count($expectedFilesIterator),

@@ -121,6 +121,16 @@ final class File extends AbstractNode
     private array $codeUnitsByLine = [];
 
     /**
+     * @var array<string, Class_>
+     */
+    private readonly array $rawClasses;
+
+    /**
+     * @var array<string, Trait_>
+     */
+    private readonly array $rawTraits;
+
+    /**
      * @param non-empty-string                                       $sha1
      * @param array<positive-int, ?list<non-empty-string>>           $lineCoverageData
      * @param array<non-empty-string, ProcessedFunctionCoverageData> $functionCoverageData
@@ -139,6 +149,8 @@ final class File extends AbstractNode
         $this->testData              = $testData;
         $this->linesOfCode           = $linesOfCode;
         $this->hasBranchCoverageData = $hasBranchCoverageData;
+        $this->rawClasses            = $classes;
+        $this->rawTraits             = $traits;
 
         $this->calculateStatistics($classes, $traits, $functions);
     }
@@ -178,6 +190,22 @@ final class File extends AbstractNode
     public function testData(): array
     {
         return $this->testData;
+    }
+
+    /**
+     * @return array<string, Class_>
+     */
+    public function rawClasses(): array
+    {
+        return $this->rawClasses;
+    }
+
+    /**
+     * @return array<string, Trait_>
+     */
+    public function rawTraits(): array
+    {
+        return $this->rawTraits;
     }
 
     /**

@@ -9,9 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use const ENT_COMPAT;
-use const ENT_HTML401;
-use const ENT_SUBSTITUTE;
 use const JSON_THROW_ON_ERROR;
 use const PHP_INT_MAX;
 use function array_key_exists;
@@ -39,7 +36,6 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
-use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -53,23 +49,13 @@ use SebastianBergmann\Template\Template;
  */
 final class File extends Renderer
 {
-    private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
-
     /**
      * Maximum number of paths per method for which table rows, interactive
      * graph highlighting data, and graph edge classes are rendered; path
      * counts grow combinatorially and would bloat the report otherwise.
      */
-    private const int MAX_RENDERED_PATHS = 100;
-    private readonly SyntaxHighlighter $syntaxHighlighter;
+    private const int MAX_RENDERED_PATHS        = 100;
     private ?ControlFlowGraph $controlFlowGraph = null;
-
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
-    {
-        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage, $hasPathCoverage);
-
-        $this->syntaxHighlighter = new SyntaxHighlighter;
-    }
 
     public function render(FileNode $node, string $file): void
     {
@@ -1141,22 +1127,6 @@ final class File extends Renderer
         return $coverageData;
     }
 
-    private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $coverageCount = '', string $coverageCountClass = 'col-0'): string
-    {
-        $template->setVar(
-            [
-                'lineNumber'         => (string) $lineNumber,
-                'lineContent'        => $lineContent,
-                'class'              => $class,
-                'popover'            => $popover,
-                'coverageCount'      => $coverageCount,
-                'coverageCountClass' => $coverageCountClass,
-            ],
-        );
-
-        return $template->render();
-    }
-
     private function abbreviateClassName(string $className): string
     {
         $tmp = explode('\\', $className);
@@ -1181,37 +1151,6 @@ final class File extends Renderer
         }
 
         return $this->escapeHtml($methodName);
-    }
-
-    /**
-     * @param TestType $testData
-     */
-    private function createPopoverContentForTest(string $test, array $testData): string
-    {
-        $testCSS = '';
-
-        switch ($testData['status']) {
-            case 'success':
-                $testCSS = match ($testData['size']) {
-                    'small'  => ' class="covered-by-small-tests"',
-                    'medium' => ' class="covered-by-medium-tests"',
-                    // no break
-                    default => ' class="covered-by-large-tests"',
-                };
-
-                break;
-
-            case 'failure':
-                $testCSS = ' class="danger"';
-
-                break;
-        }
-
-        return sprintf(
-            '<li%s>%s</li>',
-            $testCSS,
-            htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
-        );
     }
 
     private static function startLine(ProcessedFunctionCoverageData $methodData): int

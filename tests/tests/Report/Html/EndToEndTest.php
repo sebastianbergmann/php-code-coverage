@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function file_get_contents;
+use function is_dir;
 use function iterator_count;
 use function str_replace;
 use FilesystemIterator;
@@ -77,8 +78,21 @@ final class EndToEndTest extends TestCase
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
-        $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
-        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/.html/');
+        $this->assertHtmlFilesEquals($expectedFilesPath, $actualFilesPath);
+
+        $expectedClassesPath = $expectedFilesPath . DIRECTORY_SEPARATOR . '_classes';
+        $actualClassesPath   = $actualFilesPath . DIRECTORY_SEPARATOR . '_classes';
+
+        if (is_dir($expectedClassesPath)) {
+            $this->assertDirectoryExists($actualClassesPath);
+            $this->assertHtmlFilesEquals($expectedClassesPath, $actualClassesPath);
+        }
+    }
+
+    private function assertHtmlFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
+    {
+        $expectedFilesIterator = new RegexIterator(new FilesystemIterator($expectedFilesPath), '/\.html$/');
+        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/\.html$/');
 
         $this->assertEquals(
             iterator_count($expectedFilesIterator),
@@ -86,8 +100,7 @@ final class EndToEndTest extends TestCase
             'Generated files and expected files not match',
         );
 
-        foreach ($expectedFilesIterator as $path => $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
+        foreach (new RegexIterator(new FilesystemIterator($expectedFilesPath), '/\.html$/') as $path => $fileInfo) {
             $filename = $fileInfo->getFilename();
 
             $actualFile = $actualFilesPath . DIRECTORY_SEPARATOR . $filename;

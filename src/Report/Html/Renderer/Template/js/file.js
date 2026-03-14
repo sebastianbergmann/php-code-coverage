@@ -17,37 +17,52 @@ $(function () {
     }
   });
 
-  var $popovers = $('.popin > :first-child');
-  $('.popin').on({
+  var $linePopovers = $('tr.popin > :first-child');
+  var $spanPopovers = $('span.popin[data-bs-content]');
+  var $allPopovers = $linePopovers.add($spanPopovers);
+
+  function hideAllExcept($except) {
+    $allPopovers.each(function () {
+      var $current = $(this);
+      if (!$except || !$current.is($except)) {
+        $current.popover('hide');
+      }
+    });
+  }
+
+  $('tr.popin').on({
     'click.popover': function (event) {
       event.stopPropagation();
 
       var $container = $(this).children().first();
 
-      //Close all other popovers:
-      $popovers.each(function () {
-        var $current = $(this);
-        if (!$current.is($container)) {
-          $current.popover('hide');
-        }
-      });
-
-      // Toggle this popover:
+      hideAllExcept($container);
       $container.popover('toggle');
+    },
+  });
+
+  $spanPopovers.on({
+    'click.popover': function (event) {
+      event.stopPropagation();
+
+      var $span = $(this);
+
+      hideAllExcept($span);
+      $span.popover('toggle');
     },
   });
 
   //Hide all popovers on outside click:
   $(document).click(function (event) {
     if ($(event.target).closest($('.popover')).length === 0) {
-      $popovers.popover('hide');
+      hideAllExcept(null);
     }
   });
 
   //Hide all popovers on escape:
   $(document).keyup(function (event) {
     if (event.key === 'Escape') {
-      $popovers.popover('hide');
+      hideAllExcept(null);
     }
   });
 });

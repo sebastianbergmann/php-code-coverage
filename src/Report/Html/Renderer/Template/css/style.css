@@ -228,6 +228,19 @@ table#code tr {
   flex-wrap: nowrap;
 }
 
+.structure-table {
+ width: auto;
+}
+
+.structure-table td, .structure-table th {
+ white-space: nowrap;
+}
+
+.structure-table .popin {
+ cursor: pointer;
+ text-decoration: underline dotted;
+}
+
 table#code td:first-of-type {
   flex: 0 0 auto;
   width: auto;

@@ -93,10 +93,12 @@ use function count;
 use function explode;
 use function file_get_contents;
 use function htmlspecialchars;
+use function implode;
 use function is_string;
 use function ksort;
+use function max;
+use function min;
 use function range;
-use function sort;
 use function sprintf;
 use function str_ends_with;
 use function str_replace;
@@ -810,99 +812,75 @@ final class File extends Renderer
 
         $coverageData = $node->functionCoverageData();
         $testData     = $node->testData();
-        $codeLines    = $this->loadFile($node->pathAsString());
         $branches     = '';
 
         ksort($coverageData);
 
         /** @var ProcessedFunctionCoverageData $methodData */
         foreach ($coverageData as $methodName => $methodData) {
-            $branchStructure = '';
+            if ($methodData->branches === []) {
+                continue;
+            }
+
+            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $branches .= '<table class="table table-bordered table-sm structure-table">' . "\n";
+            $branches .= '<thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
+            $branches .= '<tbody>' . "\n";
+
+            $branchIndex = 1;
 
             /** @var ProcessedBranchCoverageData $branch */
             foreach ($methodData->branches as $branch) {
-                $branchStructure .= $this->renderBranchLines($branch, $codeLines, $testData);
+                $lineStart  = min($branch->line_start, $branch->line_end);
+                $lineEnd    = max($branch->line_start, $branch->line_end);
+                $linesLabel = $lineStart === $lineEnd
+                    ? sprintf('<a href="#%d">L%d</a>', $lineStart, $lineStart)
+                    : sprintf('<a href="#%d">L%d</a>&ndash;<a href="#%d">L%d</a>', $lineStart, $lineStart, $lineEnd, $lineEnd);
+
+                $numTests = count($branch->hit);
+
+                if ($numTests === 0) {
+                    $statusClass = 'danger';
+                    $statusLabel = 'Not covered';
+                    $testsLabel  = '&mdash;';
+                } else {
+                    $statusClass = 'success';
+                    $statusLabel = 'Covered';
+
+                    $popoverContent = '<ul>';
+
+                    foreach ($branch->hit as $test) {
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                    }
+
+                    $popoverContent .= '</ul>';
+
+                    $testsLabel = sprintf(
+                        '<span class="popin" data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true">%s</span>',
+                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
+                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                    );
+                }
+
+                $branches .= sprintf(
+                    '<tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    $statusClass,
+                    $branchIndex,
+                    $linesLabel,
+                    $statusLabel,
+                    $testsLabel,
+                );
+
+                $branchIndex++;
             }
 
-            if ($branchStructure !== '') { // don't show empty branches
-                $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
-                $branches .= $branchStructure;
-            }
+            $branches .= '</tbody></table>' . "\n";
         }
 
         $branchesTemplate->setVar(['branches' => $branches]);
 
         return $branchesTemplate->render();
-    }
-
-    /**
-     * @param list<string> $codeLines
-     */
-    private function renderBranchLines(ProcessedBranchCoverageData $branch, array $codeLines, array $testData): string
-    {
-        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
-
-        $lines = '';
-
-        $branchLines = range($branch->line_start, $branch->line_end);
-        sort($branchLines); // sometimes end_line < start_line
-
-        /** @var int $line */
-        foreach ($branchLines as $line) {
-            if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
-                continue;
-            }
-
-            $popoverContent = '';
-            $popoverTitle   = '';
-
-            $numTests = count($branch->hit);
-
-            if ($numTests === 0) {
-                $trClass = 'danger';
-            } else {
-                $lineCss        = 'covered-by-large-tests';
-                $popoverContent = '<ul>';
-
-                if ($numTests > 1) {
-                    $popoverTitle = $numTests . ' tests cover this branch';
-                } else {
-                    $popoverTitle = '1 test covers this branch';
-                }
-
-                foreach ($branch->hit as $test) {
-                    if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
-                        $lineCss = 'covered-by-medium-tests';
-                    } elseif ($testData[$test]['size'] === 'small') {
-                        $lineCss = 'covered-by-small-tests';
-                    }
-
-                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
-                }
-                $trClass = $lineCss . ' popin';
-            }
-
-            $popover = '';
-
-            if ($popoverTitle !== '') {
-                $popover = sprintf(
-                    ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                    $popoverTitle,
-                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                );
-            }
-
-            $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
-        }
-
-        if ($lines === '') {
-            return '';
-        }
-
-        $linesTemplate->setVar(['lines' => $lines]);
-
-        return $linesTemplate->render();
     }
 
     private function renderPathStructure(FileNode $node): string
@@ -911,115 +889,86 @@ final class File extends Renderer
 
         $coverageData = $node->functionCoverageData();
         $testData     = $node->testData();
-        $codeLines    = $this->loadFile($node->pathAsString());
         $paths        = '';
 
         ksort($coverageData);
 
         /** @var ProcessedFunctionCoverageData $methodData */
         foreach ($coverageData as $methodName => $methodData) {
-            $pathStructure = '';
+            if ($methodData->paths === []) {
+                continue;
+            }
 
             if (count($methodData->paths) > 100) {
-                $pathStructure .= '<p>' . count($methodData->paths) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
+                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+                $paths .= '<p>' . count($methodData->paths) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
 
                 continue;
             }
 
+            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $paths .= '<table class="table table-bordered table-sm structure-table">' . "\n";
+            $paths .= '<thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
+            $paths .= '<tbody>' . "\n";
+
+            $pathIndex = 1;
+
             foreach ($methodData->paths as $path) {
-                $pathStructure .= $this->renderPathLines($path, $methodData->branches, $codeLines, $testData);
+                $branchLabels = [];
+
+                foreach ($path->path as $branchId) {
+                    $branch     = $methodData->branches[$branchId];
+                    $branchLine = min($branch->line_start, $branch->line_end);
+
+                    $branchLabels[] = sprintf('<a href="#%d">L%d</a>', $branchLine, $branchLine);
+                }
+
+                $branchesLabel = implode(' &rarr; ', $branchLabels);
+
+                $numTests = count($path->hit);
+
+                if ($numTests === 0) {
+                    $statusClass = 'danger';
+                    $statusLabel = 'Not covered';
+                    $testsLabel  = '&mdash;';
+                } else {
+                    $statusClass = 'success';
+                    $statusLabel = 'Covered';
+
+                    $popoverContent = '<ul>';
+
+                    foreach ($path->hit as $test) {
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                    }
+
+                    $popoverContent .= '</ul>';
+
+                    $testsLabel = sprintf(
+                        '<span class="popin" data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true">%s</span>',
+                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
+                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                    );
+                }
+
+                $paths .= sprintf(
+                    '<tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    $statusClass,
+                    $pathIndex,
+                    $branchesLabel,
+                    $statusLabel,
+                    $testsLabel,
+                );
+
+                $pathIndex++;
             }
 
-            if ($pathStructure !== '') {
-                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
-                $paths .= $pathStructure;
-            }
+            $paths .= '</tbody></table>' . "\n";
         }
 
         $pathsTemplate->setVar(['paths' => $paths]);
 
         return $pathsTemplate->render();
-    }
-
-    /**
-     * @param array<int, ProcessedBranchCoverageData> $branches
-     * @param list<string>                            $codeLines
-     */
-    private function renderPathLines(ProcessedPathCoverageData $path, array $branches, array $codeLines, array $testData): string
-    {
-        $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
-
-        $lines = '';
-        $first = true;
-
-        foreach ($path->path as $branchId) {
-            if ($first) {
-                $first = false;
-            } else {
-                $lines .= '    <tr><td colspan="2">&nbsp;</td></tr>' . "\n";
-            }
-
-            $branchLines = range($branches[$branchId]->line_start, $branches[$branchId]->line_end);
-            sort($branchLines); // sometimes end_line < start_line
-
-            /** @var int $line */
-            foreach ($branchLines as $line) {
-                if (!isset($codeLines[$line])) { // blank line at end of file is sometimes included here
-                    continue;
-                }
-
-                $popoverContent = '';
-                $popoverTitle   = '';
-
-                $numTests = count($path->hit);
-
-                if ($numTests === 0) {
-                    $trClass = 'danger';
-                } else {
-                    $lineCss        = 'covered-by-large-tests';
-                    $popoverContent = '<ul>';
-
-                    if ($numTests > 1) {
-                        $popoverTitle = $numTests . ' tests cover this path';
-                    } else {
-                        $popoverTitle = '1 test covers this path';
-                    }
-
-                    foreach ($path->hit as $test) {
-                        if ($lineCss === 'covered-by-large-tests' && $testData[$test]['size'] === 'medium') {
-                            $lineCss = 'covered-by-medium-tests';
-                        } elseif ($testData[$test]['size'] === 'small') {
-                            $lineCss = 'covered-by-small-tests';
-                        }
-
-                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
-                    }
-
-                    $trClass = $lineCss . ' popin';
-                }
-
-                $popover = '';
-
-                if ($popoverTitle !== '') {
-                    $popover = sprintf(
-                        ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                        $popoverTitle,
-                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                    );
-                }
-
-                $lines .= $this->renderLine($singleLineTemplate, $line, $codeLines[$line - 1], $trClass, $popover);
-            }
-        }
-
-        if ($lines === '') {
-            return '';
-        }
-
-        $linesTemplate->setVar(['lines' => $lines]);
-
-        return $linesTemplate->render();
     }
 
     private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string

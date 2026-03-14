@@ -224,6 +224,19 @@ table + .structure-heading {
  padding-top: 0.5em;
 }
 
+.structure-table {
+ width: auto;
+}
+
+.structure-table td, .structure-table th {
+ white-space: nowrap;
+}
+
+.structure-table .popin {
+ cursor: pointer;
+ text-decoration: underline dotted;
+}
+
 table#code td:first-of-type {
   padding-left: .75em;
   padding-right: .75em;

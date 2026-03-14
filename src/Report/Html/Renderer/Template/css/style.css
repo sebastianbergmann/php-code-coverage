@@ -185,6 +185,16 @@ td.col-0 {
  display: none;
 }
 
+.branch-hit {
+ color: var(--phpunit-success-bar);
+ font-weight: bold;
+}
+
+.branch-miss {
+ color: var(--phpunit-danger-bar);
+ font-weight: bold;
+}
+
 td span.comment {
  color: var(--bs-secondary-color);
 }

@@ -636,8 +636,8 @@ final class File extends Renderer
         $testData             = $node->testData();
         $codeLines            = $this->loadFile($node->pathAsString());
 
-        $lineData        = [];
-        $branchStartData = [];
+        $lineData          = [];
+        $decisionPointData = [];
 
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
@@ -650,18 +650,22 @@ final class File extends Renderer
         /** @var ProcessedFunctionCoverageData $method */
         foreach ($functionCoverageData as $method) {
             /** @var ProcessedBranchCoverageData $branch */
-            foreach ($method->branches as $branch) {
-                $startLine = min($branch->line_start, $branch->line_end);
+            foreach ($method->branches as $branchId => $branch) {
+                if (count($branch->out) > 1) {
+                    $decisionLine = max($branch->line_start, $branch->line_end);
 
-                if (isset($lineData[$startLine])) {
-                    if (!isset($branchStartData[$startLine])) {
-                        $branchStartData[$startLine] = ['total' => 0, 'hit' => 0];
-                    }
+                    if (isset($lineData[$decisionLine]) && !isset($decisionPointData[$decisionLine])) {
+                        $targets = [];
 
-                    $branchStartData[$startLine]['total']++;
+                        foreach ($branch->out as $targetBranchId) {
+                            if (isset($method->branches[$targetBranchId])) {
+                                $targets[] = $method->branches[$targetBranchId]->hit !== [];
+                            }
+                        }
 
-                    if ($branch->hit !== []) {
-                        $branchStartData[$startLine]['hit']++;
+                        if (count($targets) > 1) {
+                            $decisionPointData[$decisionLine] = $targets;
+                        }
                     }
                 }
 
@@ -700,8 +704,16 @@ final class File extends Renderer
                     $lineCss = 'warning';
                 }
 
-                if (isset($branchStartData[$i]) && $branchStartData[$i]['total'] > 1) {
-                    $coverageCount = $branchStartData[$i]['hit'] . '/' . $branchStartData[$i]['total'];
+                if (isset($decisionPointData[$i])) {
+                    $markers = '';
+
+                    foreach ($decisionPointData[$i] as $isHit) {
+                        $markers .= $isHit
+                            ? '<span class="branch-hit">&bull;</span>'
+                            : '<span class="branch-miss">&bull;</span>';
+                    }
+
+                    $coverageCount = $markers;
                 }
 
                 $popoverContent = '<ul>';
@@ -846,7 +858,23 @@ final class File extends Renderer
                 continue;
             }
 
-            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $branchCount    = count($methodData->branches);
+            $hitBranchCount = 0;
+
+            foreach ($methodData->branches as $branch) {
+                if ($branch->hit !== []) {
+                    $hitBranchCount++;
+                }
+            }
+
+            $badge = sprintf(
+                ' <span class="%s">%d/%d</span>',
+                $hitBranchCount === $branchCount ? 'success' : ($hitBranchCount === 0 ? 'danger' : 'warning'),
+                $hitBranchCount,
+                $branchCount,
+            );
+
+            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h5>' . "\n";
             $branches .= '<table class="table table-bordered table-sm structure-table">' . "\n";
             $branches .= '<thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
             $branches .= '<tbody>' . "\n";
@@ -923,14 +951,28 @@ final class File extends Renderer
                 continue;
             }
 
-            if (count($methodData->paths) > 100) {
-                $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
-                $paths .= '<p>' . count($methodData->paths) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
+            $pathCount    = count($methodData->paths);
+            $hitPathCount = 0;
 
-                continue;
+            foreach ($methodData->paths as $path) {
+                if ($path->hit !== []) {
+                    $hitPathCount++;
+                }
             }
 
-            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a></h5>' . "\n";
+            $badge = sprintf(
+                ' <span class="%s">%d/%d</span>',
+                $hitPathCount === $pathCount ? 'success' : ($hitPathCount === 0 ? 'danger' : 'warning'),
+                $hitPathCount,
+                $pathCount,
+            );
+
+            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h5>' . "\n";
+
+            if ($pathCount > 100) {
+                $paths .= '<details><summary>' . $pathCount . ' paths &mdash; click to expand</summary>' . "\n";
+            }
+
             $paths .= '<table class="table table-bordered table-sm structure-table">' . "\n";
             $paths .= '<thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
             $paths .= '<tbody>' . "\n";
@@ -988,6 +1030,10 @@ final class File extends Renderer
             }
 
             $paths .= '</tbody></table>' . "\n";
+
+            if ($pathCount > 100) {
+                $paths .= '</details>' . "\n";
+            }
         }
 
         $pathsTemplate->setVar(['paths' => $paths]);

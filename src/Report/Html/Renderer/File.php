@@ -517,7 +517,8 @@ final class File extends Renderer
         $testData             = $node->testData();
         $codeLines            = $this->highlightedSourceFor($node);
 
-        $lineData = [];
+        $lineData        = [];
+        $branchStartData = [];
 
         foreach (array_keys($codeLines) as $line) {
             $lineData[$line + 1] = [
@@ -531,6 +532,20 @@ final class File extends Renderer
         foreach ($functionCoverageData as $method) {
             /** @var ProcessedBranchCoverageData $branch */
             foreach ($method->branches as $branch) {
+                $startLine = min($branch->line_start, $branch->line_end);
+
+                if (isset($lineData[$startLine])) {
+                    if (!isset($branchStartData[$startLine])) {
+                        $branchStartData[$startLine] = ['total' => 0, 'hit' => 0];
+                    }
+
+                    $branchStartData[$startLine]['total']++;
+
+                    if ($branch->hit !== []) {
+                        $branchStartData[$startLine]['hit']++;
+                    }
+                }
+
                 foreach (range($branch->line_start, $branch->line_end) as $line) {
                     if (!isset($lineData[$line])) { // blank line at end of file is sometimes included here
                         continue;
@@ -554,6 +569,9 @@ final class File extends Renderer
             $trClass = '';
             $popover = '';
 
+            $coverageCount      = '';
+            $coverageCountClass = 'coverage-count';
+
             $currentLineData = $lineData[$i] ?? [
                 'includedInBranches'    => 0,
                 'includedInHitBranches' => 0,
@@ -567,6 +585,10 @@ final class File extends Renderer
                     $lineCss = 'danger';
                 } elseif ($currentLineData['includedInHitBranches'] !== $currentLineData['includedInBranches']) {
                     $lineCss = 'warning';
+                }
+
+                if (isset($branchStartData[$i]) && $branchStartData[$i]['total'] > 1) {
+                    $coverageCount = $branchStartData[$i]['hit'] . '/' . $branchStartData[$i]['total'];
                 }
 
                 $popoverContent = '<ul>';
@@ -598,7 +620,7 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, $coverageCount, $coverageCountClass);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);
@@ -659,6 +681,9 @@ final class File extends Renderer
             $trClass = '';
             $popover = '';
 
+            $coverageCount      = '';
+            $coverageCountClass = 'coverage-count';
+
             $currentLineData = $lineData[$i] ?? [
                 'includedInPaths'    => [],
                 'includedInHitPaths' => [],
@@ -706,7 +731,7 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, $coverageCount, $coverageCountClass);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);
@@ -879,14 +904,16 @@ final class File extends Renderer
         return $pathsTemplate->render();
     }
 
-    private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
+    private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $coverageCount = '', string $coverageCountClass = 'col-0'): string
     {
         $template->setVar(
             [
-                'lineNumber'  => (string) $lineNumber,
-                'lineContent' => $lineContent,
-                'class'       => $class,
-                'popover'     => $popover,
+                'lineNumber'         => (string) $lineNumber,
+                'lineContent'        => $lineContent,
+                'class'              => $class,
+                'popover'            => $popover,
+                'coverageCount'      => $coverageCount,
+                'coverageCountClass' => $coverageCountClass,
             ],
         );
 

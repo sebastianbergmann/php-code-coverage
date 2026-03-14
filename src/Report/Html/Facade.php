@@ -10,12 +10,19 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const DIRECTORY_SEPARATOR;
+use function array_key_exists;
 use function copy;
 use function date;
 use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Builder;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\NamespaceNode;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Class_ as ClassRenderer;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Dashboard as ClassDashboard;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Namespace_ as NamespaceRenderer;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Exception;
@@ -49,29 +56,26 @@ final readonly class Facade
         $date              = date('D M j G:i:s T Y');
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
 
-        $dashboard = new Dashboard(
-            $this->templatePath,
-            $this->generator,
-            $date,
-            $this->thresholds,
-            $hasBranchCoverage,
-        );
+        $builder        = new Builder;
+        $rootNamespace  = $builder->build($report);
+        $fileToClassMap = $this->buildFileToClassMap($rootNamespace);
 
-        $directory = new Directory(
-            $this->templatePath,
-            $this->generator,
-            $date,
-            $this->thresholds,
-            $hasBranchCoverage,
-        );
+        $this->renderFileView($report, $target, $date, $hasBranchCoverage, $fileToClassMap);
+        $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage);
+        $this->copyFiles($target);
+        $this->renderCss($target);
+    }
 
-        $file = new File(
-            $this->templatePath,
-            $this->generator,
-            $date,
-            $this->thresholds,
-            $hasBranchCoverage,
-        );
+    /**
+     * @param array<string, string> $fileToClassMap
+     */
+    private function renderFileView(DirectoryNode $report, string $target, string $date, bool $hasBranchCoverage, array $fileToClassMap): void
+    {
+        $dashboard = new Dashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+        $directory = new Directory($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+        $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+
+        $file->setFileToClassMap($fileToClassMap);
 
         $directory->render($report, $target . 'index.html');
         $dashboard->render($report, $target . 'dashboard.html');
@@ -92,9 +96,72 @@ final readonly class Facade
                 $file->render($node, $target . $id);
             }
         }
+    }
 
-        $this->copyFiles($target);
-        $this->renderCss($target);
+    private function renderClassView(NamespaceNode $rootNamespace, string $target, string $date, bool $hasBranchCoverage): void
+    {
+        $classTarget = $this->directory($target . '_classes');
+
+        $namespaceRenderer = new NamespaceRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+        $classRenderer     = new ClassRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+        $dashboard         = new ClassDashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage);
+
+        $namespaceRenderer->render($rootNamespace, $classTarget . 'index.html');
+        $dashboard->render($rootNamespace, $classTarget . 'dashboard.html');
+
+        foreach ($rootNamespace->iterate() as $node) {
+            if ($node instanceof NamespaceNode) {
+                $id = $node->id();
+
+                Filesystem::createDirectory($classTarget . $id);
+
+                $namespaceRenderer->render($node, $classTarget . $id . '/index.html');
+                $dashboard->render($node, $classTarget . $id . '/dashboard.html');
+            } elseif ($node instanceof ClassNode) {
+                $nsId = $node->parent()->id();
+
+                if ($nsId === 'index') {
+                    $dir = $classTarget;
+                } else {
+                    $dir = $classTarget . $nsId . '/';
+                    Filesystem::createDirectory($dir);
+                }
+
+                $classRenderer->render($node, $dir . $node->shortName() . '.html');
+            }
+        }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function buildFileToClassMap(NamespaceNode $rootNamespace): array
+    {
+        $map = [];
+
+        foreach ($rootNamespace->iterate() as $node) {
+            if (!$node instanceof ClassNode) {
+                continue;
+            }
+
+            $fileId = $node->fileNode()->id();
+
+            if (array_key_exists($fileId, $map)) {
+                continue;
+            }
+
+            $nsId = $node->parent()->id();
+
+            if ($nsId === 'index') {
+                $classPagePath = '_classes/' . $node->shortName() . '.html';
+            } else {
+                $classPagePath = '_classes/' . $nsId . '/' . $node->shortName() . '.html';
+            }
+
+            $map[$fileId] = $classPagePath;
+        }
+
+        return $map;
     }
 
     private function copyFiles(string $target): void

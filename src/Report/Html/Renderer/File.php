@@ -220,6 +220,12 @@ final class File extends Renderer
             ],
         );
 
+        if ($this->hasBranchCoverage) {
+            $template->setVar(
+                ['tabs' => $this->renderViewTabs($node->name(), 'line')],
+            );
+        }
+
         try {
             $template->renderTo($file . '.html');
         } catch (Exception $e) {
@@ -233,6 +239,7 @@ final class File extends Renderer
         if ($this->hasBranchCoverage) {
             $template->setVar(
                 [
+                    'tabs'      => $this->renderViewTabs($node->name(), 'branch'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithBranchCoverage($node),
                     'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
@@ -252,6 +259,7 @@ final class File extends Renderer
 
             $template->setVar(
                 [
+                    'tabs'      => $this->renderViewTabs($node->name(), 'path'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithPathCoverage($node),
                     'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
@@ -589,6 +597,34 @@ final class File extends Renderer
         $linesTemplate->setVar(['lines' => $lines]);
 
         return $linesTemplate->render();
+    }
+
+    private function renderViewTabs(string $fileName, string $activeView): string
+    {
+        $tabs = [
+            'line'   => ['href' => $fileName . '.html', 'label' => 'Line Coverage'],
+            'branch' => ['href' => $fileName . '_branch.html', 'label' => 'Branch Coverage'],
+            'path'   => ['href' => $fileName . '_path.html', 'label' => 'Path Coverage'],
+        ];
+
+        $html = '   <ul class="nav nav-tabs mb-3">' . "\n";
+
+        foreach ($tabs as $view => $tab) {
+            $active = $view === $activeView ? ' active' : '';
+            $aria   = $view === $activeView ? ' aria-current="page"' : '';
+
+            $html .= sprintf(
+                '    <li class="nav-item"><a class="nav-link%s" href="%s"%s>%s</a></li>' . "\n",
+                $active,
+                $tab['href'],
+                $aria,
+                $tab['label'],
+            );
+        }
+
+        $html .= '   </ul>';
+
+        return $html;
     }
 
     private function renderSourceWithBranchCoverage(FileNode $node): string

@@ -24,6 +24,7 @@
    </div>
   </header>
   <div class="container-fluid">
+{{tabs}}
    <div class="table-responsive">
     <table class="table table-bordered">
      <thead>

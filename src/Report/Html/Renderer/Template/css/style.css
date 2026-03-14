@@ -171,6 +171,30 @@ td.codeLine {
  white-space: pre-wrap;
 }
 
+td.coverage-count {
+ font-family: var(--bs-font-monospace);
+ font-size: 0.75em;
+ text-align: center;
+ vertical-align: middle;
+ white-space: nowrap;
+ width: 3.5em;
+ flex: 0 0 3.5em;
+}
+
+td.col-0 {
+ display: none;
+}
+
+.branch-hit {
+ color: var(--phpunit-success-bar);
+ font-weight: bold;
+}
+
+.branch-miss {
+ color: var(--phpunit-danger-bar);
+ font-weight: bold;
+}
+
 td span.comment {
  color: var(--bs-secondary-color);
 }
@@ -222,6 +246,19 @@ svg text {
 table + .structure-heading {
  border-top: 1px solid var(--bs-gray-200);
  padding-top: 0.5em;
+}
+
+.structure-table {
+ width: auto;
+}
+
+.structure-table td, .structure-table th {
+ white-space: nowrap;
+}
+
+.structure-table .popin {
+ cursor: pointer;
+ text-decoration: underline dotted;
 }
 
 table#code td:first-of-type {

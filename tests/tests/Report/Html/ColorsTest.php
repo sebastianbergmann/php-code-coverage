@@ -21,22 +21,22 @@ final class ColorsTest extends TestCase
     {
         $colors = Colors::default();
 
-        $this->assertSame('#dff0d8', $colors->successLow());
-        $this->assertSame('#2d4431', $colors->successLowDark());
-        $this->assertSame('#c3e3b5', $colors->successMedium());
-        $this->assertSame('#3c6051', $colors->successMediumDark());
-        $this->assertSame('#99cb84', $colors->successHigh());
-        $this->assertSame('#3d5c4e', $colors->successHighDark());
-        $this->assertSame('#28a745', $colors->successBar());
-        $this->assertSame('#1f8135', $colors->successBarDark());
-        $this->assertSame('#fcf8e3', $colors->warning());
-        $this->assertSame('#3e3408', $colors->warningDark());
-        $this->assertSame('#ffc107', $colors->warningBar());
-        $this->assertSame('#c19406', $colors->warningBarDark());
-        $this->assertSame('#f2dede', $colors->danger());
-        $this->assertSame('#42221e', $colors->dangerDark());
-        $this->assertSame('#dc3545', $colors->dangerBar());
-        $this->assertSame('#a62633', $colors->dangerBarDark());
+        $this->assertSame('#d6e6f2', $colors->successLow());
+        $this->assertSame('#1e3550', $colors->successLowDark());
+        $this->assertSame('#b3d1e8', $colors->successMedium());
+        $this->assertSame('#2d4f6e', $colors->successMediumDark());
+        $this->assertSame('#8cb4d5', $colors->successHigh());
+        $this->assertSame('#2a4a6b', $colors->successHighDark());
+        $this->assertSame('#1a73b4', $colors->successBar());
+        $this->assertSame('#1560a0', $colors->successBarDark());
+        $this->assertSame('#fdf0d5', $colors->warning());
+        $this->assertSame('#3d3010', $colors->warningDark());
+        $this->assertSame('#e5a100', $colors->warningBar());
+        $this->assertSame('#b88a00', $colors->warningBarDark());
+        $this->assertSame('#fad4c0', $colors->danger());
+        $this->assertSame('#4a2a10', $colors->dangerDark());
+        $this->assertSame('#d45500', $colors->dangerBar());
+        $this->assertSame('#b54400', $colors->dangerBarDark());
         $this->assertSame('var(--bs-gray-200)', $colors->breadcrumbs());
         $this->assertSame('var(--bs-gray-800)', $colors->breadcrumbsDark());
     }

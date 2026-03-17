@@ -4,15 +4,15 @@
     color-scheme: light dark;
 
     /* PHPUnit light/dark colors */
-    --phpunit-breadcrumbs: light-dark(var(--bs-gray-200), var(--bs-gray-800));
-    --phpunit-success-bar: light-dark(#28a745 ,#1f8135);
-    --phpunit-success-high: light-dark(#99cb84, #3d5c4e);
-    --phpunit-success-medium: light-dark(#c3e3b5,#3c6051);
-    --phpunit-success-low: light-dark(#dff0d8, #2d4431);
-    --phpunit-warning: light-dark(#fcf8e3, #3e3408);
-    --phpunit-warning-bar: light-dark(#ffc107 ,#c19406);
-    --phpunit-danger: light-dark(#f2dede, #42221e);
-    --phpunit-danger-bar: light-dark(#dc3545, #a62633);
+    --phpunit-breadcrumbs: light-dark({{breadcrumbs}}, {{breadcrumbs-dark}});
+    --phpunit-success-bar: light-dark({{success-bar}}, {{success-bar-dark}});
+    --phpunit-success-high: light-dark({{success-high}}, {{success-high-dark}});
+    --phpunit-success-medium: light-dark({{success-medium}}, {{success-medium-dark}});
+    --phpunit-success-low: light-dark({{success-low}}, {{success-low-dark}});
+    --phpunit-warning: light-dark({{warning}}, {{warning-dark}});
+    --phpunit-warning-bar: light-dark({{warning-bar}}, {{warning-bar-dark}});
+    --phpunit-danger: light-dark({{danger}}, {{danger-dark}});
+    --phpunit-danger-bar: light-dark({{danger-bar}}, {{danger-bar-dark}});
 
     /* Bootstrap v5.3 default colors (light, dark) */
     --bs-body-bg-rgb: 255, 255, 255;

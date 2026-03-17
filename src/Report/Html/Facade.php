@@ -123,11 +123,24 @@ final readonly class Facade
 
         $template->setVar(
             [
-                'success-low'    => $this->colors->successLow(),
-                'success-medium' => $this->colors->successMedium(),
-                'success-high'   => $this->colors->successHigh(),
-                'warning'        => $this->colors->warning(),
-                'danger'         => $this->colors->danger(),
+                'breadcrumbs'         => $this->colors->breadcrumbs(),
+                'breadcrumbs-dark'    => $this->colors->breadcrumbsDark(),
+                'success-bar'         => $this->colors->successBar(),
+                'success-bar-dark'    => $this->colors->successBarDark(),
+                'success-high'        => $this->colors->successHigh(),
+                'success-high-dark'   => $this->colors->successHighDark(),
+                'success-medium'      => $this->colors->successMedium(),
+                'success-medium-dark' => $this->colors->successMediumDark(),
+                'success-low'         => $this->colors->successLow(),
+                'success-low-dark'    => $this->colors->successLowDark(),
+                'warning'             => $this->colors->warning(),
+                'warning-dark'        => $this->colors->warningDark(),
+                'warning-bar'         => $this->colors->warningBar(),
+                'warning-bar-dark'    => $this->colors->warningBarDark(),
+                'danger'              => $this->colors->danger(),
+                'danger-dark'         => $this->colors->dangerDark(),
+                'danger-bar'          => $this->colors->dangerBar(),
+                'danger-bar-dark'     => $this->colors->dangerBarDark(),
             ],
         );
 

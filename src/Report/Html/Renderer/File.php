@@ -95,6 +95,7 @@ use function file_get_contents;
 use function htmlspecialchars;
 use function implode;
 use function is_string;
+use function json_encode;
 use function ksort;
 use function max;
 use function min;
@@ -113,6 +114,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -205,7 +207,16 @@ final class File extends Renderer
     /**
      * @var array<non-empty-string, list<string>>
      */
-    private static array $formattedSourceCache = [];
+    private static array $formattedSourceCache  = [];
+    private ?ControlFlowGraph $controlFlowGraph = null;
+    private readonly Colors $colors;
+
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, Colors $colors)
+    {
+        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage);
+
+        $this->colors = $colors;
+    }
 
     public function render(FileNode $node, string $file): void
     {
@@ -1020,8 +1031,9 @@ final class File extends Renderer
                 }
 
                 $paths .= sprintf(
-                    '<tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    '<tr class="%s path-row" data-path-index="%d"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
                     $statusClass,
+                    $pathIndex - 1,
                     $pathIndex,
                     $branchesLabel,
                     $statusLabel,
@@ -1033,6 +1045,39 @@ final class File extends Renderer
 
             $paths .= '</tbody></table>' . "\n";
 
+            $pathsJson = [];
+            $pathIdx   = 0;
+
+            foreach ($methodData->paths as $path) {
+                $edges     = [];
+                $branchIds = $path->path;
+
+                for ($i = 0; $i < count($branchIds) - 1; $i++) {
+                    $edges[] = $branchIds[$i] . '-' . $branchIds[$i + 1];
+                }
+
+                $lastBranchId = $branchIds[count($branchIds) - 1];
+
+                if (isset($methodData->branches[$lastBranchId])) {
+                    foreach ($methodData->branches[$lastBranchId]->out as $dest) {
+                        if ($dest === ControlFlowGraph::XDEBUG_EXIT_BRANCH) {
+                            $edges[] = $lastBranchId . '-exit';
+                        }
+                    }
+                }
+
+                $pathsJson[$pathIdx] = $edges;
+                $pathIdx++;
+            }
+
+            $svg = $this->controlFlowGraph()->renderSvg($methodData, $methodData->paths);
+
+            $paths .= sprintf(
+                '<div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
+                htmlspecialchars(json_encode($pathsJson), self::HTML_SPECIAL_CHARS_FLAGS),
+                $svg,
+            );
+
             if ($pathCount > 100) {
                 $paths .= '</details>' . "\n";
             }
@@ -1041,6 +1086,15 @@ final class File extends Renderer
         $pathsTemplate->setVar(['paths' => $paths]);
 
         return $pathsTemplate->render();
+    }
+
+    private function controlFlowGraph(): ControlFlowGraph
+    {
+        if ($this->controlFlowGraph === null) {
+            $this->controlFlowGraph = new ControlFlowGraph($this->colors);
+        }
+
+        return $this->controlFlowGraph;
     }
 
     private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $coverageCount = '', string $coverageCountClass = 'col-0'): string

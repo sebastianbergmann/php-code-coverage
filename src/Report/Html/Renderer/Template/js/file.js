@@ -65,4 +65,36 @@ $(function () {
       hideAllExcept(null);
     }
   });
+
+  // Path highlighting in control flow graphs
+  $(document).on('click', '.path-row', function () {
+    var $row = $(this);
+    var pathIndex = $row.data('path-index');
+    var $table = $row.closest('table');
+    var $graph = $table.nextAll('.cfg-graph').first();
+
+    if (!$graph.length) return;
+
+    var pathsData = $graph.data('paths');
+
+    // Reset all highlights
+    $graph.find('.edge, .node').removeClass('highlighted');
+
+    // Toggle: if already selected, deselect
+    if ($row.hasClass('path-selected')) {
+      $('.path-row').removeClass('path-selected');
+      return;
+    }
+
+    $('.path-row').removeClass('path-selected');
+    $row.addClass('path-selected');
+
+    if (!pathsData || !pathsData[pathIndex]) return;
+
+    // Highlight edges for this path
+    var edges = pathsData[pathIndex];
+    for (var i = 0; i < edges.length; i++) {
+      $graph.find('#edge-' + edges[i]).addClass('highlighted');
+    }
+  });
 });

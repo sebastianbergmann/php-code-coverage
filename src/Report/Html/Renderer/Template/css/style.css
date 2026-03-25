@@ -309,3 +309,40 @@ table#code td:first-of-type a {
 .progress-bar.bg-danger {
  background-color: var(--phpunit-danger-bar) !important;
 }
+
+.cfg-graph {
+ margin: 1em 0;
+ padding: 0.5em;
+ border: 1px solid var(--bs-border-color);
+ border-radius: 4px;
+ overflow-x: auto;
+ background: var(--bs-body-bg);
+}
+
+.cfg-graph svg {
+ max-width: 100%;
+ height: auto;
+ display: block;
+}
+
+.cfg-graph .edge.highlighted path,
+.cfg-graph .edge.highlighted polygon {
+ stroke: var(--bs-link-color);
+ stroke-width: 3px;
+ fill: var(--bs-link-color);
+}
+
+.cfg-graph .node.highlighted polygon,
+.cfg-graph .node.highlighted ellipse {
+ stroke: var(--bs-link-color);
+ stroke-width: 3px;
+}
+
+.path-row {
+ cursor: pointer;
+}
+
+.path-row.path-selected {
+ outline: 2px solid var(--bs-link-color);
+ outline-offset: -2px;
+}

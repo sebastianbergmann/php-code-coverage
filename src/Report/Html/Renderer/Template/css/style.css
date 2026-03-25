@@ -171,6 +171,30 @@ td.codeLine {
  white-space: pre-wrap;
 }
 
+td.coverage-count {
+ font-family: var(--bs-font-monospace);
+ font-size: 0.75em;
+ text-align: center;
+ vertical-align: middle;
+ white-space: nowrap;
+ width: 3.5em;
+ flex: 0 0 3.5em;
+}
+
+td.col-0 {
+ display: none;
+}
+
+.branch-hit {
+ color: var(--phpunit-success-bar);
+ font-weight: bold;
+}
+
+.branch-miss {
+ color: var(--phpunit-danger-bar);
+ font-weight: bold;
+}
+
 td span.comment {
  color: var(--bs-secondary-color);
 }
@@ -224,6 +248,19 @@ table + .structure-heading {
  padding-top: 0.5em;
 }
 
+.structure-table {
+ width: auto;
+}
+
+.structure-table td, .structure-table th {
+ white-space: nowrap;
+}
+
+.structure-table .popin {
+ cursor: pointer;
+ text-decoration: underline dotted;
+}
+
 table#code td:first-of-type {
   padding-left: .75em;
   padding-right: .75em;
@@ -271,4 +308,41 @@ table#code td:first-of-type a {
 
 .progress-bar.bg-danger {
  background-color: var(--phpunit-danger-bar) !important;
+}
+
+.cfg-graph {
+ margin: 1em 0;
+ padding: 0.5em;
+ border: 1px solid var(--bs-border-color);
+ border-radius: 4px;
+ overflow-x: auto;
+ background: var(--bs-body-bg);
+}
+
+.cfg-graph svg {
+ max-width: 100%;
+ height: auto;
+ display: block;
+}
+
+.cfg-graph .edge.highlighted path,
+.cfg-graph .edge.highlighted polygon {
+ stroke: var(--bs-link-color);
+ stroke-width: 3px;
+ fill: var(--bs-link-color);
+}
+
+.cfg-graph .node.highlighted polygon,
+.cfg-graph .node.highlighted ellipse {
+ stroke: var(--bs-link-color);
+ stroke-width: 3px;
+}
+
+.path-row {
+ cursor: pointer;
+}
+
+.path-row.path-selected {
+ outline: 2px solid var(--bs-link-color);
+ outline-offset: -2px;
 }

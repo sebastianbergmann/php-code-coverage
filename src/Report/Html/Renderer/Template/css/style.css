@@ -272,3 +272,16 @@ table#code td:first-of-type a {
 .progress-bar.bg-danger {
  background-color: var(--phpunit-danger-bar) !important;
 }
+
+.file-coverage-chart {
+ width: 100%;
+ max-width: 900px;
+}
+
+.dashboard-row {
+ margin-top: 2rem;
+}
+
+.dashboard-column .scrollbox {
+ height: 400px;
+}

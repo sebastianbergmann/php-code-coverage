@@ -107,8 +107,14 @@ final class CachingSourceAnalyser implements SourceAnalyser
             return false;
         }
 
+        $data = file_get_contents($cacheFile);
+
+        if ($data === false) {
+            return false;
+        }
+
         return unserialize(
-            file_get_contents($cacheFile),
+            $data,
             [
                 'allowed_classes' => [
                     AnalysisResult::class,

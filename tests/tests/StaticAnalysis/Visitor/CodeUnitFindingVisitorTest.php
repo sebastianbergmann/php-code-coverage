@@ -255,6 +255,22 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertArrayHasKey('six', $methods);
     }
 
+    public function testHandlesEnumUsingTrait(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_enum_using_trait.php');
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(1, $classes);
+
+        $enum = $classes['SebastianBergmann\CodeCoverage\TestFixture\EnumWithTrait'];
+
+        $this->assertSame(
+            ['SebastianBergmann\CodeCoverage\TestFixture\EnumTrait'],
+            $enum->traits(),
+        );
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->createForHostVersion()->parse(

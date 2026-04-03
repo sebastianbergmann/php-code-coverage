@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [14.0.0] - 2026-MM-DD
+## [14.0.0] - 2026-04-03
 
 ### Added
 
@@ -28,4 +28,4 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Report\PHP` class was removed, use the new `SebastianBergmann\CodeCoverage\Serializer` class instead
 
-[14.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/13.0...main
+[14.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/13.0.2...14.0.0

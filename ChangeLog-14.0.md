@@ -8,6 +8,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The XML document of the code coverage report in Cobertura XML format no longer has the `<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">` line at the beginning. No document exists at this URL any more, referencing remote DTD URLs is problematic, and no common consumer of Cobertura XML relies on this line.
 
+### Fixed
+
+* [#1147](https://github.com/sebastianbergmann/php-code-coverage/pull/1147): `CoversClass` does not transitively target traits used by enumerations
+
 ## [14.0.0] - 2026-04-03
 
 ### Added

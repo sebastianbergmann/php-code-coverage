@@ -9,10 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
+use function realpath;
 use function sprintf;
 use function str_replace;
 use function trim;
@@ -83,9 +85,15 @@ final class CoberturaTest extends TestCase
     {
         $this->assertStringMatchesFormatFile($expectationFile, $coberturaXml);
 
+        $dtdPath = realpath(__DIR__ . '/../../_files/Report/Cobertura/coverage-04.dtd');
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $dtdPath = 'file:///' . str_replace('\\', '/', $dtdPath);
+        }
+
         $coberturaXml = str_replace(
             '<?xml version="1.0" encoding="UTF-8"?>',
-            '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<!DOCTYPE coverage SYSTEM "' . __DIR__ . '/../../_files/Report/Cobertura/coverage-04.dtd">',
+            '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<!DOCTYPE coverage SYSTEM "' . $dtdPath . '">',
             $coberturaXml,
         );
 

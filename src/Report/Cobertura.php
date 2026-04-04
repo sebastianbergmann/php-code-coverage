@@ -39,7 +39,7 @@ final class Cobertura
     {
         $time = (string) time();
 
-        $document             = new DOMDocument('1.0', 'UTF-8');
+        $document = new DOMDocument('1.0', 'UTF-8');
 
         $coverageElement = $document->createElement('coverage');
 

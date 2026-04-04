@@ -16,7 +16,7 @@ use function preg_match;
 use function range;
 use function str_replace;
 use function time;
-use DOMImplementation;
+use DOMDocument;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
@@ -39,17 +39,7 @@ final class Cobertura
     {
         $time = (string) time();
 
-        $implementation = new DOMImplementation;
-
-        $documentType = $implementation->createDocumentType(
-            'coverage',
-            '',
-            'http://cobertura.sourceforge.net/xml/coverage-04.dtd',
-        );
-
-        $document             = $implementation->createDocument('', '', $documentType);
-        $document->xmlVersion = '1.0';
-        $document->encoding   = 'UTF-8';
+        $document             = new DOMDocument('1.0', 'UTF-8');
 
         $coverageElement = $document->createElement('coverage');
 

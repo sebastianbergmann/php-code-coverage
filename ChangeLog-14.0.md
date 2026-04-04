@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.0.1] - 2026-MM-DD
+
+### Changed
+
+* The XML document of the code coverage report in Cobertura XML format no longer has the `<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">` line at the beginning. No document exists at this URL any more, referencing remote DTD URLs is problematic, and no common consumer of Cobertura XML relies on this line.
+
 ## [14.0.0] - 2026-04-03
 
 ### Added
@@ -28,4 +34,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * The `SebastianBergmann\CodeCoverage\Report\PHP` class was removed, use the new `SebastianBergmann\CodeCoverage\Serializer` class instead
 
+[14.0.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.0.0...main
 [14.0.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/13.0.2...14.0.0

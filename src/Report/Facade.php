@@ -141,6 +141,18 @@ final readonly class Facade
         );
     }
 
+    public function summary(): Summary
+    {
+        return new Summary(
+            $this->report->numberOfExecutableLines(),
+            $this->report->numberOfExecutedLines(),
+            $this->report->numberOfExecutableBranches(),
+            $this->report->numberOfExecutedBranches(),
+            $this->report->numberOfExecutablePaths(),
+            $this->report->numberOfExecutedPaths(),
+        );
+    }
+
     /**
      * @param ?non-empty-string $target
      */

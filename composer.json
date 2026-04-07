@@ -36,7 +36,7 @@
         "nikic/php-parser": "^5.7.0",
         "phpunit/php-text-template": "^6.0",
         "sebastian/complexity": "^6.0",
-        "sebastian/environment": "^9.1",
+        "sebastian/environment": "^9.2",
         "sebastian/git-state": "^1.0",
         "sebastian/lines-of-code": "^5.0",
         "sebastian/version": "^7.0",
@@ -61,7 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "14.0.x-dev"
+            "dev-main": "14.1.x-dev"
         }
     }
 }

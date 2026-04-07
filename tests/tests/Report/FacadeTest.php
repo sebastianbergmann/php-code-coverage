@@ -61,6 +61,33 @@ final class FacadeTest extends TestCase
         $this->assertStringContainsString('Summary:', $result);
     }
 
+    public function testSummaryReturnsLineCoverageSummary(): void
+    {
+        $facade  = Facade::fromObject($this->getLineCoverageForBankAccount());
+        $summary = $facade->summary();
+
+        $this->assertInstanceOf(Summary::class, $summary);
+        $this->assertSame(8, $summary->numberOfExecutableLines());
+        $this->assertSame(5, $summary->numberOfExecutedLines());
+        $this->assertEqualsWithDelta(62.50, $summary->lineCoverageAsPercentage(), 0.01);
+        $this->assertFalse($summary->hasBranchAndPathCoverage());
+    }
+
+    public function testSummaryReturnsPathCoverageSummary(): void
+    {
+        $facade  = Facade::fromObject($this->getPathCoverageForBankAccount());
+        $summary = $facade->summary();
+
+        $this->assertInstanceOf(Summary::class, $summary);
+        $this->assertSame(8, $summary->numberOfExecutableLines());
+        $this->assertSame(5, $summary->numberOfExecutedLines());
+        $this->assertTrue($summary->hasBranchAndPathCoverage());
+        $this->assertSame(7, $summary->numberOfExecutableBranches());
+        $this->assertSame(3, $summary->numberOfExecutedBranches());
+        $this->assertSame(5, $summary->numberOfExecutablePaths());
+        $this->assertSame(3, $summary->numberOfExecutedPaths());
+    }
+
     public function testRenderTextReturnsString(): void
     {
         $facade = Facade::fromObject($this->getLineCoverageForBankAccount());

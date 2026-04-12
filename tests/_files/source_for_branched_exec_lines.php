@@ -609,3 +609,18 @@ final class MyFinalClass extends MyAbstractClass
     {
     }                               // +1
 }
+
+#[\Attribute]
+class AttributeWithCtor
+{
+    public function __construct(array $myArray)
+    {}  // +2
+}
+
+#[AttributeWithCtor(myArray: [
+    'foo' => [
+        'bar' => 'baz',
+    ],
+])]
+class MyClassWithAttribute
+{}

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.1.1] - 2026-MM-DD
+
+### Fixed
+
+* [#1149](https://github.com/sebastianbergmann/php-code-coverage/pull/1149): Lines spanned by attributes are treated as executable
+
 ## [14.1.0] - 2026-04-12
 
 ### Added
@@ -16,4 +22,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1147](https://github.com/sebastianbergmann/php-code-coverage/pull/1147): `CoversClass` does not transitively target traits used by enumerations
 
+[14.1.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.0...main
 [14.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.0.0...14.1.0

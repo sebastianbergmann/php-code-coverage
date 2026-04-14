@@ -40,6 +40,26 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/phpunit/issues/6442')]
+    public function testAbstractMethodDeclarationsAreNotExecutable(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_abstract_method.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayNotHasKey(6, $executableLines);
+        $this->assertArrayNotHasKey(8, $executableLines);
+
+        $this->assertArrayHasKey(12, $executableLines);
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
     public function testMatchArmsAreProcessedCorrectly(): void
     {

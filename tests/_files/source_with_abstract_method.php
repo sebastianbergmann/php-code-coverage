@@ -5,7 +5,10 @@ abstract class ClassWithAbstractMethod
 {
     abstract public function abstractMethod(): void;
 
+    abstract protected function anotherAbstractMethod(): void;
+
     public function concreteMethod(): void
     {
+        echo 'x';
     }
 }

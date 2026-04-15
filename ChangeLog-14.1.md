@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [14.1.2] - 2026-MM-DD
+## [14.1.2] - 2026-04-15
 
 ### Fixed
 
@@ -28,6 +28,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1147](https://github.com/sebastianbergmann/php-code-coverage/pull/1147): `CoversClass` does not transitively target traits used by enumerations
 
-[14.1.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.1...main
+[14.1.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.1...14.1.2
 [14.1.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.0...14.1.1
 [14.1.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.0.0...14.1.0

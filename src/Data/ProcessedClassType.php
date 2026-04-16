@@ -35,12 +35,12 @@ final class ProcessedClassType
     public int|string $crap;
     public readonly string $link;
 
+    /**
+     * @param array<string, ProcessedMethodType> $methods
+     */
     public function __construct(
         string $className,
         string $namespace,
-        /**
-         * @var array<string, ProcessedMethodType>
-         */
         array $methods,
         int $startLine,
         int $executableLines,

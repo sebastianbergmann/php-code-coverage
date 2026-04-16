@@ -29,6 +29,9 @@ final readonly class Coverage
         $this->line      = $line;
     }
 
+    /**
+     * @param list<string> $tests
+     */
     public function finalize(array $tests): void
     {
         $writer = $this->xmlWriter;

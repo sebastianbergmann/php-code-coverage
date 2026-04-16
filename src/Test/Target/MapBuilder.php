@@ -25,6 +25,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 /**
  * @phpstan-import-type TargetMap from Mapper
  * @phpstan-import-type TargetMapPart from Mapper
+ * @phpstan-import-type ReverseLookup from Mapper
  *
  * @immutable
  *
@@ -169,6 +170,10 @@ final readonly class MapBuilder
         ];
     }
 
+    /**
+     * @param array<non-empty-string, list<positive-int>>                      $sourceData
+     * @param array<string, array<non-empty-string, array<int, positive-int>>> $data
+     */
     private function mergeLines(string $targetClass, array $sourceData, array &$data): void
     {
         /**
@@ -195,6 +200,13 @@ final readonly class MapBuilder
         }
     }
 
+    /**
+     * @param TargetMapPart $methods
+     * @param ReverseLookup $reverseLookup
+     *
+     * @param-out TargetMapPart $methods
+     * @param-out ReverseLookup $reverseLookup
+     */
     private function processMethods(Class_|Trait_ $classOrTrait, string $file, array &$methods, array &$reverseLookup): void
     {
         foreach ($classOrTrait->methods() as $method) {

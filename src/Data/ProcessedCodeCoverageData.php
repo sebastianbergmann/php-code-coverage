@@ -214,6 +214,8 @@ final class ProcessedCodeCoverageData
      *
      * During a merge, a higher number is better.
      *
+     * @param array<int, null|list<TestIdType>> $data
+     *
      * @return 1|2|3|4
      */
     private function priorityForLine(array $data, int $line): int

@@ -119,6 +119,8 @@ use SebastianBergmann\Template\Template;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
  */
 final class File extends Renderer
 {
@@ -800,7 +802,8 @@ final class File extends Renderer
     }
 
     /**
-     * @param list<string> $codeLines
+     * @param list<string>            $codeLines
+     * @param array<string, TestType> $testData
      */
     private function renderBranchLines(ProcessedBranchCoverageData $branch, array $codeLines, array $testData): string
     {
@@ -908,6 +911,7 @@ final class File extends Renderer
     /**
      * @param array<int, ProcessedBranchCoverageData> $branches
      * @param list<string>                            $codeLines
+     * @param array<string, TestType>                 $testData
      */
     private function renderPathLines(ProcessedPathCoverageData $path, array $branches, array $codeLines, array $testData): string
     {
@@ -1119,6 +1123,9 @@ final class File extends Renderer
         return $methodName;
     }
 
+    /**
+     * @param TestType $testData
+     */
     private function createPopoverContentForTest(string $test, array $testData): string
     {
         $testCSS = '';

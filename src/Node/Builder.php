@@ -73,6 +73,7 @@ final readonly class Builder
     }
 
     /**
+     * @param array<string, mixed>    $items
      * @param array<string, TestType> $tests
      */
     private function addItems(Directory $root, array $items, array $tests): void

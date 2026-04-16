@@ -28,13 +28,13 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines.php');
     }
 
-    #[RequiresPhp('>=8.1')]
+    #[RequiresPhp('>=8.1.0')]
     public function testExecutableLinesAreGroupedByBranchPhp81(): void
     {
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php81.php');
     }
 
-    #[RequiresPhp('>=8.2')]
+    #[RequiresPhp('>=8.2.0')]
     public function testExecutableLinesAreGroupedByBranchPhp82(): void
     {
         $this->doTestSelfDescribingAssert(TEST_FILES_PATH . 'source_for_branched_exec_lines_php82.php');

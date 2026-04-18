@@ -33,6 +33,7 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  *         },
  *         phpCodeCoverage: array{
  *             version: string,
+ *             serializationFormat: int,
  *             driverInformation: array{
  *                 name: non-empty-string,
  *                 version: non-empty-string,
@@ -55,6 +56,8 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  */
 final readonly class Serializer
 {
+    public const int SERIALIZATION_FORMAT = 1;
+
     /**
      * @param non-empty-string $target
      *
@@ -72,8 +75,9 @@ final readonly class Serializer
                 'vendorUrl' => $runtime->getVendorUrl(),
             ],
             'phpCodeCoverage' => [
-                'version'           => Version::id(),
-                'driverInformation' => $codeCoverage->driverInformation(),
+                'version'             => Version::id(),
+                'serializationFormat' => self::SERIALIZATION_FORMAT,
+                'driverInformation'   => $codeCoverage->driverInformation(),
             ],
         ];
 
@@ -111,7 +115,7 @@ final readonly class Serializer
 
         Filesystem::write(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . PHP_EOL .
+            '<?php // phpunit/php-code-coverage serialization format ' . self::SERIALIZATION_FORMAT . PHP_EOL .
             "return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'" . PHP_EOL .
             $serializedData . PHP_EOL .
             'END_OF_COVERAGE_SERIALIZATION' . PHP_EOL .

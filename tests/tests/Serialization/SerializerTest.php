@@ -32,7 +32,7 @@ final class SerializerTest extends TestCase
         $this->removeTemporaryFiles();
     }
 
-    public function testSerializedFileHasVersionHeaderOnFirstLine(): void
+    public function testSerializedFileHasSerializationFormatHeaderOnFirstLine(): void
     {
         $coverage = $this->getLineCoverageForBankAccount();
         $target   = TEST_FILES_PATH . 'tmp/serialized.php';
@@ -43,8 +43,8 @@ final class SerializerTest extends TestCase
         $firstLine = fgets($file);
         fclose($file);
 
-        $this->assertMatchesRegularExpression(
-            '/^<\?php \/\/ phpunit\/php-code-coverage version .+$/',
+        $this->assertSame(
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT,
             trim($firstLine),
         );
     }
@@ -125,6 +125,7 @@ final class SerializerTest extends TestCase
         $this->assertArrayHasKey('timestamp', $data['buildInformation']);
         $this->assertArrayHasKey('runtime', $data['buildInformation']);
         $this->assertArrayHasKey('phpCodeCoverage', $data['buildInformation']);
+        $this->assertSame(Serializer::SERIALIZATION_FORMAT, $data['buildInformation']['phpCodeCoverage']['serializationFormat']);
         $this->assertEquals($coverage->driverInformation(), $data['buildInformation']['phpCodeCoverage']['driverInformation']);
     }
 

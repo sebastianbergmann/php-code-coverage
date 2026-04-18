@@ -19,10 +19,10 @@ final class VersionMismatchExceptionTest extends TestCase
 {
     public function testHasMessage(): void
     {
-        $e = new VersionMismatchException('1.0', '2.0');
+        $e = new VersionMismatchException(1, 2);
 
         $this->assertSame(
-            'Coverage data was written by version 1.0 and cannot be read by version 2.0',
+            'Coverage data was written using serialization format 1 and cannot be read by code that supports serialization format 2',
             $e->getMessage(),
         );
     }

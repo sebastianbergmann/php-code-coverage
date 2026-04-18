@@ -20,7 +20,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
-use SebastianBergmann\CodeCoverage\Version;
 
 #[CoversClass(Unserializer::class)]
 #[Medium]
@@ -81,19 +80,19 @@ final class UnserializerTest extends TestCase
         (new Unserializer)->unserialize($target);
     }
 
-    public function testThrowsExceptionWhenFileHasNoVersionHeader(): void
+    public function testThrowsExceptionWhenFileHasNoFormatHeader(): void
     {
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
 
         file_put_contents($target, "<?php\nreturn [];\n");
 
         $this->expectException(FileCouldNotBeReadException::class);
-        $this->expectExceptionMessage('does not contain phpunit/php-code-coverage version information');
+        $this->expectExceptionMessage('does not contain phpunit/php-code-coverage serialization format information');
 
         (new Unserializer)->unserialize($target);
     }
 
-    public function testThrowsExceptionWhenVersionDoesNotMatch(): void
+    public function testThrowsExceptionWhenSerializationFormatDoesNotMatch(): void
     {
         $coverage = $this->getLineCoverageForBankAccount();
         $target   = TEST_FILES_PATH . 'tmp/serialized.php';
@@ -101,7 +100,7 @@ final class UnserializerTest extends TestCase
         (new Serializer)->serialize($target, $coverage);
 
         $contents = file_get_contents($target);
-        $tampered = preg_replace('/^(<\?php \/\/ phpunit\/php-code-coverage version ).+$/m', '${1}0.0.0', $contents);
+        $tampered = preg_replace('/^(<\?php \/\/ phpunit\/php-code-coverage serialization format ).+$/m', '${1}999', $contents);
         file_put_contents($target, $tampered);
 
         $this->expectException(VersionMismatchException::class);
@@ -115,7 +114,7 @@ final class UnserializerTest extends TestCase
 
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\ntrigger_error('corrupted data', E_USER_WARNING);\nreturn [];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\ntrigger_error('corrupted data', E_USER_WARNING);\nreturn [];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -128,7 +127,7 @@ final class UnserializerTest extends TestCase
     {
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
@@ -154,7 +153,22 @@ final class UnserializerTest extends TestCase
         $this->assertArrayHasKey('timestamp', $result['buildInformation']);
         $this->assertArrayHasKey('runtime', $result['buildInformation']);
         $this->assertArrayHasKey('phpCodeCoverage', $result['buildInformation']);
+        $this->assertSame(Serializer::SERIALIZATION_FORMAT, $result['buildInformation']['phpCodeCoverage']['serializationFormat']);
         $this->assertEquals($coverage->driverInformation(), $result['buildInformation']['phpCodeCoverage']['driverInformation']);
+    }
+
+    public function testThrowsExceptionWhenPhpCodeCoverageSerializationFormatIsMissing(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+        file_put_contents(
+            $target,
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0']]];",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage.serializationFormat' key");
+
+        (new Unserializer)->unserialize($target);
     }
 
     public function testThrowsExceptionWhenDataIsNotAnArray(): void
@@ -162,7 +176,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn 'not an array';",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn 'not an array';",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -176,7 +190,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => 'invalid'];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => 'invalid'];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -190,7 +204,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => 'invalid']];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => 'invalid']];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -204,7 +218,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => []]];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => []]];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -218,7 +232,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => 'invalid']];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => 'invalid']];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -232,7 +246,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => []]];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => []]];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -246,7 +260,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => 'invalid']]];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => 'invalid']]];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -260,7 +274,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => []]]];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => []]]];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -274,7 +288,7 @@ final class UnserializerTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp/serialized.php';
         file_put_contents(
             $target,
-            '<?php // phpunit/php-code-coverage version ' . Version::id() . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']]], 'basePath' => '', 'codeCoverage' => null, 'testResults' => []];",
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']]], 'basePath' => '', 'codeCoverage' => null, 'testResults' => []];",
         );
 
         $this->expectException(InvalidCoverageDataException::class);
@@ -291,13 +305,13 @@ final class UnserializerTest extends TestCase
             'buildInformation' => [
                 'timestamp'       => '2024-01-01',
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
-                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
             ],
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => [],
         ];
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
@@ -347,14 +361,14 @@ final class UnserializerTest extends TestCase
             'buildInformation' => [
                 'timestamp'       => '2024-01-01',
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
-                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
                 'git'             => 'not-an-array',
             ],
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => [],
         ];
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
@@ -376,14 +390,14 @@ final class UnserializerTest extends TestCase
             'buildInformation' => [
                 'timestamp'       => '2024-01-01',
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
-                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
                 'git'             => [],
             ],
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => [],
         ];
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
@@ -405,14 +419,14 @@ final class UnserializerTest extends TestCase
             'buildInformation' => [
                 'timestamp'       => '2024-01-01',
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
-                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
                 'git'             => ['originUrl' => 'https://example.com', 'branch' => 'main', 'commit' => 'abc123', 'isClean' => 'yes', 'status' => ''],
             ],
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => [],
         ];
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .
@@ -434,14 +448,14 @@ final class UnserializerTest extends TestCase
             'buildInformation' => [
                 'timestamp'       => '2024-01-01',
                 'runtime'         => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'],
-                'phpCodeCoverage' => ['version' => '12.0.0', 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
+                'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0']],
             ],
             'basePath'     => '',
             'codeCoverage' => new ProcessedCodeCoverageData,
             'testResults'  => 'not an array',
         ];
 
-        $header = '<?php // phpunit/php-code-coverage version ' . Version::id();
+        $header = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT;
         file_put_contents(
             $target,
             $header . "\nreturn \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'\n" .

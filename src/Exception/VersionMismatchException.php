@@ -18,13 +18,13 @@ use SebastianBergmann\CodeCoverage\Exception;
  */
 final class VersionMismatchException extends RuntimeException implements Exception
 {
-    public function __construct(string $storedVersion, string $currentVersion)
+    public function __construct(int $storedFormat, int $supportedFormat)
     {
         parent::__construct(
             sprintf(
-                'Coverage data was written by version %s and cannot be read by version %s',
-                $storedVersion,
-                $currentVersion,
+                'Coverage data was written using serialization format %d and cannot be read by code that supports serialization format %d',
+                $storedFormat,
+                $supportedFormat,
             ),
         );
     }

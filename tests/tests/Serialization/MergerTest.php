@@ -301,8 +301,9 @@ final class MergerTest extends TestCase
                     'vendorUrl' => 'https://php.net',
                 ],
                 'phpCodeCoverage' => [
-                    'version'           => Version::id(),
-                    'driverInformation' => [
+                    'version'             => Version::id(),
+                    'serializationFormat' => Serializer::SERIALIZATION_FORMAT,
+                    'driverInformation'   => [
                         'name'    => 'Xdebug',
                         'version' => '3.3.0',
                     ],
@@ -342,7 +343,7 @@ final class MergerTest extends TestCase
     {
         $path = TEST_FILES_PATH . 'tmp/' . $filename;
 
-        $content = '<?php // phpunit/php-code-coverage version ' . Version::id() . PHP_EOL .
+        $content = '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . PHP_EOL .
             "return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'" . PHP_EOL .
             serialize($data) . PHP_EOL .
             'END_OF_COVERAGE_SERIALIZATION' . PHP_EOL .

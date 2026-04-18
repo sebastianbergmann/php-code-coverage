@@ -103,8 +103,9 @@ final readonly class Merger
             'timestamp'       => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
             'runtime'         => $refRuntime,
             'phpCodeCoverage' => [
-                'version'           => Version::id(),
-                'driverInformation' => $refDriver,
+                'version'             => Version::id(),
+                'serializationFormat' => Serializer::SERIALIZATION_FORMAT,
+                'driverInformation'   => $refDriver,
             ],
         ];
 

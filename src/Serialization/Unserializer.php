@@ -15,13 +15,13 @@ use function fgets;
 use function fopen;
 use function is_array;
 use function is_bool;
+use function is_int;
 use function is_string;
 use function preg_match;
 use function restore_error_handler;
 use function set_error_handler;
 use function trim;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
-use SebastianBergmann\CodeCoverage\Version;
 
 /**
  * @phpstan-import-type SerializedCoverage from Serializer
@@ -55,14 +55,14 @@ final readonly class Unserializer
             throw new FileCouldNotBeReadException('Cannot read from file: ' . $path);
         }
 
-        if (preg_match('/^<\?php \/\/ phpunit\/php-code-coverage version (.+)$/', trim($firstLine), $matches) !== 1) {
-            throw new FileCouldNotBeReadException('File does not contain phpunit/php-code-coverage version information: ' . $path);
+        if (preg_match('/^<\?php \/\/ phpunit\/php-code-coverage serialization format (\d+)$/', trim($firstLine), $matches) !== 1) {
+            throw new FileCouldNotBeReadException('File does not contain phpunit/php-code-coverage serialization format information: ' . $path);
         }
 
-        $storedVersion = $matches[1];
+        $storedFormat = (int) $matches[1];
 
-        if ($storedVersion !== Version::id()) {
-            throw new VersionMismatchException($storedVersion, Version::id());
+        if ($storedFormat !== Serializer::SERIALIZATION_FORMAT) {
+            throw new VersionMismatchException($storedFormat, Serializer::SERIALIZATION_FORMAT);
         }
 
         set_error_handler(
@@ -124,6 +124,10 @@ final readonly class Unserializer
 
         if (!array_key_exists('version', $phpCodeCoverage) || !is_string($phpCodeCoverage['version'])) {
             throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.version\' key');
+        }
+
+        if (!array_key_exists('serializationFormat', $phpCodeCoverage) || !is_int($phpCodeCoverage['serializationFormat'])) {
+            throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.serializationFormat\' key');
         }
 
         if (!array_key_exists('driverInformation', $phpCodeCoverage) || !is_array($phpCodeCoverage['driverInformation'])) {

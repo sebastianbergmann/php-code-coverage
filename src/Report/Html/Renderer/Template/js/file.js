@@ -17,37 +17,84 @@ $(function () {
     }
   });
 
-  var $popovers = $('.popin > :first-child');
-  $('.popin').on({
+  var $linePopovers = $('tr.popin > :first-child');
+  var $spanPopovers = $('span.popin[data-bs-content]');
+  var $allPopovers = $linePopovers.add($spanPopovers);
+
+  function hideAllExcept($except) {
+    $allPopovers.each(function () {
+      var $current = $(this);
+      if (!$except || !$current.is($except)) {
+        $current.popover('hide');
+      }
+    });
+  }
+
+  $('tr.popin').on({
     'click.popover': function (event) {
       event.stopPropagation();
 
       var $container = $(this).children().first();
 
-      //Close all other popovers:
-      $popovers.each(function () {
-        var $current = $(this);
-        if (!$current.is($container)) {
-          $current.popover('hide');
-        }
-      });
-
-      // Toggle this popover:
+      hideAllExcept($container);
       $container.popover('toggle');
+    },
+  });
+
+  $spanPopovers.on({
+    'click.popover': function (event) {
+      event.stopPropagation();
+
+      var $span = $(this);
+
+      hideAllExcept($span);
+      $span.popover('toggle');
     },
   });
 
   //Hide all popovers on outside click:
   $(document).click(function (event) {
     if ($(event.target).closest($('.popover')).length === 0) {
-      $popovers.popover('hide');
+      hideAllExcept(null);
     }
   });
 
   //Hide all popovers on escape:
   $(document).keyup(function (event) {
     if (event.key === 'Escape') {
-      $popovers.popover('hide');
+      hideAllExcept(null);
+    }
+  });
+
+  // Path highlighting in control flow graphs
+  $(document).on('click', '.path-row', function () {
+    var $row = $(this);
+    var pathIndex = $row.data('path-index');
+    var $table = $row.closest('table');
+    var $graph = $table.nextAll('.cfg-graph').first();
+
+    if (!$graph.length) return;
+
+    var pathsData = $graph.data('paths');
+
+    // Reset all highlights
+    $graph.find('.edge, .node').removeClass('highlighted');
+
+    // Toggle: if already selected, deselect
+    if ($row.hasClass('path-selected')) {
+      $('.path-row').removeClass('path-selected');
+      return;
+    }
+
+    $('.path-row').removeClass('path-selected');
+    $row.addClass('path-selected');
+
+    if (!pathsData || !pathsData[pathIndex]) return;
+
+    // Highlight edges for this path
+    var edges = pathsData[pathIndex];
+    for (var i = 0; i < edges.length; i++) {
+      $graph.find('#edge-' + edges[i]).addClass('highlighted');
     }
   });
 });

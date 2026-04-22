@@ -26,6 +26,14 @@
    </div>
   </header>
   <div class="container-fluid">
+   <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="50" data-high-lower-bound="90">
+    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter="all">All</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small">Small</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="medium">Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="large">Large</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium">Small + Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium+large">Small + Medium + Large</button>
+   </div>
    <div class="table-responsive">
     <table class="table table-bordered">
      <thead>
@@ -43,7 +51,7 @@
       </tr>
      </thead>
      <tbody>
-      <tr>
+      <tr data-coverage="{&quot;linesTotal&quot;:8,&quot;linesAll&quot;:5,&quot;linesSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;linesSM&quot;:0,&quot;linesSML&quot;:0,&quot;methodsTotal&quot;:4,&quot;methodsAll&quot;:3,&quot;methodsSmall&quot;:0,&quot;methodsMedium&quot;:0,&quot;methodsLarge&quot;:0,&quot;methodsSM&quot;:0,&quot;methodsSML&quot;:0,&quot;classesTotal&quot;:1,&quot;classesAll&quot;:0,&quot;classesSmall&quot;:0,&quot;classesMedium&quot;:0,&quot;classesLarge&quot;:0,&quot;classesSM&quot;:0,&quot;classesSML&quot;:0}">
        <td class="warning">Total</td>
        <td class="warning big">       <div class="progress">
          <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="62.50" aria-valuemin="0" aria-valuemax="100" style="width: 62.50%">
@@ -88,7 +96,7 @@
        <td class="danger small"><div align="right">0&nbsp;/&nbsp;1</div></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="warning">BankAccount</td>
        <td class="warning big">       <div class="progress">
          <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="62.50" aria-valuemin="0" aria-valuemax="100" style="width: 62.50%">
@@ -133,7 +141,7 @@
        <td class="danger small"><div align="right">0&nbsp;/&nbsp;1</div></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="success">&nbsp;<a href="#6"><abbr title="getBalance()">getBalance</abbr></a></td>
        <td class="success big">       <div class="progress">
          <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
@@ -171,7 +179,7 @@
        <td class="success" colspan="3"></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="danger">&nbsp;<a href="#11"><abbr title="setBalance($balance)">setBalance</abbr></a></td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
@@ -209,7 +217,7 @@
        <td class="danger" colspan="3"></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="success">&nbsp;<a href="#20"><abbr title="depositMoney($balance)">depositMoney</abbr></a></td>
        <td class="success big">       <div class="progress">
          <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
@@ -247,7 +255,7 @@
        <td class="success" colspan="3"></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="success">&nbsp;<a href="#27"><abbr title="withdrawMoney($balance)">withdrawMoney</abbr></a></td>
        <td class="success big">       <div class="progress">
          <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
@@ -345,5 +353,6 @@
   <script src="_js/jquery.min.js?v=%s" type="text/javascript"></script>
   <script src="_js/bootstrap.bundle.min.js?v=%s" type="text/javascript"></script>
   <script src="_js/file.js?v=%s" type="text/javascript"></script>
+  <script src="_js/test-size-filter.js?v=%s" type="text/javascript"></script>
  </body>
 </html>

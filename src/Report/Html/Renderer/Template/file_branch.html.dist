@@ -24,6 +24,14 @@
    </div>
   </header>
   <div class="container-fluid">
+   <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="{{low_upper_bound}}" data-high-lower-bound="{{high_lower_bound}}">
+    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter="all">All</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small">Small</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="medium">Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="large">Large</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium">Small + Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium+large">Small + Medium + Large</button>
+   </div>
    <div class="table-responsive">
     <table class="table table-bordered">
      <thead>
@@ -61,5 +69,6 @@
   <script src="{{path_to_root}}_js/jquery.min.js?v={{version}}" type="text/javascript"></script>
   <script src="{{path_to_root}}_js/bootstrap.bundle.min.js?v={{version}}" type="text/javascript"></script>
   <script src="{{path_to_root}}_js/file.js?v={{version}}" type="text/javascript"></script>
+  <script src="{{path_to_root}}_js/test-size-filter.js?v={{version}}" type="text/javascript"></script>
  </body>
 </html>

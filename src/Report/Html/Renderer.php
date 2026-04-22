@@ -9,11 +9,14 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const ENT_COMPAT;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
+use const JSON_THROW_ON_ERROR;
 use function count;
 use function htmlspecialchars;
+use function json_encode;
 use function sprintf;
 use function str_repeat;
 use function substr_count;
@@ -196,6 +199,7 @@ abstract class Renderer
                 'icon'                      => $data['icon'] ?? '',
                 'crap'                      => (string) ($data['crap'] ?? ''),
                 'name'                      => $data['name'],
+                'coverage_data'             => htmlspecialchars($data['coverageDataJson'] ?? '{}', ENT_COMPAT),
                 'lines_bar'                 => $linesBar,
                 'lines_executed_percent'    => $data['linesExecutedPercentAsString'],
                 'lines_level'               => $linesLevel,
@@ -334,6 +338,14 @@ abstract class Renderer
         }
 
         return 'success';
+    }
+
+    /**
+     * @param array<string, float|int> $data
+     */
+    protected function buildCoverageDataJson(array $data): string
+    {
+        return json_encode($data, JSON_THROW_ON_ERROR);
     }
 
     private function runtimeString(): string

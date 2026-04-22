@@ -14,6 +14,7 @@ use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -21,6 +22,7 @@ use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;
 
 #[CoversClass(CodeCoverage::class)]
+#[Medium]
 final class CodeCoverageTest extends TestCase
 {
     private ?CodeCoverage $coverage = null;

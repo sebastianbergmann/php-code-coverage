@@ -10,9 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\Data;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ProcessedFunctionCoverageData::class)]
+#[Small]
 final class ProcessedFunctionCoverageDataTest extends TestCase
 {
     public function testMergeReturnsSelfWhenBranchesAndPathsAreIdentical(): void

@@ -10,9 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\Data;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ProcessedTraitType::class)]
+#[Small]
 final class ProcessedTraitTypeTest extends TestCase
 {
     public function testCanBeConstructed(): void

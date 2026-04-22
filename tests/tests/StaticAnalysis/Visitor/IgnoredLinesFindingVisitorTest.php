@@ -15,9 +15,11 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
+#[Small]
 final class IgnoredLinesFindingVisitorTest extends TestCase
 {
     public function testAnonymousClassIsNotProcessed(): void

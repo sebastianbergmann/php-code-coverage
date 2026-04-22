@@ -15,9 +15,13 @@ use function iterator_count;
 use function unlink;
 use DateTimeImmutable;
 use FilesystemIterator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
 
+#[CoversClass(Facade::class)]
+#[Medium]
 final class XmlTest extends TestCase
 {
     private static string $TEST_REPORT_PATH_SOURCE;

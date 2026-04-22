@@ -16,12 +16,14 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassThatUsesAnonymousClass;
 use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNamespacesName\ClassWithNameThatIsPartOfItsNamespacesName;
 
 #[CoversClass(CodeUnitFindingVisitor::class)]
+#[Small]
 final class CodeUnitFindingVisitorTest extends TestCase
 {
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/786')]

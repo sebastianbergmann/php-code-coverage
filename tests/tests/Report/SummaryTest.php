@@ -10,9 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(Summary::class)]
+#[Small]
 final class SummaryTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

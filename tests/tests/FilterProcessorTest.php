@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage;
 use function array_keys;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
@@ -24,6 +25,7 @@ use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
 
 #[CoversClass(FilterProcessor::class)]
+#[Small]
 final class FilterProcessorTest extends TestCase
 {
     private FilterProcessor $processor;

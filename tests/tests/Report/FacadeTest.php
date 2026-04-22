@@ -14,11 +14,13 @@ use const PHP_EOL;
 use function file_get_contents;
 use function str_replace;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Serialization\Serializer;
 use SebastianBergmann\CodeCoverage\Serialization\Unserializer;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(Facade::class)]
+#[Medium]
 final class FacadeTest extends TestCase
 {
     protected function tearDown(): void

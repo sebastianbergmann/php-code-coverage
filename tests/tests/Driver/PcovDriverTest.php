@@ -12,10 +12,14 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use const PHP_SAPI;
 use function extension_loaded;
 use function ini_get;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
+#[CoversClass(PcovDriver::class)]
+#[Medium]
 final class PcovDriverTest extends TestCase
 {
     protected function setUp(): void

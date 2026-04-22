@@ -15,9 +15,13 @@ use function file_get_contents;
 use function iterator_count;
 use function str_replace;
 use FilesystemIterator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use RegexIterator;
 use SebastianBergmann\CodeCoverage\TestCase;
 
+#[CoversClass(Facade::class)]
+#[Medium]
 final class EndToEndTest extends TestCase
 {
     protected function tearDown(): void

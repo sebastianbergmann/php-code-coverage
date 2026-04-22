@@ -17,12 +17,14 @@ use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
 #[CoversClass(Filesystem::class)]
+#[Medium]
 final class FilesystemTest extends TestCase
 {
     private string $tempDir;

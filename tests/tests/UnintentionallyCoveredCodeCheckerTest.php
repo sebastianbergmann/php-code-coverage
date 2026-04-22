@@ -11,11 +11,13 @@ namespace SebastianBergmann\CodeCoverage;
 
 use function array_keys;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 
 #[CoversClass(UnintentionallyCoveredCodeChecker::class)]
+#[Small]
 final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 {
     private UnintentionallyCoveredCodeChecker $processor;

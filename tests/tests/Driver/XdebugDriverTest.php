@@ -16,9 +16,13 @@ use function phpversion;
 use function version_compare;
 use function xdebug_get_code_coverage;
 use function xdebug_info;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
+#[CoversClass(XdebugDriver::class)]
+#[Medium]
 final class XdebugDriverTest extends TestCase
 {
     protected function setUp(): void

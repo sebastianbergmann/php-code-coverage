@@ -20,11 +20,13 @@ use function str_replace;
 use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 
 #[CoversClass(Cobertura::class)]
 #[CoversClass(Xml::class)]
+#[Medium]
 final class CoberturaTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

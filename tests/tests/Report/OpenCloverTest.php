@@ -17,11 +17,13 @@ use function sprintf;
 use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 
 #[CoversClass(OpenClover::class)]
 #[CoversClass(Xml::class)]
+#[Medium]
 final class OpenCloverTest extends TestCase
 {
     public function testLineCoverageForBankAccountTest(): void

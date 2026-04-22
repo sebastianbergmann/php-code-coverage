@@ -31,6 +31,14 @@
     <li class="nav-item"><a class="nav-link" href="source_without_namespace.php_branch.html">Branch Coverage</a></li>
     <li class="nav-item"><a class="nav-link active" href="source_without_namespace.php_path.html" aria-current="page">Path Coverage</a></li>
    </ul>
+   <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="50" data-high-lower-bound="90">
+    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter="all">All</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small">Small</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="medium">Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="large">Large</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium">Small + Medium</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium+large">Small + Medium + Large</button>
+   </div>
    <div class="table-responsive">
     <table class="table table-bordered">
      <thead>
@@ -48,7 +56,7 @@
       </tr>
      </thead>
      <tbody>
-      <tr>
+      <tr data-coverage="{&quot;linesTotal&quot;:4,&quot;linesAll&quot;:0,&quot;linesSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;linesSM&quot;:0,&quot;linesSML&quot;:0,&quot;methodsTotal&quot;:1,&quot;methodsAll&quot;:0,&quot;methodsSmall&quot;:0,&quot;methodsMedium&quot;:0,&quot;methodsLarge&quot;:0,&quot;methodsSM&quot;:0,&quot;methodsSML&quot;:0,&quot;classesTotal&quot;:0,&quot;classesAll&quot;:0,&quot;classesSmall&quot;:0,&quot;classesMedium&quot;:0,&quot;classesLarge&quot;:0,&quot;classesSM&quot;:0,&quot;classesSML&quot;:0}">
        <td class="danger">Total</td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
@@ -88,7 +96,7 @@
        <td class=" small"><div align="right">0&nbsp;/&nbsp;0</div></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="danger"><a href="#12"><abbr title="&amp;foo($bar)">foo</abbr></a></td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
@@ -126,7 +134,7 @@
        <td class="danger" colspan="3"></td>
       </tr>
 
-      <tr>
+      <tr data-coverage="{}">
        <td class="">Foo</td>
        <td class=" big"></td>
        <td class=" small"><div align="right">n/a</div></td>
@@ -189,21 +197,156 @@
 <tr class="danger path-row" data-path-index="0"><td>1</td><td><a href="#12">L12</a> &rarr; <a href="#15">L15</a> &rarr; <a href="#15">L15</a></td><td>Not covered</td><td>&mdash;</td></tr>
 <tr class="danger path-row" data-path-index="1"><td>2</td><td><a href="#12">L12</a> &rarr; <a href="#15">L15</a> &rarr; <a href="#15">L15</a></td><td>Not covered</td><td>&mdash;</td></tr>
 </tbody></table>
-<div class="cfg-graph" data-paths="[[&quot;0-7&quot;,&quot;7-10&quot;],[&quot;0-9&quot;,&quot;9-10&quot;]]">%A</div>
+<div class="cfg-graph" data-paths="[[&quot;0-7&quot;,&quot;7-10&quot;],[&quot;0-9&quot;,&quot;9-10&quot;]]"><svg width="134pt" height="260pt"
+ viewBox="0.00 0.00 134.00 260.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256)">
+<!-- entry -->
+<g id="node1" class="node terminal">
+<title>entry</title>
+<ellipse fill="lightgrey" stroke="black" cx="63" cy="-234" rx="28.11" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="63" y="-231.43" font-family="sans-serif" font-size="11.00">entry</text>
+</g>
+<!-- b0 -->
+<g id="node2" class="node uncovered">
+<title>b0</title>
+<polygon fill="lightgrey" stroke="black" points="90.88,-180 35.12,-180 35.12,-144 90.88,-144 90.88,-180"/>
+<text xml:space="preserve" text-anchor="middle" x="63" y="-159.43" font-family="sans-serif" font-size="11.00">L12&#45;L15</text>
+</g>
+<!-- entry&#45;&gt;b0 -->
+<g id="edge1" class="edge">
+<title>entry&#45;&gt;b0</title>
+<path fill="none" stroke="black" d="M63,-215.7C63,-208.41 63,-199.73 63,-191.54"/>
+<polygon fill="black" stroke="black" points="66.5,-191.62 63,-181.62 59.5,-191.62 66.5,-191.62"/>
+</g>
+<!-- b7 -->
+<g id="node3" class="node uncovered">
+<title>b7</title>
+<polygon fill="lightgrey" stroke="black" points="54,-108 0,-108 0,-72 54,-72 54,-108"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-87.42" font-family="sans-serif" font-size="11.00">L15</text>
+</g>
+<!-- b0&#45;&gt;b7 -->
+<g id="edge&#45;0&#45;7" class="edge uncovered path&#45;0">
+<title>b0&#45;&gt;b7</title>
+<path fill="none" stroke="black" d="M54.1,-143.7C50.13,-135.98 45.37,-126.71 40.94,-118.11"/>
+<polygon fill="black" stroke="black" points="44.17,-116.74 36.49,-109.45 37.95,-119.94 44.17,-116.74"/>
+</g>
+<!-- b9 -->
+<g id="node4" class="node uncovered">
+<title>b9</title>
+<polygon fill="lightgrey" stroke="black" points="126,-108 72,-108 72,-72 126,-72 126,-108"/>
+<text xml:space="preserve" text-anchor="middle" x="99" y="-87.42" font-family="sans-serif" font-size="11.00">L15</text>
+</g>
+<!-- b0&#45;&gt;b9 -->
+<g id="edge&#45;0&#45;9" class="edge uncovered path&#45;1">
+<title>b0&#45;&gt;b9</title>
+<path fill="none" stroke="black" d="M71.9,-143.7C75.87,-135.98 80.63,-126.71 85.06,-118.11"/>
+<polygon fill="black" stroke="black" points="88.05,-119.94 89.51,-109.45 81.83,-116.74 88.05,-119.94"/>
+</g>
+<!-- b10 -->
+<g id="node5" class="node uncovered">
+<title>b10</title>
+<polygon fill="lightgrey" stroke="black" points="90.88,-36 35.12,-36 35.12,0 90.88,0 90.88,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="63" y="-15.43" font-family="sans-serif" font-size="11.00">L15&#45;L18</text>
+</g>
+<!-- b7&#45;&gt;b10 -->
+<g id="edge&#45;7&#45;10" class="edge uncovered path&#45;0">
+<title>b7&#45;&gt;b10</title>
+<path fill="none" stroke="black" d="M35.9,-71.7C39.87,-63.98 44.63,-54.71 49.06,-46.11"/>
+<polygon fill="black" stroke="black" points="52.05,-47.94 53.51,-37.45 45.83,-44.74 52.05,-47.94"/>
+</g>
+<!-- b9&#45;&gt;b10 -->
+<g id="edge&#45;9&#45;10" class="edge uncovered path&#45;1">
+<title>b9&#45;&gt;b10</title>
+<path fill="none" stroke="black" d="M90.1,-71.7C86.13,-63.98 81.37,-54.71 76.94,-46.11"/>
+<polygon fill="black" stroke="black" points="80.17,-44.74 72.49,-37.45 73.95,-47.94 80.17,-44.74"/>
+</g>
+</g>
+</svg>
+</div>
 <h5 class="structure-heading"><a name="{closure:%ssource_without_namespace.php:14-14}">{closure:%ssource_without_namespace.php:14-14}</a> <span class="danger">0/1</span></h5>
 <table class="table table-bordered table-sm structure-table">
 <thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>
 <tbody>
 <tr class="danger path-row" data-path-index="0"><td>1</td><td><a href="#14">L14</a></td><td>Not covered</td><td>&mdash;</td></tr>
 </tbody></table>
-<div class="cfg-graph" data-paths="[[&quot;0-exit&quot;]]">%A</div>
+<div class="cfg-graph" data-paths="[[&quot;0-exit&quot;]]"><svg width="64pt" height="188pt"
+ viewBox="0.00 0.00 64.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<!-- entry -->
+<g id="node1" class="node terminal">
+<title>entry</title>
+<ellipse fill="lightgrey" stroke="black" cx="28.11" cy="-162" rx="28.11" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-159.43" font-family="sans-serif" font-size="11.00">entry</text>
+</g>
+<!-- b0 -->
+<g id="node2" class="node uncovered">
+<title>b0</title>
+<polygon fill="lightgrey" stroke="black" points="55.11,-108 1.11,-108 1.11,-72 55.11,-72 55.11,-108"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-87.42" font-family="sans-serif" font-size="11.00">L14</text>
+</g>
+<!-- entry&#45;&gt;b0 -->
+<g id="edge1" class="edge">
+<title>entry&#45;&gt;b0</title>
+<path fill="none" stroke="black" d="M28.11,-143.7C28.11,-136.41 28.11,-127.73 28.11,-119.54"/>
+<polygon fill="black" stroke="black" points="31.61,-119.62 28.11,-109.62 24.61,-119.62 31.61,-119.62"/>
+</g>
+<!-- exit -->
+<g id="node3" class="node terminal">
+<title>exit</title>
+<ellipse fill="lightgrey" stroke="black" cx="28.11" cy="-18" rx="27" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-15.43" font-family="sans-serif" font-size="11.00">exit</text>
+</g>
+<!-- b0&#45;&gt;exit -->
+<g id="edge&#45;0&#45;exit" class="edge uncovered path&#45;0">
+<title>b0&#45;&gt;exit</title>
+<path fill="none" stroke="black" d="M28.11,-71.7C28.11,-64.41 28.11,-55.73 28.11,-47.54"/>
+<polygon fill="black" stroke="black" points="31.61,-47.62 28.11,-37.62 24.61,-47.62 31.61,-47.62"/>
+</g>
+</g>
+</svg>
+</div>
 <h5 class="structure-heading"><a name="{main}">{main}</a> <span class="success">1/1</span></h5>
 <table class="table table-bordered table-sm structure-table">
 <thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>
 <tbody>
 <tr class="success path-row" data-path-index="0"><td>1</td><td><a href="#19">L19</a></td><td>Covered</td><td><span class="popin" data-bs-title="1 test" data-bs-content="&lt;ul&gt;&lt;li&gt;faketest&lt;/li&gt;&lt;/ul&gt;" data-bs-placement="top" data-bs-html="true">1 test</span></td></tr>
 </tbody></table>
-<div class="cfg-graph" data-paths="[[&quot;0-exit&quot;]]">%A</div>
+<div class="cfg-graph" data-paths="[[&quot;0-exit&quot;]]"><svg width="64pt" height="188pt"
+ viewBox="0.00 0.00 64.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<!-- entry -->
+<g id="node1" class="node terminal">
+<title>entry</title>
+<ellipse fill="lightgrey" stroke="black" cx="28.11" cy="-162" rx="28.11" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-159.43" font-family="sans-serif" font-size="11.00">entry</text>
+</g>
+<!-- b0 -->
+<g id="node2" class="node covered">
+<title>b0</title>
+<polygon fill="lightgrey" stroke="black" points="55.11,-108 1.11,-108 1.11,-72 55.11,-72 55.11,-108"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-87.42" font-family="sans-serif" font-size="11.00">L19</text>
+</g>
+<!-- entry&#45;&gt;b0 -->
+<g id="edge1" class="edge">
+<title>entry&#45;&gt;b0</title>
+<path fill="none" stroke="black" d="M28.11,-143.7C28.11,-136.41 28.11,-127.73 28.11,-119.54"/>
+<polygon fill="black" stroke="black" points="31.61,-119.62 28.11,-109.62 24.61,-119.62 31.61,-119.62"/>
+</g>
+<!-- exit -->
+<g id="node3" class="node terminal">
+<title>exit</title>
+<ellipse fill="lightgrey" stroke="black" cx="28.11" cy="-18" rx="27" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="28.11" y="-15.43" font-family="sans-serif" font-size="11.00">exit</text>
+</g>
+<!-- b0&#45;&gt;exit -->
+<g id="edge&#45;0&#45;exit" class="edge uncovered path&#45;0">
+<title>b0&#45;&gt;exit</title>
+<path fill="none" stroke="black" d="M28.11,-71.7C28.11,-64.41 28.11,-55.73 28.11,-47.54"/>
+<polygon fill="black" stroke="black" points="31.61,-47.62 28.11,-37.62 24.61,-47.62 31.61,-47.62"/>
+</g>
+</g>
+</svg>
+</div>
 
 
    <footer>
@@ -221,5 +364,6 @@
   <script src="_js/jquery.min.js?v=%s" type="text/javascript"></script>
   <script src="_js/bootstrap.bundle.min.js?v=%s" type="text/javascript"></script>
   <script src="_js/file.js?v=%s" type="text/javascript"></script>
+  <script src="_js/test-size-filter.js?v=%s" type="text/javascript"></script>
  </body>
 </html>

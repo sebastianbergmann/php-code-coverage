@@ -15,12 +15,12 @@ use function file_get_contents;
 use function iterator_count;
 use function str_replace;
 use FilesystemIterator;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNamespace;
 use PHPUnit\Framework\Attributes\Medium;
 use RegexIterator;
 use SebastianBergmann\CodeCoverage\TestCase;
 
-#[CoversClass(Facade::class)]
+#[CoversNamespace('SebastianBergmann\CodeCoverage\Report\Html')]
 #[Medium]
 final class EndToEndTest extends TestCase
 {

@@ -224,9 +224,20 @@ table + .structure-heading {
  padding-top: 0.5em;
 }
 
+table#code tr {
+  flex-wrap: nowrap;
+}
+
 table#code td:first-of-type {
+  flex: 0 0 auto;
+  width: auto;
   padding-left: .75em;
   padding-right: .75em;
+}
+
+table#code td.codeLine {
+  flex: 1 1 auto;
+  width: auto;
 }
 
 table#code td:first-of-type a {

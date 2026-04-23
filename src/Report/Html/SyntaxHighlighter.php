@@ -66,8 +66,11 @@ use const T_NAMESPACE;
 use const T_NEW;
 use const T_PRINT;
 use const T_PRIVATE;
+use const T_PRIVATE_SET;
 use const T_PROTECTED;
+use const T_PROTECTED_SET;
 use const T_PUBLIC;
+use const T_PUBLIC_SET;
 use const T_READONLY;
 use const T_REQUIRE;
 use const T_REQUIRE_ONCE;
@@ -157,8 +160,11 @@ final class SyntaxHighlighter
         T_NEW           => true,
         T_PRINT         => true,
         T_PRIVATE       => true,
+        T_PRIVATE_SET   => true,
         T_PROTECTED     => true,
+        T_PROTECTED_SET => true,
         T_PUBLIC        => true,
+        T_PUBLIC_SET    => true,
         T_READONLY      => true,
         T_REQUIRE       => true,
         T_REQUIRE_ONCE  => true,

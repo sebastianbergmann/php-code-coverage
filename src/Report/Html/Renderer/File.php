@@ -12,78 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use const ENT_COMPAT;
 use const ENT_HTML401;
 use const ENT_SUBSTITUTE;
-use const T_ABSTRACT;
-use const T_ARRAY;
-use const T_AS;
-use const T_BREAK;
-use const T_CALLABLE;
-use const T_CASE;
-use const T_CATCH;
-use const T_CLASS;
-use const T_CLONE;
-use const T_COMMENT;
-use const T_CONST;
-use const T_CONTINUE;
-use const T_DECLARE;
-use const T_DEFAULT;
-use const T_DO;
-use const T_DOC_COMMENT;
-use const T_ECHO;
-use const T_ELSE;
-use const T_ELSEIF;
-use const T_EMPTY;
-use const T_ENDDECLARE;
-use const T_ENDFOR;
-use const T_ENDFOREACH;
-use const T_ENDIF;
-use const T_ENDSWITCH;
-use const T_ENDWHILE;
-use const T_ENUM;
-use const T_EVAL;
-use const T_EXIT;
-use const T_EXTENDS;
-use const T_FINAL;
-use const T_FINALLY;
-use const T_FN;
-use const T_FOR;
-use const T_FOREACH;
-use const T_FUNCTION;
-use const T_GLOBAL;
-use const T_GOTO;
-use const T_HALT_COMPILER;
-use const T_IF;
-use const T_IMPLEMENTS;
-use const T_INCLUDE;
-use const T_INCLUDE_ONCE;
-use const T_INLINE_HTML;
-use const T_INSTANCEOF;
-use const T_INSTEADOF;
-use const T_INTERFACE;
-use const T_ISSET;
-use const T_LIST;
-use const T_MATCH;
-use const T_NAMESPACE;
-use const T_NEW;
-use const T_PRINT;
-use const T_PRIVATE;
-use const T_PROTECTED;
-use const T_PUBLIC;
-use const T_READONLY;
-use const T_REQUIRE;
-use const T_REQUIRE_ONCE;
-use const T_RETURN;
-use const T_STATIC;
-use const T_SWITCH;
-use const T_THROW;
-use const T_TRAIT;
-use const T_TRY;
-use const T_UNSET;
-use const T_USE;
-use const T_VAR;
-use const T_WHILE;
-use const T_YIELD;
-use const T_YIELD_FROM;
-use const TOKEN_PARSE;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -91,17 +19,11 @@ use function array_pop;
 use function array_unique;
 use function count;
 use function explode;
-use function file_get_contents;
 use function htmlspecialchars;
-use function is_string;
 use function ksort;
 use function range;
 use function sort;
 use function sprintf;
-use function str_ends_with;
-use function str_replace;
-use function token_get_all;
-use function trim;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
@@ -111,6 +33,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -124,86 +47,15 @@ use SebastianBergmann\Template\Template;
  */
 final class File extends Renderer
 {
-    /**
-     * @var array<int,true>
-     */
-    private const array KEYWORD_TOKENS = [
-        T_ABSTRACT      => true,
-        T_ARRAY         => true,
-        T_AS            => true,
-        T_BREAK         => true,
-        T_CALLABLE      => true,
-        T_CASE          => true,
-        T_CATCH         => true,
-        T_CLASS         => true,
-        T_CLONE         => true,
-        T_CONST         => true,
-        T_CONTINUE      => true,
-        T_DECLARE       => true,
-        T_DEFAULT       => true,
-        T_DO            => true,
-        T_ECHO          => true,
-        T_ELSE          => true,
-        T_ELSEIF        => true,
-        T_EMPTY         => true,
-        T_ENDDECLARE    => true,
-        T_ENDFOR        => true,
-        T_ENDFOREACH    => true,
-        T_ENDIF         => true,
-        T_ENDSWITCH     => true,
-        T_ENDWHILE      => true,
-        T_ENUM          => true,
-        T_EVAL          => true,
-        T_EXIT          => true,
-        T_EXTENDS       => true,
-        T_FINAL         => true,
-        T_FINALLY       => true,
-        T_FN            => true,
-        T_FOR           => true,
-        T_FOREACH       => true,
-        T_FUNCTION      => true,
-        T_GLOBAL        => true,
-        T_GOTO          => true,
-        T_HALT_COMPILER => true,
-        T_IF            => true,
-        T_IMPLEMENTS    => true,
-        T_INCLUDE       => true,
-        T_INCLUDE_ONCE  => true,
-        T_INSTANCEOF    => true,
-        T_INSTEADOF     => true,
-        T_INTERFACE     => true,
-        T_ISSET         => true,
-        T_LIST          => true,
-        T_MATCH         => true,
-        T_NAMESPACE     => true,
-        T_NEW           => true,
-        T_PRINT         => true,
-        T_PRIVATE       => true,
-        T_PROTECTED     => true,
-        T_PUBLIC        => true,
-        T_READONLY      => true,
-        T_REQUIRE       => true,
-        T_REQUIRE_ONCE  => true,
-        T_RETURN        => true,
-        T_STATIC        => true,
-        T_SWITCH        => true,
-        T_THROW         => true,
-        T_TRAIT         => true,
-        T_TRY           => true,
-        T_UNSET         => true,
-        T_USE           => true,
-        T_VAR           => true,
-        T_WHILE         => true,
-        T_YIELD         => true,
-        T_YIELD_FROM    => true,
-    ];
-
     private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+    private readonly SyntaxHighlighter $syntaxHighlighter;
 
-    /**
-     * @var array<non-empty-string, list<string>>
-     */
-    private static array $formattedSourceCache = [];
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)
+    {
+        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage);
+
+        $this->syntaxHighlighter = new SyntaxHighlighter;
+    }
 
     public function render(FileNode $node, string $file): void
     {
@@ -530,7 +382,7 @@ final class File extends Renderer
 
         $coverageData = $node->lineCoverageData();
         $testData     = $node->testData();
-        $codeLines    = $this->loadFile($node->pathAsString());
+        $codeLines    = $this->syntaxHighlighter->highlight($node->pathAsString());
         $lines        = '';
         $i            = 1;
 
@@ -598,7 +450,7 @@ final class File extends Renderer
 
         $functionCoverageData = $node->functionCoverageData();
         $testData             = $node->testData();
-        $codeLines            = $this->loadFile($node->pathAsString());
+        $codeLines            = $this->syntaxHighlighter->highlight($node->pathAsString());
 
         $lineData = [];
 
@@ -686,7 +538,7 @@ final class File extends Renderer
 
         $functionCoverageData = $node->functionCoverageData();
         $testData             = $node->testData();
-        $codeLines            = $this->loadFile($node->pathAsString());
+        $codeLines            = $this->syntaxHighlighter->highlight($node->pathAsString());
 
         $lineData = [];
 
@@ -776,7 +628,7 @@ final class File extends Renderer
 
         $coverageData = $node->functionCoverageData();
         $testData     = $node->testData();
-        $codeLines    = $this->loadFile($node->pathAsString());
+        $codeLines    = $this->syntaxHighlighter->highlight($node->pathAsString());
         $branches     = '';
 
         ksort($coverageData);
@@ -878,7 +730,7 @@ final class File extends Renderer
 
         $coverageData = $node->functionCoverageData();
         $testData     = $node->testData();
-        $codeLines    = $this->loadFile($node->pathAsString());
+        $codeLines    = $this->syntaxHighlighter->highlight($node->pathAsString());
         $paths        = '';
 
         ksort($coverageData);
@@ -1004,99 +856,6 @@ final class File extends Renderer
         return $template->render();
     }
 
-    /**
-     * @param non-empty-string $file
-     *
-     * @return list<string>
-     */
-    private function loadFile(string $file): array
-    {
-        if (isset(self::$formattedSourceCache[$file])) {
-            return self::$formattedSourceCache[$file];
-        }
-
-        $buffer              = file_get_contents($file);
-        $tokens              = token_get_all($buffer, TOKEN_PARSE);
-        $result              = [''];
-        $i                   = 0;
-        $stringFlag          = false;
-        $fileEndsWithNewLine = str_ends_with($buffer, "\n");
-
-        unset($buffer);
-
-        foreach ($tokens as $j => $token) {
-            if (is_string($token)) {
-                if ($token === '"' && $tokens[$j - 1] !== '\\') {
-                    $result[$i] .= sprintf(
-                        '<span class="string">%s</span>',
-                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
-                    );
-
-                    $stringFlag = !$stringFlag;
-                } else {
-                    $result[$i] .= sprintf(
-                        '<span class="keyword">%s</span>',
-                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
-                    );
-                }
-
-                continue;
-            }
-
-            [$token, $value] = $token;
-
-            $value = str_replace(
-                ["\t", ' '],
-                ['&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'],
-                htmlspecialchars($value, self::HTML_SPECIAL_CHARS_FLAGS),
-            );
-
-            if ($value === "\n") {
-                $result[++$i] = '';
-            } else {
-                $lines = explode("\n", $value);
-
-                foreach ($lines as $jj => $line) {
-                    $line = trim($line);
-
-                    if ($line !== '') {
-                        if ($stringFlag) {
-                            $colour = 'string';
-                        } else {
-                            $colour = 'default';
-
-                            if ($this->isInlineHtml($token)) {
-                                $colour = 'html';
-                            } elseif ($this->isComment($token)) {
-                                $colour = 'comment';
-                            } elseif ($this->isKeyword($token)) {
-                                $colour = 'keyword';
-                            }
-                        }
-
-                        $result[$i] .= sprintf(
-                            '<span class="%s">%s</span>',
-                            $colour,
-                            $line,
-                        );
-                    }
-
-                    if (isset($lines[$jj + 1])) {
-                        $result[++$i] = '';
-                    }
-                }
-            }
-        }
-
-        if ($fileEndsWithNewLine) {
-            unset($result[count($result) - 1]);
-        }
-
-        self::$formattedSourceCache[$file] = $result;
-
-        return $result;
-    }
-
     private function abbreviateClassName(string $className): string
     {
         $tmp = explode('\\', $className);
@@ -1152,20 +911,5 @@ final class File extends Renderer
             $testCSS,
             htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
         );
-    }
-
-    private function isComment(int $token): bool
-    {
-        return $token === T_COMMENT || $token === T_DOC_COMMENT;
-    }
-
-    private function isInlineHtml(int $token): bool
-    {
-        return $token === T_INLINE_HTML;
-    }
-
-    private function isKeyword(int $token): bool
-    {
-        return isset(self::KEYWORD_TOKENS[$token]);
     }
 }

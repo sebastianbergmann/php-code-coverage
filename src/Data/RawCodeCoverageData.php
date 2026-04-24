@@ -150,6 +150,22 @@ final class RawCodeCoverageData
     }
 
     /**
+     * @param int[] $lines
+     */
+    public function addMissingExecutableLines(string $filename, array $lines): void
+    {
+        if (!isset($this->lineCoverage[$filename])) {
+            return;
+        }
+
+        foreach ($lines as $line) {
+            if (!isset($this->lineCoverage[$filename][$line])) {
+                $this->lineCoverage[$filename][$line] = Driver::LINE_NOT_EXECUTED;
+            }
+        }
+    }
+
+    /**
      * @param int[] $linesToBranchMap
      */
     public function markExecutableLineByBranch(string $filename, array $linesToBranchMap): void

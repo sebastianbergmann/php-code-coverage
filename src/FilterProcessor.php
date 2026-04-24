@@ -101,6 +101,11 @@ final readonly class FilterProcessor
                 array_keys($linesToBranchMap),
             );
 
+            $data->addMissingExecutableLines(
+                $filename,
+                array_keys($linesToBranchMap),
+            );
+
             $data->markExecutableLineByBranch(
                 $filename,
                 $linesToBranchMap,

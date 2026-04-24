@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
+use SebastianBergmann\CodeCoverage\Util\EnsuresUtf8;
 use XMLWriter;
 
 /**
@@ -18,6 +19,7 @@ use XMLWriter;
  */
 final readonly class Unit
 {
+    use EnsuresUtf8;
     private XMLWriter $xmlWriter;
 
     public function __construct(
@@ -31,14 +33,14 @@ final readonly class Unit
     ) {
         $this->xmlWriter = $xmlWriter;
 
-        $this->xmlWriter->writeAttribute('name', $name);
+        $this->xmlWriter->writeAttribute('name', $this->ensureUtf8($name));
         $this->xmlWriter->writeAttribute('start', (string) $start);
         $this->xmlWriter->writeAttribute('executable', (string) $executable);
         $this->xmlWriter->writeAttribute('executed', (string) $executed);
         $this->xmlWriter->writeAttribute('crap', (string) $crap);
 
         $this->xmlWriter->startElement('namespace');
-        $this->xmlWriter->writeAttribute('name', $namespace);
+        $this->xmlWriter->writeAttribute('name', $this->ensureUtf8($namespace));
         $this->xmlWriter->endElement();
     }
 

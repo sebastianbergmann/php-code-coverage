@@ -19,6 +19,7 @@ use function time;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
+use SebastianBergmann\CodeCoverage\Util\EnsuresUtf8;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
@@ -30,6 +31,8 @@ use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
  */
 final class Cobertura
 {
+    use EnsuresUtf8;
+
     /**
      * @param null|non-empty-string $target
      *
@@ -66,7 +69,7 @@ final class Cobertura
         $sourcesElement = $document->createElement('sources');
         $coverageElement->appendChild($sourcesElement);
 
-        $sourceElement = $document->createElement('source', $report->pathAsString());
+        $sourceElement = $document->createElement('source', $this->ensureUtf8($report->pathAsString()));
         $sourcesElement->appendChild($sourceElement);
 
         $packagesElement = $document->createElement('packages');
@@ -82,7 +85,7 @@ final class Cobertura
             $packageElement    = $document->createElement('package');
             $packageComplexity = 0;
 
-            $packageElement->setAttribute('name', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+            $packageElement->setAttribute('name', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
 
             $linesValid   = $item->numberOfExecutableLines();
             $linesCovered = $item->numberOfExecutedLines();
@@ -120,8 +123,8 @@ final class Cobertura
 
                 $classElement = $document->createElement('class');
 
-                $classElement->setAttribute('name', $className);
-                $classElement->setAttribute('filename', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+                $classElement->setAttribute('name', $this->ensureUtf8($className));
+                $classElement->setAttribute('filename', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
                 $classElement->setAttribute('line-rate', (string) $lineRate);
                 $classElement->setAttribute('branch-rate', (string) $branchRate);
                 $classElement->setAttribute('complexity', (string) $class->ccn);
@@ -153,8 +156,8 @@ final class Cobertura
 
                     $methodElement = $document->createElement('method');
 
-                    $methodElement->setAttribute('name', $methodName);
-                    $methodElement->setAttribute('signature', $signature[1]);
+                    $methodElement->setAttribute('name', $this->ensureUtf8($methodName));
+                    $methodElement->setAttribute('signature', $this->ensureUtf8($signature[1]));
                     $methodElement->setAttribute('line-rate', (string) $lineRate);
                     $methodElement->setAttribute('branch-rate', (string) $branchRate);
                     $methodElement->setAttribute('complexity', (string) $method->ccn);
@@ -196,8 +199,8 @@ final class Cobertura
             $functionsBranchesCovered = 0;
 
             $classElement = $document->createElement('class');
-            $classElement->setAttribute('name', basename($item->pathAsString()));
-            $classElement->setAttribute('filename', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+            $classElement->setAttribute('name', $this->ensureUtf8(basename($item->pathAsString())));
+            $classElement->setAttribute('filename', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
 
             $methodsElement = $document->createElement('methods');
 
@@ -234,8 +237,8 @@ final class Cobertura
 
                 $methodElement = $document->createElement('method');
 
-                $methodElement->setAttribute('name', $functionName);
-                $methodElement->setAttribute('signature', $function->signature);
+                $methodElement->setAttribute('name', $this->ensureUtf8($functionName));
+                $methodElement->setAttribute('signature', $this->ensureUtf8($function->signature));
                 $methodElement->setAttribute('line-rate', (string) $lineRate);
                 $methodElement->setAttribute('branch-rate', (string) $branchRate);
                 $methodElement->setAttribute('complexity', (string) $function->ccn);

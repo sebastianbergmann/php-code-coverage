@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.1.5] - 2026-MM-DD
+
+### Fixed
+
+* [#491](https://github.com/sebastianbergmann/php-code-coverage/issues/491): Ensure strings are valid UTF-8 before passing them to XML APIs
+
 ## [14.1.4] - 2026-04-23
 
 ### Fixed

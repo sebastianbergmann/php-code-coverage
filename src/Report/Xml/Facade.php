@@ -29,6 +29,7 @@ use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\PathExistsButIsNotDirectoryException;
+use SebastianBergmann\CodeCoverage\Util\EnsuresUtf8;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
@@ -45,6 +46,8 @@ use XMLWriter;
  */
 final class Facade
 {
+    use EnsuresUtf8;
+
     public const string XML_NAMESPACE = 'https://schema.phpunit.de/coverage/1.0';
     private string $target;
     private Project $project;
@@ -162,7 +165,7 @@ final class Facade
 
         $writer = $this->project->getWriter();
         $writer->startElement('directory');
-        $writer->writeAttribute('name', $directoryName);
+        $writer->writeAttribute('name', $this->ensureUtf8($directoryName));
         $directoryObject = $context->addDirectory();
 
         $this->setTotals($directory, $directoryObject->totals());
@@ -183,7 +186,7 @@ final class Facade
     private function processFile(FileNode $file, Directory $context): void
     {
         $context->getWriter()->startElement('file');
-        $context->getWriter()->writeAttribute('name', $file->name());
+        $context->getWriter()->writeAttribute('name', $this->ensureUtf8($file->name()));
         $context->getWriter()->writeAttribute('href', $file->id() . '.xml');
         $context->getWriter()->writeAttribute('hash', $file->sha1());
 

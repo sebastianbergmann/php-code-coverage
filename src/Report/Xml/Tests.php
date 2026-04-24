@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use function sprintf;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Util\EnsuresUtf8;
 use XMLWriter;
 
 /**
@@ -22,6 +23,7 @@ use XMLWriter;
  */
 final readonly class Tests
 {
+    use EnsuresUtf8;
     private readonly XMLWriter $xmlWriter;
 
     public function __construct(XMLWriter $xmlWriter)
@@ -36,7 +38,7 @@ final readonly class Tests
     {
         $this->xmlWriter->startElement('test');
 
-        $this->xmlWriter->writeAttribute('name', $test);
+        $this->xmlWriter->writeAttribute('name', $this->ensureUtf8($test));
         $this->xmlWriter->writeAttribute('size', $result['size']);
         $this->xmlWriter->writeAttribute('status', $result['status']);
         $this->xmlWriter->writeAttribute('time', sprintf('%F', $result['time']));

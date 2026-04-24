@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## [14.1.5] - 2026-MM-DD
 
+### Changed
+
+* [#941](https://github.com/sebastianbergmann/php-code-coverage/issues/941): Sort directories and files in strict alphabetical order
+
 ### Fixed
 
 * [#491](https://github.com/sebastianbergmann/php-code-coverage/issues/491): Ensure strings are valid UTF-8 before passing them to XML APIs

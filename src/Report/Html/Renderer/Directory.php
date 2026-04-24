@@ -12,9 +12,11 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use function count;
 use function sprintf;
 use function str_repeat;
+use function usort;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
@@ -34,11 +36,25 @@ final class Directory extends Renderer
 
         $items = $this->renderItem($node, true);
 
-        foreach ($node->directories() as $item) {
+        $directories = $node->directories();
+
+        usort(
+            $directories,
+            static fn (DirectoryNode $a, DirectoryNode $b) => $a->name() <=> $b->name(),
+        );
+
+        foreach ($directories as $item) {
             $items .= $this->renderItem($item);
         }
 
-        foreach ($node->files() as $item) {
+        $files = $node->files();
+
+        usort(
+            $files,
+            static fn (FileNode $a, FileNode $b) => $a->name() <=> $b->name(),
+        );
+
+        foreach ($files as $item) {
             $items .= $this->renderItem($item);
         }
 

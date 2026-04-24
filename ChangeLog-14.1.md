@@ -2,12 +2,17 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.1.6] - 2026-04-24
+
+### Fixed
+
+* [#1077](https://github.com/sebastianbergmann/php-code-coverage/issues/1077): `UnintentionallyCoveredCodeException` should report `ClassName::methodName` when methods are targeted
+
 ## [14.1.5] - 2026-04-24
 
 ### Changed
 
 * [#941](https://github.com/sebastianbergmann/php-code-coverage/issues/941): Sort directories and files in strict alphabetical order
-* [#1077](https://github.com/sebastianbergmann/php-code-coverage/issues/1077): `UnintentionallyCoveredCodeException` should report `ClassName::methodName` when methods are targeted
 
 ### Fixed
 
@@ -56,6 +61,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1147](https://github.com/sebastianbergmann/php-code-coverage/pull/1147): `CoversClass` does not transitively target traits used by enumerations
 
+[14.1.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.5...14.1.6
 [14.1.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.4...14.1.5
 [14.1.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.3...14.1.4
 [14.1.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.2...14.1.3

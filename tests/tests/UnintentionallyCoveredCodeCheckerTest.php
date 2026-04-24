@@ -42,41 +42,41 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         );
     }
 
-    public function testProcessKeepsFullMethodNameWhenNoClassLevelTargets(): void
+    public function testProcessReducesUnitToClassNameByDefault(): void
     {
         $this->assertSame(
-            ['CoveredClass::publicMethod'],
+            ['CoveredClass'],
             $this->processor->process(['CoveredClass::publicMethod'], []),
         );
     }
 
-    public function testProcessReducesUnitToClassNameWhenClassIsTargeted(): void
+    public function testProcessKeepsFullMethodNameWhenMethodLevelReportingIsEnabled(): void
     {
         $this->assertSame(
-            ['CoveredClass'],
-            $this->processor->process(['CoveredClass::publicMethod'], [], ['CoveredClass']),
+            ['CoveredClass::publicMethod'],
+            $this->processor->process(['CoveredClass::publicMethod'], [], true),
         );
     }
 
-    public function testProcessDeduplicatesMethodsToClassNameWhenClassIsTargeted(): void
+    public function testProcessDeduplicatesMethodsToClassNameByDefault(): void
     {
         $this->assertSame(
             ['CoveredClass'],
             $this->processor->process([
                 'CoveredClass::publicMethod',
                 'CoveredClass::protectedMethod',
-            ], [], ['CoveredClass']),
+            ], []),
         );
     }
 
-    public function testProcessKeepsDistinctMethodsWhenNoClassLevelTargets(): void
+    public function testProcessKeepsDistinctMethodsWhenMethodLevelReportingIsEnabled(): void
     {
         $this->assertSame(
             ['CoveredClass::protectedMethod', 'CoveredClass::publicMethod'],
             $this->processor->process([
                 'CoveredClass::publicMethod',
                 'CoveredClass::protectedMethod',
-            ], []),
+            ], [], true),
         );
     }
 
@@ -87,29 +87,29 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             $this->processor->process([
                 'CoveredClass::publicMethod',
                 'CoveredClass::publicMethod',
-            ], []),
+            ], [], true),
         );
     }
 
-    public function testProcessSortsResult(): void
+    public function testProcessSortsResultAtMethodLevel(): void
     {
         $this->assertSame(
             ['CoveredClass::publicMethod', 'CoveredParentClass::publicMethod'],
             $this->processor->process([
                 'CoveredParentClass::publicMethod',
                 'CoveredClass::publicMethod',
-            ], []),
+            ], [], true),
         );
     }
 
-    public function testProcessSortsResultWithClassLevelTargets(): void
+    public function testProcessSortsResultAtClassLevel(): void
     {
         $this->assertSame(
             ['CoveredClass', 'CoveredParentClass'],
             $this->processor->process([
                 'CoveredParentClass::publicMethod',
                 'CoveredClass::publicMethod',
-            ], [], ['CoveredClass', 'CoveredParentClass']),
+            ], []),
         );
     }
 
@@ -127,7 +127,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
     public function testProcessDoesNotFilterClassThatIsNotSubclassOfExcludedParent(): void
     {
         $this->assertSame(
-            ['CoveredParentClass::publicMethod'],
+            ['CoveredParentClass'],
             $this->processor->process(
                 ['CoveredParentClass::publicMethod'],
                 ['CoveredParentClass'],
@@ -135,14 +135,14 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         );
     }
 
-    public function testProcessDoesNotFilterClassThatIsNotSubclassOfExcludedParentWithClassLevelTarget(): void
+    public function testProcessDoesNotFilterClassThatIsNotSubclassOfExcludedParentWithMethodLevelReporting(): void
     {
         $this->assertSame(
-            ['CoveredParentClass'],
+            ['CoveredParentClass::publicMethod'],
             $this->processor->process(
                 ['CoveredParentClass::publicMethod'],
                 ['CoveredParentClass'],
-                ['CoveredParentClass'],
+                true,
             ),
         );
     }
@@ -154,10 +154,10 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         $this->processor->process(['NonExistentClass::method'], []);
     }
 
-    public function testProcessHandlesMixedUnitsWithoutClassLevelTargets(): void
+    public function testProcessHandlesMixedUnitsAtClassLevel(): void
     {
         $this->assertSame(
-            ['CoveredClass::publicMethod', 'some_function'],
+            ['CoveredClass', 'some_function'],
             $this->processor->process([
                 'some_function',
                 'CoveredClass::publicMethod',
@@ -165,14 +165,14 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         );
     }
 
-    public function testProcessHandlesMixedUnitsWithClassLevelTargets(): void
+    public function testProcessHandlesMixedUnitsAtMethodLevel(): void
     {
         $this->assertSame(
-            ['CoveredClass', 'some_function'],
+            ['CoveredClass::publicMethod', 'some_function'],
             $this->processor->process([
                 'some_function',
                 'CoveredClass::publicMethod',
-            ], [], ['CoveredClass']),
+            ], [], true),
         );
     }
 
@@ -484,7 +484,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testCheckReportsClassLevelForClassTargetAndMethodLevelForMethodTarget(): void
+    public function testCheckReportsMethodLevelWhenAnyMethodTargetIsPresent(): void
     {
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             'file.php' => [1 => 1, 5 => 1, 10 => 1],
@@ -515,7 +515,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             $this->fail('Expected UnintentionallyCoveredCodeException');
         } catch (UnintentionallyCoveredCodeException $e) {
             $this->assertSame(
-                ['CoveredClass', 'CoveredParentClass::protectedMethod'],
+                ['CoveredClass::publicMethod', 'CoveredParentClass::protectedMethod'],
                 $e->getUnintentionallyCoveredUnits(),
             );
         }

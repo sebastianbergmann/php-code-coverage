@@ -15,14 +15,12 @@ use function array_merge;
 use function array_unique;
 use function count;
 use function explode;
-use function in_array;
 use function sort;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\Test\Target\Class_;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\Method;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
-use SebastianBergmann\CodeCoverage\Test\Target\Trait_;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -58,12 +56,10 @@ final readonly class UnintentionallyCoveredCodeChecker
             }
         }
 
-        $classLevelTargets = $this->classLevelTargets($covers, $uses);
-
         $unintentionallyCoveredUnits = $this->process(
             $unintentionallyCoveredUnits,
             $parentClassesExcludedFromCheck,
-            $classLevelTargets,
+            $this->hasMethodLevelTargets($covers, $uses),
         );
 
         if ($unintentionallyCoveredUnits !== []) {
@@ -78,13 +74,12 @@ final readonly class UnintentionallyCoveredCodeChecker
     /**
      * @param list<string>       $unintentionallyCoveredUnits
      * @param list<class-string> $parentClassesExcludedFromCheck
-     * @param list<string>       $classLevelTargets
      *
      * @throws ReflectionException
      *
      * @return list<string>
      */
-    public function process(array $unintentionallyCoveredUnits, array $parentClassesExcludedFromCheck, array $classLevelTargets = []): array
+    public function process(array $unintentionallyCoveredUnits, array $parentClassesExcludedFromCheck, bool $methodLevelReporting = false): array
     {
         $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
         $processed                   = [];
@@ -114,10 +109,10 @@ final readonly class UnintentionallyCoveredCodeChecker
                 );
             }
 
-            if (in_array($tmp[0], $classLevelTargets, true)) {
-                $processed[] = $tmp[0];
-            } else {
+            if ($methodLevelReporting) {
                 $processed[] = $unintentionallyCoveredUnit;
+            } else {
+                $processed[] = $tmp[0];
             }
         }
 
@@ -169,23 +164,16 @@ final readonly class UnintentionallyCoveredCodeChecker
         return $allowedLines;
     }
 
-    /**
-     * @return list<string>
-     */
-    private function classLevelTargets(TargetCollection $covers, TargetCollection $uses): array
+    private function hasMethodLevelTargets(TargetCollection $covers, TargetCollection $uses): bool
     {
-        $classLevelTargets = [];
-
         foreach ([$covers, $uses] as $targets) {
             foreach ($targets as $target) {
-                if ($target instanceof Class_) {
-                    $classLevelTargets[] = $target->className();
-                } elseif ($target instanceof Trait_) {
-                    $classLevelTargets[] = $target->traitName();
+                if ($target instanceof Method) {
+                    return true;
                 }
             }
         }
 
-        return array_unique($classLevelTargets);
+        return false;
     }
 }

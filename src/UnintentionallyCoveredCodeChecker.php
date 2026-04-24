@@ -15,10 +15,14 @@ use function array_merge;
 use function array_unique;
 use function count;
 use function explode;
+use function in_array;
 use function sort;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Test\Target\Class_;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SebastianBergmann\CodeCoverage\Test\Target\Trait_;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -37,7 +41,7 @@ final readonly class UnintentionallyCoveredCodeChecker
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function check(RawCodeCoverageData $data, array $linesToBeCovered, array $linesToBeUsed, Mapper $targetMapper, array $parentClassesExcludedFromCheck): true
+    public function check(RawCodeCoverageData $data, array $linesToBeCovered, array $linesToBeUsed, Mapper $targetMapper, array $parentClassesExcludedFromCheck, TargetCollection $covers, TargetCollection $uses): true
     {
         $allowedLines = $this->allowedLines(
             $linesToBeCovered,
@@ -54,9 +58,12 @@ final readonly class UnintentionallyCoveredCodeChecker
             }
         }
 
+        $classLevelTargets = $this->classLevelTargets($covers, $uses);
+
         $unintentionallyCoveredUnits = $this->process(
             $unintentionallyCoveredUnits,
             $parentClassesExcludedFromCheck,
+            $classLevelTargets,
         );
 
         if ($unintentionallyCoveredUnits !== []) {
@@ -71,12 +78,13 @@ final readonly class UnintentionallyCoveredCodeChecker
     /**
      * @param list<string>       $unintentionallyCoveredUnits
      * @param list<class-string> $parentClassesExcludedFromCheck
+     * @param list<string>       $classLevelTargets
      *
      * @throws ReflectionException
      *
      * @return list<string>
      */
-    public function process(array $unintentionallyCoveredUnits, array $parentClassesExcludedFromCheck): array
+    public function process(array $unintentionallyCoveredUnits, array $parentClassesExcludedFromCheck, array $classLevelTargets = []): array
     {
         $unintentionallyCoveredUnits = array_unique($unintentionallyCoveredUnits);
         $processed                   = [];
@@ -106,7 +114,11 @@ final readonly class UnintentionallyCoveredCodeChecker
                 );
             }
 
-            $processed[] = $tmp[0];
+            if (in_array($tmp[0], $classLevelTargets, true)) {
+                $processed[] = $tmp[0];
+            } else {
+                $processed[] = $unintentionallyCoveredUnit;
+            }
         }
 
         $processed = array_unique($processed);
@@ -155,5 +167,25 @@ final readonly class UnintentionallyCoveredCodeChecker
         }
 
         return $allowedLines;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function classLevelTargets(TargetCollection $covers, TargetCollection $uses): array
+    {
+        $classLevelTargets = [];
+
+        foreach ([$covers, $uses] as $targets) {
+            foreach ($targets as $target) {
+                if ($target instanceof Class_) {
+                    $classLevelTargets[] = $target->className();
+                } elseif ($target instanceof Trait_) {
+                    $classLevelTargets[] = $target->traitName();
+                }
+            }
+        }
+
+        return array_unique($classLevelTargets);
     }
 }

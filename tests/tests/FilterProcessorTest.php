@@ -22,6 +22,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
 
 #[CoversClass(FilterProcessor::class)]
@@ -170,6 +171,8 @@ final class FilterProcessorTest extends TestCase
             false,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([], $data->lineCoverage());
@@ -189,6 +192,8 @@ final class FilterProcessorTest extends TestCase
             false,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
@@ -208,6 +213,8 @@ final class FilterProcessorTest extends TestCase
             false,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([1, 2], array_keys($data->lineCoverage()['file.php']));
@@ -228,6 +235,8 @@ final class FilterProcessorTest extends TestCase
             false,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertArrayHasKey('covered.php', $data->lineCoverage());
@@ -250,6 +259,8 @@ final class FilterProcessorTest extends TestCase
             true,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
     }
 
@@ -267,6 +278,8 @@ final class FilterProcessorTest extends TestCase
             true,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
@@ -286,6 +299,8 @@ final class FilterProcessorTest extends TestCase
             true,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
@@ -305,6 +320,8 @@ final class FilterProcessorTest extends TestCase
             false,
             new Mapper($this->emptyMap()),
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
@@ -412,6 +429,11 @@ final class FilterProcessorTest extends TestCase
             'functions'                     => [],
             'reverseLookup'                 => [],
         ];
+    }
+
+    private function emptyTargetCollection(): TargetCollection
+    {
+        return TargetCollection::fromArray([]);
     }
 
     private function createFileAnalyser(AnalysisResult $result): FileAnalyser

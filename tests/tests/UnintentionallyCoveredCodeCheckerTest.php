@@ -15,6 +15,8 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\Target;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 
 #[CoversClass(UnintentionallyCoveredCodeChecker::class)]
 #[Small]
@@ -40,18 +42,37 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         );
     }
 
-    public function testProcessReducesUnitWithDoubleColonToClassName(): void
+    public function testProcessKeepsFullMethodNameWhenNoClassLevelTargets(): void
     {
         $this->assertSame(
-            ['CoveredClass'],
+            ['CoveredClass::publicMethod'],
             $this->processor->process(['CoveredClass::publicMethod'], []),
         );
     }
 
-    public function testProcessRemovesDuplicateClassNames(): void
+    public function testProcessReducesUnitToClassNameWhenClassIsTargeted(): void
     {
         $this->assertSame(
             ['CoveredClass'],
+            $this->processor->process(['CoveredClass::publicMethod'], [], ['CoveredClass']),
+        );
+    }
+
+    public function testProcessDeduplicatesMethodsToClassNameWhenClassIsTargeted(): void
+    {
+        $this->assertSame(
+            ['CoveredClass'],
+            $this->processor->process([
+                'CoveredClass::publicMethod',
+                'CoveredClass::protectedMethod',
+            ], [], ['CoveredClass']),
+        );
+    }
+
+    public function testProcessKeepsDistinctMethodsWhenNoClassLevelTargets(): void
+    {
+        $this->assertSame(
+            ['CoveredClass::protectedMethod', 'CoveredClass::publicMethod'],
             $this->processor->process([
                 'CoveredClass::publicMethod',
                 'CoveredClass::protectedMethod',
@@ -62,7 +83,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
     public function testProcessRemovesDuplicateInputUnits(): void
     {
         $this->assertSame(
-            ['CoveredClass'],
+            ['CoveredClass::publicMethod'],
             $this->processor->process([
                 'CoveredClass::publicMethod',
                 'CoveredClass::publicMethod',
@@ -73,11 +94,22 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
     public function testProcessSortsResult(): void
     {
         $this->assertSame(
-            ['CoveredClass', 'CoveredParentClass'],
+            ['CoveredClass::publicMethod', 'CoveredParentClass::publicMethod'],
             $this->processor->process([
                 'CoveredParentClass::publicMethod',
                 'CoveredClass::publicMethod',
             ], []),
+        );
+    }
+
+    public function testProcessSortsResultWithClassLevelTargets(): void
+    {
+        $this->assertSame(
+            ['CoveredClass', 'CoveredParentClass'],
+            $this->processor->process([
+                'CoveredParentClass::publicMethod',
+                'CoveredClass::publicMethod',
+            ], [], ['CoveredClass', 'CoveredParentClass']),
         );
     }
 
@@ -95,9 +127,21 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
     public function testProcessDoesNotFilterClassThatIsNotSubclassOfExcludedParent(): void
     {
         $this->assertSame(
+            ['CoveredParentClass::publicMethod'],
+            $this->processor->process(
+                ['CoveredParentClass::publicMethod'],
+                ['CoveredParentClass'],
+            ),
+        );
+    }
+
+    public function testProcessDoesNotFilterClassThatIsNotSubclassOfExcludedParentWithClassLevelTarget(): void
+    {
+        $this->assertSame(
             ['CoveredParentClass'],
             $this->processor->process(
                 ['CoveredParentClass::publicMethod'],
+                ['CoveredParentClass'],
                 ['CoveredParentClass'],
             ),
         );
@@ -110,14 +154,25 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
         $this->processor->process(['NonExistentClass::method'], []);
     }
 
-    public function testProcessHandlesMixedUnits(): void
+    public function testProcessHandlesMixedUnitsWithoutClassLevelTargets(): void
+    {
+        $this->assertSame(
+            ['CoveredClass::publicMethod', 'some_function'],
+            $this->processor->process([
+                'some_function',
+                'CoveredClass::publicMethod',
+            ], []),
+        );
+    }
+
+    public function testProcessHandlesMixedUnitsWithClassLevelTargets(): void
     {
         $this->assertSame(
             ['CoveredClass', 'some_function'],
             $this->processor->process([
                 'some_function',
                 'CoveredClass::publicMethod',
-            ], []),
+            ], [], ['CoveredClass']),
         );
     }
 
@@ -230,6 +285,8 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
@@ -251,6 +308,8 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
     }
 
@@ -268,6 +327,8 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             ['file.php' => [2]],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
@@ -287,6 +348,8 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
@@ -304,12 +367,14 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
     }
 
-    public function testCheckUsesMapperForReverseLookup(): void
+    public function testCheckReportsMethodLevelWhenMethodIsTargeted(): void
     {
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             'file.php' => [1 => 1, 5 => 1],
@@ -320,6 +385,10 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
         $mapper = new Mapper($map);
 
+        $covers = TargetCollection::fromArray([
+            Target::forMethod('CoveredClass', 'protectedMethod'),
+        ]);
+
         try {
             $this->processor->check(
                 $data,
@@ -327,6 +396,40 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
                 [],
                 $mapper,
                 [],
+                $covers,
+                $this->emptyTargetCollection(),
+            );
+
+            $this->fail('Expected UnintentionallyCoveredCodeException');
+        } catch (UnintentionallyCoveredCodeException $e) {
+            $this->assertSame(['CoveredClass::publicMethod'], $e->getUnintentionallyCoveredUnits());
+        }
+    }
+
+    public function testCheckReportsClassLevelWhenClassIsTargeted(): void
+    {
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            'file.php' => [1 => 1, 5 => 1],
+        ]);
+
+        $map                                = $this->emptyMap();
+        $map['reverseLookup']['file.php:5'] = 'CoveredClass::publicMethod';
+
+        $mapper = new Mapper($map);
+
+        $covers = TargetCollection::fromArray([
+            Target::forClass('CoveredClass'),
+        ]);
+
+        try {
+            $this->processor->check(
+                $data,
+                ['file.php' => [1]],
+                [],
+                $mapper,
+                [],
+                $covers,
+                $this->emptyTargetCollection(),
             );
 
             $this->fail('Expected UnintentionallyCoveredCodeException');
@@ -352,6 +455,8 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             ['CoveredParentClass'],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
@@ -372,9 +477,115 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
             $mapper,
             [],
+            $this->emptyTargetCollection(),
+            $this->emptyTargetCollection(),
         );
 
         $this->assertTrue($result);
+    }
+
+    public function testCheckReportsClassLevelForClassTargetAndMethodLevelForMethodTarget(): void
+    {
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            'file.php' => [1 => 1, 5 => 1, 10 => 1],
+        ]);
+
+        $map                                 = $this->emptyMap();
+        $map['reverseLookup']['file.php:5']  = 'CoveredClass::publicMethod';
+        $map['reverseLookup']['file.php:10'] = 'CoveredParentClass::protectedMethod';
+
+        $mapper = new Mapper($map);
+
+        $covers = TargetCollection::fromArray([
+            Target::forClass('CoveredClass'),
+            Target::forMethod('CoveredParentClass', 'publicMethod'),
+        ]);
+
+        try {
+            $this->processor->check(
+                $data,
+                ['file.php' => [1]],
+                [],
+                $mapper,
+                [],
+                $covers,
+                $this->emptyTargetCollection(),
+            );
+
+            $this->fail('Expected UnintentionallyCoveredCodeException');
+        } catch (UnintentionallyCoveredCodeException $e) {
+            $this->assertSame(
+                ['CoveredClass', 'CoveredParentClass::protectedMethod'],
+                $e->getUnintentionallyCoveredUnits(),
+            );
+        }
+    }
+
+    public function testCheckReportsClassLevelWhenTraitIsTargeted(): void
+    {
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            'file.php' => [1 => 1, 5 => 1],
+        ]);
+
+        $map                                = $this->emptyMap();
+        $map['reverseLookup']['file.php:5'] = 'SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne::one';
+
+        $mapper = new Mapper($map);
+
+        $covers = TargetCollection::fromArray([
+            Target::forTrait('SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne'),
+        ]);
+
+        try {
+            $this->processor->check(
+                $data,
+                ['file.php' => [1]],
+                [],
+                $mapper,
+                [],
+                $covers,
+                $this->emptyTargetCollection(),
+            );
+
+            $this->fail('Expected UnintentionallyCoveredCodeException');
+        } catch (UnintentionallyCoveredCodeException $e) {
+            $this->assertSame(
+                ['SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne'],
+                $e->getUnintentionallyCoveredUnits(),
+            );
+        }
+    }
+
+    public function testCheckUsesClassLevelTargetsFromUsesCollection(): void
+    {
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            'file.php' => [1 => 1, 5 => 1],
+        ]);
+
+        $map                                = $this->emptyMap();
+        $map['reverseLookup']['file.php:5'] = 'CoveredClass::publicMethod';
+
+        $mapper = new Mapper($map);
+
+        $uses = TargetCollection::fromArray([
+            Target::forClass('CoveredClass'),
+        ]);
+
+        try {
+            $this->processor->check(
+                $data,
+                ['file.php' => [1]],
+                [],
+                $mapper,
+                [],
+                $this->emptyTargetCollection(),
+                $uses,
+            );
+
+            $this->fail('Expected UnintentionallyCoveredCodeException');
+        } catch (UnintentionallyCoveredCodeException $e) {
+            $this->assertSame(['CoveredClass'], $e->getUnintentionallyCoveredUnits());
+        }
     }
 
     /**
@@ -392,5 +603,10 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             'functions'                     => [],
             'reverseLookup'                 => [],
         ];
+    }
+
+    private function emptyTargetCollection(): TargetCollection
+    {
+        return TargetCollection::fromArray([]);
     }
 }

@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * [#941](https://github.com/sebastianbergmann/php-code-coverage/issues/941): Sort directories and files in strict alphabetical order
+* [#1077](https://github.com/sebastianbergmann/php-code-coverage/issues/1077): `UnintentionallyCoveredCodeException` should report `ClassName::methodName` when methods are targeted
 
 ### Fixed
 

@@ -233,6 +233,8 @@ final class CodeCoverage
 
         if ($covers !== false) {
             $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+        } else {
+            $covers = TargetCollection::fromArray([]);
         }
 
         if ($linesToBeCovered !== false) {
@@ -247,6 +249,8 @@ final class CodeCoverage
             $this->checkForUnintentionallyCoveredCode,
             $this->targetMapper,
             $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
+            $covers,
+            $uses,
         );
 
         if ($rawData->lineCoverage() === []) {

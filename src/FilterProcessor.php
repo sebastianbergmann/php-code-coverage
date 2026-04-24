@@ -17,6 +17,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
 
 /**
@@ -36,7 +37,7 @@ final readonly class FilterProcessor
      * @throws ReflectionException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function applyCoversAndUsesFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size, bool $checkForUnintentionallyCoveredCode, Mapper $targetMapper, array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck): void
+    public function applyCoversAndUsesFilter(RawCodeCoverageData $rawData, array|false $linesToBeCovered, array $linesToBeUsed, TestSize $size, bool $checkForUnintentionallyCoveredCode, Mapper $targetMapper, array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck, TargetCollection $covers, TargetCollection $uses): void
     {
         if ($linesToBeCovered === false) {
             $rawData->clear();
@@ -55,6 +56,8 @@ final readonly class FilterProcessor
                 $linesToBeUsed,
                 $targetMapper,
                 $parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
+                $covers,
+                $uses,
             );
         }
 

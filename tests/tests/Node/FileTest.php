@@ -250,6 +250,36 @@ final class FileTest extends TestCase
         $this->assertSame(1, $file->numberOfTestedTraits());
     }
 
+    public function testHasBranchCoverageDataDefaultsToFalse(): void
+    {
+        $file = $this->createFileNode();
+
+        $this->assertFalse($file->hasBranchCoverageData());
+        $this->assertSame(1, $file->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testHasBranchCoverageDataWhenTrue(): void
+    {
+        $root = new Directory('root');
+
+        $file = new File(
+            'test.php',
+            $root,
+            'abc123',
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(0, 0, 0),
+            true,
+        );
+
+        $this->assertTrue($file->hasBranchCoverageData());
+        $this->assertSame(0, $file->numberOfFilesWithoutBranchCoverageData());
+    }
+
     private function createFileNode(): File
     {
         $root = new Directory('root');

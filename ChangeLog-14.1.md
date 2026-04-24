@@ -13,6 +13,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#491](https://github.com/sebastianbergmann/php-code-coverage/issues/491): Ensure strings are valid UTF-8 before passing them to XML APIs
 * [#919](https://github.com/sebastianbergmann/php-code-coverage/issues/919): Not all lines of an interface are ignored
+* [#1007](https://github.com/sebastianbergmann/php-code-coverage/issues/1007): Incorrect branch/path coverage totals for uncovered files
 * [#1029](https://github.com/sebastianbergmann/php-code-coverage/issues/1029): Lines of multiline ternary expressions inside array literals are not shown in coverage reports
 * [#1030](https://github.com/sebastianbergmann/php-code-coverage/issues/1030): Start line of code unit includes attributes
 

@@ -100,6 +100,7 @@ final readonly class Builder
                             $analysisResult->traits(),
                             $analysisResult->functions(),
                             $analysisResult->linesOfCode(),
+                            $value['functionCoverage'] !== [],
                         ),
                     );
                 }

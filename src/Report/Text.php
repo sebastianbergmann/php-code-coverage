@@ -168,6 +168,17 @@ final readonly class Text
         if ($hasBranchCoverage) {
             $output .= $this->format($colors['paths'], $padding, $paths);
             $output .= $this->format($colors['branches'], $padding, $branches);
+
+            $numFilesWithoutBranchCoverageData = $report->numberOfFilesWithoutBranchCoverageData();
+
+            if ($numFilesWithoutBranchCoverageData > 0) {
+                $output .= sprintf(
+                    '  * %d %s not loaded during test execution and no branch/path data is available for %s' . PHP_EOL,
+                    $numFilesWithoutBranchCoverageData,
+                    $numFilesWithoutBranchCoverageData === 1 ? 'file was' : 'files were',
+                    $numFilesWithoutBranchCoverageData === 1 ? 'it' : 'them',
+                );
+            }
         }
         $output .= $this->format($colors['lines'], $padding, $lines);
 

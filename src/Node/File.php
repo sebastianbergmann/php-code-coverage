@@ -78,6 +78,7 @@ final class File extends AbstractNode
      */
     private array $functions = [];
     private readonly LinesOfCode $linesOfCode;
+    private readonly bool $hasBranchCoverageData;
     private ?int $numClasses         = null;
     private int $numTestedClasses    = 0;
     private ?int $numTraits          = null;
@@ -100,15 +101,16 @@ final class File extends AbstractNode
      * @param array<string, Trait_>                        $traits
      * @param array<string, Function_>                     $functions
      */
-    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode)
+    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false)
     {
         parent::__construct($name, $parent);
 
-        $this->sha1                 = $sha1;
-        $this->lineCoverageData     = $lineCoverageData;
-        $this->functionCoverageData = $functionCoverageData;
-        $this->testData             = $testData;
-        $this->linesOfCode          = $linesOfCode;
+        $this->sha1                  = $sha1;
+        $this->lineCoverageData      = $lineCoverageData;
+        $this->functionCoverageData  = $functionCoverageData;
+        $this->testData              = $testData;
+        $this->linesOfCode           = $linesOfCode;
+        $this->hasBranchCoverageData = $hasBranchCoverageData;
 
         $this->calculateStatistics($classes, $traits, $functions);
     }
@@ -207,6 +209,16 @@ final class File extends AbstractNode
     public function numberOfExecutedPaths(): int
     {
         return $this->numExecutedPaths;
+    }
+
+    public function hasBranchCoverageData(): bool
+    {
+        return $this->hasBranchCoverageData;
+    }
+
+    public function numberOfFilesWithoutBranchCoverageData(): int
+    {
+        return $this->hasBranchCoverageData ? 0 : 1;
     }
 
     public function numberOfClasses(): int

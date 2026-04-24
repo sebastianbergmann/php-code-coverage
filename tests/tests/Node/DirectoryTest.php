@@ -98,6 +98,62 @@ final class DirectoryTest extends TestCase
         $this->assertSame($first, $second);
     }
 
+    public function testNumberOfFilesWithoutBranchCoverageDataWithNoChildren(): void
+    {
+        $root = new Directory('root');
+
+        $this->assertSame(0, $root->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testNumberOfFilesWithoutBranchCoverageDataWithAllFilesHavingData(): void
+    {
+        $root = new Directory('root');
+
+        $root->addFile($this->createFileWithBranchCoverageData($root, 'a.php'));
+        $root->addFile($this->createFileWithBranchCoverageData($root, 'b.php'));
+
+        $this->assertSame(0, $root->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testNumberOfFilesWithoutBranchCoverageDataWithSomeFilesMissingData(): void
+    {
+        $root = new Directory('root');
+
+        $root->addFile($this->createFileWithBranchCoverageData($root, 'a.php'));
+        $root->addFile($this->createFile($root, 'b.php'));
+        $root->addFile($this->createFile($root, 'c.php'));
+
+        $this->assertSame(2, $root->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testNumberOfFilesWithoutBranchCoverageDataAggregatesFromNestedDirectories(): void
+    {
+        $root  = new Directory('root');
+        $child = $root->addDirectory('sub');
+
+        $root->addFile($this->createFileWithBranchCoverageData($root, 'a.php'));
+        $child->addFile($this->createFile($child, 'b.php'));
+
+        $this->assertSame(1, $root->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    private function createFileWithBranchCoverageData(Directory $parent, string $name): File
+    {
+        return new File(
+            $name,
+            $parent,
+            'sha1hash',
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(0, 0, 0),
+            true,
+        );
+    }
+
     private function createFile(Directory $parent, string $name): File
     {
         return new File(

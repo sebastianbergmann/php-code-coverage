@@ -53,6 +53,20 @@ final class SummaryTest extends TestCase
         );
     }
 
+    public function testNumberOfFilesWithoutBranchCoverageDataDefaultsToZero(): void
+    {
+        $summary = new Summary(0, 0, 0, 0, 0, 0);
+
+        $this->assertSame(0, $summary->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testNumberOfFilesWithoutBranchCoverageData(): void
+    {
+        $summary = new Summary(10, 5, 7, 3, 5, 3, 2);
+
+        $this->assertSame(2, $summary->numberOfFilesWithoutBranchCoverageData());
+    }
+
     public function testPathCoverageForBankAccountTest(): void
     {
         $report  = $this->getPathCoverageForBankAccount()->getReport();

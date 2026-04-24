@@ -56,23 +56,24 @@ final class Directory extends AbstractNode implements IteratorAggregate
     /**
      * @var ?array<string, ProcessedFunctionType>
      */
-    private ?array $functions          = null;
-    private ?LinesOfCode $linesOfCode  = null;
-    private int $numFiles              = -1;
-    private int $numExecutableLines    = -1;
-    private int $numExecutedLines      = -1;
-    private int $numExecutableBranches = -1;
-    private int $numExecutedBranches   = -1;
-    private int $numExecutablePaths    = -1;
-    private int $numExecutedPaths      = -1;
-    private int $numClasses            = -1;
-    private int $numTestedClasses      = -1;
-    private int $numTraits             = -1;
-    private int $numTestedTraits       = -1;
-    private int $numMethods            = -1;
-    private int $numTestedMethods      = -1;
-    private int $numFunctions          = -1;
-    private int $numTestedFunctions    = -1;
+    private ?array $functions                      = null;
+    private ?LinesOfCode $linesOfCode              = null;
+    private int $numFiles                          = -1;
+    private int $numExecutableLines                = -1;
+    private int $numExecutedLines                  = -1;
+    private int $numExecutableBranches             = -1;
+    private int $numExecutedBranches               = -1;
+    private int $numExecutablePaths                = -1;
+    private int $numExecutedPaths                  = -1;
+    private int $numFilesWithoutBranchCoverageData = -1;
+    private int $numClasses                        = -1;
+    private int $numTestedClasses                  = -1;
+    private int $numTraits                         = -1;
+    private int $numTestedTraits                   = -1;
+    private int $numMethods                        = -1;
+    private int $numTestedMethods                  = -1;
+    private int $numFunctions                      = -1;
+    private int $numTestedFunctions                = -1;
 
     public function count(): int
     {
@@ -297,6 +298,19 @@ final class Directory extends AbstractNode implements IteratorAggregate
         }
 
         return $this->numExecutedPaths;
+    }
+
+    public function numberOfFilesWithoutBranchCoverageData(): int
+    {
+        if ($this->numFilesWithoutBranchCoverageData === -1) {
+            $this->numFilesWithoutBranchCoverageData = 0;
+
+            foreach ($this->children as $child) {
+                $this->numFilesWithoutBranchCoverageData += $child->numberOfFilesWithoutBranchCoverageData();
+            }
+        }
+
+        return $this->numFilesWithoutBranchCoverageData;
     }
 
     public function numberOfClasses(): int

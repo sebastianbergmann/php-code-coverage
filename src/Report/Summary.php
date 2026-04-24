@@ -47,21 +47,28 @@ final readonly class Summary
     private int $numberOfExecutedPaths;
 
     /**
+     * @var non-negative-int
+     */
+    private int $numberOfFilesWithoutBranchCoverageData;
+
+    /**
      * @param non-negative-int $numberOfExecutableLines
      * @param non-negative-int $numberOfExecutedLines
      * @param non-negative-int $numberOfExecutableBranches
      * @param non-negative-int $numberOfExecutedBranches
      * @param non-negative-int $numberOfExecutablePaths
      * @param non-negative-int $numberOfExecutedPaths
+     * @param non-negative-int $numberOfFilesWithoutBranchCoverageData
      */
-    public function __construct(int $numberOfExecutableLines, int $numberOfExecutedLines, int $numberOfExecutableBranches, int $numberOfExecutedBranches, int $numberOfExecutablePaths, int $numberOfExecutedPaths)
+    public function __construct(int $numberOfExecutableLines, int $numberOfExecutedLines, int $numberOfExecutableBranches, int $numberOfExecutedBranches, int $numberOfExecutablePaths, int $numberOfExecutedPaths, int $numberOfFilesWithoutBranchCoverageData = 0)
     {
-        $this->numberOfExecutableLines    = $numberOfExecutableLines;
-        $this->numberOfExecutedLines      = $numberOfExecutedLines;
-        $this->numberOfExecutableBranches = $numberOfExecutableBranches;
-        $this->numberOfExecutedBranches   = $numberOfExecutedBranches;
-        $this->numberOfExecutablePaths    = $numberOfExecutablePaths;
-        $this->numberOfExecutedPaths      = $numberOfExecutedPaths;
+        $this->numberOfExecutableLines                = $numberOfExecutableLines;
+        $this->numberOfExecutedLines                  = $numberOfExecutedLines;
+        $this->numberOfExecutableBranches             = $numberOfExecutableBranches;
+        $this->numberOfExecutedBranches               = $numberOfExecutedBranches;
+        $this->numberOfExecutablePaths                = $numberOfExecutablePaths;
+        $this->numberOfExecutedPaths                  = $numberOfExecutedPaths;
+        $this->numberOfFilesWithoutBranchCoverageData = $numberOfFilesWithoutBranchCoverageData;
     }
 
     /**
@@ -130,6 +137,14 @@ final readonly class Summary
     public function pathCoverageAsPercentage(): float
     {
         return $this->percentage($this->numberOfExecutedPaths, $this->numberOfExecutablePaths);
+    }
+
+    /**
+     * @return non-negative-int
+     */
+    public function numberOfFilesWithoutBranchCoverageData(): int
+    {
+        return $this->numberOfFilesWithoutBranchCoverageData;
     }
 
     /**

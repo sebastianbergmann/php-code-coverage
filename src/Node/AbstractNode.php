@@ -226,6 +226,8 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfExecutedPaths(): int;
 
+    abstract public function numberOfFilesWithoutBranchCoverageData(): int;
+
     abstract public function numberOfClasses(): int;
 
     abstract public function numberOfTestedClasses(): int;

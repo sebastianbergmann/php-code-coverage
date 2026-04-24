@@ -153,6 +153,7 @@ final readonly class Facade
             $this->report->numberOfExecutedBranches(),
             $this->report->numberOfExecutablePaths(),
             $this->report->numberOfExecutedPaths(),
+            $this->report->numberOfFilesWithoutBranchCoverageData(),
         );
     }
 

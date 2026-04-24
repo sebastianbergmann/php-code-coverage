@@ -11,11 +11,13 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function assert;
 use function file_get_contents;
+use function range;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
@@ -61,6 +63,34 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         $this->assertNotContains(10, $ignoredLines);
         $this->assertNotContains(11, $ignoredLines);
         $this->assertNotContains(12, $ignoredLines);
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/919')]
+    public function testAllLinesOfInterfaceAreIgnored(): void
+    {
+        $ignoredLines = $this->findIgnoredLines(
+            TEST_FILES_PATH . 'source_with_interface.php',
+            false,
+            false,
+        );
+
+        foreach (range(4, 16) as $line) {
+            $this->assertContains($line, $ignoredLines);
+        }
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/919')]
+    public function testAllLinesOfInterfaceAreIgnoredWhenUsingAnnotationsForIgnoringCode(): void
+    {
+        $ignoredLines = $this->findIgnoredLines(
+            TEST_FILES_PATH . 'source_with_interface.php',
+            true,
+            false,
+        );
+
+        foreach (range(4, 16) as $line) {
+            $this->assertContains($line, $ignoredLines);
+        }
     }
 
     /**

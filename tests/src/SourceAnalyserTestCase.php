@@ -35,6 +35,9 @@ abstract class SourceAnalyserTestCase extends TestCase
                 25,
                 30,
                 33,
+                34,
+                35,
+                36,
                 38,
                 39,
                 40,
@@ -100,6 +103,9 @@ abstract class SourceAnalyserTestCase extends TestCase
         $this->assertSame(
             [
                 4,
+                5,
+                6,
+                7,
                 9,
                 29,
                 31,
@@ -122,6 +128,9 @@ abstract class SourceAnalyserTestCase extends TestCase
                 11,
                 18,
                 33,
+                34,
+                35,
+                36,
             ],
             $this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore.php',

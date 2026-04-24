@@ -322,6 +322,66 @@ final class CodeUnitFindingVisitorTest extends TestCase
         );
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1030')]
+    public function testStartLineExcludesAttributes(): void
+    {
+        $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/source_with_attributes.php');
+
+        $interfaces = $codeUnitFindingVisitor->interfaces();
+
+        $this->assertCount(1, $interfaces);
+
+        $interface = $interfaces['SebastianBergmann\CodeCoverage\TestFixture\InterfaceWithAttribute'];
+
+        $this->assertSame(5, $interface->startLine());
+        $this->assertSame(7, $interface->endLine());
+
+        $classes = $codeUnitFindingVisitor->classes();
+
+        $this->assertCount(1, $classes);
+
+        $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithAttribute'];
+
+        $this->assertSame(10, $class->startLine());
+        $this->assertSame(26, $class->endLine());
+
+        $methods = $class->methods();
+
+        $this->assertCount(3, $methods);
+
+        $this->assertSame(13, $methods['methodWithAttribute']->startLine());
+        $this->assertSame(15, $methods['methodWithAttribute']->endLine());
+
+        $this->assertSame(19, $methods['methodWithMultipleAttributes']->startLine());
+        $this->assertSame(21, $methods['methodWithMultipleAttributes']->endLine());
+
+        $this->assertSame(23, $methods['methodWithAttributeOnSameLine']->startLine());
+        $this->assertSame(25, $methods['methodWithAttributeOnSameLine']->endLine());
+
+        $traits = $codeUnitFindingVisitor->traits();
+
+        $this->assertCount(1, $traits);
+
+        $trait = $traits['SebastianBergmann\CodeCoverage\TestFixture\TraitWithAttribute'];
+
+        $this->assertSame(29, $trait->startLine());
+        $this->assertSame(35, $trait->endLine());
+
+        $traitMethods = $trait->methods();
+
+        $this->assertSame(32, $traitMethods['methodWithAttribute']->startLine());
+        $this->assertSame(34, $traitMethods['methodWithAttribute']->endLine());
+
+        $functions = $codeUnitFindingVisitor->functions();
+
+        $this->assertCount(1, $functions);
+
+        $function = $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithAttribute'];
+
+        $this->assertSame(38, $function->startLine());
+        $this->assertSame(40, $function->endLine());
+    }
+
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
         $nodes = (new ParserFactory)->createForHostVersion()->parse(

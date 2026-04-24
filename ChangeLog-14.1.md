@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#491](https://github.com/sebastianbergmann/php-code-coverage/issues/491): Ensure strings are valid UTF-8 before passing them to XML APIs
 * [#919](https://github.com/sebastianbergmann/php-code-coverage/issues/919): Not all lines of an interface are ignored
+* [#1030](https://github.com/sebastianbergmann/php-code-coverage/issues/1030): Start line of code unit includes attributes
 
 ## [14.1.4] - 2026-04-23
 

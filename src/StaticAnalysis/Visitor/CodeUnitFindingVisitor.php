@@ -256,7 +256,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $name,
             $namespacedName,
             $this->namespace($namespacedName, $name),
-            $node->getStartLine(),
+            $this->startLine($node),
             $node->getEndLine(),
             $parentInterfaces,
         );
@@ -284,7 +284,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $namespacedName,
             $this->namespace($namespacedName, $name),
             $this->file,
-            $node->getStartLine(),
+            $this->startLine($node),
             $node->getEndLine(),
             $parentClass,
             $interfaces,
@@ -303,7 +303,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $namespacedName,
             $this->namespace($namespacedName, $name),
             $this->file,
-            $node->getStartLine(),
+            $this->startLine($node),
             $node->getEndLine(),
             [],
             $this->processMethods($node->getMethods()),
@@ -322,7 +322,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         foreach ($nodes as $node) {
             $methods[$node->name->toString()] = new Method(
                 $node->name->toString(),
-                $node->getStartLine(),
+                $this->startLine($node),
                 $node->getEndLine(),
                 $this->signature($node),
                 $this->visibility($node),
@@ -346,11 +346,16 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $name,
             $namespacedName,
             $this->namespace($namespacedName, $name),
-            $node->getStartLine(),
+            $this->startLine($node),
             $node->getEndLine(),
             $this->signature($node),
             $this->cyclomaticComplexity($node),
         );
+    }
+
+    private function startLine(Class_|ClassMethod|Enum_|Function_|Interface_|Trait_ $node): int
+    {
+        return $node->name->getStartLine();
     }
 
     private function namespace(string $namespacedName, string $name): string

@@ -9,16 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage\Util;
 
+use const DIRECTORY_SEPARATOR;
 use function sort;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 
 #[CoversClass(PathReducer::class)]
 #[Small]
-#[RequiresOperatingSystemFamily('Linux')]
 final class PathReducerTest extends TestCase
 {
     public function testReduceWithNoFilesReturnsEmptyString(): void
@@ -30,11 +29,11 @@ final class PathReducerTest extends TestCase
 
     public function testReduceWithSingleAbsoluteFileReturnsDirnameAndRenamesFile(): void
     {
-        $data = $this->dataWithFiles(['/path/to/file.php']);
+        $data = $this->dataWithFiles([DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'to' . DIRECTORY_SEPARATOR . 'file.php']);
 
         $result = (new PathReducer)->reduce($data);
 
-        $this->assertSame('/path/to', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'to', $result);
         $this->assertSame(['file.php'], $data->coveredFiles());
     }
 
@@ -44,20 +43,20 @@ final class PathReducerTest extends TestCase
 
         $result = (new PathReducer)->reduce($data);
 
-        $this->assertSame('/path/to', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'to', $result);
         $this->assertSame(['file.php'], $data->coveredFiles());
     }
 
     public function testReduceWithMultipleFilesExtractsLongestCommonPath(): void
     {
         $data = $this->dataWithFiles([
-            '/common/path/a.php',
-            '/common/path/b.php',
+            DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'a.php',
+            DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'b.php',
         ]);
 
         $result = (new PathReducer)->reduce($data);
 
-        $this->assertSame('/common/path', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'path', $result);
         $this->assertSame(['a.php', 'b.php'], $data->coveredFiles());
     }
 
@@ -70,28 +69,28 @@ final class PathReducerTest extends TestCase
 
         $result = (new PathReducer)->reduce($data);
 
-        $this->assertSame('/common', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR . 'common', $result);
         $this->assertSame(['a.php', 'b.php'], $data->coveredFiles());
     }
 
     public function testReduceWithMultipleFilesInDifferentDirectoriesReturnsRootPath(): void
     {
         $data = $this->dataWithFiles([
-            '/alpha/x.php',
-            '/beta/y.php',
+            DIRECTORY_SEPARATOR . 'alpha' . DIRECTORY_SEPARATOR . 'x.php',
+            DIRECTORY_SEPARATOR . 'beta' . DIRECTORY_SEPARATOR . 'y.php',
         ]);
 
         $result = (new PathReducer)->reduce($data);
 
         $this->assertSame('', $result);
-        $this->assertSame(['alpha/x.php', 'beta/y.php'], $data->coveredFiles());
+        $this->assertSame(['alpha' . DIRECTORY_SEPARATOR . 'x.php', 'beta' . DIRECTORY_SEPARATOR . 'y.php'], $data->coveredFiles());
     }
 
     public function testReduceDoesNotDestroyCoverageDataWhenFilesShareNoCommonPrefix(): void
     {
         $data = $this->dataWithFiles([
-            'src/a.php',
-            'lib/b.php',
+            'src' . DIRECTORY_SEPARATOR . 'a.php',
+            'lib' . DIRECTORY_SEPARATOR . 'b.php',
         ]);
 
         $result = (new PathReducer)->reduce($data);
@@ -100,7 +99,7 @@ final class PathReducerTest extends TestCase
         $coveredFiles = $data->coveredFiles();
         sort($coveredFiles);
 
-        $this->assertSame(['lib/b.php', 'src/a.php'], $coveredFiles);
+        $this->assertSame(['lib' . DIRECTORY_SEPARATOR . 'b.php', 'src' . DIRECTORY_SEPARATOR . 'a.php'], $coveredFiles);
     }
 
     /**

@@ -74,29 +74,31 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof PhpParserInterface_) {
             $this->processInterface($node);
+
+            return null;
         }
 
-        if ($node instanceof PhpParserClass_) {
-            if ($node->isAnonymous()) {
-                return null;
-            }
-
+        if ($node instanceof PhpParserClass_ && !$node->isAnonymous()) {
             $this->processClass($node);
+
+            return null;
         }
 
         if ($node instanceof PhpParserEnum) {
             $this->processClass($node);
+
+            return null;
         }
 
         if ($node instanceof PhpParserTrait_) {
             $this->processTrait($node);
-        }
 
-        if (!$node instanceof PhpParserFunction_) {
             return null;
         }
 
-        $this->processFunction($node);
+        if ($node instanceof PhpParserFunction_) {
+            $this->processFunction($node);
+        }
 
         return null;
     }
@@ -111,19 +113,13 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $traits = [];
-
-        foreach ($node->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                $traits[] = $trait->toString();
-            }
-        }
+        $traits = $this->traitUses($node);
 
         if ($traits === []) {
             return null;
         }
 
-        $this->postProcessClassOrTrait($node, $traits);
+        $this->setTraits($node, $traits);
 
         return null;
     }
@@ -311,6 +307,22 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
+     * @return list<non-empty-string>
+     */
+    private function traitUses(PhpParserClass_|PhpParserEnum|PhpParserTrait_ $node): array
+    {
+        $traits = [];
+
+        foreach ($node->getTraitUses() as $traitUse) {
+            foreach ($traitUse->traits as $trait) {
+                $traits[] = $trait->toString();
+            }
+        }
+
+        return $traits;
+    }
+
+    /**
      * @param list<ClassMethod> $nodes
      *
      * @return array<non-empty-string, Method>
@@ -403,7 +415,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     /**
      * @param list<non-empty-string> $traits
      */
-    private function postProcessClassOrTrait(PhpParserClass_|PhpParserEnum|PhpParserTrait_ $node, array $traits): void
+    private function setTraits(PhpParserClass_|PhpParserEnum|PhpParserTrait_ $node, array $traits): void
     {
         $name = $node->namespacedName->toString();
 

@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
+#[CoversClass(AttributeParentConnectingVisitor::class)]
 #[Small]
 final class IgnoredLinesFindingVisitorTest extends TestCase
 {

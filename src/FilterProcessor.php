@@ -94,7 +94,9 @@ final readonly class FilterProcessor
                 continue;
             }
 
-            $linesToBranchMap = $analyser->analyse($filename)->executableLines();
+            $analysisResult      = $analyser->analyse($filename);
+            $linesToBranchMap    = $analysisResult->executableLines();
+            $branchOperatorLines = $analysisResult->branchOperatorLines();
 
             $data->keepLineCoverageDataOnlyForLines(
                 $filename,
@@ -103,7 +105,7 @@ final readonly class FilterProcessor
 
             $data->addMissingExecutableLines(
                 $filename,
-                array_keys($linesToBranchMap),
+                array_keys($branchOperatorLines),
             );
 
             $data->markExecutableLineByBranch(

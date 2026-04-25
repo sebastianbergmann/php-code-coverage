@@ -119,10 +119,31 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
                 11 => 5,
                 12 => 6,
                 13 => 7,
-                14 => 2,
             ],
             $executableLinesFindingVisitor->executableLinesGroupedByBranch(),
         );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
+    public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayNotHasKey(8, $executableLines);
+        $this->assertArrayNotHasKey(13, $executableLines);
+        $this->assertArrayHasKey(9, $executableLines);
+        $this->assertArrayHasKey(10, $executableLines);
+        $this->assertArrayHasKey(11, $executableLines);
+        $this->assertArrayHasKey(12, $executableLines);
     }
 
     private function doTestSelfDescribingAssert(string $filename): void

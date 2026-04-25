@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_diff_key;
+use function array_intersect_key;
 use function assert;
 use function count;
 use function current;
@@ -21,6 +22,7 @@ use function preg_quote;
 use function range;
 use function reset;
 use function sprintf;
+use function strtolower;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -40,6 +42,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      * @var LinesType
      */
     private array $executableLinesGroupedByBranch = [];
+
+    /**
+     * @var array<int, true>
+     */
+    private array $branchOperatorLines = [];
 
     /**
      * @var array<int, bool>
@@ -127,6 +134,24 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                     $arm->body->getEndLine(),
                     ++$this->nextBranch,
                 );
+            }
+
+            if ([] !== $node->arms) {
+                $firstArmLine = $node->arms[0]->getStartLine();
+                $lastArmLine  = $node->arms[count($node->arms) - 1]->getEndLine();
+
+                if ($node->getStartLine() < $firstArmLine &&
+                    $this->matchConditionHasNoOpcode($node->cond)) {
+                    foreach (range($node->getStartLine(), $firstArmLine - 1) as $line) {
+                        $this->unsets[$line] = true;
+                    }
+                }
+
+                if ($node->getEndLine() > $lastArmLine) {
+                    foreach (range($lastArmLine + 1, $node->getEndLine()) as $line) {
+                        $this->unsets[$line] = true;
+                    }
+                }
             }
 
             return null;
@@ -364,7 +389,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $this->setLineBranch($node->getStartLine(), $node->getEndLine(), ++$this->nextBranch);
+        $branch = ++$this->nextBranch;
+
+        foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
+            $this->executableLinesGroupedByBranch[$line] = $branch;
+        }
 
         return null;
     }
@@ -390,6 +419,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $this->unsets,
         );
 
+        $this->branchOperatorLines = array_intersect_key(
+            $this->branchOperatorLines,
+            $this->executableLinesGroupedByBranch,
+        );
+
         return null;
     }
 
@@ -401,10 +435,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         return $this->executableLinesGroupedByBranch;
     }
 
+    /**
+     * @return array<int, true>
+     */
+    public function branchOperatorLines(): array
+    {
+        return $this->branchOperatorLines;
+    }
+
     private function setLineBranch(int $start, int $end, int $branch): void
     {
         foreach (range($start, $end) as $line) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
+            $this->branchOperatorLines[$line]            = true;
         }
+    }
+
+    private function matchConditionHasNoOpcode(Node\Expr $cond): bool
+    {
+        if (!$cond instanceof Node\Expr\ConstFetch) {
+            return false;
+        }
+
+        $name = strtolower($cond->name->toString());
+
+        return $name === 'true' || $name === 'false' || $name === 'null';
     }
 }

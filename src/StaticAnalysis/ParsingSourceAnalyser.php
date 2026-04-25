@@ -105,6 +105,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
                 $lineCountingVisitor->result()->nonCommentLinesOfCode(),
             ),
             $executableLinesFindingVisitor->executableLinesGroupedByBranch(),
+            $executableLinesFindingVisitor->branchOperatorLines(),
             $ignoredLines,
         );
     }

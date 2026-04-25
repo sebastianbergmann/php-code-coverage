@@ -45,6 +45,11 @@ final readonly class AnalysisResult
     private array $executableLines;
 
     /**
+     * @var array<int, true>
+     */
+    private array $branchOperatorLines;
+
+    /**
      * @var LinesType
      */
     private array $ignoredLines;
@@ -55,17 +60,19 @@ final readonly class AnalysisResult
      * @param array<string, Trait_>     $traits
      * @param array<string, Function_>  $functions
      * @param LinesType                 $executableLines
+     * @param array<int, true>          $branchOperatorLines
      * @param LinesType                 $ignoredLines
      */
-    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $ignoredLines)
+    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $ignoredLines)
     {
-        $this->interfaces      = $interfaces;
-        $this->classes         = $classes;
-        $this->traits          = $traits;
-        $this->functions       = $functions;
-        $this->linesOfCode     = $linesOfCode;
-        $this->executableLines = $executableLines;
-        $this->ignoredLines    = $ignoredLines;
+        $this->interfaces          = $interfaces;
+        $this->classes             = $classes;
+        $this->traits              = $traits;
+        $this->functions           = $functions;
+        $this->linesOfCode         = $linesOfCode;
+        $this->executableLines     = $executableLines;
+        $this->branchOperatorLines = $branchOperatorLines;
+        $this->ignoredLines        = $ignoredLines;
     }
 
     /**
@@ -111,6 +118,14 @@ final readonly class AnalysisResult
     public function executableLines(): array
     {
         return $this->executableLines;
+    }
+
+    /**
+     * @return array<int, true>
+     */
+    public function branchOperatorLines(): array
+    {
+        return $this->branchOperatorLines;
     }
 
     /**

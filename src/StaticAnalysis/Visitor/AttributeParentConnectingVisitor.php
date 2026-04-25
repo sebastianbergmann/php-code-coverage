@@ -10,8 +10,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_key_last;
 use function array_pop;
-use function count;
 use PhpParser\Node;
 use PhpParser\NodeVisitor;
 
@@ -43,7 +43,7 @@ final class AttributeParentConnectingVisitor implements NodeVisitor
     {
         if ($this->stack !== [] &&
             ($node instanceof Node\Attribute || $node instanceof Node\AttributeGroup)) {
-            $node->setAttribute('parent', $this->stack[count($this->stack) - 1]);
+            $node->setAttribute('parent', $this->stack[array_key_last($this->stack)]);
         }
 
         $this->stack[] = $node;

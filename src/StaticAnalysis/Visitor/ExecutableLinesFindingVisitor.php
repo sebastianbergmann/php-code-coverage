@@ -74,7 +74,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private const array ALWAYS_IGNORED = [
         Node\Stmt\Declare_::class,
-        Node\Stmt\DeclareDeclare::class,
+        Node\DeclareItem::class,
         Node\Stmt\Else_::class,
         Node\Stmt\EnumCase::class,
         Node\Stmt\Finally_::class,
@@ -85,7 +85,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         Node\Stmt\Switch_::class,
         Node\Stmt\TryCatch::class,
         Node\Stmt\Use_::class,
-        Node\Stmt\UseUse::class,
+        Node\UseItem::class,
         Node\Expr\ConstFetch::class,
         Node\Expr\Variable::class,
         Node\Expr\Throw_::class,
@@ -129,7 +129,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $this->collectMatchingComments($node);
 
         if ($node instanceof Node\Scalar\String_ ||
-            $node instanceof Node\Scalar\EncapsedStringPart) {
+            $node instanceof Node\InterpolatedStringPart) {
             $this->stripMultilineStringInterior($node);
 
             return null;

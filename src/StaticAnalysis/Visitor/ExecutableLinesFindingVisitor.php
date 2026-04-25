@@ -11,19 +11,16 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function array_diff_key;
 use function array_intersect_key;
+use function array_key_last;
 use function assert;
 use function count;
-use function current;
-use function end;
+use function ctype_space;
 use function explode;
 use function is_array;
 use function max;
-use function preg_match;
-use function preg_quote;
-use function reset;
-use function sprintf;
 use function str_replace;
 use function strtolower;
+use function trim;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -532,26 +529,17 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
         if ([] !== $node->init) {
             $startLine = $node->init[0]->getStartLine();
-
-            end($node->init);
-            $endLine = current($node->init)->getEndLine();
-            reset($node->init);
+            $endLine   = $node->init[array_key_last($node->init)]->getEndLine();
         }
 
         if ([] !== $node->cond) {
             $startLine ??= $node->cond[0]->getStartLine();
-
-            end($node->cond);
-            $endLine = current($node->cond)->getEndLine();
-            reset($node->cond);
+            $endLine = $node->cond[array_key_last($node->cond)]->getEndLine();
         }
 
         if ([] !== $node->loop) {
             $startLine ??= $node->loop[0]->getStartLine();
-
-            end($node->loop);
-            $endLine = current($node->loop)->getEndLine();
-            reset($node->loop);
+            $endLine = $node->loop[array_key_last($node->loop)]->getEndLine();
         }
 
         if (null === $startLine || null === $endLine) {
@@ -566,8 +554,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         assert([] !== $node->types);
 
         $startLine = $node->types[0]->getStartLine();
-        end($node->types);
-        $endLine = current($node->types)->getEndLine();
+        $endLine   = $node->types[array_key_last($node->types)]->getEndLine();
 
         $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
     }
@@ -644,17 +631,14 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         foreach (explode("\n", $this->source) as $i => $line) {
             $lineNumber = $i + 1;
 
-            if (preg_match('/^\s*$/', $line) === 1) {
+            if ($line === '' || ctype_space($line)) {
                 unset($this->executableLinesGroupedByBranch[$lineNumber]);
 
                 continue;
             }
 
             if (isset($this->commentsToCheckForUnset[$lineNumber]) &&
-                preg_match(
-                    sprintf('/^\s*%s\s*$/', preg_quote($this->commentsToCheckForUnset[$lineNumber], '/')),
-                    $line,
-                ) === 1) {
+                trim($line) === trim($this->commentsToCheckForUnset[$lineNumber])) {
                 unset($this->executableLinesGroupedByBranch[$lineNumber]);
             }
         }

@@ -10,11 +10,13 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 
 #[CoversClass(ParsingSourceAnalyser::class)]
 #[CoversClass(CodeUnitFindingVisitor::class)]
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
+#[Group('static-analysis')]
 #[Small]
 final class ParsingSourceAnalyserTest extends SourceAnalyserTestCase
 {

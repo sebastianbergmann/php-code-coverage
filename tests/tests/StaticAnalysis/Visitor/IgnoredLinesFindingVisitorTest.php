@@ -16,6 +16,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(IgnoredLinesFindingVisitor::class)]
 #[CoversClass(AttributeParentConnectingVisitor::class)]
 #[Small]
+#[Group('static-analysis')]
 final class IgnoredLinesFindingVisitorTest extends TestCase
 {
     public function testAnonymousClassIsNotProcessed(): void

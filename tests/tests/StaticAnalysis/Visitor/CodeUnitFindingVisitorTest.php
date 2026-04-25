@@ -16,6 +16,7 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\ClassWithNameThatIsPartOfItsNames
 
 #[CoversClass(CodeUnitFindingVisitor::class)]
 #[Small]
+#[Group('static-analysis')]
 final class CodeUnitFindingVisitorTest extends TestCase
 {
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/786')]

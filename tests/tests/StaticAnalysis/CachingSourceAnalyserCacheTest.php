@@ -14,6 +14,7 @@ use function file_get_contents;
 use function sys_get_temp_dir;
 use function uniqid;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 #[UsesClass(ParsingSourceAnalyser::class)]
 #[UsesClass(CodeUnitFindingVisitor::class)]
 #[UsesClass(IgnoredLinesFindingVisitor::class)]
+#[Group('static-analysis')]
 #[Small]
 final class CachingSourceAnalyserCacheTest extends TestCase
 {

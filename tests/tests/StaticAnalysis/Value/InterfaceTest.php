@@ -10,11 +10,13 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Interface_::class)]
 #[Small]
+#[Group('static-analysis')]
 final class InterfaceTest extends TestCase
 {
     public function testHasName(): void

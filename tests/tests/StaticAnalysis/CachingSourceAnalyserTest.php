@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use const DIRECTORY_SEPARATOR;
 use function sys_get_temp_dir;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 #[UsesClass(ParsingSourceAnalyser::class)]
 #[UsesClass(CodeUnitFindingVisitor::class)]
 #[UsesClass(IgnoredLinesFindingVisitor::class)]
+#[Group('static-analysis')]
 #[Small]
 final class CachingSourceAnalyserTest extends SourceAnalyserTestCase
 {

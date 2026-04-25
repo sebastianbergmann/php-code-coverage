@@ -37,7 +37,7 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
 
         // Anonymous class start line should not be in ignored lines
         // (only named classes get their start line added)
-        $this->assertNotContains(4, $ignoredLines);
+        $this->assertArrayNotHasKey(4, $ignoredLines);
     }
 
     public function testDeprecatedMethodIsIgnoredWhenIgnoreDeprecatedIsTrue(): void
@@ -49,9 +49,9 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         );
 
         // Lines 9-11 cover the deprecated method
-        $this->assertContains(9, $ignoredLines);
-        $this->assertContains(10, $ignoredLines);
-        $this->assertContains(11, $ignoredLines);
+        $this->assertArrayHasKey(9, $ignoredLines);
+        $this->assertArrayHasKey(10, $ignoredLines);
+        $this->assertArrayHasKey(11, $ignoredLines);
     }
 
     public function testDeprecatedMethodIsNotIgnoredWhenIgnoreDeprecatedIsFalse(): void
@@ -63,9 +63,9 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         );
 
         // The method body lines should not be in ignored lines
-        $this->assertNotContains(10, $ignoredLines);
-        $this->assertNotContains(11, $ignoredLines);
-        $this->assertNotContains(12, $ignoredLines);
+        $this->assertArrayNotHasKey(10, $ignoredLines);
+        $this->assertArrayNotHasKey(11, $ignoredLines);
+        $this->assertArrayNotHasKey(12, $ignoredLines);
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/919')]
@@ -78,7 +78,7 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         );
 
         foreach (range(4, 16) as $line) {
-            $this->assertContains($line, $ignoredLines);
+            $this->assertArrayHasKey($line, $ignoredLines);
         }
     }
 
@@ -92,12 +92,12 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         );
 
         foreach (range(4, 16) as $line) {
-            $this->assertContains($line, $ignoredLines);
+            $this->assertArrayHasKey($line, $ignoredLines);
         }
     }
 
     /**
-     * @return list<int>
+     * @return array<int, true>
      */
     private function findIgnoredLines(string $filename, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): array
     {

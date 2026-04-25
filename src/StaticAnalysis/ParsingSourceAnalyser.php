@@ -11,13 +11,12 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const T_COMMENT;
 use const T_DOC_COMMENT;
-use function array_merge;
-use function array_unique;
+use function array_keys;
+use function array_replace;
 use function assert;
 use function is_array;
+use function ksort;
 use function max;
-use function range;
-use function sort;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
@@ -81,18 +80,18 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
         }
         // @codeCoverageIgnoreEnd
 
-        $ignoredLines = array_unique(
-            array_merge(
-                $this->findLinesIgnoredByLineBasedAnnotations(
-                    $sourceCodeFile,
-                    $sourceCode,
-                    $useAnnotationsForIgnoringCode,
-                ),
-                $ignoredLinesFindingVisitor->ignoredLines(),
+        $ignoredLines = array_replace(
+            $this->findLinesIgnoredByLineBasedAnnotations(
+                $sourceCodeFile,
+                $sourceCode,
+                $useAnnotationsForIgnoringCode,
             ),
+            $ignoredLinesFindingVisitor->ignoredLines(),
         );
 
-        sort($ignoredLines);
+        ksort($ignoredLines);
+
+        $ignoredLines = array_keys($ignoredLines);
 
         return new AnalysisResult(
             $codeUnitFindingVisitor->interfaces(),
@@ -111,7 +110,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
     }
 
     /**
-     * @return array<int, int>
+     * @return array<int, true>
      */
     private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): array
     {
@@ -132,7 +131,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
             if ($comment === '// @codeCoverageIgnore' ||
                 $comment === '//@codeCoverageIgnore') {
-                $result[] = $token[2];
+                $result[$token[2]] = true;
 
                 continue;
             }
@@ -150,10 +149,9 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
                     $start = $token[2];
                 }
 
-                $result = array_merge(
-                    $result,
-                    range($start, $token[2]),
-                );
+                for ($line = $start; $line <= $token[2]; $line++) {
+                    $result[$line] = true;
+                }
             }
         }
 

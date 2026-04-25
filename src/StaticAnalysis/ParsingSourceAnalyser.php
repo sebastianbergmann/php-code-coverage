@@ -133,24 +133,21 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
                 continue;
             }
 
-            $comment = trim($token[1]);
+            $annotation = trim($token[1], "/ \n\r\t\0\x0B");
 
-            if ($comment === '// @codeCoverageIgnore' ||
-                $comment === '//@codeCoverageIgnore') {
+            if ($annotation === '@codeCoverageIgnore') {
                 $result[$token[2]] = true;
 
                 continue;
             }
 
-            if ($comment === '// @codeCoverageIgnoreStart' ||
-                $comment === '//@codeCoverageIgnoreStart') {
+            if ($annotation === '@codeCoverageIgnoreStart') {
                 $start = $token[2];
 
                 continue;
             }
 
-            if ($comment === '// @codeCoverageIgnoreEnd' ||
-                $comment === '//@codeCoverageIgnoreEnd') {
+            if ($annotation === '@codeCoverageIgnoreEnd') {
                 if (false === $start) {
                     $start = $token[2];
                 }

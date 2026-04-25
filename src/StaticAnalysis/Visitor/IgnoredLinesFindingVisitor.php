@@ -113,16 +113,17 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if (str_contains($docComment->getText(), '@codeCoverageIgnore')) {
-            for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
-                $this->ignoredLines[$line] = true;
-            }
+        $text = $docComment->getText();
+
+        $ignore = str_contains($text, '@codeCoverageIgnore') ||
+                  ($this->ignoreDeprecated && str_contains($text, '@deprecated'));
+
+        if (!$ignore) {
+            return;
         }
 
-        if ($this->ignoreDeprecated && str_contains($docComment->getText(), '@deprecated')) {
-            for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
-                $this->ignoredLines[$line] = true;
-            }
+        for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
+            $this->ignoredLines[$line] = true;
         }
     }
 }

@@ -24,7 +24,7 @@ use XMLWriter;
 final readonly class Tests
 {
     use EnsuresUtf8;
-    private readonly XMLWriter $xmlWriter;
+    private XMLWriter $xmlWriter;
 
     public function __construct(XMLWriter $xmlWriter)
     {

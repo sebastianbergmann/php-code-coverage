@@ -124,6 +124,71 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         );
     }
 
+    #[RequiresPhp('>=8.4.0')]
+    public function testPropertyHooksAreProcessedCorrectly(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_property_hooks.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        $this->assertArrayNotHasKey(4, $executableLines);
+
+        $this->assertArrayHasKey(9, $executableLines);
+        $this->assertArrayHasKey(9, $branchOperatorLines);
+
+        $this->assertArrayNotHasKey(10, $executableLines);
+        $this->assertArrayHasKey(11, $executableLines);
+        $this->assertArrayNotHasKey(12, $executableLines);
+
+        $this->assertArrayHasKey(17, $executableLines);
+    }
+
+    public function testEmptyMatchExpressionIsProcessedCorrectly(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_empty_match.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayHasKey(4, $executableLines);
+    }
+
+    public function testBranchOperatorLinesAccessorReturnsLinesAddedByBranchHandlers(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $this->assertSame(
+            [
+                9  => true,
+                10 => true,
+                11 => true,
+                12 => true,
+            ],
+            $executableLinesFindingVisitor->branchOperatorLines(),
+        );
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
     public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
     {

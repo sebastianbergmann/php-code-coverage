@@ -11,8 +11,8 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function assert;
 use function implode;
-use function rtrim;
-use function trim;
+use function strlen;
+use function substr;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
@@ -372,7 +372,11 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function namespace(string $namespacedName, string $name): string
     {
-        return trim(rtrim($namespacedName, $name), '\\');
+        if ($namespacedName === $name) {
+            return '';
+        }
+
+        return substr($namespacedName, 0, -strlen($name) - 1);
     }
 
     private function unionTypeAsString(UnionType $node): string

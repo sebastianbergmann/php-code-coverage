@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_any;
 use function array_diff_key;
 use function array_intersect_key;
 use function array_key_last;
@@ -68,6 +69,33 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @var list<class-string<Node>>
+     */
+    private const array ALWAYS_IGNORED = [
+        Node\Stmt\Declare_::class,
+        Node\Stmt\DeclareDeclare::class,
+        Node\Stmt\Else_::class,
+        Node\Stmt\EnumCase::class,
+        Node\Stmt\Finally_::class,
+        Node\Stmt\GroupUse::class,
+        Node\Stmt\Label::class,
+        Node\Stmt\Namespace_::class,
+        Node\Stmt\Nop::class,
+        Node\Stmt\Switch_::class,
+        Node\Stmt\TryCatch::class,
+        Node\Stmt\Use_::class,
+        Node\Stmt\UseUse::class,
+        Node\Expr\ConstFetch::class,
+        Node\Expr\Variable::class,
+        Node\Expr\Throw_::class,
+        Node\ComplexType::class,
+        Node\Const_::class,
+        Node\Identifier::class,
+        Node\Name::class,
+        Node\Param::class,
+        Node\Scalar::class,
+    ];
     private int $nextBranch = 0;
     private readonly string $source;
 
@@ -283,28 +311,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     private function isAlwaysIgnored(Node $node): bool
     {
-        return $node instanceof Node\Stmt\Declare_ ||
-            $node instanceof Node\Stmt\DeclareDeclare ||
-            $node instanceof Node\Stmt\Else_ ||
-            $node instanceof Node\Stmt\EnumCase ||
-            $node instanceof Node\Stmt\Finally_ ||
-            $node instanceof Node\Stmt\GroupUse ||
-            $node instanceof Node\Stmt\Label ||
-            $node instanceof Node\Stmt\Namespace_ ||
-            $node instanceof Node\Stmt\Nop ||
-            $node instanceof Node\Stmt\Switch_ ||
-            $node instanceof Node\Stmt\TryCatch ||
-            $node instanceof Node\Stmt\Use_ ||
-            $node instanceof Node\Stmt\UseUse ||
-            $node instanceof Node\Expr\ConstFetch ||
-            $node instanceof Node\Expr\Variable ||
-            $node instanceof Node\Expr\Throw_ ||
-            $node instanceof Node\ComplexType ||
-            $node instanceof Node\Const_ ||
-            $node instanceof Node\Identifier ||
-            $node instanceof Node\Name ||
-            $node instanceof Node\Param ||
-            $node instanceof Node\Scalar;
+        return array_any(
+            self::ALWAYS_IGNORED,
+            /** class-string<Node> $class */
+            static fn (string $class) => $node instanceof $class,
+        );
     }
 
     private function enterMatch(Node\Expr\Match_ $node): void

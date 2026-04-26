@@ -13,21 +13,12 @@ use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function file_put_contents;
 use function hash;
-use function hash_final;
-use function hash_init;
-use function hash_update;
-use function hash_update_file;
 use function implode;
 use function is_file;
 use function serialize;
-use function sort;
-use function strlen;
-use function substr;
 use function unserialize;
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\CodeCoverage\Version;
 
 /**
  * @internal This interface is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -36,8 +27,6 @@ use SebastianBergmann\CodeCoverage\Util\Filesystem;
  */
 final class CachingSourceAnalyser implements SourceAnalyser
 {
-    private static ?string $analysisFingerprint = null;
-
     /**
      * @var non-empty-string
      */
@@ -161,7 +150,7 @@ final class CachingSourceAnalyser implements SourceAnalyser
                 "\0",
                 [
                     $source,
-                    self::fingerprintOfSourceCodeForStaticAnalysis(),
+                    Version::id(),
                     $useAnnotationsForIgnoringCode,
                     $ignoreDeprecatedCode,
                 ],
@@ -169,49 +158,5 @@ final class CachingSourceAnalyser implements SourceAnalyser
         );
 
         return $this->directory . DIRECTORY_SEPARATOR . $cacheKey;
-    }
-
-    /**
-     * Returns an SHA-256 fingerprint of every PHP file that contributes to the
-     * shape and content of an {@see AnalysisResult} — i.e. everything under
-     * `src/StaticAnalysis/`. The result is memoised for the lifetime of the
-     * PHP process, so the directory walk happens at most once per run.
-     *
-     * Including this in the cache key means that any change to a visitor, an
-     * analyser, or a value class automatically invalidates entries from the
-     * previous code shape, without anyone having to remember to bump a
-     * format-version constant.
-     */
-    private static function fingerprintOfSourceCodeForStaticAnalysis(): string
-    {
-        if (self::$analysisFingerprint !== null) {
-            return self::$analysisFingerprint;
-        }
-
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(__DIR__, FilesystemIterator::SKIP_DOTS),
-        );
-
-        $files = [];
-
-        foreach ($iterator as $file) {
-            if ($file->isFile() && $file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        sort($files);
-
-        $hash = hash_init('sha256');
-
-        foreach ($files as $file) {
-            // include the path relative to __DIR__ so file renames and moves
-            // invalidate the cache, while the absolute install location does
-            // not (which would otherwise differ per machine).
-            hash_update($hash, substr($file, strlen(__DIR__)));
-            hash_update_file($hash, $file);
-        }
-
-        return self::$analysisFingerprint = hash_final($hash);
     }
 }

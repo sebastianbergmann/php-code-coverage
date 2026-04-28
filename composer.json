@@ -62,7 +62,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "14.1.x-dev"
+            "dev-main": "14.2.x-dev"
         }
     }
 }

@@ -24,7 +24,6 @@ use function trim;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
@@ -36,13 +35,6 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
  */
 final readonly class ParsingSourceAnalyser implements SourceAnalyser
 {
-    private Parser $parser;
-
-    public function __construct()
-    {
-        $this->parser = (new ParserFactory)->createForHostVersion();
-    }
-
     /**
      * @param non-empty-string $sourceCodeFile
      */
@@ -52,8 +44,10 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
         assert($linesOfCode > 0);
 
+        $parser = (new ParserFactory)->createForHostVersion();
+
         try {
-            $nodes = $this->parser->parse($sourceCode);
+            $nodes = $parser->parse($sourceCode);
 
             assert($nodes !== null);
 

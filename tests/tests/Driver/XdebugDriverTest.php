@@ -40,32 +40,27 @@ final class XdebugDriverTest extends TestCase
         }
     }
 
-    public function testSupportsBranchAndPathCoverage(): void
+    public function testDefaultsToLineGranularity(): void
     {
-        $this->assertTrue($this->driver()->canCollectBranchAndPathCoverage());
+        $this->assertSame(Granularity::Line, $this->driver()->granularity());
     }
 
-    public function testBranchAndPathCoverageCanBeDisabled(): void
+    public function testGranularityCanBeSetToLineAndBranch(): void
     {
         $driver = $this->driver();
 
-        $driver->disableBranchAndPathCoverage();
+        $driver->setGranularity(Granularity::LineAndBranch);
 
-        $this->assertFalse($driver->collectsBranchAndPathCoverage());
+        $this->assertSame(Granularity::LineAndBranch, $driver->granularity());
     }
 
-    public function testBranchAndPathCoverageCanBeEnabled(): void
+    public function testGranularityCanBeSetToLineBranchAndPath(): void
     {
         $driver = $this->driver();
 
-        $driver->enableBranchAndPathCoverage();
+        $driver->setGranularity(Granularity::LineBranchAndPath);
 
-        $this->assertTrue($driver->collectsBranchAndPathCoverage());
-    }
-
-    public function testBranchAndPathCoverageIsNotCollectedByDefault(): void
-    {
-        $this->assertFalse($this->driver()->collectsBranchAndPathCoverage());
+        $this->assertSame(Granularity::LineBranchAndPath, $driver->granularity());
     }
 
     public function testHasNameAndVersion(): void

@@ -34,9 +34,10 @@ abstract class Renderer
     protected string $date;
     protected Thresholds $thresholds;
     protected bool $hasBranchCoverage;
+    protected bool $hasPathCoverage;
     protected string $version;
 
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
     {
         $this->templatePath      = $templatePath;
         $this->generator         = $generator;
@@ -44,6 +45,20 @@ abstract class Renderer
         $this->thresholds        = $thresholds;
         $this->version           = Version::id();
         $this->hasBranchCoverage = $hasBranchCoverage;
+        $this->hasPathCoverage   = $hasPathCoverage;
+    }
+
+    protected function templateNameForTier(string $base): string
+    {
+        if ($this->hasPathCoverage) {
+            return $this->templatePath . $base . '_branch_and_path.html';
+        }
+
+        if ($this->hasBranchCoverage) {
+            return $this->templatePath . $base . '_branch.html';
+        }
+
+        return $this->templatePath . $base . '.html';
     }
 
     /**
@@ -261,9 +276,8 @@ abstract class Renderer
     {
         $level = $this->colorLevel($percent);
 
-        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'coverage_bar_branch.html' : 'coverage_bar.html');
-        $template     = new Template(
-            $templateName,
+        $template = new Template(
+            $this->templatePath . 'coverage_bar.html',
             '{{',
             '}}',
         );

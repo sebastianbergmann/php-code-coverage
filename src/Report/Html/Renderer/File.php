@@ -50,17 +50,16 @@ final class File extends Renderer
     private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
     private readonly SyntaxHighlighter $syntaxHighlighter;
 
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage)
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
     {
-        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage);
+        parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage, $hasPathCoverage);
 
         $this->syntaxHighlighter = new SyntaxHighlighter;
     }
 
     public function render(FileNode $node, string $file): void
     {
-        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_branch.html' : 'file.html');
-        $template     = new Template($templateName, '{{', '}}');
+        $template = new Template($this->templateNameForTier('file'), '{{', '}}');
         $this->setCommonTemplateVariables($template, $node);
 
         $template->setVar(
@@ -101,7 +100,9 @@ final class File extends Renderer
                     $e,
                 );
             }
+        }
 
+        if ($this->hasPathCoverage) {
             $template->setVar(
                 [
                     'items'     => $this->renderItems($node),
@@ -125,12 +126,10 @@ final class File extends Renderer
 
     private function renderItems(FileNode $node): string
     {
-        $templateName = $this->templatePath . ($this->hasBranchCoverage ? 'file_item_branch.html' : 'file_item.html');
-        $template     = new Template($templateName, '{{', '}}');
+        $template = new Template($this->templateNameForTier('file_item'), '{{', '}}');
 
-        $methodTemplateName = $this->templatePath . ($this->hasBranchCoverage ? 'method_item_branch.html' : 'method_item.html');
         $methodItemTemplate = new Template(
-            $methodTemplateName,
+            $this->templateNameForTier('method_item'),
             '{{',
             '}}',
         );

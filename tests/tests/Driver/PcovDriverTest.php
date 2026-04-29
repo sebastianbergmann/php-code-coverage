@@ -14,7 +14,7 @@ use function extension_loaded;
 use function ini_get;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
-use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
+use SebastianBergmann\CodeCoverage\BranchCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\TestCase;
 
@@ -37,30 +37,32 @@ final class PcovDriverTest extends TestCase
         }
     }
 
-    public function testDoesNotSupportBranchAndPathCoverage(): void
+    public function testDefaultsToLineGranularity(): void
     {
-        $this->assertFalse($this->driver()->canCollectBranchAndPathCoverage());
+        $this->assertSame(Granularity::Line, $this->driver()->granularity());
     }
 
-    public function testBranchAndPathCoverageCanBeDisabled(): void
+    public function testGranularityCanBeSetToLine(): void
     {
         $driver = $this->driver();
 
-        $driver->disableBranchAndPathCoverage();
+        $driver->setGranularity(Granularity::Line);
 
-        $this->assertFalse($driver->collectsBranchAndPathCoverage());
+        $this->assertSame(Granularity::Line, $driver->granularity());
     }
 
-    public function testBranchAndPathCoverageCannotBeEnabled(): void
+    public function testCannotSetGranularityRequiringBranchCoverage(): void
     {
-        $this->expectException(BranchAndPathCoverageNotSupportedException::class);
+        $this->expectException(BranchCoverageNotSupportedException::class);
 
-        $this->driver()->enableBranchAndPathCoverage();
+        $this->driver()->setGranularity(Granularity::LineAndBranch);
     }
 
-    public function testBranchAndPathCoverageIsNotCollected(): void
+    public function testCannotSetGranularityRequiringPathCoverage(): void
     {
-        $this->assertFalse($this->driver()->collectsBranchAndPathCoverage());
+        $this->expectException(BranchCoverageNotSupportedException::class);
+
+        $this->driver()->setGranularity(Granularity::LineBranchAndPath);
     }
 
     public function testHasNameAndVersion(): void

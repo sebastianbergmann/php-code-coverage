@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\Environment\Runtime;
 
@@ -35,7 +36,7 @@ final class CodeCoverageTest extends TestCase
             $filter = new Filter;
 
             $this->coverage = new CodeCoverage(
-                (new Selector)->forLineCoverage($filter),
+                (new Selector)->select($filter),
                 $filter,
             );
         }
@@ -318,6 +319,7 @@ final class CodeCoverageTest extends TestCase
     public function testDisableBranchAndPathCoverageAndCollectsBranchAndPathCoverage(): void
     {
         $driver = $this->createStub(Driver::class);
+        $driver->method('granularity')->willReturn(Granularity::Line);
 
         $coverage = new CodeCoverage($driver, new Filter);
 

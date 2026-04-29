@@ -48,6 +48,7 @@ final readonly class Facade
         $target            = $this->directory($target);
         $date              = date('D M j G:i:s T Y');
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
+        $hasPathCoverage   = $report->numberOfExecutablePaths() > 0;
 
         $dashboard = new Dashboard(
             $this->templatePath,
@@ -55,6 +56,7 @@ final readonly class Facade
             $date,
             $this->thresholds,
             $hasBranchCoverage,
+            $hasPathCoverage,
         );
 
         $directory = new Directory(
@@ -63,6 +65,7 @@ final readonly class Facade
             $date,
             $this->thresholds,
             $hasBranchCoverage,
+            $hasPathCoverage,
         );
 
         $file = new File(
@@ -71,6 +74,7 @@ final readonly class Facade
             $date,
             $this->thresholds,
             $hasBranchCoverage,
+            $hasPathCoverage,
         );
 
         $directory->render($report, $target . 'index.html');

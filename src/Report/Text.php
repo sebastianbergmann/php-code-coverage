@@ -47,6 +47,7 @@ final readonly class Text
     public function process(Directory $report, bool $showColors = false): string
     {
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
+        $hasPathCoverage   = $report->numberOfExecutablePaths() > 0;
 
         $output = PHP_EOL . PHP_EOL;
 
@@ -113,7 +114,7 @@ final readonly class Text
         $paths    = '';
         $branches = '';
 
-        if ($hasBranchCoverage) {
+        if ($hasPathCoverage) {
             $paths = sprintf(
                 '  Paths:   %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
@@ -123,7 +124,9 @@ final readonly class Text
                 $report->numberOfExecutedPaths(),
                 $report->numberOfExecutablePaths(),
             );
+        }
 
+        if ($hasBranchCoverage) {
             $branches = sprintf(
                 '  Branches:   %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
@@ -165,8 +168,11 @@ final readonly class Text
         $output .= $this->format($colors['classes'], $padding, $classes);
         $output .= $this->format($colors['methods'], $padding, $methods);
 
-        if ($hasBranchCoverage) {
+        if ($hasPathCoverage) {
             $output .= $this->format($colors['paths'], $padding, $paths);
+        }
+
+        if ($hasBranchCoverage) {
             $output .= $this->format($colors['branches'], $padding, $branches);
 
             $numFilesWithoutBranchCoverageData = $report->numberOfFilesWithoutBranchCoverageData();
@@ -262,9 +268,12 @@ final readonly class Text
                 $output .= PHP_EOL . $fullQualifiedPath . PHP_EOL
                     . '  ' . $methodColor . 'Methods: ' . $this->printCoverageCounts($classInfo['methodsCovered'], $classInfo['methodCount'], 2) . $resetColor . ' ';
 
+                if ($hasPathCoverage) {
+                    $output .= '  ' . $pathsColor . 'Paths: ' . $this->printCoverageCounts($classInfo['pathsCovered'], $classInfo['pathsCount'], 3) . $resetColor . ' ';
+                }
+
                 if ($hasBranchCoverage) {
-                    $output .= '  ' . $pathsColor . 'Paths: ' . $this->printCoverageCounts($classInfo['pathsCovered'], $classInfo['pathsCount'], 3) . $resetColor . ' '
-                    . '  ' . $branchesColor . 'Branches: ' . $this->printCoverageCounts($classInfo['branchesCovered'], $classInfo['branchesCount'], 3) . $resetColor . ' ';
+                    $output .= '  ' . $branchesColor . 'Branches: ' . $this->printCoverageCounts($classInfo['branchesCovered'], $classInfo['branchesCount'], 3) . $resetColor . ' ';
                 }
                 $output .= '  ' . $linesColor . 'Lines: ' . $this->printCoverageCounts($classInfo['statementsCovered'], $classInfo['statementCount'], 3) . $resetColor;
             }

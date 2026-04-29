@@ -79,16 +79,11 @@ final class XdebugDriver extends Driver
         }
     }
 
-    public function canCollectBranchAndPathCoverage(): bool
-    {
-        return true;
-    }
-
     public function start(): void
     {
         $flags = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
 
-        if ($this->collectsBranchAndPathCoverage()) {
+        if ($this->granularity() === Granularity::LineBranchAndPath) {
             $flags |= XDEBUG_CC_BRANCH_CHECK;
         }
 
@@ -101,7 +96,7 @@ final class XdebugDriver extends Driver
 
         xdebug_stop_code_coverage();
 
-        if ($this->collectsBranchAndPathCoverage()) {
+        if ($this->granularity() === Granularity::LineBranchAndPath) {
             /* @var XdebugCodeCoverageWithPathCoverageType $data */
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
@@ -118,6 +113,16 @@ final class XdebugDriver extends Driver
     public function version(): string
     {
         return phpversion('xdebug');
+    }
+
+    protected function canCollectBranchCoverage(): bool
+    {
+        return true;
+    }
+
+    protected function canCollectPathCoverage(): bool
+    {
+        return true;
     }
 
     /**

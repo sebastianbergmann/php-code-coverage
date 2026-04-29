@@ -10,8 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverAvailableException;
-use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
+use SebastianBergmann\CodeCoverage\NoSupportedDriverAvailableException;
 use SebastianBergmann\Environment\Runtime;
 
 /**
@@ -20,43 +19,52 @@ use SebastianBergmann\Environment\Runtime;
 final class Selector
 {
     /**
-     * @throws NoCodeCoverageDriverAvailableException
-     * @throws PcovNotAvailableException
+     * @throws NoSupportedDriverAvailableException
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
      * @throws XdebugVersionNotSupportedException
      */
-    public function forLineCoverage(Filter $filter): Driver
+    public function select(Filter $filter, Granularity $granularity = Granularity::Line): Driver
     {
         $runtime = new Runtime;
 
-        if ($runtime->hasPCOV()) {
+        if ($granularity === Granularity::Line && $runtime->hasPCOV()) {
             return new PcovDriver($filter);
         }
 
         if ($runtime->hasXdebug()) {
-            return new XdebugDriver($filter);
-        }
-
-        throw new NoCodeCoverageDriverAvailableException;
-    }
-
-    /**
-     * @throws NoCodeCoverageDriverWithPathCoverageSupportAvailableException
-     * @throws XdebugNotAvailableException
-     * @throws XdebugNotEnabledException
-     * @throws XdebugVersionNotSupportedException
-     */
-    public function forLineAndPathCoverage(Filter $filter): Driver
-    {
-        if ((new Runtime)->hasXdebug()) {
             $driver = new XdebugDriver($filter);
-
-            $driver->enableBranchAndPathCoverage();
+            $driver->setGranularity($granularity);
 
             return $driver;
         }
 
-        throw new NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
+        throw new NoSupportedDriverAvailableException($granularity);
+    }
+
+    /**
+     * @throws NoSupportedDriverAvailableException
+     * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
+     *
+     * @deprecated
+     */
+    public function forLineCoverage(Filter $filter): Driver
+    {
+        return $this->select($filter, Granularity::Line);
+    }
+
+    /**
+     * @throws NoSupportedDriverAvailableException
+     * @throws XdebugNotAvailableException
+     * @throws XdebugNotEnabledException
+     * @throws XdebugVersionNotSupportedException
+     *
+     * @deprecated
+     */
+    public function forLineAndPathCoverage(Filter $filter): Driver
+    {
+        return $this->select($filter, Granularity::LineBranchAndPath);
     }
 }

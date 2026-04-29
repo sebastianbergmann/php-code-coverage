@@ -13,6 +13,7 @@ use function array_merge;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingSourceAnalyser;
@@ -43,7 +44,6 @@ final class CodeCoverage
     private ?Mapper $targetMapper                    = null;
     private ?string $cacheDirectory                  = null;
     private bool $checkForUnintentionallyCoveredCode = false;
-    private bool $collectBranchAndPathCoverage       = false;
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
     private bool $useAnnotationsForIgnoringCode      = true;
@@ -359,23 +359,31 @@ final class CodeCoverage
         $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck[] = $className;
     }
 
+    /**
+     * @throws BranchCoverageNotSupportedException
+     * @throws PathCoverageNotSupportedException
+     *
+     * @deprecated
+     */
     public function enableBranchAndPathCoverage(): void
     {
-        $this->driver->enableBranchAndPathCoverage();
-
-        $this->collectBranchAndPathCoverage = true;
+        $this->driver->setGranularity(Granularity::LineBranchAndPath);
     }
 
+    /**
+     * @deprecated
+     */
     public function disableBranchAndPathCoverage(): void
     {
-        $this->driver->disableBranchAndPathCoverage();
-
-        $this->collectBranchAndPathCoverage = false;
+        $this->driver->setGranularity(Granularity::Line);
     }
 
+    /**
+     * @deprecated
+     */
     public function collectsBranchAndPathCoverage(): bool
     {
-        return $this->collectBranchAndPathCoverage;
+        return $this->driver->granularity() === Granularity::LineBranchAndPath;
     }
 
     public function validate(TargetCollection $targets): ValidationResult

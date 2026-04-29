@@ -16,9 +16,8 @@ use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\CachingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Registry;
 use SebastianBergmann\CodeCoverage\Test\Target\MapBuilder;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
@@ -40,7 +39,6 @@ final class CodeCoverage
     private const string UNCOVERED_FILES = 'UNCOVERED_FILES';
     private readonly Driver $driver;
     private readonly Filter $filter;
-    private ?FileAnalyser $analyser                  = null;
     private ?Mapper $targetMapper                    = null;
     private ?string $cacheDirectory                  = null;
     private bool $checkForUnintentionallyCoveredCode = false;
@@ -435,25 +433,10 @@ final class CodeCoverage
 
     private function analyser(): FileAnalyser
     {
-        if ($this->analyser !== null) {
-            return $this->analyser;
-        }
-
-        $sourceAnalyser = new ParsingSourceAnalyser;
-
-        if ($this->cachesStaticAnalysis()) {
-            $sourceAnalyser = new CachingSourceAnalyser(
-                $this->cacheDirectory,
-                $sourceAnalyser,
-            );
-        }
-
-        $this->analyser = new FileAnalyser(
-            $sourceAnalyser,
+        return Registry::analyser(
+            $this->cacheDirectory,
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode,
         );
-
-        return $this->analyser;
     }
 }

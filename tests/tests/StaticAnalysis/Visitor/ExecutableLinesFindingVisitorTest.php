@@ -191,6 +191,27 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         );
     }
 
+    public function testCaseStatementsAreExecutableButNotBranchOperators(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_switch_case.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        $this->assertArrayHasKey(9, $executableLines);
+        $this->assertArrayHasKey(11, $executableLines);
+
+        $this->assertArrayNotHasKey(9, $branchOperatorLines);
+        $this->assertArrayNotHasKey(11, $branchOperatorLines);
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
     public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
     {

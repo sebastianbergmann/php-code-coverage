@@ -196,9 +196,14 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Stmt\If_ ||
-            $node instanceof Node\Stmt\ElseIf_ ||
-            $node instanceof Node\Stmt\Case_) {
+            $node instanceof Node\Stmt\ElseIf_) {
             $this->enterConditional($node);
+
+            return null;
+        }
+
+        if ($node instanceof Node\Stmt\Case_) {
+            $this->enterCase($node);
 
             return null;
         }
@@ -518,7 +523,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node\Stmt\Case_|Node\Stmt\ElseIf_|Node\Stmt\If_ $node
+     * @param Node\Stmt\ElseIf_|Node\Stmt\If_ $node
      */
     private function enterConditional(Node $node): void
     {
@@ -531,6 +536,17 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node->cond->getStartLine(),
             ++$this->nextBranch,
         );
+    }
+
+    private function enterCase(Node\Stmt\Case_ $node): void
+    {
+        if (null === $node->cond) {
+            return;
+        }
+
+        $line = $node->cond->getStartLine();
+
+        $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
     }
 
     private function enterFor(Node\Stmt\For_ $node): void

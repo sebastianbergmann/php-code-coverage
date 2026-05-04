@@ -212,6 +212,29 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayNotHasKey(11, $branchOperatorLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1156')]
+    public function testStatementsConsistingOfASideEffectFreeExpressionAreNotExecutable(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_dead_scalar_literal_statement.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        foreach ([8, 9, 10, 11, 12, 13] as $deadLine) {
+            $this->assertArrayNotHasKey($deadLine, $executableLines);
+            $this->assertArrayNotHasKey($deadLine, $branchOperatorLines);
+        }
+
+        $this->assertArrayHasKey(15, $executableLines);
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
     public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
     {

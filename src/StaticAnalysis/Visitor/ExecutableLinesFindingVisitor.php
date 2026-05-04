@@ -160,6 +160,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
+        if ($node instanceof Node\Stmt\Expression &&
+            (
+                $node->expr instanceof Node\Scalar ||
+                $node->expr instanceof Node\Expr\ConstFetch
+            )
+        ) {
+            return null;
+        }
+
         if ($node instanceof Node\Stmt\Enum_ ||
             $node instanceof Node\Stmt\Function_ ||
             $node instanceof Node\Stmt\Class_ ||

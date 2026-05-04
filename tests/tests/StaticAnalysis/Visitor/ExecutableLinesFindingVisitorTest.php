@@ -234,6 +234,31 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayHasKey(12, $executableLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1156')]
+    public function testScalarLiteralsNotMarkedAsExecutable(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_scalar_literals.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayNotHasKey(6, $executableLines);
+        $this->assertArrayNotHasKey(7, $executableLines);
+        $this->assertArrayNotHasKey(9, $executableLines);
+        $this->assertArrayNotHasKey(10, $executableLines);
+        $this->assertArrayNotHasKey(12, $executableLines);
+        $this->assertArrayNotHasKey(13, $executableLines);
+        $this->assertArrayHasKey(8, $executableLines);
+        $this->assertArrayHasKey(11, $executableLines);
+        $this->assertArrayHasKey(14, $executableLines);
+    }
+
     private function doTestSelfDescribingAssert(string $filename): void
     {
         $source                        = file_get_contents($filename);

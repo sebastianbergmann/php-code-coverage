@@ -163,6 +163,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
+        if ($node instanceof Node\Stmt\Expression &&
+            $this->isSideEffectFreeExpressionStatement($node)) {
+            return null;
+        }
+
         if ($node instanceof Node\Stmt\Enum_ ||
             $node instanceof Node\Stmt\Function_ ||
             $node instanceof Node\Stmt\Class_ ||
@@ -460,5 +465,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $name = strtolower($cond->name->toString());
 
         return $name === 'true' || $name === 'false' || $name === 'null';
+    }
+
+    /**
+     * A statement consisting solely of a literal scalar (`'foo';`, `42;`) or
+     * one of the named constants `true`, `false`, `null` produces no opcodes:
+     * the Zend compiler discards it as dead code, so the driver cannot report
+     * it as executed and the analyser must not record it as executable.
+     */
+    private function isSideEffectFreeExpressionStatement(Node\Stmt\Expression $node): bool
+    {
+        $expr = $node->expr;
+
+        if ($expr instanceof Node\Scalar\String_ ||
+            $expr instanceof Node\Scalar\Int_ ||
+            $expr instanceof Node\Scalar\Float_) {
+            return true;
+        }
+
+        if ($expr instanceof Node\Expr\ConstFetch) {
+            $name = strtolower($expr->name->toString());
+
+            return $name === 'true' || $name === 'false' || $name === 'null';
+        }
+
+        return false;
     }
 }

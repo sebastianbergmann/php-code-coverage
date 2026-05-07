@@ -276,17 +276,24 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Stmt\If_ ||
-            $node instanceof Node\Stmt\ElseIf_ ||
-            $node instanceof Node\Stmt\Case_) {
-            if (null === $node->cond) {
-                return null;
-            }
-
+            $node instanceof Node\Stmt\ElseIf_) {
             $this->setLineBranch(
                 $node->cond->getStartLine(),
                 $node->cond->getStartLine(),
                 ++$this->nextBranch,
             );
+
+            return null;
+        }
+
+        if ($node instanceof Node\Stmt\Case_) {
+            if (null === $node->cond) {
+                return null;
+            }
+
+            $line = $node->cond->getStartLine();
+
+            $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
 
             return null;
         }

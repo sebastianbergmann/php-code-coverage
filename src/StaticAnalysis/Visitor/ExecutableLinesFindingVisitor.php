@@ -384,7 +384,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                         continue;
                     }
 
-                    unset($this->executableLinesGroupedByBranch[$line]);
+                    unset(
+                        $this->executableLinesGroupedByBranch[$line],
+                        $this->branchOperatorLines[$line],
+                    );
 
                     if ($isConcreteClassLike && !$stmt instanceof Node\Stmt\ClassMethod) {
                         $this->unsets[$line] = true;

@@ -26,4 +26,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * `SebastianBergmann\CodeCoverage\CodeCoverage::collectsBranchAndPathCoverage()`
 * `SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException`, replaced by `BranchCoverageNotSupportedException` and `PathCoverageNotSupportedException`
 
+### Fixed
+
+* [#1159](https://github.com/sebastianbergmann/php-code-coverage/issues/1159): Statements inside a closure passed as a call argument are incorrectly reported as not covered
+
 [14.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.7...main

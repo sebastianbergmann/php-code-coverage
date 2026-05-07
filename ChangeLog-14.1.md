@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* [#1159](https://github.com/sebastianbergmann/php-code-coverage/issues/1159): Statements inside a closure passed as a call argument are incorrectly reported as not covered
 * `case` statements are treated as branch operators
 
 ## [14.1.7] - 2026-05-04

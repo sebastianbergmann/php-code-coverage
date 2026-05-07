@@ -190,6 +190,30 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayHasKey(12, $executableLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1159')]
+    public function testStatementsInClosureNestedInCallArgumentAreNotMarkedAsBranchOperators(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_callable_inside_call_argument.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        $this->assertArrayHasKey(8, $executableLines);
+        $this->assertArrayHasKey(10, $executableLines);
+
+        $this->assertArrayNotHasKey(8, $branchOperatorLines);
+        $this->assertArrayNotHasKey(10, $branchOperatorLines);
+
+        $this->assertArrayHasKey(11, $branchOperatorLines);
+    }
+
     private function doTestSelfDescribingAssert(string $filename): void
     {
         $source                        = file_get_contents($filename);

@@ -201,7 +201,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                     }
 
                     foreach (range($stmt->getStartLine(), $stmt->getEndLine()) as $line) {
-                        unset($this->executableLinesGroupedByBranch[$line]);
+                        unset(
+                            $this->executableLinesGroupedByBranch[$line],
+                            $this->branchOperatorLines[$line],
+                        );
 
                         if (
                             $isConcreteClassLike &&

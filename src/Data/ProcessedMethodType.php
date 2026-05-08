@@ -27,6 +27,8 @@ final class ProcessedMethodType
     public int $executedLinesByMediumTests               = 0;
     public int $executedLinesByLargeTests                = 0;
     public int $executedLinesBySmallOrMediumTests        = 0;
+    public int $executedLinesBySmallOrLargeTests         = 0;
+    public int $executedLinesByMediumOrLargeTests        = 0;
     public int $executedLinesBySmallOrMediumOrLargeTests = 0;
     public int $executableBranches;
     public int $executedBranches;

@@ -62,6 +62,8 @@ final class File extends AbstractNode
     private int $numExecutedLinesByMediumTests               = 0;
     private int $numExecutedLinesByLargeTests                = 0;
     private int $numExecutedLinesBySmallOrMediumTests        = 0;
+    private int $numExecutedLinesBySmallOrLargeTests         = 0;
+    private int $numExecutedLinesByMediumOrLargeTests        = 0;
     private int $numExecutedLinesBySmallOrMediumOrLargeTests = 0;
     private int $numExecutableBranches                       = 0;
     private int $numExecutedBranches                         = 0;
@@ -90,6 +92,8 @@ final class File extends AbstractNode
     private int $numTestedClassesByMediumTests                  = 0;
     private int $numTestedClassesByLargeTests                   = 0;
     private int $numTestedClassesBySmallOrMediumTests           = 0;
+    private int $numTestedClassesBySmallOrLargeTests            = 0;
+    private int $numTestedClassesByMediumOrLargeTests           = 0;
     private int $numTestedClassesBySmallOrMediumOrLargeTests    = 0;
     private ?int $numTraits                                     = null;
     private int $numTestedTraits                                = 0;
@@ -97,6 +101,8 @@ final class File extends AbstractNode
     private int $numTestedTraitsByMediumTests                   = 0;
     private int $numTestedTraitsByLargeTests                    = 0;
     private int $numTestedTraitsBySmallOrMediumTests            = 0;
+    private int $numTestedTraitsBySmallOrLargeTests             = 0;
+    private int $numTestedTraitsByMediumOrLargeTests            = 0;
     private int $numTestedTraitsBySmallOrMediumOrLargeTests     = 0;
     private ?int $numMethods                                    = null;
     private ?int $numTestedMethods                              = null;
@@ -104,12 +110,16 @@ final class File extends AbstractNode
     private ?int $numTestedMethodsByMediumTests                 = null;
     private ?int $numTestedMethodsByLargeTests                  = null;
     private ?int $numTestedMethodsBySmallOrMediumTests          = null;
+    private ?int $numTestedMethodsBySmallOrLargeTests           = null;
+    private ?int $numTestedMethodsByMediumOrLargeTests          = null;
     private ?int $numTestedMethodsBySmallOrMediumOrLargeTests   = null;
     private ?int $numTestedFunctions                            = null;
     private ?int $numTestedFunctionsBySmallTests                = null;
     private ?int $numTestedFunctionsByMediumTests               = null;
     private ?int $numTestedFunctionsByLargeTests                = null;
     private ?int $numTestedFunctionsBySmallOrMediumTests        = null;
+    private ?int $numTestedFunctionsBySmallOrLargeTests         = null;
+    private ?int $numTestedFunctionsByMediumOrLargeTests        = null;
     private ?int $numTestedFunctionsBySmallOrMediumOrLargeTests = null;
 
     /**
@@ -236,6 +246,16 @@ final class File extends AbstractNode
         return $this->numExecutedLinesBySmallOrMediumTests;
     }
 
+    public function numberOfExecutedLinesBySmallOrLargeTests(): int
+    {
+        return $this->numExecutedLinesBySmallOrLargeTests;
+    }
+
+    public function numberOfExecutedLinesByMediumOrLargeTests(): int
+    {
+        return $this->numExecutedLinesByMediumOrLargeTests;
+    }
+
     public function numberOfExecutedLinesBySmallOrMediumOrLargeTests(): int
     {
         return $this->numExecutedLinesBySmallOrMediumOrLargeTests;
@@ -315,6 +335,16 @@ final class File extends AbstractNode
         return $this->numTestedClassesBySmallOrMediumTests;
     }
 
+    public function numberOfTestedClassesBySmallOrLargeTests(): int
+    {
+        return $this->numTestedClassesBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedClassesByMediumOrLargeTests(): int
+    {
+        return $this->numTestedClassesByMediumOrLargeTests;
+    }
+
     public function numberOfTestedClassesBySmallOrMediumOrLargeTests(): int
     {
         return $this->numTestedClassesBySmallOrMediumOrLargeTests;
@@ -362,6 +392,16 @@ final class File extends AbstractNode
     public function numberOfTestedTraitsBySmallOrMediumTests(): int
     {
         return $this->numTestedTraitsBySmallOrMediumTests;
+    }
+
+    public function numberOfTestedTraitsBySmallOrLargeTests(): int
+    {
+        return $this->numTestedTraitsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedTraitsByMediumOrLargeTests(): int
+    {
+        return $this->numTestedTraitsByMediumOrLargeTests;
     }
 
     public function numberOfTestedTraitsBySmallOrMediumOrLargeTests(): int
@@ -521,6 +561,56 @@ final class File extends AbstractNode
         return $this->numTestedMethodsBySmallOrMediumTests;
     }
 
+    public function numberOfTestedMethodsBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedMethodsBySmallOrLargeTests === null) {
+            $this->numTestedMethodsBySmallOrLargeTests = 0;
+
+            foreach ($this->classes as $class) {
+                foreach ($class->methods as $method) {
+                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrLargeTests === $method->executableLines) {
+                        $this->numTestedMethodsBySmallOrLargeTests++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait->methods as $method) {
+                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrLargeTests === $method->executableLines) {
+                        $this->numTestedMethodsBySmallOrLargeTests++;
+                    }
+                }
+            }
+        }
+
+        return $this->numTestedMethodsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedMethodsByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedMethodsByMediumOrLargeTests === null) {
+            $this->numTestedMethodsByMediumOrLargeTests = 0;
+
+            foreach ($this->classes as $class) {
+                foreach ($class->methods as $method) {
+                    if ($method->executableLines > 0 && $method->executedLinesByMediumOrLargeTests === $method->executableLines) {
+                        $this->numTestedMethodsByMediumOrLargeTests++;
+                    }
+                }
+            }
+
+            foreach ($this->traits as $trait) {
+                foreach ($trait->methods as $method) {
+                    if ($method->executableLines > 0 && $method->executedLinesByMediumOrLargeTests === $method->executableLines) {
+                        $this->numTestedMethodsByMediumOrLargeTests++;
+                    }
+                }
+            }
+        }
+
+        return $this->numTestedMethodsByMediumOrLargeTests;
+    }
+
     public function numberOfTestedMethodsBySmallOrMediumOrLargeTests(): int
     {
         if ($this->numTestedMethodsBySmallOrMediumOrLargeTests === null) {
@@ -625,6 +715,36 @@ final class File extends AbstractNode
         }
 
         return $this->numTestedFunctionsBySmallOrMediumTests;
+    }
+
+    public function numberOfTestedFunctionsBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedFunctionsBySmallOrLargeTests === null) {
+            $this->numTestedFunctionsBySmallOrLargeTests = 0;
+
+            foreach ($this->functions as $function) {
+                if ($function->executableLines > 0 && $function->executedLinesBySmallOrLargeTests === $function->executableLines) {
+                    $this->numTestedFunctionsBySmallOrLargeTests++;
+                }
+            }
+        }
+
+        return $this->numTestedFunctionsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedFunctionsByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedFunctionsByMediumOrLargeTests === null) {
+            $this->numTestedFunctionsByMediumOrLargeTests = 0;
+
+            foreach ($this->functions as $function) {
+                if ($function->executableLines > 0 && $function->executedLinesByMediumOrLargeTests === $function->executableLines) {
+                    $this->numTestedFunctionsByMediumOrLargeTests++;
+                }
+            }
+        }
+
+        return $this->numTestedFunctionsByMediumOrLargeTests;
     }
 
     public function numberOfTestedFunctionsBySmallOrMediumOrLargeTests(): int
@@ -734,6 +854,26 @@ final class File extends AbstractNode
                         unset($codeUnit);
                     }
 
+                    if ($coveredBySmall || $coveredByLarge) {
+                        $this->numExecutedLinesBySmallOrLargeTests++;
+
+                        foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                            $codeUnit->executedLinesBySmallOrLargeTests++;
+                        }
+
+                        unset($codeUnit);
+                    }
+
+                    if ($coveredByMedium || $coveredByLarge) {
+                        $this->numExecutedLinesByMediumOrLargeTests++;
+
+                        foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                            $codeUnit->executedLinesByMediumOrLargeTests++;
+                        }
+
+                        unset($codeUnit);
+                    }
+
                     if ($coveredBySmall || $coveredByMedium || $coveredByLarge) {
                         $this->numExecutedLinesBySmallOrMediumOrLargeTests++;
 
@@ -788,6 +928,14 @@ final class File extends AbstractNode
                 $this->numTestedTraitsBySmallOrMediumTests++;
             }
 
+            if ($trait->executableLines > 0 && $trait->executedLinesBySmallOrLargeTests === $trait->executableLines) {
+                $this->numTestedTraitsBySmallOrLargeTests++;
+            }
+
+            if ($trait->executableLines > 0 && $trait->executedLinesByMediumOrLargeTests === $trait->executableLines) {
+                $this->numTestedTraitsByMediumOrLargeTests++;
+            }
+
             if ($trait->executableLines > 0 && $trait->executedLinesBySmallOrMediumOrLargeTests === $trait->executableLines) {
                 $this->numTestedTraitsBySmallOrMediumOrLargeTests++;
             }
@@ -836,6 +984,14 @@ final class File extends AbstractNode
                 $this->numTestedClassesBySmallOrMediumTests++;
             }
 
+            if ($class->executableLines > 0 && $class->executedLinesBySmallOrLargeTests === $class->executableLines) {
+                $this->numTestedClassesBySmallOrLargeTests++;
+            }
+
+            if ($class->executableLines > 0 && $class->executedLinesByMediumOrLargeTests === $class->executableLines) {
+                $this->numTestedClassesByMediumOrLargeTests++;
+            }
+
             if ($class->executableLines > 0 && $class->executedLinesBySmallOrMediumOrLargeTests === $class->executableLines) {
                 $this->numTestedClassesBySmallOrMediumOrLargeTests++;
             }
@@ -869,6 +1025,14 @@ final class File extends AbstractNode
 
             if ($function->executableLines > 0 && $function->executedLinesBySmallOrMediumTests === $function->executableLines) {
                 $this->numTestedFunctionsBySmallOrMediumTests++;
+            }
+
+            if ($function->executableLines > 0 && $function->executedLinesBySmallOrLargeTests === $function->executableLines) {
+                $this->numTestedFunctionsBySmallOrLargeTests++;
+            }
+
+            if ($function->executableLines > 0 && $function->executedLinesByMediumOrLargeTests === $function->executableLines) {
+                $this->numTestedFunctionsByMediumOrLargeTests++;
             }
 
             if ($function->executableLines > 0 && $function->executedLinesBySmallOrMediumOrLargeTests === $function->executableLines) {

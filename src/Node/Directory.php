@@ -66,6 +66,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private int $numExecutedLinesByMediumTests                 = -1;
     private int $numExecutedLinesByLargeTests                  = -1;
     private int $numExecutedLinesBySmallOrMediumTests          = -1;
+    private int $numExecutedLinesBySmallOrLargeTests           = -1;
+    private int $numExecutedLinesByMediumOrLargeTests          = -1;
     private int $numExecutedLinesBySmallOrMediumOrLargeTests   = -1;
     private int $numExecutableBranches                         = -1;
     private int $numExecutedBranches                           = -1;
@@ -78,6 +80,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private int $numTestedClassesByMediumTests                 = -1;
     private int $numTestedClassesByLargeTests                  = -1;
     private int $numTestedClassesBySmallOrMediumTests          = -1;
+    private int $numTestedClassesBySmallOrLargeTests           = -1;
+    private int $numTestedClassesByMediumOrLargeTests          = -1;
     private int $numTestedClassesBySmallOrMediumOrLargeTests   = -1;
     private int $numTraits                                     = -1;
     private int $numTestedTraits                               = -1;
@@ -85,6 +89,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private int $numTestedTraitsByMediumTests                  = -1;
     private int $numTestedTraitsByLargeTests                   = -1;
     private int $numTestedTraitsBySmallOrMediumTests           = -1;
+    private int $numTestedTraitsBySmallOrLargeTests            = -1;
+    private int $numTestedTraitsByMediumOrLargeTests           = -1;
     private int $numTestedTraitsBySmallOrMediumOrLargeTests    = -1;
     private int $numMethods                                    = -1;
     private int $numTestedMethods                              = -1;
@@ -92,6 +98,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private int $numTestedMethodsByMediumTests                 = -1;
     private int $numTestedMethodsByLargeTests                  = -1;
     private int $numTestedMethodsBySmallOrMediumTests          = -1;
+    private int $numTestedMethodsBySmallOrLargeTests           = -1;
+    private int $numTestedMethodsByMediumOrLargeTests          = -1;
     private int $numTestedMethodsBySmallOrMediumOrLargeTests   = -1;
     private int $numFunctions                                  = -1;
     private int $numTestedFunctions                            = -1;
@@ -99,6 +107,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private int $numTestedFunctionsByMediumTests               = -1;
     private int $numTestedFunctionsByLargeTests                = -1;
     private int $numTestedFunctionsBySmallOrMediumTests        = -1;
+    private int $numTestedFunctionsBySmallOrLargeTests         = -1;
+    private int $numTestedFunctionsByMediumOrLargeTests        = -1;
     private int $numTestedFunctionsBySmallOrMediumOrLargeTests = -1;
 
     /**
@@ -151,6 +161,8 @@ final class Directory extends AbstractNode implements IteratorAggregate
         $this->numExecutedLinesByMediumTests               = -1;
         $this->numExecutedLinesByLargeTests                = -1;
         $this->numExecutedLinesBySmallOrMediumTests        = -1;
+        $this->numExecutedLinesBySmallOrLargeTests         = -1;
+        $this->numExecutedLinesByMediumOrLargeTests        = -1;
         $this->numExecutedLinesBySmallOrMediumOrLargeTests = -1;
     }
 
@@ -340,6 +352,32 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->numExecutedLinesBySmallOrMediumTests;
     }
 
+    public function numberOfExecutedLinesBySmallOrLargeTests(): int
+    {
+        if ($this->numExecutedLinesBySmallOrLargeTests === -1) {
+            $this->numExecutedLinesBySmallOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutedLinesBySmallOrLargeTests += $child->numberOfExecutedLinesBySmallOrLargeTests();
+            }
+        }
+
+        return $this->numExecutedLinesBySmallOrLargeTests;
+    }
+
+    public function numberOfExecutedLinesByMediumOrLargeTests(): int
+    {
+        if ($this->numExecutedLinesByMediumOrLargeTests === -1) {
+            $this->numExecutedLinesByMediumOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numExecutedLinesByMediumOrLargeTests += $child->numberOfExecutedLinesByMediumOrLargeTests();
+            }
+        }
+
+        return $this->numExecutedLinesByMediumOrLargeTests;
+    }
+
     public function numberOfExecutedLinesBySmallOrMediumOrLargeTests(): int
     {
         if ($this->numExecutedLinesBySmallOrMediumOrLargeTests === -1) {
@@ -511,6 +549,32 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->numTestedClassesBySmallOrMediumTests;
     }
 
+    public function numberOfTestedClassesBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedClassesBySmallOrLargeTests === -1) {
+            $this->numTestedClassesBySmallOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedClassesBySmallOrLargeTests += $child->numberOfTestedClassesBySmallOrLargeTests();
+            }
+        }
+
+        return $this->numTestedClassesBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedClassesByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedClassesByMediumOrLargeTests === -1) {
+            $this->numTestedClassesByMediumOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedClassesByMediumOrLargeTests += $child->numberOfTestedClassesByMediumOrLargeTests();
+            }
+        }
+
+        return $this->numTestedClassesByMediumOrLargeTests;
+    }
+
     public function numberOfTestedClassesBySmallOrMediumOrLargeTests(): int
     {
         if ($this->numTestedClassesBySmallOrMediumOrLargeTests === -1) {
@@ -600,6 +664,32 @@ final class Directory extends AbstractNode implements IteratorAggregate
         }
 
         return $this->numTestedTraitsBySmallOrMediumTests;
+    }
+
+    public function numberOfTestedTraitsBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedTraitsBySmallOrLargeTests === -1) {
+            $this->numTestedTraitsBySmallOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedTraitsBySmallOrLargeTests += $child->numberOfTestedTraitsBySmallOrLargeTests();
+            }
+        }
+
+        return $this->numTestedTraitsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedTraitsByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedTraitsByMediumOrLargeTests === -1) {
+            $this->numTestedTraitsByMediumOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedTraitsByMediumOrLargeTests += $child->numberOfTestedTraitsByMediumOrLargeTests();
+            }
+        }
+
+        return $this->numTestedTraitsByMediumOrLargeTests;
     }
 
     public function numberOfTestedTraitsBySmallOrMediumOrLargeTests(): int
@@ -693,6 +783,32 @@ final class Directory extends AbstractNode implements IteratorAggregate
         return $this->numTestedMethodsBySmallOrMediumTests;
     }
 
+    public function numberOfTestedMethodsBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedMethodsBySmallOrLargeTests === -1) {
+            $this->numTestedMethodsBySmallOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedMethodsBySmallOrLargeTests += $child->numberOfTestedMethodsBySmallOrLargeTests();
+            }
+        }
+
+        return $this->numTestedMethodsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedMethodsByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedMethodsByMediumOrLargeTests === -1) {
+            $this->numTestedMethodsByMediumOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedMethodsByMediumOrLargeTests += $child->numberOfTestedMethodsByMediumOrLargeTests();
+            }
+        }
+
+        return $this->numTestedMethodsByMediumOrLargeTests;
+    }
+
     public function numberOfTestedMethodsBySmallOrMediumOrLargeTests(): int
     {
         if ($this->numTestedMethodsBySmallOrMediumOrLargeTests === -1) {
@@ -782,6 +898,32 @@ final class Directory extends AbstractNode implements IteratorAggregate
         }
 
         return $this->numTestedFunctionsBySmallOrMediumTests;
+    }
+
+    public function numberOfTestedFunctionsBySmallOrLargeTests(): int
+    {
+        if ($this->numTestedFunctionsBySmallOrLargeTests === -1) {
+            $this->numTestedFunctionsBySmallOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedFunctionsBySmallOrLargeTests += $child->numberOfTestedFunctionsBySmallOrLargeTests();
+            }
+        }
+
+        return $this->numTestedFunctionsBySmallOrLargeTests;
+    }
+
+    public function numberOfTestedFunctionsByMediumOrLargeTests(): int
+    {
+        if ($this->numTestedFunctionsByMediumOrLargeTests === -1) {
+            $this->numTestedFunctionsByMediumOrLargeTests = 0;
+
+            foreach ($this->children as $child) {
+                $this->numTestedFunctionsByMediumOrLargeTests += $child->numberOfTestedFunctionsByMediumOrLargeTests();
+            }
+        }
+
+        return $this->numTestedFunctionsByMediumOrLargeTests;
     }
 
     public function numberOfTestedFunctionsBySmallOrMediumOrLargeTests(): int

@@ -1,5 +1,5 @@
 $(function () {
-  var $btnGroup = $('[data-test-size-filter]').first().parent();
+  var $btnGroup = $('[data-test-size-filter], [data-test-size-filter-all]').first().parent();
   var lowBound = parseFloat($btnGroup.data('low-upper-bound')) || 50;
   var highBound = parseFloat($btnGroup.data('high-lower-bound')) || 90;
 
@@ -24,7 +24,34 @@ $(function () {
     return total > 0 ? (n / total) * 100 : 0;
   }
 
+  function filterKey(sizes) {
+    if (sizes.length === 0) return 'all';
+    if (sizes.length === 1) return sizes[0];
+    if (sizes.length === 3) return 'small+medium+large';
+    var has = {small: false, medium: false, large: false};
+    sizes.forEach(function (s) { has[s] = true; });
+    if (has.small && has.medium) return 'small+medium';
+    if (has.small && has.large) return 'small+large';
+    if (has.medium && has.large) return 'medium+large';
+    return 'all';
+  }
+
+  function dataKeys(filter) {
+    switch (filter) {
+      case 'small':              return {lines: 'linesSmall',  methods: 'methodsSmall',  classes: 'classesSmall'};
+      case 'medium':             return {lines: 'linesMedium', methods: 'methodsMedium', classes: 'classesMedium'};
+      case 'large':              return {lines: 'linesLarge',  methods: 'methodsLarge',  classes: 'classesLarge'};
+      case 'small+medium':       return {lines: 'linesSM',     methods: 'methodsSM',     classes: 'classesSM'};
+      case 'small+large':        return {lines: 'linesSL',     methods: 'methodsSL',     classes: 'classesSL'};
+      case 'medium+large':       return {lines: 'linesML',     methods: 'methodsML',     classes: 'classesML'};
+      case 'small+medium+large': return {lines: 'linesSML',    methods: 'methodsSML',    classes: 'classesSML'};
+      default:                   return {lines: 'linesAll',    methods: 'methodsAll',    classes: 'classesAll'};
+    }
+  }
+
   function applyFilter(filter) {
+    var keys = dataKeys(filter);
+
     $('tr[data-coverage]').each(function () {
       var $tr = $(this);
       var raw = $tr.attr('data-coverage');
@@ -38,33 +65,9 @@ $(function () {
       var methodsTotal = d.methodsTotal || 0;
       var classesTotal = d.classesTotal || 0;
 
-      var linesExec, methodsTested, classesTested;
-
-      if (filter === 'small') {
-        linesExec = d.linesSmall || 0;
-        methodsTested = d.methodsSmall || 0;
-        classesTested = d.classesSmall || 0;
-      } else if (filter === 'medium') {
-        linesExec = d.linesMedium || 0;
-        methodsTested = d.methodsMedium || 0;
-        classesTested = d.classesMedium || 0;
-      } else if (filter === 'large') {
-        linesExec = d.linesLarge || 0;
-        methodsTested = d.methodsLarge || 0;
-        classesTested = d.classesLarge || 0;
-      } else if (filter === 'small+medium') {
-        linesExec = d.linesSM || 0;
-        methodsTested = d.methodsSM || 0;
-        classesTested = d.classesSM || 0;
-      } else if (filter === 'small+medium+large') {
-        linesExec = d.linesSML || 0;
-        methodsTested = d.methodsSML || 0;
-        classesTested = d.classesSML || 0;
-      } else {
-        linesExec = d.linesAll || 0;
-        methodsTested = d.methodsAll || 0;
-        classesTested = d.classesAll || 0;
-      }
+      var linesExec = d[keys.lines] || 0;
+      var methodsTested = d[keys.methods] || 0;
+      var classesTested = d[keys.classes] || 0;
 
       var linesPct = pct(linesExec, linesTotal);
       var methodsPct = pct(methodsTested, methodsTotal);
@@ -74,7 +77,6 @@ $(function () {
       var nameCell = cells.eq(0);
       var idx = 1;
 
-      // Lines: bar, percent, number (3 cells)
       var linesLevel = linesTotal > 0 ? colorLevel(linesPct) : '';
 
       cells.eq(idx).attr('class', linesLevel + ' big').html(linesTotal > 0 ? coverageBar(linesPct) : '');
@@ -86,28 +88,18 @@ $(function () {
       );
       idx += 3;
 
-      // Branches (if present): bar, percent, number (3 cells) - skip, don't modify
-      // Paths (if present): bar, percent, number (3 cells) - skip, don't modify
-      // We need to find where methods start. Methods are identified by having the methods data.
-      // For branch views: lines(3) + branches(3) + paths(3) + methods(3+crap) + classes(3)
-      // For non-branch: lines(3) + methods(3+crap?) + classes(3)
-
-      // Detect if this is a branch view by checking total cell count
       var totalCells = cells.length;
       var methodsIdx, classesIdx, hasClasses;
 
       if (totalCells >= 16) {
-        // Branch view: name(1) + lines(3) + branches(3) + paths(3) + methods(3+crap) + classes(3)
         methodsIdx = 10;
         classesIdx = 14;
         hasClasses = totalCells >= 17;
       } else if (totalCells >= 11) {
-        // Non-branch file view: name(1) + lines(3) + methods(3+crap) + classes(3)
         methodsIdx = 4;
         classesIdx = 8;
         hasClasses = true;
       } else if (totalCells >= 10) {
-        // Directory view: name(1) + lines(3) + methods(3) + classes(3)
         methodsIdx = 4;
         classesIdx = 7;
         hasClasses = true;
@@ -115,7 +107,6 @@ $(function () {
         return;
       }
 
-      // Methods: bar, percent, number
       var methodsLevel = methodsTotal > 0 ? colorLevel(methodsPct) : '';
 
       cells.eq(methodsIdx).attr('class', methodsLevel + ' big').html(methodsTotal > 0 ? coverageBar(methodsPct) : '');
@@ -126,7 +117,6 @@ $(function () {
         '<div align="right">' + methodsTested + '&nbsp;/&nbsp;' + methodsTotal + '</div>'
       );
 
-      // Classes: bar, percent, number
       if (hasClasses && cells.eq(classesIdx).length) {
         var classesLevel = classesTotal > 0 ? colorLevel(classesPct) : '';
 
@@ -139,17 +129,33 @@ $(function () {
         );
       }
 
-      // Update name cell background
       nameCell.attr('class', linesLevel);
     });
   }
 
-  $('[data-test-size-filter]').on('click', function () {
-    var $btn = $(this);
+  function currentSizes() {
+    return $btnGroup.find('input[type=checkbox][data-test-size-filter]:checked').map(function () {
+      return $(this).data('test-size-filter');
+    }).get();
+  }
 
-    $btn.siblings().removeClass('active');
-    $btn.addClass('active');
+  function refresh() {
+    var sizes = currentSizes();
+    var $allBtn = $btnGroup.find('[data-test-size-filter-all]');
 
-    applyFilter($btn.data('test-size-filter'));
+    if (sizes.length === 0) {
+      $allBtn.addClass('active');
+    } else {
+      $allBtn.removeClass('active');
+    }
+
+    applyFilter(filterKey(sizes));
+  }
+
+  $btnGroup.on('change', 'input[type=checkbox][data-test-size-filter]', refresh);
+
+  $btnGroup.on('click', '[data-test-size-filter-all]', function () {
+    $btnGroup.find('input[type=checkbox][data-test-size-filter]:checked').prop('checked', false);
+    refresh();
   });
 });

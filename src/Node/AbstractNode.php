@@ -168,6 +168,22 @@ abstract class AbstractNode implements Countable
         );
     }
 
+    public function percentageOfExecutedLinesBySmallOrLargeTests(): Percentage
+    {
+        return Percentage::fromFractionAndTotal(
+            $this->numberOfExecutedLinesBySmallOrLargeTests(),
+            $this->numberOfExecutableLines(),
+        );
+    }
+
+    public function percentageOfExecutedLinesByMediumOrLargeTests(): Percentage
+    {
+        return Percentage::fromFractionAndTotal(
+            $this->numberOfExecutedLinesByMediumOrLargeTests(),
+            $this->numberOfExecutableLines(),
+        );
+    }
+
     public function percentageOfExecutedLinesBySmallOrMediumOrLargeTests(): Percentage
     {
         return Percentage::fromFractionAndTotal(
@@ -222,6 +238,16 @@ abstract class AbstractNode implements Countable
         return $this->numberOfTestedClassesBySmallOrMediumTests() + $this->numberOfTestedTraitsBySmallOrMediumTests();
     }
 
+    public function numberOfTestedClassesAndTraitsBySmallOrLargeTests(): int
+    {
+        return $this->numberOfTestedClassesBySmallOrLargeTests() + $this->numberOfTestedTraitsBySmallOrLargeTests();
+    }
+
+    public function numberOfTestedClassesAndTraitsByMediumOrLargeTests(): int
+    {
+        return $this->numberOfTestedClassesByMediumOrLargeTests() + $this->numberOfTestedTraitsByMediumOrLargeTests();
+    }
+
     public function numberOfTestedClassesAndTraitsBySmallOrMediumOrLargeTests(): int
     {
         return $this->numberOfTestedClassesBySmallOrMediumOrLargeTests() + $this->numberOfTestedTraitsBySmallOrMediumOrLargeTests();
@@ -263,6 +289,16 @@ abstract class AbstractNode implements Countable
     public function numberOfTestedFunctionsAndMethodsBySmallOrMediumTests(): int
     {
         return $this->numberOfTestedFunctionsBySmallOrMediumTests() + $this->numberOfTestedMethodsBySmallOrMediumTests();
+    }
+
+    public function numberOfTestedFunctionsAndMethodsBySmallOrLargeTests(): int
+    {
+        return $this->numberOfTestedFunctionsBySmallOrLargeTests() + $this->numberOfTestedMethodsBySmallOrLargeTests();
+    }
+
+    public function numberOfTestedFunctionsAndMethodsByMediumOrLargeTests(): int
+    {
+        return $this->numberOfTestedFunctionsByMediumOrLargeTests() + $this->numberOfTestedMethodsByMediumOrLargeTests();
     }
 
     public function numberOfTestedFunctionsAndMethodsBySmallOrMediumOrLargeTests(): int
@@ -317,6 +353,10 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfExecutedLinesBySmallOrMediumTests(): int;
 
+    abstract public function numberOfExecutedLinesBySmallOrLargeTests(): int;
+
+    abstract public function numberOfExecutedLinesByMediumOrLargeTests(): int;
+
     abstract public function numberOfExecutedLinesBySmallOrMediumOrLargeTests(): int;
 
     abstract public function numberOfExecutableBranches(): int;
@@ -341,6 +381,10 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfTestedClassesBySmallOrMediumTests(): int;
 
+    abstract public function numberOfTestedClassesBySmallOrLargeTests(): int;
+
+    abstract public function numberOfTestedClassesByMediumOrLargeTests(): int;
+
     abstract public function numberOfTestedClassesBySmallOrMediumOrLargeTests(): int;
 
     abstract public function numberOfTraits(): int;
@@ -354,6 +398,10 @@ abstract class AbstractNode implements Countable
     abstract public function numberOfTestedTraitsByLargeTests(): int;
 
     abstract public function numberOfTestedTraitsBySmallOrMediumTests(): int;
+
+    abstract public function numberOfTestedTraitsBySmallOrLargeTests(): int;
+
+    abstract public function numberOfTestedTraitsByMediumOrLargeTests(): int;
 
     abstract public function numberOfTestedTraitsBySmallOrMediumOrLargeTests(): int;
 
@@ -369,6 +417,10 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfTestedMethodsBySmallOrMediumTests(): int;
 
+    abstract public function numberOfTestedMethodsBySmallOrLargeTests(): int;
+
+    abstract public function numberOfTestedMethodsByMediumOrLargeTests(): int;
+
     abstract public function numberOfTestedMethodsBySmallOrMediumOrLargeTests(): int;
 
     abstract public function numberOfFunctions(): int;
@@ -382,6 +434,10 @@ abstract class AbstractNode implements Countable
     abstract public function numberOfTestedFunctionsByLargeTests(): int;
 
     abstract public function numberOfTestedFunctionsBySmallOrMediumTests(): int;
+
+    abstract public function numberOfTestedFunctionsBySmallOrLargeTests(): int;
+
+    abstract public function numberOfTestedFunctionsByMediumOrLargeTests(): int;
 
     abstract public function numberOfTestedFunctionsBySmallOrMediumOrLargeTests(): int;
 

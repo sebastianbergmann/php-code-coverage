@@ -32,12 +32,13 @@
     <li class="nav-item"><a class="nav-link" href="BankAccount.php_path.html">Path Coverage</a></li>
    </ul>
    <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="50" data-high-lower-bound="90">
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small">Small</button>
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="medium">Medium</button>
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="large">Large</button>
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium">Small + Medium</button>
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-test-size-filter="small+medium+large">Small + Medium + Large</button>
-    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter="all">All</button>
+    <input type="checkbox" class="btn-check" id="filter-size-small" data-test-size-filter="small" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-small">Small</label>
+    <input type="checkbox" class="btn-check" id="filter-size-medium" data-test-size-filter="medium" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-medium">Medium</label>
+    <input type="checkbox" class="btn-check" id="filter-size-large" data-test-size-filter="large" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-large">Large</label>
+    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter-all>All</button>
    </div>
    <div class="table-responsive">
     <table class="table table-bordered">

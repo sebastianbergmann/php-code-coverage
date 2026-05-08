@@ -12,8 +12,11 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Visibility;
 
 #[CoversClass(Directory::class)]
 #[Small]
@@ -135,6 +138,159 @@ final class DirectoryTest extends TestCase
         $child->addFile($this->createFile($child, 'b.php'));
 
         $this->assertSame(1, $root->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testNumberOfExecutedLinesByTestSizeAggregatesFromChildren(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
+        $root->addFile($this->createFileCoveredByMediumTest($root, 'medium.php'));
+        $root->addFile($this->createFileCoveredByLargeTest($root, 'large.php'));
+
+        $this->assertSame(6, $root->numberOfExecutableLines());
+        $this->assertSame(6, $root->numberOfExecutedLines());
+        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesByMediumTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesByLargeTests());
+        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrMediumTests());
+        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrLargeTests());
+        $this->assertSame(4, $root->numberOfExecutedLinesByMediumOrLargeTests());
+        $this->assertSame(6, $root->numberOfExecutedLinesBySmallOrMediumOrLargeTests());
+    }
+
+    public function testNumberOfTestedClassesByTestSizeAggregatesFromChildren(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
+        $root->addFile($this->createFileCoveredByMediumTest($root, 'medium.php'));
+        $root->addFile($this->createFileCoveredByLargeTest($root, 'large.php'));
+
+        $this->assertSame(1, $root->numberOfTestedClassesBySmallTests());
+        $this->assertSame(1, $root->numberOfTestedClassesByMediumTests());
+        $this->assertSame(1, $root->numberOfTestedClassesByLargeTests());
+        $this->assertSame(2, $root->numberOfTestedClassesBySmallOrMediumTests());
+        $this->assertSame(2, $root->numberOfTestedClassesBySmallOrLargeTests());
+        $this->assertSame(2, $root->numberOfTestedClassesByMediumOrLargeTests());
+        $this->assertSame(3, $root->numberOfTestedClassesBySmallOrMediumOrLargeTests());
+    }
+
+    public function testNumberOfTestedMethodsByTestSizeAggregatesFromChildren(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
+        $root->addFile($this->createFileCoveredByMediumTest($root, 'medium.php'));
+
+        $this->assertSame(1, $root->numberOfTestedMethodsBySmallTests());
+        $this->assertSame(1, $root->numberOfTestedMethodsByMediumTests());
+        $this->assertSame(0, $root->numberOfTestedMethodsByLargeTests());
+        $this->assertSame(2, $root->numberOfTestedMethodsBySmallOrMediumTests());
+        $this->assertSame(1, $root->numberOfTestedMethodsBySmallOrLargeTests());
+        $this->assertSame(1, $root->numberOfTestedMethodsByMediumOrLargeTests());
+        $this->assertSame(2, $root->numberOfTestedMethodsBySmallOrMediumOrLargeTests());
+    }
+
+    public function testNumberOfTestedFunctionsByTestSizeAggregatesFromChildren(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFileWithFunctionCoveredBySmallTest($root, 'small.php'));
+        $root->addFile($this->createFileWithFunctionCoveredByMediumTest($root, 'medium.php'));
+
+        $this->assertSame(1, $root->numberOfTestedFunctionsBySmallTests());
+        $this->assertSame(1, $root->numberOfTestedFunctionsByMediumTests());
+        $this->assertSame(0, $root->numberOfTestedFunctionsByLargeTests());
+        $this->assertSame(2, $root->numberOfTestedFunctionsBySmallOrMediumTests());
+        $this->assertSame(1, $root->numberOfTestedFunctionsBySmallOrLargeTests());
+        $this->assertSame(1, $root->numberOfTestedFunctionsByMediumOrLargeTests());
+        $this->assertSame(2, $root->numberOfTestedFunctionsBySmallOrMediumOrLargeTests());
+    }
+
+    public function testNumberOfTestedTraitsByTestSizeReturnsZeroWhenNoTraitsExist(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
+
+        $this->assertSame(0, $root->numberOfTestedTraitsBySmallTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsByMediumTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsByLargeTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrMediumTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrLargeTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsByMediumOrLargeTests());
+        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrMediumOrLargeTests());
+    }
+
+    public function testTestSizeAggregationCachesResultsAcrossNestedDirectories(): void
+    {
+        $root = new Directory('root');
+        $sub  = $root->addDirectory('sub');
+        $sub->addFile($this->createFileCoveredBySmallTest($sub, 'small.php'));
+        $sub->addFile($this->createFileCoveredByLargeTest($sub, 'large.php'));
+
+        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesByLargeTests());
+        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrLargeTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
+    }
+
+    private function createFileCoveredBySmallTest(Directory $parent, string $name): File
+    {
+        return $this->createFileCoveredBySingleTestSize($parent, $name, 'small');
+    }
+
+    private function createFileCoveredByMediumTest(Directory $parent, string $name): File
+    {
+        return $this->createFileCoveredBySingleTestSize($parent, $name, 'medium');
+    }
+
+    private function createFileCoveredByLargeTest(Directory $parent, string $name): File
+    {
+        return $this->createFileCoveredBySingleTestSize($parent, $name, 'large');
+    }
+
+    private function createFileCoveredBySingleTestSize(Directory $parent, string $name, string $size): File
+    {
+        $method = new Method('m', 1, 2, 'public function m(): void', Visibility::Public, 1);
+        $class  = new Class_('C', 'C', '', $name, 1, 2, null, [], [], ['m' => $method]);
+
+        return new File(
+            $name,
+            $parent,
+            'sha1hash',
+            [1 => ['t'], 2 => ['t']],
+            [],
+            ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
+            ['C' => $class],
+            [],
+            [],
+            new LinesOfCode(2, 0, 2),
+        );
+    }
+
+    private function createFileWithFunctionCoveredBySmallTest(Directory $parent, string $name): File
+    {
+        return $this->createFileWithFunctionCoveredBySingleTestSize($parent, $name, 'small');
+    }
+
+    private function createFileWithFunctionCoveredByMediumTest(Directory $parent, string $name): File
+    {
+        return $this->createFileWithFunctionCoveredBySingleTestSize($parent, $name, 'medium');
+    }
+
+    private function createFileWithFunctionCoveredBySingleTestSize(Directory $parent, string $name, string $size): File
+    {
+        $function = new Function_('f', 'f', '', 1, 2, 'function f(): void', 1);
+
+        return new File(
+            $name,
+            $parent,
+            'sha1hash',
+            [1 => ['t'], 2 => ['t']],
+            [],
+            ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
+            [],
+            [],
+            ['f' => $function],
+            new LinesOfCode(2, 0, 2),
+        );
     }
 
     private function createFileWithBranchCoverageData(Directory $parent, string $name): File

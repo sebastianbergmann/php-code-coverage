@@ -190,6 +190,36 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayHasKey(12, $executableLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1160')]
+    public function testTernaryInsideSpreadDoesNotCreateSeparateBranches(): void
+    {
+        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_ternary_in_spread.php');
+        $parser                        = (new ParserFactory)->createForHostVersion();
+        $nodes                         = $parser->parse($source);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        foreach ([5, 6, 7, 8, 9, 10] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
+        }
+
+        $branch = $executableLines[5];
+
+        foreach ([6, 7, 8, 9, 10] as $line) {
+            $this->assertSame($branch, $executableLines[$line]);
+        }
+
+        foreach ([7, 8, 9] as $line) {
+            $this->assertArrayNotHasKey($line, $branchOperatorLines);
+        }
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1159')]
     public function testStatementsInClosureNestedInCallArgumentAreNotMarkedAsBranchOperators(): void
     {

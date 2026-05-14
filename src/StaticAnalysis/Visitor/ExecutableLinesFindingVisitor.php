@@ -57,6 +57,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      * @var array<int, string>
      */
     private array $commentsToCheckForUnset = [];
+    private int $spreadDepth               = 0;
 
     public function __construct(string $source)
     {
@@ -65,6 +66,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): null
     {
+        if ($node instanceof Node\ArrayItem && $node->unpack) {
+            $this->spreadDepth++;
+        }
+
         foreach ($node->getComments() as $comment) {
             $commentLine = $comment->getStartLine();
 
@@ -258,6 +263,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Expr\Ternary) {
+            if ($this->spreadDepth > 0) {
+                return null;
+            }
+
             if (null !== $node->if &&
                 $node->getStartLine() !== $node->if->getEndLine()) {
                 $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
@@ -408,6 +417,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
         foreach (range($node->getStartLine(), $node->getEndLine()) as $line) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
+        }
+
+        return null;
+    }
+
+    public function leaveNode(Node $node): null
+    {
+        if ($node instanceof Node\ArrayItem && $node->unpack) {
+            $this->spreadDepth--;
         }
 
         return null;

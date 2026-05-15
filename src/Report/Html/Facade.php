@@ -117,6 +117,7 @@ final readonly class Facade
         copy($this->templatePath . 'js/bootstrap.bundle.min.js', $dir . 'bootstrap.bundle.min.js');
         copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
         copy($this->templatePath . 'js/file.js', $dir . 'file.js');
+        copy($this->templatePath . 'js/test-size-filter.js', $dir . 'test-size-filter.js');
     }
 
     private function renderCss(string $target): void

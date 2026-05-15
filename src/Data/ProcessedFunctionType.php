@@ -23,6 +23,13 @@ final class ProcessedFunctionType
     public readonly int $endLine;
     public int $executableLines;
     public int $executedLines;
+    public int $executedLinesBySmallTests                = 0;
+    public int $executedLinesByMediumTests               = 0;
+    public int $executedLinesByLargeTests                = 0;
+    public int $executedLinesBySmallOrMediumTests        = 0;
+    public int $executedLinesBySmallOrLargeTests         = 0;
+    public int $executedLinesByMediumOrLargeTests        = 0;
+    public int $executedLinesBySmallOrMediumOrLargeTests = 0;
     public int $executableBranches;
     public int $executedBranches;
     public int $executablePaths;

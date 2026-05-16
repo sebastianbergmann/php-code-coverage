@@ -1,0 +1,44 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended",
+        "helpers:pinGitHubActionDigests"
+    ],
+    "baseBranchPatterns": [
+        "main",
+        "/^\\d+\\.\\d+$/"
+    ],
+    "rebaseWhen": "conflicted",
+    "prHourlyLimit": 2,
+    "prConcurrentLimit": 10,
+    "dependencyDashboard": true,
+    "labels": ["type/dependencies"],
+    "vulnerabilityAlerts": {
+        "enabled": true,
+        "labels": ["type/security", "type/dependencies"]
+    },
+    "packageRules": [
+        {
+            "description": "Group GitHub Actions updates per branch into one PR",
+            "matchManagers": ["github-actions"],
+            "groupName": "github-actions"
+        },
+        {
+            "description": "Do not update the PHP platform requirement in composer.json",
+            "matchManagers": ["composer"],
+            "matchDepNames": ["php"],
+            "enabled": false
+        },
+        {
+            "description": "Do not suggest major updates for Composer dependencies",
+            "matchManagers": ["composer"],
+            "matchUpdateTypes": ["major"],
+            "enabled": false
+        },
+        {
+            "description": "Bump composer.json ranges when updating dependencies",
+            "matchManagers": ["composer"],
+            "rangeStrategy": "bump"
+        }
+    ]
+}

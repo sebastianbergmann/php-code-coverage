@@ -6,15 +6,23 @@ on:
 
 name: CI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   COMPOSER_ROOT_VERSION: 14.1.x-dev
   PHP_VERSION: 8.4
+
+permissions:
+  contents: read
 
 jobs:
   coding-guidelines:
     name: Coding Guidelines
 
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
@@ -55,6 +63,7 @@ jobs:
     name: Static Analysis
 
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
@@ -111,6 +120,7 @@ jobs:
     name: Tests
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
 
     env:
       PHP_EXTENSIONS: none, ctype, curl, dom, json, libxml, mbstring, openssl, pdo_sqlite, soap, tokenizer, xml, xmlwriter

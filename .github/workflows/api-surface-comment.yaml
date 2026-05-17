@@ -1,6 +1,9 @@
 # https://github.com/marketplace/actions/api-surface-check-for-php
 
 on:
+  # zizmor: ignore[dangerous-triggers] workflow_run is required to comment on
+  # PRs from forks; this workflow only runs a pinned action and does not check
+  # out PR-controlled code.
   workflow_run:
     workflows: ["API Surface Check"]
     types: [completed]
@@ -9,7 +12,6 @@ name: "API Surface Comment"
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: api-surface-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
@@ -17,6 +19,9 @@ concurrency:
 
 jobs:
   check-api-surface:
+    name: Check API Surface
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # required to post the API surface diff comment on the PR
     steps:
       - uses: composer/api-surface-check@8817bcdb1d067675d726060181f579bac4c3cd98 # main

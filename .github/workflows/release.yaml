@@ -7,6 +7,13 @@ on:
 
 name: Release
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Release
@@ -14,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
+      contents: write # required to create GitHub releases
 
     steps:
       - name: Checkout
@@ -31,15 +38,12 @@ jobs:
           tools: none
 
       - name: Determine tag
-        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
 
       - name: Parse ChangeLog
-        run: build/scripts/extract-release-notes.php ${RELEASE_TAG} > release-notes.md
+        run: build/scripts/extract-release-notes.php "${RELEASE_TAG}" > release-notes.md
 
       - name: Create release
-        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.RELEASE_TAG }}
-          name: phpunit/php-code-coverage ${{ env.RELEASE_TAG }}
-          bodyFile: release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${RELEASE_TAG}" --title "phpunit/php-code-coverage ${RELEASE_TAG}" --notes-file release-notes.md

@@ -13,6 +13,7 @@ use const PHP_EOL;
 use function array_replace_recursive;
 use function file_put_contents;
 use function serialize;
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -45,6 +46,17 @@ final class MergerTest extends TestCase
         $path = $this->writeFile('a.php', $this->makeItem());
 
         $result = (new Merger)->merge([$path]);
+
+        $this->assertArrayHasKey('buildInformation', $result);
+        $this->assertArrayHasKey('basePath', $result);
+        $this->assertArrayHasKey('codeCoverage', $result);
+        $this->assertArrayHasKey('testResults', $result);
+        $this->assertInstanceOf(ProcessedCodeCoverageData::class, $result['codeCoverage']);
+    }
+
+    public function testMergeAsynchronously(): void
+    {
+        $result = (new Merger)->asyncMerge($this->generatePathList());
 
         $this->assertArrayHasKey('buildInformation', $result);
         $this->assertArrayHasKey('basePath', $result);
@@ -282,6 +294,16 @@ final class MergerTest extends TestCase
         $result = (new Merger)->merge([$pathA, $pathB], false);
 
         $this->assertArrayHasKey('codeCoverage', $result);
+    }
+
+    /**
+     * @return Generator<non-empty-string>
+     */
+    private function generatePathList(): Generator
+    {
+        yield $this->writeFile('a.php', $this->makeItem(['basePath' => '/home/user/project']));
+
+        yield $this->writeFile('b.php', $this->makeItem(['basePath' => '/home/user/project']));
     }
 
     /**

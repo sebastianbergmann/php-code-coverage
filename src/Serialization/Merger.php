@@ -11,8 +11,8 @@ namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use function array_key_exists;
 use function array_merge;
-use function array_slice;
 use DateTimeImmutable;
+use Generator;
 use SebastianBergmann\CodeCoverage\Version;
 
 /**
@@ -35,13 +35,35 @@ final readonly class Merger
      */
     public function merge(array $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
     {
-        if ($paths === []) {
+        return $this->asyncMerge(
+            $this->createGeneratorFor($paths),
+            $requireMatchingGitInformation,
+            $requireMatchingPhpVersion,
+            $requireMatchingCodeCoverageDriver,
+        );
+    }
+
+    /**
+     * @param Generator<non-empty-string> $paths
+     *
+     * @throws DriverMismatchException
+     * @throws EmptyPathListException
+     * @throws GitInformationMismatchException
+     * @throws MixedGitInformationException
+     * @throws RuntimeMismatchException
+     *
+     * @return SerializedCoverage
+     */
+    public function asyncMerge(Generator $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
+    {
+        if (!$paths->valid()) {
             throw new EmptyPathListException;
         }
 
         $unserializer = new Unserializer;
 
-        $first      = $unserializer->unserialize($paths[0]);
+        $first = $unserializer->unserialize($paths->current());
+        $paths->next();
         $refRuntime = $first['buildInformation']['runtime'];
         $refDriver  = $first['buildInformation']['phpCodeCoverage']['driverInformation'];
         $refHasGit  = array_key_exists('git', $first['buildInformation']);
@@ -50,7 +72,10 @@ final readonly class Merger
         $mergedCoverage    = clone $first['codeCoverage'];
         $mergedTestResults = [$first['testResults']];
 
-        foreach (array_slice($paths, 1) as $path) {
+        while ($paths->valid()) {
+            $path = $paths->current();
+            $paths->next();
+
             $item    = $unserializer->unserialize($path);
             $runtime = $item['buildInformation']['runtime'];
 
@@ -119,5 +144,17 @@ final readonly class Merger
             'codeCoverage'     => $mergedCoverage,
             'testResults'      => array_merge(...$mergedTestResults),
         ];
+    }
+
+    /**
+     * @template T
+     *
+     * @param array<T> $paths
+     *
+     * @return Generator<T>
+     */
+    private function createGeneratorFor(array $paths): Generator
+    {
+        yield from $paths;
     }
 }

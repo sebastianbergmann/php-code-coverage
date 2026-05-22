@@ -54,9 +54,9 @@ final class MergerTest extends TestCase
         $this->assertInstanceOf(ProcessedCodeCoverageData::class, $result['codeCoverage']);
     }
 
-    public function testMergeAsynchronously(): void
+    public function testMergeWithGenerator(): void
     {
-        $result = (new Merger)->asyncMerge($this->generatePathList());
+        $result = (new Merger)->merge($this->generatePathList());
 
         $this->assertArrayHasKey('buildInformation', $result);
         $this->assertArrayHasKey('basePath', $result);

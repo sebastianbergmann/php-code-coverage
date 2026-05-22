@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Serialization;
 use function array_key_exists;
 use function array_merge;
 use DateTimeImmutable;
-use Generator;
 use SebastianBergmann\CodeCoverage\Version;
 
 /**
@@ -23,7 +22,7 @@ use SebastianBergmann\CodeCoverage\Version;
 final readonly class Merger
 {
     /**
-     * @param list<non-empty-string> $paths
+     * @param iterable<non-empty-string> $paths
      *
      * @throws DriverMismatchException
      * @throws EmptyPathListException
@@ -33,48 +32,27 @@ final readonly class Merger
      *
      * @return SerializedCoverage
      */
-    public function merge(array $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
+    public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
     {
-        return $this->asyncMerge(
-            $this->createGeneratorFor($paths),
-            $requireMatchingGitInformation,
-            $requireMatchingPhpVersion,
-            $requireMatchingCodeCoverageDriver,
-        );
-    }
+        $first             = null;
+        $refRuntime        = null;
+        $refDriver         = null;
+        $refHasGit         = null;
+        $refGit            = null;
+        $mergedTestResults = null;
+        $runtime           = null;
 
-    /**
-     * @param Generator<non-empty-string> $paths
-     *
-     * @throws DriverMismatchException
-     * @throws EmptyPathListException
-     * @throws GitInformationMismatchException
-     * @throws MixedGitInformationException
-     * @throws RuntimeMismatchException
-     *
-     * @return SerializedCoverage
-     */
-    public function asyncMerge(Generator $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
-    {
-        if (!$paths->valid()) {
-            throw new EmptyPathListException;
-        }
+        foreach ($paths as $path) {
+            $unserializer ??= new Unserializer;
 
-        $unserializer = new Unserializer;
+            $first ??= $unserializer->unserialize($path);
+            $refRuntime ??= $first['buildInformation']['runtime'];
+            $refDriver ??= $first['buildInformation']['phpCodeCoverage']['driverInformation'];
+            $refHasGit ??= array_key_exists('git', $first['buildInformation']);
+            $refGit ??= $first['buildInformation']['git'] ?? null;
 
-        $first = $unserializer->unserialize($paths->current());
-        $paths->next();
-        $refRuntime = $first['buildInformation']['runtime'];
-        $refDriver  = $first['buildInformation']['phpCodeCoverage']['driverInformation'];
-        $refHasGit  = array_key_exists('git', $first['buildInformation']);
-        $refGit     = $first['buildInformation']['git'] ?? null;
-
-        $mergedCoverage    = clone $first['codeCoverage'];
-        $mergedTestResults = [$first['testResults']];
-
-        while ($paths->valid()) {
-            $path = $paths->current();
-            $paths->next();
+            $mergedCoverage ??= clone $first['codeCoverage'];
+            $mergedTestResults ??= [$first['testResults']];
 
             $item    = $unserializer->unserialize($path);
             $runtime = $item['buildInformation']['runtime'];
@@ -124,6 +102,10 @@ final readonly class Merger
             $mergedTestResults[] = $item['testResults'];
         }
 
+        if (!isset($first)) {
+            throw new EmptyPathListException;
+        }
+
         $buildInformation = [
             'timestamp'       => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
             'runtime'         => $refRuntime,
@@ -144,17 +126,5 @@ final readonly class Merger
             'codeCoverage'     => $mergedCoverage,
             'testResults'      => array_merge(...$mergedTestResults),
         ];
-    }
-
-    /**
-     * @template T
-     *
-     * @param array<T> $paths
-     *
-     * @return Generator<T>
-     */
-    private function createGeneratorFor(array $paths): Generator
-    {
-        yield from $paths;
     }
 }

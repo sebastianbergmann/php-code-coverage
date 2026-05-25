@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Serialization;
 
 use function array_key_exists;
 use function array_merge;
+use function assert;
 use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\Version;
 
@@ -34,67 +35,30 @@ final readonly class Merger
      */
     public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
     {
-        $first             = null;
-        $refRuntime        = null;
-        $refDriver         = null;
-        $refHasGit         = null;
-        $refGit            = null;
-        $mergedTestResults = null;
-        $runtime           = null;
+        $unserializer = new Unserializer;
 
         foreach ($paths as $path) {
-            $unserializer ??= new Unserializer;
+            if (!isset($first, $mergedCoverage, $mergedTestResults)) {
+                $first = $unserializer->unserialize($path);
 
-            $first ??= $unserializer->unserialize($path);
-            $refRuntime ??= $first['buildInformation']['runtime'];
-            $refDriver ??= $first['buildInformation']['phpCodeCoverage']['driverInformation'];
-            $refHasGit ??= array_key_exists('git', $first['buildInformation']);
-            $refGit ??= $first['buildInformation']['git'] ?? null;
+                $mergedCoverage    = clone $first['codeCoverage'];
+                $mergedTestResults = [$first['testResults']];
 
-            $mergedCoverage ??= clone $first['codeCoverage'];
-            $mergedTestResults ??= [$first['testResults']];
+                continue;
+            }
 
-            $item    = $unserializer->unserialize($path);
-            $runtime = $item['buildInformation']['runtime'];
+            $item = $unserializer->unserialize($path);
 
             if ($requireMatchingPhpVersion) {
-                if ($runtime['name'] !== $refRuntime['name'] || $runtime['version'] !== $refRuntime['version']) {
-                    throw new RuntimeMismatchException;
-                }
+                $this->assertPhpVersionMatches($first, $item);
             }
 
             if ($requireMatchingCodeCoverageDriver) {
-                $driver = $item['buildInformation']['phpCodeCoverage']['driverInformation'];
-
-                if ($driver['name'] !== $refDriver['name'] || $driver['version'] !== $refDriver['version']) {
-                    throw new DriverMismatchException;
-                }
+                $this->assertDriverMatches($first, $item);
             }
 
             if ($requireMatchingGitInformation) {
-                $hasGit = array_key_exists('git', $item['buildInformation']);
-
-                if ($hasGit !== $refHasGit) {
-                    throw new MixedGitInformationException;
-                }
-
-                if ($hasGit) {
-                    $git = $item['buildInformation']['git'];
-
-                    foreach (['originUrl', 'branch', 'commit', 'status'] as $field) {
-                        if ($git[$field] !== $refGit[$field]) {
-                            throw new GitInformationMismatchException($field, (string) $refGit[$field], (string) $git[$field]);
-                        }
-                    }
-
-                    if ($git['isClean'] !== $refGit['isClean']) {
-                        throw new GitInformationMismatchException(
-                            'isClean',
-                            $refGit['isClean'] ? 'true' : 'false',
-                            $git['isClean'] ? 'true' : 'false',
-                        );
-                    }
-                }
+                $this->assertGitInformationMatches($first, $item);
             }
 
             $mergedCoverage->merge($item['codeCoverage']);
@@ -106,18 +70,21 @@ final readonly class Merger
             throw new EmptyPathListException;
         }
 
+        assert(isset($mergedCoverage));
+        assert(isset($mergedTestResults));
+
         $buildInformation = [
             'timestamp'       => (new DateTimeImmutable)->format('D M j G:i:s T Y'),
-            'runtime'         => $refRuntime,
+            'runtime'         => $first['buildInformation']['runtime'],
             'phpCodeCoverage' => [
                 'version'             => Version::id(),
                 'serializationFormat' => Serializer::SERIALIZATION_FORMAT,
-                'driverInformation'   => $refDriver,
+                'driverInformation'   => $first['buildInformation']['phpCodeCoverage']['driverInformation'],
             ],
         ];
 
-        if ($refHasGit) {
-            $buildInformation['git'] = $refGit;
+        if (array_key_exists('git', $first['buildInformation'])) {
+            $buildInformation['git'] = $first['buildInformation']['git'];
         }
 
         return [
@@ -126,5 +93,78 @@ final readonly class Merger
             'codeCoverage'     => $mergedCoverage,
             'testResults'      => array_merge(...$mergedTestResults),
         ];
+    }
+
+    /**
+     * @param SerializedCoverage $reference
+     * @param SerializedCoverage $current
+     *
+     * @throws RuntimeMismatchException
+     */
+    private function assertPhpVersionMatches(array $reference, array $current): void
+    {
+        $referenceRuntime = $reference['buildInformation']['runtime'];
+        $currentRuntime   = $current['buildInformation']['runtime'];
+
+        if (
+            $referenceRuntime['name'] !== $currentRuntime['name'] ||
+            $referenceRuntime['version'] !== $currentRuntime['version']
+        ) {
+            throw new RuntimeMismatchException;
+        }
+    }
+
+    /**
+     * @param SerializedCoverage $reference
+     * @param SerializedCoverage $current
+     *
+     * @throws DriverMismatchException
+     */
+    private function assertDriverMatches(array $reference, array $current): void
+    {
+        $referenceDriver = $reference['buildInformation']['phpCodeCoverage']['driverInformation'];
+        $currentDriver   = $current['buildInformation']['phpCodeCoverage']['driverInformation'];
+
+        if (
+            $referenceDriver['name'] !== $currentDriver['name'] ||
+            $referenceDriver['version'] !== $currentDriver['version']
+        ) {
+            throw new DriverMismatchException;
+        }
+    }
+
+    /**
+     * @param SerializedCoverage $reference
+     * @param SerializedCoverage $current
+     *
+     * @throws GitInformationMismatchException
+     * @throws MixedGitInformationException
+     */
+    private function assertGitInformationMatches(array $reference, array $current): void
+    {
+        $refHasGit = array_key_exists('git', $reference['buildInformation']);
+
+        if ($refHasGit !== array_key_exists('git', $current['buildInformation'])) {
+            throw new MixedGitInformationException;
+        }
+
+        if ($refHasGit) {
+            $referenceGit = $reference['buildInformation']['git'];
+            $currentGit   = $current['buildInformation']['git'];
+
+            foreach (['originUrl', 'branch', 'commit', 'status'] as $field) {
+                if ($currentGit[$field] !== $referenceGit[$field]) {
+                    throw new GitInformationMismatchException($field, (string) $referenceGit[$field], (string) $currentGit[$field]);
+                }
+            }
+
+            if ($currentGit['isClean'] !== $referenceGit['isClean']) {
+                throw new GitInformationMismatchException(
+                    'isClean',
+                    $referenceGit['isClean'] ? 'true' : 'false',
+                    $currentGit['isClean'] ? 'true' : 'false',
+                );
+            }
+        }
     }
 }

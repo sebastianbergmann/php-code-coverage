@@ -42,7 +42,7 @@
         "theseer/tokenizer": "^2.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^12.5.27"
+        "phpunit/phpunit": "^12.5.28"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",

@@ -606,6 +606,9 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             'classesThatImplementInterface' => [],
             'methods'                       => [],
             'functions'                     => [],
+            'files'                         => [],
+            'directories'                   => [],
+            'directoriesRecursively'        => [],
             'reverseLookup'                 => [],
         ];
     }

@@ -458,6 +458,9 @@ final class FilterProcessorTest extends TestCase
             'classesThatImplementInterface' => [],
             'methods'                       => [],
             'functions'                     => [],
+            'files'                         => [],
+            'directories'                   => [],
+            'directoriesRecursively'        => [],
             'reverseLookup'                 => [],
         ];
     }

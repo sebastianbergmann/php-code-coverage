@@ -73,6 +73,30 @@ abstract class Target
         return new Trait_($traitName);
     }
 
+    /**
+     * @param non-empty-string $path
+     */
+    public static function forFile(string $path): File
+    {
+        return new File($path);
+    }
+
+    /**
+     * @param non-empty-string $directory
+     */
+    public static function forDirectory(string $directory): Directory
+    {
+        return new Directory($directory);
+    }
+
+    /**
+     * @param non-empty-string $directory
+     */
+    public static function forDirectoryRecursively(string $directory): DirectoryRecursively
+    {
+        return new DirectoryRecursively($directory);
+    }
+
     public function isNamespace(): bool
     {
         return false;
@@ -108,8 +132,23 @@ abstract class Target
         return false;
     }
 
+    public function isFile(): bool
+    {
+        return false;
+    }
+
+    public function isDirectory(): bool
+    {
+        return false;
+    }
+
+    public function isDirectoryRecursively(): bool
+    {
+        return false;
+    }
+
     /**
-     * @return 'classes'|'classesThatExtendClass'|'classesThatImplementInterface'|'functions'|'methods'|'namespaces'|'traits'
+     * @return 'classes'|'classesThatExtendClass'|'classesThatImplementInterface'|'directories'|'directoriesRecursively'|'files'|'functions'|'methods'|'namespaces'|'traits'
      */
     abstract public function key(): string;
 

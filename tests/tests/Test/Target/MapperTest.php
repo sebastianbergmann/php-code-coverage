@@ -11,6 +11,9 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
 use function array_merge;
+use function chdir;
+use function dirname;
+use function getcwd;
 use function range;
 use function realpath;
 use function strtolower;
@@ -44,6 +47,9 @@ final class MapperTest extends TestCase
     public static function provider(): array
     {
         $file = self::realpath(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
+
+        $top   = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Top.php');
+        $inner = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Subdir/Inner.php');
 
         return [
             'class' => [
@@ -192,6 +198,40 @@ final class MapperTest extends TestCase
                     ],
                 ),
             ],
+
+            'file' => [
+                [
+                    $top => range(1, 4),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forFile($top),
+                    ],
+                ),
+            ],
+
+            'directory (direct children only)' => [
+                [
+                    $top => range(1, 4),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forDirectory(dirname($top)),
+                    ],
+                ),
+            ],
+
+            'directory (recursively)' => [
+                [
+                    $top   => range(1, 4),
+                    $inner => range(1, 4),
+                ],
+                TargetCollection::fromArray(
+                    [
+                        Target::forDirectoryRecursively(dirname($top)),
+                    ],
+                ),
+            ],
         ];
     }
 
@@ -250,6 +290,30 @@ final class MapperTest extends TestCase
                 TargetCollection::fromArray(
                     [
                         Target::forNamespace('DoesNotExist'),
+                    ],
+                ),
+            ],
+            'file' => [
+                'File /path/that/does/not/exist.php is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forFile('/path/that/does/not/exist.php'),
+                    ],
+                ),
+            ],
+            'directory' => [
+                'Directory /path/that/does/not/exist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forDirectory('/path/that/does/not/exist'),
+                    ],
+                ),
+            ],
+            'directory (recursively)' => [
+                'Directory (recursively) /path/that/does/not/exist is not a valid target for code coverage',
+                TargetCollection::fromArray(
+                    [
+                        Target::forDirectoryRecursively('/path/that/does/not/exist'),
                     ],
                 ),
             ],
@@ -329,6 +393,51 @@ final class MapperTest extends TestCase
         );
     }
 
+    public function testRelativeFileTargetIsResolvedViaRealpath(): void
+    {
+        $top    = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Top.php');
+        $mapper = $this->mapper([$top]);
+
+        $previousCwd = self::getcwd();
+        chdir(dirname($top));
+
+        try {
+            $this->assertSame(
+                [$top => range(1, 4)],
+                $mapper->mapTarget(Target::forFile('./Top.php')),
+            );
+        } finally {
+            chdir($previousCwd);
+        }
+    }
+
+    public function testRelativeDirectoryTargetIsResolvedViaRealpath(): void
+    {
+        $top    = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Top.php');
+        $inner  = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Subdir/Inner.php');
+        $mapper = $this->mapper([$top, $inner]);
+
+        $previousCwd = self::getcwd();
+        chdir(dirname($top, 2));
+
+        try {
+            $this->assertSame(
+                [$top => range(1, 4)],
+                $mapper->mapTarget(Target::forDirectory('./file-target-tree')),
+            );
+
+            $this->assertSame(
+                [
+                    $top   => range(1, 4),
+                    $inner => range(1, 4),
+                ],
+                $mapper->mapTarget(Target::forDirectoryRecursively('./file-target-tree')),
+            );
+        } finally {
+            chdir($previousCwd);
+        }
+    }
+
     public function testLineOfCodeInGlobalScopeDoesNotBelongToCodeUnit(): void
     {
         $file   = self::realpath(__DIR__ . '/../../../_files/source_without_ignore.php');
@@ -378,5 +487,19 @@ final class MapperTest extends TestCase
         }
 
         return $realpath;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function getcwd(): string
+    {
+        $cwd = getcwd();
+
+        if ($cwd === false) {
+            throw new RuntimeException('Could not determine current working directory');
+        }
+
+        return $cwd;
     }
 }

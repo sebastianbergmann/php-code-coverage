@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* [#1186](https://github.com/sebastianbergmann/php-code-coverage/pull/1186): `Merger::merge()` now accepts any kind of iterable
 * Reduced overhead in static analysis
 * The HTML report now distinguishes three rendering modes (line, line + branch, line + branch + path) so that a driver providing branch coverage without path coverage no longer forces path-coverage UI to appear with empty data
 * The Text report now gates the `Branches:` and `Paths:` lines on the presence of the corresponding data independently

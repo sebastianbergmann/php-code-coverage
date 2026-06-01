@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const ENT_QUOTES;
 use const ENT_XML1;
 use function array_filter;
 use function array_map;
@@ -194,12 +195,12 @@ CSS;
                     $item['executableLines'],
                     $item['complexity'],
                 ),
-                ENT_XML1,
+                ENT_QUOTES | ENT_XML1,
             );
 
             $svg .= sprintf(
                 ' <a href="%s"><circle cx="%.1f" cy="%.1f" r="%.1f" class="%s"><title>%s</title></circle></a>' . "\n",
-                htmlspecialchars($item['link'], ENT_XML1),
+                htmlspecialchars($item['link'], ENT_QUOTES | ENT_XML1),
                 $cx,
                 $cy,
                 $r,

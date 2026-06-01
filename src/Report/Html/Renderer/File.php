@@ -343,6 +343,12 @@ final class File extends Renderer
             1,
         );
 
+        if ($item instanceof ProcessedFunctionType) {
+            $name = $item->functionName;
+        } else {
+            $name = $item->methodName;
+        }
+
         return $this->renderItemTemplate(
             $template,
             [
@@ -351,7 +357,7 @@ final class File extends Renderer
                     $indent,
                     $item->startLine,
                     htmlspecialchars($item->signature, self::HTML_SPECIAL_CHARS_FLAGS),
-                    $item instanceof ProcessedFunctionType ? $item->functionName : $item->methodName,
+                    $this->escapeHtml($name),
                 ),
                 'numMethods'                      => $numMethods,
                 'numTestedMethods'                => $numTestedMethods,
@@ -860,14 +866,14 @@ final class File extends Renderer
         $tmp = explode('\\', $className);
 
         if (count($tmp) > 1) {
-            $className = sprintf(
+            return sprintf(
                 '<abbr title="%s">%s</abbr>',
-                $className,
-                array_pop($tmp),
+                $this->escapeHtml($className),
+                $this->escapeHtml(array_pop($tmp)),
             );
         }
 
-        return $className;
+        return $this->escapeHtml($className);
     }
 
     private function abbreviateMethodName(string $methodName): string
@@ -875,10 +881,10 @@ final class File extends Renderer
         $parts = explode('->', $methodName);
 
         if (count($parts) === 2) {
-            return $this->abbreviateClassName($parts[0]) . '->' . $parts[1];
+            return $this->abbreviateClassName($parts[0]) . '->' . $this->escapeHtml($parts[1]);
         }
 
-        return $methodName;
+        return $this->escapeHtml($methodName);
     }
 
     /**

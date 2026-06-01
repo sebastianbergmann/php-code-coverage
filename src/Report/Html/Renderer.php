@@ -9,8 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const ENT_HTML5;
+use const ENT_QUOTES;
+use const ENT_SUBSTITUTE;
 use function array_pop;
 use function count;
+use function htmlspecialchars;
 use function sprintf;
 use function str_repeat;
 use function substr_count;
@@ -179,7 +183,7 @@ abstract class Renderer
         $template->setVar(
             [
                 'id'               => $node->id(),
-                'full_path'        => $node->pathAsString(),
+                'full_path'        => $this->escapeHtml($node->pathAsString()),
                 'path_to_root'     => $this->pathToRoot($node),
                 'breadcrumbs'      => $this->breadcrumbs($node),
                 'date'             => $this->date,
@@ -190,6 +194,11 @@ abstract class Renderer
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
             ],
         );
+    }
+
+    protected function escapeHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
     }
 
     protected function breadcrumbs(AbstractNode $node): string
@@ -225,7 +234,7 @@ abstract class Renderer
     {
         $buffer = sprintf(
             '         <li class="breadcrumb-item active">%s</li>' . "\n",
-            $node->name(),
+            $this->escapeHtml($node->name()),
         );
 
         if ($node instanceof DirectoryNode) {
@@ -240,7 +249,7 @@ abstract class Renderer
         return sprintf(
             '         <li class="breadcrumb-item"><a href="%sindex.html">%s</a></li>' . "\n",
             $pathToRoot,
-            $node->name(),
+            $this->escapeHtml($node->name()),
         );
     }
 

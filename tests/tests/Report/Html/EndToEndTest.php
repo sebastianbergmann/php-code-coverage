@@ -12,12 +12,19 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function file_get_contents;
+use function file_put_contents;
 use function iterator_count;
+use function mkdir;
 use function str_replace;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversNamespace;
 use PHPUnit\Framework\Attributes\Medium;
 use RegexIterator;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversNamespace('SebastianBergmann\CodeCoverage\Report\Html')]
@@ -77,6 +84,38 @@ final class EndToEndTest extends TestCase
         $report->process($this->getCoverageForClassWithAnonymousFunction()->getReport(), TEST_FILES_PATH . 'tmp');
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+    }
+
+    public function testHtmlSpecialCharactersInFileAndDirectoryNamesAreEncoded(): void
+    {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped('The filesystem on Windows does not allow "<", ">" or \'"\' in file or directory names');
+        }
+
+        $source = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'encoding-source';
+        $target = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'encoding-report';
+        $file   = $source . DIRECTORY_SEPARATOR . 'Resource <X & Y>.php';
+        $nested = $source . DIRECTORY_SEPARATOR . 'Group <A & B>' . DIRECTORY_SEPARATOR . 'inner.php';
+
+        mkdir($source . DIRECTORY_SEPARATOR . 'Group <A & B>', 0o777, true);
+        file_put_contents($file, "<?php function f() { return 1; }\n");
+        file_put_contents($nested, "<?php function g() { return 2; }\n");
+
+        $analyser  = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+        $processed = new ProcessedCodeCoverageData;
+
+        foreach ([$file, $nested] as $path) {
+            $processed->initializeUnseenData(RawCodeCoverageData::fromUncoveredFile($path, $analyser));
+        }
+
+        (new Facade)->process((new Builder($analyser))->build($processed, [], ''), $target);
+
+        $index = file_get_contents($target . DIRECTORY_SEPARATOR . 'index.html');
+
+        $this->assertStringContainsString('Resource &lt;X &amp; Y&gt;.php', $index);
+        $this->assertStringContainsString('Group &lt;A &amp; B&gt;', $index);
+        $this->assertStringNotContainsString('Resource <X & Y>.php', $index);
+        $this->assertStringNotContainsString('Group <A & B>', $index);
     }
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void

@@ -69,7 +69,7 @@ final class Dashboard extends Renderer
         return sprintf(
             '         <li class="breadcrumb-item"><a href="index.html">%s</a></li>' . "\n" .
             '         <li class="breadcrumb-item active">(Dashboard)</li>' . "\n",
-            $node->name(),
+            $this->escapeHtml($node->name()),
         );
     }
 

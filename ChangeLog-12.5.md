@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [12.5.7] - 2026-MM-DD
+
+### Fixed
+
+* [#1212](https://github.com/sebastianbergmann/php-code-coverage/pull/1212): Filenames in HTML report are not escaped
+
 ## [12.5.6] - 2026-04-15
 
 ### Fixed
@@ -53,6 +59,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#1126](https://github.com/sebastianbergmann/php-code-coverage/issues/1126): Add test execution time to `<test>` elements under `projects/tests` in the XML reports index file
 * [#1127](https://github.com/sebastianbergmann/php-code-coverage/issues/1127): Add SHA-1 hash of content of SUT source file to XML report
 
+[12.5.7]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.6...12.5
 [12.5.6]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.5...12.5.6
 [12.5.5]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.4...12.5.5
 [12.5.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/12.5.3...12.5.4

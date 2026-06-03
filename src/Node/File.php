@@ -334,7 +334,9 @@ final class File extends AbstractNode
             foreach ($this->functions as $function) {
                 if ($function->executableLines > 0 &&
                     $function->coverage === 100) {
+                    // @codeCoverageIgnoreStart
                     $this->numTestedFunctions++;
+                    // @codeCoverageIgnoreEnd
                 }
             }
         }

@@ -9,9 +9,14 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use function array_fill;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
@@ -278,6 +283,241 @@ final class FileTest extends TestCase
 
         $this->assertTrue($file->hasBranchCoverageData());
         $this->assertSame(0, $file->numberOfFilesWithoutBranchCoverageData());
+    }
+
+    public function testExposesSha1(): void
+    {
+        $file = $this->createFileNode();
+
+        $this->assertSame('abc123', $file->sha1());
+    }
+
+    public function testExposesLineCoverageData(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertArrayHasKey(1, $file->lineCoverageData());
+    }
+
+    public function testExposesFunctionCoverageData(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertArrayHasKey('myFunc', $file->functionCoverageData());
+    }
+
+    public function testExposesTestData(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertArrayHasKey('test1', $file->testData());
+    }
+
+    public function testExposesClasses(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertArrayHasKey('MyClass', $file->classes());
+    }
+
+    public function testExposesFunctions(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertArrayHasKey('myFunc', $file->functions());
+    }
+
+    public function testExposesLinesOfCode(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertSame(5, $file->linesOfCode()->linesOfCode());
+    }
+
+    public function testCountsExecutableAndExecutedLines(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertSame(2, $file->numberOfExecutableLines());
+        $this->assertSame(1, $file->numberOfExecutedLines());
+    }
+
+    public function testCountsExecutableAndExecutedBranches(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertSame(2, $file->numberOfExecutableBranches());
+        $this->assertSame(2, $file->numberOfExecutedBranches());
+    }
+
+    public function testCountsExecutableAndExecutedPaths(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertSame(2, $file->numberOfExecutablePaths());
+        $this->assertSame(2, $file->numberOfExecutedPaths());
+    }
+
+    public function testCountsClasses(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertSame(1, $file->numberOfClasses());
+        $this->assertSame(1, $file->numberOfClasses());
+    }
+
+    public function testCountsTestedClasses(): void
+    {
+        $file = $this->createFileNodeWithCoverageData();
+
+        $this->assertSame(1, $file->numberOfTestedClasses());
+    }
+
+    public function testCountsFunctions(): void
+    {
+        $file = $this->createFileNodeWithFunction();
+
+        $this->assertSame(1, $file->numberOfFunctions());
+    }
+
+    public function testCountsMethods(): void
+    {
+        $file = $this->createFileNodeWithTestedClassAndTrait();
+
+        $this->assertSame(2, $file->numberOfMethods());
+    }
+
+    public function testCountsTestedMethods(): void
+    {
+        $file = $this->createFileNodeWithTestedClassAndTrait();
+
+        $this->assertSame(2, $file->numberOfTestedMethods());
+    }
+
+    private function createFileNodeWithTestedClassAndTrait(): File
+    {
+        $root = new Directory('root');
+
+        $classMethod = new Method(
+            'classMethod',
+            1,
+            5,
+            'public function classMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $class = new Class_(
+            'MyClass',
+            'MyClass',
+            '',
+            'test.php',
+            1,
+            5,
+            null,
+            [],
+            [],
+            ['classMethod' => $classMethod],
+        );
+
+        $traitMethod = new Method(
+            'traitMethod',
+            6,
+            10,
+            'public function traitMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $trait = new Trait_(
+            'MyTrait',
+            'MyTrait',
+            '',
+            'test.php',
+            6,
+            10,
+            [],
+            ['traitMethod' => $traitMethod],
+        );
+
+        $lineCoverageData = array_fill(1, 10, ['test1']);
+
+        return new File(
+            'test.php',
+            $root,
+            'abc123',
+            $lineCoverageData,
+            [],
+            ['test1'   => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            ['MyClass' => $class],
+            ['MyTrait' => $trait],
+            [],
+            new LinesOfCode(10, 0, 10),
+        );
+    }
+
+    private function createFileNodeWithCoverageData(): File
+    {
+        $root = new Directory('root');
+
+        $method = new Method(
+            'classMethod',
+            1,
+            5,
+            'public function classMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $class = new Class_(
+            'MyClass',
+            'MyClass',
+            '',
+            'test.php',
+            1,
+            5,
+            null,
+            [],
+            [],
+            ['classMethod' => $method],
+        );
+
+        $function = new Function_(
+            'myFunc',
+            'myFunc',
+            '',
+            6,
+            10,
+            'function myFunc(): void',
+            1,
+        );
+
+        $lineCoverageData = array_fill(1, 10, ['test1']);
+
+        $functionCoverageData = [
+            'MyClass->classMethod' => new ProcessedFunctionCoverageData(
+                [new ProcessedBranchCoverageData(0, 5, 1, 5, ['test1'], [], [])],
+                [new ProcessedPathCoverageData([0 => 0], ['test1'])],
+            ),
+            'myFunc' => new ProcessedFunctionCoverageData(
+                [new ProcessedBranchCoverageData(0, 5, 6, 10, ['test1'], [], [])],
+                [new ProcessedPathCoverageData([0 => 0], ['test1'])],
+            ),
+        ];
+
+        return new File(
+            'test.php',
+            $root,
+            'abc123',
+            $lineCoverageData,
+            $functionCoverageData,
+            ['test1'   => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            ['MyClass' => $class],
+            [],
+            ['myFunc' => $function],
+            new LinesOfCode(10, 0, 10),
+            true,
+        );
     }
 
     private function createFileNode(): File

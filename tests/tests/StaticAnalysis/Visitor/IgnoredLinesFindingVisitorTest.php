@@ -68,6 +68,19 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
         $this->assertArrayNotHasKey(12, $ignoredLines);
     }
 
+    public function testConnectsAttributesToTheirParentNode(): void
+    {
+        $ignoredLines = $this->findIgnoredLines(
+            TEST_FILES_PATH . 'source_with_ignore_attributes.php',
+            true,
+            false,
+        );
+
+        // Lines 5-10 cover the class annotated with CodeCoverageIgnore
+        $this->assertArrayHasKey(5, $ignoredLines);
+        $this->assertArrayHasKey(10, $ignoredLines);
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/919')]
     public function testAllLinesOfInterfaceAreIgnored(): void
     {

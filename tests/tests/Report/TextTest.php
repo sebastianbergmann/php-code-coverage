@@ -108,4 +108,23 @@ final class TextTest extends TestCase
             str_replace(PHP_EOL, "\n", $text->process($this->getCoverageForFilesWithUncoveredExcluded()->getReport())),
         );
     }
+
+    public function testTextForReportWithFileWithoutBranchCoverageData(): void
+    {
+        $text = new Text(Thresholds::default(), false, false);
+
+        $output = str_replace(PHP_EOL, "\n", $text->process($this->reportWithFileWithoutBranchCoverageData()));
+
+        $this->assertStringContainsString('1 file was not loaded during test execution and no branch/path data is available for it', $output);
+    }
+
+    public function testTextForReportWithNestedDirectories(): void
+    {
+        $text = new Text(Thresholds::default(), true, false);
+
+        $output = str_replace(PHP_EOL, "\n", $text->process($this->reportForNestedDirectories()));
+
+        $this->assertStringContainsString('BankAccount', $output);
+        $this->assertStringContainsString('TargetClass', $output);
+    }
 }

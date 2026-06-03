@@ -18,6 +18,7 @@ use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\InMemoryTarget;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 
@@ -64,6 +65,36 @@ final class OpenCloverTest extends TestCase
             TEST_FILES_PATH . 'Report/OpenClover/class-with-anonymous-function.xml',
             $clover->process($this->getCoverageForClassWithAnonymousFunction()->getReport()),
         );
+    }
+
+    public function testCloverForNamespacedBankAccount(): void
+    {
+        $clover = new OpenClover;
+
+        $this->assertAndValidate(
+            TEST_FILES_PATH . 'Report/OpenClover/NamespacedBankAccount.xml',
+            $clover->process($this->getLineCoverageForNamespacedBankAccount()->getReport(), null, 'NamespacedBankAccount'),
+        );
+    }
+
+    public function testCloverForReportWithNestedDirectories(): void
+    {
+        $clover = new OpenClover;
+
+        $report = $clover->process($this->reportForNestedDirectories(), null, 'NestedDirectories');
+
+        $this->assertStringContainsString('BankAccount.php', $report);
+        $this->assertStringContainsString('TargetClass.php', $report);
+    }
+
+    public function testWritesReportToTarget(): void
+    {
+        $clover = new OpenClover;
+        $target = InMemoryTarget::target('openclover');
+
+        $buffer = $clover->process($this->getLineCoverageForBankAccount()->getReport(), $target, 'BankAccount');
+
+        $this->assertSame($buffer, InMemoryTarget::content($target));
     }
 
     /**

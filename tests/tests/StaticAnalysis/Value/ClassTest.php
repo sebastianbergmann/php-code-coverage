@@ -34,6 +34,29 @@ final class ClassTest extends TestCase
         $this->assertSame('example', $this->class()->namespace());
     }
 
+    public function testIsNamespacedWhenNamespaceIsNotEmpty(): void
+    {
+        $this->assertTrue($this->class()->isNamespaced());
+    }
+
+    public function testIsNotNamespacedWhenNamespaceIsEmpty(): void
+    {
+        $class = new Class_(
+            'Example',
+            'Example',
+            '',
+            'file.php',
+            1,
+            2,
+            null,
+            [],
+            [],
+            [],
+        );
+
+        $this->assertFalse($class->isNamespaced());
+    }
+
     public function testHasFile(): void
     {
         $this->assertSame('file.php', $this->class()->file());

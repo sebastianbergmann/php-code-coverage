@@ -46,6 +46,39 @@ final class EndToEndTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
+    public function testMissingBranchCoverageDataIsMarkedInDirectorySummary(): void
+    {
+        $report = new Facade;
+        $report->process($this->reportWithFileWithoutBranchCoverageData(), TEST_FILES_PATH . 'tmp');
+
+        $index = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.html');
+
+        $this->assertStringContainsString('Not all files have branch and path coverage data', $index);
+    }
+
+    public function testTestSizeAndStatusAreReflectedInSourceRendering(): void
+    {
+        $report = new Facade;
+        $report->process($this->coverageForBankAccountWithVariousTestSizesAndStatuses()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $source = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+
+        $this->assertStringContainsString('covered-by-medium-tests', $source);
+        $this->assertStringContainsString('covered-by-small-tests', $source);
+    }
+
+    public function testTestSizeIsReflectedInBranchAndPathSourceRendering(): void
+    {
+        $report = new Facade;
+        $report->process($this->pathCoverageForBankAccountWithVariousTestSizes()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $branch = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_branch.html');
+        $path   = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_path.html');
+
+        $this->assertStringContainsString('covered-by-medium-tests', $branch);
+        $this->assertStringContainsString('covered-by-small-tests', $path);
+    }
+
     public function testPathCoverageForBankAccountTest(): void
     {
         $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';

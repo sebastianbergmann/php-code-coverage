@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage clover="%s" generated="%i">
+  <project timestamp="%i" name="NamespacedBankAccount">
+    <metrics files="1" loc="39" ncloc="39" classes="1" complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
+    <package name="SomeNamespace">
+      <metrics complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
+      <file name="NamespacedBankAccount.php" path="%sNamespacedBankAccount.php">
+        <metrics loc="39" ncloc="39" classes="1" complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
+        <class name="BankAccount">
+          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        </class>
+        <class name="BankAccountTrait">
+          <metrics complexity="5" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" methods="4" coveredmethods="3"/>
+        </class>
+        <line num="11" type="method" complexity="1" count="2" signature="getBalance()" visibility="public"/>
+        <line num="13" type="stmt" count="2"/>
+        <line num="16" type="method" complexity="2" count="0" signature="setBalance($balance)" visibility="protected"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="19" type="stmt" count="0"/>
+        <line num="21" type="stmt" count="0"/>
+        <line num="25" type="method" complexity="1" count="2" signature="depositMoney($balance)" visibility="public"/>
+        <line num="27" type="stmt" count="2"/>
+        <line num="29" type="stmt" count="1"/>
+        <line num="32" type="method" complexity="1" count="2" signature="withdrawMoney($balance)" visibility="public"/>
+        <line num="34" type="stmt" count="2"/>
+        <line num="36" type="stmt" count="1"/>
+      </file>
+    </package>
+  </project>
+</coverage>

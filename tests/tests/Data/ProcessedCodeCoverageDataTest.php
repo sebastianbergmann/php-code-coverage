@@ -174,4 +174,76 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $this->assertIsArray($newCoverage->functionCoverage()['/some/path/SomeClass.php']);
         $this->assertArrayHasKey('SomeClass->secondFunction', $newCoverage->functionCoverage()['/some/path/SomeClass.php']);
     }
+
+    public function testMergeOfLinesPresentInOnlyOneOfTheTwoFiles(): void
+    {
+        $existingCoverage = new ProcessedCodeCoverageData;
+        $existingCoverage->setLineCoverage(
+            [
+                '/some/path/SomeClass.php' => [
+                    8 => ['test1'],
+                ],
+            ],
+        );
+
+        $newCoverage = new ProcessedCodeCoverageData;
+        $newCoverage->setLineCoverage(
+            [
+                '/some/path/SomeClass.php' => [
+                    9 => ['test2'],
+                ],
+            ],
+        );
+
+        $existingCoverage->merge($newCoverage);
+
+        $lineCoverage = $existingCoverage->lineCoverage()['/some/path/SomeClass.php'];
+
+        $this->assertSame(['test1'], $lineCoverage[8]);
+        $this->assertSame(['test2'], $lineCoverage[9]);
+    }
+
+    public function testRenameFile(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+        $coverage->setLineCoverage(
+            [
+                '/some/path/OldName.php' => [
+                    8 => ['test1'],
+                ],
+            ],
+        );
+        $coverage->setFunctionCoverage(
+            [
+                '/some/path/OldName.php' => [
+                    'someFunction' => new ProcessedFunctionCoverageData([], []),
+                ],
+            ],
+        );
+
+        $coverage->renameFile('/some/path/OldName.php', '/some/path/NewName.php');
+
+        $this->assertArrayHasKey('/some/path/NewName.php', $coverage->lineCoverage());
+        $this->assertArrayNotHasKey('/some/path/OldName.php', $coverage->lineCoverage());
+        $this->assertArrayHasKey('/some/path/NewName.php', $coverage->functionCoverage());
+        $this->assertArrayNotHasKey('/some/path/OldName.php', $coverage->functionCoverage());
+    }
+
+    public function testRenameFileWithoutFunctionCoverage(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+        $coverage->setLineCoverage(
+            [
+                '/some/path/OldName.php' => [
+                    8 => ['test1'],
+                ],
+            ],
+        );
+
+        $coverage->renameFile('/some/path/OldName.php', '/some/path/NewName.php');
+
+        $this->assertArrayHasKey('/some/path/NewName.php', $coverage->lineCoverage());
+        $this->assertArrayNotHasKey('/some/path/OldName.php', $coverage->lineCoverage());
+        $this->assertArrayNotHasKey('/some/path/NewName.php', $coverage->functionCoverage());
+    }
 }

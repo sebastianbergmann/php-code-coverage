@@ -21,6 +21,7 @@ use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\InMemoryTarget;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 
@@ -77,6 +78,26 @@ final class CoberturaTest extends TestCase
             TEST_FILES_PATH . 'Report/Cobertura/class-with-outside-function.xml',
             $cobertura->process($this->getCoverageForClassWithOutsideFunction()->getReport()),
         );
+    }
+
+    public function testCoberturaForReportWithNestedDirectories(): void
+    {
+        $cobertura = new Cobertura;
+
+        $report = $cobertura->process($this->reportForNestedDirectories());
+
+        $this->assertStringContainsString('BankAccount.php', $report);
+        $this->assertStringContainsString('TargetClass.php', $report);
+    }
+
+    public function testWritesReportToTarget(): void
+    {
+        $cobertura = new Cobertura;
+        $target    = InMemoryTarget::target('cobertura');
+
+        $buffer = $cobertura->process($this->getLineCoverageForBankAccount()->getReport(), $target);
+
+        $this->assertSame($buffer, InMemoryTarget::content($target));
     }
 
     /**

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="%i">
+  <project timestamp="%i" name="NamespacedBankAccount">
+    <package name="SomeNamespace">
+      <file name="%sNamespacedBankAccount.php">
+        <class name="SomeNamespace\BankAccount" namespace="SomeNamespace">
+          <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <class name="SomeNamespace\BankAccountTrait" namespace="SomeNamespace">
+          <metrics complexity="5" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" elements="12" coveredelements="8"/>
+        </class>
+        <line num="11" type="method" name="getBalance" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="13" type="stmt" count="2"/>
+        <line num="16" type="method" name="setBalance" visibility="protected" complexity="2" crap="6" count="0"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="19" type="stmt" count="0"/>
+        <line num="21" type="stmt" count="0"/>
+        <line num="25" type="method" name="depositMoney" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="27" type="stmt" count="2"/>
+        <line num="29" type="stmt" count="1"/>
+        <line num="32" type="method" name="withdrawMoney" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="34" type="stmt" count="2"/>
+        <line num="36" type="stmt" count="1"/>
+        <metrics loc="39" ncloc="39" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" elements="12" coveredelements="8"/>
+      </file>
+    </package>
+    <metrics files="1" loc="39" ncloc="39" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="5" elements="12" coveredelements="8"/>
+  </project>
+</coverage>

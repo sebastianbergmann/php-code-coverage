@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use const DIRECTORY_SEPARATOR;
 use function is_dir;
 use function rmdir;
 use function unlink;
@@ -16,12 +17,19 @@ use BankAccount;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SebastianBergmann\CodeCoverage\Test\TestSize;
+use SebastianBergmann\CodeCoverage\Test\TestStatus;
 use SomeNamespace\BankAccountTrait;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
@@ -2112,6 +2120,159 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
             time: 2.7,
+        );
+
+        return $coverage;
+    }
+
+    /**
+     * Builds a report whose tree contains a sub-directory node so that the
+     * iteration in the report writers yields both Directory and File nodes.
+     */
+    protected function reportForNestedDirectories(): DirectoryNode
+    {
+        $analyser  = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+        $processed = new ProcessedCodeCoverageData;
+
+        $files = [
+            TEST_FILES_PATH . 'BankAccount.php',
+            TEST_FILES_PATH . 'Target' . DIRECTORY_SEPARATOR . 'TargetClass.php',
+        ];
+
+        foreach ($files as $path) {
+            $processed->initializeUnseenData(RawCodeCoverageData::fromUncoveredFile($path, $analyser));
+        }
+
+        return (new Builder($analyser))->build($processed, [], '');
+    }
+
+    /**
+     * Builds a report that has branch coverage but also contains a file for
+     * which no branch and path coverage data is available.
+     */
+    protected function reportWithFileWithoutBranchCoverageData(): DirectoryNode
+    {
+        $coverage = $this->getPathCoverageForBankAccount();
+
+        $coverage->filter()->includeFile(TEST_FILES_PATH . 'Target' . DIRECTORY_SEPARATOR . 'TargetClass.php');
+        $coverage->includeUncoveredFiles();
+
+        return $coverage->getReport();
+    }
+
+    /**
+     * Records line coverage for BankAccount.php where the lines are covered by
+     * tests of different sizes (large, medium, small) and statuses (success and
+     * failure) so that the corresponding rendering branches are exercised.
+     */
+    protected function coverageForBankAccountWithVariousTestSizesAndStatuses(): CodeCoverage
+    {
+        $data = $this->getLineCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('name')->willReturn('Xdebug');
+        $stub->method('version')->willReturn('3.0.0');
+        $stub->method('stop')->willReturn(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->start('BankAccountTest::testBalanceIsInitiallyZero', TestSize::Large, true);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'getBalance')]),
+            time: 0.1,
+        );
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative', TestSize::Medium);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'withdrawMoney')]),
+            time: 0.2,
+        );
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative2', TestSize::Small);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'depositMoney')]),
+            time: 0.3,
+        );
+
+        $coverage->start('BankAccountTest::testDepositWithdrawMoney', TestSize::Large);
+        $coverage->stop(
+            true,
+            TestStatus::Failure,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+            time: 0.4,
+        );
+
+        return $coverage;
+    }
+
+    /**
+     * Records branch and path coverage for BankAccount.php where the covering
+     * tests have different sizes so that the size-dependent rendering branches
+     * in the branch and path source views are exercised.
+     */
+    protected function pathCoverageForBankAccountWithVariousTestSizes(): CodeCoverage
+    {
+        $data = $this->getPathCoverageXdebugDataForBankAccount();
+
+        $stub = $this->createStub(Driver::class);
+
+        $stub->method('stop')->willReturn(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($stub, $filter);
+
+        $coverage->enableBranchAndPathCoverage();
+
+        $coverage->start('BankAccountTest::testBalanceIsInitiallyZero', TestSize::Large, true);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'getBalance')]),
+            time: 0.5,
+        );
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative', TestSize::Medium);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'withdrawMoney')]),
+            time: 0.6,
+        );
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative2', TestSize::Small);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'depositMoney')]),
+            time: 0.7,
+        );
+
+        $coverage->start('BankAccountTest::testDepositWithdrawMoney', TestSize::Small);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([
+                Target::forMethod(BankAccount::class, 'getBalance'),
+                Target::forMethod(BankAccount::class, 'depositMoney'),
+                Target::forMethod(BankAccount::class, 'withdrawMoney'),
+            ]),
+            time: 0.8,
         );
 
         return $coverage;

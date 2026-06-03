@@ -138,6 +138,104 @@ final class AbstractNodeTest extends TestCase
         $this->assertGreaterThan(0, $file->cyclomaticComplexity());
     }
 
+    public function testNumberOfClassesAndTraits(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame(1, $file->numberOfClassesAndTraits());
+    }
+
+    public function testNumberOfTestedClassesAndTraits(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraits());
+    }
+
+    public function testNumberOfFunctionsAndMethods(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame(1, $file->numberOfFunctionsAndMethods());
+    }
+
+    public function testNumberOfTestedFunctionsAndMethods(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethods());
+    }
+
+    public function testPercentageOfTestedClassesAndTraits(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame('100.00%', $file->percentageOfTestedClassesAndTraits()->asString());
+    }
+
+    public function testPercentageOfTestedFunctionsAndMethods(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame('100.00%', $file->percentageOfTestedFunctionsAndMethods()->asString());
+    }
+
+    public function testPercentageOfExecutedLines(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertSame('100.00%', $file->percentageOfExecutedLines()->asString());
+    }
+
+    public function testPercentageOfExecutedBranches(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertIsString($file->percentageOfExecutedBranches()->asString());
+    }
+
+    public function testPercentageOfExecutedPaths(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $this->assertIsString($file->percentageOfExecutedPaths()->asString());
+    }
+
+    public function testClassesAndTraitsAreMerged(): void
+    {
+        $file = $this->createFileWithTestedClass();
+
+        $classesAndTraits = $file->classesAndTraits();
+
+        $this->assertArrayHasKey('MyClass', $classesAndTraits);
+    }
+
+    public function testPathAsStringContainsAllAncestors(): void
+    {
+        $root       = new Directory('root');
+        $child      = $root->addDirectory('child');
+        $grandchild = $child->addDirectory('grandchild');
+
+        $this->assertSame(
+            'root' . DIRECTORY_SEPARATOR . 'child' . DIRECTORY_SEPARATOR . 'grandchild',
+            $grandchild->pathAsString(),
+        );
+    }
+
+    public function testPathAsArrayContainsAllAncestors(): void
+    {
+        $root       = new Directory('root');
+        $child      = $root->addDirectory('child');
+        $grandchild = $child->addDirectory('grandchild');
+
+        $path = $grandchild->pathAsArray();
+
+        $this->assertCount(3, $path);
+        $this->assertSame($root, $path[0]);
+        $this->assertSame($child, $path[1]);
+        $this->assertSame($grandchild, $path[2]);
+    }
+
     public function testNameStripsTrailingDirectorySeparator(): void
     {
         $root = new Directory('root' . DIRECTORY_SEPARATOR);

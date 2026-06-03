@@ -34,6 +34,26 @@ final class FunctionTest extends TestCase
         $this->assertSame('example', $this->function()->namespace());
     }
 
+    public function testIsNamespacedWhenNamespaceIsNotEmpty(): void
+    {
+        $this->assertTrue($this->function()->isNamespaced());
+    }
+
+    public function testIsNotNamespacedWhenNamespaceIsEmpty(): void
+    {
+        $function = new Function_(
+            'example',
+            'example',
+            '',
+            1,
+            2,
+            'the-signature',
+            3,
+        );
+
+        $this->assertFalse($function->isNamespaced());
+    }
+
     public function testHasStartLine(): void
     {
         $this->assertSame(1, $this->function()->startLine());

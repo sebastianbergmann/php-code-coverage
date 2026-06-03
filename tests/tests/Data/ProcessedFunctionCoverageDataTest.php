@@ -17,6 +17,62 @@ use PHPUnit\Framework\TestCase;
 #[Small]
 final class ProcessedFunctionCoverageDataTest extends TestCase
 {
+    public function testCanBeCreatedFromXdebugCoverage(): void
+    {
+        $data = ProcessedFunctionCoverageData::fromXdebugCoverage(
+            [
+                'branches' => [
+                    0 => [
+                        'op_start'   => 0,
+                        'op_end'     => 5,
+                        'line_start' => 11,
+                        'line_end'   => 12,
+                        'hit'        => 1,
+                        'out'        => [0 => 6],
+                        'out_hit'    => [0 => 1],
+                    ],
+                ],
+                'paths' => [
+                    0 => [
+                        'path' => [0 => 0],
+                        'hit'  => 1,
+                    ],
+                ],
+            ],
+        );
+
+        $this->assertCount(1, $data->branches);
+        $this->assertCount(1, $data->paths);
+        $this->assertInstanceOf(ProcessedBranchCoverageData::class, $data->branches[0]);
+        $this->assertInstanceOf(ProcessedPathCoverageData::class, $data->paths[0]);
+        $this->assertSame(11, $data->branches[0]->line_start);
+        $this->assertSame([0 => 0], $data->paths[0]->path);
+    }
+
+    public function testRecordBranchHitDelegatesToBranch(): void
+    {
+        $data = new ProcessedFunctionCoverageData(
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], [])],
+            [0 => new ProcessedPathCoverageData([0 => 0], [])],
+        );
+
+        $data->recordBranchHit(0, 'testCaseId');
+
+        $this->assertSame(['testCaseId'], $data->branches[0]->hit);
+    }
+
+    public function testRecordPathHitDelegatesToPath(): void
+    {
+        $data = new ProcessedFunctionCoverageData(
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], [])],
+            [0 => new ProcessedPathCoverageData([0 => 0], [])],
+        );
+
+        $data->recordPathHit(0, 'testCaseId');
+
+        $this->assertSame(['testCaseId'], $data->paths[0]->hit);
+    }
+
     public function testMergeReturnsSelfWhenBranchesAndPathsAreIdentical(): void
     {
         $branch = new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], []);
@@ -30,5 +86,34 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
         $result = $data->merge($data);
 
         $this->assertSame($data, $result);
+    }
+
+    public function testMergeCombinesAndAddsBranchesAndPaths(): void
+    {
+        $base = new ProcessedFunctionCoverageData(
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test1'], [], [])],
+            [0 => new ProcessedPathCoverageData([0 => 0], ['test1'])],
+        );
+
+        $other = new ProcessedFunctionCoverageData(
+            [
+                0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test2'], [], []),
+                1 => new ProcessedBranchCoverageData(15, 16, 26, 27, ['test3'], [], []),
+            ],
+            [
+                0 => new ProcessedPathCoverageData([0 => 0], ['test2']),
+                1 => new ProcessedPathCoverageData([0 => 1], ['test3']),
+            ],
+        );
+
+        $merged = $base->merge($other);
+
+        $this->assertNotSame($base, $merged);
+        $this->assertCount(2, $merged->branches);
+        $this->assertCount(2, $merged->paths);
+        $this->assertSame(['test1', 'test2'], $merged->branches[0]->hit);
+        $this->assertSame(['test3'], $merged->branches[1]->hit);
+        $this->assertSame(['test1', 'test2'], $merged->paths[0]->hit);
+        $this->assertSame(['test3'], $merged->paths[1]->hit);
     }
 }

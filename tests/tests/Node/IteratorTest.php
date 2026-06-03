@@ -38,6 +38,21 @@ final class IteratorTest extends TestCase
         $iterator->rewind();
 
         $this->assertTrue($iterator->hasChildren());
+
+        $children = $iterator->getChildren();
+
+        $this->assertInstanceOf(Iterator::class, $children);
+    }
+
+    public function testHasChildrenReturnsFalseForFile(): void
+    {
+        $root = new Directory('root');
+        $root->addFile($this->createFile($root, 'a.php'));
+
+        $iterator = new Iterator($root);
+        $iterator->rewind();
+
+        $this->assertFalse($iterator->hasChildren());
     }
 
     public function testFullIteration(): void

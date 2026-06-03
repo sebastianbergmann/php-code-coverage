@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
-use function count;
 use Iterator;
 
 /**
@@ -23,6 +22,10 @@ final class TargetCollectionIterator implements Iterator
      * @var list<Target>
      */
     private readonly array $targets;
+
+    /**
+     * @var non-negative-int
+     */
     private int $position = 0;
 
     public function __construct(TargetCollection $metadata)
@@ -37,9 +40,12 @@ final class TargetCollectionIterator implements Iterator
 
     public function valid(): bool
     {
-        return $this->position < count($this->targets);
+        return isset($this->targets[$this->position]);
     }
 
+    /**
+     * @return non-negative-int
+     */
     public function key(): int
     {
         return $this->position;

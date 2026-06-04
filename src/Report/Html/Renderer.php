@@ -58,6 +58,7 @@ use SebastianBergmann\Template\Template;
  *     numFilesWithoutBranchCoverageData?: int,
  *     icon?: string,
  *     crap?: int|string,
+ *     coverageDataJson?: string,
  * }
  */
 abstract class Renderer

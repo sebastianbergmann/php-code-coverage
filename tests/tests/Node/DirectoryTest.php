@@ -498,21 +498,33 @@ final class DirectoryTest extends TestCase
         );
     }
 
+    /**
+     * @param non-empty-string $name
+     */
     private function createFileCoveredBySmallTest(Directory $parent, string $name): File
     {
         return $this->createFileCoveredBySingleTestSize($parent, $name, 'small');
     }
 
+    /**
+     * @param non-empty-string $name
+     */
     private function createFileCoveredByMediumTest(Directory $parent, string $name): File
     {
         return $this->createFileCoveredBySingleTestSize($parent, $name, 'medium');
     }
 
+    /**
+     * @param non-empty-string $name
+     */
     private function createFileCoveredByLargeTest(Directory $parent, string $name): File
     {
         return $this->createFileCoveredBySingleTestSize($parent, $name, 'large');
     }
 
+    /**
+     * @param non-empty-string $name
+     */
     private function createFileCoveredBySingleTestSize(Directory $parent, string $name, string $size): File
     {
         $method = new Method('m', 1, 2, 'public function m(): void', Visibility::Public, 1);

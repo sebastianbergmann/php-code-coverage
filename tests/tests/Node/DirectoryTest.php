@@ -330,83 +330,6 @@ final class DirectoryTest extends TestCase
         $this->assertSame(2, $root->numberOfTestedFunctions());
     }
 
-    /**
-     * @param non-empty-string $name
-     */
-    private function createPopulatedFile(Directory $parent, string $name): File
-    {
-        // Derive unique code unit names so that aggregation across files does
-        // not collapse same-named units when merging keyed arrays.
-        $suffix = str_replace('.', '_', $name);
-
-        $classMethod = new Method(
-            'classMethod',
-            1,
-            5,
-            'public function classMethod(): void',
-            Visibility::Public,
-            1,
-        );
-
-        $class = new Class_(
-            'MyClass_' . $suffix,
-            'MyClass_' . $suffix,
-            '',
-            $name,
-            1,
-            5,
-            null,
-            [],
-            [],
-            ['classMethod' => $classMethod],
-        );
-
-        $traitMethod = new Method(
-            'traitMethod',
-            6,
-            10,
-            'public function traitMethod(): void',
-            Visibility::Public,
-            1,
-        );
-
-        $trait = new Trait_(
-            'MyTrait_' . $suffix,
-            'MyTrait_' . $suffix,
-            '',
-            $name,
-            6,
-            10,
-            [],
-            ['traitMethod' => $traitMethod],
-        );
-
-        $function = new Function_(
-            'myFunc_' . $suffix,
-            'myFunc_' . $suffix,
-            '',
-            11,
-            15,
-            'function myFunc(): void',
-            1,
-        );
-
-        $lineCoverageData = array_fill(1, 15, ['test1']);
-
-        return new File(
-            $name,
-            $parent,
-            'sha1hash',
-            $lineCoverageData,
-            [],
-            ['test1'              => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
-            ['MyClass_' . $suffix => $class],
-            ['MyTrait_' . $suffix => $trait],
-            ['myFunc_' . $suffix  => $function],
-            new LinesOfCode(15, 0, 15),
-        );
-    }
-
     public function testNumberOfExecutedLinesByTestSizeAggregatesFromChildren(): void
     {
         $root = new Directory('root');
@@ -496,6 +419,83 @@ final class DirectoryTest extends TestCase
         $this->assertSame(2, $root->numberOfExecutedLinesByLargeTests());
         $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrLargeTests());
         $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
+    }
+
+    /**
+     * @param non-empty-string $name
+     */
+    private function createPopulatedFile(Directory $parent, string $name): File
+    {
+        // Derive unique code unit names so that aggregation across files does
+        // not collapse same-named units when merging keyed arrays.
+        $suffix = str_replace('.', '_', $name);
+
+        $classMethod = new Method(
+            'classMethod',
+            1,
+            5,
+            'public function classMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $class = new Class_(
+            'MyClass_' . $suffix,
+            'MyClass_' . $suffix,
+            '',
+            $name,
+            1,
+            5,
+            null,
+            [],
+            [],
+            ['classMethod' => $classMethod],
+        );
+
+        $traitMethod = new Method(
+            'traitMethod',
+            6,
+            10,
+            'public function traitMethod(): void',
+            Visibility::Public,
+            1,
+        );
+
+        $trait = new Trait_(
+            'MyTrait_' . $suffix,
+            'MyTrait_' . $suffix,
+            '',
+            $name,
+            6,
+            10,
+            [],
+            ['traitMethod' => $traitMethod],
+        );
+
+        $function = new Function_(
+            'myFunc_' . $suffix,
+            'myFunc_' . $suffix,
+            '',
+            11,
+            15,
+            'function myFunc(): void',
+            1,
+        );
+
+        $lineCoverageData = array_fill(1, 15, ['test1']);
+
+        return new File(
+            $name,
+            $parent,
+            'sha1hash',
+            $lineCoverageData,
+            [],
+            ['test1'              => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            ['MyClass_' . $suffix => $class],
+            ['MyTrait_' . $suffix => $trait],
+            ['myFunc_' . $suffix  => $function],
+            new LinesOfCode(15, 0, 15),
+        );
     }
 
     private function createFileCoveredBySmallTest(Directory $parent, string $name): File

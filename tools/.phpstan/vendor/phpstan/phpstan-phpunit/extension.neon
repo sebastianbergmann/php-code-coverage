@@ -1,0 +1,89 @@
+parameters:
+	phpunit:
+		convertUnionToIntersectionType: true
+		reportMissingDataProviderReturnType: false
+	additionalConstructors:
+		- PHPUnit\Framework\TestCase::setUp
+	earlyTerminatingMethodCalls:
+		PHPUnit\Framework\Assert:
+			- fail
+			- markTestIncomplete
+			- markTestSkipped
+	stubFiles:
+		- stubs/Assert.stub
+		- stubs/AssertionFailedError.stub
+		- stubs/ExpectationFailedException.stub
+		- stubs/MockBuilder.stub
+		- stubs/MockObject.stub
+		- stubs/Stub.stub
+		- stubs/TestCase.stub
+	exceptions:
+		uncheckedExceptionRegexes:
+			- '#^PHPUnit\\#'
+			- '#^SebastianBergmann\\#'
+
+parametersSchema:
+	phpunit: structure([
+		convertUnionToIntersectionType: bool(),
+		reportMissingDataProviderReturnType: bool(),
+	])
+
+services:
+	-
+		class: PHPStan\PhpDoc\PHPUnit\MockObjectTypeNodeResolverExtension
+	-
+		class: PHPStan\Type\PHPUnit\Assert\AssertFunctionTypeSpecifyingExtension
+		tags:
+			- phpstan.typeSpecifier.functionTypeSpecifyingExtension
+	-
+		class: PHPStan\Type\PHPUnit\Assert\AssertMethodTypeSpecifyingExtension
+		tags:
+			- phpstan.typeSpecifier.methodTypeSpecifyingExtension
+	-
+		class: PHPStan\Type\PHPUnit\Assert\AssertStaticMethodTypeSpecifyingExtension
+		tags:
+			- phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension
+	-
+		class: PHPStan\Type\PHPUnit\MockBuilderDynamicReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+	-
+		class: PHPStan\Type\PHPUnit\MockForIntersectionDynamicReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+			- phpstan.broker.dynamicStaticMethodReturnTypeExtension
+	-
+		class: PHPStan\Rules\PHPUnit\CoversHelper
+	-
+		class: PHPStan\Rules\PHPUnit\AnnotationHelper
+
+	-
+		class: PHPStan\Rules\PHPUnit\TestMethodsHelper
+
+	-
+		class: PHPStan\Rules\PHPUnit\PHPUnitVersion
+		factory: @PHPStan\Rules\PHPUnit\PHPUnitVersionDetector::createPHPUnitVersion()
+	-
+		class: PHPStan\Rules\PHPUnit\PHPUnitVersionDetector
+
+	-
+		class: PHPStan\Rules\PHPUnit\DataProviderHelper
+		factory: @PHPStan\Rules\PHPUnit\DataProviderHelperFactory::create()
+	-
+		class: PHPStan\Rules\PHPUnit\DataProviderHelperFactory
+		arguments:
+			parser: @defaultAnalysisParser
+
+	-
+		class: PHPStan\Type\PHPUnit\DataProviderReturnTypeIgnoreExtension
+
+	-
+		class: PHPStan\Type\PHPUnit\DynamicCallToAssertionIgnoreExtension
+
+conditionalTags:
+	PHPStan\PhpDoc\PHPUnit\MockObjectTypeNodeResolverExtension:
+		phpstan.phpDoc.typeNodeResolverExtension: %phpunit.convertUnionToIntersectionType%
+	PHPStan\Type\PHPUnit\DataProviderReturnTypeIgnoreExtension:
+		phpstan.ignoreErrorExtension: [%featureToggles.bleedingEdge%, not(%phpunit.reportMissingDataProviderReturnType%)]
+	PHPStan\Type\PHPUnit\DynamicCallToAssertionIgnoreExtension:
+		phpstan.ignoreErrorExtension: %featureToggles.bleedingEdge%

@@ -1,0 +1,39 @@
+rules:
+	- PHPStan\Rules\PHPUnit\AssertSameBooleanExpectedRule
+	- PHPStan\Rules\PHPUnit\AssertSameNullExpectedRule
+	- PHPStan\Rules\PHPUnit\AssertSameWithCountRule
+	- PHPStan\Rules\PHPUnit\ClassCoversExistsRule
+	- PHPStan\Rules\PHPUnit\ClassMethodCoversExistsRule
+	- PHPStan\Rules\PHPUnit\MockMethodCallRule
+	- PHPStan\Rules\PHPUnit\NoMissingSpaceInClassAnnotationRule
+	- PHPStan\Rules\PHPUnit\NoMissingSpaceInMethodAnnotationRule
+	- PHPStan\Rules\PHPUnit\ShouldCallParentMethodsRule
+
+conditionalTags:
+	PHPStan\Rules\PHPUnit\AssertEqualsIsDiscouragedRule:
+		phpstan.rules.rule: [%strictRulesInstalled%, %featureToggles.bleedingEdge%]
+
+	PHPStan\Rules\PHPUnit\DataProviderDataRule:
+		phpstan.rules.rule: %featureToggles.bleedingEdge%
+
+services:
+	-
+		class: PHPStan\Rules\PHPUnit\DataProviderDeclarationRule
+		arguments:
+			checkFunctionNameCase: %checkFunctionNameCase%
+			deprecationRulesInstalled: %deprecationRulesInstalled%
+		tags:
+			- phpstan.rules.rule
+
+	-
+		class: PHPStan\Rules\PHPUnit\AttributeRequiresPhpVersionRule
+		arguments:
+			deprecationRulesInstalled: %deprecationRulesInstalled%
+		tags:
+			- phpstan.rules.rule
+
+	-
+		class: PHPStan\Rules\PHPUnit\AssertEqualsIsDiscouragedRule
+
+	-
+		class: PHPStan\Rules\PHPUnit\DataProviderDataRule

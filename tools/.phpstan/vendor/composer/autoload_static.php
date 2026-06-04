@@ -42,6 +42,7 @@ class ComposerStaticInitf9e7218f71d5874b5632927df4f72bd7
         'PHPStan\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpstan/phpstan-strict-rules/src',
+            1 => __DIR__ . '/..' . '/phpstan/phpstan-phpunit/src',
         ),
         'Nette\\' =>
         array (

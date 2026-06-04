@@ -8,7 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'TomasVotruba\\TypeCoverage\\' => array($vendorDir . '/tomasvotruba/type-coverage/src'),
     'PHPStan\\ExtensionInstaller\\' => array($vendorDir . '/phpstan/extension-installer/src'),
-    'PHPStan\\' => array($vendorDir . '/phpstan/phpstan-strict-rules/src'),
+    'PHPStan\\' => array($vendorDir . '/phpstan/phpstan-strict-rules/src', $vendorDir . '/phpstan/phpstan-phpunit/src'),
     'Nette\\' => array($vendorDir . '/nette/utils/src'),
     'Ergebnis\\PHPStan\\Rules\\' => array($vendorDir . '/ergebnis/phpstan-rules/src'),
 );

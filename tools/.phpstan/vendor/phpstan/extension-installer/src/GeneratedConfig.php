@@ -24,6 +24,21 @@ final class GeneratedConfig
     'version' => '2.13.1',
     'phpstanVersionConstraint' => '>=2.1.35.0-dev, <3.0.0.0-dev',
   ),
+  'phpstan/phpstan-phpunit' => 
+  array (
+    'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-phpunit',
+    'relative_install_path' => '../../phpstan-phpunit',
+    'extra' => 
+    array (
+      'includes' => 
+      array (
+        0 => 'extension.neon',
+        1 => 'rules.neon',
+      ),
+    ),
+    'version' => '2.0.16',
+    'phpstanVersionConstraint' => '>=2.1.32.0-dev, <3.0.0.0-dev',
+  ),
   'phpstan/phpstan-strict-rules' => 
   array (
     'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-strict-rules',

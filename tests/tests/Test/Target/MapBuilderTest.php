@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
@@ -46,14 +47,14 @@ final class MapBuilderTest extends TestCase
      */
     public static function provider(): array
     {
-        $file             = realpath(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
-        $traitOne         = realpath(__DIR__ . '/../../../_files/Target/TraitOne.php');
-        $traitTwo         = realpath(__DIR__ . '/../../../_files/Target/TraitTwo.php');
-        $twoTraits        = realpath(__DIR__ . '/../../../_files/Target/two_traits.php');
-        $enum             = realpath(__DIR__ . '/../../../_files/Target/TargetEnumeration.php');
-        $grandParentClass = realpath(__DIR__ . '/../../../_files/Target/GrandParentClass.php');
-        $parentClass      = realpath(__DIR__ . '/../../../_files/Target/ParentClass.php');
-        $childClass       = realpath(__DIR__ . '/../../../_files/Target/ChildClass.php');
+        $file             = self::realpath(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
+        $traitOne         = self::realpath(__DIR__ . '/../../../_files/Target/TraitOne.php');
+        $traitTwo         = self::realpath(__DIR__ . '/../../../_files/Target/TraitTwo.php');
+        $twoTraits        = self::realpath(__DIR__ . '/../../../_files/Target/two_traits.php');
+        $enum             = self::realpath(__DIR__ . '/../../../_files/Target/TargetEnumeration.php');
+        $grandParentClass = self::realpath(__DIR__ . '/../../../_files/Target/GrandParentClass.php');
+        $parentClass      = self::realpath(__DIR__ . '/../../../_files/Target/ParentClass.php');
+        $childClass       = self::realpath(__DIR__ . '/../../../_files/Target/ChildClass.php');
 
         return [
             'generic' => [
@@ -431,11 +432,11 @@ final class MapBuilderTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1066')]
     public function testIssue1066(): void
     {
-        $baseDummy      = realpath(__DIR__ . '/../../../_files/Target/regression/1066/BaseDummy.php');
-        $dummy          = realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy.php');
-        $dummy2         = realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy2.php');
-        $dummyWithTrait = realpath(__DIR__ . '/../../../_files/Target/regression/1066/DummyWithTrait.php');
-        $someTrait      = realpath(__DIR__ . '/../../../_files/Target/regression/1066/SomeTrait.php');
+        $baseDummy      = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/BaseDummy.php');
+        $dummy          = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy.php');
+        $dummy2         = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy2.php');
+        $dummyWithTrait = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/DummyWithTrait.php');
+        $someTrait      = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/SomeTrait.php');
 
         $this->assertSame(
             [
@@ -586,5 +587,19 @@ final class MapBuilderTest extends TestCase
                 false,
             ),
         );
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function realpath(string $path): string
+    {
+        $realpath = realpath($path);
+
+        if ($realpath === false) {
+            throw new RuntimeException('Could not resolve real path of ' . $path);
+        }
+
+        return $realpath;
     }
 }

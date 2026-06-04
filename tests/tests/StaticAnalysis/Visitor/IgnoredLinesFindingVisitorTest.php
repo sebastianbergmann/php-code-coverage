@@ -115,7 +115,10 @@ final class IgnoredLinesFindingVisitorTest extends TestCase
     private function findIgnoredLines(string $filename, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): array
     {
         $source = file_get_contents($filename);
-        $nodes  = (new ParserFactory)->createForHostVersion()->parse($source);
+
+        assert($source !== false);
+
+        $nodes = (new ParserFactory)->createForHostVersion()->parse($source);
 
         assert($nodes !== null);
 

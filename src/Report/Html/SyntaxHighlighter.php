@@ -87,6 +87,7 @@ use const T_WHILE;
 use const T_YIELD;
 use const T_YIELD_FROM;
 use const TOKEN_PARSE;
+use function array_values;
 use function count;
 use function explode;
 use function file_get_contents;
@@ -97,6 +98,7 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use SebastianBergmann\CodeCoverage\Serialization\FileCouldNotBeReadException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -200,7 +202,14 @@ final class SyntaxHighlighter
             return self::$cache[$file];
         }
 
-        $buffer              = file_get_contents($file);
+        $buffer = file_get_contents($file);
+
+        if ($buffer === false) {
+            // @codeCoverageIgnoreStart
+            throw new FileCouldNotBeReadException($file);
+            // @codeCoverageIgnoreEnd
+        }
+
         $tokens              = token_get_all($buffer, TOKEN_PARSE);
         $result              = [''];
         $i                   = 0;
@@ -211,15 +220,15 @@ final class SyntaxHighlighter
 
         foreach ($tokens as $j => $token) {
             if (is_string($token)) {
-                if ($token === '"' && $tokens[$j - 1] !== '\\') {
-                    $result[$i] .= sprintf(
+                if ($token === '"' && ($tokens[$j - 1] ?? null) !== '\\') {
+                    $result[$i] = ($result[$i] ?? '') . sprintf(
                         '<span class="string">%s</span>',
                         htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
                     );
 
                     $stringFlag = !$stringFlag;
                 } else {
-                    $result[$i] .= sprintf(
+                    $result[$i] = ($result[$i] ?? '') . sprintf(
                         '<span class="keyword">%s</span>',
                         htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
                     );
@@ -228,7 +237,7 @@ final class SyntaxHighlighter
                 continue;
             }
 
-            [$token, $value] = $token;
+            [$tokenId, $value] = $token;
 
             $value = str_replace(
                 ["\t", ' '],
@@ -250,16 +259,16 @@ final class SyntaxHighlighter
                         } else {
                             $colour = 'default';
 
-                            if ($this->isInlineHtml($token)) {
+                            if ($this->isInlineHtml($tokenId)) {
                                 $colour = 'html';
-                            } elseif ($this->isComment($token)) {
+                            } elseif ($this->isComment($tokenId)) {
                                 $colour = 'comment';
-                            } elseif ($this->isKeyword($token)) {
+                            } elseif ($this->isKeyword($tokenId)) {
                                 $colour = 'keyword';
                             }
                         }
 
-                        $result[$i] .= sprintf(
+                        $result[$i] = ($result[$i] ?? '') . sprintf(
                             '<span class="%s">%s</span>',
                             $colour,
                             $line,
@@ -276,6 +285,8 @@ final class SyntaxHighlighter
         if ($fileEndsWithNewLine) {
             unset($result[count($result) - 1]);
         }
+
+        $result = array_values($result);
 
         self::$cache[$file] = $result;
 

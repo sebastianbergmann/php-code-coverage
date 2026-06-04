@@ -13,6 +13,7 @@ use function array_keys;
 use function array_merge;
 use function array_slice;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
@@ -56,8 +57,10 @@ final readonly class MapBuilder
 
         foreach ($filter->files() as $file) {
             foreach ($analyser->analyse($file)->traits() as $trait) {
-                if ($trait->isNamespaced()) {
-                    $this->processNamespace($namespaces, $trait->namespace(), $file, $trait->startLine(), $trait->endLine());
+                $namespace = $trait->namespace();
+
+                if ($namespace !== '') {
+                    $this->processNamespace($namespaces, $namespace, $file, $trait->startLine(), $trait->endLine());
                 }
 
                 $this->process($traits, $trait->namespacedName(), $file, $trait->startLine(), $trait->endLine());
@@ -85,8 +88,10 @@ final readonly class MapBuilder
             }
 
             foreach ($analysisResult->classes() as $class) {
-                if ($class->isNamespaced()) {
-                    $this->processNamespace($namespaces, $class->namespace(), $file, $class->startLine(), $class->endLine());
+                $namespace = $class->namespace();
+
+                if ($namespace !== '') {
+                    $this->processNamespace($namespaces, $namespace, $file, $class->startLine(), $class->endLine());
                 }
 
                 $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
@@ -106,8 +111,10 @@ final readonly class MapBuilder
             }
 
             foreach ($analysisResult->functions() as $function) {
-                if ($function->isNamespaced()) {
-                    $this->processNamespace($namespaces, $function->namespace(), $file, $function->startLine(), $function->endLine());
+                $namespace = $function->namespace();
+
+                if ($namespace !== '') {
+                    $this->processNamespace($namespaces, $namespace, $file, $function->startLine(), $function->endLine());
                 }
 
                 $this->process($functions, $function->namespacedName(), $file, $function->startLine(), $function->endLine());
@@ -119,8 +126,8 @@ final readonly class MapBuilder
         }
 
         foreach ($namespaces as $namespace => $files) {
-            foreach (array_keys($files) as $file) {
-                $namespaces[$namespace][$file] = array_unique($namespaces[$namespace][$file]);
+            foreach ($files as $file => $lines) {
+                $namespaces[$namespace][$file] = array_values(array_unique($lines));
             }
         }
 
@@ -134,7 +141,7 @@ final readonly class MapBuilder
             }
 
             foreach ($this->parentClasses($classDetails, $class) as $parentClass) {
-                $this->mergeLines($class->namespacedName(), $classes[$parentClass->namespacedName()], $classes);
+                $this->mergeLines($class->namespacedName(), $classes[$parentClass->namespacedName()] ?? [], $classes);
 
                 if (isset($classesThatExtendClass[$parentClass->namespacedName()])) {
                     $this->process($classesThatExtendClass, $parentClass->namespacedName(), $class->file(), $class->startLine(), $class->endLine());
@@ -171,8 +178,11 @@ final readonly class MapBuilder
     }
 
     /**
-     * @param array<non-empty-string, list<positive-int>>                      $sourceData
-     * @param array<string, array<non-empty-string, array<int, positive-int>>> $data
+     * @param non-empty-string                            $targetClass
+     * @param array<non-empty-string, list<positive-int>> $sourceData
+     * @param TargetMapPart                               $data
+     *
+     * @param-out TargetMapPart $data
      */
     private function mergeLines(string $targetClass, array $sourceData, array &$data): void
     {
@@ -191,18 +201,21 @@ final readonly class MapBuilder
                 continue;
             }
 
-            $data[$targetClass][$file] = array_unique(
-                array_merge(
-                    $data[$targetClass][$file],
-                    $lines,
+            $data[$targetClass][$file] = array_values(
+                array_unique(
+                    array_merge(
+                        $data[$targetClass][$file],
+                        $lines,
+                    ),
                 ),
             );
         }
     }
 
     /**
-     * @param TargetMapPart $methods
-     * @param ReverseLookup $reverseLookup
+     * @param non-empty-string $file
+     * @param TargetMapPart    $methods
+     * @param ReverseLookup    $reverseLookup
      *
      * @param-out TargetMapPart $methods
      * @param-out ReverseLookup $reverseLookup
@@ -270,17 +283,19 @@ final readonly class MapBuilder
      */
     private function parentClasses(array $classDetails, Class_ $class): array
     {
-        if (!$class->hasParent()) {
+        $parentClass = $class->parentClass();
+
+        if ($parentClass === null) {
             return [];
         }
 
-        if (!isset($classDetails[$class->parentClass()])) {
+        if (!isset($classDetails[$parentClass])) {
             return [];
         }
 
         return array_merge(
-            [$classDetails[$class->parentClass()]],
-            $this->parentClasses($classDetails, $classDetails[$class->parentClass()]),
+            [$classDetails[$parentClass]],
+            $this->parentClasses($classDetails, $classDetails[$parentClass]),
         );
     }
 }

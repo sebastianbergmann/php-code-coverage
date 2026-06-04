@@ -29,7 +29,7 @@ final class DirectoryTest extends TestCase
     {
         $root = new Directory('root');
 
-        $this->assertSame(0, $root->count());
+        $this->assertCount(0, $root);
     }
 
     public function testCountWithFiles(): void
@@ -39,7 +39,7 @@ final class DirectoryTest extends TestCase
         $root->addFile($this->createFile($root, 'a.php'));
         $root->addFile($this->createFile($root, 'b.php'));
 
-        $this->assertSame(2, $root->count());
+        $this->assertCount(2, $root);
     }
 
     public function testCountWithNestedDirectories(): void
@@ -49,7 +49,7 @@ final class DirectoryTest extends TestCase
 
         $child->addFile($this->createFile($child, 'a.php'));
 
-        $this->assertSame(1, $root->count());
+        $this->assertCount(1, $root);
     }
 
     public function testAddDirectoryReturnsNewDirectory(): void
@@ -330,6 +330,9 @@ final class DirectoryTest extends TestCase
         $this->assertSame(2, $root->numberOfTestedFunctions());
     }
 
+    /**
+     * @param non-empty-string $name
+     */
     private function createPopulatedFile(Directory $parent, string $name): File
     {
         // Derive unique code unit names so that aggregation across files does

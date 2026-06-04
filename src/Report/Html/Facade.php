@@ -10,12 +10,15 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const DIRECTORY_SEPARATOR;
+use function assert;
 use function copy;
 use function date;
 use function dirname;
 use function str_ends_with;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
+use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Exception;
@@ -81,6 +84,8 @@ final readonly class Facade
         $dashboard->render($report, $target . 'dashboard.html');
 
         foreach ($report as $node) {
+            assert($node instanceof AbstractNode);
+
             $id = $node->id();
 
             if ($node instanceof DirectoryNode) {
@@ -88,7 +93,7 @@ final readonly class Facade
 
                 $directory->render($node, $target . $id . '/index.html');
                 $dashboard->render($node, $target . $id . '/dashboard.html');
-            } else {
+            } elseif ($node instanceof FileNode) {
                 $dir = dirname($target . $id);
 
                 Filesystem::createDirectory($dir);

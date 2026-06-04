@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 /**
- * @phpstan-type LinesType array<int, int>
+ * @phpstan-type LinesType array<positive-int, int>
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
@@ -45,12 +45,12 @@ final readonly class AnalysisResult
     private array $executableLines;
 
     /**
-     * @var array<int, true>
+     * @var array<positive-int, true>
      */
     private array $branchOperatorLines;
 
     /**
-     * @var LinesType
+     * @var array<int, int>
      */
     private array $ignoredLines;
 
@@ -60,8 +60,8 @@ final readonly class AnalysisResult
      * @param array<string, Trait_>     $traits
      * @param array<string, Function_>  $functions
      * @param LinesType                 $executableLines
-     * @param array<int, true>          $branchOperatorLines
-     * @param LinesType                 $ignoredLines
+     * @param array<positive-int, true> $branchOperatorLines
+     * @param array<int, int>           $ignoredLines
      */
     public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $ignoredLines)
     {
@@ -121,7 +121,7 @@ final readonly class AnalysisResult
     }
 
     /**
-     * @return array<int, true>
+     * @return array<positive-int, true>
      */
     public function branchOperatorLines(): array
     {
@@ -129,7 +129,7 @@ final readonly class AnalysisResult
     }
 
     /**
-     * @return LinesType
+     * @return array<int, int>
      */
     public function ignoredLines(): array
     {

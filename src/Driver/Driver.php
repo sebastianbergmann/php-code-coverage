@@ -74,8 +74,14 @@ abstract class Driver
         $this->granularity = $granularity;
     }
 
+    /**
+     * @return non-empty-string
+     */
     abstract public function name(): string;
 
+    /**
+     * @return non-empty-string
+     */
     abstract public function version(): string;
 
     public function nameAndVersion(): string

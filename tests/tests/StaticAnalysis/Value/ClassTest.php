@@ -107,8 +107,8 @@ final class ClassTest extends TestCase
         $methods = [
             'method' => new Method(
                 'method',
-                0,
-                0,
+                1,
+                1,
                 'method(): void',
                 Visibility::Public,
                 1,
@@ -119,6 +119,7 @@ final class ClassTest extends TestCase
     }
 
     /**
+     * @param ?non-empty-string               $parentClass
      * @param list<non-empty-string>          $interfaces
      * @param list<non-empty-string>          $traits
      * @param array<non-empty-string, Method> $methods

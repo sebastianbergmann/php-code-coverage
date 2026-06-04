@@ -37,6 +37,8 @@ final class Cobertura
      * @param null|non-empty-string $target
      *
      * @throws WriteOperationFailedException
+     *
+     * @return non-empty-string
      */
     public function process(Directory $report, ?string $target = null): string
     {
@@ -146,6 +148,8 @@ final class Cobertura
 
                     preg_match("/\((.*?)\)/", $method->signature, $signature);
 
+                    $signatureArguments = $signature[1] ?? '';
+
                     $linesValid   = $method->executableLines;
                     $linesCovered = $method->executedLines;
                     $lineRate     = $linesCovered / $linesValid;
@@ -157,7 +161,7 @@ final class Cobertura
                     $methodElement = $document->createElement('method');
 
                     $methodElement->setAttribute('name', $this->ensureUtf8($methodName));
-                    $methodElement->setAttribute('signature', $this->ensureUtf8($signature[1]));
+                    $methodElement->setAttribute('signature', $this->ensureUtf8($signatureArguments));
                     $methodElement->setAttribute('line-rate', (string) $lineRate);
                     $methodElement->setAttribute('branch-rate', (string) $branchRate);
                     $methodElement->setAttribute('complexity', (string) $method->ccn);

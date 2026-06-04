@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Util;
 
 use const DIRECTORY_SEPARATOR;
+use function array_keys;
 use function array_shift;
 use function basename;
 use function count;
@@ -50,59 +51,69 @@ final class PathReducer
                 $normalised = str_replace('/', DIRECTORY_SEPARATOR, substr($file, 7));
             }
 
-            $data->renameFile($file, basename($normalised));
+            $newFile = basename($normalised);
+
+            $data->renameFile($file, $newFile === '' ? $file : $newFile);
 
             return dirname($normalised);
         }
 
-        $original = $coveredFiles;
-        $paths    = $coveredFiles;
-        $max      = count($paths);
+        $paths = [];
 
-        for ($i = 0; $i < $max; $i++) {
-            if (str_starts_with($paths[$i], 'phar://')) {
-                $paths[$i] = substr($paths[$i], 7);
-                $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
+        foreach ($coveredFiles as $coveredFile) {
+            $normalised = $coveredFile;
+
+            if (str_starts_with($coveredFile, 'phar://')) {
+                $normalised = str_replace('/', DIRECTORY_SEPARATOR, substr($coveredFile, 7));
             }
 
-            $paths[$i] = explode(DIRECTORY_SEPARATOR, $paths[$i]);
+            $parts = explode(DIRECTORY_SEPARATOR, $normalised);
 
-            if ($paths[$i][0] === '') {
-                $paths[$i][0] = DIRECTORY_SEPARATOR;
+            if ($parts[0] === '') {
+                $parts[0] = DIRECTORY_SEPARATOR;
             }
+
+            $paths[] = [
+                'original' => $coveredFile,
+                'parts'    => $parts,
+            ];
         }
 
         $commonPath = '';
-        $done       = false;
 
-        while (!$done) {
-            for ($i = 0; $i < $max - 1; $i++) {
-                if (!isset($paths[$i][0]) || !isset($paths[$i + 1][0]) ||
-                    $paths[$i][0] !== $paths[$i + 1][0]) {
-                    $done = true;
+        while (true) {
+            $firstSegment = $paths[0]['parts'][0] ?? null;
+
+            if ($firstSegment === null) {
+                break;
+            }
+
+            $allShareFirstSegment = true;
+
+            foreach ($paths as $path) {
+                if (($path['parts'][0] ?? null) !== $firstSegment) {
+                    $allShareFirstSegment = false;
 
                     break;
                 }
             }
 
-            if (!$done) {
-                $commonPath .= $paths[0][0];
+            if (!$allShareFirstSegment) {
+                break;
+            }
 
-                if ($paths[0][0] !== DIRECTORY_SEPARATOR) {
-                    $commonPath .= DIRECTORY_SEPARATOR;
-                }
+            $commonPath .= $firstSegment === DIRECTORY_SEPARATOR ? $firstSegment : $firstSegment . DIRECTORY_SEPARATOR;
 
-                for ($i = 0; $i < $max; $i++) {
-                    array_shift($paths[$i]);
-                }
+            foreach (array_keys($paths) as $i) {
+                array_shift($paths[$i]['parts']);
             }
         }
 
-        for ($i = 0; $i < $max; $i++) {
-            $newPath = implode(DIRECTORY_SEPARATOR, $paths[$i]);
+        foreach ($paths as $path) {
+            $newPath = implode(DIRECTORY_SEPARATOR, $path['parts']);
 
-            if ($newPath !== $original[$i]) {
-                $data->renameFile($original[$i], $newPath);
+            if ($newPath !== '' && $newPath !== $path['original']) {
+                $data->renameFile($path['original'], $newPath);
             }
         }
 

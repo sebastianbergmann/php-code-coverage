@@ -43,7 +43,7 @@ final class Trait_ extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'traits'
      */
     public function key(): string
     {

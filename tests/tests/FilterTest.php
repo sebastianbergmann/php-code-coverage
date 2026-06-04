@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 #[CoversClass(Filter::class)]
 #[Small]
@@ -30,7 +31,7 @@ final class FilterTest extends TestCase
     {
         $filter = new Filter;
 
-        $file = realpath(__DIR__ . '/../_files/filter/a.php');
+        $file = self::realpath(__DIR__ . '/../_files/filter/a.php');
 
         $filter->includeFile($file);
 
@@ -49,8 +50,8 @@ final class FilterTest extends TestCase
         $filter = new Filter;
 
         $files = [
-            realpath(__DIR__ . '/../_files/filter/a.php'),
-            realpath(__DIR__ . '/../_files/filter/b.php'),
+            self::realpath(__DIR__ . '/../_files/filter/a.php'),
+            self::realpath(__DIR__ . '/../_files/filter/b.php'),
         ];
 
         $filter->includeFiles($files);
@@ -75,23 +76,23 @@ final class FilterTest extends TestCase
     {
         $filter = new Filter;
 
-        $filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+        $filter->includeFile(self::realpath(__DIR__ . '/../_files/filter/a.php'));
 
-        $this->assertFalse($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
+        $this->assertFalse($filter->isExcluded(self::realpath(__DIR__ . '/../_files/filter/a.php')));
 
         /**
          * Assertion is performed twice to test the is-cached path.
          */
-        $this->assertFalse($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/a.php')));
+        $this->assertFalse($filter->isExcluded(self::realpath(__DIR__ . '/../_files/filter/a.php')));
     }
 
     public function testNotIncludedFileIsFiltered(): void
     {
         $filter = new Filter;
 
-        $filter->includeFile(realpath(__DIR__ . '/../_files/filter/a.php'));
+        $filter->includeFile(self::realpath(__DIR__ . '/../_files/filter/a.php'));
 
-        $this->assertTrue($filter->isExcluded(realpath(__DIR__ . '/../_files/filter/b.php')));
+        $this->assertTrue($filter->isExcluded(self::realpath(__DIR__ . '/../_files/filter/b.php')));
     }
 
     public function testNonFilesAreFiltered(): void
@@ -115,5 +116,19 @@ final class FilterTest extends TestCase
 
         $this->assertTrue($filter->isEmpty());
         $this->assertSame([], $filter->files());
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function realpath(string $path): string
+    {
+        $realpath = realpath($path);
+
+        if ($realpath === false) {
+            throw new RuntimeException('Could not resolve real path of ' . $path);
+        }
+
+        return $realpath;
     }
 }

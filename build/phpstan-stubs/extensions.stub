@@ -1,0 +1,38 @@
+<?php declare(strict_types=1);
+/*
+ * This file is part of phpunit/php-code-coverage.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace pcov {
+    /**
+     * @return list<non-empty-string>
+     */
+    function waiting(): array {}
+
+    /**
+     * @param array<non-empty-string> $filter
+     *
+     * @return array<non-empty-string, array<positive-int, int>>
+     */
+    function collect(int $type = 0, array $filter = []): array {}
+}
+
+namespace {
+    /**
+     * @return list<string>
+     */
+    function xdebug_info(string $category): array {}
+
+    /**
+     * The value type depends on the flags that were passed to
+     * xdebug_start_code_coverage(); see SebastianBergmann\CodeCoverage\Driver\XdebugDriver.
+     *
+     * @return array<non-empty-string, mixed>
+     */
+    function xdebug_get_code_coverage(): array {}
+}

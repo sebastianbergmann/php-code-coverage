@@ -43,7 +43,7 @@ final class ClassesThatImplementInterface extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'classesThatImplementInterface'
      */
     public function key(): string
     {

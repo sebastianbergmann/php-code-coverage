@@ -109,7 +109,7 @@ abstract class Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'classes'|'classesThatExtendClass'|'classesThatImplementInterface'|'functions'|'methods'|'namespaces'|'traits'
      */
     abstract public function key(): string;
 

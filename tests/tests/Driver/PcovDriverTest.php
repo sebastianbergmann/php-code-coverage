@@ -32,7 +32,9 @@ final class PcovDriverTest extends TestCase
             $this->markTestSkipped('This test requires the PCOV extension to be loaded');
         }
 
-        if (!ini_get('pcov.enabled')) {
+        $enabled = ini_get('pcov.enabled');
+
+        if ($enabled === false || $enabled === '' || $enabled === '0') {
             $this->markTestSkipped('This test requires the PCOV extension to be enabled');
         }
     }

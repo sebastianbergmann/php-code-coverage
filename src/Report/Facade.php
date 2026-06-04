@@ -33,7 +33,7 @@ final readonly class Facade
     private Directory $report;
 
     /**
-     * @var array<string, array{size: string, status: string, time: float}>
+     * @var array<non-empty-string, array{size: string, status: string, time: float}>
      */
     private array $testResults;
 
@@ -57,7 +57,7 @@ final readonly class Facade
     }
 
     /**
-     * @param array<string, array{size: string, status: string, time: float}> $testResults
+     * @param array<non-empty-string, array{size: string, status: string, time: float}> $testResults
      */
     private function __construct(Directory $report, array $testResults)
     {

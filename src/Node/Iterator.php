@@ -56,7 +56,7 @@ final class Iterator implements RecursiveIterator
 
     public function current(): ?AbstractNode
     {
-        return $this->valid() ? $this->nodes[$this->position] : null;
+        return $this->nodes[$this->position] ?? null;
     }
 
     public function next(): void
@@ -66,13 +66,15 @@ final class Iterator implements RecursiveIterator
 
     public function getChildren(): self
     {
-        assert($this->nodes[$this->position] instanceof Directory);
+        $node = $this->nodes[$this->position] ?? null;
 
-        return new self($this->nodes[$this->position]);
+        assert($node instanceof Directory);
+
+        return new self($node);
     }
 
     public function hasChildren(): bool
     {
-        return $this->nodes[$this->position] instanceof Directory;
+        return ($this->nodes[$this->position] ?? null) instanceof Directory;
     }
 }

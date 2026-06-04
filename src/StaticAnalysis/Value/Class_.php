@@ -33,12 +33,12 @@ final readonly class Class_
     private string $file;
 
     /**
-     * @var non-negative-int
+     * @var positive-int
      */
     private int $startLine;
 
     /**
-     * @var non-negative-int
+     * @var positive-int
      */
     private int $endLine;
 
@@ -66,8 +66,8 @@ final readonly class Class_
      * @param non-empty-string                $name
      * @param non-empty-string                $namespacedName
      * @param non-empty-string                $file
-     * @param non-negative-int                $startLine
-     * @param non-negative-int                $endLine
+     * @param positive-int                    $startLine
+     * @param positive-int                    $endLine
      * @param ?non-empty-string               $parentClass
      * @param list<non-empty-string>          $interfaces
      * @param list<non-empty-string>          $traits
@@ -122,7 +122,7 @@ final readonly class Class_
     }
 
     /**
-     * @return non-negative-int
+     * @return positive-int
      */
     public function startLine(): int
     {
@@ -130,7 +130,7 @@ final readonly class Class_
     }
 
     /**
-     * @return non-negative-int
+     * @return positive-int
      */
     public function endLine(): int
     {

@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Medium;
 use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(Serializer::class)]
@@ -39,10 +40,14 @@ final class SerializerTest extends TestCase
 
         (new Serializer)->serialize($target, $coverage);
 
-        $file      = fopen($target, 'r');
+        $file = fopen($target, 'r');
+
+        $this->assertNotFalse($file);
+
         $firstLine = fgets($file);
         fclose($file);
 
+        $this->assertNotFalse($firstLine);
         $this->assertSame(
             '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT,
             trim($firstLine),
@@ -74,6 +79,8 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('basePath', $data);
         $this->assertIsString($data['basePath']);
         $this->assertNotEmpty($data['basePath']);
     }
@@ -87,12 +94,19 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('basePath', $data);
+        $this->assertArrayHasKey('codeCoverage', $data);
+        $this->assertIsString($data['basePath']);
+        $this->assertInstanceOf(ProcessedCodeCoverageData::class, $data['codeCoverage']);
+
         $originalFiles   = $coverage->getData()->coveredFiles();
         $serialisedFiles = $data['codeCoverage']->coveredFiles();
 
         $this->assertCount(count($originalFiles), $serialisedFiles);
 
         foreach ($serialisedFiles as $i => $relativeFile) {
+            $this->assertArrayHasKey($i, $originalFiles);
             $this->assertSame(
                 $originalFiles[$i],
                 $data['basePath'] . DIRECTORY_SEPARATOR . $relativeFile,
@@ -109,6 +123,8 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('testResults', $data);
         $this->assertEquals($coverage->getTests(), $data['testResults']);
     }
 
@@ -121,12 +137,23 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
-        $this->assertIsArray($data['buildInformation']);
-        $this->assertArrayHasKey('timestamp', $data['buildInformation']);
-        $this->assertArrayHasKey('runtime', $data['buildInformation']);
-        $this->assertArrayHasKey('phpCodeCoverage', $data['buildInformation']);
-        $this->assertSame(Serializer::SERIALIZATION_FORMAT, $data['buildInformation']['phpCodeCoverage']['serializationFormat']);
-        $this->assertEquals($coverage->driverInformation(), $data['buildInformation']['phpCodeCoverage']['driverInformation']);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('buildInformation', $data);
+
+        $buildInformation = $data['buildInformation'];
+
+        $this->assertIsArray($buildInformation);
+        $this->assertArrayHasKey('timestamp', $buildInformation);
+        $this->assertArrayHasKey('runtime', $buildInformation);
+        $this->assertArrayHasKey('phpCodeCoverage', $buildInformation);
+
+        $phpCodeCoverage = $buildInformation['phpCodeCoverage'];
+
+        $this->assertIsArray($phpCodeCoverage);
+        $this->assertArrayHasKey('serializationFormat', $phpCodeCoverage);
+        $this->assertArrayHasKey('driverInformation', $phpCodeCoverage);
+        $this->assertSame(Serializer::SERIALIZATION_FORMAT, $phpCodeCoverage['serializationFormat']);
+        $this->assertEquals($coverage->driverInformation(), $phpCodeCoverage['driverInformation']);
     }
 
     public function testSerializationWorksWhenDataContainsSingleQuotes(): void
@@ -138,8 +165,12 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('basePath', $data);
+        $this->assertArrayHasKey('codeCoverage', $data);
         $this->assertIsString($data['basePath']);
         $this->assertNotEmpty($data['basePath']);
+        $this->assertInstanceOf(ProcessedCodeCoverageData::class, $data['codeCoverage']);
         $this->assertCount(count($coverage->getData()->coveredFiles()), $data['codeCoverage']->coveredFiles());
     }
 
@@ -152,9 +183,12 @@ final class SerializerTest extends TestCase
 
         $data = require $target;
 
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('buildInformation', $data);
         $this->assertIsArray($data['buildInformation']);
 
         if (isset($data['buildInformation']['git'])) {
+            $this->assertIsArray($data['buildInformation']['git']);
             $this->assertArrayHasKey('originUrl', $data['buildInformation']['git']);
             $this->assertArrayHasKey('branch', $data['buildInformation']['git']);
             $this->assertArrayHasKey('commit', $data['buildInformation']['git']);

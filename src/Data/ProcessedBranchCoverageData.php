@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_merge;
 use function array_unique;
+use function array_values;
 use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
@@ -89,7 +90,7 @@ final class ProcessedBranchCoverageData
             $this->op_end,
             $this->line_start,
             $this->line_end,
-            array_unique(array_merge($this->hit, $data->hit)),
+            array_values(array_unique(array_merge($this->hit, $data->hit))),
             $this->out,
             $this->out_hit,
         );

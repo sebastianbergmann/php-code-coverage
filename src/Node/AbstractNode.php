@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
 use function array_merge;
+use function max;
 use function str_ends_with;
 use function str_replace;
 use function substr;
@@ -194,7 +195,7 @@ abstract class AbstractNode implements Countable
             $ccn += $function->ccn;
         }
 
-        return $ccn;
+        return max(0, $ccn);
     }
 
     /**

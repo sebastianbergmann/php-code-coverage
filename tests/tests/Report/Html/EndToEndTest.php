@@ -26,6 +26,7 @@ use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
+use SplFileInfo;
 
 #[CoversNamespace('SebastianBergmann\CodeCoverage\Report\Html')]
 #[Medium]
@@ -53,6 +54,7 @@ final class EndToEndTest extends TestCase
 
         $index = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.html');
 
+        $this->assertNotFalse($index);
         $this->assertStringContainsString('Not all files have branch and path coverage data', $index);
     }
 
@@ -63,6 +65,7 @@ final class EndToEndTest extends TestCase
 
         $source = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
 
+        $this->assertNotFalse($source);
         $this->assertStringContainsString('covered-by-medium-tests', $source);
         $this->assertStringContainsString('covered-by-small-tests', $source);
     }
@@ -75,6 +78,8 @@ final class EndToEndTest extends TestCase
         $branch = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_branch.html');
         $path   = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_path.html');
 
+        $this->assertNotFalse($branch);
+        $this->assertNotFalse($path);
         $this->assertStringContainsString('covered-by-medium-tests', $branch);
         $this->assertStringContainsString('covered-by-small-tests', $path);
     }
@@ -145,6 +150,7 @@ final class EndToEndTest extends TestCase
 
         $index = file_get_contents($target . DIRECTORY_SEPARATOR . 'index.html');
 
+        $this->assertNotFalse($index);
         $this->assertStringContainsString('Resource &lt;X &amp; Y&gt;.php', $index);
         $this->assertStringContainsString('Group &lt;A &amp; B&gt;', $index);
         $this->assertStringNotContainsString('Resource <X & Y>.php', $index);
@@ -156,23 +162,30 @@ final class EndToEndTest extends TestCase
         $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/.html/');
 
-        $this->assertEquals(
+        $this->assertSame(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
             'Generated files and expected files not match',
         );
 
-        foreach ($expectedFilesIterator as $path => $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
+        foreach ($expectedFilesIterator as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
             $filename = $fileInfo->getFilename();
 
             $actualFile = $actualFilesPath . DIRECTORY_SEPARATOR . $filename;
 
             $this->assertFileExists($actualFile);
 
+            $actual = file_get_contents($actualFile);
+
+            $this->assertNotFalse($actual);
+
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
-                str_replace(PHP_EOL, "\n", file_get_contents($actualFile)),
+                str_replace(PHP_EOL, "\n", $actual),
                 "{$filename} not match",
             );
         }

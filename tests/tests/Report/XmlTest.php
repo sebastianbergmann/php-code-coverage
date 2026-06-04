@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
+use SplFileInfo;
 
 #[CoversClass(Facade::class)]
 #[CoversClass(BuildInformation::class)]
@@ -49,8 +50,11 @@ final class XmlTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $path => $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
+        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
             unlink($fileInfo->getPathname());
         }
     }
@@ -180,7 +184,10 @@ final class XmlTest extends TestCase
             '3.5.1',
         );
 
-        $this->assertStringContainsString('<directory name="Target"', file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.xml'));
+        $index = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.xml');
+
+        $this->assertNotFalse($index);
+        $this->assertStringContainsString('<directory name="Target"', $index);
     }
 
     public function testBuildInformationIsOmittedWhenRuntimeIsNotProvided(): void
@@ -227,7 +234,11 @@ final class XmlTest extends TestCase
             $driverExtensionVersion,
         );
 
-        return file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.xml');
+        $index = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.xml');
+
+        $this->assertNotFalse($index);
+
+        return $index;
     }
 
     private function concatenatedReportFiles(): string
@@ -235,8 +246,15 @@ final class XmlTest extends TestCase
         $buffer = '';
 
         foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
-            $buffer .= file_get_contents($fileInfo->getPathname());
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
+            $contents = file_get_contents($fileInfo->getPathname());
+
+            $this->assertNotFalse($contents);
+
+            $buffer .= $contents;
         }
 
         return $buffer;
@@ -247,23 +265,30 @@ final class XmlTest extends TestCase
         $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new FilesystemIterator($actualFilesPath);
 
-        $this->assertEquals(
+        $this->assertSame(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
             'Generated files and expected files not match',
         );
 
-        foreach ($expectedFilesIterator as $path => $fileInfo) {
-            /* @var \SplFileInfo $fileInfo */
+        foreach ($expectedFilesIterator as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
             $filename = $fileInfo->getFilename();
 
             $actualFile = $actualFilesPath . DIRECTORY_SEPARATOR . $filename;
 
             $this->assertFileExists($actualFile);
 
+            $actual = file_get_contents($actualFile);
+
+            $this->assertNotFalse($actual);
+
             $this->assertStringMatchesFormatFile(
                 $fileInfo->getPathname(),
-                file_get_contents($actualFile),
+                $actual,
                 "{$filename} not match",
             );
         }

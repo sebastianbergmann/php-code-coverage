@@ -39,7 +39,11 @@ final class CodeCoverage
     private const string UNCOVERED_FILES = 'UNCOVERED_FILES';
     private readonly Driver $driver;
     private readonly Filter $filter;
-    private ?Mapper $targetMapper                    = null;
+    private ?Mapper $targetMapper = null;
+
+    /**
+     * @var ?non-empty-string
+     */
     private ?string $cacheDirectory                  = null;
     private bool $checkForUnintentionallyCoveredCode = false;
     private bool $includeUncoveredFiles              = true;
@@ -50,12 +54,16 @@ final class CodeCoverage
      * @var list<class-string>
      */
     private array $parentClassesExcludedFromUnintentionallyCoveredCodeCheck = [];
-    private ?string $currentId                                              = null;
-    private ?TestSize $currentSize                                          = null;
+
+    /**
+     * @var ?non-empty-string
+     */
+    private ?string $currentId     = null;
+    private ?TestSize $currentSize = null;
     private ProcessedCodeCoverageData $data;
 
     /**
-     * @var array<string, TestType>
+     * @var array<non-empty-string, TestType>
      */
     private array $tests             = [];
     private ?Directory $cachedReport = null;
@@ -130,7 +138,7 @@ final class CodeCoverage
     }
 
     /**
-     * @return array<string, TestType>
+     * @return array<non-empty-string, TestType>
      */
     public function getTests(): array
     {
@@ -138,13 +146,16 @@ final class CodeCoverage
     }
 
     /**
-     * @param array<string, TestType> $tests
+     * @param array<non-empty-string, TestType> $tests
      */
     public function setTests(array $tests): void
     {
         $this->tests = $tests;
     }
 
+    /**
+     * @param non-empty-string $id
+     */
     public function start(string $id, ?TestSize $size = null, bool $clear = false): void
     {
         if ($clear) {
@@ -173,6 +184,8 @@ final class CodeCoverage
     }
 
     /**
+     * @param ?non-empty-string $id
+     *
      * @throws ReflectionException
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
@@ -245,7 +258,7 @@ final class CodeCoverage
             $linesToBeUsed,
             $size,
             $this->checkForUnintentionallyCoveredCode,
-            $this->targetMapper,
+            $this->targetMapper(),
             $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
             $covers,
             $uses,
@@ -325,6 +338,9 @@ final class CodeCoverage
         return $this->cacheDirectory !== null;
     }
 
+    /**
+     * @param non-empty-string $directory
+     */
     public function cacheStaticAnalysis(string $directory): void
     {
         $this->cacheDirectory = $directory;
@@ -337,6 +353,8 @@ final class CodeCoverage
 
     /**
      * @throws StaticAnalysisCacheNotConfiguredException
+     *
+     * @return non-empty-string
      */
     public function cacheDirectory(): string
     {

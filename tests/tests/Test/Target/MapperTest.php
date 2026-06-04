@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
@@ -42,7 +43,7 @@ final class MapperTest extends TestCase
      */
     public static function provider(): array
     {
-        $file = realpath(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
+        $file = self::realpath(__DIR__ . '/../../../_files/source_with_interfaces_classes_traits_functions.php');
 
         return [
             'class' => [
@@ -62,9 +63,9 @@ final class MapperTest extends TestCase
 
             'class (which uses traits)' => [
                 [
-                    realpath(__DIR__ . '/../../../_files/Target/ClassUsingTraitUsingTrait.php') => range(4, 11),
-                    realpath(__DIR__ . '/../../../_files/Target/TraitTwo.php')                  => range(4, 11),
-                    realpath(__DIR__ . '/../../../_files/Target/TraitOne.php')                  => range(4, 9),
+                    self::realpath(__DIR__ . '/../../../_files/Target/ClassUsingTraitUsingTrait.php') => range(4, 11),
+                    self::realpath(__DIR__ . '/../../../_files/Target/TraitTwo.php')                  => range(4, 11),
+                    self::realpath(__DIR__ . '/../../../_files/Target/TraitOne.php')                  => range(4, 9),
                 ],
                 TargetCollection::fromArray(
                     [
@@ -86,9 +87,9 @@ final class MapperTest extends TestCase
 
             'classes that extend class (grand parent, parent, and child)' => [
                 [
-                    realpath(__DIR__ . '/../../../_files/Target/GrandParentClass.php') => range(4, 9),
-                    realpath(__DIR__ . '/../../../_files/Target/ParentClass.php')      => range(4, 9),
-                    realpath(__DIR__ . '/../../../_files/Target/ChildClass.php')       => range(4, 9),
+                    self::realpath(__DIR__ . '/../../../_files/Target/GrandParentClass.php') => range(4, 9),
+                    self::realpath(__DIR__ . '/../../../_files/Target/ParentClass.php')      => range(4, 9),
+                    self::realpath(__DIR__ . '/../../../_files/Target/ChildClass.php')       => range(4, 9),
                 ],
                 TargetCollection::fromArray(
                     [
@@ -111,7 +112,7 @@ final class MapperTest extends TestCase
 
             'trait' => [
                 [
-                    realpath(__DIR__ . '/../../../_files/Target/TraitOne.php') => range(4, 9),
+                    self::realpath(__DIR__ . '/../../../_files/Target/TraitOne.php') => range(4, 9),
                 ],
                 TargetCollection::fromArray(
                     [
@@ -183,7 +184,7 @@ final class MapperTest extends TestCase
 
             'enumeration' => [
                 [
-                    realpath(__DIR__ . '/../../../_files/Target/TargetEnumeration.php') => range(4, 8),
+                    self::realpath(__DIR__ . '/../../../_files/Target/TargetEnumeration.php') => range(4, 8),
                 ],
                 TargetCollection::fromArray(
                     [
@@ -281,7 +282,7 @@ final class MapperTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1064')]
     public function testCodeUnitTargetingIsCaseInsensitive(): void
     {
-        $path   = realpath(__DIR__ . '/../../../_files/Target/TargetClass.php');
+        $path   = self::realpath(__DIR__ . '/../../../_files/Target/TargetClass.php');
         $mapper = $this->mapper([$path]);
 
         $this->assertSame(
@@ -297,11 +298,11 @@ final class MapperTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1066')]
     public function testIssue1066(): void
     {
-        $baseDummy      = realpath(__DIR__ . '/../../../_files/Target/regression/1066/BaseDummy.php');
-        $dummy          = realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy.php');
-        $dummy2         = realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy2.php');
-        $dummyWithTrait = realpath(__DIR__ . '/../../../_files/Target/regression/1066/DummyWithTrait.php');
-        $someTrait      = realpath(__DIR__ . '/../../../_files/Target/regression/1066/SomeTrait.php');
+        $baseDummy      = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/BaseDummy.php');
+        $dummy          = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy.php');
+        $dummy2         = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/Dummy2.php');
+        $dummyWithTrait = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/DummyWithTrait.php');
+        $someTrait      = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/SomeTrait.php');
 
         $mapper = $this->mapper(
             [
@@ -330,7 +331,7 @@ final class MapperTest extends TestCase
 
     public function testLineOfCodeInGlobalScopeDoesNotBelongToCodeUnit(): void
     {
-        $file   = realpath(__DIR__ . '/../../../_files/source_without_ignore.php');
+        $file   = self::realpath(__DIR__ . '/../../../_files/source_without_ignore.php');
         $mapper = $this->mapper([$file]);
 
         $this->assertSame($file . ':2', $mapper->lookup($file, 2));
@@ -363,5 +364,19 @@ final class MapperTest extends TestCase
                 false,
             ),
         );
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function realpath(string $path): string
+    {
+        $realpath = realpath($path);
+
+        if ($realpath === false) {
+            throw new RuntimeException('Could not resolve real path of ' . $path);
+        }
+
+        return $realpath;
     }
 }

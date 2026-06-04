@@ -335,6 +335,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $coverage->skipEmptyLines();
 
+        $lineCoverage = $coverage->lineCoverage();
+
+        $this->assertArrayHasKey($filename, $lineCoverage);
         $this->assertEquals(
             [
                 13 => -1,
@@ -344,9 +347,12 @@ final class RawCodeCoverageDataTest extends TestCase
                 35 => -1,
                 36 => -1,
             ],
-            $coverage->lineCoverage()[$filename],
+            $lineCoverage[$filename],
         );
 
+        $functionCoverage = $coverage->functionCoverage();
+
+        $this->assertArrayHasKey($filename, $functionCoverage);
         $this->assertEquals(
             [
                 '{main}' => [
@@ -406,7 +412,7 @@ final class RawCodeCoverageDataTest extends TestCase
                     ],
                 ],
             ],
-            $coverage->functionCoverage()[$filename],
+            $functionCoverage[$filename],
         );
     }
 
@@ -677,6 +683,8 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $lineCoverage = $dataObject->lineCoverage();
 
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
         // Line 8 was in the map and should still be present
         $this->assertArrayHasKey(8, $lineCoverage['/some/path/SomeClass.php']);
         // Lines 9 and 13 were not in the map and should have been skipped (continue)
@@ -730,11 +738,18 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject->addMissingExecutableLines('/some/path/SomeClass.php', [8, 9, 10]);
 
-        $lineCoverage = $dataObject->lineCoverage()['/some/path/SomeClass.php'];
+        $lineCoverage = $dataObject->lineCoverage();
 
-        $this->assertSame(1, $lineCoverage[8]);
-        $this->assertSame(-1, $lineCoverage[9]);
-        $this->assertSame(-1, $lineCoverage[10]);
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertArrayHasKey(10, $fileLines);
+        $this->assertSame(1, $fileLines[8]);
+        $this->assertSame(-1, $fileLines[9]);
+        $this->assertSame(-1, $fileLines[10]);
     }
 
     public function testAddMissingExecutableLinesWithUnknownFile(): void
@@ -768,10 +783,16 @@ final class RawCodeCoverageDataTest extends TestCase
         // "branch already removed" early continue.
         $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 9 => 0]);
 
-        $lineCoverage = $dataObject->lineCoverage()['/some/path/SomeClass.php'];
+        $lineCoverage = $dataObject->lineCoverage();
 
-        $this->assertSame(1, $lineCoverage[8]);
-        $this->assertSame(1, $lineCoverage[9]);
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertSame(1, $fileLines[8]);
+        $this->assertSame(1, $fileLines[9]);
     }
 
     public function testKeepFunctionCoverageDataOnlyForLines(): void
@@ -814,7 +835,12 @@ final class RawCodeCoverageDataTest extends TestCase
         // and the path referencing it are removed.
         $dataObject->keepFunctionCoverageDataOnlyForLines($filename, [11]);
 
-        $functionData = $dataObject->functionCoverage()[$filename]['foo'];
+        $functionCoverage = $dataObject->functionCoverage();
+
+        $this->assertArrayHasKey($filename, $functionCoverage);
+        $this->assertArrayHasKey('foo', $functionCoverage[$filename]);
+
+        $functionData = $functionCoverage[$filename]['foo'];
 
         $this->assertEmpty($functionData['branches']);
         $this->assertEmpty($functionData['paths']);

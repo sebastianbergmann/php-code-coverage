@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function assert;
 use function explode;
 use function file_get_contents;
 use function preg_match;
@@ -47,8 +48,10 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     public function testArrowFunctionIsProcessedCorrectly(): void
     {
         $source = file_get_contents(TEST_FILES_PATH . 'source_with_arrow_function.php');
+        assert($source !== false);
         $parser = (new ParserFactory)->createForHostVersion();
         $nodes  = $parser->parse($source);
+        assert($nodes !== null);
 
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
@@ -65,8 +68,10 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     public function testEmptyForLoopIsProcessedCorrectly(): void
     {
         $source = file_get_contents(TEST_FILES_PATH . 'source_with_empty_for_loops.php');
+        assert($source !== false);
         $parser = (new ParserFactory)->createForHostVersion();
         $nodes  = $parser->parse($source);
+        assert($nodes !== null);
 
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
@@ -84,9 +89,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/phpunit/issues/6442')]
     public function testAbstractMethodDeclarationsAreNotExecutable(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_abstract_method.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_abstract_method.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -104,9 +111,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
     public function testMatchArmsAreProcessedCorrectly(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_expression.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_match_expression.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -129,9 +138,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[RequiresPhp('>=8.4.0')]
     public function testPropertyHooksAreProcessedCorrectly(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_property_hooks.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_property_hooks.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -155,9 +166,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
     public function testEmptyMatchExpressionIsProcessedCorrectly(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_empty_match.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_empty_match.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -171,9 +184,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
     public function testBranchOperatorLinesAccessorReturnsLinesAddedByBranchHandlers(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -193,9 +208,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
     public function testCaseStatementsAreExecutableButNotBranchOperators(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_with_switch_case.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_switch_case.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -215,9 +232,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1156')]
     public function testStatementsConsistingOfASideEffectFreeExpressionAreNotExecutable(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_dead_scalar_literal_statement.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_dead_scalar_literal_statement.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -238,9 +257,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
     public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -260,9 +281,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1160')]
     public function testTernaryInsideSpreadDoesNotCreateSeparateBranches(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_ternary_in_spread.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_ternary_in_spread.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -279,6 +302,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $branch = $executableLines[5];
 
         foreach ([6, 7, 8, 9, 10] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
             $this->assertSame($branch, $executableLines[$line]);
         }
 
@@ -290,9 +314,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1159')]
     public function testStatementsInClosureNestedInCallArgumentAreNotMarkedAsBranchOperators(): void
     {
-        $source                        = file_get_contents(__DIR__ . '/../../../_files/source_callable_inside_call_argument.php');
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_callable_inside_call_argument.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;
@@ -313,9 +339,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
     private function doTestSelfDescribingAssert(string $filename): void
     {
-        $source                        = file_get_contents($filename);
-        $parser                        = (new ParserFactory)->createForHostVersion();
-        $nodes                         = $parser->parse($source);
+        $source = file_get_contents($filename);
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
         $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
 
         $traverser = new NodeTraverser;

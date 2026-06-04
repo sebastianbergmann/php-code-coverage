@@ -58,7 +58,7 @@ final class Method extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'methods'
      */
     public function key(): string
     {

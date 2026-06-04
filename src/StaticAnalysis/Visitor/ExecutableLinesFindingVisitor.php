@@ -12,13 +12,14 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function array_any;
 use function array_diff_key;
 use function array_intersect_key;
-use function array_key_last;
 use function assert;
 use function count;
 use function ctype_space;
+use function end;
 use function explode;
 use function is_array;
 use function max;
+use function reset;
 use function str_replace;
 use function strtolower;
 use function trim;
@@ -105,7 +106,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private array $executableLinesGroupedByBranch = [];
 
     /**
-     * @var array<int, true>
+     * @var array<positive-int, true>
      */
     private array $branchOperatorLines = [];
 
@@ -299,7 +300,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @return array<int, true>
+     * @return array<positive-int, true>
      */
     public function branchOperatorLines(): array
     {
@@ -356,8 +357,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        $firstArmLine = $node->arms[0]->getStartLine();
-        $lastArmLine  = $node->arms[count($node->arms) - 1]->getEndLine();
+        $firstArmLine = reset($node->arms)->getStartLine();
+        $lastArmLine  = end($node->arms)->getEndLine();
 
         if ($node->getStartLine() < $firstArmLine && $this->matchConditionHasNoOpcode($node->cond)) {
             $this->markRangeForUnset($node->getStartLine(), $firstArmLine - 1);
@@ -418,7 +419,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             null === $node->stmts ||
             (
                 1 === count($node->stmts) &&
-                $node->stmts[0] instanceof Node\Stmt\Nop
+                reset($node->stmts) instanceof Node\Stmt\Nop
             );
 
         if (!$hasEmptyBody) {
@@ -570,7 +571,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        $line = $node->cond->getStartLine();
+        $line = max(1, $node->cond->getStartLine());
 
         $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
     }
@@ -581,18 +582,18 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $endLine   = null;
 
         if ([] !== $node->init) {
-            $startLine = $node->init[0]->getStartLine();
-            $endLine   = $node->init[array_key_last($node->init)]->getEndLine();
+            $startLine = reset($node->init)->getStartLine();
+            $endLine   = end($node->init)->getEndLine();
         }
 
         if ([] !== $node->cond) {
-            $startLine ??= $node->cond[0]->getStartLine();
-            $endLine = $node->cond[array_key_last($node->cond)]->getEndLine();
+            $startLine ??= reset($node->cond)->getStartLine();
+            $endLine = end($node->cond)->getEndLine();
         }
 
         if ([] !== $node->loop) {
-            $startLine ??= $node->loop[0]->getStartLine();
-            $endLine = $node->loop[array_key_last($node->loop)]->getEndLine();
+            $startLine ??= reset($node->loop)->getStartLine();
+            $endLine = end($node->loop)->getEndLine();
         }
 
         if (null === $startLine || null === $endLine) {
@@ -606,8 +607,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         assert([] !== $node->types);
 
-        $startLine = $node->types[0]->getStartLine();
-        $endLine   = $node->types[array_key_last($node->types)]->getEndLine();
+        $startLine = reset($node->types)->getStartLine();
+        $endLine   = end($node->types)->getEndLine();
 
         $this->setLineBranch($startLine, $endLine, ++$this->nextBranch);
     }
@@ -620,7 +621,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
         $branch = ++$this->nextBranch;
 
-        for ($line = $node->getStartLine(); $line <= $node->getEndLine(); $line++) {
+        for ($line = max(1, $node->getStartLine()); $line <= $node->getEndLine(); $line++) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
         }
     }
@@ -662,7 +663,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private function setLineBranch(int $start, int $end, int $branch): void
     {
-        for ($line = $start; $line <= $end; $line++) {
+        for ($line = max(1, $start); $line <= $end; $line++) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
             $this->branchOperatorLines[$line]            = true;
         }

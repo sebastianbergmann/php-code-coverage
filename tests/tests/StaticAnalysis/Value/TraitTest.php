@@ -82,8 +82,8 @@ final class TraitTest extends TestCase
         $methods = [
             'method' => new Method(
                 'method',
-                0,
-                0,
+                1,
+                1,
                 'method(): void',
                 Visibility::Public,
                 1,

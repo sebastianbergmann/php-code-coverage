@@ -110,9 +110,13 @@ final class FacadeTest extends TestCase
         $result = $facade->renderText($target);
 
         $this->assertFileExists($target);
+
+        $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Text/BankAccount-line.txt',
-            str_replace(PHP_EOL, "\n", file_get_contents($target)),
+            str_replace(PHP_EOL, "\n", $contents),
         );
     }
 
@@ -125,9 +129,12 @@ final class FacadeTest extends TestCase
 
         $this->assertFileExists($target);
 
+        $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/Clover/BankAccount-line.xml',
-            file_get_contents($target),
+            $contents,
         );
     }
 
@@ -140,9 +147,12 @@ final class FacadeTest extends TestCase
 
         $this->assertFileExists($target);
 
+        $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
         $this->assertStringMatchesFormatFile(
             TEST_FILES_PATH . 'Report/OpenClover/BankAccount-line.xml',
-            file_get_contents($target),
+            $contents,
         );
     }
 
@@ -154,8 +164,12 @@ final class FacadeTest extends TestCase
         $facade->renderCobertura($target);
 
         $this->assertFileExists($target);
-        $this->assertStringContainsString('<?xml', file_get_contents($target));
-        $this->assertStringContainsString('<coverage', file_get_contents($target));
+
+        $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
+        $this->assertStringContainsString('<?xml', $contents);
+        $this->assertStringContainsString('<coverage', $contents);
     }
 
     public function testRenderCrap4j(): void
@@ -166,8 +180,12 @@ final class FacadeTest extends TestCase
         $facade->renderCrap4j($target);
 
         $this->assertFileExists($target);
-        $this->assertStringContainsString('<?xml', file_get_contents($target));
-        $this->assertStringContainsString('crap_result', file_get_contents($target));
+
+        $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
+        $this->assertStringContainsString('<?xml', $contents);
+        $this->assertStringContainsString('crap_result', $contents);
     }
 
     public function testRenderHtml(): void

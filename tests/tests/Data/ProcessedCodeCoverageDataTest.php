@@ -70,7 +70,10 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $existingCoverage->merge($newCoverage);
 
-        $this->assertArrayHasKey(12, $existingCoverage->lineCoverage()['/some/path/SomeClass.php']);
+        $lineCoverage = $existingCoverage->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+        $this->assertArrayHasKey(12, $lineCoverage['/some/path/SomeClass.php']);
     }
 
     public function testMergeDoesNotCrashWhenFileContentsHaveChanged(): void
@@ -171,8 +174,11 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $coverage->merge($newCoverage);
 
-        $this->assertIsArray($newCoverage->functionCoverage()['/some/path/SomeClass.php']);
-        $this->assertArrayHasKey('SomeClass->secondFunction', $newCoverage->functionCoverage()['/some/path/SomeClass.php']);
+        $functionCoverage = $newCoverage->functionCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $functionCoverage);
+        $this->assertIsArray($functionCoverage['/some/path/SomeClass.php']);
+        $this->assertArrayHasKey('SomeClass->secondFunction', $functionCoverage['/some/path/SomeClass.php']);
     }
 
     public function testMergeOfLinesPresentInOnlyOneOfTheTwoFiles(): void
@@ -197,10 +203,16 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $existingCoverage->merge($newCoverage);
 
-        $lineCoverage = $existingCoverage->lineCoverage()['/some/path/SomeClass.php'];
+        $lineCoverage = $existingCoverage->lineCoverage();
 
-        $this->assertSame(['test1'], $lineCoverage[8]);
-        $this->assertSame(['test2'], $lineCoverage[9]);
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertSame(['test1'], $fileLines[8]);
+        $this->assertSame(['test2'], $fileLines[9]);
     }
 
     public function testRenameFile(): void

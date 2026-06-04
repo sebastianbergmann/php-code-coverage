@@ -14,6 +14,7 @@ use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
@@ -25,6 +26,9 @@ use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
 
+/**
+ * @phpstan-import-type TargetMap from Mapper
+ */
 #[CoversClass(FilterProcessor::class)]
 #[Small]
 final class FilterProcessorTest extends TestCase
@@ -54,7 +58,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyFilterKeepsIncludedFiles(): void
     {
-        $file = realpath(__FILE__);
+        $file = self::realpath(__FILE__);
 
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             $file => [1 => 1],
@@ -83,7 +87,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyExecutableLinesFilterKeepsOnlyExecutableLines(): void
     {
-        $file = realpath(__FILE__);
+        $file = self::realpath(__FILE__);
 
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             $file => [1 => -1, 2 => 1, 3 => -1],
@@ -98,7 +102,10 @@ final class FilterProcessorTest extends TestCase
 
         $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
 
-        $this->assertSame([2], array_keys($data->lineCoverage()[$file]));
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+        $this->assertSame([2], array_keys($lineCoverage[$file]));
     }
 
     public function testApplyExecutableLinesFilterSkipsNonFilterFiles(): void
@@ -116,12 +123,15 @@ final class FilterProcessorTest extends TestCase
 
         $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
 
-        $this->assertSame([1 => 1, 2 => 1], $data->lineCoverage()['not_a_real_file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('not_a_real_file.php', $lineCoverage);
+        $this->assertSame([1 => 1, 2 => 1], $lineCoverage['not_a_real_file.php']);
     }
 
     public function testApplyIgnoredLinesFilterRemovesIgnoredLines(): void
     {
-        $file = realpath(__FILE__);
+        $file = self::realpath(__FILE__);
 
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
             $file => [1 => 1, 2 => 1, 3 => 1],
@@ -136,7 +146,10 @@ final class FilterProcessorTest extends TestCase
 
         $this->processor->applyIgnoredLinesFilter($data, $filter, $analyser);
 
-        $this->assertSame([1, 3], array_keys($data->lineCoverage()[$file]));
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+        $this->assertSame([1, 3], array_keys($lineCoverage[$file]));
     }
 
     public function testApplyIgnoredLinesFilterSkipsNonFilterFiles(): void
@@ -154,7 +167,10 @@ final class FilterProcessorTest extends TestCase
 
         $this->processor->applyIgnoredLinesFilter($data, $filter, $analyser);
 
-        $this->assertSame([1 => 1, 2 => 1], $data->lineCoverage()['not_a_real_file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('not_a_real_file.php', $lineCoverage);
+        $this->assertSame([1 => 1, 2 => 1], $lineCoverage['not_a_real_file.php']);
     }
 
     public function testApplyCoversAndUsesFilterClearsDataWhenLinesToBeCoveredIsFalse(): void
@@ -196,7 +212,10 @@ final class FilterProcessorTest extends TestCase
             $this->emptyTargetCollection(),
         );
 
-        $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('file.php', $lineCoverage);
+        $this->assertSame([1 => 1], $lineCoverage['file.php']);
     }
 
     public function testApplyCoversAndUsesFilterKeepsOnlyCoveredLines(): void
@@ -217,7 +236,10 @@ final class FilterProcessorTest extends TestCase
             $this->emptyTargetCollection(),
         );
 
-        $this->assertSame([1, 2], array_keys($data->lineCoverage()['file.php']));
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('file.php', $lineCoverage);
+        $this->assertSame([1, 2], array_keys($lineCoverage['file.php']));
     }
 
     public function testApplyCoversAndUsesFilterRemovesFilesNotInCoversList(): void
@@ -282,7 +304,10 @@ final class FilterProcessorTest extends TestCase
             $this->emptyTargetCollection(),
         );
 
-        $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('file.php', $lineCoverage);
+        $this->assertSame([1 => 1], $lineCoverage['file.php']);
     }
 
     public function testApplyCoversAndUsesFilterSkipsUnintentionallyCoveredCodeCheckForLargeTests(): void
@@ -303,7 +328,10 @@ final class FilterProcessorTest extends TestCase
             $this->emptyTargetCollection(),
         );
 
-        $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('file.php', $lineCoverage);
+        $this->assertSame([1 => 1], $lineCoverage['file.php']);
     }
 
     public function testApplyCoversAndUsesFilterSkipsUnintentionallyCoveredCodeCheckWhenDisabled(): void
@@ -324,12 +352,15 @@ final class FilterProcessorTest extends TestCase
             $this->emptyTargetCollection(),
         );
 
-        $this->assertSame([1 => 1], $data->lineCoverage()['file.php']);
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey('file.php', $lineCoverage);
+        $this->assertSame([1 => 1], $lineCoverage['file.php']);
     }
 
     public function testUncoveredFilesFromFilterReturnsDataForUncoveredFiles(): void
     {
-        $file = realpath(__DIR__ . '/../_files/BankAccount.php');
+        $file = self::realpath(__DIR__ . '/../_files/BankAccount.php');
 
         $filter = new Filter;
         $filter->includeFile($file);
@@ -345,7 +376,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testUncoveredFilesFromFilterReturnsEmptyWhenAllFilesAreCovered(): void
     {
-        $file = realpath(__DIR__ . '/../_files/BankAccount.php');
+        $file = self::realpath(__DIR__ . '/../_files/BankAccount.php');
 
         $filter = new Filter;
         $filter->includeFile($file);
@@ -377,7 +408,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testUncoveredFilesFromFilterSkipsNonExistentFiles(): void
     {
-        $realFile = realpath(__DIR__ . '/../_files/BankAccount.php');
+        $realFile = self::realpath(__DIR__ . '/../_files/BankAccount.php');
 
         $filter = new Filter;
         $filter->includeFile($realFile);
@@ -399,8 +430,8 @@ final class FilterProcessorTest extends TestCase
 
     public function testUncoveredFilesFromFilterReturnsMultipleFiles(): void
     {
-        $file1 = realpath(__DIR__ . '/../_files/BankAccount.php');
-        $file2 = realpath(__DIR__ . '/../_files/CoveredClass.php');
+        $file1 = self::realpath(__DIR__ . '/../_files/BankAccount.php');
+        $file2 = self::realpath(__DIR__ . '/../_files/CoveredClass.php');
 
         $filter = new Filter;
         $filter->includeFile($file1);
@@ -415,7 +446,7 @@ final class FilterProcessorTest extends TestCase
     }
 
     /**
-     * @return array{namespaces: array<empty>, traits: array<empty>, classes: array<empty>, classesThatExtendClass: array<empty>, classesThatImplementInterface: array<empty>, methods: array<empty>, functions: array<empty>, reverseLookup: array<empty>}
+     * @return TargetMap
      */
     private function emptyMap(): array
     {
@@ -442,5 +473,19 @@ final class FilterProcessorTest extends TestCase
         $sourceAnalyser->method('analyse')->willReturn($result);
 
         return new FileAnalyser($sourceAnalyser, false, false);
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function realpath(string $path): string
+    {
+        $realpath = realpath($path);
+
+        if ($realpath === false) {
+            throw new RuntimeException('Could not resolve real path of ' . $path);
+        }
+
+        return $realpath;
     }
 }

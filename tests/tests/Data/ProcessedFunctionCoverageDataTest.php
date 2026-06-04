@@ -43,6 +43,8 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
 
         $this->assertCount(1, $data->branches);
         $this->assertCount(1, $data->paths);
+        $this->assertArrayHasKey(0, $data->branches);
+        $this->assertArrayHasKey(0, $data->paths);
         $this->assertInstanceOf(ProcessedBranchCoverageData::class, $data->branches[0]);
         $this->assertInstanceOf(ProcessedPathCoverageData::class, $data->paths[0]);
         $this->assertSame(11, $data->branches[0]->line_start);
@@ -58,6 +60,7 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
 
         $data->recordBranchHit(0, 'testCaseId');
 
+        $this->assertArrayHasKey(0, $data->branches);
         $this->assertSame(['testCaseId'], $data->branches[0]->hit);
     }
 
@@ -70,6 +73,7 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
 
         $data->recordPathHit(0, 'testCaseId');
 
+        $this->assertArrayHasKey(0, $data->paths);
         $this->assertSame(['testCaseId'], $data->paths[0]->hit);
     }
 
@@ -111,6 +115,10 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
         $this->assertNotSame($base, $merged);
         $this->assertCount(2, $merged->branches);
         $this->assertCount(2, $merged->paths);
+        $this->assertArrayHasKey(0, $merged->branches);
+        $this->assertArrayHasKey(1, $merged->branches);
+        $this->assertArrayHasKey(0, $merged->paths);
+        $this->assertArrayHasKey(1, $merged->paths);
         $this->assertSame(['test1', 'test2'], $merged->branches[0]->hit);
         $this->assertSame(['test3'], $merged->branches[1]->hit);
         $this->assertSame(['test1', 'test2'], $merged->paths[0]->hit);

@@ -77,7 +77,7 @@ final readonly class Crap4j
                 foreach ($class->methods as $methodName => $method) {
                     $crapLoad = $this->crapLoad((float) $method->crap, $method->ccn, $method->coverage);
 
-                    $fullCrap     += $method->crap;
+                    $fullCrap     += (float) $method->crap;
                     $fullCrapLoad += $crapLoad;
                     $fullMethodCount++;
 

@@ -103,7 +103,7 @@ final class PathReducerTest extends TestCase
     }
 
     /**
-     * @param list<string> $files
+     * @param list<non-empty-string> $files
      */
     private function dataWithFiles(array $files): ProcessedCodeCoverageData
     {

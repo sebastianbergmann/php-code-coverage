@@ -148,7 +148,8 @@ final readonly class Merger
             throw new MixedGitInformationException;
         }
 
-        if ($refHasGit) {
+        if (array_key_exists('git', $reference['buildInformation']) &&
+            array_key_exists('git', $current['buildInformation'])) {
             $referenceGit = $reference['buildInformation']['git'];
             $currentGit   = $current['buildInformation']['git'];
 

@@ -1,5 +1,5 @@
 parameters:
-    level: 6
+    level: 10
 
     paths:
         - src
@@ -7,6 +7,9 @@ parameters:
         - tests/bootstrap.php
 
     resultCachePath: %tmpDir%/php-code-coverage-14.2.php
+
+    stubFiles:
+        - build/phpstan-stubs/extensions.stub
 
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     reportAlwaysTrueInLastCondition: true

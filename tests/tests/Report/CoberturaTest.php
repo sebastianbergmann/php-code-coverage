@@ -21,6 +21,7 @@ use function trim;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use RuntimeException;
 use SebastianBergmann\CodeCoverage\InMemoryTarget;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Util\Xml;
@@ -108,7 +109,7 @@ final class CoberturaTest extends TestCase
     {
         $this->assertStringMatchesFormatFile($expectationFile, $coberturaXml);
 
-        $dtdPath = realpath(__DIR__ . '/../../_files/Report/Cobertura/coverage-04.dtd');
+        $dtdPath = self::realpath(__DIR__ . '/../../_files/Report/Cobertura/coverage-04.dtd');
 
         if (DIRECTORY_SEPARATOR === '\\') {
             $dtdPath = 'file:///' . str_replace('\\', '/', $dtdPath);
@@ -144,5 +145,19 @@ final class CoberturaTest extends TestCase
         if (isset($buffer)) {
             $this->fail($buffer);
         }
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private static function realpath(string $path): string
+    {
+        $realpath = realpath($path);
+
+        if ($realpath === false) {
+            throw new RuntimeException('Could not resolve real path of ' . $path);
+        }
+
+        return $realpath;
     }
 }

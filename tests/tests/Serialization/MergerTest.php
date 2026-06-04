@@ -109,8 +109,15 @@ final class MergerTest extends TestCase
         $result = (new Merger)->merge([$pathA, $pathB]);
 
         $merged = $result['codeCoverage']->lineCoverage();
-        $this->assertSame(['test1'], $merged['/src/Foo.php'][1]);
-        $this->assertSame(['test2'], $merged['/src/Foo.php'][2]);
+
+        $this->assertArrayHasKey('/src/Foo.php', $merged);
+
+        $fooLines = $merged['/src/Foo.php'];
+
+        $this->assertArrayHasKey(1, $fooLines);
+        $this->assertArrayHasKey(2, $fooLines);
+        $this->assertSame(['test1'], $fooLines[1]);
+        $this->assertSame(['test2'], $fooLines[2]);
     }
 
     public function testMergesTestResults(): void
@@ -144,6 +151,7 @@ final class MergerTest extends TestCase
 
         $result = (new Merger)->merge([$path]);
 
+        $this->assertArrayHasKey('git', $result['buildInformation']);
         $this->assertSame($git, $result['buildInformation']['git']);
     }
 
@@ -360,6 +368,8 @@ final class MergerTest extends TestCase
 
     /**
      * @param array<mixed> $data
+     *
+     * @return non-empty-string
      */
     private function writeFile(string $filename, array $data): string
     {

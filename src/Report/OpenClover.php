@@ -38,7 +38,11 @@ final class OpenClover
     use EnsuresUtf8;
 
     /**
+     * @param null|non-empty-string $target
+     *
      * @throws WriteOperationFailedException
+     *
+     * @return non-empty-string
      */
     public function process(Directory $report, ?string $target = null, ?string $name = null): string
     {

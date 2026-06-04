@@ -43,17 +43,17 @@ final class File extends AbstractNode
     private string $sha1;
 
     /**
-     * @var array<int, ?list<non-empty-string>>
+     * @var array<positive-int, ?list<non-empty-string>>
      */
     private array $lineCoverageData;
 
     /**
-     * @var array<string, ProcessedFunctionCoverageData>
+     * @var array<non-empty-string, ProcessedFunctionCoverageData>
      */
     private array $functionCoverageData;
 
     /**
-     * @var array<string, TestType>
+     * @var array<non-empty-string, TestType>
      */
     private readonly array $testData;
     private int $numExecutableLines    = 0;
@@ -79,13 +79,13 @@ final class File extends AbstractNode
     private array $functions = [];
     private readonly LinesOfCode $linesOfCode;
     private readonly bool $hasBranchCoverageData;
-    private ?int $numClasses         = null;
-    private int $numTestedClasses    = 0;
-    private ?int $numTraits          = null;
-    private int $numTestedTraits     = 0;
-    private ?int $numMethods         = null;
-    private ?int $numTestedMethods   = null;
-    private ?int $numTestedFunctions = null;
+    private ?int $numClasses        = null;
+    private int $numTestedClasses   = 0;
+    private ?int $numTraits         = null;
+    private int $numTestedTraits    = 0;
+    private ?int $numMethods        = null;
+    private ?int $numTestedMethods  = null;
+    private int $numTestedFunctions = 0;
 
     /**
      * @var array<int, array<int, ProcessedClassType|ProcessedFunctionType|ProcessedMethodType|ProcessedTraitType>>
@@ -93,13 +93,13 @@ final class File extends AbstractNode
     private array $codeUnitsByLine = [];
 
     /**
-     * @param non-empty-string                             $sha1
-     * @param array<int, ?list<non-empty-string>>          $lineCoverageData
-     * @param array<string, ProcessedFunctionCoverageData> $functionCoverageData
-     * @param array<string, TestType>                      $testData
-     * @param array<string, Class_>                        $classes
-     * @param array<string, Trait_>                        $traits
-     * @param array<string, Function_>                     $functions
+     * @param non-empty-string                                       $sha1
+     * @param array<positive-int, ?list<non-empty-string>>           $lineCoverageData
+     * @param array<non-empty-string, ProcessedFunctionCoverageData> $functionCoverageData
+     * @param array<non-empty-string, TestType>                      $testData
+     * @param array<string, Class_>                                  $classes
+     * @param array<string, Trait_>                                  $traits
+     * @param array<string, Function_>                               $functions
      */
     public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false)
     {
@@ -129,7 +129,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<int, ?list<non-empty-string>>
+     * @return array<positive-int, ?list<non-empty-string>>
      */
     public function lineCoverageData(): array
     {
@@ -137,7 +137,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<string, ProcessedFunctionCoverageData>
+     * @return array<non-empty-string, ProcessedFunctionCoverageData>
      */
     public function functionCoverageData(): array
     {
@@ -145,7 +145,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<string, TestType>
+     * @return array<non-empty-string, TestType>
      */
     public function testData(): array
     {
@@ -328,19 +328,6 @@ final class File extends AbstractNode
 
     public function numberOfTestedFunctions(): int
     {
-        if ($this->numTestedFunctions === null) {
-            $this->numTestedFunctions = 0;
-
-            foreach ($this->functions as $function) {
-                if ($function->executableLines > 0 &&
-                    $function->coverage === 100) {
-                    // @codeCoverageIgnoreStart
-                    $this->numTestedFunctions++;
-                    // @codeCoverageIgnoreEnd
-                }
-            }
-        }
-
         return $this->numTestedFunctions;
     }
 
@@ -361,20 +348,16 @@ final class File extends AbstractNode
 
         foreach (range(1, $this->linesOfCode->linesOfCode()) as $lineNumber) {
             if (isset($this->lineCoverageData[$lineNumber])) {
-                foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
                     $codeUnit->executableLines++;
                 }
-
-                unset($codeUnit);
 
                 $this->numExecutableLines++;
 
                 if (count($this->lineCoverageData[$lineNumber]) > 0) {
-                    foreach ($this->codeUnitsByLine[$lineNumber] as &$codeUnit) {
+                    foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
                         $codeUnit->executedLines++;
                     }
-
-                    unset($codeUnit);
 
                     $this->numExecutedLines++;
                 }

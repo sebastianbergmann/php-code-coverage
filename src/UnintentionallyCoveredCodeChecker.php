@@ -13,9 +13,14 @@ use function array_flip;
 use function array_keys;
 use function array_merge;
 use function array_unique;
+use function class_exists;
 use function count;
+use function enum_exists;
 use function explode;
+use function interface_exists;
 use function sort;
+use function sprintf;
+use function trait_exists;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
@@ -94,6 +99,15 @@ final readonly class UnintentionallyCoveredCodeChecker
             }
 
             try {
+                if (!class_exists($tmp[0]) &&
+                    !interface_exists($tmp[0]) &&
+                    !trait_exists($tmp[0]) &&
+                    !enum_exists($tmp[0])) {
+                    throw new \ReflectionException(
+                        sprintf('"%s" does not exist', $tmp[0]),
+                    );
+                }
+
                 $class = new ReflectionClass($tmp[0]);
 
                 foreach ($parentClassesExcludedFromCheck as $parentClass) {
@@ -127,7 +141,7 @@ final readonly class UnintentionallyCoveredCodeChecker
      * @param TargetedLines $linesToBeCovered
      * @param TargetedLines $linesToBeUsed
      *
-     * @return TargetedLines
+     * @return array<non-empty-string, array<int, int>>
      */
     public function allowedLines(array $linesToBeCovered, array $linesToBeUsed): array
     {

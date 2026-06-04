@@ -118,6 +118,10 @@ final readonly class ProcessedFunctionCoverageData
      */
     public function recordBranchHit(int $branchId, string $testCaseId): void
     {
+        if (!isset($this->branches[$branchId])) {
+            return;
+        }
+
         $this->branches[$branchId]->recordHit($testCaseId);
     }
 
@@ -126,6 +130,10 @@ final readonly class ProcessedFunctionCoverageData
      */
     public function recordPathHit(int $pathId, string $testCaseId): void
     {
+        if (!isset($this->paths[$pathId])) {
+            return;
+        }
+
         $this->paths[$pathId]->recordHit($testCaseId);
     }
 }

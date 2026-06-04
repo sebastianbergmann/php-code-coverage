@@ -31,6 +31,14 @@ trait EnsuresUtf8
 
         assert($encoding !== false);
 
-        return mb_convert_encoding($value, 'UTF-8', $encoding);
+        $converted = mb_convert_encoding($value, 'UTF-8', $encoding);
+
+        if ($converted === false) {
+            // @codeCoverageIgnoreStart
+            return $value;
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $converted;
     }
 }

@@ -83,7 +83,20 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Attribute &&
             $node->name->toString() === 'PHPUnit\Framework\Attributes\CodeCoverageIgnore') {
             $attributeGroup = $node->getAttribute('parent');
+
+            if (!$attributeGroup instanceof Node) {
+                // @codeCoverageIgnoreStart
+                return null;
+                // @codeCoverageIgnoreEnd
+            }
+
             $attributedNode = $attributeGroup->getAttribute('parent');
+
+            if (!$attributedNode instanceof Node) {
+                // @codeCoverageIgnoreStart
+                return null;
+                // @codeCoverageIgnoreEnd
+            }
 
             for ($line = $attributedNode->getStartLine(); $line <= $attributedNode->getEndLine(); $line++) {
                 $this->ignoredLines[$line] = true;

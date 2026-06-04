@@ -11,10 +11,13 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function assert;
 use function implode;
+use function is_string;
+use function max;
 use function strlen;
 use function substr;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
@@ -156,6 +159,9 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $this->functions;
     }
 
+    /**
+     * @return non-negative-int
+     */
     private function cyclomaticComplexity(ClassMethod|PhpParserFunction_ $node): int
     {
         $nodes = $node->getStmts();
@@ -176,13 +182,20 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $cyclomaticComplexityCalculatingVisitor->cyclomaticComplexity();
     }
 
+    /**
+     * @return non-empty-string
+     */
     private function signature(ClassMethod|PhpParserFunction_ $node): string
     {
         $signature  = ($node->returnsByRef() ? '&' : '') . $node->name->toString() . '(';
         $parameters = [];
 
         foreach ($node->getParams() as $parameter) {
-            assert(isset($parameter->var->name));
+            $variable = $parameter->var;
+
+            if (!$variable instanceof Variable || !is_string($variable->name)) {
+                continue; // @codeCoverageIgnore
+            }
 
             $parameterAsString = '';
 
@@ -190,7 +203,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
                 $parameterAsString = $this->type($parameter->type) . ' ';
             }
 
-            $parameterAsString .= '$' . $parameter->var->name;
+            $parameterAsString .= '$' . $variable->name;
 
             /* @todo Handle default values */
 
@@ -222,7 +235,13 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             return $this->intersectionTypeAsString($type);
         }
 
-        return $type->toString();
+        if ($type instanceof Identifier || $type instanceof Name) {
+            return $type->toString();
+        }
+
+        // @codeCoverageIgnoreStart
+        return '';
+        // @codeCoverageIgnoreEnd
     }
 
     private function visibility(ClassMethod $node): Visibility
@@ -240,6 +259,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processInterface(PhpParserInterface_ $node): void
     {
+        assert(isset($node->name));
+        assert(isset($node->namespacedName));
+        assert($node->namespacedName instanceof Name);
+
         $name             = $node->name->toString();
         $namespacedName   = $node->namespacedName->toString();
         $parentInterfaces = [];
@@ -253,13 +276,17 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $namespacedName,
             $this->namespace($namespacedName, $name),
             $this->startLine($node),
-            $node->getEndLine(),
+            $this->endLine($node),
             $parentInterfaces,
         );
     }
 
     private function processClass(PhpParserClass_|PhpParserEnum $node): void
     {
+        assert(isset($node->name));
+        assert(isset($node->namespacedName));
+        assert($node->namespacedName instanceof Name);
+
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
         $parentClass    = null;
@@ -281,7 +308,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $this->namespace($namespacedName, $name),
             $this->file,
             $this->startLine($node),
-            $node->getEndLine(),
+            $this->endLine($node),
             $parentClass,
             $interfaces,
             [],
@@ -291,6 +318,10 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processTrait(PhpParserTrait_ $node): void
     {
+        assert(isset($node->name));
+        assert(isset($node->namespacedName));
+        assert($node->namespacedName instanceof Name);
+
         $name           = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
 
@@ -300,7 +331,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $this->namespace($namespacedName, $name),
             $this->file,
             $this->startLine($node),
-            $node->getEndLine(),
+            $this->endLine($node),
             [],
             $this->processMethods($node->getMethods()),
         );
@@ -335,7 +366,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $methods[$node->name->toString()] = new Method(
                 $node->name->toString(),
                 $this->startLine($node),
-                $node->getEndLine(),
+                $this->endLine($node),
                 $this->signature($node),
                 $this->visibility($node),
                 $this->cyclomaticComplexity($node),
@@ -359,15 +390,28 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $namespacedName,
             $this->namespace($namespacedName, $name),
             $this->startLine($node),
-            $node->getEndLine(),
+            $this->endLine($node),
             $this->signature($node),
             $this->cyclomaticComplexity($node),
         );
     }
 
+    /**
+     * @return positive-int
+     */
     private function startLine(ClassMethod|PhpParserClass_|PhpParserEnum|PhpParserFunction_|PhpParserInterface_|PhpParserTrait_ $node): int
     {
-        return $node->name->getStartLine();
+        assert(isset($node->name));
+
+        return max(1, $node->name->getStartLine());
+    }
+
+    /**
+     * @return positive-int
+     */
+    private function endLine(ClassMethod|PhpParserClass_|PhpParserEnum|PhpParserFunction_|PhpParserInterface_|PhpParserTrait_ $node): int
+    {
+        return max(1, $node->getEndLine());
     }
 
     private function namespace(string $namespacedName, string $name): string
@@ -421,6 +465,9 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
      */
     private function setTraits(PhpParserClass_|PhpParserEnum|PhpParserTrait_ $node, array $traits): void
     {
+        assert(isset($node->namespacedName));
+        assert($node->namespacedName instanceof Name);
+
         $name = $node->namespacedName->toString();
 
         if ($node instanceof PhpParserClass_ || $node instanceof PhpParserEnum) {

@@ -43,7 +43,7 @@ final class Function_ extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'functions'
      */
     public function key(): string
     {

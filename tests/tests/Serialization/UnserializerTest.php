@@ -53,6 +53,7 @@ final class UnserializerTest extends TestCase
         $this->assertCount(count($originalFiles), $serialisedFiles);
 
         foreach ($serialisedFiles as $i => $relativeFile) {
+            $this->assertArrayHasKey($i, $originalFiles);
             $this->assertSame(
                 $originalFiles[$i],
                 $result['basePath'] . DIRECTORY_SEPARATOR . $relativeFile,
@@ -100,6 +101,9 @@ final class UnserializerTest extends TestCase
         (new Serializer)->serialize($target, $coverage);
 
         $contents = file_get_contents($target);
+
+        $this->assertNotFalse($contents);
+
         $tampered = preg_replace('/^(<\?php \/\/ phpunit\/php-code-coverage serialization format ).+$/m', '${1}999', $contents);
         file_put_contents($target, $tampered);
 

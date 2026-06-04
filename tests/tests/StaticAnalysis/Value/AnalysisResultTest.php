@@ -133,8 +133,8 @@ final class AnalysisResultTest extends TestCase
      * @param array<string, Class_>     $classes
      * @param array<string, Trait_>     $traits
      * @param array<string, Function_>  $functions
-     * @param array<int, int>           $executableLines
-     * @param array<int, true>          $branchOperatorLines
+     * @param array<positive-int, int>  $executableLines
+     * @param array<positive-int, true> $branchOperatorLines
      * @param array<int, int>           $ignoredLines
      */
     private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $ignoredLines = []): AnalysisResult

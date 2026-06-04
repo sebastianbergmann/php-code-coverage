@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_merge;
 use function array_unique;
+use function array_values;
 use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
@@ -62,7 +63,7 @@ final class ProcessedPathCoverageData
 
         return new self(
             $this->path,
-            array_unique(array_merge($this->hit, $data->hit)),
+            array_values(array_unique(array_merge($this->hit, $data->hit))),
         );
     }
 

@@ -31,7 +31,7 @@ final class FileTest extends TestCase
     {
         $file = $this->createFileNode();
 
-        $this->assertSame(1, $file->count());
+        $this->assertCount(1, $file);
     }
 
     public function testNumberOfTraitsWithTraits(): void
@@ -160,7 +160,10 @@ final class FileTest extends TestCase
             new LinesOfCode(5, 0, 5),
         );
 
-        $traits    = $file->traits();
+        $traits = $file->traits();
+
+        $this->assertArrayHasKey('MyTrait', $traits);
+
         $traitData = $traits['MyTrait'];
 
         $this->assertGreaterThan(0, $traitData->executableLines);

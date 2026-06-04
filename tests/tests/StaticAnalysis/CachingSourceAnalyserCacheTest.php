@@ -39,6 +39,7 @@ final class CachingSourceAnalyserCacheTest extends TestCase
         $file       = TEST_FILES_PATH . 'source_without_ignore.php';
         $sourceCode = file_get_contents($file);
 
+        $this->assertNotFalse($sourceCode);
         $this->assertSame(0, $analyser->cacheHits());
         $this->assertSame(0, $analyser->cacheMisses());
 

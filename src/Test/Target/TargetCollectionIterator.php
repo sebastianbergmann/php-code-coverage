@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use Iterator;
+use OutOfBoundsException;
 
 /**
  * @template-implements Iterator<int, Target>
@@ -53,6 +54,12 @@ final class TargetCollectionIterator implements Iterator
 
     public function current(): Target
     {
+        if (!isset($this->targets[$this->position])) {
+            // @codeCoverageIgnoreStart
+            throw new OutOfBoundsException('There is no target at the current position');
+            // @codeCoverageIgnoreEnd
+        }
+
         return $this->targets[$this->position];
     }
 

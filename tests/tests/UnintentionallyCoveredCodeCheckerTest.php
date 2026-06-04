@@ -18,6 +18,9 @@ use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 
+/**
+ * @phpstan-import-type TargetMap from Mapper
+ */
 #[CoversClass(UnintentionallyCoveredCodeChecker::class)]
 #[Small]
 final class UnintentionallyCoveredCodeCheckerTest extends TestCase
@@ -241,6 +244,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             ['file.php' => [2, 3]],
         );
 
+        $this->assertArrayHasKey('file.php', $result);
         $this->assertSame([1, 2, 3], array_keys($result['file.php']));
     }
 
@@ -268,6 +272,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
             [],
         );
 
+        $this->assertArrayHasKey('file.php', $result);
         $this->assertArrayHasKey(5, $result['file.php']);
     }
 
@@ -589,7 +594,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
     }
 
     /**
-     * @return array{namespaces: array<empty>, traits: array<empty>, classes: array<empty>, classesThatExtendClass: array<empty>, classesThatImplementInterface: array<empty>, methods: array<empty>, functions: array<empty>, reverseLookup: array<empty>}
+     * @return TargetMap
      */
     private function emptyMap(): array
     {

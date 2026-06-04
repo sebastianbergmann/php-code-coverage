@@ -49,7 +49,7 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  *     },
  *     basePath: string,
  *     codeCoverage: ProcessedCodeCoverageData,
- *     testResults: array<string, array{size: string, status: string, time: float}>,
+ *     testResults: array<non-empty-string, array{size: string, status: string, time: float}>,
  * }
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -124,8 +124,6 @@ final readonly class Serializer
     }
 
     /**
-     * @param non-empty-string $serialized
-     *
      * @throws PharPrefixCouldNotBeStrippedException
      *
      * @return non-empty-string
@@ -141,7 +139,7 @@ final readonly class Serializer
             $serialized,
         );
 
-        if ($result === null) {
+        if ($result === null || $result === '') {
             // @codeCoverageIgnoreStart
             throw new PharPrefixCouldNotBeStrippedException;
             // @codeCoverageIgnoreEnd

@@ -77,7 +77,15 @@ final class PcovDriver extends Driver
 
     public function version(): string
     {
-        return phpversion('pcov');
+        $version = phpversion('pcov');
+
+        if ($version === false || $version === '') {
+            // @codeCoverageIgnoreStart
+            throw new PcovNotAvailableException;
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $version;
     }
 
     /**

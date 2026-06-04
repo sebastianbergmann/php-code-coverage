@@ -22,12 +22,12 @@ final readonly class Method
     private string $name;
 
     /**
-     * @var non-negative-int
+     * @var positive-int
      */
     private int $startLine;
 
     /**
-     * @var non-negative-int
+     * @var positive-int
      */
     private int $endLine;
     private Visibility $visibility;
@@ -38,16 +38,16 @@ final readonly class Method
     private string $signature;
 
     /**
-     * @var positive-int
+     * @var non-negative-int
      */
     private int $cyclomaticComplexity;
 
     /**
      * @param non-empty-string $name
-     * @param non-negative-int $startLine
-     * @param non-negative-int $endLine
+     * @param positive-int     $startLine
+     * @param positive-int     $endLine
      * @param non-empty-string $signature
-     * @param positive-int     $cyclomaticComplexity
+     * @param non-negative-int $cyclomaticComplexity
      */
     public function __construct(string $name, int $startLine, int $endLine, string $signature, Visibility $visibility, int $cyclomaticComplexity)
     {
@@ -68,7 +68,7 @@ final readonly class Method
     }
 
     /**
-     * @return non-negative-int
+     * @return positive-int
      */
     public function startLine(): int
     {
@@ -76,7 +76,7 @@ final readonly class Method
     }
 
     /**
-     * @return non-negative-int
+     * @return positive-int
      */
     public function endLine(): int
     {
@@ -97,7 +97,7 @@ final readonly class Method
     }
 
     /**
-     * @return positive-int
+     * @return non-negative-int
      */
     public function cyclomaticComplexity(): int
     {

@@ -31,7 +31,9 @@ final class XdebugDriverTest extends TestCase
             $this->markTestSkipped('This test requires the PHP commandline interpreter');
         }
 
-        if (!extension_loaded('xdebug') || !version_compare(phpversion('xdebug'), '3.1', '>=')) {
+        $version = phpversion('xdebug');
+
+        if (!extension_loaded('xdebug') || $version === false || !version_compare($version, '3.1', '>=')) {
             $this->markTestSkipped('This test requires the Xdebug extension (version >= 3.1) to be loaded');
         }
 

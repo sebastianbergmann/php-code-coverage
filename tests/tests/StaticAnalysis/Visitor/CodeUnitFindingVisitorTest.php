@@ -92,6 +92,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $functions = $codeUnitFindingVisitor->functions();
 
         $this->assertCount(1, $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\functionWithUnionTypes', $functions);
 
         $this->assertSame(
             'functionWithUnionTypes(string|bool $x): string|bool',
@@ -109,6 +110,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $functions = $codeUnitFindingVisitor->functions();
 
         $this->assertCount(1, $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\functionWithIntersectionTypes', $functions);
 
         $this->assertSame(
             'functionWithIntersectionTypes(\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo $x): \SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartOne&\SebastianBergmann\CodeCoverage\TestFixture\IntersectionPartTwo',
@@ -126,6 +128,9 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $functions = $codeUnitFindingVisitor->functions();
 
         $this->assertCount(3, $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\f', $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\g', $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\h', $functions);
 
         $this->assertSame(
             'f((\SebastianBergmann\CodeCoverage\TestFixture\A&\SebastianBergmann\CodeCoverage\TestFixture\B)|\SebastianBergmann\CodeCoverage\TestFixture\D $x): void',
@@ -266,6 +271,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $classes = $codeUnitFindingVisitor->classes();
 
         $this->assertCount(1, $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\ClassWithAbstractMethod', $classes);
 
         $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithAbstractMethod'];
 
@@ -282,6 +288,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $classes = $codeUnitFindingVisitor->classes();
 
         $this->assertCount(1, $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\ClassWithNullableTypesAndPrivateMethod', $classes);
 
         $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithNullableTypesAndPrivateMethod'];
 
@@ -299,6 +306,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $traits = $codeUnitFindingVisitor->traits();
 
         $this->assertCount(2, $traits);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\OuterTrait', $traits);
 
         $outerTrait = $traits['SebastianBergmann\CodeCoverage\TestFixture\OuterTrait'];
 
@@ -315,6 +323,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $classes = $codeUnitFindingVisitor->classes();
 
         $this->assertCount(1, $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\EnumWithTrait', $classes);
 
         $enum = $classes['SebastianBergmann\CodeCoverage\TestFixture\EnumWithTrait'];
 
@@ -332,6 +341,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $interfaces = $codeUnitFindingVisitor->interfaces();
 
         $this->assertCount(1, $interfaces);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\InterfaceWithAttribute', $interfaces);
 
         $interface = $interfaces['SebastianBergmann\CodeCoverage\TestFixture\InterfaceWithAttribute'];
 
@@ -341,6 +351,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $classes = $codeUnitFindingVisitor->classes();
 
         $this->assertCount(1, $classes);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\ClassWithAttribute', $classes);
 
         $class = $classes['SebastianBergmann\CodeCoverage\TestFixture\ClassWithAttribute'];
 
@@ -350,6 +361,9 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $methods = $class->methods();
 
         $this->assertCount(3, $methods);
+        $this->assertArrayHasKey('methodWithAttribute', $methods);
+        $this->assertArrayHasKey('methodWithMultipleAttributes', $methods);
+        $this->assertArrayHasKey('methodWithAttributeOnSameLine', $methods);
 
         $this->assertSame(13, $methods['methodWithAttribute']->startLine());
         $this->assertSame(15, $methods['methodWithAttribute']->endLine());
@@ -363,6 +377,7 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $traits = $codeUnitFindingVisitor->traits();
 
         $this->assertCount(1, $traits);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\TraitWithAttribute', $traits);
 
         $trait = $traits['SebastianBergmann\CodeCoverage\TestFixture\TraitWithAttribute'];
 
@@ -371,12 +386,15 @@ final class CodeUnitFindingVisitorTest extends TestCase
 
         $traitMethods = $trait->methods();
 
+        $this->assertArrayHasKey('methodWithAttribute', $traitMethods);
+
         $this->assertSame(32, $traitMethods['methodWithAttribute']->startLine());
         $this->assertSame(34, $traitMethods['methodWithAttribute']->endLine());
 
         $functions = $codeUnitFindingVisitor->functions();
 
         $this->assertCount(1, $functions);
+        $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\TestFixture\functionWithAttribute', $functions);
 
         $function = $functions['SebastianBergmann\CodeCoverage\TestFixture\functionWithAttribute'];
 
@@ -384,11 +402,16 @@ final class CodeUnitFindingVisitorTest extends TestCase
         $this->assertSame(40, $function->endLine());
     }
 
+    /**
+     * @param non-empty-string $filename
+     */
     private function findCodeUnits(string $filename): CodeUnitFindingVisitor
     {
-        $nodes = (new ParserFactory)->createForHostVersion()->parse(
-            file_get_contents($filename),
-        );
+        $source = file_get_contents($filename);
+
+        assert($source !== false);
+
+        $nodes = (new ParserFactory)->createForHostVersion()->parse($source);
 
         assert($nodes !== null);
 

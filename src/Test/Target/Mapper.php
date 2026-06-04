@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 use function array_keys;
 use function array_merge;
 use function array_unique;
+use function array_values;
 use function strcasecmp;
 
 /**
@@ -55,7 +56,7 @@ final readonly class Mapper
                     continue;
                 }
 
-                $result[$file] = array_unique(array_merge($result[$file], $lines));
+                $result[$file] = array_values(array_unique(array_merge($result[$file], $lines)));
             }
         }
 

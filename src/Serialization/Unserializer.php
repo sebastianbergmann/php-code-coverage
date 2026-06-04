@@ -86,6 +86,8 @@ final readonly class Unserializer
     }
 
     /**
+     * @phpstan-assert SerializedCoverage $data
+     *
      * @throws InvalidCoverageDataException
      */
     private function validate(mixed $data): void

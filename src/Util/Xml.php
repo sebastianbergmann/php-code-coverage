@@ -28,6 +28,9 @@ final readonly class Xml
      *
      * @see https://bugs.php.net/bug.php?id=79191
      */
+    /**
+     * @return non-empty-string
+     */
     public static function asString(DOMDocument $document): string
     {
         $xmlErrorHandling = libxml_use_internal_errors(true);
@@ -37,7 +40,7 @@ final readonly class Xml
 
         $buffer = $document->saveXML();
 
-        if ($buffer === false) {
+        if ($buffer === false || $buffer === '') {
             // @codeCoverageIgnoreStart
             $message = 'Unable to generate the XML';
 

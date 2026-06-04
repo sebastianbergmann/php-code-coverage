@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
+use SplFileInfo;
 
 #[CoversClass(Filesystem::class)]
 #[Medium]
@@ -157,6 +158,10 @@ final class FilesystemTest extends TestCase
         );
 
         foreach ($items as $item) {
+            if (!$item instanceof SplFileInfo) {
+                continue;
+            }
+
             if ($item->isDir()) {
                 rmdir($item->getPathname());
             } else {

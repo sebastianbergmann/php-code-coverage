@@ -13,6 +13,7 @@ use function array_key_exists;
 use function array_keys;
 use function array_merge;
 use function array_unique;
+use function array_values;
 use function count;
 use function is_array;
 use function ksort;
@@ -26,9 +27,9 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
- * @phpstan-type TestIdType string
- * @phpstan-type FunctionCoverageType array<string, array<string, ProcessedFunctionCoverageData>>
- * @phpstan-type LineCoverageType array<string, array<int, null|list<TestIdType>>>
+ * @phpstan-type TestIdType non-empty-string
+ * @phpstan-type FunctionCoverageType array<non-empty-string, array<non-empty-string, ProcessedFunctionCoverageData>>
+ * @phpstan-type LineCoverageType array<non-empty-string, array<positive-int, null|list<TestIdType>>>
  */
 final class ProcessedCodeCoverageData
 {
@@ -72,6 +73,9 @@ final class ProcessedCodeCoverageData
         }
     }
 
+    /**
+     * @param non-empty-string $testCaseId
+     */
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
     {
         foreach ($executedCode->lineCoverage() as $file => $lines) {
@@ -84,15 +88,21 @@ final class ProcessedCodeCoverageData
 
         foreach ($executedCode->functionCoverage() as $file => $functions) {
             foreach ($functions as $functionName => $functionData) {
+                if (!isset($this->functionCoverage[$file][$functionName])) {
+                    continue;
+                }
+
+                $functionCoverage = $this->functionCoverage[$file][$functionName];
+
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] === Driver::BRANCH_HIT) {
-                        $this->functionCoverage[$file][$functionName]->recordBranchHit($branchId, $testCaseId);
+                        $functionCoverage->recordBranchHit($branchId, $testCaseId);
                     }
                 }
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
                     if ($pathData['hit'] === Driver::BRANCH_HIT) {
-                        $this->functionCoverage[$file][$functionName]->recordPathHit($pathId, $testCaseId);
+                        $functionCoverage->recordPathHit($pathId, $testCaseId);
                     }
                 }
             }
@@ -136,7 +146,7 @@ final class ProcessedCodeCoverageData
     }
 
     /**
-     * @return array<string>
+     * @return list<non-empty-string>
      */
     public function coveredFiles(): array
     {
@@ -145,9 +155,15 @@ final class ProcessedCodeCoverageData
         return array_keys($this->lineCoverage);
     }
 
+    /**
+     * @param non-empty-string $oldFile
+     * @param non-empty-string $newFile
+     */
     public function renameFile(string $oldFile, string $newFile): void
     {
-        $this->lineCoverage[$newFile] = $this->lineCoverage[$oldFile];
+        if (isset($this->lineCoverage[$oldFile])) {
+            $this->lineCoverage[$newFile] = $this->lineCoverage[$oldFile];
+        }
 
         if (isset($this->functionCoverage[$oldFile])) {
             $this->functionCoverage[$newFile] = $this->functionCoverage[$oldFile];
@@ -174,15 +190,22 @@ final class ProcessedCodeCoverageData
             );
 
             foreach ($compareLineNumbers as $line) {
+                if (!array_key_exists($line, $newData->lineCoverage[$file])) {
+                    continue;
+                }
+
                 $thatPriority = $this->priorityForLine($newData->lineCoverage[$file], $line);
                 $thisPriority = $this->priorityForLine($this->lineCoverage[$file], $line);
 
                 if ($thatPriority > $thisPriority) {
                     $this->lineCoverage[$file][$line] = $newData->lineCoverage[$file][$line];
-                } elseif ($thatPriority === $thisPriority && is_array($this->lineCoverage[$file][$line])) {
-                    $this->lineCoverage[$file][$line] = array_unique(
+                } elseif ($thatPriority === $thisPriority &&
+                    array_key_exists($line, $this->lineCoverage[$file]) &&
+                    is_array($this->lineCoverage[$file][$line]) &&
+                    is_array($newData->lineCoverage[$file][$line])) {
+                    $this->lineCoverage[$file][$line] = array_values(array_unique(
                         array_merge($this->lineCoverage[$file][$line], $newData->lineCoverage[$file][$line]),
-                    );
+                    ));
                 }
             }
         }
@@ -214,7 +237,8 @@ final class ProcessedCodeCoverageData
      *
      * During a merge, a higher number is better.
      *
-     * @param array<int, null|list<TestIdType>> $data
+     * @param array<positive-int, null|list<TestIdType>> $data
+     * @param positive-int                               $line
      *
      * @return 1|2|3|4
      */
@@ -238,6 +262,8 @@ final class ProcessedCodeCoverageData
     /**
      * For a function we have never seen before, copy all data over and simply init the 'hit' array.
      *
+     * @param non-empty-string                                         $file
+     * @param non-empty-string                                         $functionName
      * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
     private function initPreviouslyUnseenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
@@ -254,6 +280,8 @@ final class ProcessedCodeCoverageData
      * Techniques such as mocking and where the contents of a file are different vary during tests (e.g. compiling
      * containers) mean that the functions inside a file cannot be relied upon to be static.
      *
+     * @param non-empty-string                                         $file
+     * @param non-empty-string                                         $functionName
      * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
      */
     private function initPreviouslySeenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
@@ -262,8 +290,10 @@ final class ProcessedCodeCoverageData
             $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
         }
 
-        $this->functionCoverage[$file][$functionName] = $this->functionCoverage[$file][$functionName]->merge(
-            $functionData,
-        );
+        $existing = $this->functionCoverage[$file][$functionName] ?? null;
+
+        if ($existing !== null) {
+            $this->functionCoverage[$file][$functionName] = $existing->merge($functionData);
+        }
     }
 }

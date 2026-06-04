@@ -43,7 +43,7 @@ final class ClassesThatExtendClass extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'classesThatExtendClass'
      */
     public function key(): string
     {

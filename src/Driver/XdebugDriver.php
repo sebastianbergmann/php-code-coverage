@@ -33,7 +33,7 @@ use SebastianBergmann\CodeCoverage\Filter;
  *
  * @see https://xdebug.org/docs/code_coverage#xdebug_get_code_coverage
  *
- * @phpstan-type XdebugLinesCoverageType array<int, int>
+ * @phpstan-type XdebugLinesCoverageType array<positive-int, int>
  * @phpstan-type XdebugBranchCoverageType array{
  *     op_start: int,
  *     op_end: int,
@@ -51,13 +51,13 @@ use SebastianBergmann\CodeCoverage\Filter;
  *     branches: array<int, XdebugBranchCoverageType>,
  *     paths: array<int, XdebugPathCoverageType>,
  * }
- * @phpstan-type XdebugFunctionsCoverageType array<string, XdebugFunctionCoverageType>
+ * @phpstan-type XdebugFunctionsCoverageType array<non-empty-string, XdebugFunctionCoverageType>
  * @phpstan-type XdebugPathAndBranchesCoverageType array{
  *     lines: XdebugLinesCoverageType,
  *     functions: XdebugFunctionsCoverageType,
  * }
- * @phpstan-type XdebugCodeCoverageWithoutPathCoverageType array<string, XdebugLinesCoverageType>
- * @phpstan-type XdebugCodeCoverageWithPathCoverageType array<string, XdebugPathAndBranchesCoverageType>
+ * @phpstan-type XdebugCodeCoverageWithoutPathCoverageType array<non-empty-string, XdebugLinesCoverageType>
+ * @phpstan-type XdebugCodeCoverageWithPathCoverageType array<non-empty-string, XdebugPathAndBranchesCoverageType>
  */
 final class XdebugDriver extends Driver
 {
@@ -97,11 +97,13 @@ final class XdebugDriver extends Driver
         xdebug_stop_code_coverage();
 
         if ($this->granularity() === Granularity::LineBranchAndPath) {
-            /* @var XdebugCodeCoverageWithPathCoverageType $data */
+            $this->ensureWithPathCoverage($data);
+
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
         }
 
-        /* @var XdebugCodeCoverageWithoutPathCoverageType $data */
+        $this->ensureWithoutPathCoverage($data);
+
         return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
     }
 
@@ -112,7 +114,15 @@ final class XdebugDriver extends Driver
 
     public function version(): string
     {
-        return phpversion('xdebug');
+        $version = phpversion('xdebug');
+
+        if ($version === false || $version === '') {
+            // @codeCoverageIgnoreStart
+            throw new XdebugNotAvailableException;
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $version;
     }
 
     protected function canCollectBranchCoverage(): bool
@@ -126,6 +136,31 @@ final class XdebugDriver extends Driver
     }
 
     /**
+     * The shape of the data returned by xdebug_get_code_coverage() is
+     * determined by the flags that were passed to xdebug_start_code_coverage()
+     * in start(): when XDEBUG_CC_BRANCH_CHECK was set, path coverage is
+     * included.
+     *
+     * @param array<non-empty-string, mixed> $data
+     *
+     * @phpstan-assert XdebugCodeCoverageWithPathCoverageType $data
+     */
+    private function ensureWithPathCoverage(array $data): void
+    {
+    }
+
+    /**
+     * @param array<non-empty-string, mixed> $data
+     *
+     * @phpstan-assert XdebugCodeCoverageWithoutPathCoverageType $data
+     *
+     * @see ensureWithPathCoverage()
+     */
+    private function ensureWithoutPathCoverage(array $data): void
+    {
+    }
+
+    /**
      * @throws XdebugNotAvailableException
      * @throws XdebugNotEnabledException
      * @throws XdebugVersionNotSupportedException
@@ -136,8 +171,8 @@ final class XdebugDriver extends Driver
             throw new XdebugNotAvailableException;
         }
 
-        if (!version_compare(phpversion('xdebug'), '3.1', '>=')) {
-            throw new XdebugVersionNotSupportedException(phpversion('xdebug'));
+        if (!version_compare($this->version(), '3.1', '>=')) {
+            throw new XdebugVersionNotSupportedException($this->version());
         }
 
         if (!in_array('coverage', xdebug_info('mode'), true)) {

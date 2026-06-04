@@ -281,7 +281,11 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertFalse($coverage->cachesStaticAnalysis());
 
-        $coverage->cacheStaticAnalysis(sys_get_temp_dir());
+        $directory = sys_get_temp_dir();
+
+        $this->assertNotEmpty($directory);
+
+        $coverage->cacheStaticAnalysis($directory);
 
         $this->assertTrue($coverage->cachesStaticAnalysis());
 
@@ -298,6 +302,8 @@ final class CodeCoverageTest extends TestCase
         );
 
         $dir = sys_get_temp_dir();
+
+        $this->assertNotEmpty($dir);
 
         $coverage->cacheStaticAnalysis($dir);
 

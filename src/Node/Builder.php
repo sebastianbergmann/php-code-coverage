@@ -10,11 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
-use function count;
+use function array_shift;
 use function explode;
+use function is_array;
 use function is_file;
 use function sha1_file;
-use function str_ends_with;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -38,7 +38,7 @@ final readonly class Builder
     }
 
     /**
-     * @param array<string, TestType> $testResults
+     * @param array<non-empty-string, TestType> $testResults
      */
     public function build(ProcessedCodeCoverageData $codeCoverage, array $testResults, string $basePath = ''): Directory
     {
@@ -73,38 +73,40 @@ final readonly class Builder
     }
 
     /**
-     * @param array<string, mixed>    $items
-     * @param array<string, TestType> $tests
+     * @param array<array-key, mixed>           $items
+     * @param array<non-empty-string, TestType> $tests
      */
     private function addItems(Directory $root, array $items, array $tests): void
     {
         foreach ($items as $key => $value) {
             $key = (string) $key;
 
-            if (str_ends_with($key, '/f')) {
+            if ($value instanceof FileCoverageData) {
                 $key      = substr($key, 0, -2);
                 $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
-                if (is_file($filename)) {
+                $sha1 = is_file($filename) ? sha1_file($filename) : false;
+
+                if ($sha1 !== false) {
                     $analysisResult = $this->analyser->analyse($filename);
 
                     $root->addFile(
                         new File(
                             $key,
                             $root,
-                            sha1_file($filename),
-                            $value['lineCoverage'],
-                            $value['functionCoverage'],
+                            $sha1,
+                            $value->lineCoverage,
+                            $value->functionCoverage,
                             $tests,
                             $analysisResult->classes(),
                             $analysisResult->traits(),
                             $analysisResult->functions(),
                             $analysisResult->linesOfCode(),
-                            $value['functionCoverage'] !== [],
+                            $value->functionCoverage !== [],
                         ),
                     );
                 }
-            } else {
+            } elseif (is_array($value)) {
                 $child = $root->addDirectory($key);
 
                 $this->addItems($child, $value, $tests);
@@ -152,7 +154,7 @@ final readonly class Builder
      * )
      * </code>
      *
-     * @return array<string, array<string, array{lineCoverage: array<int, int>, functionCoverage: array<string, array<int, int>>}>>
+     * @return array<array-key, mixed>
      */
     private function buildDirectoryStructure(ProcessedCodeCoverageData $codeCoverage): array
     {
@@ -162,26 +164,51 @@ final readonly class Builder
         $functionCoverage = $codeCoverage->functionCoverage();
 
         foreach ($codeCoverage->coveredFiles() as $originalPath) {
-            $path    = explode(DIRECTORY_SEPARATOR, $originalPath);
-            $pointer = &$result;
-            $max     = count($path);
-
-            for ($i = 0; $i < $max; $i++) {
-                $type = '';
-
-                if ($i === ($max - 1)) {
-                    $type = '/f';
-                }
-
-                $pointer = &$pointer[$path[$i] . $type];
-            }
-
-            $pointer = [
-                'lineCoverage'     => $lineCoverage[$originalPath] ?? [],
-                'functionCoverage' => $functionCoverage[$originalPath] ?? [],
-            ];
+            $result = $this->insertIntoDirectoryStructure(
+                $result,
+                explode(DIRECTORY_SEPARATOR, $originalPath),
+                new FileCoverageData(
+                    $lineCoverage[$originalPath] ?? [],
+                    $functionCoverage[$originalPath] ?? [],
+                ),
+            );
         }
 
         return $result;
+    }
+
+    /**
+     * @param array<array-key, mixed> $structure
+     * @param list<string>            $path
+     *
+     * @return array<array-key, mixed>
+     */
+    private function insertIntoDirectoryStructure(array $structure, array $path, FileCoverageData $leaf): array
+    {
+        $segment = array_shift($path);
+
+        if ($segment === null) {
+            // @codeCoverageIgnoreStart
+            return $structure;
+            // @codeCoverageIgnoreEnd
+        }
+
+        if ($path === []) {
+            $structure[$segment . '/f'] = $leaf;
+
+            return $structure;
+        }
+
+        $child = $structure[$segment] ?? [];
+
+        if (!is_array($child)) {
+            // @codeCoverageIgnoreStart
+            $child = [];
+            // @codeCoverageIgnoreEnd
+        }
+
+        $structure[$segment] = $this->insertIntoDirectoryStructure($child, $path, $leaf);
+
+        return $structure;
     }
 }

@@ -43,7 +43,7 @@ final class Namespace_ extends Target
     }
 
     /**
-     * @return non-empty-string
+     * @return 'namespaces'
      */
     public function key(): string
     {

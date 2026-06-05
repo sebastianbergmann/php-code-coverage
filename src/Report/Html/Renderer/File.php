@@ -52,7 +52,6 @@ final class File extends Renderer
 {
     private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
     private readonly SyntaxHighlighter $syntaxHighlighter;
-
     private ?ControlFlowGraph $controlFlowGraph = null;
     private readonly Colors $colors;
 

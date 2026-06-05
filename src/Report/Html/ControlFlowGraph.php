@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use function count;
 use function fclose;
 use function fwrite;
 use function implode;
@@ -164,21 +163,25 @@ final class ControlFlowGraph
         $pathIndex = 0;
 
         foreach ($paths as $path) {
-            $branchIds = $path->path;
+            $previousBranchId = null;
+            $lastBranchId     = null;
 
-            for ($i = 0; $i < count($branchIds) - 1; $i++) {
-                $edgeKey = $branchIds[$i] . '-' . $branchIds[$i + 1];
+            foreach ($path->path as $branchId) {
+                if ($previousBranchId !== null) {
+                    $edgeKey = $previousBranchId . '-' . $branchId;
 
-                if (!isset($edgePathClasses[$edgeKey])) {
-                    $edgePathClasses[$edgeKey] = [];
+                    if (!isset($edgePathClasses[$edgeKey])) {
+                        $edgePathClasses[$edgeKey] = [];
+                    }
+
+                    $edgePathClasses[$edgeKey][] = 'path-' . $pathIndex;
                 }
 
-                $edgePathClasses[$edgeKey][] = 'path-' . $pathIndex;
+                $previousBranchId = $branchId;
+                $lastBranchId     = $branchId;
             }
 
-            $lastBranchId = $branchIds[count($branchIds) - 1];
-
-            if (isset($methodData->branches[$lastBranchId])) {
+            if ($lastBranchId !== null && isset($methodData->branches[$lastBranchId])) {
                 foreach ($methodData->branches[$lastBranchId]->out as $dest) {
                     if ($dest === self::XDEBUG_EXIT_BRANCH) {
                         $edgeKey = $lastBranchId . '-exit';
@@ -212,7 +215,7 @@ final class ControlFlowGraph
 
         $process = @proc_open('dot -Tsvg', $descriptorSpec, $pipes);
 
-        if ($process === false) {
+        if ($process === false || !isset($pipes[0], $pipes[1], $pipes[2])) {
             $this->dotAvailable = false;
 
             return '';
@@ -258,6 +261,6 @@ final class ControlFlowGraph
         $this->dotAvailable = true;
 
         // Strip XML declaration and DOCTYPE, keep only the <svg> element
-        return preg_replace('/^.*?(<svg\b)/s', '$1', $svg);
+        return preg_replace('/^.*?(<svg\b)/s', '$1', $svg) ?? '';
     }
 }

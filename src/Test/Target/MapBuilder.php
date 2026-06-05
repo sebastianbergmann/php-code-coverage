@@ -15,6 +15,7 @@ use function array_slice;
 use function array_unique;
 use function array_values;
 use function count;
+use function dirname;
 use function explode;
 use function implode;
 use function range;
@@ -53,6 +54,9 @@ final readonly class MapBuilder
         $traits                        = [];
         $methods                       = [];
         $functions                     = [];
+        $files                         = [];
+        $directories                   = [];
+        $directoriesRecursively        = [];
         $reverseLookup                 = [];
 
         foreach ($filter->files() as $file) {
@@ -125,8 +129,8 @@ final readonly class MapBuilder
             }
         }
 
-        foreach ($namespaces as $namespace => $files) {
-            foreach ($files as $file => $lines) {
+        foreach ($namespaces as $namespace => $filesInNamespace) {
+            foreach ($filesInNamespace as $file => $lines) {
                 $namespaces[$namespace][$file] = array_values(array_unique($lines));
             }
         }
@@ -165,6 +169,29 @@ final readonly class MapBuilder
             unset($classesThatExtendClass[$className]);
         }
 
+        foreach ($filter->files() as $file) {
+            $linesOfCode = $analyser->analyse($file)->linesOfCode()->linesOfCode();
+
+            if ($linesOfCode === 0) {
+                continue;
+            }
+
+            $lines = range(1, $linesOfCode);
+
+            $files[$file] = [$file => $lines];
+
+            $parent = dirname($file);
+
+            $directories[$parent][$file] = $lines;
+
+            $ancestor = $parent;
+
+            while ($ancestor !== dirname($ancestor)) {
+                $directoriesRecursively[$ancestor][$file] = $lines;
+                $ancestor                                 = dirname($ancestor);
+            }
+        }
+
         return [
             'namespaces'                    => $namespaces,
             'traits'                        => $traits,
@@ -173,6 +200,9 @@ final readonly class MapBuilder
             'classesThatImplementInterface' => $classesThatImplementInterface,
             'methods'                       => $methods,
             'functions'                     => $functions,
+            'files'                         => $files,
+            'directories'                   => $directories,
+            'directoriesRecursively'        => $directoriesRecursively,
             'reverseLookup'                 => $reverseLookup,
         ];
     }

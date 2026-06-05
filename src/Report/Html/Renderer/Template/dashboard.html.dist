@@ -18,6 +18,7 @@
 {{breadcrumbs}}
        </ol>
       </nav>
+{{view_switcher}}
      </div>
     </div>
    </div>

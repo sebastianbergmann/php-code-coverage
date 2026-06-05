@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use const ENT_COMPAT;
 use const ENT_HTML401;
 use const ENT_SUBSTITUTE;
+use const JSON_THROW_ON_ERROR;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -815,6 +816,12 @@ final class File extends Renderer
                     $popoverContent = '<ul>';
 
                     foreach ($branch->hit as $test) {
+                        if (!isset($testData[$test])) {
+                            // @codeCoverageIgnoreStart
+                            continue;
+                            // @codeCoverageIgnoreEnd
+                        }
+
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
@@ -896,6 +903,10 @@ final class File extends Renderer
                 $branchLabels = [];
 
                 foreach ($path->path as $branchId) {
+                    if (!isset($methodData->branches[$branchId])) {
+                        continue;
+                    }
+
                     $branch     = $methodData->branches[$branchId];
                     $branchLine = min($branch->line_start, $branch->line_end);
 
@@ -917,6 +928,12 @@ final class File extends Renderer
                     $popoverContent = '<ul>';
 
                     foreach ($path->hit as $test) {
+                        if (!isset($testData[$test])) {
+                            // @codeCoverageIgnoreStart
+                            continue;
+                            // @codeCoverageIgnoreEnd
+                        }
+
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
@@ -949,16 +966,20 @@ final class File extends Renderer
             $pathIdx   = 0;
 
             foreach ($methodData->paths as $path) {
-                $edges     = [];
-                $branchIds = $path->path;
+                $edges            = [];
+                $previousBranchId = null;
+                $lastBranchId     = null;
 
-                for ($i = 0; $i < count($branchIds) - 1; $i++) {
-                    $edges[] = $branchIds[$i] . '-' . $branchIds[$i + 1];
+                foreach ($path->path as $branchId) {
+                    if ($previousBranchId !== null) {
+                        $edges[] = $previousBranchId . '-' . $branchId;
+                    }
+
+                    $previousBranchId = $branchId;
+                    $lastBranchId     = $branchId;
                 }
 
-                $lastBranchId = $branchIds[count($branchIds) - 1];
-
-                if (isset($methodData->branches[$lastBranchId])) {
+                if ($lastBranchId !== null && isset($methodData->branches[$lastBranchId])) {
                     foreach ($methodData->branches[$lastBranchId]->out as $dest) {
                         if ($dest === ControlFlowGraph::XDEBUG_EXIT_BRANCH) {
                             $edges[] = $lastBranchId . '-exit';
@@ -974,7 +995,7 @@ final class File extends Renderer
 
             $paths .= sprintf(
                 '<div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
-                htmlspecialchars(json_encode($pathsJson), self::HTML_SPECIAL_CHARS_FLAGS),
+                htmlspecialchars(json_encode($pathsJson, JSON_THROW_ON_ERROR), self::HTML_SPECIAL_CHARS_FLAGS),
                 $svg,
             );
 

@@ -81,6 +81,49 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertEquals($lineData, $dataObject->lineCoverage());
     }
 
+    public function testLineAndBranchDataFromGenericFormat(): void
+    {
+        $lineCoverage = [
+            '/some/path/SomeClass.php' => [
+                8 => 1,
+                9 => -1,
+            ],
+        ];
+
+        $functionCoverage = [
+            '/some/path/SomeClass.php' => [
+                '/some/path/SomeClass.php' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 0,
+                            'line_start' => 8,
+                            'line_end'   => 8,
+                            'hit'        => 1,
+                            'out'        => [],
+                            'out_hit'    => [],
+                        ],
+                        1 => [
+                            'op_start'   => 0,
+                            'op_end'     => 0,
+                            'line_start' => 8,
+                            'line_end'   => 8,
+                            'hit'        => 0,
+                            'out'        => [],
+                            'out_hit'    => [],
+                        ],
+                    ],
+                    'paths' => [],
+                ],
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineAndBranchCoverage($lineCoverage, $functionCoverage);
+
+        $this->assertSame($lineCoverage, $dataObject->lineCoverage());
+        $this->assertSame($functionCoverage, $dataObject->functionCoverage());
+    }
+
     public function testClear(): void
     {
         $lineDataFromDriver = [

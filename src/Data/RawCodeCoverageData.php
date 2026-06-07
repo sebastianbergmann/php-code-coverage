@@ -95,6 +95,15 @@ final class RawCodeCoverageData
     }
 
     /**
+     * @param XdebugCodeCoverageWithoutPathCoverageType            $lineCoverage
+     * @param array<non-empty-string, XdebugFunctionsCoverageType> $functionCoverage
+     */
+    public static function fromLineAndBranchCoverage(array $lineCoverage, array $functionCoverage): self
+    {
+        return new self($lineCoverage, $functionCoverage);
+    }
+
+    /**
      * @param non-empty-string $filename
      */
     public static function fromUncoveredFile(string $filename, FileAnalyser $analyser): self

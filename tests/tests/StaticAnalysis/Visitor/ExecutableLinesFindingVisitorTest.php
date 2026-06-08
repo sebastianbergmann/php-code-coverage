@@ -154,14 +154,41 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
         $this->assertArrayNotHasKey(4, $executableLines);
 
-        $this->assertArrayHasKey(9, $executableLines);
-        $this->assertArrayHasKey(9, $branchOperatorLines);
+        $this->assertArrayNotHasKey(9, $executableLines);
+        $this->assertArrayNotHasKey(9, $branchOperatorLines);
 
         $this->assertArrayNotHasKey(10, $executableLines);
         $this->assertArrayHasKey(11, $executableLines);
         $this->assertArrayNotHasKey(12, $executableLines);
 
         $this->assertArrayHasKey(17, $executableLines);
+    }
+
+    #[RequiresPhp('>=8.4.0')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1230')]
+    public function testShortFormPropertyHookBodyIsNotExecutable(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_property_hook_short_form.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        $this->assertArrayNotHasKey(7, $executableLines);
+        $this->assertArrayNotHasKey(7, $branchOperatorLines);
+
+        $this->assertArrayNotHasKey(11, $executableLines);
+        $this->assertArrayNotHasKey(11, $branchOperatorLines);
+        $this->assertArrayNotHasKey(12, $executableLines);
+        $this->assertArrayNotHasKey(12, $branchOperatorLines);
     }
 
     public function testEmptyMatchExpressionIsProcessedCorrectly(): void

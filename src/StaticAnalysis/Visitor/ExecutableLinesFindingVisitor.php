@@ -451,27 +451,17 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $protected = [];
 
         foreach ($stmt->hooks as $hook) {
-            if ($hook->body === null) {
+            if (!is_array($hook->body)) {
                 continue;
             }
 
-            if ($hook->body instanceof Node\Expr) {
-                for ($line = $hook->body->getStartLine(); $line <= $hook->body->getEndLine(); $line++) {
-                    $protected[$line] = true;
+            foreach ($hook->body as $bodyStmt) {
+                if ($bodyStmt instanceof Node\Stmt\Nop) {
+                    continue;
                 }
 
-                continue;
-            }
-
-            if (is_array($hook->body)) {
-                foreach ($hook->body as $bodyStmt) {
-                    if ($bodyStmt instanceof Node\Stmt\Nop) {
-                        continue;
-                    }
-
-                    for ($line = $bodyStmt->getStartLine(); $line <= $bodyStmt->getEndLine(); $line++) {
-                        $protected[$line] = true;
-                    }
+                for ($line = $bodyStmt->getStartLine(); $line <= $bodyStmt->getEndLine(); $line++) {
+                    $protected[$line] = true;
                 }
             }
         }
@@ -482,18 +472,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function enterPropertyHook(Node\PropertyHook $node): void
     {
         $this->markParameterLinesForUnset($node);
-
-        if ($node->body === null) {
-            return;
-        }
-
-        if ($node->body instanceof Node\Expr) {
-            $this->setLineBranch(
-                $node->body->getStartLine(),
-                $node->body->getEndLine(),
-                ++$this->nextBranch,
-            );
-        }
     }
 
     private function enterArrowFunction(Node\Expr\ArrowFunction $node): void

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.2.2] - 2026-MM-DD
+
+### Fixed
+
+* [#1230](https://github.com/sebastianbergmann/php-code-coverage/issues/1230): Short-form property hook bodies wrongly classified as executable
+
 ## [14.2.1] - 2026-06-07
 
 ### Added
@@ -37,5 +43,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1159](https://github.com/sebastianbergmann/php-code-coverage/issues/1159): Statements inside a closure passed as a call argument are incorrectly reported as not covered
 
+[14.2.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.1...main
 [14.2.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.0...14.2.1
 [14.2.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.1.10...14.2.0

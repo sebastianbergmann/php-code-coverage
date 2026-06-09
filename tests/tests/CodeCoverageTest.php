@@ -279,7 +279,7 @@ final class CodeCoverageTest extends TestCase
             new Filter,
         );
 
-        $this->assertFalse($coverage->detectsDeadCode());
+        $this->assertFalse($coverage->staticallyDetectsDeadCode());
     }
 
     public function testEnableAndDisableDeadCodeDetection(): void
@@ -289,11 +289,11 @@ final class CodeCoverageTest extends TestCase
             new Filter,
         );
 
-        $coverage->enableDeadCodeDetection();
-        $this->assertTrue($coverage->detectsDeadCode());
+        $coverage->enableStaticDeadCodeDetection();
+        $this->assertTrue($coverage->staticallyDetectsDeadCode());
 
-        $coverage->disableDeadCodeDetection();
-        $this->assertFalse($coverage->detectsDeadCode());
+        $coverage->disableStaticDeadCodeDetection();
+        $this->assertFalse($coverage->staticallyDetectsDeadCode());
     }
 
     public function testCacheStaticAnalysisAndDoNotCacheStaticAnalysis(): void

@@ -31,4 +31,11 @@ final class ClassWithoutDeadCode
 
         return $sum;
     }
+
+    public function infiniteLoop(): int
+    {
+        for (;;) {
+            return 0;
+        }
+    }
 }

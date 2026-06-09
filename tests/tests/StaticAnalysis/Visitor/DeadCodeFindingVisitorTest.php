@@ -12,6 +12,14 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function array_keys;
 use function assert;
 use function file_get_contents;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -53,6 +61,8 @@ final class DeadCodeFindingVisitorTest extends TestCase
                 89,  // body of while (false)
                 96,  // body of for (...; false; ...)
                 103, // dead arm of ternary with literal-false condition
+                120, // dead arm of ternary with literal-true condition
+                136, // body of if (false), with a trailing Nop that must be skipped
             ],
             array_keys($deadLines),
         );
@@ -62,7 +72,7 @@ final class DeadCodeFindingVisitorTest extends TestCase
     {
         $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code.php');
 
-        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113] as $liveLine) {
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113, 125, 130] as $liveLine) {
             $this->assertArrayNotHasKey($liveLine, $deadLines);
         }
     }
@@ -72,6 +82,29 @@ final class DeadCodeFindingVisitorTest extends TestCase
         $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_without_dead_code.php');
 
         $this->assertSame([], $deadLines);
+    }
+
+    public function testIgnoresNodesWithoutLineInformation(): void
+    {
+        // Synthetic AST nodes default to a -1 line (per PHP-Parser's
+        // phpstan-return contract for getStartLine()/getEndLine()). The
+        // visitor must not record those as dead lines.
+        //
+        // The wrapper If_ carries positive line attributes so the
+        // wrapper-boundary skip in markBlock cannot mask the < 1 guard.
+        $deadBody = new Expression(new Assign(new Variable('x'), new Int_(1)));
+        $ifFalse  = new If_(
+            new ConstFetch(new Name('false')),
+            ['stmts'     => [$deadBody]],
+            ['startLine' => 5, 'endLine' => 10],
+        );
+        $ifTrue = new If_(new ConstFetch(new Name('true')), ['stmts' => [], 'else' => new Else_([])]);
+
+        $visitor = new DeadCodeFindingVisitor;
+        $visitor->enterNode($ifFalse);
+        $visitor->enterNode($ifTrue);
+
+        $this->assertSame([], $visitor->deadLines());
     }
 
     /**

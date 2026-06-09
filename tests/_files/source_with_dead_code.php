@@ -112,4 +112,29 @@ final class ClassWithDeadCode
 
         return -$n;
     }
+
+    public function deadTernaryArmAfterTrue(int $n): int
+    {
+        return true
+            ? $n
+            : $n + 1;
+    }
+
+    public function singleLineTernary(int $n): int
+    {
+        return $n > 0 ? $n : -$n;
+    }
+
+    public function deadIfFalseSingleLine(): void
+    {
+        if (false) { $x = 1; }
+    }
+
+    public function deadIfFalseWithNop(): void
+    {
+        if (false) {
+            $x = 1;
+            /** trailing docblock parses to a Nop and must be skipped */
+        }
+    }
 }

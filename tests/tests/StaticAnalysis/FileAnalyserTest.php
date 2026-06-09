@@ -66,6 +66,7 @@ final class FileAnalyserTest extends TestCase
             [],
             [],
             [],
+            [],
         );
     }
 }

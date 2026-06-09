@@ -49,6 +49,7 @@ final class CodeCoverage
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
     private bool $useAnnotationsForIgnoringCode      = true;
+    private bool $detectDeadCode                     = false;
 
     /**
      * @var list<class-string>
@@ -330,6 +331,21 @@ final class CodeCoverage
         $this->ignoreDeprecatedCode = false;
     }
 
+    public function enableDeadCodeDetection(): void
+    {
+        $this->detectDeadCode = true;
+    }
+
+    public function disableDeadCodeDetection(): void
+    {
+        $this->detectDeadCode = false;
+    }
+
+    public function detectsDeadCode(): bool
+    {
+        return $this->detectDeadCode;
+    }
+
     /**
      * @phpstan-assert-if-true !null $this->cacheDirectory
      */
@@ -455,6 +471,7 @@ final class CodeCoverage
             $this->cacheDirectory,
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode,
+            $this->detectDeadCode,
         );
     }
 }

@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const T_COMMENT;
 use const T_DOC_COMMENT;
+use function array_intersect_key;
 use function array_keys;
 use function array_replace;
 use function assert;
@@ -37,10 +38,12 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 final readonly class ParsingSourceAnalyser implements SourceAnalyser
 {
     private Parser $parser;
+    private bool $detectDeadCode;
 
-    public function __construct()
+    public function __construct(bool $detectDeadCode = false)
     {
-        $this->parser = (new ParserFactory)->createForHostVersion();
+        $this->parser         = (new ParserFactory)->createForHostVersion();
+        $this->detectDeadCode = $detectDeadCode;
     }
 
     /**
@@ -62,6 +65,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
             $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($sourceCode);
+            $deadCodeFindingVisitor        = null;
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new AttributeParentConnectingVisitor);
@@ -69,6 +73,11 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $traverser->addVisitor($lineCountingVisitor);
             $traverser->addVisitor($ignoredLinesFindingVisitor);
             $traverser->addVisitor($executableLinesFindingVisitor);
+
+            if ($this->detectDeadCode) {
+                $deadCodeFindingVisitor = new DeadCodeFindingVisitor;
+                $traverser->addVisitor($deadCodeFindingVisitor);
+            }
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
@@ -99,6 +108,16 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
         $ignoredLines = array_keys($ignoredLines);
 
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $deadLines       = [];
+
+        if ($deadCodeFindingVisitor !== null) {
+            $deadLines = array_intersect_key(
+                $deadCodeFindingVisitor->deadLines(),
+                $executableLines,
+            );
+        }
+
         return new AnalysisResult(
             $codeUnitFindingVisitor->interfaces(),
             $codeUnitFindingVisitor->classes(),
@@ -109,8 +128,9 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
                 $lineCountingVisitor->result()->commentLinesOfCode(),
                 $lineCountingVisitor->result()->nonCommentLinesOfCode(),
             ),
-            $executableLinesFindingVisitor->executableLinesGroupedByBranch(),
+            $executableLines,
             $executableLinesFindingVisitor->branchOperatorLines(),
+            $deadLines,
             $ignoredLines,
         );
     }

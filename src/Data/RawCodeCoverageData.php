@@ -108,10 +108,16 @@ final class RawCodeCoverageData
      */
     public static function fromUncoveredFile(string $filename, FileAnalyser $analyser): self
     {
+        $analysisResult = $analyser->analyse($filename);
+
         $lineCoverage = array_map(
             static fn (): int => Driver::LINE_NOT_EXECUTED,
-            $analyser->analyse($filename)->executableLines(),
+            $analysisResult->executableLines(),
         );
+
+        foreach ($analysisResult->deadLines() as $line => $_) {
+            $lineCoverage[$line] = Driver::LINE_NOT_EXECUTABLE;
+        }
 
         return new self([$filename => $lineCoverage], []);
     }
@@ -181,6 +187,21 @@ final class RawCodeCoverageData
             if (!isset($this->lineCoverage[$filename][$line])) {
                 $this->lineCoverage[$filename][$line] = Driver::LINE_NOT_EXECUTED;
             }
+        }
+    }
+
+    /**
+     * @param non-empty-string          $filename
+     * @param array<positive-int, true> $lines
+     */
+    public function markLinesAsNotExecutable(string $filename, array $lines): void
+    {
+        if (!isset($this->lineCoverage[$filename])) {
+            return;
+        }
+
+        foreach ($lines as $line => $_) {
+            $this->lineCoverage[$filename][$line] = Driver::LINE_NOT_EXECUTABLE;
         }
     }
 

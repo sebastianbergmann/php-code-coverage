@@ -675,6 +675,30 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertEmpty($dataObject->functionCoverage());
     }
 
+    public function testFromUncoveredFileMarksDeadLinesAsNotExecutable(): void
+    {
+        $filename = TEST_FILES_PATH . 'source_with_dead_code.php';
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser(true), false, false);
+
+        $dataObject = RawCodeCoverageData::fromUncoveredFile($filename, $analyser);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey($filename, $lineCoverage);
+
+        $fileCoverage = $lineCoverage[$filename];
+
+        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103] as $deadLine) {
+            $this->assertArrayHasKey($deadLine, $fileCoverage, "Line {$deadLine} should be present in the coverage map");
+            $this->assertSame(-2, $fileCoverage[$deadLine], "Line {$deadLine} should be marked as not executable");
+        }
+
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113] as $liveLine) {
+            $this->assertArrayHasKey($liveLine, $fileCoverage, "Line {$liveLine} should be present in the coverage map");
+            $this->assertSame(-1, $fileCoverage[$liveLine], "Line {$liveLine} should be marked as not executed");
+        }
+    }
+
     public function testKeepLineCoverageDataOnlyForLinesWithUnknownFile(): void
     {
         $lineDataFromDriver = [
@@ -806,6 +830,49 @@ final class RawCodeCoverageDataTest extends TestCase
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
         $dataObject->addMissingExecutableLines('/some/path/UnknownFile.php', [8, 9]);
+
+        $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
+    }
+
+    public function testMarkLinesAsNotExecutableDemotesLinesToTheDeadCodeStatus(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 1,
+                9  => -1,
+                10 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->markLinesAsNotExecutable('/some/path/SomeClass.php', [9 => true, 10 => true]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileCoverage = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileCoverage);
+        $this->assertArrayHasKey(9, $fileCoverage);
+        $this->assertArrayHasKey(10, $fileCoverage);
+        $this->assertSame(1, $fileCoverage[8]);
+        $this->assertSame(-2, $fileCoverage[9]);
+        $this->assertSame(-2, $fileCoverage[10]);
+    }
+
+    public function testMarkLinesAsNotExecutableWithUnknownFileIsNoOp(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8 => 1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
+
+        $dataObject->markLinesAsNotExecutable('/some/path/UnknownFile.php', [8 => true]);
 
         $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }

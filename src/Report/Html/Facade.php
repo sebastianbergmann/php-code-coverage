@@ -78,6 +78,7 @@ final readonly class Facade
             $this->thresholds,
             $hasBranchCoverage,
             $hasPathCoverage,
+            $this->colors,
         );
 
         $directory->render($report, $target . 'index.html');

@@ -1,4 +1,4 @@
-      <tr>
+      <tr data-coverage="{{coverage_data}}">
        <td class="{{lines_level}}">{{icon}}{{name}}</td>
        <td class="{{lines_level}} big">{{lines_bar}}</td>
        <td class="{{lines_level}} small"><div align="right">{{lines_executed_percent}}</div></td>

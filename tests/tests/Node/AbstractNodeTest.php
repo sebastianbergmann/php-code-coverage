@@ -236,6 +236,45 @@ final class AbstractNodeTest extends TestCase
         $this->assertSame($grandchild, $path[2]);
     }
 
+    public function testPercentageOfExecutedLinesByTestSize(): void
+    {
+        $file = $this->createFileWithMixedTestSizeCoverage();
+
+        $this->assertSame(50.0, $file->percentageOfExecutedLinesBySmallTests()->asFloat());
+        $this->assertSame(25.0, $file->percentageOfExecutedLinesByMediumTests()->asFloat());
+        $this->assertSame(25.0, $file->percentageOfExecutedLinesByLargeTests()->asFloat());
+        $this->assertSame(75.0, $file->percentageOfExecutedLinesBySmallOrMediumTests()->asFloat());
+        $this->assertSame(75.0, $file->percentageOfExecutedLinesBySmallOrLargeTests()->asFloat());
+        $this->assertSame(50.0, $file->percentageOfExecutedLinesByMediumOrLargeTests()->asFloat());
+        $this->assertSame(100.0, $file->percentageOfExecutedLinesBySmallOrMediumOrLargeTests()->asFloat());
+    }
+
+    public function testNumberOfTestedClassesAndTraitsByTestSize(): void
+    {
+        $file = $this->createFileWithMixedTestSizeCoverage();
+
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsBySmallTests());
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByMediumTests());
+        $this->assertSame(0, $file->numberOfTestedClassesAndTraitsByLargeTests());
+        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsBySmallOrMediumTests());
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsBySmallOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByMediumOrLargeTests());
+        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsBySmallOrMediumOrLargeTests());
+    }
+
+    public function testNumberOfTestedFunctionsAndMethodsByTestSize(): void
+    {
+        $file = $this->createFileWithMixedTestSizeCoverage();
+
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsBySmallTests());
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByMediumTests());
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByLargeTests());
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsBySmallOrMediumTests());
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsBySmallOrLargeTests());
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsByMediumOrLargeTests());
+        $this->assertSame(3, $file->numberOfTestedFunctionsAndMethodsBySmallOrMediumOrLargeTests());
+    }
+
     public function testNameStripsTrailingDirectorySeparator(): void
     {
         $root = new Directory('root' . DIRECTORY_SEPARATOR);
@@ -250,6 +289,48 @@ final class AbstractNodeTest extends TestCase
         $grandchild = $child->addDirectory('grandchild');
 
         $this->assertSame('child/grandchild', $grandchild->id());
+    }
+
+    private function createFileWithMixedTestSizeCoverage(): File
+    {
+        $root = new Directory('root');
+
+        $smallMethod  = new Method('m1', 1, 4, 'public function m1(): void', Visibility::Public, 1);
+        $mediumMethod = new Method('m2', 5, 6, 'public function m2(): void', Visibility::Public, 1);
+
+        $smallClass  = new Class_('SmallClass', 'SmallClass', '', 'test.php', 1, 4, null, [], [], ['m1' => $smallMethod]);
+        $mediumTrait = new Trait_('MediumTrait', 'MediumTrait', '', 'test.php', 5, 6, [], ['m2' => $mediumMethod]);
+        $largeFunc   = new Function_('largeFunc', 'largeFunc', '', 7, 8, 'function largeFunc(): void', 1);
+
+        $lineCoverageData = [
+            1 => ['tSmall'],
+            2 => ['tSmall'],
+            3 => ['tSmall'],
+            4 => ['tSmall'],
+            5 => ['tMedium'],
+            6 => ['tMedium'],
+            7 => ['tLarge'],
+            8 => ['tLarge'],
+        ];
+
+        $testData = [
+            'tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
+            'tMedium' => ['size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+            'tLarge'  => ['size' => 'large', 'status' => 'passed', 'time' => 0.0],
+        ];
+
+        return new File(
+            'test.php',
+            $root,
+            'abc123',
+            $lineCoverageData,
+            [],
+            $testData,
+            ['SmallClass'  => $smallClass],
+            ['MediumTrait' => $mediumTrait],
+            ['largeFunc'   => $largeFunc],
+            new LinesOfCode(8, 0, 8),
+        );
     }
 
     private function createFileWithTestedClass(): File

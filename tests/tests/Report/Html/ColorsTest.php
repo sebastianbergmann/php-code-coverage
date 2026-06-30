@@ -34,7 +34,7 @@ final class ColorsTest extends TestCase
         $this->assertSame('#e5a100', $colors->warningBar());
         $this->assertSame('#b88a00', $colors->warningBarDark());
         $this->assertSame('#fad4c0', $colors->danger());
-        $this->assertSame('#4a2a10', $colors->dangerDark());
+        $this->assertSame('#371e09', $colors->dangerDark());
         $this->assertSame('#d45500', $colors->dangerBar());
         $this->assertSame('#b54400', $colors->dangerBarDark());
         $this->assertSame('var(--bs-gray-200)', $colors->breadcrumbs());

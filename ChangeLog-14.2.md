@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.2.3] - 2026-MM-DD
+
+### Fixed
+
+* [#1240](https://github.com/sebastianbergmann/php-code-coverage/issues/1240): Dark-mode HTML report: Warning and Danger backgrounds are indistinguishable for colorblind users
+
 ## [14.2.2] - 2026-06-08
 
 ### Fixed

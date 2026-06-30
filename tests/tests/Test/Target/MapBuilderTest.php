@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_merge;
+use function dirname;
 use function range;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -37,13 +38,17 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitTwo;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
+ * @phpstan-import-type TargetMapPart from Mapper
+ * @phpstan-import-type ReverseLookup from Mapper
+ *
+ * @phpstan-type PartialTargetMap array{namespaces: TargetMapPart, traits: TargetMapPart, classes: TargetMapPart, classesThatExtendClass: TargetMapPart, classesThatImplementInterface: TargetMapPart, methods: TargetMapPart, functions: TargetMapPart, reverseLookup: ReverseLookup}
  */
 #[CoversClass(MapBuilder::class)]
 #[Small]
 final class MapBuilderTest extends TestCase
 {
     /**
-     * @return non-empty-array<non-empty-string, array{0: TargetMap, 1: non-empty-list<non-empty-string>}>
+     * @return non-empty-array<non-empty-string, array{0: PartialTargetMap, 1: non-empty-list<non-empty-string>}>
      */
     public static function provider(): array
     {
@@ -420,13 +425,62 @@ final class MapBuilderTest extends TestCase
     }
 
     /**
-     * @param TargetMap                        $expected,
+     * @param PartialTargetMap                 $expected
      * @param non-empty-list<non-empty-string> $files
      */
     #[DataProvider('provider')]
     public function testBuildsMap(array $expected, array $files): void
     {
-        $this->assertSame($expected, $this->map($files));
+        $this->assertSame($this->withFileAndDirectoryEntries($expected, $files), $this->map($files));
+    }
+
+    public function testBuildsMapForFileAndDirectoryTargets(): void
+    {
+        $top   = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Top.php');
+        $inner = self::realpath(__DIR__ . '/../../../_files/Target/file-target-tree/Subdir/Inner.php');
+
+        $topDir = dirname($top);
+        $subDir = dirname($inner);
+
+        $map = $this->map([$top, $inner]);
+
+        $topLines   = range(1, 4);
+        $innerLines = range(1, 4);
+
+        $this->assertSame(
+            [
+                $top   => [$top => $topLines],
+                $inner => [$inner => $innerLines],
+            ],
+            $map['files'],
+        );
+
+        $this->assertArrayHasKey($topDir, $map['directories']);
+        $this->assertSame(
+            [$top => $topLines],
+            $map['directories'][$topDir],
+        );
+
+        $this->assertArrayHasKey($subDir, $map['directories']);
+        $this->assertSame(
+            [$inner => $innerLines],
+            $map['directories'][$subDir],
+        );
+
+        $this->assertArrayHasKey($topDir, $map['directoriesRecursively']);
+        $this->assertSame(
+            [
+                $top   => $topLines,
+                $inner => $innerLines,
+            ],
+            $map['directoriesRecursively'][$topDir],
+        );
+
+        $this->assertArrayHasKey($subDir, $map['directoriesRecursively']);
+        $this->assertSame(
+            [$inner => $innerLines],
+            $map['directoriesRecursively'][$subDir],
+        );
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1066')]
@@ -438,8 +492,16 @@ final class MapBuilderTest extends TestCase
         $dummyWithTrait = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/DummyWithTrait.php');
         $someTrait      = self::realpath(__DIR__ . '/../../../_files/Target/regression/1066/SomeTrait.php');
 
+        $files = [
+            $baseDummy,
+            $dummy,
+            $dummy2,
+            $dummyWithTrait,
+            $someTrait,
+        ];
+
         $this->assertSame(
-            [
+            $this->withFileAndDirectoryEntries([
                 'namespaces' => [
                     'SebastianBergmann' => [
                         $someTrait      => range(4, 6),
@@ -555,16 +617,8 @@ final class MapBuilderTest extends TestCase
                     $dummyWithTrait . ':15' => DummyWithTrait::class . '::method2',
                     $dummyWithTrait . ':16' => DummyWithTrait::class . '::method2',
                 ],
-            ],
-            $this->map(
-                [
-                    $baseDummy,
-                    $dummy,
-                    $dummy2,
-                    $dummyWithTrait,
-                    $someTrait,
-                ],
-            ),
+            ], $files),
+            $this->map($files),
         );
     }
 
@@ -587,6 +641,60 @@ final class MapBuilderTest extends TestCase
                 false,
             ),
         );
+    }
+
+    /**
+     * @param PartialTargetMap                 $expected
+     * @param non-empty-list<non-empty-string> $files
+     *
+     * @return TargetMap
+     */
+    private function withFileAndDirectoryEntries(array $expected, array $files): array
+    {
+        $filter = new Filter;
+        $filter->includeFiles($files);
+
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+
+        $filesMap                  = [];
+        $directoriesMap            = [];
+        $directoriesRecursivelyMap = [];
+
+        foreach ($filter->files() as $file) {
+            $linesOfCode = $analyser->analyse($file)->linesOfCode()->linesOfCode();
+
+            if ($linesOfCode === 0) {
+                continue;
+            }
+
+            $lines = range(1, $linesOfCode);
+
+            $filesMap[$file] = [$file => $lines];
+
+            $parent                         = dirname($file);
+            $directoriesMap[$parent][$file] = $lines;
+
+            $ancestor = $parent;
+
+            while ($ancestor !== dirname($ancestor)) {
+                $directoriesRecursivelyMap[$ancestor][$file] = $lines;
+                $ancestor                                    = dirname($ancestor);
+            }
+        }
+
+        return [
+            'namespaces'                    => $expected['namespaces'],
+            'traits'                        => $expected['traits'],
+            'classes'                       => $expected['classes'],
+            'classesThatExtendClass'        => $expected['classesThatExtendClass'],
+            'classesThatImplementInterface' => $expected['classesThatImplementInterface'],
+            'methods'                       => $expected['methods'],
+            'functions'                     => $expected['functions'],
+            'files'                         => $filesMap,
+            'directories'                   => $directoriesMap,
+            'directoriesRecursively'        => $directoriesRecursivelyMap,
+            'reverseLookup'                 => $expected['reverseLookup'],
+        ];
     }
 
     /**

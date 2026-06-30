@@ -20,6 +20,9 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 #[CoversClass(Class_::class)]
 #[CoversClass(ClassesThatExtendClass::class)]
 #[CoversClass(ClassesThatImplementInterface::class)]
+#[CoversClass(Directory::class)]
+#[CoversClass(DirectoryRecursively::class)]
+#[CoversClass(File::class)]
 #[CoversClass(Function_::class)]
 #[CoversClass(Method::class)]
 #[CoversClass(Namespace_::class)]
@@ -167,5 +170,74 @@ final class TargetTest extends TestCase
         $this->assertSame('traits', $target->key());
         $this->assertSame($traitName, $target->target());
         $this->assertSame('Trait ' . $traitName, $target->description());
+    }
+
+    public function testCanBeFile(): void
+    {
+        $path = '/path/to/file.php';
+
+        $target = Target::forFile($path);
+
+        $this->assertTrue($target->isFile());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isDirectory());
+        $this->assertFalse($target->isDirectoryRecursively());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
+
+        $this->assertSame($path, $target->path());
+        $this->assertSame('files', $target->key());
+        $this->assertSame($path, $target->target());
+        $this->assertSame('File ' . $path, $target->description());
+    }
+
+    public function testCanBeDirectory(): void
+    {
+        $directory = '/path/to/directory';
+
+        $target = Target::forDirectory($directory);
+
+        $this->assertTrue($target->isDirectory());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isDirectoryRecursively());
+        $this->assertFalse($target->isFile());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
+
+        $this->assertSame($directory, $target->directory());
+        $this->assertSame('directories', $target->key());
+        $this->assertSame($directory, $target->target());
+        $this->assertSame('Directory ' . $directory, $target->description());
+    }
+
+    public function testCanBeDirectoryRecursively(): void
+    {
+        $directory = '/path/to/directory';
+
+        $target = Target::forDirectoryRecursively($directory);
+
+        $this->assertTrue($target->isDirectoryRecursively());
+        $this->assertFalse($target->isClass());
+        $this->assertFalse($target->isClassesThatExtendClass());
+        $this->assertFalse($target->isClassesThatImplementInterface());
+        $this->assertFalse($target->isDirectory());
+        $this->assertFalse($target->isFile());
+        $this->assertFalse($target->isFunction());
+        $this->assertFalse($target->isMethod());
+        $this->assertFalse($target->isNamespace());
+        $this->assertFalse($target->isTrait());
+
+        $this->assertSame($directory, $target->directory());
+        $this->assertSame('directoriesRecursively', $target->key());
+        $this->assertSame($directory, $target->target());
+        $this->assertSame('Directory (recursively) ' . $directory, $target->description());
     }
 }

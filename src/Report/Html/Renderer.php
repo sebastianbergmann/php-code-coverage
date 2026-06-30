@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const ENT_COMPAT;
+use const ENT_HTML401;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
@@ -56,9 +58,13 @@ use SebastianBergmann\Template\Template;
  *     icon?: string,
  *     crap?: int|string,
  * }
+ *
+ * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
  */
 abstract class Renderer
 {
+    protected const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+    protected readonly SyntaxHighlighter $syntaxHighlighter;
     protected string $templatePath;
     protected string $generator;
     protected string $date;
@@ -66,6 +72,11 @@ abstract class Renderer
     protected bool $hasBranchCoverage;
     protected bool $hasPathCoverage;
     protected string $version;
+
+    /**
+     * @var array<string, string>
+     */
+    private array $fileToClassMap = [];
 
     public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
     {
@@ -76,6 +87,15 @@ abstract class Renderer
         $this->version           = Version::id();
         $this->hasBranchCoverage = $hasBranchCoverage;
         $this->hasPathCoverage   = $hasPathCoverage;
+        $this->syntaxHighlighter = new SyntaxHighlighter;
+    }
+
+    /**
+     * @param array<string, string> $map
+     */
+    public function setFileToClassMap(array $map): void
+    {
+        $this->fileToClassMap = $map;
     }
 
     /**
@@ -224,11 +244,18 @@ abstract class Renderer
 
     protected function setCommonTemplateVariables(Template $template, AbstractNode $node): void
     {
+        $pathToRoot    = $this->pathToRoot($node);
+        $classesTarget = '_classes/index.html';
+
+        if ($node instanceof FileNode && isset($this->fileToClassMap[$node->id()])) {
+            $classesTarget = $this->fileToClassMap[$node->id()];
+        }
+
         $template->setVar(
             [
                 'id'               => $node->id(),
                 'full_path'        => $this->escapeHtml($node->pathAsString()),
-                'path_to_root'     => $this->pathToRoot($node),
+                'path_to_root'     => $pathToRoot,
                 'breadcrumbs'      => $this->breadcrumbs($node),
                 'date'             => $this->date,
                 'version'          => $this->version,
@@ -236,6 +263,7 @@ abstract class Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
+                'view_switcher'    => $this->viewSwitcher($pathToRoot, 'files', 'index.html', $classesTarget),
             ],
         );
     }
@@ -243,6 +271,31 @@ abstract class Renderer
     protected function escapeHtml(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
+    }
+
+    protected function viewSwitcher(string $pathToRoot, string $activeView, string $filesTarget = 'index.html', string $classesTarget = '_classes/index.html'): string
+    {
+        if ($activeView === 'files') {
+            return sprintf(
+                '      <ul class="nav nav-tabs mt-2">' . "\n" .
+                '       <li class="nav-item"><a class="nav-link active" href="%sindex.html">Files</a></li>' . "\n" .
+                '       <li class="nav-item"><a class="nav-link" href="%s%s">Classes</a></li>' . "\n" .
+                '      </ul>' . "\n",
+                $pathToRoot,
+                $pathToRoot,
+                $classesTarget,
+            );
+        }
+
+        return sprintf(
+            '      <ul class="nav nav-tabs mt-2">' . "\n" .
+            '       <li class="nav-item"><a class="nav-link" href="%s%s">Files</a></li>' . "\n" .
+            '       <li class="nav-item"><a class="nav-link active" href="%s_classes/index.html">Classes</a></li>' . "\n" .
+            '      </ul>' . "\n",
+            $pathToRoot,
+            $filesTarget,
+            $pathToRoot,
+        );
     }
 
     protected function breadcrumbs(AbstractNode $node): string
@@ -336,7 +389,52 @@ abstract class Renderer
         return 'success';
     }
 
-    private function runtimeString(): string
+    protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
+    {
+        $template->setVar(
+            [
+                'lineNumber'  => (string) $lineNumber,
+                'lineContent' => $lineContent,
+                'class'       => $class,
+                'popover'     => $popover,
+            ],
+        );
+
+        return $template->render();
+    }
+
+    /**
+     * @param TestType $testData
+     */
+    protected function createPopoverContentForTest(string $test, array $testData): string
+    {
+        $testCSS = '';
+
+        switch ($testData['status']) {
+            case 'success':
+                $testCSS = match ($testData['size']) {
+                    'small'  => ' class="covered-by-small-tests"',
+                    'medium' => ' class="covered-by-medium-tests"',
+                    // no break
+                    default => ' class="covered-by-large-tests"',
+                };
+
+                break;
+
+            case 'failure':
+                $testCSS = ' class="danger"';
+
+                break;
+        }
+
+        return sprintf(
+            '<li%s>%s</li>',
+            $testCSS,
+            htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
+        );
+    }
+
+    protected function runtimeString(): string
     {
         $runtime = new Runtime;
 

@@ -6,11 +6,8 @@ use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\InClassMethodNode;
 use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleErrorBuilder;
 use PHPUnit\Framework\TestCase;
-use function count;
-use function is_numeric;
-use function sprintf;
+use function array_merge;
 
 /**
  * @implements Rule<InClassMethodNode>
@@ -18,24 +15,17 @@ use function sprintf;
 class AttributeRequiresPhpVersionRule implements Rule
 {
 
-	private PHPUnitVersion $PHPUnitVersion;
-
 	private TestMethodsHelper $testMethodsHelper;
 
-	/**
-	 * When phpstan-deprecation-rules is installed, it reports deprecated usages.
-	 */
-	private bool $deprecationRulesInstalled;
+	private AttributeVersionRequirementHelper $attributeVersionRequirementHelper;
 
 	public function __construct(
-		PHPUnitVersion $PHPUnitVersion,
 		TestMethodsHelper $testMethodsHelper,
-		bool $deprecationRulesInstalled
+		AttributeVersionRequirementHelper $attributeVersionRequirementHelper
 	)
 	{
-		$this->PHPUnitVersion = $PHPUnitVersion;
 		$this->testMethodsHelper = $testMethodsHelper;
-		$this->deprecationRulesInstalled = $deprecationRulesInstalled;
+		$this->attributeVersionRequirementHelper = $attributeVersionRequirementHelper;
 	}
 
 	public function getNodeType(): string
@@ -55,39 +45,13 @@ class AttributeRequiresPhpVersionRule implements Rule
 			return [];
 		}
 
-		$errors = [];
-		foreach ($reflectionMethod->getAttributesByName('PHPUnit\Framework\Attributes\RequiresPhp') as $attr) {
-			$args = $attr->getArguments();
-			if (count($args) !== 1) {
-				continue;
-			}
-
-			if (
-				!is_numeric($args[0])
-			) {
-				continue;
-			}
-
-			if ($this->PHPUnitVersion->requiresPhpversionAttributeWithOperator()->yes()) {
-				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement is missing operator.'),
-				)
-					->identifier('phpunit.attributeRequiresPhpVersion')
-					->build();
-			} elseif (
-				$this->deprecationRulesInstalled
-				&& $this->PHPUnitVersion->deprecatesPhpversionAttributeWithoutOperator()->yes()
-			) {
-				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement without operator is deprecated.'),
-				)
-					->identifier('phpunit.attributeRequiresPhpVersion')
-					->build();
-			}
-
-		}
-
-		return $errors;
+		return $this->attributeVersionRequirementHelper->checkVersionRequirement(
+			array_merge(
+				$reflectionMethod->getAttributesByName('PHPUnit\Framework\Attributes\RequiresPhp'),
+				$reflectionMethod->getAttributesByName('PHPUnit\Framework\Attributes\RequiresPhpunit'),
+			),
+			$scope,
+		);
 	}
 
 }

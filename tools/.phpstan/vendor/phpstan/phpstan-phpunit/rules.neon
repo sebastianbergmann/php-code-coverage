@@ -16,6 +16,9 @@ conditionalTags:
 	PHPStan\Rules\PHPUnit\DataProviderDataRule:
 		phpstan.rules.rule: %featureToggles.bleedingEdge%
 
+	PHPStan\Rules\PHPUnit\ClassAttributeRequiresPhpVersionRule:
+		phpstan.rules.rule: %featureToggles.bleedingEdge%
+
 services:
 	-
 		class: PHPStan\Rules\PHPUnit\DataProviderDeclarationRule
@@ -27,10 +30,11 @@ services:
 
 	-
 		class: PHPStan\Rules\PHPUnit\AttributeRequiresPhpVersionRule
-		arguments:
-			deprecationRulesInstalled: %deprecationRulesInstalled%
 		tags:
 			- phpstan.rules.rule
+
+	-
+		class: PHPStan\Rules\PHPUnit\ClassAttributeRequiresPhpVersionRule
 
 	-
 		class: PHPStan\Rules\PHPUnit\AssertEqualsIsDiscouragedRule

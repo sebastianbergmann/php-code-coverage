@@ -62,6 +62,11 @@ class PHPUnitVersion
 		return $this->minVersion(12, 4);
 	}
 
+	public function warnsAboutIncompleteVersion(): TrinaryLogic
+	{
+		return $this->minVersion(12, 5);
+	}
+
 	private function minVersion(int $major, int $minor): TrinaryLogic
 	{
 		if ($this->majorVersion === null || $this->minorVersion === null) {

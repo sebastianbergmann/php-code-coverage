@@ -128,6 +128,18 @@ final class AnalysisResultTest extends TestCase
         $this->assertSame($ignoredLines, $this->analysisResult(ignoredLines: $ignoredLines)->ignoredLines());
     }
 
+    public function testHasDeadLines(): void
+    {
+        $deadLines = [9 => true];
+
+        $this->assertSame($deadLines, $this->analysisResult(deadLines: $deadLines)->deadLines());
+    }
+
+    public function testHasNoDeadLinesByDefault(): void
+    {
+        $this->assertSame([], $this->analysisResult()->deadLines());
+    }
+
     /**
      * @param array<string, Interface_> $interfaces
      * @param array<string, Class_>     $classes
@@ -135,9 +147,10 @@ final class AnalysisResultTest extends TestCase
      * @param array<string, Function_>  $functions
      * @param array<positive-int, int>  $executableLines
      * @param array<positive-int, true> $branchOperatorLines
+     * @param array<positive-int, true> $deadLines
      * @param array<int, int>           $ignoredLines
      */
-    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $ignoredLines = []): AnalysisResult
+    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = []): AnalysisResult
     {
         return new AnalysisResult(
             $interfaces,
@@ -147,6 +160,7 @@ final class AnalysisResultTest extends TestCase
             $linesOfCode ?? new LinesOfCode(0, 0, 0),
             $executableLines,
             $branchOperatorLines,
+            $deadLines,
             $ignoredLines,
         );
     }

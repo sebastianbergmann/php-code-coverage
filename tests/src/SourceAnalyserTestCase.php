@@ -239,6 +239,52 @@ abstract class SourceAnalyserTestCase extends TestCase
         $this->assertContains(5, $ignoredLines);
     }
 
+    public function testDeadCodeDetectionIsDisabledByDefault(): void
+    {
+        $result = $this->analyser()->analyse(
+            TEST_FILES_PATH . 'source_with_dead_code.php',
+            file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
+            false,
+            false,
+        );
+
+        $this->assertSame([], $result->deadLines());
+    }
+
+    public function testDeadCodeDetectionReportsUnreachableLinesWhenEnabled(): void
+    {
+        $result = $this->analyserWithDeadCodeDetection()->analyse(
+            TEST_FILES_PATH . 'source_with_dead_code.php',
+            file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
+            false,
+            false,
+        );
+
+        $deadLines       = $result->deadLines();
+        $executableLines = $result->executableLines();
+
+        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103] as $line) {
+            $this->assertArrayHasKey($line, $deadLines, "Line {$line} should be reported as dead");
+            $this->assertArrayHasKey($line, $executableLines, 'Dead lines must be a subset of executable lines');
+        }
+    }
+
+    public function testDeadCodeDetectionLeavesLiveLinesAlone(): void
+    {
+        $result = $this->analyserWithDeadCodeDetection()->analyse(
+            TEST_FILES_PATH . 'source_with_dead_code.php',
+            file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
+            false,
+            false,
+        );
+
+        $deadLines = $result->deadLines();
+
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113] as $line) {
+            $this->assertArrayNotHasKey($line, $deadLines, "Line {$line} should be live");
+        }
+    }
+
     public function testCodeUnitsAreFound(): void
     {
         $analyser = new ParsingSourceAnalyser;
@@ -267,4 +313,6 @@ abstract class SourceAnalyserTestCase extends TestCase
     }
 
     abstract protected function analyser(): SourceAnalyser;
+
+    abstract protected function analyserWithDeadCodeDetection(): SourceAnalyser;
 }

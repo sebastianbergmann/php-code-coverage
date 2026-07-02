@@ -21,18 +21,19 @@ final class Registry
     /**
      * @param ?non-empty-string $cacheDirectory
      */
-    public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): FileAnalyser
+    public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, bool $detectDeadCode = false): FileAnalyser
     {
         if (self::$analyser !== null) {
             return self::$analyser;
         }
 
-        $sourceAnalyser = new ParsingSourceAnalyser;
+        $sourceAnalyser = new ParsingSourceAnalyser($detectDeadCode);
 
         if ($cacheDirectory !== null) {
             $sourceAnalyser = new CachingSourceAnalyser(
                 $cacheDirectory,
                 $sourceAnalyser,
+                $detectDeadCode,
             );
         }
 

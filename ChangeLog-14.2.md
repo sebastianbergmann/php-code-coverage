@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#1240](https://github.com/sebastianbergmann/php-code-coverage/issues/1240): Dark-mode HTML report: Warning and Danger backgrounds are indistinguishable for colorblind users
+* [#1244](https://github.com/sebastianbergmann/php-code-coverage/pull/1244): Do not build code unit map when test has no coverage targets
 
 ## [14.2.2] - 2026-06-08
 

@@ -20,6 +20,7 @@ use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\Environment\Runtime;
 
 #[CoversClass(CodeCoverage::class)]
@@ -435,6 +436,16 @@ final class CodeCoverageTest extends TestCase
         $coverage->append($data, 'A test', true);
 
         $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $coverage->getData()->coveredFiles());
+    }
+
+    public function testEmptyTargetCollectionIsValidWithoutBuildingCodeUnitMap(): void
+    {
+        $coverage = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $this->assertTrue($coverage->validate(TargetCollection::fromArray([]))->isSuccess());
     }
 
     private function requireDriver(): CodeCoverage

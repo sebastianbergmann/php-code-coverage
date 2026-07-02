@@ -240,29 +240,38 @@ final class CodeCoverage
         }
 
         $linesToBeCovered = false;
-        $linesToBeUsed    = [];
 
         if ($covers !== false) {
-            $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+            $linesToBeCovered = [];
+
+            if ($covers->isNotEmpty()) {
+                $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+            }
         } else {
             $covers = TargetCollection::fromArray([]);
         }
 
-        if ($linesToBeCovered !== false) {
+        $linesToBeUsed = [];
+
+        if ($linesToBeCovered !== false && $linesToBeCovered !== [] && $uses->isNotEmpty()) {
             $linesToBeUsed = $this->targetMapper()->mapTargets($uses);
         }
 
-        $filterProcessor->applyCoversAndUsesFilter(
-            $rawData,
-            $linesToBeCovered,
-            $linesToBeUsed,
-            $size,
-            $this->checkForUnintentionallyCoveredCode,
-            $this->targetMapper(),
-            $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
-            $covers,
-            $uses,
-        );
+        if ($linesToBeCovered === false) {
+            $rawData->clear();
+        } elseif ($linesToBeCovered !== []) {
+            $filterProcessor->applyCoversAndUsesFilter(
+                $rawData,
+                $linesToBeCovered,
+                $linesToBeUsed,
+                $size,
+                $this->checkForUnintentionallyCoveredCode,
+                $this->targetMapper(),
+                $this->parentClassesExcludedFromUnintentionallyCoveredCodeCheck,
+                $covers,
+                $uses,
+            );
+        }
 
         if ($rawData->lineCoverage() === []) {
             return;
@@ -404,6 +413,10 @@ final class CodeCoverage
 
     public function validate(TargetCollection $targets): ValidationResult
     {
+        if ($targets->isEmpty()) {
+            return ValidationResult::success();
+        }
+
         return (new TargetCollectionValidator)->validate($this->targetMapper(), $targets);
     }
 

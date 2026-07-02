@@ -256,13 +256,18 @@ final class CodeCoverage
         }
 
         $linesToBeCovered = false;
-        $linesToBeUsed    = [];
 
         if ($covers !== false) {
-            $linesToBeCovered = $covers->isEmpty() ? [] : $this->targetMapper()->mapTargets($covers);
+            $linesToBeCovered = [];
+
+            if ($covers->isNotEmpty()) {
+                $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+            }
         }
 
-        if ($linesToBeCovered !== false && $uses->isNotEmpty()) {
+        $linesToBeUsed = [];
+
+        if ($linesToBeCovered !== false && $linesToBeCovered !== [] && $uses->isNotEmpty()) {
             $linesToBeUsed = $this->targetMapper()->mapTargets($uses);
         }
 

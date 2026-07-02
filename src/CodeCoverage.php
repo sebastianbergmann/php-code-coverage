@@ -259,10 +259,10 @@ final class CodeCoverage
         $linesToBeUsed    = [];
 
         if ($covers !== false) {
-            $linesToBeCovered = $this->targetMapper()->mapTargets($covers);
+            $linesToBeCovered = $covers->isEmpty() ? [] : $this->targetMapper()->mapTargets($covers);
         }
 
-        if ($linesToBeCovered !== false) {
+        if ($linesToBeCovered !== false && $uses->isNotEmpty()) {
             $linesToBeUsed = $this->targetMapper()->mapTargets($uses);
         }
 
@@ -403,6 +403,10 @@ final class CodeCoverage
 
     public function validate(TargetCollection $targets): ValidationResult
     {
+        if ($targets->isEmpty()) {
+            return ValidationResult::success();
+        }
+
         return (new TargetCollectionValidator)->validate($this->targetMapper(), $targets);
     }
 

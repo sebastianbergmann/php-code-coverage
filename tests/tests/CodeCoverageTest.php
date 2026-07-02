@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\Environment\Runtime;
 
 #[CoversClass(CodeCoverage::class)]
@@ -139,5 +140,10 @@ final class CodeCoverageTest extends TestCase
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
             $coverage->getData()->lineCoverage(),
         );
+    }
+
+    public function testEmptyTargetCollectionIsValidWithoutBuildingCodeUnitMap(): void
+    {
+        $this->assertTrue($this->coverage->validate(TargetCollection::fromArray([]))->isSuccess());
     }
 }

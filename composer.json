@@ -33,7 +33,7 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
-        "nikic/php-parser": "^5.7.0",
+        "nikic/php-parser": "^5.8.0",
         "phpunit/php-text-template": "^5.0",
         "sebastian/complexity": "^5.0",
         "sebastian/environment": "^8.1.2",

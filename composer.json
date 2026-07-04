@@ -34,7 +34,7 @@
         "ext-libxml": "*",
         "ext-mbstring": "*",
         "ext-xmlwriter": "*",
-        "nikic/php-parser": "^5.7.0",
+        "nikic/php-parser": "^5.8.0",
         "phpunit/php-text-template": "^6.0",
         "sebastian/complexity": "^6.0",
         "sebastian/environment": "^9.3.2",

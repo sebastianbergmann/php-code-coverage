@@ -17,6 +17,7 @@ use function count;
 use function is_numeric;
 use function preg_match;
 use function sprintf;
+use function strpos;
 use function substr_count;
 use function version_compare;
 
@@ -43,9 +44,9 @@ final class AttributeVersionRequirementHelper
 
 	public function __construct(
 		PHPUnitVersion $PHPUnitVersion,
-		bool $deprecationRulesInstalled,
 		PhpVersion $phpVersion,
-		bool $bleedingEdge,
+		bool $deprecationRulesInstalled = false,
+		bool $bleedingEdge = false,
 		bool $warnAboutIncompleteVersion = true
 	)
 	{
@@ -96,11 +97,18 @@ final class AttributeVersionRequirementHelper
 					continue;
 				}
 
+				$pharIoVersions = strpos($attr->getName(), 'RequiresPhpunit') !== false
+					? $this->PHPUnitVersion->getPharIoVersions()
+					: $phpstanPharIoVersions;
+				if ($pharIoVersions === []) {
+					continue;
+				}
+
 				try {
 					// check composer like version constraints, e.g. ^1  or ~2
 					$testPhpVersionConstraint = $parser->parse($versionRequirement);
 
-					foreach ($phpstanPharIoVersions as $pharIoVersion) {
+					foreach ($pharIoVersions as $pharIoVersion) {
 						if ($testPhpVersionConstraint->complies($pharIoVersion)) {
 							// one of the versions within range matched, check next attribute
 							continue 2;
@@ -120,7 +128,7 @@ final class AttributeVersionRequirementHelper
 
 					$operator = $matches['operator'] !== '' ? $matches['operator'] : '>=';
 
-					foreach ($phpstanPharIoVersions as $pharIoVersion) {
+					foreach ($pharIoVersions as $pharIoVersion) {
 						if (version_compare($pharIoVersion->getVersionString(), $matches['version'], $operator)) {
 							// one of the versions within range matched, check next attribute
 							continue 2;

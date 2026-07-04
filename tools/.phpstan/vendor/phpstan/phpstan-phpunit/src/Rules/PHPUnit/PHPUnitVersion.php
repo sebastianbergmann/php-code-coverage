@@ -2,7 +2,9 @@
 
 namespace PHPStan\Rules\PHPUnit;
 
+use PharIo\Version\Version;
 use PHPStan\TrinaryLogic;
+use function sprintf;
 
 class PHPUnitVersion
 {
@@ -15,6 +17,21 @@ class PHPUnitVersion
 	{
 		$this->majorVersion = $majorVersion;
 		$this->minorVersion = $minorVersion;
+	}
+
+	/**
+	 * @return array{}|array{Version, Version}
+	 */
+	public function getPharIoVersions(): array
+	{
+		if ($this->majorVersion === null || $this->minorVersion === null) {
+			return [];
+		}
+
+		return [
+			new Version(sprintf('%d.%d.0', $this->majorVersion, $this->minorVersion)),
+			new Version(sprintf('%d.%d.99', $this->majorVersion, $this->minorVersion)),
+		];
 	}
 
 	public function supportsDataProviderAttribute(): TrinaryLogic

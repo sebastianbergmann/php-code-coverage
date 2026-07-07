@@ -31,13 +31,4 @@ final class CachingSourceAnalyserTest extends SourceAnalyserTestCase
             new ParsingSourceAnalyser,
         );
     }
-
-    protected function analyserWithDeadCodeDetection(): SourceAnalyser
-    {
-        return new CachingSourceAnalyser(
-            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-tests-for-static-analysis-dead-code',
-            new ParsingSourceAnalyser(true),
-            true,
-        );
-    }
 }

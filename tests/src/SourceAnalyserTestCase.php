@@ -239,21 +239,9 @@ abstract class SourceAnalyserTestCase extends TestCase
         $this->assertContains(5, $ignoredLines);
     }
 
-    public function testDeadCodeDetectionIsDisabledByDefault(): void
+    public function testDeadCodeDetectionReportsUnreachableLines(): void
     {
         $result = $this->analyser()->analyse(
-            TEST_FILES_PATH . 'source_with_dead_code.php',
-            file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
-            false,
-            false,
-        );
-
-        $this->assertSame([], $result->deadLines());
-    }
-
-    public function testDeadCodeDetectionReportsUnreachableLinesWhenEnabled(): void
-    {
-        $result = $this->analyserWithDeadCodeDetection()->analyse(
             TEST_FILES_PATH . 'source_with_dead_code.php',
             file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
             false,
@@ -271,7 +259,7 @@ abstract class SourceAnalyserTestCase extends TestCase
 
     public function testDeadCodeDetectionLeavesLiveLinesAlone(): void
     {
-        $result = $this->analyserWithDeadCodeDetection()->analyse(
+        $result = $this->analyser()->analyse(
             TEST_FILES_PATH . 'source_with_dead_code.php',
             file_get_contents(TEST_FILES_PATH . 'source_with_dead_code.php'),
             false,
@@ -313,6 +301,4 @@ abstract class SourceAnalyserTestCase extends TestCase
     }
 
     abstract protected function analyser(): SourceAnalyser;
-
-    abstract protected function analyserWithDeadCodeDetection(): SourceAnalyser;
 }

@@ -110,7 +110,7 @@ final class CodeCoverageTest extends TestCase
                 24 => [],
                 29 => [],
                 31 => [],
-                32 => [],
+                32 => null,
             ],
         ];
 
@@ -271,30 +271,6 @@ final class CodeCoverageTest extends TestCase
         $coverage->doNotIgnoreDeprecatedCode();
 
         $this->assertNotNull($coverage->getData(true));
-    }
-
-    public function testDeadCodeDetectionIsDisabledByDefault(): void
-    {
-        $coverage = new CodeCoverage(
-            $this->createStub(Driver::class),
-            new Filter,
-        );
-
-        $this->assertFalse($coverage->staticallyDetectsDeadCode());
-    }
-
-    public function testEnableAndDisableDeadCodeDetection(): void
-    {
-        $coverage = new CodeCoverage(
-            $this->createStub(Driver::class),
-            new Filter,
-        );
-
-        $coverage->enableStaticDeadCodeDetection();
-        $this->assertTrue($coverage->staticallyDetectsDeadCode());
-
-        $coverage->disableStaticDeadCodeDetection();
-        $this->assertFalse($coverage->staticallyDetectsDeadCode());
     }
 
     public function testCacheStaticAnalysisAndDoNotCacheStaticAnalysis(): void

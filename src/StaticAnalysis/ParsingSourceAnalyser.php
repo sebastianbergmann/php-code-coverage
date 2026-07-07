@@ -38,12 +38,10 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 final readonly class ParsingSourceAnalyser implements SourceAnalyser
 {
     private Parser $parser;
-    private bool $detectDeadCode;
 
-    public function __construct(bool $detectDeadCode = false)
+    public function __construct()
     {
-        $this->parser         = (new ParserFactory)->createForHostVersion();
-        $this->detectDeadCode = $detectDeadCode;
+        $this->parser = (new ParserFactory)->createForHostVersion();
     }
 
     /**
@@ -65,7 +63,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
             $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($sourceCode);
-            $deadCodeFindingVisitor        = null;
+            $deadCodeFindingVisitor        = new DeadCodeFindingVisitor;
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new AttributeParentConnectingVisitor);
@@ -73,11 +71,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $traverser->addVisitor($lineCountingVisitor);
             $traverser->addVisitor($ignoredLinesFindingVisitor);
             $traverser->addVisitor($executableLinesFindingVisitor);
-
-            if ($this->detectDeadCode) {
-                $deadCodeFindingVisitor = new DeadCodeFindingVisitor;
-                $traverser->addVisitor($deadCodeFindingVisitor);
-            }
+            $traverser->addVisitor($deadCodeFindingVisitor);
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
@@ -109,14 +103,11 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
         $ignoredLines = array_keys($ignoredLines);
 
         $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
-        $deadLines       = [];
 
-        if ($deadCodeFindingVisitor !== null) {
-            $deadLines = array_intersect_key(
-                $deadCodeFindingVisitor->deadLines(),
-                $executableLines,
-            );
-        }
+        $deadLines = array_intersect_key(
+            $deadCodeFindingVisitor->deadLines(),
+            $executableLines,
+        );
 
         return new AnalysisResult(
             $codeUnitFindingVisitor->interfaces(),

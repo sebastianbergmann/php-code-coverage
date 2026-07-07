@@ -32,7 +32,6 @@ final class CachingSourceAnalyser implements SourceAnalyser
      */
     private readonly string $directory;
     private readonly SourceAnalyser $sourceAnalyser;
-    private readonly bool $detectDeadCode;
 
     /**
      * @var non-negative-int
@@ -47,13 +46,12 @@ final class CachingSourceAnalyser implements SourceAnalyser
     /**
      * @param non-empty-string $directory
      */
-    public function __construct(string $directory, SourceAnalyser $sourceAnalyser, bool $detectDeadCode = false)
+    public function __construct(string $directory, SourceAnalyser $sourceAnalyser)
     {
         Filesystem::createDirectory($directory);
 
         $this->directory      = $directory;
         $this->sourceAnalyser = $sourceAnalyser;
-        $this->detectDeadCode = $detectDeadCode;
     }
 
     /**
@@ -167,7 +165,6 @@ final class CachingSourceAnalyser implements SourceAnalyser
                     Version::id(),
                     $useAnnotationsForIgnoringCode,
                     $ignoreDeprecatedCode,
-                    $this->detectDeadCode,
                 ],
             ),
         );

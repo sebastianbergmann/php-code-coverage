@@ -24,9 +24,4 @@ final class ParsingSourceAnalyserTest extends SourceAnalyserTestCase
     {
         return new ParsingSourceAnalyser;
     }
-
-    protected function analyserWithDeadCodeDetection(): SourceAnalyser
-    {
-        return new ParsingSourceAnalyser(true);
-    }
 }

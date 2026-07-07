@@ -668,7 +668,14 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertArrayHasKey($filename, $lineCoverage);
         $this->assertNotEmpty($lineCoverage[$filename]);
 
-        foreach ($lineCoverage[$filename] as $status) {
+        foreach ($lineCoverage[$filename] as $line => $status) {
+            if ($line === 32) {
+                // the second return statement in withdrawMoney() is dead code
+                $this->assertSame(-2, $status);
+
+                continue;
+            }
+
             $this->assertSame(-1, $status);
         }
 
@@ -678,7 +685,7 @@ final class RawCodeCoverageDataTest extends TestCase
     public function testFromUncoveredFileMarksDeadLinesAsNotExecutable(): void
     {
         $filename = TEST_FILES_PATH . 'source_with_dead_code.php';
-        $analyser = new FileAnalyser(new ParsingSourceAnalyser(true), false, false);
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
 
         $dataObject = RawCodeCoverageData::fromUncoveredFile($filename, $analyser);
 

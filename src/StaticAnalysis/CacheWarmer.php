@@ -24,12 +24,11 @@ final readonly class CacheWarmer
      *
      * @return array{cacheHits: non-negative-int, cacheMisses: non-negative-int}
      */
-    public function warmCache(string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, Filter $filter, bool $detectDeadCode = false): array
+    public function warmCache(string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, Filter $filter): array
     {
         $analyser = new CachingSourceAnalyser(
             $cacheDirectory,
-            new ParsingSourceAnalyser($detectDeadCode),
-            $detectDeadCode,
+            new ParsingSourceAnalyser,
         );
 
         foreach ($filter->files() as $file) {

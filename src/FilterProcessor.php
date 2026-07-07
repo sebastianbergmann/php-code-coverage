@@ -112,6 +112,11 @@ final readonly class FilterProcessor
                 $filename,
                 $linesToBranchMap,
             );
+
+            $data->markLinesAsNotExecutable(
+                $filename,
+                $analysisResult->deadLines(),
+            );
         }
     }
 

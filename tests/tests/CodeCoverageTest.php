@@ -110,7 +110,7 @@ final class CodeCoverageTest extends TestCase
                 24 => [],
                 29 => [],
                 31 => [],
-                32 => [],
+                32 => null,
             ],
         ];
 

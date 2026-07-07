@@ -50,6 +50,11 @@ final readonly class AnalysisResult
     private array $branchOperatorLines;
 
     /**
+     * @var array<positive-int, true>
+     */
+    private array $deadLines;
+
+    /**
      * @var array<int, int>
      */
     private array $ignoredLines;
@@ -61,9 +66,10 @@ final readonly class AnalysisResult
      * @param array<string, Function_>  $functions
      * @param LinesType                 $executableLines
      * @param array<positive-int, true> $branchOperatorLines
+     * @param array<positive-int, true> $deadLines
      * @param array<int, int>           $ignoredLines
      */
-    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $ignoredLines)
+    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines)
     {
         $this->interfaces          = $interfaces;
         $this->classes             = $classes;
@@ -72,6 +78,7 @@ final readonly class AnalysisResult
         $this->linesOfCode         = $linesOfCode;
         $this->executableLines     = $executableLines;
         $this->branchOperatorLines = $branchOperatorLines;
+        $this->deadLines           = $deadLines;
         $this->ignoredLines        = $ignoredLines;
     }
 
@@ -126,6 +133,14 @@ final readonly class AnalysisResult
     public function branchOperatorLines(): array
     {
         return $this->branchOperatorLines;
+    }
+
+    /**
+     * @return array<positive-int, true>
+     */
+    public function deadLines(): array
+    {
+        return $this->deadLines;
     }
 
     /**

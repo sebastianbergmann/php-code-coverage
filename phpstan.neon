@@ -6,7 +6,7 @@ parameters:
         - tests/tests
         - tests/bootstrap.php
 
-    resultCachePath: %tmpDir%/php-code-coverage-14.2.php
+    resultCachePath: %tmpDir%/php-code-coverage-14.3.php
 
     stubFiles:
         - build/phpstan-stubs/extensions.stub

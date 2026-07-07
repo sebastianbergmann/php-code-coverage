@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const T_COMMENT;
 use const T_DOC_COMMENT;
+use function array_intersect_key;
 use function array_keys;
 use function array_replace;
 use function assert;
@@ -62,6 +63,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
             $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($sourceCode);
+            $deadCodeFindingVisitor        = new DeadCodeFindingVisitor;
 
             $traverser->addVisitor(new NameResolver);
             $traverser->addVisitor(new AttributeParentConnectingVisitor);
@@ -69,6 +71,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $traverser->addVisitor($lineCountingVisitor);
             $traverser->addVisitor($ignoredLinesFindingVisitor);
             $traverser->addVisitor($executableLinesFindingVisitor);
+            $traverser->addVisitor($deadCodeFindingVisitor);
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
@@ -99,6 +102,13 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
         $ignoredLines = array_keys($ignoredLines);
 
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $deadLines = array_intersect_key(
+            $deadCodeFindingVisitor->deadLines(),
+            $executableLines,
+        );
+
         return new AnalysisResult(
             $codeUnitFindingVisitor->interfaces(),
             $codeUnitFindingVisitor->classes(),
@@ -109,8 +119,9 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
                 $lineCountingVisitor->result()->commentLinesOfCode(),
                 $lineCountingVisitor->result()->nonCommentLinesOfCode(),
             ),
-            $executableLinesFindingVisitor->executableLinesGroupedByBranch(),
+            $executableLines,
             $executableLinesFindingVisitor->branchOperatorLines(),
+            $deadLines,
             $ignoredLines,
         );
     }

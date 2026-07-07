@@ -97,7 +97,7 @@ final class FilterProcessorTest extends TestCase
         $filter->includeFile($file);
 
         $analyser = $this->createFileAnalyser(
-            new AnalysisResult([], [], [], [], new LinesOfCode(0, 0, 0), [2 => 2], [], []),
+            new AnalysisResult([], [], [], [], new LinesOfCode(0, 0, 0), [2 => 2], [], [], []),
         );
 
         $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
@@ -141,7 +141,7 @@ final class FilterProcessorTest extends TestCase
         $filter->includeFile($file);
 
         $analyser = $this->createFileAnalyser(
-            new AnalysisResult([], [], [], [], new LinesOfCode(0, 0, 0), [], [], [2 => 2]),
+            new AnalysisResult([], [], [], [], new LinesOfCode(0, 0, 0), [], [], [], [2 => 2]),
         );
 
         $this->processor->applyIgnoredLinesFilter($data, $filter, $analyser);

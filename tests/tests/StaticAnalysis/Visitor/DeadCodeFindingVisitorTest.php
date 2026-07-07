@@ -92,7 +92,44 @@ final class DeadCodeFindingVisitorTest extends TestCase
             174, // return inside if (false), reachable only through goto
             189, // label inside else after if (true)
             191, // return inside else after if (true), reachable only through goto
+            204, // label inside elseif after if (true)
+            206, // return inside elseif after if (true), reachable only through goto
         ] as $liveLine) {
+            $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
+        }
+    }
+
+    public function testIdentifiesDeadCodeAfterTerminatorInAllStatementContexts(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code_in_various_contexts.php');
+
+        $this->assertSame(
+            [
+                7,   // after return in a function body
+                14,  // after return in a closure body
+                22,  // after return in an if body
+                34,  // after return in an else body
+                44,  // after return in an elseif body
+                54,  // after break in a while body
+                62,  // after break in a do-while body
+                70,  // after continue in a foreach body
+                79,  // after return in a switch case
+                90,  // after throw in a try body
+                93,  // after return in a catch body
+                96,  // after return in a finally body
+                108, // after return at namespace level
+            ],
+            array_keys($deadLines),
+        );
+    }
+
+    public function testLiveArmOfMultiLineShortTernaryWithLiteralFalseConditionIsNotDead(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code_in_various_contexts.php');
+
+        // `false ?: 1` has no "if" arm to mark dead; its result is the
+        // (live) else arm
+        foreach ([102, 103] as $liveLine) {
             $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
         }
     }

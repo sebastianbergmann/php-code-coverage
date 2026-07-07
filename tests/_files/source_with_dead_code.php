@@ -191,4 +191,21 @@ final class ClassWithDeadCode
             return 2;
         }
     }
+
+    public function labelledElseifAfterIfTrueIsReachable(bool $x): int
+    {
+        if ($x) {
+            goto there;
+        }
+
+        if (true) {
+            return 1;
+        } elseif ($x) {
+            there:
+
+            return 2;
+        }
+
+        return 3;
+    }
 }

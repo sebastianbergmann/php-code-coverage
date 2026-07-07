@@ -688,12 +688,12 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $fileCoverage = $lineCoverage[$filename];
 
-        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103] as $deadLine) {
+        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103, 158] as $deadLine) {
             $this->assertArrayHasKey($deadLine, $fileCoverage, "Line {$deadLine} should be present in the coverage map");
             $this->assertSame(-2, $fileCoverage[$deadLine], "Line {$deadLine} should be marked as not executable");
         }
 
-        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113] as $liveLine) {
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113, 151, 162, 174, 191] as $liveLine) {
             $this->assertArrayHasKey($liveLine, $fileCoverage, "Line {$liveLine} should be present in the coverage map");
             $this->assertSame(-1, $fileCoverage[$liveLine], "Line {$liveLine} should be marked as not executed");
         }

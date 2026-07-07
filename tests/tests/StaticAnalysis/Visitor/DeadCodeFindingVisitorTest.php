@@ -63,6 +63,7 @@ final class DeadCodeFindingVisitorTest extends TestCase
                 103, // dead arm of ternary with literal-false condition
                 120, // dead arm of ternary with literal-true condition
                 136, // body of if (false), with a trailing Nop that must be skipped
+                158, // after goto
             ],
             array_keys($deadLines),
         );
@@ -74,6 +75,25 @@ final class DeadCodeFindingVisitorTest extends TestCase
 
         foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113, 125, 130] as $liveLine) {
             $this->assertArrayNotHasKey($liveLine, $deadLines);
+        }
+    }
+
+    public function testCodeReachableOnlyThroughGotoIsNotDead(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code.php');
+
+        foreach ([
+            147, // return before a label; the label resets reachability for what follows
+            149, // label after a terminator
+            151, // return reachable only through goto
+            160, // label after dead code following a goto
+            162, // return reachable by falling through the label
+            172, // label inside if (false)
+            174, // return inside if (false), reachable only through goto
+            189, // label inside else after if (true)
+            191, // return inside else after if (true), reachable only through goto
+        ] as $liveLine) {
+            $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
         }
     }
 

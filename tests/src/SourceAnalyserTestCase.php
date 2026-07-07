@@ -263,7 +263,7 @@ abstract class SourceAnalyserTestCase extends TestCase
         $deadLines       = $result->deadLines();
         $executableLines = $result->executableLines();
 
-        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103] as $line) {
+        foreach ([9, 10, 16, 22, 28, 35, 43, 50, 51, 60, 68, 69, 80, 89, 96, 103, 158] as $line) {
             $this->assertArrayHasKey($line, $deadLines, "Line {$line} should be reported as dead");
             $this->assertArrayHasKey($line, $executableLines, 'Dead lines must be a subset of executable lines');
         }
@@ -280,7 +280,7 @@ abstract class SourceAnalyserTestCase extends TestCase
 
         $deadLines = $result->deadLines();
 
-        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113] as $line) {
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113, 151, 162, 174, 191] as $line) {
             $this->assertArrayNotHasKey($line, $deadLines, "Line {$line} should be live");
         }
     }

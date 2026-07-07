@@ -137,4 +137,58 @@ final class ClassWithDeadCode
             /** trailing docblock parses to a Nop and must be skipped */
         }
     }
+
+    public function codeAfterLabelIsReachable(bool $x): int
+    {
+        if ($x) {
+            goto retry;
+        }
+
+        return 1;
+
+        retry:
+
+        return 2;
+    }
+
+    public function deadAfterGoto(): int
+    {
+        goto end;
+
+        $x = 1;
+
+        end:
+
+        return 2;
+    }
+
+    public function labelledBlockInIfFalseIsReachable(bool $x): int
+    {
+        if ($x) {
+            goto inside;
+        }
+
+        if (false) {
+            inside:
+
+            return 1;
+        }
+
+        return 2;
+    }
+
+    public function labelledElseAfterIfTrueIsReachable(bool $x): int
+    {
+        if ($x) {
+            goto here;
+        }
+
+        if (true) {
+            return 1;
+        } else {
+            here:
+
+            return 2;
+        }
+    }
 }

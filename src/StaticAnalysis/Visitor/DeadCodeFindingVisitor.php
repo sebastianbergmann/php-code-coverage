@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function ksort;
 use function strtolower;
 use PhpParser\Node;
+use PhpParser\NodeFinder;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -20,11 +21,16 @@ use PhpParser\NodeVisitorAbstract;
  * The visitor recognizes three structural patterns:
  *
  *  - Statements that follow an unconditional control-flow transfer within the
- *    same `stmts` array (`return`, `throw`, exit/die, `break`, `continue`).
+ *    same `stmts` array (`return`, `throw`, exit/die, `break`, `continue`, `goto`).
  *  - Bodies of branches with literal-constant conditions: `if (false) { ... }`,
  *    `elseif (false) { ... }`, `while (false) { ... }`, `for (...; false; ...) { ... }`,
  *    the `elseif`/`else` tail after an `if (true)`, and the unreachable arm of
  *    a ternary with a literal-constant condition.
+ *
+ * A label makes the code that follows it reachable again via `goto`. Since
+ * `goto` may also jump into a conditional block (only loops and switches are
+ * forbidden jump targets), a statement or block that contains a label anywhere
+ * in its subtree is never reported as dead.
  *
  * Whole-program reasoning (never-called functions, opcode-level optimization)
  * is out of scope; the visitor reports only what is locally derivable from the
@@ -105,10 +111,14 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
         }
 
         foreach ($node->elseifs as $elseif) {
+            if ($this->containsLabel($elseif->stmts)) {
+                continue;
+            }
+
             $this->markRange($elseif->getStartLine(), $elseif->getEndLine());
         }
 
-        if ($node->else !== null) {
+        if ($node->else !== null && !$this->containsLabel($node->else->stmts)) {
             $this->markRange($node->else->getStartLine(), $node->else->getEndLine());
         }
     }
@@ -138,12 +148,22 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
         $terminated = false;
 
         foreach ($stmts as $stmt) {
-            if ($terminated && !$stmt instanceof Node\Stmt\Nop) {
-                $this->markRange($stmt->getStartLine(), $stmt->getEndLine());
+            if (!$terminated) {
+                if ($this->isTerminator($stmt)) {
+                    $terminated = true;
+                }
+
+                continue;
             }
 
-            if (!$terminated && $this->isTerminator($stmt)) {
-                $terminated = true;
+            if ($this->containsLabel([$stmt])) {
+                $terminated = false;
+
+                continue;
+            }
+
+            if (!$stmt instanceof Node\Stmt\Nop) {
+                $this->markRange($stmt->getStartLine(), $stmt->getEndLine());
             }
         }
     }
@@ -153,6 +173,10 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
      */
     private function markBlock(array $stmts, Node $wrapper): void
     {
+        if ($this->containsLabel($stmts)) {
+            return;
+        }
+
         $wrapperStart = $wrapper->getStartLine();
         $wrapperEnd   = $wrapper->getEndLine();
 
@@ -190,7 +214,8 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
     {
         if ($stmt instanceof Node\Stmt\Return_ ||
             $stmt instanceof Node\Stmt\Break_ ||
-            $stmt instanceof Node\Stmt\Continue_) {
+            $stmt instanceof Node\Stmt\Continue_ ||
+            $stmt instanceof Node\Stmt\Goto_) {
             return true;
         }
 
@@ -200,6 +225,14 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
         }
 
         return false;
+    }
+
+    /**
+     * @param array<Node\Stmt> $stmts
+     */
+    private function containsLabel(array $stmts): bool
+    {
+        return (new NodeFinder)->findFirstInstanceOf($stmts, Node\Stmt\Label::class) !== null;
     }
 
     /**

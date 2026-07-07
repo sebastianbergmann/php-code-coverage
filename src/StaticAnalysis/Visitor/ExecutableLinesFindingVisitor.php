@@ -532,10 +532,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private function enterConditional(Node $node): void
     {
-        if (null === $node->cond) {
-            return;
-        }
-
         $this->setLineBranch(
             $node->cond->getStartLine(),
             $node->cond->getStartLine(),

@@ -16,7 +16,9 @@
  * therefore all values that vary between runs (version, runtime, date, paths)
  * are replaced with %s placeholders; directory separators that follow the
  * fixture path are replaced with %e so that the expectations also match on
- * Windows. In large file views, everything after
+ * Windows. The contents of control flow graph containers are replaced with
+ * %A: the SVG markup varies between Graphviz versions and is omitted entirely
+ * when the dot tool is not available. In large file views, everything after
  * the coverage summary table (source listing, footer, scripts) is collapsed
  * to %a: PCRE cannot compile the format description of a fully literal large
  * file view into a regular expression ("regular expression is too large").
@@ -67,6 +69,7 @@ function withPlaceholders(string $content): string
     $content = preg_replace('#( at )[^<]+(\.</small>)#', '${1}%s${2}', $content);
     $content = str_replace('php-code-coverage ' . Version::id() . '</a>', 'php-code-coverage %s</a>', $content);
     $content = str_replace('?v=' . Version::id(), '?v=%s', $content);
+    $content = preg_replace('#(<div class="cfg-graph"[^>]*>).*?(</div>)#s', '${1}%A${2}', $content);
 
     return preg_replace_callback(
         '/' . preg_quote(rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR), '/') . '(' . preg_quote(DIRECTORY_SEPARATOR, '/') . '[^<"]*)?/',

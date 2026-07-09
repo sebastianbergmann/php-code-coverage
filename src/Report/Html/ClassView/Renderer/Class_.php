@@ -152,23 +152,25 @@ final class Class_ extends Renderer
         }
 
         // Trait methods
-        foreach ($node->traitSections() as $section) {
+        foreach ($node->traitSections() as $i => $section) {
             foreach ($section->trait->methods as $methodName => $method) {
                 $items .= $this->renderMethodItem(
                     $methodItemTemplate,
                     $method,
                     '&nbsp;<small>[' . htmlspecialchars($section->traitName, self::HTML_SPECIAL_CHARS_FLAGS) . ']</small> ',
+                    'trait-' . $i . '-',
                 );
             }
         }
 
         // Inherited methods
-        foreach ($node->parentSections() as $section) {
+        foreach ($node->parentSections() as $i => $section) {
             foreach ($section->methods as $methodName => $method) {
                 $items .= $this->renderMethodItem(
                     $methodItemTemplate,
                     $method,
                     '&nbsp;<small>[' . htmlspecialchars($section->className, self::HTML_SPECIAL_CHARS_FLAGS) . ']</small> ',
+                    'parent-' . $i . '-',
                 );
             }
         }
@@ -176,7 +178,7 @@ final class Class_ extends Renderer
         return $items;
     }
 
-    private function renderMethodItem(Template $template, ProcessedMethodType $method, string $indent = '&nbsp;'): string
+    private function renderMethodItem(Template $template, ProcessedMethodType $method, string $indent = '&nbsp;', string $anchorPrefix = ''): string
     {
         $numMethods       = 0;
         $numTestedMethods = 0;
@@ -213,8 +215,9 @@ final class Class_ extends Renderer
             $template,
             [
                 'name' => sprintf(
-                    '%s<a href="#%d"><abbr title="%s">%s</abbr></a>',
+                    '%s<a href="#%s%d"><abbr title="%s">%s</abbr></a>',
                     $indent,
+                    $anchorPrefix,
                     $method->startLine,
                     htmlspecialchars($method->signature, self::HTML_SPECIAL_CHARS_FLAGS),
                     $method->methodName,
@@ -255,7 +258,7 @@ final class Class_ extends Renderer
         );
 
         // Trait source sections
-        foreach ($node->traitSections() as $section) {
+        foreach ($node->traitSections() as $i => $section) {
             $sections .= $this->renderSectionHeader('From ' . $section->traitName);
 
             $sections .= $this->renderSourceSection(
@@ -265,11 +268,12 @@ final class Class_ extends Renderer
                 $section->endLine,
                 $section->fileNode->lineCoverageData(),
                 $section->fileNode->testData(),
+                'trait-' . $i . '-',
             );
         }
 
         // Parent source sections
-        foreach ($node->parentSections() as $section) {
+        foreach ($node->parentSections() as $i => $section) {
             $sections .= $this->renderSectionHeader('Inherited from ' . $section->className);
 
             foreach ($section->methods as $method) {
@@ -280,6 +284,7 @@ final class Class_ extends Renderer
                     $method->endLine,
                     $section->fileNode->lineCoverageData(),
                     $section->fileNode->testData(),
+                    'parent-' . $i . '-',
                 );
             }
         }
@@ -300,7 +305,7 @@ final class Class_ extends Renderer
      * @param array<int, ?list<non-empty-string>> $coverageData
      * @param array<string, TestType>             $testData
      */
-    private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData): string
+    private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, string $anchorPrefix = ''): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
@@ -363,7 +368,7 @@ final class Class_ extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);

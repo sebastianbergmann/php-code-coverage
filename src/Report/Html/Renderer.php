@@ -389,10 +389,11 @@ abstract class Renderer
         return 'success';
     }
 
-    protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover): string
+    protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $anchorPrefix = ''): string
     {
         $template->setVar(
             [
+                'anchor'      => $anchorPrefix . $lineNumber,
                 'lineNumber'  => (string) $lineNumber,
                 'lineContent' => $lineContent,
                 'class'       => $class,

@@ -16,6 +16,7 @@ use function file_put_contents;
 use function iterator_count;
 use function mkdir;
 use function str_replace;
+use function substr_count;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversNamespace;
 use PHPUnit\Framework\Attributes\Medium;
@@ -116,9 +117,15 @@ final class EndToEndTest extends TestCase
         $this->assertStringNotContainsString('declarationOnly', $branch);
         $this->assertStringNotContainsString('declarationOnly', $path);
 
-        // the paths of a function with more than 100 paths are collapsed
+        // the paths of a function with more than 100 paths are collapsed and capped
         $this->assertStringContainsString('<details><summary>101 paths &mdash; click to expand</summary>', $path);
+        $this->assertStringContainsString('Only the first 100 paths are shown', $path);
         $this->assertStringContainsString('</details>', $path);
+        $this->assertStringContainsString('data-path-index="99"', $path);
+        $this->assertStringNotContainsString('data-path-index="100"', $path);
+
+        // the graph highlighting data is capped as well: one "0-exit" edge for each of the 100 rendered paths
+        $this->assertSame(100, substr_count($path, '&quot;0-exit&quot;'));
     }
 
     public function testPathCoverageForBankAccountTest(): void

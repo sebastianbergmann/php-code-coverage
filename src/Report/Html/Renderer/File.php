@@ -17,6 +17,7 @@ use function array_key_exists;
 use function array_keys;
 use function array_merge;
 use function array_pop;
+use function array_slice;
 use function array_unique;
 use function count;
 use function explode;
@@ -52,6 +53,13 @@ use SebastianBergmann\Template\Template;
 final class File extends Renderer
 {
     private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
+
+    /**
+     * Maximum number of paths per method for which table rows, interactive
+     * graph highlighting data, and graph edge classes are rendered; path
+     * counts grow combinatorially and would bloat the report otherwise.
+     */
+    private const int MAX_RENDERED_PATHS = 100;
     private readonly SyntaxHighlighter $syntaxHighlighter;
     private ?ControlFlowGraph $controlFlowGraph = null;
 
@@ -887,8 +895,13 @@ final class File extends Renderer
 
             $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h5>' . "\n";
 
-            if ($pathCount > 100) {
+            $renderedPaths = $methodData->paths;
+
+            if ($pathCount > self::MAX_RENDERED_PATHS) {
+                $renderedPaths = array_slice($methodData->paths, 0, self::MAX_RENDERED_PATHS, true);
+
                 $paths .= '<details><summary>' . $pathCount . ' paths &mdash; click to expand</summary>' . "\n";
+                $paths .= '<p>Only the first ' . self::MAX_RENDERED_PATHS . ' paths are shown, consider refactoring your code to bring the number of paths down.</p>' . "\n";
             }
 
             $paths .= '<table class="table table-bordered table-sm structure-table">' . "\n";
@@ -897,7 +910,7 @@ final class File extends Renderer
 
             $pathIndex = 1;
 
-            foreach ($methodData->paths as $path) {
+            foreach ($renderedPaths as $path) {
                 $branchLabels = [];
 
                 foreach ($path->path as $branchId) {
@@ -965,7 +978,7 @@ final class File extends Renderer
             $pathsJson = [];
             $pathIdx   = 0;
 
-            foreach ($methodData->paths as $path) {
+            foreach ($renderedPaths as $path) {
                 $edges            = [];
                 $previousBranchId = null;
                 $lastBranchId     = null;
@@ -991,7 +1004,7 @@ final class File extends Renderer
                 $pathIdx++;
             }
 
-            $svg = $this->controlFlowGraph()->renderSvg($methodData, $methodData->paths);
+            $svg = $this->controlFlowGraph()->renderSvg($methodData, $renderedPaths);
 
             $paths .= sprintf(
                 '<div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
@@ -999,7 +1012,7 @@ final class File extends Renderer
                 $svg,
             );
 
-            if ($pathCount > 100) {
+            if ($pathCount > self::MAX_RENDERED_PATHS) {
                 $paths .= '</details>' . "\n";
             }
         }

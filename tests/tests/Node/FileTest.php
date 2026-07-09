@@ -602,6 +602,20 @@ final class FileTest extends TestCase
         $this->assertSame(1, $file->numberOfTestedMethods());
     }
 
+    public function testRawClassesCanBeQueried(): void
+    {
+        $file = $this->createFileNodeWithTestedClassAndTrait();
+
+        $this->assertArrayHasKey('MyClass', $file->rawClasses());
+    }
+
+    public function testRawTraitsCanBeQueried(): void
+    {
+        $file = $this->createFileNodeWithTestedClassAndTrait();
+
+        $this->assertArrayHasKey('MyTrait', $file->rawTraits());
+    }
+
     private function createFileNodeWithTestedClassAndTrait(): File
     {
         $root = new Directory('root');

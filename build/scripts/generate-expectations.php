@@ -133,33 +133,46 @@ foreach ($scenarios as $expectationDirectoryName => $coverage) {
 
     $expectationDirectory = $expectationPath . $expectationDirectoryName;
 
-    if (is_dir($expectationDirectory)) {
-        foreach (glob($expectationDirectory . DIRECTORY_SEPARATOR . '*') as $staleFile) {
-            unlink($staleFile);
-        }
-    } else {
-        mkdir($expectationDirectory, 0o777, true);
-    }
+    removeDirectory($expectationDirectory);
+    mkdir($expectationDirectory, 0o777, true);
 
-    foreach (glob($temporaryPath . DIRECTORY_SEPARATOR . '*.html') as $generatedFile) {
-        $name      = basename($generatedFile);
-        $generated = str_replace(PHP_EOL, "\n", file_get_contents($generatedFile));
-        $content   = withPlaceholders($generated);
+    $generatedFiles = new RegexIterator(
+        new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($temporaryPath, RecursiveDirectoryIterator::SKIP_DOTS),
+        ),
+        '/\.html$/',
+    );
+
+    $numberOfFiles = 0;
+
+    foreach ($generatedFiles as $generatedFile) {
+        $relativePath = substr($generatedFile->getPathname(), strlen($temporaryPath) + 1);
+        $generated    = str_replace(PHP_EOL, "\n", file_get_contents($generatedFile->getPathname()));
+        $content      = withPlaceholders($generated);
 
         if (!formatMatches($content, $generated)) {
             $content = collapseSourceListing($content);
         }
 
         if (!formatMatches($content, $generated)) {
-            print 'Format description for ' . $expectationDirectoryName . '/' . $name . ' does not match the generated file' . PHP_EOL;
+            print 'Format description for ' . $expectationDirectoryName . '/' . $relativePath . ' does not match the generated file' . PHP_EOL;
 
             exit(1);
         }
 
-        file_put_contents($expectationDirectory . DIRECTORY_SEPARATOR . $name, $content);
+        $targetFile      = $expectationDirectory . DIRECTORY_SEPARATOR . $relativePath;
+        $targetDirectory = dirname($targetFile);
+
+        if (!is_dir($targetDirectory)) {
+            mkdir($targetDirectory, 0o777, true);
+        }
+
+        file_put_contents($targetFile, $content);
+
+        $numberOfFiles++;
     }
 
-    print $expectationDirectoryName . ': ' . count(glob($expectationDirectory . DIRECTORY_SEPARATOR . '*.html')) . ' files' . PHP_EOL;
+    print $expectationDirectoryName . ': ' . $numberOfFiles . ' files' . PHP_EOL;
 }
 
 removeDirectory($temporaryPath);

@@ -20,6 +20,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Visibility;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(Directory::class)]
 #[Small]
@@ -339,13 +340,13 @@ final class DirectoryTest extends TestCase
 
         $this->assertSame(6, $root->numberOfExecutableLines());
         $this->assertSame(6, $root->numberOfExecutedLines());
-        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
-        $this->assertSame(2, $root->numberOfExecutedLinesByMediumTests());
-        $this->assertSame(2, $root->numberOfExecutedLinesByLargeTests());
-        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrMediumTests());
-        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrLargeTests());
-        $this->assertSame(4, $root->numberOfExecutedLinesByMediumOrLargeTests());
-        $this->assertSame(6, $root->numberOfExecutedLinesBySmallOrMediumOrLargeTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::LARGE));
+        $this->assertSame(4, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(4, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(4, $root->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(6, $root->numberOfExecutedLinesByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedClassesByTestSizeAggregatesFromChildren(): void
@@ -355,13 +356,13 @@ final class DirectoryTest extends TestCase
         $root->addFile($this->createFileCoveredByMediumTest($root, 'medium.php'));
         $root->addFile($this->createFileCoveredByLargeTest($root, 'large.php'));
 
-        $this->assertSame(1, $root->numberOfTestedClassesBySmallTests());
-        $this->assertSame(1, $root->numberOfTestedClassesByMediumTests());
-        $this->assertSame(1, $root->numberOfTestedClassesByLargeTests());
-        $this->assertSame(2, $root->numberOfTestedClassesBySmallOrMediumTests());
-        $this->assertSame(2, $root->numberOfTestedClassesBySmallOrLargeTests());
-        $this->assertSame(2, $root->numberOfTestedClassesByMediumOrLargeTests());
-        $this->assertSame(3, $root->numberOfTestedClassesBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $root->numberOfTestedClassesByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $root->numberOfTestedClassesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(1, $root->numberOfTestedClassesByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedClassesByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(2, $root->numberOfTestedClassesByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedClassesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(3, $root->numberOfTestedClassesByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedMethodsByTestSizeAggregatesFromChildren(): void
@@ -370,13 +371,13 @@ final class DirectoryTest extends TestCase
         $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
         $root->addFile($this->createFileCoveredByMediumTest($root, 'medium.php'));
 
-        $this->assertSame(1, $root->numberOfTestedMethodsBySmallTests());
-        $this->assertSame(1, $root->numberOfTestedMethodsByMediumTests());
-        $this->assertSame(0, $root->numberOfTestedMethodsByLargeTests());
-        $this->assertSame(2, $root->numberOfTestedMethodsBySmallOrMediumTests());
-        $this->assertSame(1, $root->numberOfTestedMethodsBySmallOrLargeTests());
-        $this->assertSame(1, $root->numberOfTestedMethodsByMediumOrLargeTests());
-        $this->assertSame(2, $root->numberOfTestedMethodsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $root->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $root->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $root->numberOfTestedMethodsByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedMethodsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(1, $root->numberOfTestedMethodsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(1, $root->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedMethodsByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedFunctionsByTestSizeAggregatesFromChildren(): void
@@ -385,13 +386,13 @@ final class DirectoryTest extends TestCase
         $root->addFile($this->createFileWithFunctionCoveredBySmallTest($root, 'small.php'));
         $root->addFile($this->createFileWithFunctionCoveredByMediumTest($root, 'medium.php'));
 
-        $this->assertSame(1, $root->numberOfTestedFunctionsBySmallTests());
-        $this->assertSame(1, $root->numberOfTestedFunctionsByMediumTests());
-        $this->assertSame(0, $root->numberOfTestedFunctionsByLargeTests());
-        $this->assertSame(2, $root->numberOfTestedFunctionsBySmallOrMediumTests());
-        $this->assertSame(1, $root->numberOfTestedFunctionsBySmallOrLargeTests());
-        $this->assertSame(1, $root->numberOfTestedFunctionsByMediumOrLargeTests());
-        $this->assertSame(2, $root->numberOfTestedFunctionsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $root->numberOfTestedFunctionsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $root->numberOfTestedFunctionsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $root->numberOfTestedFunctionsByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedFunctionsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(1, $root->numberOfTestedFunctionsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(1, $root->numberOfTestedFunctionsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfTestedFunctionsByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedTraitsByTestSizeReturnsZeroWhenNoTraitsExist(): void
@@ -399,13 +400,9 @@ final class DirectoryTest extends TestCase
         $root = new Directory('root');
         $root->addFile($this->createFileCoveredBySmallTest($root, 'small.php'));
 
-        $this->assertSame(0, $root->numberOfTestedTraitsBySmallTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsByMediumTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsByLargeTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrMediumTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrLargeTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsByMediumOrLargeTests());
-        $this->assertSame(0, $root->numberOfTestedTraitsBySmallOrMediumOrLargeTests());
+        foreach (TestSizes::COMBINATIONS as $combination) {
+            $this->assertSame(0, $root->numberOfTestedTraitsByTestSize($combination));
+        }
     }
 
     public function testTestSizeAggregationCachesResultsAcrossNestedDirectories(): void
@@ -415,10 +412,10 @@ final class DirectoryTest extends TestCase
         $sub->addFile($this->createFileCoveredBySmallTest($sub, 'small.php'));
         $sub->addFile($this->createFileCoveredByLargeTest($sub, 'large.php'));
 
-        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
-        $this->assertSame(2, $root->numberOfExecutedLinesByLargeTests());
-        $this->assertSame(4, $root->numberOfExecutedLinesBySmallOrLargeTests());
-        $this->assertSame(2, $root->numberOfExecutedLinesBySmallTests());
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::LARGE));
+        $this->assertSame(4, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(2, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
     }
 
     /**

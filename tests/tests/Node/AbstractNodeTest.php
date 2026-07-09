@@ -19,6 +19,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Visibility;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(AbstractNode::class)]
 #[Small]
@@ -240,39 +241,39 @@ final class AbstractNodeTest extends TestCase
     {
         $file = $this->createFileWithMixedTestSizeCoverage();
 
-        $this->assertSame(50.0, $file->percentageOfExecutedLinesBySmallTests()->asFloat());
-        $this->assertSame(25.0, $file->percentageOfExecutedLinesByMediumTests()->asFloat());
-        $this->assertSame(25.0, $file->percentageOfExecutedLinesByLargeTests()->asFloat());
-        $this->assertSame(75.0, $file->percentageOfExecutedLinesBySmallOrMediumTests()->asFloat());
-        $this->assertSame(75.0, $file->percentageOfExecutedLinesBySmallOrLargeTests()->asFloat());
-        $this->assertSame(50.0, $file->percentageOfExecutedLinesByMediumOrLargeTests()->asFloat());
-        $this->assertSame(100.0, $file->percentageOfExecutedLinesBySmallOrMediumOrLargeTests()->asFloat());
+        $this->assertSame(50.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::SMALL)->asFloat());
+        $this->assertSame(25.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::MEDIUM)->asFloat());
+        $this->assertSame(25.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::LARGE)->asFloat());
+        $this->assertSame(75.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::MEDIUM)->asFloat());
+        $this->assertSame(75.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::LARGE)->asFloat());
+        $this->assertSame(50.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE)->asFloat());
+        $this->assertSame(100.0, $file->percentageOfExecutedLinesByTestSize(TestSizes::ALL)->asFloat());
     }
 
     public function testNumberOfTestedClassesAndTraitsByTestSize(): void
     {
         $file = $this->createFileWithMixedTestSizeCoverage();
 
-        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsBySmallTests());
-        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByMediumTests());
-        $this->assertSame(0, $file->numberOfTestedClassesAndTraitsByLargeTests());
-        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsBySmallOrMediumTests());
-        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsBySmallOrLargeTests());
-        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByMediumOrLargeTests());
-        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedClassesAndTraitsByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedFunctionsAndMethodsByTestSize(): void
     {
         $file = $this->createFileWithMixedTestSizeCoverage();
 
-        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsBySmallTests());
-        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByMediumTests());
-        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByLargeTests());
-        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsBySmallOrMediumTests());
-        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsBySmallOrLargeTests());
-        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsByMediumOrLargeTests());
-        $this->assertSame(3, $file->numberOfTestedFunctionsAndMethodsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(3, $file->numberOfTestedFunctionsAndMethodsByTestSize(TestSizes::ALL));
     }
 
     public function testNameStripsTrailingDirectorySeparator(): void

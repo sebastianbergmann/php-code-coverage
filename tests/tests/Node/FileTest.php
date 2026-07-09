@@ -22,6 +22,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Visibility;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(File::class)]
 #[Small]
@@ -264,13 +265,13 @@ final class FileTest extends TestCase
 
         $this->assertSame(12, $file->numberOfExecutableLines());
         $this->assertSame(10, $file->numberOfExecutedLines());
-        $this->assertSame(6, $file->numberOfExecutedLinesBySmallTests());
-        $this->assertSame(4, $file->numberOfExecutedLinesByMediumTests());
-        $this->assertSame(2, $file->numberOfExecutedLinesByLargeTests());
-        $this->assertSame(8, $file->numberOfExecutedLinesBySmallOrMediumTests());
-        $this->assertSame(8, $file->numberOfExecutedLinesBySmallOrLargeTests());
-        $this->assertSame(6, $file->numberOfExecutedLinesByMediumOrLargeTests());
-        $this->assertSame(10, $file->numberOfExecutedLinesBySmallOrMediumOrLargeTests());
+        $this->assertSame(6, $file->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(4, $file->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(2, $file->numberOfExecutedLinesByTestSize(TestSizes::LARGE));
+        $this->assertSame(8, $file->numberOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(8, $file->numberOfExecutedLinesByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(6, $file->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(10, $file->numberOfExecutedLinesByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedClassesByTestSize(): void
@@ -279,13 +280,13 @@ final class FileTest extends TestCase
 
         $this->assertSame(3, $file->numberOfClasses());
         $this->assertSame(3, $file->numberOfTestedClasses());
-        $this->assertSame(1, $file->numberOfTestedClassesBySmallTests());
-        $this->assertSame(1, $file->numberOfTestedClassesByMediumTests());
-        $this->assertSame(1, $file->numberOfTestedClassesByLargeTests());
-        $this->assertSame(2, $file->numberOfTestedClassesBySmallOrMediumTests());
-        $this->assertSame(2, $file->numberOfTestedClassesBySmallOrLargeTests());
-        $this->assertSame(2, $file->numberOfTestedClassesByMediumOrLargeTests());
-        $this->assertSame(3, $file->numberOfTestedClassesBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedClassesByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $file->numberOfTestedClassesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedClassesByTestSize(TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedClassesByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(2, $file->numberOfTestedClassesByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(2, $file->numberOfTestedClassesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(3, $file->numberOfTestedClassesByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedTraitsByTestSize(): void
@@ -294,13 +295,13 @@ final class FileTest extends TestCase
 
         $this->assertSame(1, $file->numberOfTraits());
         $this->assertSame(1, $file->numberOfTestedTraits());
-        $this->assertSame(1, $file->numberOfTestedTraitsBySmallTests());
-        $this->assertSame(1, $file->numberOfTestedTraitsByMediumTests());
-        $this->assertSame(0, $file->numberOfTestedTraitsByLargeTests());
-        $this->assertSame(1, $file->numberOfTestedTraitsBySmallOrMediumTests());
-        $this->assertSame(1, $file->numberOfTestedTraitsBySmallOrLargeTests());
-        $this->assertSame(1, $file->numberOfTestedTraitsByMediumOrLargeTests());
-        $this->assertSame(1, $file->numberOfTestedTraitsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $file->numberOfTestedTraitsByTestSize(TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedTraitsByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedMethodsByTestSize(): void
@@ -309,13 +310,13 @@ final class FileTest extends TestCase
 
         $this->assertSame(4, $file->numberOfMethods());
         $this->assertSame(4, $file->numberOfTestedMethods());
-        $this->assertSame(2, $file->numberOfTestedMethodsBySmallTests());
-        $this->assertSame(2, $file->numberOfTestedMethodsByMediumTests());
-        $this->assertSame(1, $file->numberOfTestedMethodsByLargeTests());
-        $this->assertSame(3, $file->numberOfTestedMethodsBySmallOrMediumTests());
-        $this->assertSame(3, $file->numberOfTestedMethodsBySmallOrLargeTests());
-        $this->assertSame(3, $file->numberOfTestedMethodsByMediumOrLargeTests());
-        $this->assertSame(4, $file->numberOfTestedMethodsBySmallOrMediumOrLargeTests());
+        $this->assertSame(2, $file->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(2, $file->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedMethodsByTestSize(TestSizes::LARGE));
+        $this->assertSame(3, $file->numberOfTestedMethodsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(3, $file->numberOfTestedMethodsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(3, $file->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(4, $file->numberOfTestedMethodsByTestSize(TestSizes::ALL));
     }
 
     public function testNumberOfTestedFunctionsByTestSize(): void
@@ -324,30 +325,27 @@ final class FileTest extends TestCase
 
         $this->assertSame(2, $file->numberOfFunctions());
         $this->assertSame(1, $file->numberOfTestedFunctions());
-        $this->assertSame(1, $file->numberOfTestedFunctionsBySmallTests());
-        $this->assertSame(0, $file->numberOfTestedFunctionsByMediumTests());
-        $this->assertSame(0, $file->numberOfTestedFunctionsByLargeTests());
-        $this->assertSame(1, $file->numberOfTestedFunctionsBySmallOrMediumTests());
-        $this->assertSame(1, $file->numberOfTestedFunctionsBySmallOrLargeTests());
-        $this->assertSame(0, $file->numberOfTestedFunctionsByMediumOrLargeTests());
-        $this->assertSame(1, $file->numberOfTestedFunctionsBySmallOrMediumOrLargeTests());
+        $this->assertSame(1, $file->numberOfTestedFunctionsByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $file->numberOfTestedFunctionsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $file->numberOfTestedFunctionsByTestSize(TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedFunctionsByTestSize(TestSizes::SMALL | TestSizes::MEDIUM));
+        $this->assertSame(1, $file->numberOfTestedFunctionsByTestSize(TestSizes::SMALL | TestSizes::LARGE));
+        $this->assertSame(0, $file->numberOfTestedFunctionsByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfTestedFunctionsByTestSize(TestSizes::ALL));
     }
 
     public function testTestSizeCountersAreZeroWhenNoTestDataIsAvailable(): void
     {
         $file = $this->createFileNode();
 
-        $this->assertSame(0, $file->numberOfExecutedLinesBySmallTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesByMediumTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesByLargeTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesBySmallOrMediumTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesBySmallOrLargeTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesByMediumOrLargeTests());
-        $this->assertSame(0, $file->numberOfExecutedLinesBySmallOrMediumOrLargeTests());
-        $this->assertSame(0, $file->numberOfTestedClassesBySmallTests());
-        $this->assertSame(0, $file->numberOfTestedTraitsBySmallTests());
-        $this->assertSame(0, $file->numberOfTestedMethodsBySmallTests());
-        $this->assertSame(0, $file->numberOfTestedFunctionsBySmallTests());
+        foreach (TestSizes::COMBINATIONS as $combination) {
+            $this->assertSame(0, $file->numberOfExecutedLinesByTestSize($combination));
+        }
+
+        $this->assertSame(0, $file->numberOfTestedClassesByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $file->numberOfTestedTraitsByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $file->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $file->numberOfTestedFunctionsByTestSize(TestSizes::SMALL));
     }
 
     public function testHasBranchCoverageDataDefaultsToFalse(): void

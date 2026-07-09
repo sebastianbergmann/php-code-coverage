@@ -24,6 +24,7 @@ use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\Template\Template;
@@ -63,6 +64,21 @@ use SebastianBergmann\Template\Template;
  */
 abstract class Renderer
 {
+    /**
+     * Maps each combination of test sizes to the key suffix used in the
+     * coverage data JSON that drives the test size filter.
+     *
+     * @var array<int, non-empty-string>
+     */
+    protected const array TEST_SIZE_JSON_KEY_SUFFIXES = [
+        TestSizes::SMALL                                        => 'Small',
+        TestSizes::MEDIUM                                       => 'Medium',
+        TestSizes::LARGE                                        => 'Large',
+        TestSizes::SMALL | TestSizes::MEDIUM                    => 'SM',
+        TestSizes::SMALL | TestSizes::LARGE                     => 'SL',
+        TestSizes::MEDIUM | TestSizes::LARGE                    => 'ML',
+        TestSizes::SMALL | TestSizes::MEDIUM | TestSizes::LARGE => 'SML',
+    ];
     protected string $templatePath;
     protected string $generator;
     protected string $date;
@@ -347,6 +363,26 @@ abstract class Renderer
     protected function buildCoverageDataJson(array $data): string
     {
         return json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
+    protected function coverageDataJsonFor(AbstractNode $node): string
+    {
+        $data = [
+            'linesTotal'   => $node->numberOfExecutableLines(),
+            'linesAll'     => $node->numberOfExecutedLines(),
+            'methodsTotal' => $node->numberOfFunctionsAndMethods(),
+            'methodsAll'   => $node->numberOfTestedFunctionsAndMethods(),
+            'classesTotal' => $node->numberOfClassesAndTraits(),
+            'classesAll'   => $node->numberOfTestedClassesAndTraits(),
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $data['lines' . $suffix]   = $node->numberOfExecutedLinesByTestSize($combination);
+            $data['methods' . $suffix] = $node->numberOfTestedFunctionsAndMethodsByTestSize($combination);
+            $data['classes' . $suffix] = $node->numberOfTestedClassesAndTraitsByTestSize($combination);
+        }
+
+        return $this->buildCoverageDataJson($data);
     }
 
     private function runtimeString(): string

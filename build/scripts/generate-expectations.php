@@ -14,7 +14,9 @@
  *
  * The generated files are compared using assertStringMatchesFormatFile(),
  * therefore all values that vary between runs (version, runtime, date, paths)
- * are replaced with %s placeholders. In large file views, everything after
+ * are replaced with %s placeholders; directory separators that follow the
+ * fixture path are replaced with %e so that the expectations also match on
+ * Windows. In large file views, everything after
  * the coverage summary table (source listing, footer, scripts) is collapsed
  * to %a: PCRE cannot compile the format description of a fully literal large
  * file view into a regular expression ("regular expression is too large").
@@ -65,9 +67,19 @@ function withPlaceholders(string $content): string
     $content = preg_replace('#( at )[^<]+(\.</small>)#', '${1}%s${2}', $content);
     $content = str_replace('php-code-coverage ' . Version::id() . '</a>', 'php-code-coverage %s</a>', $content);
     $content = str_replace('?v=' . Version::id(), '?v=%s', $content);
-    $content = str_replace(TEST_FILES_PATH, '%s', $content);
 
-    return str_replace(rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR), '%s', $content);
+    return preg_replace_callback(
+        '/' . preg_quote(rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR), '/') . '(' . preg_quote(DIRECTORY_SEPARATOR, '/') . '[^<"]*)?/',
+        static function (array $matches): string
+        {
+            if (!isset($matches[1])) {
+                return '%s';
+            }
+
+            return '%s' . str_replace(DIRECTORY_SEPARATOR, '%e', substr($matches[1], 1));
+        },
+        $content,
+    );
 }
 
 function collapseSourceListing(string $content): string

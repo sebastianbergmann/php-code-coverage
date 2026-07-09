@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use const DIRECTORY_SEPARATOR;
 use BankAccount;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -1227,10 +1228,10 @@ final readonly class CoverageFixtureProvider
     public function coverageForClassesWithTraitsAndInheritance(): CodeCoverage
     {
         $filter = new Filter;
-        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ChildClass.php');
-        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ExampleClass.php');
-        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ExampleTrait.php');
-        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ParentClass.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ChildClass.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleClass.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleTrait.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ParentClass.php');
 
         $coverage = new CodeCoverage(
             $this->xdebugFakeForClassesWithTraitsAndInheritance(),
@@ -1555,17 +1556,17 @@ final readonly class CoverageFixtureProvider
         return new FakeDriver(
             RawCodeCoverageData::fromXdebugWithoutPathCoverage(
                 [
-                    TEST_FILES_PATH . 'ClassView/ChildClass.php' => [
+                    TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ChildClass.php' => [
                         11 => 1,
                     ],
-                    TEST_FILES_PATH . 'ClassView/ExampleClass.php' => [
+                    TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleClass.php' => [
                         9  => 1,
                         14 => -1,
                     ],
-                    TEST_FILES_PATH . 'ClassView/ExampleTrait.php' => [
+                    TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleTrait.php' => [
                         9 => 1,
                     ],
-                    TEST_FILES_PATH . 'ClassView/ParentClass.php' => [
+                    TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ParentClass.php' => [
                         9 => -1,
                     ],
                 ],

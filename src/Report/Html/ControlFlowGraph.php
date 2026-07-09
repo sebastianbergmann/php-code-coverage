@@ -32,13 +32,16 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
  */
 final class ControlFlowGraph
 {
+    /**
+     * Branch identifier used by Xdebug for the exit of a function (XDEBUG_BRANCH_EXIT in xdebug_branch_info.h).
+     */
     public const int XDEBUG_EXIT_BRANCH = 2147483645;
     private ?bool $dotAvailable         = null;
-    private readonly Colors $colors;
+    private readonly string $dotBinary;
 
-    public function __construct(Colors $colors)
+    public function __construct(string $dotBinary = 'dot')
     {
-        $this->colors = $colors;
+        $this->dotBinary = $dotBinary;
     }
 
     /**
@@ -52,19 +55,21 @@ final class ControlFlowGraph
     }
 
     /**
+     * Generates the graph in Graphviz DOT format.
+     *
+     * Nodes and edges carry "covered" / "uncovered" classes instead of color
+     * literals; the report's stylesheet maps them to the configured color
+     * scheme in both light mode and dark mode.
+     *
      * @param null|array<int, ProcessedPathCoverageData> $paths
      */
-    private function generateDot(ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
+    public function generateDot(ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
     {
-        $coveredFill   = $this->colors->successLow();
-        $coveredBorder = $this->colors->successBar();
-        $uncoveredFill = $this->colors->danger();
-        $uncoveredEdge = $this->colors->dangerBar();
-
         $dot = "digraph {\n";
         $dot .= "  rankdir=TB;\n";
+        $dot .= "  bgcolor=transparent;\n";
         $dot .= '  node [shape=box, style=filled, fontname="sans-serif", fontsize=11];' . "\n";
-        $dot .= '  entry [label="entry", shape=oval, style=filled, fillcolor="#f5f5f5", color="#999999"];' . "\n";
+        $dot .= '  entry [label="entry", shape=oval, class="terminal"];' . "\n";
 
         $hasExit       = false;
         $firstBranchId = null;
@@ -86,25 +91,16 @@ final class ControlFlowGraph
                 ? sprintf('L%d', $lineStart)
                 : sprintf('L%d-L%d', $lineStart, $lineEnd);
 
-            if ($branch->hit !== []) {
-                $fillColor = $coveredFill;
-                $color     = $coveredBorder;
-            } else {
-                $fillColor = $uncoveredFill;
-                $color     = $uncoveredEdge;
-            }
-
             $dot .= sprintf(
-                '  b%d [label="%s", fillcolor="%s", color="%s"];' . "\n",
+                '  b%d [label="%s", class="%s"];' . "\n",
                 $branchId,
                 $label,
-                $fillColor,
-                $color,
+                $branch->hit !== [] ? 'covered' : 'uncovered',
             );
         }
 
         if ($hasExit) {
-            $dot .= '  exit [label="exit", shape=oval, style=filled, fillcolor="#f5f5f5", color="#999999"];' . "\n";
+            $dot .= '  exit [label="exit", shape=oval, class="terminal"];' . "\n";
         }
 
         if ($firstBranchId !== null) {
@@ -120,24 +116,23 @@ final class ControlFlowGraph
                     : sprintf('b%d', $destBranchId);
 
                 $edgeHit = isset($branch->out_hit[$edgeIndex]) && $branch->out_hit[$edgeIndex] > 0;
-                $color   = $edgeHit ? $coveredBorder : $uncoveredEdge;
 
                 $edgeKey = $destBranchId === self::XDEBUG_EXIT_BRANCH
                     ? $branchId . '-exit'
                     : $branchId . '-' . $destBranchId;
 
-                $attrs = sprintf('color="%s"', $color);
-                $attrs .= sprintf(', id="edge-%s"', $edgeKey);
+                $classes = [$edgeHit ? 'covered' : 'uncovered'];
 
                 if (isset($edgePathClasses[$edgeKey])) {
-                    $attrs .= sprintf(', class="%s"', implode(' ', $edgePathClasses[$edgeKey]));
+                    $classes = [...$classes, ...$edgePathClasses[$edgeKey]];
                 }
 
                 $dot .= sprintf(
-                    "  b%d -> %s [%s];\n",
+                    '  b%d -> %s [id="edge-%s", class="%s"];' . "\n",
                     $branchId,
                     $destNode,
-                    $attrs,
+                    $edgeKey,
+                    implode(' ', $classes),
                 );
             }
         }
@@ -213,12 +208,14 @@ final class ControlFlowGraph
             2 => ['pipe', 'w'],
         ];
 
-        $process = @proc_open('dot -Tsvg', $descriptorSpec, $pipes);
+        $process = @proc_open($this->dotBinary . ' -Tsvg', $descriptorSpec, $pipes);
 
         if ($process === false || !isset($pipes[0], $pipes[1], $pipes[2])) {
+            // @codeCoverageIgnoreStart
             $this->dotAvailable = false;
 
             return '';
+            // @codeCoverageIgnoreEnd
         }
 
         // Use non-blocking I/O to avoid deadlock when dot's output
@@ -232,8 +229,10 @@ final class ControlFlowGraph
         while ($written < $length) {
             $chunk = @fwrite($pipes[0], substr($dot, $written));
 
-            if ($chunk === false) {
+            if ($chunk === false || $chunk === 0) {
+                // @codeCoverageIgnoreStart
                 break;
+                // @codeCoverageIgnoreEnd
             }
 
             $written += $chunk;

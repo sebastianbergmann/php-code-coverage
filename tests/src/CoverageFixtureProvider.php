@@ -1336,6 +1336,159 @@ final readonly class CoverageFixtureProvider
         return $coverage;
     }
 
+    /**
+     * Records branch and path coverage for BankAccount.php where one test
+     * covers some but not all branches and paths of a method, so that the
+     * "partially covered" rendering states of the branch and path views are
+     * exercised: mixed decision point markers, warning-classified source
+     * lines, single-test popovers, and partial summary badges.
+     *
+     * The data also contains a function without branch and path data as well
+     * as a function with more than 100 paths.
+     */
+    public function pathCoverageForBankAccountWithPartialBranchAndPathCoverage(): CodeCoverage
+    {
+        $manyPaths = [];
+
+        for ($i = 0; $i < 101; $i++) {
+            $manyPaths[$i] = [
+                'path' => [0 => 0],
+                'hit'  => 0,
+            ];
+        }
+
+        $data = RawCodeCoverageData::fromXdebugWithPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                'lines' => [
+                    13 => 1,
+                    14 => 1,
+                    16 => -1,
+                    18 => 1,
+                ],
+                'functions' => [
+                    'BankAccount->setBalance' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 4,
+                                'line_start' => 11,
+                                'line_end'   => 13,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 5,
+                                    1 => 9,
+                                ],
+                                'out_hit' => [
+                                    0 => 1,
+                                    1 => 0,
+                                ],
+                            ],
+                            5 => [
+                                'op_start'   => 5,
+                                'op_end'     => 8,
+                                'line_start' => 14,
+                                'line_end'   => 14,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 13,
+                                ],
+                                'out_hit' => [
+                                    0 => 1,
+                                ],
+                            ],
+                            9 => [
+                                'op_start'   => 9,
+                                'op_end'     => 12,
+                                'line_start' => 14,
+                                'line_end'   => 16,
+                                'hit'        => 0,
+                                'out'        => [
+                                    0 => 2147483645,
+                                ],
+                                'out_hit' => [
+                                    0 => 0,
+                                ],
+                            ],
+                            13 => [
+                                'op_start'   => 13,
+                                'op_end'     => 14,
+                                'line_start' => 18,
+                                'line_end'   => 18,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 2147483645,
+                                ],
+                                'out_hit' => [
+                                    0 => 1,
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                    1 => 5,
+                                    2 => 13,
+                                ],
+                                'hit' => 1,
+                            ],
+                            1 => [
+                                'path' => [
+                                    0 => 0,
+                                    1 => 9,
+                                ],
+                                'hit' => 0,
+                            ],
+                        ],
+                    ],
+                    'BankAccount->declarationOnly' => [
+                        'branches' => [
+                        ],
+                        'paths' => [
+                        ],
+                    ],
+                    'BankAccount->complex' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 14,
+                                'line_start' => 20,
+                                'line_end'   => 25,
+                                'hit'        => 0,
+                                'out'        => [
+                                    0 => 2147483645,
+                                ],
+                                'out_hit' => [
+                                    0 => 0,
+                                ],
+                            ],
+                        ],
+                        'paths' => $manyPaths,
+                    ],
+                ],
+            ],
+        ]);
+
+        $driver = new FakeDriver($data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->enableBranchAndPathCoverage();
+
+        $coverage->start('BankAccountTest::testSetBalance', TestSize::Small, true);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'setBalance')]),
+            time: 0.5,
+        );
+
+        return $coverage;
+    }
+
     private function xdebugFakeForFileWithIgnoredLines(): Driver
     {
         return new FakeDriver(

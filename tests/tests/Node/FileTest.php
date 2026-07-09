@@ -319,6 +319,73 @@ final class FileTest extends TestCase
         $this->assertSame(4, $file->numberOfTestedMethodsByTestSize(TestSizes::ALL));
     }
 
+    public function testNumberOfTestedMethodsByTestSizeIgnoresMethodsWithoutExecutableLines(): void
+    {
+        $root = new Directory('root');
+
+        $testedMethod = new Method('testedMethod', 1, 2, 'public function testedMethod(): void', Visibility::Public, 1);
+        $emptyMethod  = new Method('emptyMethod', 3, 4, 'public function emptyMethod(): void', Visibility::Public, 1);
+
+        $class = new Class_(
+            'MyClass',
+            'MyClass',
+            '',
+            'test.php',
+            1,
+            4,
+            null,
+            [],
+            [],
+            [
+                'testedMethod' => $testedMethod,
+                'emptyMethod'  => $emptyMethod,
+            ],
+        );
+
+        $file = new File(
+            'test.php',
+            $root,
+            'abc123',
+            [1 => ['tSmall'], 2 => ['tSmall']],
+            [],
+            ['tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            ['MyClass' => $class],
+            [],
+            [],
+            new LinesOfCode(4, 0, 4),
+        );
+
+        $this->assertSame(1, $file->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $file->numberOfTestedMethodsByTestSize(TestSizes::ALL));
+    }
+
+    public function testNumberOfExecutedLinesByTestSizeWhenLineIsCoveredByTestsOfAllSizes(): void
+    {
+        $root = new Directory('root');
+
+        $file = new File(
+            'test.php',
+            $root,
+            'abc123',
+            [1 => ['tSmall', 'tMedium', 'tLarge', 'tSmall2']],
+            [],
+            [
+                'tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
+                'tMedium' => ['size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+                'tLarge'  => ['size' => 'large', 'status' => 'passed', 'time' => 0.0],
+                'tSmall2' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
+            ],
+            [],
+            [],
+            [],
+            new LinesOfCode(1, 0, 1),
+        );
+
+        foreach (TestSizes::COMBINATIONS as $combination) {
+            $this->assertSame(1, $file->numberOfExecutedLinesByTestSize($combination));
+        }
+    }
+
     public function testNumberOfTestedFunctionsByTestSize(): void
     {
         $file = $this->createFileNodeWithMixedTestSizes();

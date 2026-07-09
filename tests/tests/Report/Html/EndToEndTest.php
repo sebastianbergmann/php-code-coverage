@@ -220,6 +220,16 @@ final class EndToEndTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
+    public function testForClassesWithTraitsAndInheritance(): void
+    {
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'CoverageForClassesWithTraitsAndInheritance';
+
+        $report = new Facade;
+        $report->process($this->getCoverageForClassesWithTraitsAndInheritance()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+    }
+
     public function testHtmlSpecialCharactersInFileAndDirectoryNamesAreEncoded(): void
     {
         if (DIRECTORY_SEPARATOR === '\\') {

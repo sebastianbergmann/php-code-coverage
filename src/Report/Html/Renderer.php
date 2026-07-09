@@ -21,9 +21,12 @@ use function json_encode;
 use function sprintf;
 use function str_repeat;
 use function substr_count;
+use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Version;
@@ -439,6 +442,65 @@ abstract class Renderer
             $data['lines' . $suffix]   = $node->numberOfExecutedLinesByTestSize($combination);
             $data['methods' . $suffix] = $node->numberOfTestedFunctionsAndMethodsByTestSize($combination);
             $data['classes' . $suffix] = $node->numberOfTestedClassesAndTraitsByTestSize($combination);
+        }
+
+        return $this->buildCoverageDataJson($data);
+    }
+
+    protected function coverageDataJsonForClassNode(ClassNode $node): string
+    {
+        $numMethods = $node->numberOfMethods();
+        $numClasses = $numMethods > 0 ? 1 : 0;
+
+        $data = [
+            'linesTotal'   => $node->numberOfExecutableLines(),
+            'linesAll'     => $node->numberOfExecutedLines(),
+            'methodsTotal' => $numMethods,
+            'methodsAll'   => $node->numberOfTestedMethods(),
+            'classesTotal' => $numClasses,
+            'classesAll'   => ($numClasses === 1 && $node->numberOfTestedMethods() === $numMethods) ? 1 : 0,
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $numTestedMethodsByTestSize = $node->numberOfTestedMethodsByTestSize($combination);
+
+            $data['lines' . $suffix]   = $node->numberOfExecutedLinesByTestSize($combination);
+            $data['methods' . $suffix] = $numTestedMethodsByTestSize;
+            $data['classes' . $suffix] = ($numClasses === 1 && $numTestedMethodsByTestSize === $numMethods) ? 1 : 0;
+        }
+
+        return $this->buildCoverageDataJson($data);
+    }
+
+    protected function coverageDataJsonForFunctionOrMethod(ProcessedFunctionType|ProcessedMethodType $item): string
+    {
+        $numMethods       = 0;
+        $numTestedMethods = 0;
+
+        if ($item->executableLines > 0) {
+            $numMethods = 1;
+
+            if ($item->executedLines === $item->executableLines) {
+                $numTestedMethods = 1;
+            }
+        }
+
+        $data = [
+            'linesTotal'   => $item->executableLines,
+            'linesAll'     => $item->executedLines,
+            'methodsTotal' => $numMethods,
+            'methodsAll'   => $numTestedMethods,
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $numTestedMethodsByTestSize = 0;
+
+            if ($numMethods === 1 && $item->executedLinesByTestSize[$combination] === $item->executableLines) {
+                $numTestedMethodsByTestSize = 1;
+            }
+
+            $data['lines' . $suffix]   = $item->executedLinesByTestSize[$combination];
+            $data['methods' . $suffix] = $numTestedMethodsByTestSize;
         }
 
         return $this->buildCoverageDataJson($data);

@@ -18,6 +18,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(ClassNode::class)]
 #[Small]
@@ -174,6 +175,24 @@ final class ClassNodeTest extends TestCase
 
         // Own: 3, trait: 1, parent method: 1
         $this->assertSame(5, $node->numberOfExecutedPaths());
+    }
+
+    public function testNumberOfExecutedLinesByTestSizeIncludesTraitsAndParents(): void
+    {
+        $node = $this->createClassNodeWithTraitAndParentAndSmallTestCoverage();
+
+        // Own: 4, trait: 2, parent method: 3
+        $this->assertSame(9, $node->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $node->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM));
+    }
+
+    public function testNumberOfTestedMethodsByTestSizeCountsMethodsFullyCoveredBySelectedSizesOnly(): void
+    {
+        $node = $this->createClassNodeWithTraitAndParentAndSmallTestCoverage();
+
+        // Own method: 10/10 lines, trait method: 4/5 lines, parent method: 3/3 lines
+        $this->assertSame(2, $node->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $node->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM));
     }
 
     public function testNumberOfMethodsCountsOnlyMethodsWithExecutableLines(): void
@@ -355,6 +374,35 @@ final class ClassNodeTest extends TestCase
         $parentSection = new ParentSection('App\\BaseClass', '/path/to/base.php', ['parentMethod' => $inheritedMethod], $parentFileNode);
 
         return new ClassNode('App\\MyClass', 'App', '/path/to/class.php', 1, 20, $processedClass, $fileNode, [], [$parentSection], $parent);
+    }
+
+    private function createClassNodeWithTraitAndParentAndSmallTestCoverage(): ClassNode
+    {
+        $parent = new NamespaceNode('Root', '');
+        $root   = new Directory('root');
+
+        $ownMethod       = new ProcessedMethodType('doSomething', 'public', 'public function doSomething(): void', 1, 5, 10, 10, 0, 0, 0, 0, 1, 100, 1, '');
+        $traitMethod     = new ProcessedMethodType('traitMethod', 'public', 'public function traitMethod(): void', 1, 5, 5, 4, 0, 0, 0, 0, 1, 80, 1, '');
+        $inheritedMethod = new ProcessedMethodType('parentMethod', 'public', 'public function parentMethod(): void', 1, 5, 3, 3, 0, 0, 0, 0, 1, 100, 1, '');
+
+        $ownMethod->executedLinesByTestSize[TestSizes::SMALL]       = 10;
+        $traitMethod->executedLinesByTestSize[TestSizes::SMALL]     = 4;
+        $inheritedMethod->executedLinesByTestSize[TestSizes::SMALL] = 3;
+
+        $processedClass = new ProcessedClassType('App\\MyClass', 'App', ['doSomething' => $ownMethod], 1, 10, 10, 0, 0, 0, 0, 1, 100, 1, '');
+        $processedTrait = new ProcessedTraitType('App\\MyTrait', 'App', ['traitMethod' => $traitMethod], 1, 5, 4, 0, 0, 0, 0, 1, 80, 1, '');
+
+        $processedClass->executedLinesByTestSize[TestSizes::SMALL] = 4;
+        $processedTrait->executedLinesByTestSize[TestSizes::SMALL] = 2;
+
+        $fileNode       = new File('test.php', $root, 'abc123', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
+        $traitFileNode  = new File('trait.php', $root, 'def456', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
+        $parentFileNode = new File('parent.php', $root, 'ghi789', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
+
+        $traitSection  = new TraitSection('App\\MyTrait', '/path/to/trait.php', 1, 10, $processedTrait, $traitFileNode);
+        $parentSection = new ParentSection('App\\BaseClass', '/path/to/base.php', ['parentMethod' => $inheritedMethod], $parentFileNode);
+
+        return new ClassNode('App\\MyClass', 'App', '/path/to/class.php', 1, 20, $processedClass, $fileNode, [$traitSection], [$parentSection], $parent);
     }
 
     private function createClassNodeWithTraitAndParent(): ClassNode

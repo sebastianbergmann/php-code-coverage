@@ -449,40 +449,6 @@ final class File extends Renderer
         return $this->buildCoverageDataJson($data);
     }
 
-    private function coverageDataJsonForFunctionOrMethod(ProcessedFunctionType|ProcessedMethodType $item): string
-    {
-        $numMethods       = 0;
-        $numTestedMethods = 0;
-
-        if ($item->executableLines > 0) {
-            $numMethods = 1;
-
-            if ($item->executedLines === $item->executableLines) {
-                $numTestedMethods = 1;
-            }
-        }
-
-        $data = [
-            'linesTotal'   => $item->executableLines,
-            'linesAll'     => $item->executedLines,
-            'methodsTotal' => $numMethods,
-            'methodsAll'   => $numTestedMethods,
-        ];
-
-        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
-            $numTestedMethodsByTestSize = 0;
-
-            if ($numMethods === 1 && $item->executedLinesByTestSize[$combination] === $item->executableLines) {
-                $numTestedMethodsByTestSize = 1;
-            }
-
-            $data['lines' . $suffix]   = $item->executedLinesByTestSize[$combination];
-            $data['methods' . $suffix] = $numTestedMethodsByTestSize;
-        }
-
-        return $this->buildCoverageDataJson($data);
-    }
-
     /**
      * @return list<string>
      */

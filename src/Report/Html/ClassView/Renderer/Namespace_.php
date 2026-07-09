@@ -139,6 +139,7 @@ final class Namespace_ extends Renderer
             'testedMethodsPercentAsString'    => $statsNode->percentageOfTestedMethods()->asString(),
             'testedClassesPercent'            => $statsNode->percentageOfTestedClasses()->asFloat(),
             'testedClassesPercentAsString'    => $statsNode->percentageOfTestedClasses()->asString(),
+            'coverageDataJson'                => $this->coverageDataJsonForNamespace($statsNode),
         ];
 
         if ($child === null) {
@@ -186,6 +187,7 @@ final class Namespace_ extends Renderer
             'testedMethodsPercentAsString'    => $class->percentageOfTestedMethods()->asString(),
             'testedClassesPercent'            => $class->percentageOfTestedClasses()->asFloat(),
             'testedClassesPercentAsString'    => $class->percentageOfTestedClasses()->asString(),
+            'coverageDataJson'                => $this->coverageDataJsonForClassNode($class),
             'icon'                            => sprintf(
                 '<img src="%s_icons/file-code.svg" class="octicon" />',
                 $this->pathToRootForNamespace($class->parent()),
@@ -203,6 +205,26 @@ final class Namespace_ extends Renderer
             new Template($templateName, '{{', '}}'),
             $data,
         );
+    }
+
+    private function coverageDataJsonForNamespace(NamespaceNode $node): string
+    {
+        $data = [
+            'linesTotal'   => $node->numberOfExecutableLines(),
+            'linesAll'     => $node->numberOfExecutedLines(),
+            'methodsTotal' => $node->numberOfMethods(),
+            'methodsAll'   => $node->numberOfTestedMethods(),
+            'classesTotal' => $node->numberOfClasses(),
+            'classesAll'   => $node->numberOfTestedClasses(),
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $data['lines' . $suffix]   = $node->numberOfExecutedLinesByTestSize($combination);
+            $data['methods' . $suffix] = $node->numberOfTestedMethodsByTestSize($combination);
+            $data['classes' . $suffix] = $node->numberOfTestedClassesByTestSize($combination);
+        }
+
+        return $this->buildCoverageDataJson($data);
     }
 
     private function pathToRootForNamespace(NamespaceNode $node): string

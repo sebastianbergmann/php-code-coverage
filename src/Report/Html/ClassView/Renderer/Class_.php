@@ -143,6 +143,7 @@ final class Class_ extends Renderer
                 'testedClassesPercent'            => $node->percentageOfTestedClasses()->asFloat(),
                 'testedClassesPercentAsString'    => $node->percentageOfTestedClasses()->asString(),
                 'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
+                'coverageDataJson'                => $this->coverageDataJsonForClassNode($node),
             ],
         );
 
@@ -239,6 +240,7 @@ final class Class_ extends Renderer
                 'testedMethodsPercent'            => $testedMethodsPercentage->asFloat(),
                 'testedMethodsPercentAsString'    => $testedMethodsPercentage->asString(),
                 'crap'                            => $method->crap,
+                'coverageDataJson'                => $this->coverageDataJsonForFunctionOrMethod($method),
             ],
         );
     }

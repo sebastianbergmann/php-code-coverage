@@ -19,6 +19,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(NamespaceNode::class)]
 #[Small]
@@ -160,6 +161,30 @@ final class NamespaceNodeTest extends TestCase
         $this->assertSame(2, $root->numberOfExecutedBranches());
         $this->assertSame(2, $root->numberOfExecutablePaths());
         $this->assertSame(1, $root->numberOfExecutedPaths());
+    }
+
+    public function testByTestSizeCountersAggregateClassesAndChildNamespaces(): void
+    {
+        $root  = new NamespaceNode('Root', '');
+        $child = new NamespaceNode('Child', 'Child', $root);
+
+        $method                                            = new ProcessedMethodType('m', 'public', 'public function m(): void', 1, 5, 3, 3, 0, 0, 0, 0, 1, 100, 1, '');
+        $method->executedLinesByTestSize[TestSizes::SMALL] = 3;
+
+        $classNode = $this->createClassNode($child, 3, 3, 0, 0, 0, 0, ['m' => $method]);
+
+        $classNode->class_()->executedLinesByTestSize[TestSizes::SMALL] = 3;
+
+        $child->addClass($classNode);
+        $root->addNamespace($child);
+
+        $this->assertSame(3, $root->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $root->numberOfTestedMethodsByTestSize(TestSizes::SMALL));
+        $this->assertSame(1, $root->numberOfTestedClassesByTestSize(TestSizes::SMALL));
+
+        $this->assertSame(0, $root->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $root->numberOfTestedMethodsByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $root->numberOfTestedClassesByTestSize(TestSizes::MEDIUM));
     }
 
     public function testNumberOfClassesExcludesClassesWithNoMethods(): void

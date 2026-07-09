@@ -25,6 +25,15 @@
    </div>
   </header>
   <div class="container-fluid">
+   <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="{{low_upper_bound}}" data-high-lower-bound="{{high_lower_bound}}">
+    <input type="checkbox" class="btn-check" id="filter-size-small" data-test-size-filter="small" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-small">Small</label>
+    <input type="checkbox" class="btn-check" id="filter-size-medium" data-test-size-filter="medium" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-medium">Medium</label>
+    <input type="checkbox" class="btn-check" id="filter-size-large" data-test-size-filter="large" autocomplete="off">
+    <label class="btn btn-sm btn-outline-secondary" for="filter-size-large">Large</label>
+    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter-all>All</button>
+   </div>
    <div class="table-responsive">
     <table class="table table-bordered">
      <thead>
@@ -62,5 +71,6 @@
   <script src="{{path_to_root}}_js/jquery.min.js?v={{version}}" type="text/javascript"></script>
   <script src="{{path_to_root}}_js/bootstrap.bundle.min.js?v={{version}}" type="text/javascript"></script>
   <script src="{{path_to_root}}_js/file.js?v={{version}}" type="text/javascript"></script>
+  <script src="{{path_to_root}}_js/test-size-filter.js?v={{version}}" type="text/javascript"></script>
  </body>
 </html>

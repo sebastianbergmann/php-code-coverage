@@ -98,6 +98,24 @@ final class EndToEndTest extends TestCase
             htmlspecialchars($getBalanceRowCoverageData, ENT_COMPAT),
             $source,
         );
+
+        $classIndex = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'index.html');
+        $classView  = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
+
+        $this->assertNotFalse($classIndex);
+        $this->assertNotFalse($classView);
+
+        $bankAccountCoverageData = htmlspecialchars(
+            '{"linesTotal":8,"linesAll":8,"methodsTotal":4,"methodsAll":4,"classesTotal":1,"classesAll":1,' .
+            '"linesSmall":4,"methodsSmall":1,"classesSmall":0,"linesMedium":1,"methodsMedium":0,"classesMedium":0,' .
+            '"linesLarge":5,"methodsLarge":3,"classesLarge":0,"linesSM":5,"methodsSM":1,"classesSM":0,' .
+            '"linesSL":8,"methodsSL":4,"classesSL":1,"linesML":5,"methodsML":3,"classesML":0,' .
+            '"linesSML":8,"methodsSML":4,"classesSML":1}',
+            ENT_COMPAT,
+        );
+
+        $this->assertStringContainsString($bankAccountCoverageData, $classIndex);
+        $this->assertStringContainsString($bankAccountCoverageData, $classView);
     }
 
     public function testTestSizeAndStatusAreReflectedInSourceRendering(): void

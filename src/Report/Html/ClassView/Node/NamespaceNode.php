@@ -15,6 +15,7 @@ use Generator;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
@@ -28,6 +29,9 @@ use SebastianBergmann\CodeCoverage\Util\Percentage;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type TestSizeSet from TestSizes
+ * @phpstan-import-type TestSizeCounts from TestSizes
  */
 final class NamespaceNode
 {
@@ -54,6 +58,21 @@ final class NamespaceNode
     private int $numTestedClasses      = -1;
     private int $numMethods            = -1;
     private int $numTestedMethods      = -1;
+
+    /**
+     * @var ?TestSizeCounts
+     */
+    private ?array $numExecutedLinesByTestSize = null;
+
+    /**
+     * @var ?TestSizeCounts
+     */
+    private ?array $numTestedClassesByTestSize = null;
+
+    /**
+     * @var ?TestSizeCounts
+     */
+    private ?array $numTestedMethodsByTestSize = null;
 
     public function __construct(string $name, string $namespace, ?self $parent = null)
     {
@@ -174,6 +193,28 @@ final class NamespaceNode
         return $this->numExecutedLines;
     }
 
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfExecutedLinesByTestSize(int $testSizes): int
+    {
+        if ($this->numExecutedLinesByTestSize === null) {
+            $this->numExecutedLinesByTestSize = TestSizes::ZERO_COUNTS;
+
+            foreach (TestSizes::COMBINATIONS as $combination) {
+                foreach ($this->classesInSubtree() as $class) {
+                    $this->numExecutedLinesByTestSize[$combination] += $class->class_()->executedLinesByTestSize[$combination];
+                }
+
+                foreach ($this->traitsInSubtree() as $trait) {
+                    $this->numExecutedLinesByTestSize[$combination] += $trait->executedLinesByTestSize[$combination];
+                }
+            }
+        }
+
+        return $this->numExecutedLinesByTestSize[$testSizes];
+    }
+
     public function numberOfExecutableBranches(): int
     {
         if ($this->numExecutableBranches === -1) {
@@ -280,6 +321,30 @@ final class NamespaceNode
         return $this->numTestedClasses;
     }
 
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedClassesByTestSize(int $testSizes): int
+    {
+        if ($this->numTestedClassesByTestSize === null) {
+            $this->numTestedClassesByTestSize = TestSizes::ZERO_COUNTS;
+
+            foreach (TestSizes::COMBINATIONS as $combination) {
+                foreach ($this->classes as $class) {
+                    if ($class->numberOfMethods() > 0 && $class->numberOfTestedMethodsByTestSize($combination) === $class->numberOfMethods()) {
+                        $this->numTestedClassesByTestSize[$combination]++;
+                    }
+                }
+
+                foreach ($this->childNamespaces as $ns) {
+                    $this->numTestedClassesByTestSize[$combination] += $ns->numberOfTestedClassesByTestSize($combination);
+                }
+            }
+        }
+
+        return $this->numTestedClassesByTestSize[$testSizes];
+    }
+
     public function numberOfMethods(): int
     {
         if ($this->numMethods === -1) {
@@ -308,6 +373,30 @@ final class NamespaceNode
         }
 
         return $this->numTestedMethods;
+    }
+
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedMethodsByTestSize(int $testSizes): int
+    {
+        if ($this->numTestedMethodsByTestSize === null) {
+            $this->numTestedMethodsByTestSize = TestSizes::ZERO_COUNTS;
+
+            foreach ($this->methodsInSubtree() as $method) {
+                if ($method->executableLines === 0) {
+                    continue;
+                }
+
+                foreach (TestSizes::COMBINATIONS as $combination) {
+                    if ($method->executedLinesByTestSize[$combination] === $method->executableLines) {
+                        $this->numTestedMethodsByTestSize[$combination]++;
+                    }
+                }
+            }
+        }
+
+        return $this->numTestedMethodsByTestSize[$testSizes];
     }
 
     public function percentageOfExecutedLines(): Percentage
@@ -450,5 +539,9 @@ final class NamespaceNode
         $this->numTestedClasses      = -1;
         $this->numMethods            = -1;
         $this->numTestedMethods      = -1;
+
+        $this->numExecutedLinesByTestSize = null;
+        $this->numTestedClassesByTestSize = null;
+        $this->numTestedMethodsByTestSize = null;
     }
 }

@@ -14,6 +14,7 @@ use function array_merge;
 use function array_slice;
 use function array_unique;
 use function array_values;
+use function assert;
 use function count;
 use function dirname;
 use function explode;
@@ -172,9 +173,7 @@ final readonly class MapBuilder
         foreach ($filter->files() as $file) {
             $linesOfCode = $analyser->analyse($file)->linesOfCode()->linesOfCode();
 
-            if ($linesOfCode === 0) {
-                continue;
-            }
+            assert($linesOfCode > 0);
 
             $lines = range(1, $linesOfCode);
 

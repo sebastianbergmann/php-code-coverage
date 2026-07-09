@@ -117,6 +117,7 @@ $provider = new CoverageFixtureProvider;
 
 $scenarios = [
     'CoverageForBankAccount'                => $provider->lineCoverageForBankAccount(...),
+    'CoverageForBankAccountWithTestSizes'   => $provider->coverageForBankAccountWithVariousTestSizesAndStatuses(...),
     'PathCoverageForBankAccount'            => $provider->pathCoverageForBankAccount(...),
     'PathCoverageForSourceWithoutNamespace' => $provider->pathCoverageForSourceWithoutNamespace(...),
     'CoverageForFileWithIgnoredLines'       => $provider->coverageForFileWithIgnoredLines(...),

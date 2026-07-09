@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use const XDEBUG_CC_BRANCH_CHECK;
+use const XDEBUG_CC_DEAD_CODE;
 use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
@@ -83,7 +84,7 @@ final class XdebugDriver extends Driver
         $flags = XDEBUG_CC_UNUSED;
 
         if ($this->granularity() === Granularity::LineBranchAndPath) {
-            $flags |= XDEBUG_CC_BRANCH_CHECK;
+            $flags |= XDEBUG_CC_DEAD_CODE | XDEBUG_CC_BRANCH_CHECK;
         }
 
         xdebug_start_code_coverage($flags);

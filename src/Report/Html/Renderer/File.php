@@ -725,7 +725,7 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);
@@ -836,7 +836,7 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);

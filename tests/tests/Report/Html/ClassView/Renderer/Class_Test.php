@@ -10,8 +10,12 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 
 use const DIRECTORY_SEPARATOR;
+use function array_filter;
+use function array_unique;
+use function array_values;
 use function file_get_contents;
 use function is_file;
+use function preg_match_all;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
@@ -61,6 +65,24 @@ final class Class_Test extends TestCase
         $this->assertStringContainsString('[Example\\ParentClass]', $output);
         // pathToRoot uses one extra level for nested namespace + _classes
         $this->assertStringContainsString('../../../_css/', $output);
+
+        // Line anchors in trait and parent sections are prefixed so that they do not
+        // collide with the line anchors of the class's own source section
+        $this->assertStringContainsString('id="trait-0-5"', $output);
+        $this->assertStringContainsString('href="#trait-0-', $output);
+        $this->assertStringContainsString('id="parent-0-', $output);
+        $this->assertStringContainsString('href="#parent-0-', $output);
+
+        preg_match_all('/ id="([^"]+)"/', $output, $matches);
+
+        $anchors = array_values(
+            array_filter(
+                $matches[1],
+                static fn (string $id): bool => $id !== 'code',
+            ),
+        );
+
+        $this->assertSame(array_values(array_unique($anchors)), $anchors);
     }
 
     public function testRendersClassWithBranchCoverageTemplate(): void

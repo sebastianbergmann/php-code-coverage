@@ -438,10 +438,11 @@ abstract class Renderer
         return $this->buildCoverageDataJson($data);
     }
 
-    protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $coverageCount = '', string $coverageCountClass = 'col-0'): string
+    protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $anchorPrefix = '', string $coverageCount = '', string $coverageCountClass = 'col-0'): string
     {
         $template->setVar(
             [
+                'anchor'             => $anchorPrefix . $lineNumber,
                 'lineNumber'         => (string) $lineNumber,
                 'lineContent'        => $lineContent,
                 'class'              => $class,

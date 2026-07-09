@@ -14,7 +14,6 @@ use function count;
 use function htmlspecialchars;
 use function sprintf;
 use function str_repeat;
-use function str_replace;
 use function substr_count;
 use function usort;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
@@ -41,15 +40,15 @@ final class Dashboard extends Renderer
 
         $this->setCommonTemplateVariablesForNamespace($template, $node);
 
-        $baseLink    = $node->id() . '/';
+        $pathToRoot  = $this->pathToRootForNamespace($node);
         $bubbleChart = new BubbleChart($this->thresholds);
 
         $template->setVar(
             [
-                'class_bubble_chart'  => $bubbleChart->render($this->classItems($classes, $baseLink)),
-                'class_crap_table'    => $this->classCrapTable($classes, $baseLink),
-                'method_bubble_chart' => $bubbleChart->render($this->methodItems($classes, $baseLink)),
-                'method_crap_table'   => $this->methodCrapTable($classes, $baseLink),
+                'class_bubble_chart'  => $bubbleChart->render($this->classItems($classes, $pathToRoot)),
+                'class_crap_table'    => $this->classCrapTable($classes, $pathToRoot),
+                'method_bubble_chart' => $bubbleChart->render($this->methodItems($classes, $pathToRoot)),
+                'method_crap_table'   => $this->methodCrapTable($classes, $pathToRoot),
             ],
         );
 
@@ -120,7 +119,7 @@ final class Dashboard extends Renderer
      *
      * @return list<array{name: string, coverage: float|int, executableLines: int, complexity: int, link: string}>
      */
-    private function classItems(array $classes, string $baseLink): array
+    private function classItems(array $classes, string $pathToRoot): array
     {
         $items = [];
 
@@ -134,7 +133,7 @@ final class Dashboard extends Renderer
                 'coverage'        => $class->coverage,
                 'executableLines' => $class->executableLines,
                 'complexity'      => $class->ccn,
-                'link'            => str_replace($baseLink, '', $class->link),
+                'link'            => $pathToRoot . $class->link,
             ];
         }
 
@@ -146,7 +145,7 @@ final class Dashboard extends Renderer
      *
      * @return list<array{name: string, coverage: float|int, executableLines: int, complexity: int, link: string}>
      */
-    private function methodItems(array $classes, string $baseLink): array
+    private function methodItems(array $classes, string $pathToRoot): array
     {
         $items = [];
 
@@ -161,7 +160,7 @@ final class Dashboard extends Renderer
                     'coverage'        => $method->coverage,
                     'executableLines' => $method->executableLines,
                     'complexity'      => $method->ccn,
-                    'link'            => str_replace($baseLink, '', $method->link),
+                    'link'            => $pathToRoot . $method->link,
                 ];
             }
         }
@@ -172,7 +171,7 @@ final class Dashboard extends Renderer
     /**
      * @param array<string, ProcessedClassType> $classes
      */
-    private function classCrapTable(array $classes, string $baseLink): string
+    private function classCrapTable(array $classes, string $pathToRoot): string
     {
         $items = [];
 
@@ -181,7 +180,7 @@ final class Dashboard extends Renderer
                 'name'     => $className,
                 'coverage' => $class->coverage,
                 'crap'     => (new CrapIndex($class->ccn, $class->coverage))->asString(),
-                'link'     => str_replace($baseLink, '', $class->link),
+                'link'     => $pathToRoot . $class->link,
             ];
         }
 
@@ -191,7 +190,7 @@ final class Dashboard extends Renderer
     /**
      * @param array<string, ProcessedClassType> $classes
      */
-    private function methodCrapTable(array $classes, string $baseLink): string
+    private function methodCrapTable(array $classes, string $pathToRoot): string
     {
         $items = [];
 
@@ -201,7 +200,7 @@ final class Dashboard extends Renderer
                     'name'     => $className . '::' . $methodName,
                     'coverage' => $method->coverage,
                     'crap'     => (new CrapIndex($method->ccn, $method->coverage))->asString(),
-                    'link'     => str_replace($baseLink, '', $method->link),
+                    'link'     => $pathToRoot . $method->link,
                 ];
             }
         }

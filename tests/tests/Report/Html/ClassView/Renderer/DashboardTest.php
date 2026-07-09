@@ -54,6 +54,10 @@ final class DashboardTest extends TestCase
         $this->assertNotFalse($output);
 
         $this->assertStringContainsString('App\\Root', $output);
+
+        // Links point to file-view pages, which live one level above _classes/
+        $this->assertStringContainsString('href="../t.php.html#1"', $output);
+        $this->assertStringNotContainsString('href="t.php.html#1"', $output);
     }
 
     public function testRendersNestedNamespaceBreadcrumbs(): void
@@ -83,6 +87,9 @@ final class DashboardTest extends TestCase
         $this->assertStringContainsString('(Dashboard)', $output);
         // pathToRoot for nested namespace + _classes
         $this->assertStringContainsString('../../../_css/', $output);
+
+        // Links point to file-view pages, which live above _classes/App/Models/
+        $this->assertStringContainsString('href="../../../t.php.html#1"', $output);
     }
 
     public function testRendersWithBranchCoverage(): void
@@ -138,7 +145,7 @@ final class DashboardTest extends TestCase
             1,
             100,
             1,
-            '',
+            't.php.html#1',
         );
         $processedClass = new ProcessedClassType(
             $className,
@@ -154,7 +161,7 @@ final class DashboardTest extends TestCase
             1,
             100,
             1,
-            '',
+            't.php.html#1',
         );
         $fileNode = new File('t.php', $root, 'a', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
 

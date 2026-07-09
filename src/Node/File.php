@@ -26,6 +26,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -34,6 +35,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
  *
  * @phpstan-import-type TestType from CodeCoverage
  * @phpstan-import-type LinesType from AnalysisResult
+ * @phpstan-import-type TestSizeSet from TestSizes
+ * @phpstan-import-type TestSizeCounts from TestSizes
  */
 final class File extends AbstractNode
 {
@@ -56,19 +59,17 @@ final class File extends AbstractNode
      * @var array<non-empty-string, TestType>
      */
     private readonly array $testData;
-    private int $numExecutableLines                          = 0;
-    private int $numExecutedLines                            = 0;
-    private int $numExecutedLinesBySmallTests                = 0;
-    private int $numExecutedLinesByMediumTests               = 0;
-    private int $numExecutedLinesByLargeTests                = 0;
-    private int $numExecutedLinesBySmallOrMediumTests        = 0;
-    private int $numExecutedLinesBySmallOrLargeTests         = 0;
-    private int $numExecutedLinesByMediumOrLargeTests        = 0;
-    private int $numExecutedLinesBySmallOrMediumOrLargeTests = 0;
-    private int $numExecutableBranches                       = 0;
-    private int $numExecutedBranches                         = 0;
-    private int $numExecutablePaths                          = 0;
-    private int $numExecutedPaths                            = 0;
+    private int $numExecutableLines = 0;
+    private int $numExecutedLines   = 0;
+
+    /**
+     * @var TestSizeCounts
+     */
+    private array $numExecutedLinesByTestSize = TestSizes::ZERO_COUNTS;
+    private int $numExecutableBranches        = 0;
+    private int $numExecutedBranches          = 0;
+    private int $numExecutablePaths           = 0;
+    private int $numExecutedPaths             = 0;
 
     /**
      * @var array<string, ProcessedClassType>
@@ -86,41 +87,33 @@ final class File extends AbstractNode
     private array $functions = [];
     private readonly LinesOfCode $linesOfCode;
     private readonly bool $hasBranchCoverageData;
-    private ?int $numClasses                                   = null;
-    private int $numTestedClasses                              = 0;
-    private int $numTestedClassesBySmallTests                  = 0;
-    private int $numTestedClassesByMediumTests                 = 0;
-    private int $numTestedClassesByLargeTests                  = 0;
-    private int $numTestedClassesBySmallOrMediumTests          = 0;
-    private int $numTestedClassesBySmallOrLargeTests           = 0;
-    private int $numTestedClassesByMediumOrLargeTests          = 0;
-    private int $numTestedClassesBySmallOrMediumOrLargeTests   = 0;
-    private ?int $numTraits                                    = null;
-    private int $numTestedTraits                               = 0;
-    private int $numTestedTraitsBySmallTests                   = 0;
-    private int $numTestedTraitsByMediumTests                  = 0;
-    private int $numTestedTraitsByLargeTests                   = 0;
-    private int $numTestedTraitsBySmallOrMediumTests           = 0;
-    private int $numTestedTraitsBySmallOrLargeTests            = 0;
-    private int $numTestedTraitsByMediumOrLargeTests           = 0;
-    private int $numTestedTraitsBySmallOrMediumOrLargeTests    = 0;
-    private ?int $numMethods                                   = null;
-    private ?int $numTestedMethods                             = null;
-    private ?int $numTestedMethodsBySmallTests                 = null;
-    private ?int $numTestedMethodsByMediumTests                = null;
-    private ?int $numTestedMethodsByLargeTests                 = null;
-    private ?int $numTestedMethodsBySmallOrMediumTests         = null;
-    private ?int $numTestedMethodsBySmallOrLargeTests          = null;
-    private ?int $numTestedMethodsByMediumOrLargeTests         = null;
-    private ?int $numTestedMethodsBySmallOrMediumOrLargeTests  = null;
-    private int $numTestedFunctions                            = 0;
-    private int $numTestedFunctionsBySmallTests                = 0;
-    private int $numTestedFunctionsByMediumTests               = 0;
-    private int $numTestedFunctionsByLargeTests                = 0;
-    private int $numTestedFunctionsBySmallOrMediumTests        = 0;
-    private int $numTestedFunctionsBySmallOrLargeTests         = 0;
-    private int $numTestedFunctionsByMediumOrLargeTests        = 0;
-    private int $numTestedFunctionsBySmallOrMediumOrLargeTests = 0;
+    private ?int $numClasses      = null;
+    private int $numTestedClasses = 0;
+
+    /**
+     * @var TestSizeCounts
+     */
+    private array $numTestedClassesByTestSize = TestSizes::ZERO_COUNTS;
+    private ?int $numTraits                   = null;
+    private int $numTestedTraits              = 0;
+
+    /**
+     * @var TestSizeCounts
+     */
+    private array $numTestedTraitsByTestSize = TestSizes::ZERO_COUNTS;
+    private ?int $numMethods                 = null;
+    private ?int $numTestedMethods           = null;
+
+    /**
+     * @var ?TestSizeCounts
+     */
+    private ?array $numTestedMethodsByTestSize = null;
+    private int $numTestedFunctions            = 0;
+
+    /**
+     * @var TestSizeCounts
+     */
+    private array $numTestedFunctionsByTestSize = TestSizes::ZERO_COUNTS;
 
     /**
      * @var array<int, array<int, ProcessedClassType|ProcessedFunctionType|ProcessedMethodType|ProcessedTraitType>>
@@ -226,39 +219,12 @@ final class File extends AbstractNode
         return $this->numExecutedLines;
     }
 
-    public function numberOfExecutedLinesBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfExecutedLinesByTestSize(int $testSizes): int
     {
-        return $this->numExecutedLinesBySmallTests;
-    }
-
-    public function numberOfExecutedLinesByMediumTests(): int
-    {
-        return $this->numExecutedLinesByMediumTests;
-    }
-
-    public function numberOfExecutedLinesByLargeTests(): int
-    {
-        return $this->numExecutedLinesByLargeTests;
-    }
-
-    public function numberOfExecutedLinesBySmallOrMediumTests(): int
-    {
-        return $this->numExecutedLinesBySmallOrMediumTests;
-    }
-
-    public function numberOfExecutedLinesBySmallOrLargeTests(): int
-    {
-        return $this->numExecutedLinesBySmallOrLargeTests;
-    }
-
-    public function numberOfExecutedLinesByMediumOrLargeTests(): int
-    {
-        return $this->numExecutedLinesByMediumOrLargeTests;
-    }
-
-    public function numberOfExecutedLinesBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numExecutedLinesBySmallOrMediumOrLargeTests;
+        return $this->numExecutedLinesByTestSize[$testSizes];
     }
 
     public function numberOfExecutableBranches(): int
@@ -315,39 +281,12 @@ final class File extends AbstractNode
         return $this->numTestedClasses;
     }
 
-    public function numberOfTestedClassesBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedClassesByTestSize(int $testSizes): int
     {
-        return $this->numTestedClassesBySmallTests;
-    }
-
-    public function numberOfTestedClassesByMediumTests(): int
-    {
-        return $this->numTestedClassesByMediumTests;
-    }
-
-    public function numberOfTestedClassesByLargeTests(): int
-    {
-        return $this->numTestedClassesByLargeTests;
-    }
-
-    public function numberOfTestedClassesBySmallOrMediumTests(): int
-    {
-        return $this->numTestedClassesBySmallOrMediumTests;
-    }
-
-    public function numberOfTestedClassesBySmallOrLargeTests(): int
-    {
-        return $this->numTestedClassesBySmallOrLargeTests;
-    }
-
-    public function numberOfTestedClassesByMediumOrLargeTests(): int
-    {
-        return $this->numTestedClassesByMediumOrLargeTests;
-    }
-
-    public function numberOfTestedClassesBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numTestedClassesBySmallOrMediumOrLargeTests;
+        return $this->numTestedClassesByTestSize[$testSizes];
     }
 
     public function numberOfTraits(): int
@@ -374,39 +313,12 @@ final class File extends AbstractNode
         return $this->numTestedTraits;
     }
 
-    public function numberOfTestedTraitsBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedTraitsByTestSize(int $testSizes): int
     {
-        return $this->numTestedTraitsBySmallTests;
-    }
-
-    public function numberOfTestedTraitsByMediumTests(): int
-    {
-        return $this->numTestedTraitsByMediumTests;
-    }
-
-    public function numberOfTestedTraitsByLargeTests(): int
-    {
-        return $this->numTestedTraitsByLargeTests;
-    }
-
-    public function numberOfTestedTraitsBySmallOrMediumTests(): int
-    {
-        return $this->numTestedTraitsBySmallOrMediumTests;
-    }
-
-    public function numberOfTestedTraitsBySmallOrLargeTests(): int
-    {
-        return $this->numTestedTraitsBySmallOrLargeTests;
-    }
-
-    public function numberOfTestedTraitsByMediumOrLargeTests(): int
-    {
-        return $this->numTestedTraitsByMediumOrLargeTests;
-    }
-
-    public function numberOfTestedTraitsBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numTestedTraitsBySmallOrMediumOrLargeTests;
+        return $this->numTestedTraitsByTestSize[$testSizes];
     }
 
     public function numberOfMethods(): int
@@ -461,179 +373,32 @@ final class File extends AbstractNode
         return $this->numTestedMethods;
     }
 
-    public function numberOfTestedMethodsBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedMethodsByTestSize(int $testSizes): int
     {
-        if ($this->numTestedMethodsBySmallTests === null) {
-            $this->numTestedMethodsBySmallTests = 0;
+        if ($this->numTestedMethodsByTestSize === null) {
+            $this->numTestedMethodsByTestSize = TestSizes::ZERO_COUNTS;
 
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallTests++;
-                    }
-                }
-            }
+            foreach ([$this->classes, $this->traits] as $classesOrTraits) {
+                foreach ($classesOrTraits as $classOrTrait) {
+                    foreach ($classOrTrait->methods as $method) {
+                        if ($method->executableLines === 0) {
+                            continue;
+                        }
 
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallTests++;
+                        foreach (TestSizes::COMBINATIONS as $combination) {
+                            if ($method->executedLinesByTestSize[$combination] === $method->executableLines) {
+                                $this->numTestedMethodsByTestSize[$combination]++;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        return $this->numTestedMethodsBySmallTests;
-    }
-
-    public function numberOfTestedMethodsByMediumTests(): int
-    {
-        if ($this->numTestedMethodsByMediumTests === null) {
-            $this->numTestedMethodsByMediumTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByMediumTests === $method->executableLines) {
-                        $this->numTestedMethodsByMediumTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByMediumTests === $method->executableLines) {
-                        $this->numTestedMethodsByMediumTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsByMediumTests;
-    }
-
-    public function numberOfTestedMethodsByLargeTests(): int
-    {
-        if ($this->numTestedMethodsByLargeTests === null) {
-            $this->numTestedMethodsByLargeTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsByLargeTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsByLargeTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsByLargeTests;
-    }
-
-    public function numberOfTestedMethodsBySmallOrMediumTests(): int
-    {
-        if ($this->numTestedMethodsBySmallOrMediumTests === null) {
-            $this->numTestedMethodsBySmallOrMediumTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrMediumTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrMediumTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrMediumTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrMediumTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsBySmallOrMediumTests;
-    }
-
-    public function numberOfTestedMethodsBySmallOrLargeTests(): int
-    {
-        if ($this->numTestedMethodsBySmallOrLargeTests === null) {
-            $this->numTestedMethodsBySmallOrLargeTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrLargeTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrLargeTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsBySmallOrLargeTests;
-    }
-
-    public function numberOfTestedMethodsByMediumOrLargeTests(): int
-    {
-        if ($this->numTestedMethodsByMediumOrLargeTests === null) {
-            $this->numTestedMethodsByMediumOrLargeTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByMediumOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsByMediumOrLargeTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesByMediumOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsByMediumOrLargeTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsByMediumOrLargeTests;
-    }
-
-    public function numberOfTestedMethodsBySmallOrMediumOrLargeTests(): int
-    {
-        if ($this->numTestedMethodsBySmallOrMediumOrLargeTests === null) {
-            $this->numTestedMethodsBySmallOrMediumOrLargeTests = 0;
-
-            foreach ($this->classes as $class) {
-                foreach ($class->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrMediumOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrMediumOrLargeTests++;
-                    }
-                }
-            }
-
-            foreach ($this->traits as $trait) {
-                foreach ($trait->methods as $method) {
-                    if ($method->executableLines > 0 && $method->executedLinesBySmallOrMediumOrLargeTests === $method->executableLines) {
-                        $this->numTestedMethodsBySmallOrMediumOrLargeTests++;
-                    }
-                }
-            }
-        }
-
-        return $this->numTestedMethodsBySmallOrMediumOrLargeTests;
+        return $this->numTestedMethodsByTestSize[$testSizes];
     }
 
     public function numberOfFunctions(): int
@@ -646,39 +411,12 @@ final class File extends AbstractNode
         return $this->numTestedFunctions;
     }
 
-    public function numberOfTestedFunctionsBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedFunctionsByTestSize(int $testSizes): int
     {
-        return $this->numTestedFunctionsBySmallTests;
-    }
-
-    public function numberOfTestedFunctionsByMediumTests(): int
-    {
-        return $this->numTestedFunctionsByMediumTests;
-    }
-
-    public function numberOfTestedFunctionsByLargeTests(): int
-    {
-        return $this->numTestedFunctionsByLargeTests;
-    }
-
-    public function numberOfTestedFunctionsBySmallOrMediumTests(): int
-    {
-        return $this->numTestedFunctionsBySmallOrMediumTests;
-    }
-
-    public function numberOfTestedFunctionsBySmallOrLargeTests(): int
-    {
-        return $this->numTestedFunctionsBySmallOrLargeTests;
-    }
-
-    public function numberOfTestedFunctionsByMediumOrLargeTests(): int
-    {
-        return $this->numTestedFunctionsByMediumOrLargeTests;
-    }
-
-    public function numberOfTestedFunctionsBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numTestedFunctionsBySmallOrMediumOrLargeTests;
+        return $this->numTestedFunctionsByTestSize[$testSizes];
     }
 
     /**
@@ -711,92 +449,30 @@ final class File extends AbstractNode
 
                     $this->numExecutedLines++;
 
-                    $coveredBySmall  = false;
-                    $coveredByMedium = false;
-                    $coveredByLarge  = false;
+                    $coveringTestSizes = 0;
 
                     foreach ($this->lineCoverageData[$lineNumber] as $testId) {
                         if (isset($this->testData[$testId])) {
-                            $size = $this->testData[$testId]['size'];
+                            $coveringTestSizes |= TestSizes::bitFor($this->testData[$testId]['size']);
 
-                            if ($size === 'small') {
-                                $coveredBySmall = true;
-                            } elseif ($size === 'medium') {
-                                $coveredByMedium = true;
-                            } elseif ($size === 'large') {
-                                $coveredByLarge = true;
+                            if ($coveringTestSizes === TestSizes::ALL) {
+                                break;
                             }
                         }
                     }
 
-                    if ($coveredBySmall) {
-                        $this->numExecutedLinesBySmallTests++;
+                    if ($coveringTestSizes !== 0) {
+                        foreach (TestSizes::COMBINATIONS as $combination) {
+                            if (($combination & $coveringTestSizes) === 0) {
+                                continue;
+                            }
 
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesBySmallTests++;
+                            $this->numExecutedLinesByTestSize[$combination]++;
+
+                            foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
+                                $codeUnit->executedLinesByTestSize[$combination]++;
+                            }
                         }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredByMedium) {
-                        $this->numExecutedLinesByMediumTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesByMediumTests++;
-                        }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredByLarge) {
-                        $this->numExecutedLinesByLargeTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesByLargeTests++;
-                        }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredBySmall || $coveredByMedium) {
-                        $this->numExecutedLinesBySmallOrMediumTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesBySmallOrMediumTests++;
-                        }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredBySmall || $coveredByLarge) {
-                        $this->numExecutedLinesBySmallOrLargeTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesBySmallOrLargeTests++;
-                        }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredByMedium || $coveredByLarge) {
-                        $this->numExecutedLinesByMediumOrLargeTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesByMediumOrLargeTests++;
-                        }
-
-                        unset($codeUnit);
-                    }
-
-                    if ($coveredBySmall || $coveredByMedium || $coveredByLarge) {
-                        $this->numExecutedLinesBySmallOrMediumOrLargeTests++;
-
-                        foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as &$codeUnit) {
-                            $codeUnit->executedLinesBySmallOrMediumOrLargeTests++;
-                        }
-
-                        unset($codeUnit);
                     }
                 }
             }
@@ -827,32 +503,12 @@ final class File extends AbstractNode
                 $this->numTestedTraits++;
             }
 
-            if ($trait->executableLines > 0 && $trait->executedLinesBySmallTests === $trait->executableLines) {
-                $this->numTestedTraitsBySmallTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesByMediumTests === $trait->executableLines) {
-                $this->numTestedTraitsByMediumTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesByLargeTests === $trait->executableLines) {
-                $this->numTestedTraitsByLargeTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesBySmallOrMediumTests === $trait->executableLines) {
-                $this->numTestedTraitsBySmallOrMediumTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesBySmallOrLargeTests === $trait->executableLines) {
-                $this->numTestedTraitsBySmallOrLargeTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesByMediumOrLargeTests === $trait->executableLines) {
-                $this->numTestedTraitsByMediumOrLargeTests++;
-            }
-
-            if ($trait->executableLines > 0 && $trait->executedLinesBySmallOrMediumOrLargeTests === $trait->executableLines) {
-                $this->numTestedTraitsBySmallOrMediumOrLargeTests++;
+            if ($trait->executableLines > 0) {
+                foreach (TestSizes::COMBINATIONS as $combination) {
+                    if ($trait->executedLinesByTestSize[$combination] === $trait->executableLines) {
+                        $this->numTestedTraitsByTestSize[$combination]++;
+                    }
+                }
             }
         }
 
@@ -883,32 +539,12 @@ final class File extends AbstractNode
                 $this->numTestedClasses++;
             }
 
-            if ($class->executableLines > 0 && $class->executedLinesBySmallTests === $class->executableLines) {
-                $this->numTestedClassesBySmallTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesByMediumTests === $class->executableLines) {
-                $this->numTestedClassesByMediumTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesByLargeTests === $class->executableLines) {
-                $this->numTestedClassesByLargeTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesBySmallOrMediumTests === $class->executableLines) {
-                $this->numTestedClassesBySmallOrMediumTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesBySmallOrLargeTests === $class->executableLines) {
-                $this->numTestedClassesBySmallOrLargeTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesByMediumOrLargeTests === $class->executableLines) {
-                $this->numTestedClassesByMediumOrLargeTests++;
-            }
-
-            if ($class->executableLines > 0 && $class->executedLinesBySmallOrMediumOrLargeTests === $class->executableLines) {
-                $this->numTestedClassesBySmallOrMediumOrLargeTests++;
+            if ($class->executableLines > 0) {
+                foreach (TestSizes::COMBINATIONS as $combination) {
+                    if ($class->executedLinesByTestSize[$combination] === $class->executableLines) {
+                        $this->numTestedClassesByTestSize[$combination]++;
+                    }
+                }
             }
         }
 
@@ -926,32 +562,12 @@ final class File extends AbstractNode
                 $this->numTestedFunctions++;
             }
 
-            if ($function->executableLines > 0 && $function->executedLinesBySmallTests === $function->executableLines) {
-                $this->numTestedFunctionsBySmallTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesByMediumTests === $function->executableLines) {
-                $this->numTestedFunctionsByMediumTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesByLargeTests === $function->executableLines) {
-                $this->numTestedFunctionsByLargeTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesBySmallOrMediumTests === $function->executableLines) {
-                $this->numTestedFunctionsBySmallOrMediumTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesBySmallOrLargeTests === $function->executableLines) {
-                $this->numTestedFunctionsBySmallOrLargeTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesByMediumOrLargeTests === $function->executableLines) {
-                $this->numTestedFunctionsByMediumOrLargeTests++;
-            }
-
-            if ($function->executableLines > 0 && $function->executedLinesBySmallOrMediumOrLargeTests === $function->executableLines) {
-                $this->numTestedFunctionsBySmallOrMediumOrLargeTests++;
+            if ($function->executableLines > 0) {
+                foreach (TestSizes::COMBINATIONS as $combination) {
+                    if ($function->executedLinesByTestSize[$combination] === $function->executableLines) {
+                        $this->numTestedFunctionsByTestSize[$combination]++;
+                    }
+                }
             }
         }
     }

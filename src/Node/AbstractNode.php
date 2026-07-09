@@ -20,12 +20,15 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type TestSizeSet from TestSizes
  */
 abstract class AbstractNode implements Countable
 {
@@ -136,58 +139,13 @@ abstract class AbstractNode implements Countable
         );
     }
 
-    public function percentageOfExecutedLinesBySmallTests(): Percentage
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function percentageOfExecutedLinesByTestSize(int $testSizes): Percentage
     {
         return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesBySmallTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesByMediumTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesByMediumTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesByLargeTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesByLargeTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesBySmallOrMediumTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesBySmallOrMediumTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesBySmallOrLargeTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesBySmallOrLargeTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesByMediumOrLargeTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesByMediumOrLargeTests(),
-            $this->numberOfExecutableLines(),
-        );
-    }
-
-    public function percentageOfExecutedLinesBySmallOrMediumOrLargeTests(): Percentage
-    {
-        return Percentage::fromFractionAndTotal(
-            $this->numberOfExecutedLinesBySmallOrMediumOrLargeTests(),
+            $this->numberOfExecutedLinesByTestSize($testSizes),
             $this->numberOfExecutableLines(),
         );
     }
@@ -218,39 +176,12 @@ abstract class AbstractNode implements Countable
         return $this->numberOfTestedClasses() + $this->numberOfTestedTraits();
     }
 
-    public function numberOfTestedClassesAndTraitsBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedClassesAndTraitsByTestSize(int $testSizes): int
     {
-        return $this->numberOfTestedClassesBySmallTests() + $this->numberOfTestedTraitsBySmallTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsByMediumTests(): int
-    {
-        return $this->numberOfTestedClassesByMediumTests() + $this->numberOfTestedTraitsByMediumTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsByLargeTests(): int
-    {
-        return $this->numberOfTestedClassesByLargeTests() + $this->numberOfTestedTraitsByLargeTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsBySmallOrMediumTests(): int
-    {
-        return $this->numberOfTestedClassesBySmallOrMediumTests() + $this->numberOfTestedTraitsBySmallOrMediumTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsBySmallOrLargeTests(): int
-    {
-        return $this->numberOfTestedClassesBySmallOrLargeTests() + $this->numberOfTestedTraitsBySmallOrLargeTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsByMediumOrLargeTests(): int
-    {
-        return $this->numberOfTestedClassesByMediumOrLargeTests() + $this->numberOfTestedTraitsByMediumOrLargeTests();
-    }
-
-    public function numberOfTestedClassesAndTraitsBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numberOfTestedClassesBySmallOrMediumOrLargeTests() + $this->numberOfTestedTraitsBySmallOrMediumOrLargeTests();
+        return $this->numberOfTestedClassesByTestSize($testSizes) + $this->numberOfTestedTraitsByTestSize($testSizes);
     }
 
     /**
@@ -271,39 +202,12 @@ abstract class AbstractNode implements Countable
         return $this->numberOfTestedFunctions() + $this->numberOfTestedMethods();
     }
 
-    public function numberOfTestedFunctionsAndMethodsBySmallTests(): int
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    public function numberOfTestedFunctionsAndMethodsByTestSize(int $testSizes): int
     {
-        return $this->numberOfTestedFunctionsBySmallTests() + $this->numberOfTestedMethodsBySmallTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsByMediumTests(): int
-    {
-        return $this->numberOfTestedFunctionsByMediumTests() + $this->numberOfTestedMethodsByMediumTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsByLargeTests(): int
-    {
-        return $this->numberOfTestedFunctionsByLargeTests() + $this->numberOfTestedMethodsByLargeTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsBySmallOrMediumTests(): int
-    {
-        return $this->numberOfTestedFunctionsBySmallOrMediumTests() + $this->numberOfTestedMethodsBySmallOrMediumTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsBySmallOrLargeTests(): int
-    {
-        return $this->numberOfTestedFunctionsBySmallOrLargeTests() + $this->numberOfTestedMethodsBySmallOrLargeTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsByMediumOrLargeTests(): int
-    {
-        return $this->numberOfTestedFunctionsByMediumOrLargeTests() + $this->numberOfTestedMethodsByMediumOrLargeTests();
-    }
-
-    public function numberOfTestedFunctionsAndMethodsBySmallOrMediumOrLargeTests(): int
-    {
-        return $this->numberOfTestedFunctionsBySmallOrMediumOrLargeTests() + $this->numberOfTestedMethodsBySmallOrMediumOrLargeTests();
+        return $this->numberOfTestedFunctionsByTestSize($testSizes) + $this->numberOfTestedMethodsByTestSize($testSizes);
     }
 
     /**
@@ -345,19 +249,10 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfExecutedLines(): int;
 
-    abstract public function numberOfExecutedLinesBySmallTests(): int;
-
-    abstract public function numberOfExecutedLinesByMediumTests(): int;
-
-    abstract public function numberOfExecutedLinesByLargeTests(): int;
-
-    abstract public function numberOfExecutedLinesBySmallOrMediumTests(): int;
-
-    abstract public function numberOfExecutedLinesBySmallOrLargeTests(): int;
-
-    abstract public function numberOfExecutedLinesByMediumOrLargeTests(): int;
-
-    abstract public function numberOfExecutedLinesBySmallOrMediumOrLargeTests(): int;
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    abstract public function numberOfExecutedLinesByTestSize(int $testSizes): int;
 
     abstract public function numberOfExecutableBranches(): int;
 
@@ -373,73 +268,37 @@ abstract class AbstractNode implements Countable
 
     abstract public function numberOfTestedClasses(): int;
 
-    abstract public function numberOfTestedClassesBySmallTests(): int;
-
-    abstract public function numberOfTestedClassesByMediumTests(): int;
-
-    abstract public function numberOfTestedClassesByLargeTests(): int;
-
-    abstract public function numberOfTestedClassesBySmallOrMediumTests(): int;
-
-    abstract public function numberOfTestedClassesBySmallOrLargeTests(): int;
-
-    abstract public function numberOfTestedClassesByMediumOrLargeTests(): int;
-
-    abstract public function numberOfTestedClassesBySmallOrMediumOrLargeTests(): int;
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    abstract public function numberOfTestedClassesByTestSize(int $testSizes): int;
 
     abstract public function numberOfTraits(): int;
 
     abstract public function numberOfTestedTraits(): int;
 
-    abstract public function numberOfTestedTraitsBySmallTests(): int;
-
-    abstract public function numberOfTestedTraitsByMediumTests(): int;
-
-    abstract public function numberOfTestedTraitsByLargeTests(): int;
-
-    abstract public function numberOfTestedTraitsBySmallOrMediumTests(): int;
-
-    abstract public function numberOfTestedTraitsBySmallOrLargeTests(): int;
-
-    abstract public function numberOfTestedTraitsByMediumOrLargeTests(): int;
-
-    abstract public function numberOfTestedTraitsBySmallOrMediumOrLargeTests(): int;
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    abstract public function numberOfTestedTraitsByTestSize(int $testSizes): int;
 
     abstract public function numberOfMethods(): int;
 
     abstract public function numberOfTestedMethods(): int;
 
-    abstract public function numberOfTestedMethodsBySmallTests(): int;
-
-    abstract public function numberOfTestedMethodsByMediumTests(): int;
-
-    abstract public function numberOfTestedMethodsByLargeTests(): int;
-
-    abstract public function numberOfTestedMethodsBySmallOrMediumTests(): int;
-
-    abstract public function numberOfTestedMethodsBySmallOrLargeTests(): int;
-
-    abstract public function numberOfTestedMethodsByMediumOrLargeTests(): int;
-
-    abstract public function numberOfTestedMethodsBySmallOrMediumOrLargeTests(): int;
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    abstract public function numberOfTestedMethodsByTestSize(int $testSizes): int;
 
     abstract public function numberOfFunctions(): int;
 
     abstract public function numberOfTestedFunctions(): int;
 
-    abstract public function numberOfTestedFunctionsBySmallTests(): int;
-
-    abstract public function numberOfTestedFunctionsByMediumTests(): int;
-
-    abstract public function numberOfTestedFunctionsByLargeTests(): int;
-
-    abstract public function numberOfTestedFunctionsBySmallOrMediumTests(): int;
-
-    abstract public function numberOfTestedFunctionsBySmallOrLargeTests(): int;
-
-    abstract public function numberOfTestedFunctionsByMediumOrLargeTests(): int;
-
-    abstract public function numberOfTestedFunctionsBySmallOrMediumOrLargeTests(): int;
+    /**
+     * @param TestSizeSet $testSizes
+     */
+    abstract public function numberOfTestedFunctionsByTestSize(int $testSizes): int;
 
     private function processId(): void
     {

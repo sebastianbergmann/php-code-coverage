@@ -181,35 +181,7 @@ final class File extends Renderer
                 'testedClassesPercent'            => $node->percentageOfTestedClassesAndTraits()->asFloat(),
                 'testedClassesPercentAsString'    => $node->percentageOfTestedClassesAndTraits()->asString(),
                 'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
-                'coverageDataJson'                => $this->buildCoverageDataJson([
-                    'linesTotal'    => $node->numberOfExecutableLines(),
-                    'linesAll'      => $node->numberOfExecutedLines(),
-                    'linesSmall'    => $node->numberOfExecutedLinesBySmallTests(),
-                    'linesMedium'   => $node->numberOfExecutedLinesByMediumTests(),
-                    'linesLarge'    => $node->numberOfExecutedLinesByLargeTests(),
-                    'linesSM'       => $node->numberOfExecutedLinesBySmallOrMediumTests(),
-                    'linesSL'       => $node->numberOfExecutedLinesBySmallOrLargeTests(),
-                    'linesML'       => $node->numberOfExecutedLinesByMediumOrLargeTests(),
-                    'linesSML'      => $node->numberOfExecutedLinesBySmallOrMediumOrLargeTests(),
-                    'methodsTotal'  => $node->numberOfFunctionsAndMethods(),
-                    'methodsAll'    => $node->numberOfTestedFunctionsAndMethods(),
-                    'methodsSmall'  => $node->numberOfTestedFunctionsAndMethodsBySmallTests(),
-                    'methodsMedium' => $node->numberOfTestedFunctionsAndMethodsByMediumTests(),
-                    'methodsLarge'  => $node->numberOfTestedFunctionsAndMethodsByLargeTests(),
-                    'methodsSM'     => $node->numberOfTestedFunctionsAndMethodsBySmallOrMediumTests(),
-                    'methodsSL'     => $node->numberOfTestedFunctionsAndMethodsBySmallOrLargeTests(),
-                    'methodsML'     => $node->numberOfTestedFunctionsAndMethodsByMediumOrLargeTests(),
-                    'methodsSML'    => $node->numberOfTestedFunctionsAndMethodsBySmallOrMediumOrLargeTests(),
-                    'classesTotal'  => $node->numberOfClassesAndTraits(),
-                    'classesAll'    => $node->numberOfTestedClassesAndTraits(),
-                    'classesSmall'  => $node->numberOfTestedClassesAndTraitsBySmallTests(),
-                    'classesMedium' => $node->numberOfTestedClassesAndTraitsByMediumTests(),
-                    'classesLarge'  => $node->numberOfTestedClassesAndTraitsByLargeTests(),
-                    'classesSM'     => $node->numberOfTestedClassesAndTraitsBySmallOrMediumTests(),
-                    'classesSL'     => $node->numberOfTestedClassesAndTraitsBySmallOrLargeTests(),
-                    'classesML'     => $node->numberOfTestedClassesAndTraitsByMediumOrLargeTests(),
-                    'classesSML'    => $node->numberOfTestedClassesAndTraitsBySmallOrMediumOrLargeTests(),
-                ]),
+                'coverageDataJson'                => $this->coverageDataJsonFor($node),
             ],
         );
 
@@ -325,6 +297,7 @@ final class File extends Renderer
                     'testedClassesPercent'         => $testedClassesPercentage->asFloat(),
                     'testedClassesPercentAsString' => $testedClassesPercentage->asString(),
                     'crap'                         => $item->crap,
+                    'coverageDataJson'             => $this->coverageDataJsonForClassOrTrait($item),
                 ],
             );
 
@@ -427,8 +400,101 @@ final class File extends Renderer
                 'testedMethodsPercent'            => $testedMethodsPercentage->asFloat(),
                 'testedMethodsPercentAsString'    => $testedMethodsPercentage->asString(),
                 'crap'                            => $item->crap,
+                'coverageDataJson'                => $this->coverageDataJsonForFunctionOrMethod($item),
             ],
         );
+    }
+
+    private function coverageDataJsonForClassOrTrait(ProcessedClassType|ProcessedTraitType $item): string
+    {
+        $numMethods       = 0;
+        $numTestedMethods = 0;
+
+        foreach ($item->methods as $method) {
+            if ($method->executableLines > 0) {
+                $numMethods++;
+
+                if ($method->executedLines === $method->executableLines) {
+                    $numTestedMethods++;
+                }
+            }
+        }
+
+        $numClasses       = 0;
+        $numTestedClasses = 0;
+
+        if ($item->executableLines > 0) {
+            $numClasses = 1;
+
+            if ($numTestedMethods === $numMethods) {
+                $numTestedClasses = 1;
+            }
+        }
+
+        $data = [
+            'linesTotal'   => $item->executableLines,
+            'linesAll'     => $item->executedLines,
+            'methodsTotal' => $numMethods,
+            'methodsAll'   => $numTestedMethods,
+            'classesTotal' => $numClasses,
+            'classesAll'   => $numTestedClasses,
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $numTestedMethodsByTestSize = 0;
+
+            foreach ($item->methods as $method) {
+                if ($method->executableLines > 0 && $method->executedLinesByTestSize[$combination] === $method->executableLines) {
+                    $numTestedMethodsByTestSize++;
+                }
+            }
+
+            $numTestedClassesByTestSize = 0;
+
+            if ($numClasses === 1 && $numTestedMethodsByTestSize === $numMethods) {
+                $numTestedClassesByTestSize = 1;
+            }
+
+            $data['lines' . $suffix]   = $item->executedLinesByTestSize[$combination];
+            $data['methods' . $suffix] = $numTestedMethodsByTestSize;
+            $data['classes' . $suffix] = $numTestedClassesByTestSize;
+        }
+
+        return $this->buildCoverageDataJson($data);
+    }
+
+    private function coverageDataJsonForFunctionOrMethod(ProcessedFunctionType|ProcessedMethodType $item): string
+    {
+        $numMethods       = 0;
+        $numTestedMethods = 0;
+
+        if ($item->executableLines > 0) {
+            $numMethods = 1;
+
+            if ($item->executedLines === $item->executableLines) {
+                $numTestedMethods = 1;
+            }
+        }
+
+        $data = [
+            'linesTotal'   => $item->executableLines,
+            'linesAll'     => $item->executedLines,
+            'methodsTotal' => $numMethods,
+            'methodsAll'   => $numTestedMethods,
+        ];
+
+        foreach (self::TEST_SIZE_JSON_KEY_SUFFIXES as $combination => $suffix) {
+            $numTestedMethodsByTestSize = 0;
+
+            if ($numMethods === 1 && $item->executedLinesByTestSize[$combination] === $item->executableLines) {
+                $numTestedMethodsByTestSize = 1;
+            }
+
+            $data['lines' . $suffix]   = $item->executedLinesByTestSize[$combination];
+            $data['methods' . $suffix] = $numTestedMethodsByTestSize;
+        }
+
+        return $this->buildCoverageDataJson($data);
     }
 
     /**

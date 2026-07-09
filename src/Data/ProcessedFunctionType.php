@@ -9,10 +9,15 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type TestSizeSet from TestSizes
+ * @phpstan-import-type TestSizeCounts from TestSizes
  */
 final class ProcessedFunctionType
 {
@@ -23,13 +28,11 @@ final class ProcessedFunctionType
     public readonly int $endLine;
     public int $executableLines;
     public int $executedLines;
-    public int $executedLinesBySmallTests                = 0;
-    public int $executedLinesByMediumTests               = 0;
-    public int $executedLinesByLargeTests                = 0;
-    public int $executedLinesBySmallOrMediumTests        = 0;
-    public int $executedLinesBySmallOrLargeTests         = 0;
-    public int $executedLinesByMediumOrLargeTests        = 0;
-    public int $executedLinesBySmallOrMediumOrLargeTests = 0;
+
+    /**
+     * @var TestSizeCounts
+     */
+    public array $executedLinesByTestSize = TestSizes::ZERO_COUNTS;
     public int $executableBranches;
     public int $executedBranches;
     public int $executablePaths;

@@ -10,9 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const DIRECTORY_SEPARATOR;
+use const ENT_COMPAT;
 use const PHP_EOL;
 use function file_get_contents;
 use function file_put_contents;
+use function htmlspecialchars;
 use function iterator_count;
 use function mkdir;
 use function str_replace;
@@ -58,6 +60,30 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($index);
         $this->assertStringContainsString('Not all files have branch and path coverage data', $index);
+    }
+
+    public function testLineCoverageWithTestSizesForBankAccountTest(): void
+    {
+        $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'CoverageForBankAccountWithTestSizes';
+
+        $report = new Facade;
+        $report->process($this->coverageForBankAccountWithVariousTestSizesAndStatuses()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+
+        $source = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+
+        $this->assertNotFalse($source);
+
+        $getBalanceRowCoverageData = '{"linesTotal":1,"linesAll":1,"methodsTotal":1,"methodsAll":1,' .
+            '"linesSmall":0,"methodsSmall":0,"linesMedium":0,"methodsMedium":0,' .
+            '"linesLarge":1,"methodsLarge":1,"linesSM":0,"methodsSM":0,' .
+            '"linesSL":1,"methodsSL":1,"linesML":1,"methodsML":1,"linesSML":1,"methodsSML":1}';
+
+        $this->assertStringContainsString(
+            htmlspecialchars($getBalanceRowCoverageData, ENT_COMPAT),
+            $source,
+        );
     }
 
     public function testTestSizeAndStatusAreReflectedInSourceRendering(): void

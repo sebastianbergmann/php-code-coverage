@@ -212,7 +212,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
         $this->assertFalse($target->isTrait());
 
-        $this->assertSame($directory, $target->directory());
+        $this->assertSame($directory, $target->path());
         $this->assertSame('directories', $target->key());
         $this->assertSame($directory, $target->target());
         $this->assertSame('Directory ' . $directory, $target->description());
@@ -235,7 +235,7 @@ final class TargetTest extends TestCase
         $this->assertFalse($target->isNamespace());
         $this->assertFalse($target->isTrait());
 
-        $this->assertSame($directory, $target->directory());
+        $this->assertSame($directory, $target->path());
         $this->assertSame('directoriesRecursively', $target->key());
         $this->assertSame($directory, $target->target());
         $this->assertSame('Directory (recursively) ' . $directory, $target->description());

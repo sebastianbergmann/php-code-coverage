@@ -71,6 +71,9 @@ final class TestSizes
         return 0;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function __construct()
     {
     }

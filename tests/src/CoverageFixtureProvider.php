@@ -1233,6 +1233,25 @@ final readonly class CoverageFixtureProvider
     {
         $data = $this->lineCoverageXdebugDataForBankAccount();
 
+        $data[] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8  => -1,
+                9  => -2,
+                13 => 1,
+                14 => 1,
+                15 => 1,
+                16 => 1,
+                18 => 1,
+                22 => -1,
+                24 => -1,
+                25 => -2,
+                29 => -1,
+                31 => -1,
+                32 => -2,
+                33 => -2,
+            ],
+        ]);
+
         $driver = new FakeDriver(...$data);
 
         $filter = new Filter;
@@ -1274,6 +1293,14 @@ final readonly class CoverageFixtureProvider
                 Target::forMethod(BankAccount::class, 'withdrawMoney'),
             ]),
             time: 0.4,
+        );
+
+        $coverage->start('BankAccountTest::testSetBalance', TestSize::Small);
+        $coverage->stop(
+            true,
+            TestStatus::Success,
+            TargetCollection::fromArray([Target::forMethod(BankAccount::class, 'setBalance')]),
+            time: 0.5,
         );
 
         return $coverage;

@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
@@ -309,6 +310,77 @@ final class NamespaceNodeTest extends TestCase
         $this->assertSame($rootClass, $nodes[2]);
     }
 
+    public function testTraitUsedByMultipleClassesIsCountedOnlyOnceInAggregates(): void
+    {
+        $root = new NamespaceNode('Root', '');
+
+        $traitMethod = new ProcessedMethodType('traitMethod', 'public', 'public function traitMethod(): void', 1, 5, 4, 4, 2, 1, 2, 1, 1, 100, 1, '');
+        $trait       = new ProcessedTraitType('App\\MyTrait', 'App', ['traitMethod' => $traitMethod], 1, 4, 4, 2, 1, 2, 1, 1, 100, 1, '');
+
+        $classA = $this->createClassNode($root, 10, 5, 0, 0, 0, 0, null, 'App\\A', [new TraitSection('App\\MyTrait', '/path/to/MyTrait.php', 1, 10, $trait, $this->createFileNode())]);
+        $classB = $this->createClassNode($root, 20, 10, 0, 0, 0, 0, null, 'App\\B', [new TraitSection('App\\MyTrait', '/path/to/MyTrait.php', 1, 10, $trait, $this->createFileNode())]);
+
+        $root->addClass($classA);
+        $root->addClass($classB);
+
+        // Each class includes the trait in its own metrics ...
+        $this->assertSame(14, $classA->numberOfExecutableLines());
+        $this->assertSame(24, $classB->numberOfExecutableLines());
+
+        // ... but the namespace counts the trait only once
+        $this->assertSame(34, $root->numberOfExecutableLines());
+        $this->assertSame(19, $root->numberOfExecutedLines());
+        $this->assertSame(2, $root->numberOfExecutableBranches());
+        $this->assertSame(1, $root->numberOfExecutedBranches());
+        $this->assertSame(2, $root->numberOfExecutablePaths());
+        $this->assertSame(1, $root->numberOfExecutedPaths());
+        $this->assertSame(3, $root->numberOfMethods());
+        $this->assertSame(1, $root->numberOfTestedMethods());
+    }
+
+    public function testInheritedMethodsAreNotCountedTwiceInAggregates(): void
+    {
+        $root = new NamespaceNode('Root', '');
+
+        $parentMethod = new ProcessedMethodType('parentMethod', 'public', 'public function parentMethod(): void', 1, 5, 10, 5, 0, 0, 0, 0, 1, 50, 1, '');
+
+        $parentClass = $this->createClassNode($root, 10, 5, 0, 0, 0, 0, ['parentMethod' => $parentMethod], 'App\\ParentClass');
+        $childClass  = $this->createClassNode($root, 20, 10, 0, 0, 0, 0, null, 'App\\ChildClass', [], [new ParentSection('App\\ParentClass', '/path/to/ParentClass.php', ['parentMethod' => $parentMethod], $this->createFileNode())]);
+
+        $root->addClass($parentClass);
+        $root->addClass($childClass);
+
+        // The child includes the inherited method in its own metrics ...
+        $this->assertSame(30, $childClass->numberOfExecutableLines());
+
+        // ... but the namespace counts the parent's code only once
+        $this->assertSame(30, $root->numberOfExecutableLines());
+        $this->assertSame(15, $root->numberOfExecutedLines());
+        $this->assertSame(2, $root->numberOfMethods());
+    }
+
+    public function testTraitUsedInMultipleChildNamespacesIsCountedOnlyOnceInAggregates(): void
+    {
+        $root   = new NamespaceNode('Root', '');
+        $childA = new NamespaceNode('A', 'A', $root);
+        $childB = new NamespaceNode('B', 'B', $root);
+
+        $trait = new ProcessedTraitType('MyTrait', '', [], 1, 4, 2, 0, 0, 0, 0, 1, 50, 1, '');
+
+        $childA->addClass($this->createClassNode($childA, 10, 5, 0, 0, 0, 0, null, 'A\\C', [new TraitSection('MyTrait', '/path/to/MyTrait.php', 1, 10, $trait, $this->createFileNode())]));
+        $childB->addClass($this->createClassNode($childB, 20, 10, 0, 0, 0, 0, null, 'B\\D', [new TraitSection('MyTrait', '/path/to/MyTrait.php', 1, 10, $trait, $this->createFileNode())]));
+
+        $root->addNamespace($childA);
+        $root->addNamespace($childB);
+
+        // Each child namespace counts the trait once ...
+        $this->assertSame(14, $childA->numberOfExecutableLines());
+        $this->assertSame(24, $childB->numberOfExecutableLines());
+
+        // ... and so does their parent
+        $this->assertSame(34, $root->numberOfExecutableLines());
+    }
+
     public function testCountersResetWhenAddingClass(): void
     {
         $root = new NamespaceNode('Root', '');
@@ -337,11 +409,11 @@ final class NamespaceNodeTest extends TestCase
     /**
      * @param null|array<string, ProcessedMethodType> $methods
      * @param non-empty-string                        $className
+     * @param list<TraitSection>                      $traitSections
+     * @param list<ParentSection>                     $parentSections
      */
-    private function createClassNode(NamespaceNode $parent, int $executableLines = 10, int $executedLines = 5, int $executableBranches = 0, int $executedBranches = 0, int $executablePaths = 0, int $executedPaths = 0, ?array $methods = null, string $className = 'App\\MyClass'): ClassNode
+    private function createClassNode(NamespaceNode $parent, int $executableLines = 10, int $executedLines = 5, int $executableBranches = 0, int $executedBranches = 0, int $executablePaths = 0, int $executedPaths = 0, ?array $methods = null, string $className = 'App\\MyClass', array $traitSections = [], array $parentSections = []): ClassNode
     {
-        $root = new Directory('root');
-
         if ($methods === null) {
             $methods = [
                 'doSomething' => new ProcessedMethodType('doSomething', 'public', 'public function doSomething(): void', 1, 5, $executableLines, $executedLines, $executableBranches, $executedBranches, $executablePaths, $executedPaths, 1, $executableLines > 0 ? ($executedLines / $executableLines) * 100 : 0, 1, ''),
@@ -350,8 +422,11 @@ final class NamespaceNodeTest extends TestCase
 
         $processedClass = new ProcessedClassType($className, 'App', $methods, 1, $executableLines, $executedLines, $executableBranches, $executedBranches, $executablePaths, $executedPaths, 1, $executableLines > 0 ? ($executedLines / $executableLines) * 100 : 0, 1, '');
 
-        $fileNode = new File('test.php', $root, 'abc123', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
+        return new ClassNode($className, 'App', '/path/to/test.php', 1, 20, $processedClass, $this->createFileNode(), $traitSections, $parentSections, $parent);
+    }
 
-        return new ClassNode($className, 'App', '/path/to/test.php', 1, 20, $processedClass, $fileNode, [], [], $parent);
+    private function createFileNode(): File
+    {
+        return new File('test.php', new Directory('root'), 'abc123', [], [], [], [], [], [], new LinesOfCode(0, 0, 0));
     }
 }

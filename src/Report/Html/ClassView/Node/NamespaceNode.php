@@ -13,9 +13,18 @@ use function array_merge;
 use function str_replace;
 use Generator;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 /**
+ * Aggregated metrics count the own code of each class in the namespace exactly once and each
+ * trait used by those classes exactly once, even when a trait is used by multiple classes;
+ * code inherited from a parent class is counted at the node of the class that declares it.
+ * ClassNode metrics, in contrast, include the code a class uses from traits and inherits from
+ * parent classes, so the metrics of the classes in a namespace may add up to more than the
+ * metrics of the namespace itself.
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -136,12 +145,12 @@ final class NamespaceNode
         if ($this->numExecutableLines === -1) {
             $this->numExecutableLines = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutableLines += $class->numberOfExecutableLines();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutableLines += $class->class_()->executableLines;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutableLines += $ns->numberOfExecutableLines();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutableLines += $trait->executableLines;
             }
         }
 
@@ -153,12 +162,12 @@ final class NamespaceNode
         if ($this->numExecutedLines === -1) {
             $this->numExecutedLines = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutedLines += $class->numberOfExecutedLines();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutedLines += $class->class_()->executedLines;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutedLines += $ns->numberOfExecutedLines();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutedLines += $trait->executedLines;
             }
         }
 
@@ -170,12 +179,12 @@ final class NamespaceNode
         if ($this->numExecutableBranches === -1) {
             $this->numExecutableBranches = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutableBranches += $class->numberOfExecutableBranches();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutableBranches += $class->class_()->executableBranches;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutableBranches += $ns->numberOfExecutableBranches();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutableBranches += $trait->executableBranches;
             }
         }
 
@@ -187,12 +196,12 @@ final class NamespaceNode
         if ($this->numExecutedBranches === -1) {
             $this->numExecutedBranches = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutedBranches += $class->numberOfExecutedBranches();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutedBranches += $class->class_()->executedBranches;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutedBranches += $ns->numberOfExecutedBranches();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutedBranches += $trait->executedBranches;
             }
         }
 
@@ -204,12 +213,12 @@ final class NamespaceNode
         if ($this->numExecutablePaths === -1) {
             $this->numExecutablePaths = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutablePaths += $class->numberOfExecutablePaths();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutablePaths += $class->class_()->executablePaths;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutablePaths += $ns->numberOfExecutablePaths();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutablePaths += $trait->executablePaths;
             }
         }
 
@@ -221,12 +230,12 @@ final class NamespaceNode
         if ($this->numExecutedPaths === -1) {
             $this->numExecutedPaths = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numExecutedPaths += $class->numberOfExecutedPaths();
+            foreach ($this->classesInSubtree() as $class) {
+                $this->numExecutedPaths += $class->class_()->executedPaths;
             }
 
-            foreach ($this->childNamespaces as $ns) {
-                $this->numExecutedPaths += $ns->numberOfExecutedPaths();
+            foreach ($this->traitsInSubtree() as $trait) {
+                $this->numExecutedPaths += $trait->executedPaths;
             }
         }
 
@@ -276,12 +285,10 @@ final class NamespaceNode
         if ($this->numMethods === -1) {
             $this->numMethods = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numMethods += $class->numberOfMethods();
-            }
-
-            foreach ($this->childNamespaces as $ns) {
-                $this->numMethods += $ns->numberOfMethods();
+            foreach ($this->methodsInSubtree() as $method) {
+                if ($method->executableLines > 0) {
+                    $this->numMethods++;
+                }
             }
         }
 
@@ -293,12 +300,10 @@ final class NamespaceNode
         if ($this->numTestedMethods === -1) {
             $this->numTestedMethods = 0;
 
-            foreach ($this->classes as $class) {
-                $this->numTestedMethods += $class->numberOfTestedMethods();
-            }
-
-            foreach ($this->childNamespaces as $ns) {
-                $this->numTestedMethods += $ns->numberOfTestedMethods();
+            foreach ($this->methodsInSubtree() as $method) {
+                if ($method->executableLines > 0 && $method->coverage === 100) {
+                    $this->numTestedMethods++;
+                }
             }
         }
 
@@ -379,6 +384,58 @@ final class NamespaceNode
         foreach ($this->classes as $class) {
             yield $class;
         }
+    }
+
+    /**
+     * @return list<ClassNode>
+     */
+    private function classesInSubtree(): array
+    {
+        $classes = $this->classes;
+
+        foreach ($this->childNamespaces as $ns) {
+            $classes = array_merge($classes, $ns->classesInSubtree());
+        }
+
+        return $classes;
+    }
+
+    /**
+     * @return array<non-empty-string, ProcessedTraitType>
+     */
+    private function traitsInSubtree(): array
+    {
+        $traits = [];
+
+        foreach ($this->classesInSubtree() as $class) {
+            foreach ($class->traitSections() as $section) {
+                $traits[$section->traitName] = $section->trait;
+            }
+        }
+
+        return $traits;
+    }
+
+    /**
+     * @return list<ProcessedMethodType>
+     */
+    private function methodsInSubtree(): array
+    {
+        $methods = [];
+
+        foreach ($this->classesInSubtree() as $class) {
+            foreach ($class->class_()->methods as $method) {
+                $methods[] = $method;
+            }
+        }
+
+        foreach ($this->traitsInSubtree() as $trait) {
+            foreach ($trait->methods as $method) {
+                $methods[] = $method;
+            }
+        }
+
+        return $methods;
     }
 
     private function resetCounters(): void

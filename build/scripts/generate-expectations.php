@@ -116,11 +116,12 @@ function formatMatches(string $format, string $subject): bool
 $provider = new CoverageFixtureProvider;
 
 $scenarios = [
-    'CoverageForBankAccount'                => $provider->lineCoverageForBankAccount(...),
-    'PathCoverageForBankAccount'            => $provider->pathCoverageForBankAccount(...),
-    'PathCoverageForSourceWithoutNamespace' => $provider->pathCoverageForSourceWithoutNamespace(...),
-    'CoverageForFileWithIgnoredLines'       => $provider->coverageForFileWithIgnoredLines(...),
-    'CoverageForClassWithAnonymousFunction' => $provider->coverageForClassWithAnonymousFunction(...),
+    'CoverageForBankAccount'                     => $provider->lineCoverageForBankAccount(...),
+    'PathCoverageForBankAccount'                 => $provider->pathCoverageForBankAccount(...),
+    'PathCoverageForSourceWithoutNamespace'      => $provider->pathCoverageForSourceWithoutNamespace(...),
+    'CoverageForFileWithIgnoredLines'            => $provider->coverageForFileWithIgnoredLines(...),
+    'CoverageForClassWithAnonymousFunction'      => $provider->coverageForClassWithAnonymousFunction(...),
+    'CoverageForClassesWithTraitsAndInheritance' => $provider->coverageForClassesWithTraitsAndInheritance(...),
 ];
 
 $expectationPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR;

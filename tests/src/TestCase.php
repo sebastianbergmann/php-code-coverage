@@ -699,6 +699,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return new CoverageFixtureProvider()->coverageForClassWithAnonymousFunction();
     }
 
+    protected function getCoverageForClassesWithTraitsAndInheritance(): CodeCoverage
+    {
+        return new CoverageFixtureProvider()->coverageForClassesWithTraitsAndInheritance();
+    }
+
     protected function getCoverageForClassWithOutsideFunction(): CodeCoverage
     {
         $filter = new Filter;

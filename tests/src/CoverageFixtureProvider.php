@@ -1224,6 +1224,25 @@ final readonly class CoverageFixtureProvider
         return $coverage;
     }
 
+    public function coverageForClassesWithTraitsAndInheritance(): CodeCoverage
+    {
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ChildClass.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ExampleClass.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ExampleTrait.php');
+        $filter->includeFile(TEST_FILES_PATH . 'ClassView/ParentClass.php');
+
+        $coverage = new CodeCoverage(
+            $this->xdebugFakeForClassesWithTraitsAndInheritance(),
+            $filter,
+        );
+
+        $coverage->start('ClassesWithTraitsAndInheritance', null, true);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
     /**
      * Records line coverage for BankAccount.php where the lines are covered by
      * tests of different sizes (large, medium, small) and statuses (success and
@@ -1345,6 +1364,29 @@ final readonly class CoverageFixtureProvider
                         2 => 1,
                         4 => -1,
                         6 => -1,
+                    ],
+                ],
+            ),
+        );
+    }
+
+    private function xdebugFakeForClassesWithTraitsAndInheritance(): Driver
+    {
+        return new FakeDriver(
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+                [
+                    TEST_FILES_PATH . 'ClassView/ChildClass.php' => [
+                        11 => 1,
+                    ],
+                    TEST_FILES_PATH . 'ClassView/ExampleClass.php' => [
+                        9  => 1,
+                        14 => -1,
+                    ],
+                    TEST_FILES_PATH . 'ClassView/ExampleTrait.php' => [
+                        9 => 1,
+                    ],
+                    TEST_FILES_PATH . 'ClassView/ParentClass.php' => [
+                        9 => -1,
                     ],
                 ],
             ),

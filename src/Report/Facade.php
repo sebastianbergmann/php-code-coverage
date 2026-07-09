@@ -68,9 +68,9 @@ final readonly class Facade
     /**
      * @param non-empty-string $target
      */
-    public function renderHtml(string $target, string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null): void
+    public function renderHtml(string $target, string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, bool $classView = true): void
     {
-        new HtmlFacade($generator, $colors, $thresholds, $customCssFile)->process(
+        new HtmlFacade($generator, $colors, $thresholds, $customCssFile, $classView)->process(
             $this->report,
             $target,
         );

@@ -16,6 +16,7 @@ use function file_put_contents;
 use function iterator_count;
 use function mkdir;
 use function str_replace;
+use function strpos;
 use function substr_count;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversNamespace;
@@ -116,6 +117,17 @@ final class EndToEndTest extends TestCase
         // functions without branch and path data are omitted from the structure sections
         $this->assertStringNotContainsString('declarationOnly', $branch);
         $this->assertStringNotContainsString('declarationOnly', $path);
+
+        // the structure sections are sorted by line number, not alphabetically:
+        // setBalance() begins on line 11, complex() on line 20
+        foreach ([$branch, $path] as $view) {
+            $setBalancePosition = strpos($view, '<a name="BankAccount-&gt;setBalance">');
+            $complexPosition    = strpos($view, '<a name="BankAccount-&gt;complex">');
+
+            $this->assertNotFalse($setBalancePosition);
+            $this->assertNotFalse($complexPosition);
+            $this->assertLessThan($complexPosition, $setBalancePosition);
+        }
 
         // the paths of a function with more than 100 paths are collapsed and capped
         $this->assertStringContainsString('<details><summary>101 paths &mdash; click to expand</summary>', $path);

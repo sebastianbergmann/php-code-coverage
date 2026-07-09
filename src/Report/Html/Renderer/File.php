@@ -13,6 +13,7 @@ use const ENT_COMPAT;
 use const ENT_HTML401;
 use const ENT_SUBSTITUTE;
 use const JSON_THROW_ON_ERROR;
+use const PHP_INT_MAX;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -24,11 +25,11 @@ use function explode;
 use function htmlspecialchars;
 use function implode;
 use function json_encode;
-use function ksort;
 use function max;
 use function min;
 use function range;
 use function sprintf;
+use function uasort;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
@@ -766,11 +767,9 @@ final class File extends Renderer
     {
         $branchesTemplate = new Template($this->templatePath . 'branches.html.dist', '{{', '}}');
 
-        $coverageData = $node->functionCoverageData();
+        $coverageData = $this->sortedByStartLine($node->functionCoverageData());
         $testData     = $node->testData();
         $branches     = '';
-
-        ksort($coverageData);
 
         /** @var ProcessedFunctionCoverageData $methodData */
         foreach ($coverageData as $methodName => $methodData) {
@@ -865,11 +864,9 @@ final class File extends Renderer
     {
         $pathsTemplate = new Template($this->templatePath . 'paths.html.dist', '{{', '}}');
 
-        $coverageData = $node->functionCoverageData();
+        $coverageData = $this->sortedByStartLine($node->functionCoverageData());
         $testData     = $node->testData();
         $paths        = '';
-
-        ksort($coverageData);
 
         /** @var ProcessedFunctionCoverageData $methodData */
         foreach ($coverageData as $methodName => $methodData) {
@@ -1031,6 +1028,24 @@ final class File extends Renderer
         return $this->controlFlowGraph;
     }
 
+    /**
+     * @param array<string, ProcessedFunctionCoverageData> $coverageData
+     *
+     * @return array<string, ProcessedFunctionCoverageData>
+     */
+    private function sortedByStartLine(array $coverageData): array
+    {
+        uasort(
+            $coverageData,
+            static function (ProcessedFunctionCoverageData $a, ProcessedFunctionCoverageData $b): int
+            {
+                return self::startLine($a) <=> self::startLine($b);
+            },
+        );
+
+        return $coverageData;
+    }
+
     private function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $coverageCount = '', string $coverageCountClass = 'col-0'): string
     {
         $template->setVar(
@@ -1102,5 +1117,16 @@ final class File extends Renderer
             $testCSS,
             htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
         );
+    }
+
+    private static function startLine(ProcessedFunctionCoverageData $methodData): int
+    {
+        $startLine = PHP_INT_MAX;
+
+        foreach ($methodData->branches as $branch) {
+            $startLine = min($startLine, $branch->line_start, $branch->line_end);
+        }
+
+        return $startLine;
     }
 }

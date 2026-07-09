@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_merge;
+use function assert;
 use function dirname;
 use function range;
 use function realpath;
@@ -663,9 +664,7 @@ final class MapBuilderTest extends TestCase
         foreach ($filter->files() as $file) {
             $linesOfCode = $analyser->analyse($file)->linesOfCode()->linesOfCode();
 
-            if ($linesOfCode === 0) {
-                continue;
-            }
+            assert($linesOfCode > 0);
 
             $lines = range(1, $linesOfCode);
 

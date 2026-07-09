@@ -10,16 +10,29 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const DIRECTORY_SEPARATOR;
+use const ENT_HTML5;
+use const ENT_QUOTES;
 use const PHP_EOL;
+use function array_keys;
+use function dirname;
+use function explode;
 use function file_get_contents;
 use function file_put_contents;
-use function is_dir;
-use function iterator_count;
+use function html_entity_decode;
+use function ksort;
 use function mkdir;
+use function preg_match_all;
+use function sprintf;
+use function str_contains;
 use function str_replace;
+use function str_starts_with;
+use function strlen;
+use function substr;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversNamespace;
 use PHPUnit\Framework\Attributes\Medium;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RegexIterator;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
@@ -160,48 +173,85 @@ final class EndToEndTest extends TestCase
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
     {
-        $this->assertHtmlFilesEquals($expectedFilesPath, $actualFilesPath);
-
-        $expectedClassesPath = $expectedFilesPath . DIRECTORY_SEPARATOR . '_classes';
-        $actualClassesPath   = $actualFilesPath . DIRECTORY_SEPARATOR . '_classes';
-
-        if (is_dir($expectedClassesPath)) {
-            $this->assertDirectoryExists($actualClassesPath);
-            $this->assertHtmlFilesEquals($expectedClassesPath, $actualClassesPath);
-        }
-    }
-
-    private function assertHtmlFilesEquals(string $expectedFilesPath, string $actualFilesPath): void
-    {
-        $expectedFilesIterator = new RegexIterator(new FilesystemIterator($expectedFilesPath), '/\.html$/');
-        $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/\.html$/');
+        $expectedFiles = $this->htmlFiles($expectedFilesPath);
+        $actualFiles   = $this->htmlFiles($actualFilesPath);
 
         $this->assertSame(
-            iterator_count($expectedFilesIterator),
-            iterator_count($actualFilesIterator),
-            'Generated files and expected files not match',
+            array_keys($expectedFiles),
+            array_keys($actualFiles),
+            'Generated files and expected files do not match',
         );
 
-        foreach ($expectedFilesIterator as $fileInfo) {
-            if (!$fileInfo instanceof SplFileInfo) {
-                continue; // @codeCoverageIgnore
-            }
-
-            $filename = $fileInfo->getFilename();
-
-            $actualFile = $actualFilesPath . DIRECTORY_SEPARATOR . $filename;
-
-            $this->assertFileExists($actualFile);
-
-            $actual = file_get_contents($actualFile);
+        foreach ($expectedFiles as $relativePath => $expectedFile) {
+            $actual = file_get_contents($actualFilesPath . DIRECTORY_SEPARATOR . $relativePath);
 
             $this->assertNotFalse($actual);
 
             $this->assertStringMatchesFormatFile(
-                $fileInfo->getPathname(),
+                $expectedFile,
                 str_replace(PHP_EOL, "\n", $actual),
-                "{$filename} not match",
+                "{$relativePath} does not match",
             );
         }
+
+        $this->assertRelativeLinkTargetsExist($actualFilesPath);
+    }
+
+    private function assertRelativeLinkTargetsExist(string $reportPath): void
+    {
+        foreach ($this->htmlFiles($reportPath) as $relativePath => $absolutePath) {
+            $html = file_get_contents($absolutePath);
+
+            $this->assertNotFalse($html);
+
+            preg_match_all('/(?:href|src)="([^"]+)"/', $html, $matches);
+
+            foreach ($matches[1] as $target) {
+                $target = html_entity_decode($target, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                if (str_starts_with($target, '#') || str_contains($target, '://')) {
+                    continue;
+                }
+
+                $target = explode('#', $target, 2)[0];
+                $target = explode('?', $target, 2)[0];
+
+                if ($target === '') {
+                    continue;
+                }
+
+                $this->assertFileExists(
+                    dirname($reportPath . DIRECTORY_SEPARATOR . $relativePath) . DIRECTORY_SEPARATOR . $target,
+                    sprintf('%s links to %s which does not exist', $relativePath, $target),
+                );
+            }
+        }
+    }
+
+    /**
+     * @return array<string, string> Relative path mapped to absolute path, sorted by relative path
+     */
+    private function htmlFiles(string $basePath): array
+    {
+        $iterator = new RegexIterator(
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($basePath, FilesystemIterator::SKIP_DOTS),
+            ),
+            '/\.html$/',
+        );
+
+        $files = [];
+
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
+            $files[substr($fileInfo->getPathname(), strlen($basePath) + 1)] = $fileInfo->getPathname();
+        }
+
+        ksort($files);
+
+        return $files;
     }
 }

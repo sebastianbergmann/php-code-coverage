@@ -54,14 +54,12 @@ final class File extends Renderer
     private const int HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
     private readonly SyntaxHighlighter $syntaxHighlighter;
     private ?ControlFlowGraph $controlFlowGraph = null;
-    private readonly Colors $colors;
 
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage, Colors $colors)
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
     {
         parent::__construct($templatePath, $generator, $date, $thresholds, $hasBranchCoverage, $hasPathCoverage);
 
         $this->syntaxHighlighter = new SyntaxHighlighter;
-        $this->colors            = $colors;
     }
 
     public function render(FileNode $node, string $file): void
@@ -904,7 +902,9 @@ final class File extends Renderer
 
                 foreach ($path->path as $branchId) {
                     if (!isset($methodData->branches[$branchId])) {
+                        // @codeCoverageIgnoreStart
                         continue;
+                        // @codeCoverageIgnoreEnd
                     }
 
                     $branch     = $methodData->branches[$branchId];
@@ -1012,7 +1012,7 @@ final class File extends Renderer
     private function controlFlowGraph(): ControlFlowGraph
     {
         if ($this->controlFlowGraph === null) {
-            $this->controlFlowGraph = new ControlFlowGraph($this->colors);
+            $this->controlFlowGraph = new ControlFlowGraph;
         }
 
         return $this->controlFlowGraph;

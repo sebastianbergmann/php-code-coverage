@@ -951,4 +951,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         return new CoverageFixtureProvider()->pathCoverageForBankAccountWithVariousTestSizes();
     }
+
+    protected function pathCoverageForBankAccountWithPartialBranchAndPathCoverage(): CodeCoverage
+    {
+        return new CoverageFixtureProvider()->pathCoverageForBankAccountWithPartialBranchAndPathCoverage();
+    }
 }

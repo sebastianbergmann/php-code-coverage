@@ -349,6 +349,53 @@ table#code td:first-of-type a {
  display: block;
 }
 
+.cfg-graph text {
+ fill: var(--bs-body-color);
+}
+
+.cfg-graph .node polygon,
+.cfg-graph .node ellipse {
+ fill: var(--bs-tertiary-bg);
+ stroke: var(--bs-secondary-color);
+}
+
+.cfg-graph .node.covered polygon {
+ fill: var(--phpunit-success-low);
+ stroke: var(--phpunit-success-bar);
+}
+
+.cfg-graph .node.uncovered polygon {
+ fill: var(--phpunit-danger);
+ stroke: var(--phpunit-danger-bar);
+}
+
+.cfg-graph .edge path {
+ stroke: var(--bs-secondary-color);
+}
+
+.cfg-graph .edge polygon {
+ fill: var(--bs-secondary-color);
+ stroke: var(--bs-secondary-color);
+}
+
+.cfg-graph .edge.covered path {
+ stroke: var(--phpunit-success-bar);
+}
+
+.cfg-graph .edge.covered polygon {
+ fill: var(--phpunit-success-bar);
+ stroke: var(--phpunit-success-bar);
+}
+
+.cfg-graph .edge.uncovered path {
+ stroke: var(--phpunit-danger-bar);
+}
+
+.cfg-graph .edge.uncovered polygon {
+ fill: var(--phpunit-danger-bar);
+ stroke: var(--phpunit-danger-bar);
+}
+
 .cfg-graph .edge.highlighted path,
 .cfg-graph .edge.highlighted polygon {
  stroke: var(--bs-link-color);

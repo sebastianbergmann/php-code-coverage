@@ -84,6 +84,43 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString('covered-by-small-tests', $path);
     }
 
+    public function testPartialCoverageIsReflectedInBranchAndPathRendering(): void
+    {
+        $report = new Facade;
+        $report->process($this->pathCoverageForBankAccountWithPartialBranchAndPathCoverage()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $branch = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_branch.html');
+        $path   = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_path.html');
+
+        $this->assertNotFalse($branch);
+        $this->assertNotFalse($path);
+
+        // decision point on line 13 has one covered and one uncovered outcome
+        $this->assertStringContainsString('<span class="branch-hit">&bull;</span><span class="branch-miss">&bull;</span>', $branch);
+
+        // line 14 is included in a covered and in an uncovered branch
+        $this->assertStringContainsString('warning popin', $branch);
+        $this->assertStringContainsString('1 test covers line 14', $branch);
+
+        // 3 out of 4 branches of setBalance are covered
+        $this->assertStringContainsString('<span class="warning">3/4</span>', $branch);
+
+        // line 13 is included in a covered and in an uncovered path
+        $this->assertStringContainsString('warning popin', $path);
+        $this->assertStringContainsString('1 test covers line 13', $path);
+
+        // 1 out of 2 paths of setBalance is covered
+        $this->assertStringContainsString('<span class="warning">1/2</span>', $path);
+
+        // functions without branch and path data are omitted from the structure sections
+        $this->assertStringNotContainsString('declarationOnly', $branch);
+        $this->assertStringNotContainsString('declarationOnly', $path);
+
+        // the paths of a function with more than 100 paths are collapsed
+        $this->assertStringContainsString('<details><summary>101 paths &mdash; click to expand</summary>', $path);
+        $this->assertStringContainsString('</details>', $path);
+    }
+
     public function testPathCoverageForBankAccountTest(): void
     {
         $expectedFilesPath = TEST_FILES_PATH . 'Report' . DIRECTORY_SEPARATOR . 'HTML' . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';

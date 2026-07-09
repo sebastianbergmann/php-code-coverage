@@ -263,6 +263,66 @@ final class BuilderTest extends TestCase
         $this->assertCount(0, $childNode->parentSections());
     }
 
+    public function testBuildTerminatesOnCyclicInheritance(): void
+    {
+        $root = new Directory('root');
+
+        $methodA = new Method('methodA', 1, 5, 'public function methodA(): void', Visibility::Public, 1);
+        $rawA    = new Class_('A', 'App\\A', 'App', '/path/to/A.php', 1, 10, 'App\\B', [], [], ['methodA' => $methodA]);
+
+        $methodB = new Method('methodB', 1, 5, 'public function methodB(): void', Visibility::Public, 1);
+        $rawB    = new Class_('B', 'App\\B', 'App', '/path/to/B.php', 1, 10, 'App\\A', [], [], ['methodB' => $methodB]);
+
+        $fileA = new File('A.php', $root, 'abc123', [], [], [], ['App\\A' => $rawA], [], [], new LinesOfCode(10, 0, 10));
+        $root->addFile($fileA);
+
+        $fileB = new File('B.php', $root, 'def456', [], [], [], ['App\\B' => $rawB], [], [], new LinesOfCode(10, 0, 10));
+        $root->addFile($fileB);
+
+        $builder = new Builder;
+        $result  = $builder->build($root);
+
+        $classNodes = [];
+
+        foreach ($result->iterate() as $node) {
+            if ($node instanceof Node\ClassNode) {
+                $classNodes[$node->className()] = $node;
+            }
+        }
+
+        $this->assertArrayHasKey('App\\A', $classNodes);
+        $this->assertArrayHasKey('App\\B', $classNodes);
+
+        // Each class inherits the other's method once, then the cycle is broken
+        $this->assertCount(1, $classNodes['App\\A']->parentSections());
+        $this->assertCount(1, $classNodes['App\\B']->parentSections());
+    }
+
+    public function testBuildTerminatesOnSelfInheritance(): void
+    {
+        $root = new Directory('root');
+
+        $method   = new Method('m', 1, 5, 'public function m(): void', Visibility::Public, 1);
+        $rawClass = new Class_('MyClass', 'App\\MyClass', 'App', '/path/to/Class.php', 1, 20, 'App\\MyClass', [], [], ['m' => $method]);
+
+        $file = new File('Class.php', $root, 'abc123', [], [], [], ['App\\MyClass' => $rawClass], [], [], new LinesOfCode(20, 0, 20));
+        $root->addFile($file);
+
+        $builder = new Builder;
+        $result  = $builder->build($root);
+
+        $classes = [];
+
+        foreach ($result->iterate() as $node) {
+            if ($node instanceof Node\ClassNode) {
+                $classes[] = $node;
+            }
+        }
+
+        $this->assertNotEmpty($classes);
+        $this->assertCount(0, $classes[0]->parentSections());
+    }
+
     public function testBuildWithSubdirectory(): void
     {
         $root   = new Directory('root');

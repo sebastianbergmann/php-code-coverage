@@ -37,7 +37,7 @@ final class Directory extends Target
     /**
      * @return non-empty-string
      */
-    public function directory(): string
+    public function path(): string
     {
         return $this->directory;
     }

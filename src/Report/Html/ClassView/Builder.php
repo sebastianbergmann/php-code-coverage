@@ -202,12 +202,17 @@ final class Builder
         $seenMethods  = $ownMethods;
         $currentClass = $class;
 
+        // Statically analysed code does not have to be runnable, it may declare inheritance cycles
+        $visited = [$class->namespacedName() => true];
+
         while ($currentClass->hasParent()) {
             $parentName = $currentClass->parentClass();
 
-            if ($parentName === null || !isset($this->classRegistry[$parentName])) {
+            if ($parentName === null || isset($visited[$parentName]) || !isset($this->classRegistry[$parentName])) {
                 break;
             }
+
+            $visited[$parentName] = true;
 
             $parentEntry     = $this->classRegistry[$parentName];
             $parentRaw       = $parentEntry['raw'];

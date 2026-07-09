@@ -77,6 +77,7 @@ abstract class Renderer
      * @var array<string, string>
      */
     private array $fileToClassMap = [];
+    private bool $classView       = true;
 
     public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage)
     {
@@ -96,6 +97,11 @@ abstract class Renderer
     public function setFileToClassMap(array $map): void
     {
         $this->fileToClassMap = $map;
+    }
+
+    public function disableClassView(): void
+    {
+        $this->classView = false;
     }
 
     /**
@@ -263,7 +269,7 @@ abstract class Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
-                'view_switcher'    => $this->viewSwitcher($pathToRoot, 'files', 'index.html', $classesTarget),
+                'view_switcher'    => $this->classView ? $this->viewSwitcher($pathToRoot, 'files', 'index.html', $classesTarget) : '',
             ],
         );
     }

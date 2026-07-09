@@ -43,13 +43,15 @@ final readonly class Facade
     private Colors $colors;
     private Thresholds $thresholds;
     private CustomCssFile $customCssFile;
+    private bool $classView;
 
-    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null)
+    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, bool $classView = true)
     {
         $this->generator     = $generator;
         $this->colors        = $colors ?? Colors::default();
         $this->thresholds    = $thresholds ?? Thresholds::default();
         $this->customCssFile = $customCssFile ?? CustomCssFile::default();
+        $this->classView     = $classView;
         $this->templatePath  = __DIR__ . '/Renderer/Template/';
     }
 
@@ -60,12 +62,19 @@ final readonly class Facade
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
         $hasPathCoverage   = $report->numberOfExecutablePaths() > 0;
 
-        $builder        = new Builder;
-        $rootNamespace  = $builder->build($report);
-        $fileToClassMap = $this->buildFileToClassMap($rootNamespace);
+        $fileToClassMap = [];
+
+        if ($this->classView) {
+            $rootNamespace  = new Builder()->build($report);
+            $fileToClassMap = $this->buildFileToClassMap($rootNamespace);
+        }
 
         $this->renderFileView($report, $target, $date, $hasBranchCoverage, $hasPathCoverage, $fileToClassMap);
-        $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage, $hasPathCoverage);
+
+        if (isset($rootNamespace)) {
+            $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage, $hasPathCoverage);
+        }
+
         $this->copyFiles($target);
         $this->renderCss($target);
     }
@@ -80,6 +89,12 @@ final readonly class Facade
         $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
 
         $file->setFileToClassMap($fileToClassMap);
+
+        if (!$this->classView) {
+            $dashboard->disableClassView();
+            $directory->disableClassView();
+            $file->disableClassView();
+        }
 
         $directory->render($report, $target . 'index.html');
         $dashboard->render($report, $target . 'dashboard.html');

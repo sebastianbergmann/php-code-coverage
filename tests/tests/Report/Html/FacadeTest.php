@@ -64,6 +64,34 @@ final class FacadeTest extends TestCase
         $this->assertStringContainsString('_classes/App/Models/User.html', $fileHtml);
     }
 
+    public function testProcessCanSkipTheClassView(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR;
+        $report = $this->buildReportWithNestedNamespacesAndSubdirectory();
+
+        (new Facade('', null, null, null, false))->process($report, $target);
+
+        $this->assertDirectoryDoesNotExist($target . '_classes');
+
+        $index = file_get_contents($target . 'index.html');
+
+        $this->assertNotFalse($index);
+        $this->assertStringNotContainsString('_classes/', $index);
+        $this->assertStringNotContainsString('nav-tabs', $index);
+
+        $fileHtml = file_get_contents($target . 'sub/User.php.html');
+
+        $this->assertNotFalse($fileHtml);
+        $this->assertStringNotContainsString('_classes/', $fileHtml);
+        $this->assertStringNotContainsString('nav-tabs', $fileHtml);
+
+        $dashboard = file_get_contents($target . 'dashboard.html');
+
+        $this->assertNotFalse($dashboard);
+        $this->assertStringNotContainsString('_classes/', $dashboard);
+        $this->assertStringNotContainsString('nav-tabs', $dashboard);
+    }
+
     private function buildReportWithNestedNamespacesAndSubdirectory(): DirectoryNode
     {
         $rootPath = TEST_FILES_PATH . 'FacadeNested';

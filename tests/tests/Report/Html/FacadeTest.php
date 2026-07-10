@@ -69,7 +69,7 @@ final class FacadeTest extends TestCase
         $target = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR;
         $report = $this->buildReportWithNestedNamespacesAndSubdirectory();
 
-        (new Facade('', null, null, null, false))->process($report, $target);
+        (new Facade('', null, null, null, Views::OnlyFileView))->process($report, $target);
 
         $this->assertDirectoryDoesNotExist($target . '_classes');
 
@@ -90,6 +90,56 @@ final class FacadeTest extends TestCase
         $this->assertNotFalse($dashboard);
         $this->assertStringNotContainsString('_classes/', $dashboard);
         $this->assertStringNotContainsString('nav-tabs', $dashboard);
+    }
+
+    public function testProcessCanSkipTheFileView(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR;
+        $report = $this->buildReportWithNestedNamespacesAndSubdirectory();
+
+        (new Facade('', null, null, null, Views::OnlyClassView))->process($report, $target);
+
+        // The class view is rendered at the target root instead of _classes/
+        $this->assertDirectoryDoesNotExist($target . '_classes');
+        $this->assertFileExists($target . 'index.html');
+        $this->assertFileExists($target . 'dashboard.html');
+        $this->assertFileExists($target . 'GlobalClass.html');
+        $this->assertFileExists($target . 'App/index.html');
+        $this->assertFileExists($target . 'App/dashboard.html');
+        $this->assertFileExists($target . 'App/Models/User.html');
+        $this->assertFileExists($target . 'App/Controllers/HomeController.html');
+
+        // No file view pages
+        $this->assertFileDoesNotExist($target . 'GlobalClass.php.html');
+        $this->assertDirectoryDoesNotExist($target . 'sub');
+
+        $index = file_get_contents($target . 'index.html');
+
+        $this->assertNotFalse($index);
+        $this->assertStringNotContainsString('nav-tabs', $index);
+        $this->assertStringContainsString('href="_css/style.css', $index);
+
+        // path_to_root does not include the extra ../ for _classes/
+        $namespaceIndex = file_get_contents($target . 'App/Models/index.html');
+
+        $this->assertNotFalse($namespaceIndex);
+        $this->assertStringNotContainsString('nav-tabs', $namespaceIndex);
+        $this->assertStringContainsString('href="../../_css/style.css', $namespaceIndex);
+
+        $classHtml = file_get_contents($target . 'App/Models/User.html');
+
+        $this->assertNotFalse($classHtml);
+        $this->assertStringNotContainsString('nav-tabs', $classHtml);
+        $this->assertStringContainsString('href="../../_css/style.css', $classHtml);
+
+        // The dashboard links to class pages, not to file view pages
+        $dashboard = file_get_contents($target . 'dashboard.html');
+
+        $this->assertNotFalse($dashboard);
+        $this->assertStringNotContainsString('nav-tabs', $dashboard);
+        $this->assertStringNotContainsString('.php.html', $dashboard);
+        $this->assertStringContainsString('App/Models/User.html', $dashboard);
+        $this->assertStringContainsString('App/Models/User.html#7', $dashboard);
     }
 
     private function buildReportWithNestedNamespacesAndSubdirectory(): DirectoryNode

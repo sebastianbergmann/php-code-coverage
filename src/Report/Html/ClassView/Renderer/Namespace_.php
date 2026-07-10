@@ -79,7 +79,7 @@ final class Namespace_ extends Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
-                'view_switcher'    => $this->viewSwitcher($pathToRoot, 'classes'),
+                'view_switcher'    => $this->views->fileView() ? $this->viewSwitcher($pathToRoot, 'classes') : '',
             ],
         );
     }
@@ -236,8 +236,10 @@ final class Namespace_ extends Renderer
             $depth++;
         }
 
-        // One extra level for the _classes/ directory
-        $depth++;
+        if ($this->views->fileView()) {
+            // One extra level for the _classes/ directory
+            $depth++;
+        }
 
         return str_repeat('../', $depth);
     }

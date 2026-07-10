@@ -17,9 +17,11 @@ use function str_repeat;
 use function substr_count;
 use function usort;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\CrapIndex;
 use SebastianBergmann\CodeCoverage\Report\Html\BubbleChart;
+use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\NamespaceNode;
 use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use SebastianBergmann\Template\Exception;
@@ -40,15 +42,16 @@ final class Dashboard extends Renderer
 
         $this->setCommonTemplateVariablesForNamespace($template, $node);
 
-        $pathToRoot  = $this->pathToRootForNamespace($node);
-        $bubbleChart = new BubbleChart($this->thresholds);
+        $pathToRoot     = $this->pathToRootForNamespace($node);
+        $bubbleChart    = new BubbleChart($this->thresholds);
+        $classPageLinks = $this->views->fileView() ? [] : $this->classPageLinks($node);
 
         $template->setVar(
             [
-                'class_bubble_chart'  => $bubbleChart->render($this->classItems($classes, $pathToRoot)),
-                'class_crap_table'    => $this->classCrapTable($classes, $pathToRoot),
-                'method_bubble_chart' => $bubbleChart->render($this->methodItems($classes, $pathToRoot)),
-                'method_crap_table'   => $this->methodCrapTable($classes, $pathToRoot),
+                'class_bubble_chart'  => $bubbleChart->render($this->classItems($classes, $pathToRoot, $classPageLinks)),
+                'class_crap_table'    => $this->classCrapTable($classes, $pathToRoot, $classPageLinks),
+                'method_bubble_chart' => $bubbleChart->render($this->methodItems($classes, $pathToRoot, $classPageLinks)),
+                'method_crap_table'   => $this->methodCrapTable($classes, $pathToRoot, $classPageLinks),
             ],
         );
 
@@ -79,7 +82,7 @@ final class Dashboard extends Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
-                'view_switcher'    => $this->viewSwitcher($pathToRoot, 'classes'),
+                'view_switcher'    => $this->views->fileView() ? $this->viewSwitcher($pathToRoot, 'classes') : '',
             ],
         );
     }
@@ -116,10 +119,11 @@ final class Dashboard extends Renderer
 
     /**
      * @param array<string, ProcessedClassType> $classes
+     * @param array<string, string>             $classPageLinks
      *
      * @return list<array{name: string, coverage: float|int, executableLines: int, complexity: int, link: string}>
      */
-    private function classItems(array $classes, string $pathToRoot): array
+    private function classItems(array $classes, string $pathToRoot, array $classPageLinks): array
     {
         $items = [];
 
@@ -133,7 +137,7 @@ final class Dashboard extends Renderer
                 'coverage'        => $class->coverage,
                 'executableLines' => $class->executableLines,
                 'complexity'      => $class->ccn,
-                'link'            => $pathToRoot . $class->link,
+                'link'            => $pathToRoot . ($classPageLinks[$className] ?? $class->link),
             ];
         }
 
@@ -142,10 +146,11 @@ final class Dashboard extends Renderer
 
     /**
      * @param array<string, ProcessedClassType> $classes
+     * @param array<string, string>             $classPageLinks
      *
      * @return list<array{name: string, coverage: float|int, executableLines: int, complexity: int, link: string}>
      */
-    private function methodItems(array $classes, string $pathToRoot): array
+    private function methodItems(array $classes, string $pathToRoot, array $classPageLinks): array
     {
         $items = [];
 
@@ -160,7 +165,7 @@ final class Dashboard extends Renderer
                     'coverage'        => $method->coverage,
                     'executableLines' => $method->executableLines,
                     'complexity'      => $method->ccn,
-                    'link'            => $pathToRoot . $method->link,
+                    'link'            => $pathToRoot . $this->methodLink($classPageLinks, $className, $method),
                 ];
             }
         }
@@ -170,8 +175,9 @@ final class Dashboard extends Renderer
 
     /**
      * @param array<string, ProcessedClassType> $classes
+     * @param array<string, string>             $classPageLinks
      */
-    private function classCrapTable(array $classes, string $pathToRoot): string
+    private function classCrapTable(array $classes, string $pathToRoot, array $classPageLinks): string
     {
         $items = [];
 
@@ -180,7 +186,7 @@ final class Dashboard extends Renderer
                 'name'     => $className,
                 'coverage' => $class->coverage,
                 'crap'     => (new CrapIndex($class->ccn, $class->coverage))->asString(),
-                'link'     => $pathToRoot . $class->link,
+                'link'     => $pathToRoot . ($classPageLinks[$className] ?? $class->link),
             ];
         }
 
@@ -189,8 +195,9 @@ final class Dashboard extends Renderer
 
     /**
      * @param array<string, ProcessedClassType> $classes
+     * @param array<string, string>             $classPageLinks
      */
-    private function methodCrapTable(array $classes, string $pathToRoot): string
+    private function methodCrapTable(array $classes, string $pathToRoot, array $classPageLinks): string
     {
         $items = [];
 
@@ -200,12 +207,50 @@ final class Dashboard extends Renderer
                     'name'     => $className . '::' . $methodName,
                     'coverage' => $method->coverage,
                     'crap'     => (new CrapIndex($method->ccn, $method->coverage))->asString(),
-                    'link'     => $pathToRoot . $method->link,
+                    'link'     => $pathToRoot . $this->methodLink($classPageLinks, $className, $method),
                 ];
             }
         }
 
         return $this->crapTable($items, 'Method');
+    }
+
+    /**
+     * @param array<string, string> $classPageLinks
+     */
+    private function methodLink(array $classPageLinks, string $className, ProcessedMethodType $method): string
+    {
+        if (isset($classPageLinks[$className])) {
+            return $classPageLinks[$className] . '#' . $method->startLine;
+        }
+
+        return $method->link;
+    }
+
+    /**
+     * Maps class names to class page paths relative to the class view root.
+     *
+     * The links carried by the processed class and method types point into
+     * the file view; when that view is not rendered, the dashboard has to
+     * link to the class pages instead.
+     *
+     * @return array<string, string>
+     */
+    private function classPageLinks(NamespaceNode $node): array
+    {
+        $links = [];
+
+        foreach ($node->iterate() as $descendant) {
+            if (!$descendant instanceof ClassNode) {
+                continue;
+            }
+
+            $nsId = $descendant->parent()->id();
+
+            $links[$descendant->className()] = ($nsId === 'index' ? '' : $nsId . '/') . $descendant->shortName() . '.html';
+        }
+
+        return $links;
     }
 
     /**
@@ -250,8 +295,10 @@ final class Dashboard extends Renderer
             $depth++;
         }
 
-        // One extra level for the _classes/ directory
-        $depth++;
+        if ($this->views->fileView()) {
+            // One extra level for the _classes/ directory
+            $depth++;
+        }
 
         return str_repeat('../', $depth);
     }

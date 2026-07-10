@@ -16,6 +16,7 @@ use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Report\Html\Colors;
 use SebastianBergmann\CodeCoverage\Report\Html\CustomCssFile;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlFacade;
+use SebastianBergmann\CodeCoverage\Report\Html\Views;
 use SebastianBergmann\CodeCoverage\Report\Xml\Facade as XmlFacade;
 use SebastianBergmann\CodeCoverage\Serialization\Serializer;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
@@ -68,9 +69,9 @@ final readonly class Facade
     /**
      * @param non-empty-string $target
      */
-    public function renderHtml(string $target, string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, bool $classView = true): void
+    public function renderHtml(string $target, string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, Views $views = Views::FileViewAndClassView): void
     {
-        new HtmlFacade($generator, $colors, $thresholds, $customCssFile, $classView)->process(
+        new HtmlFacade($generator, $colors, $thresholds, $customCssFile, $views)->process(
             $this->report,
             $target,
         );

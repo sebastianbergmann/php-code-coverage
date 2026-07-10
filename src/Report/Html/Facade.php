@@ -43,15 +43,15 @@ final readonly class Facade
     private Colors $colors;
     private Thresholds $thresholds;
     private CustomCssFile $customCssFile;
-    private bool $classView;
+    private Views $views;
 
-    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, bool $classView = true)
+    public function __construct(string $generator = '', ?Colors $colors = null, ?Thresholds $thresholds = null, ?CustomCssFile $customCssFile = null, Views $views = Views::FileViewAndClassView)
     {
         $this->generator     = $generator;
         $this->colors        = $colors ?? Colors::default();
         $this->thresholds    = $thresholds ?? Thresholds::default();
         $this->customCssFile = $customCssFile ?? CustomCssFile::default();
-        $this->classView     = $classView;
+        $this->views         = $views;
         $this->templatePath  = __DIR__ . '/Renderer/Template/';
     }
 
@@ -62,14 +62,15 @@ final readonly class Facade
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
         $hasPathCoverage   = $report->numberOfExecutablePaths() > 0;
 
-        $fileToClassMap = [];
-
-        if ($this->classView) {
-            $rootNamespace  = new Builder()->build($report);
-            $fileToClassMap = $this->buildFileToClassMap($rootNamespace);
+        if ($this->views->classView()) {
+            $rootNamespace = new Builder()->build($report);
         }
 
-        $this->renderFileView($report, $target, $date, $hasBranchCoverage, $hasPathCoverage, $fileToClassMap);
+        if ($this->views->fileView()) {
+            $fileToClassMap = isset($rootNamespace) ? $this->buildFileToClassMap($rootNamespace) : [];
+
+            $this->renderFileView($report, $target, $date, $hasBranchCoverage, $hasPathCoverage, $fileToClassMap);
+        }
 
         if (isset($rootNamespace)) {
             $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage, $hasPathCoverage);
@@ -84,17 +85,11 @@ final readonly class Facade
      */
     private function renderFileView(DirectoryNode $report, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage, array $fileToClassMap): void
     {
-        $dashboard = new Dashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
-        $directory = new Directory($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
-        $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
+        $dashboard = new Dashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $directory = new Directory($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
 
         $file->setFileToClassMap($fileToClassMap);
-
-        if (!$this->classView) {
-            $dashboard->disableClassView();
-            $directory->disableClassView();
-            $file->disableClassView();
-        }
 
         $directory->render($report, $target . 'index.html');
         $dashboard->render($report, $target . 'dashboard.html');
@@ -121,11 +116,11 @@ final readonly class Facade
 
     private function renderClassView(NamespaceNode $rootNamespace, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage): void
     {
-        $classTarget = $this->directory($target . '_classes');
+        $classTarget = $this->views->fileView() ? $this->directory($target . '_classes') : $target;
 
-        $namespaceRenderer = new NamespaceRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
-        $classRenderer     = new ClassRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
-        $dashboard         = new ClassDashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage);
+        $namespaceRenderer = new NamespaceRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $classRenderer     = new ClassRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $dashboard         = new ClassDashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
 
         $namespaceRenderer->render($rootNamespace, $classTarget . 'index.html');
         $dashboard->render($rootNamespace, $classTarget . 'dashboard.html');

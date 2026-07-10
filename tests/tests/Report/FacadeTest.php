@@ -15,6 +15,7 @@ use function file_get_contents;
 use function str_replace;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\Report\Html\Views;
 use SebastianBergmann\CodeCoverage\Serialization\Serializer;
 use SebastianBergmann\CodeCoverage\Serialization\Unserializer;
 use SebastianBergmann\CodeCoverage\TestCase;
@@ -197,6 +198,19 @@ final class FacadeTest extends TestCase
 
         $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'index.html');
         $this->assertDirectoryExists($target);
+    }
+
+    public function testRenderHtmlWithOnlyClassView(): void
+    {
+        $facade = Facade::fromObject($this->getLineCoverageForBankAccount());
+        $target = TEST_FILES_PATH . 'tmp';
+
+        $facade->renderHtml($target, '', null, null, null, Views::OnlyClassView);
+
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'index.html');
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'BankAccount.html');
+        $this->assertFileDoesNotExist($target . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+        $this->assertDirectoryDoesNotExist($target . DIRECTORY_SEPARATOR . '_classes');
     }
 
     public function testRenderXml(): void

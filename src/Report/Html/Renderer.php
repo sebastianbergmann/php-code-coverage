@@ -18,9 +18,11 @@ use const JSON_THROW_ON_ERROR;
 use function count;
 use function htmlspecialchars;
 use function json_encode;
+use function round;
 use function sprintf;
 use function str_repeat;
 use function substr_count;
+use RoundingMode;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
@@ -396,7 +398,7 @@ abstract class Renderer
             '}}',
         );
 
-        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', $percent)]);
+        $template->setVar(['level' => $level, 'percent' => sprintf('%.2F', round($percent, 2, RoundingMode::TowardsZero))]);
 
         return $template->render();
     }

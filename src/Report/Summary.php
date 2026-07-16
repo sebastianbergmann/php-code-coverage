@@ -9,7 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function round;
 use function sprintf;
+use RoundingMode;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -154,7 +156,7 @@ final readonly class Summary
     {
         $buffer = sprintf(
             'Lines: %01.2F%% (%d/%d)',
-            $this->lineCoverageAsPercentage(),
+            round($this->lineCoverageAsPercentage(), 2, RoundingMode::TowardsZero),
             $this->numberOfExecutedLines,
             $this->numberOfExecutableLines,
         );
@@ -162,14 +164,14 @@ final readonly class Summary
         if ($this->hasBranchAndPathCoverage()) {
             $buffer .= sprintf(
                 ', Branches: %01.2F%% (%d/%d)',
-                $this->branchCoverageAsPercentage(),
+                round($this->branchCoverageAsPercentage(), 2, RoundingMode::TowardsZero),
                 $this->numberOfExecutedBranches,
                 $this->numberOfExecutableBranches,
             );
 
             $buffer .= sprintf(
                 ', Paths: %01.2F%% (%d/%d)',
-                $this->pathCoverageAsPercentage(),
+                round($this->pathCoverageAsPercentage(), 2, RoundingMode::TowardsZero),
                 $this->numberOfExecutedPaths,
                 $this->numberOfExecutablePaths,
             );

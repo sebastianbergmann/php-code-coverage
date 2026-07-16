@@ -33,11 +33,57 @@ final class PercentageTest extends TestCase
         );
     }
 
+    public function testCanBeRepresentedAsStringWithoutPercentSign(): void
+    {
+        $this->assertSame(
+            '50.00',
+            Percentage::fromFractionAndTotal(1, 2)->asStringWithoutPercentSign(),
+        );
+
+        $this->assertSame(
+            '',
+            Percentage::fromFractionAndTotal(0, 0)->asStringWithoutPercentSign(),
+        );
+    }
+
     public function testCanBeRepresentedAsFixedWidthString(): void
     {
         $this->assertSame(
             ' 50.00%',
             Percentage::fromFractionAndTotal(1, 2)->asFixedWidthString(),
+        );
+    }
+
+    public function testStringRepresentationRoundsTowardsZero(): void
+    {
+        $this->assertSame(
+            '99.99%',
+            Percentage::fromFractionAndTotal(99999, 100000)->asString(),
+        );
+
+        $this->assertSame(
+            '66.66%',
+            Percentage::fromFractionAndTotal(2, 3)->asString(),
+        );
+
+        $this->assertSame(
+            '99.99%',
+            Percentage::fromFractionAndTotal(9999, 10000)->asString(),
+        );
+
+        $this->assertSame(
+            '100.00%',
+            Percentage::fromFractionAndTotal(2, 2)->asString(),
+        );
+
+        $this->assertSame(
+            ' 99.99%',
+            Percentage::fromFractionAndTotal(99999, 100000)->asFixedWidthString(),
+        );
+
+        $this->assertSame(
+            '99.99',
+            Percentage::fromFractionAndTotal(99999, 100000)->asStringWithoutPercentSign(),
         );
     }
 

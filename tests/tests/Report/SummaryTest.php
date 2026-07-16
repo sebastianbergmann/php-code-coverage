@@ -90,7 +90,7 @@ final class SummaryTest extends TestCase
         $this->assertSame(3, $summary->numberOfExecutedPaths());
         $this->assertEqualsWithDelta(60.00, $summary->pathCoverageAsPercentage(), 0.01);
         $this->assertSame(
-            'Lines: 62.50% (5/8), Branches: 42.86% (3/7), Paths: 60.00% (3/5)',
+            'Lines: 62.50% (5/8), Branches: 42.85% (3/7), Paths: 60.00% (3/5)',
             $summary->asString(),
         );
     }

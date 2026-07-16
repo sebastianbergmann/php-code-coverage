@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-use function sprintf;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use XMLWriter;
 
@@ -37,7 +36,7 @@ final readonly class Totals
         $this->xmlWriter->writeAttribute('executed', (string) $executed);
         $this->xmlWriter->writeAttribute(
             'percent',
-            $executable === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($executed, $executable)->asFloat()),
+            $executable === 0 ? '0' : Percentage::fromFractionAndTotal($executed, $executable)->asStringWithoutPercentSign(),
         );
         $this->xmlWriter->endElement();
     }
@@ -49,7 +48,7 @@ final readonly class Totals
         $this->xmlWriter->writeAttribute('tested', (string) $tested);
         $this->xmlWriter->writeAttribute(
             'percent',
-            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
         );
         $this->xmlWriter->endElement();
     }
@@ -61,7 +60,7 @@ final readonly class Totals
         $this->xmlWriter->writeAttribute('tested', (string) $tested);
         $this->xmlWriter->writeAttribute(
             'percent',
-            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
         );
         $this->xmlWriter->endElement();
     }
@@ -73,7 +72,7 @@ final readonly class Totals
         $this->xmlWriter->writeAttribute('tested', (string) $tested);
         $this->xmlWriter->writeAttribute(
             'percent',
-            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
         );
         $this->xmlWriter->endElement();
     }
@@ -85,7 +84,7 @@ final readonly class Totals
         $this->xmlWriter->writeAttribute('tested', (string) $tested);
         $this->xmlWriter->writeAttribute(
             'percent',
-            $count === 0 ? '0' : sprintf('%01.2F', Percentage::fromFractionAndTotal($tested, $count)->asFloat()),
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
         );
         $this->xmlWriter->endElement();
     }

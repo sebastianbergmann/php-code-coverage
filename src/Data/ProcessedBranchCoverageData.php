@@ -9,9 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
-use function array_merge;
-use function array_unique;
-use function array_values;
+use function max;
 use NoDiscard;
 use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
@@ -30,7 +28,7 @@ final class ProcessedBranchCoverageData
     public readonly int $line_start;
     public readonly int $line_end;
 
-    /** @var list<TestIdType> */
+    /** @var array<TestIdType, positive-int> map of test id to the number of times the test traversed the branch */
     public array $hit;
 
     /** @var array<int, int> */
@@ -56,9 +54,9 @@ final class ProcessedBranchCoverageData
     }
 
     /**
-     * @param list<TestIdType> $hit
-     * @param array<int, int>  $out
-     * @param array<int, int>  $out_hit
+     * @param array<TestIdType, positive-int> $hit
+     * @param array<int, int>                 $out
+     * @param array<int, int>                 $out_hit
      */
     public function __construct(
         int $op_start,
@@ -78,6 +76,12 @@ final class ProcessedBranchCoverageData
         $this->op_start   = $op_start;
     }
 
+    /**
+     * Hit counts for a test case that occurs in both operands are combined with max(), not summed,
+     * because the same test case id on both sides means the same test execution was observed twice.
+     *
+     * @see ProcessedCodeCoverageData::merge()
+     */
     #[NoDiscard]
     public function merge(self $data): self
     {
@@ -85,22 +89,29 @@ final class ProcessedBranchCoverageData
             return $this;
         }
 
+        $hit = $this->hit;
+
+        foreach ($data->hit as $testCaseId => $count) {
+            $hit[$testCaseId] = max($hit[$testCaseId] ?? 0, $count);
+        }
+
         return new self(
             $this->op_start,
             $this->op_end,
             $this->line_start,
             $this->line_end,
-            array_values(array_unique(array_merge($this->hit, $data->hit))),
+            $hit,
             $this->out,
             $this->out_hit,
         );
     }
 
     /**
-     * @param TestIdType $testCaseId
+     * @param TestIdType   $testCaseId
+     * @param positive-int $count
      */
-    public function recordHit(string $testCaseId): void
+    public function recordHit(string $testCaseId, int $count): void
     {
-        $this->hit[] = $testCaseId;
+        $this->hit[$testCaseId] = ($this->hit[$testCaseId] ?? 0) + $count;
     }
 }

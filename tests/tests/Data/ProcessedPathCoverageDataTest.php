@@ -30,18 +30,28 @@ final class ProcessedPathCoverageDataTest extends TestCase
         $this->assertSame([], $data->hit);
     }
 
-    public function testRecordHitAppendsTestCaseId(): void
+    public function testRecordHitRecordsTraversalCountForTestCase(): void
     {
         $data = new ProcessedPathCoverageData([0 => 0], []);
 
-        $data->recordHit('testCaseId');
+        $data->recordHit('testCaseId', 3);
 
-        $this->assertSame(['testCaseId'], $data->hit);
+        $this->assertSame(['testCaseId' => 3], $data->hit);
+    }
+
+    public function testRecordHitAccumulatesTraversalCountsForTestCase(): void
+    {
+        $data = new ProcessedPathCoverageData([0 => 0], []);
+
+        $data->recordHit('testCaseId', 3);
+        $data->recordHit('testCaseId', 2);
+
+        $this->assertSame(['testCaseId' => 5], $data->hit);
     }
 
     public function testMergeReturnsSelfWhenOtherHasNoHits(): void
     {
-        $data  = new ProcessedPathCoverageData([0 => 0], ['test1']);
+        $data  = new ProcessedPathCoverageData([0 => 0], ['test1' => 1]);
         $other = new ProcessedPathCoverageData([0 => 0], []);
 
         $this->assertSame($data, $data->merge($other));
@@ -49,12 +59,22 @@ final class ProcessedPathCoverageDataTest extends TestCase
 
     public function testMergeCombinesHits(): void
     {
-        $data  = new ProcessedPathCoverageData([0 => 0], ['test1']);
-        $other = new ProcessedPathCoverageData([0 => 0], ['test2']);
+        $data  = new ProcessedPathCoverageData([0 => 0], ['test1' => 1]);
+        $other = new ProcessedPathCoverageData([0 => 0], ['test2' => 2]);
 
         $merged = $data->merge($other);
 
         $this->assertNotSame($data, $merged);
-        $this->assertSame(['test1', 'test2'], $merged->hit);
+        $this->assertSame(['test1' => 1, 'test2' => 2], $merged->hit);
+    }
+
+    public function testMergeKeepsHighestTraversalCountPerTestCase(): void
+    {
+        $data  = new ProcessedPathCoverageData([0 => 0], ['test1' => 2]);
+        $other = new ProcessedPathCoverageData([0 => 0], ['test1' => 2, 'test2' => 3]);
+
+        $merged = $data->merge($other);
+
+        $this->assertSame(['test1' => 2, 'test2' => 3], $merged->hit);
     }
 }

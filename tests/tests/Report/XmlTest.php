@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Xml;
 use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function iterator_count;
+use function rmdir;
 use function unlink;
 use DateTimeImmutable;
 use FilesystemIterator;
@@ -50,13 +51,7 @@ final class XmlTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $fileInfo) {
-            if (!$fileInfo instanceof SplFileInfo) {
-                continue; // @codeCoverageIgnore
-            }
-
-            unlink($fileInfo->getPathname());
-        }
+        $this->removeDirectoryContents(TEST_FILES_PATH . 'tmp');
     }
 
     public function testForBankAccountTest(): void
@@ -216,6 +211,25 @@ final class XmlTest extends TestCase
             '<driver name="unknown" version="unknown"',
             $this->indexForBankAccountWithBuildInformation(driverExtensionName: null, driverExtensionVersion: null),
         );
+    }
+
+    private function removeDirectoryContents(string $path): void
+    {
+        foreach (new FilesystemIterator($path) as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo) {
+                continue; // @codeCoverageIgnore
+            }
+
+            if ($fileInfo->isDir()) {
+                $this->removeDirectoryContents($fileInfo->getPathname());
+
+                rmdir($fileInfo->getPathname());
+
+                continue;
+            }
+
+            unlink($fileInfo->getPathname());
+        }
     }
 
     private function indexForBankAccountWithBuildInformation(?Runtime $runtime = new Runtime, ?DateTimeImmutable $buildDate = new DateTimeImmutable, ?string $phpUnitVersion = '13.1.0', ?string $coverageVersion = '14.0.0', ?string $driverExtensionName = 'Xdebug', ?string $driverExtensionVersion = '3.5.1'): string

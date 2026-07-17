@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_filter;
+use function array_keys;
 use function count;
 use function range;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
@@ -46,7 +47,7 @@ final class File extends AbstractNode
     private string $sha1;
 
     /**
-     * @var array<positive-int, ?list<non-empty-string>>
+     * @var array<positive-int, ?array<non-empty-string, positive-int>>
      */
     private array $lineCoverageData;
 
@@ -131,13 +132,13 @@ final class File extends AbstractNode
     private readonly array $rawTraits;
 
     /**
-     * @param non-empty-string                                       $sha1
-     * @param array<positive-int, ?list<non-empty-string>>           $lineCoverageData
-     * @param array<non-empty-string, ProcessedFunctionCoverageData> $functionCoverageData
-     * @param array<non-empty-string, TestType>                      $testData
-     * @param array<string, Class_>                                  $classes
-     * @param array<string, Trait_>                                  $traits
-     * @param array<string, Function_>                               $functions
+     * @param non-empty-string                                            $sha1
+     * @param array<positive-int, ?array<non-empty-string, positive-int>> $lineCoverageData
+     * @param array<non-empty-string, ProcessedFunctionCoverageData>      $functionCoverageData
+     * @param array<non-empty-string, TestType>                           $testData
+     * @param array<string, Class_>                                       $classes
+     * @param array<string, Trait_>                                       $traits
+     * @param array<string, Function_>                                    $functions
      */
     public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false)
     {
@@ -169,7 +170,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<positive-int, ?list<non-empty-string>>
+     * @return array<positive-int, ?array<non-empty-string, positive-int>>
      */
     public function lineCoverageData(): array
     {
@@ -479,7 +480,7 @@ final class File extends AbstractNode
 
                     $coveringTestSizes = 0;
 
-                    foreach ($this->lineCoverageData[$lineNumber] as $testId) {
+                    foreach (array_keys($this->lineCoverageData[$lineNumber]) as $testId) {
                         if (isset($this->testData[$testId])) {
                             $coveringTestSizes |= TestSizes::bitFor($this->testData[$testId]['size']);
 

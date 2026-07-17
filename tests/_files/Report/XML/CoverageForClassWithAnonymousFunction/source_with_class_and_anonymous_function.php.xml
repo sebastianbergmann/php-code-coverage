@@ -14,28 +14,28 @@
     </class>
     <coverage>
       <line nr="7">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="9">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="10">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="11">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="12">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="13">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="14">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
       <line nr="17">
-        <covered by="ClassWithAnonymousFunction"/>
+        <covered by="ClassWithAnonymousFunction" count="1"/>
       </line>
     </coverage>
     <source xmlns="https://schema.phpunit.de/coverage/1.0">

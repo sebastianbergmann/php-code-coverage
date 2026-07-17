@@ -498,7 +498,7 @@ final class File extends Renderer
                     $lineCss        = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
-                    foreach ($coverageData[$i] as $test) {
+                    foreach (array_keys($coverageData[$i]) as $test) {
                         if (!isset($testData[$test])) {
                             // @codeCoverageIgnoreStart
                             continue;
@@ -618,7 +618,7 @@ final class File extends Renderer
 
                     if ($branch->hit !== []) {
                         $lineData[$line]['includedInHitBranches']++;
-                        $lineData[$line]['tests'] = array_unique(array_merge($lineData[$line]['tests'], $branch->hit));
+                        $lineData[$line]['tests'] = array_unique(array_merge($lineData[$line]['tests'], array_keys($branch->hit)));
                     }
                 }
             }
@@ -737,7 +737,7 @@ final class File extends Renderer
 
                         if ($path->hit !== []) {
                             $lineData[$line]['includedInHitPaths'][] = $pathId;
-                            $lineData[$line]['tests']                = array_unique(array_merge($lineData[$line]['tests'], $path->hit));
+                            $lineData[$line]['tests']                = array_unique(array_merge($lineData[$line]['tests'], array_keys($path->hit)));
                         }
                     }
                 }
@@ -867,7 +867,7 @@ final class File extends Renderer
 
                     $popoverContent = '<ul>';
 
-                    foreach ($branch->hit as $test) {
+                    foreach (array_keys($branch->hit) as $test) {
                         if (!isset($testData[$test])) {
                             // @codeCoverageIgnoreStart
                             continue;
@@ -984,7 +984,7 @@ final class File extends Renderer
 
                     $popoverContent = '<ul>';
 
-                    foreach ($path->hit as $test) {
+                    foreach (array_keys($path->hit) as $test) {
                         if (!isset($testData[$test])) {
                             // @codeCoverageIgnoreStart
                             continue;

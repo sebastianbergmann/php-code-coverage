@@ -30,7 +30,7 @@ final readonly class Coverage
     }
 
     /**
-     * @param list<string> $tests
+     * @param array<non-empty-string, positive-int> $tests map of test id to the number of times the test executed the line
      */
     public function finalize(array $tests): void
     {
@@ -38,9 +38,10 @@ final readonly class Coverage
         $writer->startElement('line');
         $writer->writeAttribute('nr', $this->line);
 
-        foreach ($tests as $test) {
+        foreach ($tests as $test => $count) {
             $writer->startElement('covered');
             $writer->writeAttribute('by', $test);
+            $writer->writeAttribute('count', (string) $count);
             $writer->endElement();
         }
         $writer->endElement();

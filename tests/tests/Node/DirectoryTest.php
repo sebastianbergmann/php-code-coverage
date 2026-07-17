@@ -81,7 +81,7 @@ final class DirectoryTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['test1']],
+            [1 => ['test1' => 1]],
             [],
             ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
@@ -479,7 +479,7 @@ final class DirectoryTest extends TestCase
             1,
         );
 
-        $lineCoverageData = array_fill(1, 15, ['test1']);
+        $lineCoverageData = array_fill(1, 15, ['test1' => 1]);
 
         return new File(
             $name,
@@ -531,7 +531,7 @@ final class DirectoryTest extends TestCase
             $name,
             $parent,
             'sha1hash',
-            [1 => ['t'], 2 => ['t']],
+            [1 => ['t' => 1], 2 => ['t' => 1]],
             [],
             ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
             ['C' => $class],
@@ -559,7 +559,7 @@ final class DirectoryTest extends TestCase
             $name,
             $parent,
             'sha1hash',
-            [1 => ['t'], 2 => ['t']],
+            [1 => ['t' => 1], 2 => ['t' => 1]],
             [],
             ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
             [],

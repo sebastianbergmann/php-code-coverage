@@ -58,10 +58,10 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
             [0 => new ProcessedPathCoverageData([0 => 0], [])],
         );
 
-        $data->recordBranchHit(0, 'testCaseId');
+        $data->recordBranchHit(0, 'testCaseId', 2);
 
         $this->assertArrayHasKey(0, $data->branches);
-        $this->assertSame(['testCaseId'], $data->branches[0]->hit);
+        $this->assertSame(['testCaseId' => 2], $data->branches[0]->hit);
     }
 
     public function testRecordPathHitDelegatesToPath(): void
@@ -71,10 +71,10 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
             [0 => new ProcessedPathCoverageData([0 => 0], [])],
         );
 
-        $data->recordPathHit(0, 'testCaseId');
+        $data->recordPathHit(0, 'testCaseId', 2);
 
         $this->assertArrayHasKey(0, $data->paths);
-        $this->assertSame(['testCaseId'], $data->paths[0]->hit);
+        $this->assertSame(['testCaseId' => 2], $data->paths[0]->hit);
     }
 
     public function testMergeReturnsSelfWhenBranchesAndPathsAreIdentical(): void
@@ -95,18 +95,18 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
     public function testMergeCombinesAndAddsBranchesAndPaths(): void
     {
         $base = new ProcessedFunctionCoverageData(
-            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test1'], [], [])],
-            [0 => new ProcessedPathCoverageData([0 => 0], ['test1'])],
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test1' => 1], [], [])],
+            [0 => new ProcessedPathCoverageData([0 => 0], ['test1' => 1])],
         );
 
         $other = new ProcessedFunctionCoverageData(
             [
-                0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test2'], [], []),
-                1 => new ProcessedBranchCoverageData(15, 16, 26, 27, ['test3'], [], []),
+                0 => new ProcessedBranchCoverageData(0, 14, 20, 25, ['test2' => 2], [], []),
+                1 => new ProcessedBranchCoverageData(15, 16, 26, 27, ['test3' => 3], [], []),
             ],
             [
-                0 => new ProcessedPathCoverageData([0 => 0], ['test2']),
-                1 => new ProcessedPathCoverageData([0 => 1], ['test3']),
+                0 => new ProcessedPathCoverageData([0 => 0], ['test2' => 2]),
+                1 => new ProcessedPathCoverageData([0 => 1], ['test3' => 3]),
             ],
         );
 
@@ -119,9 +119,9 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
         $this->assertArrayHasKey(1, $merged->branches);
         $this->assertArrayHasKey(0, $merged->paths);
         $this->assertArrayHasKey(1, $merged->paths);
-        $this->assertSame(['test1', 'test2'], $merged->branches[0]->hit);
-        $this->assertSame(['test3'], $merged->branches[1]->hit);
-        $this->assertSame(['test1', 'test2'], $merged->paths[0]->hit);
-        $this->assertSame(['test3'], $merged->paths[1]->hit);
+        $this->assertSame(['test1' => 1, 'test2' => 2], $merged->branches[0]->hit);
+        $this->assertSame(['test3' => 3], $merged->branches[1]->hit);
+        $this->assertSame(['test1' => 1, 'test2' => 2], $merged->paths[0]->hit);
+        $this->assertSame(['test3' => 3], $merged->paths[1]->hit);
     }
 }

@@ -11,6 +11,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#1153](https://github.com/sebastianbergmann/php-code-coverage/pull/1153): Filter HTML code coverage report by test size
 * [#1210](https://github.com/sebastianbergmann/php-code-coverage/pull/1210): Filesystem-based targeting
 * [#1231](https://github.com/sebastianbergmann/php-code-coverage/pull/1231): Identify dead code using static analysis
+* Record how often a test executed a line or traversed a branch or path (the `<covered>` elements of the XML report now have a `count` attribute; drivers that do not collect hit counts report `1`)
+
+### Changed
+
+* The serialization format for `.cov` files was bumped from version 1 to version 2; files serialized with previous versions cannot be loaded or merged any more
 
 ### Fixed
 

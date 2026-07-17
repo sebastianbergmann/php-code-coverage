@@ -23,6 +23,7 @@ use function sprintf;
 use function trait_exists;
 use ReflectionClass;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\Method;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
@@ -55,7 +56,7 @@ final readonly class UnintentionallyCoveredCodeChecker
 
         foreach ($data->lineCoverage() as $file => $_data) {
             foreach ($_data as $line => $flag) {
-                if ($flag === 1 && !isset($allowedLines[$file][$line])) {
+                if ($flag >= Driver::LINE_EXECUTED && !isset($allowedLines[$file][$line])) {
                     $unintentionallyCoveredUnits[] = $targetMapper->lookup($file, $line);
                 }
             }

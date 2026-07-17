@@ -56,7 +56,7 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  */
 final readonly class Serializer
 {
-    public const int SERIALIZATION_FORMAT = 1;
+    public const int SERIALIZATION_FORMAT = 2;
 
     /**
      * @param non-empty-string $target

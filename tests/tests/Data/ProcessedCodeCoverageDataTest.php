@@ -187,7 +187,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $existingCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    8 => ['test1'],
+                    8 => ['test1' => 1],
                 ],
             ],
         );
@@ -196,7 +196,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $newCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    9 => ['test2'],
+                    9 => ['test2' => 1],
                 ],
             ],
         );
@@ -211,8 +211,8 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertArrayHasKey(8, $fileLines);
         $this->assertArrayHasKey(9, $fileLines);
-        $this->assertSame(['test1'], $fileLines[8]);
-        $this->assertSame(['test2'], $fileLines[9]);
+        $this->assertSame(['test1' => 1], $fileLines[8]);
+        $this->assertSame(['test2' => 1], $fileLines[9]);
     }
 
     public function testRenameFile(): void
@@ -221,7 +221,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setLineCoverage(
             [
                 '/some/path/OldName.php' => [
-                    8 => ['test1'],
+                    8 => ['test1' => 1],
                 ],
             ],
         );
@@ -247,7 +247,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setLineCoverage(
             [
                 '/some/path/OldName.php' => [
-                    8 => ['test1'],
+                    8 => ['test1' => 1],
                 ],
             ],
         );

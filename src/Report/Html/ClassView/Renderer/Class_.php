@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 
 use function array_key_exists;
+use function array_keys;
 use function array_pop;
 use function count;
 use function htmlspecialchars;
@@ -303,9 +304,9 @@ final class Class_ extends Renderer
     }
 
     /**
-     * @param non-empty-string                    $filePath
-     * @param array<int, ?list<non-empty-string>> $coverageData
-     * @param array<string, TestType>             $testData
+     * @param non-empty-string                                   $filePath
+     * @param array<int, ?array<non-empty-string, positive-int>> $coverageData
+     * @param array<string, TestType>                            $testData
      */
     private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, string $anchorPrefix = ''): string
     {
@@ -343,7 +344,7 @@ final class Class_ extends Renderer
                     $lineCss        = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
-                    foreach ($coverageData[$i] as $test) {
+                    foreach (array_keys($coverageData[$i]) as $test) {
                         if ($lineCss === 'covered-by-large-tests' && isset($testData[$test]) && $testData[$test]['size'] === 'medium') {
                             $lineCss = 'covered-by-medium-tests';
                         } elseif (isset($testData[$test]) && $testData[$test]['size'] === 'small') {

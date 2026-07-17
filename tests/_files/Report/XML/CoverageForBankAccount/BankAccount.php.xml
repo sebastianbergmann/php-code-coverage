@@ -17,22 +17,22 @@
     </class>
     <coverage>
       <line nr="8">
-        <covered by="BankAccountTest::testBalanceIsInitiallyZero"/>
-        <covered by="BankAccountTest::testDepositWithdrawMoney"/>
+        <covered by="BankAccountTest::testBalanceIsInitiallyZero" count="1"/>
+        <covered by="BankAccountTest::testDepositWithdrawMoney" count="1"/>
       </line>
       <line nr="22">
-        <covered by="BankAccountTest::testBalanceCannotBecomeNegative2"/>
-        <covered by="BankAccountTest::testDepositWithdrawMoney"/>
+        <covered by="BankAccountTest::testBalanceCannotBecomeNegative2" count="1"/>
+        <covered by="BankAccountTest::testDepositWithdrawMoney" count="1"/>
       </line>
       <line nr="24">
-        <covered by="BankAccountTest::testDepositWithdrawMoney"/>
+        <covered by="BankAccountTest::testDepositWithdrawMoney" count="1"/>
       </line>
       <line nr="29">
-        <covered by="BankAccountTest::testBalanceCannotBecomeNegative"/>
-        <covered by="BankAccountTest::testDepositWithdrawMoney"/>
+        <covered by="BankAccountTest::testBalanceCannotBecomeNegative" count="1"/>
+        <covered by="BankAccountTest::testDepositWithdrawMoney" count="1"/>
       </line>
       <line nr="31">
-        <covered by="BankAccountTest::testDepositWithdrawMoney"/>
+        <covered by="BankAccountTest::testDepositWithdrawMoney" count="1"/>
       </line>
     </coverage>
     <source xmlns="https://schema.phpunit.de/coverage/1.0">

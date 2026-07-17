@@ -19,7 +19,7 @@
     <function name="baz" signature="baz()" start="28" crap="1" executable="0" executed="0" coverage="100"/>
     <coverage>
       <line nr="2">
-        <covered by="FileWithIgnoredLines"/>
+        <covered by="FileWithIgnoredLines" count="1"/>
       </line>
     </coverage>
     <source xmlns="https://schema.phpunit.de/coverage/1.0">

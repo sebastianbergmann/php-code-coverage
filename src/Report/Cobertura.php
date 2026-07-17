@@ -10,8 +10,8 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use const DIRECTORY_SEPARATOR;
+use function array_sum;
 use function basename;
-use function count;
 use function preg_match;
 use function range;
 use function str_replace;
@@ -177,7 +177,7 @@ final class Cobertura
                         $methodLineElement = $document->createElement('line');
 
                         $methodLineElement->setAttribute('number', (string) $line);
-                        $methodLineElement->setAttribute('hits', (string) count($coverageData[$line]));
+                        $methodLineElement->setAttribute('hits', (string) array_sum($coverageData[$line]));
 
                         $methodLinesElement->appendChild($methodLineElement);
 
@@ -258,7 +258,7 @@ final class Cobertura
                     $methodLineElement = $document->createElement('line');
 
                     $methodLineElement->setAttribute('number', (string) $line);
-                    $methodLineElement->setAttribute('hits', (string) count($coverageData[$line]));
+                    $methodLineElement->setAttribute('hits', (string) array_sum($coverageData[$line]));
 
                     $methodLinesElement->appendChild($methodLineElement);
 

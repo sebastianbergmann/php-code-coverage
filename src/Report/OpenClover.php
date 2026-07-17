@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function array_sum;
 use function assert;
 use function basename;
 use function count;
@@ -112,7 +113,7 @@ final class OpenClover
 
                     foreach (range($method->startLine, $method->endLine) as $line) {
                         if (isset($coverageData[$line])) {
-                            $methodCount = max($methodCount, count($coverageData[$line]));
+                            $methodCount = max($methodCount, array_sum($coverageData[$line]));
                         }
                     }
 
@@ -149,7 +150,7 @@ final class OpenClover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data),
+                    'count' => array_sum($data),
                     'type'  => 'stmt',
                 ];
             }

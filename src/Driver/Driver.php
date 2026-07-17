@@ -32,6 +32,11 @@ abstract class Driver
     public const int LINE_NOT_EXECUTED = -1;
 
     /**
+     * Minimum value for an executed line. Values greater than or equal to this
+     * are hit counts: drivers that count executions report how often the line
+     * was executed, drivers that only know whether a line was executed report
+     * LINE_EXECUTED.
+     *
      * @see http://xdebug.org/docs/code_coverage
      */
     public const int LINE_EXECUTED = 1;
@@ -42,6 +47,11 @@ abstract class Driver
     public const int BRANCH_NOT_HIT = 0;
 
     /**
+     * Minimum value for a traversed branch or path. Values greater than or
+     * equal to this are traversal counts: drivers that count report how often
+     * the branch or path was traversed, drivers that only know whether it was
+     * traversed at all report BRANCH_HIT.
+     *
      * @see http://xdebug.org/docs/code_coverage
      */
     public const int BRANCH_HIT      = 1;
@@ -92,6 +102,16 @@ abstract class Driver
     abstract public function start(): void;
 
     abstract public function stop(): RawCodeCoverageData;
+
+    /**
+     * Whether this driver reports how often a line was executed (values >= 1
+     * in the line coverage data are exact hit counts) or only whether a line
+     * was executed at all (values >= 1 mean "executed at least once").
+     */
+    public function collectsHitCounts(): bool
+    {
+        return false;
+    }
 
     protected function canCollectBranchCoverage(): bool
     {

@@ -40,18 +40,28 @@ final class ProcessedBranchCoverageDataTest extends TestCase
         $this->assertSame([0 => 0, 1 => 1], $data->out_hit);
     }
 
-    public function testRecordHitAppendsTestCaseId(): void
+    public function testRecordHitRecordsTraversalCountForTestCase(): void
     {
         $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
 
-        $data->recordHit('testCaseId');
+        $data->recordHit('testCaseId', 3);
 
-        $this->assertSame(['testCaseId'], $data->hit);
+        $this->assertSame(['testCaseId' => 3], $data->hit);
+    }
+
+    public function testRecordHitAccumulatesTraversalCountsForTestCase(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
+
+        $data->recordHit('testCaseId', 3);
+        $data->recordHit('testCaseId', 2);
+
+        $this->assertSame(['testCaseId' => 5], $data->hit);
     }
 
     public function testMergeReturnsSelfWhenOtherHasNoHits(): void
     {
-        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1'], [], []);
+        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1' => 1], [], []);
         $other = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
 
         $this->assertSame($data, $data->merge($other));
@@ -59,12 +69,22 @@ final class ProcessedBranchCoverageDataTest extends TestCase
 
     public function testMergeCombinesHits(): void
     {
-        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1'], [], []);
-        $other = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test2'], [], []);
+        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1' => 1], [], []);
+        $other = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test2' => 2], [], []);
 
         $merged = $data->merge($other);
 
         $this->assertNotSame($data, $merged);
-        $this->assertSame(['test1', 'test2'], $merged->hit);
+        $this->assertSame(['test1' => 1, 'test2' => 2], $merged->hit);
+    }
+
+    public function testMergeKeepsHighestTraversalCountPerTestCase(): void
+    {
+        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1' => 2], [], []);
+        $other = new ProcessedBranchCoverageData(0, 5, 11, 12, ['test1' => 2, 'test2' => 3], [], []);
+
+        $merged = $data->merge($other);
+
+        $this->assertSame(['test1' => 2, 'test2' => 3], $merged->hit);
     }
 }

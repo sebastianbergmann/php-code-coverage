@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report;
 
+use function array_sum;
 use function count;
 use function is_string;
 use function ksort;
@@ -104,7 +105,7 @@ final class Clover
 
                     foreach (range($method->startLine, $method->endLine) as $line) {
                         if (isset($coverageData[$line])) {
-                            $methodCount = max($methodCount, count($coverageData[$line]));
+                            $methodCount = max($methodCount, array_sum($coverageData[$line]));
                         }
                     }
 
@@ -143,7 +144,7 @@ final class Clover
                 }
 
                 $lines[$line] = [
-                    'count' => count($data), 'type' => 'stmt',
+                    'count' => array_sum($data), 'type' => 'stmt',
                 ];
             }
 

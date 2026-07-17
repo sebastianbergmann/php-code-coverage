@@ -19,7 +19,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 final readonly class FileCoverageData
 {
     /**
-     * @var array<positive-int, null|list<non-empty-string>>
+     * @var array<positive-int, null|array<non-empty-string, positive-int>>
      */
     public array $lineCoverage;
 
@@ -29,8 +29,8 @@ final readonly class FileCoverageData
     public array $functionCoverage;
 
     /**
-     * @param array<positive-int, null|list<non-empty-string>>       $lineCoverage
-     * @param array<non-empty-string, ProcessedFunctionCoverageData> $functionCoverage
+     * @param array<positive-int, null|array<non-empty-string, positive-int>> $lineCoverage
+     * @param array<non-empty-string, ProcessedFunctionCoverageData>          $functionCoverage
      */
     public function __construct(array $lineCoverage, array $functionCoverage)
     {

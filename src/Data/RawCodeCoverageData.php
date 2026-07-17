@@ -236,7 +236,7 @@ final class RawCodeCoverageData
                 $this->lineCoverage[$filename][$lineInBranch] = $lineStatus;
             }
 
-            if (Driver::LINE_EXECUTED === $lineStatus) {
+            if ($lineStatus >= Driver::LINE_EXECUTED) {
                 unset($linesByBranch[$branch]);
             }
         }

@@ -140,8 +140,8 @@ final class Class_Test extends TestCase
 
         $filePath         = TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleClass.php';
         $lineCoverageData = [
-            7 => ['SmallTest'],
-            9 => ['MediumTest'],
+            7 => ['SmallTest' => 1],
+            9 => ['MediumTest' => 1],
         ];
         $testData = [
             'SmallTest'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],

@@ -72,6 +72,11 @@ final class PcovDriverTest extends TestCase
         $this->assertStringMatchesFormat('PCOV %s', $this->driver()->nameAndVersion());
     }
 
+    public function testDoesNotCollectHitCounts(): void
+    {
+        $this->assertFalse($this->driver()->collectsHitCounts());
+    }
+
     private function driver(): PcovDriver
     {
         return new PcovDriver(new Filter);

@@ -445,6 +445,35 @@ final class FileTest extends TestCase
         $this->assertSame(0, $file->numberOfFilesWithoutBranchCoverageData());
     }
 
+    public function testCollectsHitCountsDefaultsToFalse(): void
+    {
+        $file = $this->createFileNode();
+
+        $this->assertFalse($file->collectsHitCounts());
+    }
+
+    public function testCollectsHitCountsWhenTrue(): void
+    {
+        $root = new Directory('root');
+
+        $file = new File(
+            'test.php',
+            $root,
+            'abc123',
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(0, 0, 0),
+            false,
+            true,
+        );
+
+        $this->assertTrue($file->collectsHitCounts());
+    }
+
     public function testExposesSha1(): void
     {
         $file = $this->createFileNode();

@@ -70,6 +70,11 @@ final class XdebugDriverTest extends TestCase
         $this->assertStringMatchesFormat('Xdebug %s', $this->driver()->nameAndVersion());
     }
 
+    public function testDoesNotCollectHitCounts(): void
+    {
+        $this->assertFalse($this->driver()->collectsHitCounts());
+    }
+
     public function testFilterWorks(): void
     {
         $bankAccount = TEST_FILES_PATH . 'BankAccount.php';

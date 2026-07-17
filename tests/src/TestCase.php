@@ -52,6 +52,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return new CoverageFixtureProvider()->lineCoverageForBankAccount();
     }
 
+    protected function getLineCoverageWithHitCountsForBankAccount(): CodeCoverage
+    {
+        return new CoverageFixtureProvider()->lineCoverageWithHitCountsForBankAccount();
+    }
+
     protected function getPathCoverageForBankAccount(): CodeCoverage
     {
         return new CoverageFixtureProvider()->pathCoverageForBankAccount();

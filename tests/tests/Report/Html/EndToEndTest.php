@@ -65,6 +65,45 @@ final class EndToEndTest extends TestCase
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
     }
 
+    public function testHitCountsAreShownInGutterWhenDriverCollectsThem(): void
+    {
+        $report = new Facade;
+        $report->process($this->getLineCoverageWithHitCountsForBankAccount()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $source = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+
+        $this->assertNotFalse($source);
+
+        // line 8 was executed twice by testBalanceIsInitiallyZero and three times by testDepositWithdrawMoney
+        $this->assertStringContainsString('<td class="coverage-count">5</td>', $source);
+
+        // line 22 was executed once by testBalanceCannotBecomeNegative2 and twice by testDepositWithdrawMoney
+        $this->assertStringContainsString('<td class="coverage-count">3</td>', $source);
+
+        // uncovered and non-executable lines do not get a hit count
+        $this->assertStringContainsString('<td class="col-0"></td>', $source);
+
+        $classView = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
+
+        $this->assertNotFalse($classView);
+        $this->assertStringContainsString('<td class="coverage-count">5</td>', $classView);
+        $this->assertStringContainsString('<td class="coverage-count">3</td>', $classView);
+    }
+
+    public function testHitCountsAreNotShownInGutterWhenDriverDoesNotCollectThem(): void
+    {
+        $report = new Facade;
+        $report->process($this->getLineCoverageForBankAccount()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $source    = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+        $classView = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
+
+        $this->assertNotFalse($source);
+        $this->assertNotFalse($classView);
+        $this->assertStringNotContainsString('coverage-count', $source);
+        $this->assertStringNotContainsString('coverage-count', $classView);
+    }
+
     public function testMissingBranchCoverageDataIsMarkedInDirectorySummary(): void
     {
         $report = new Facade;

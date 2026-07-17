@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 use function array_key_exists;
 use function array_keys;
 use function array_pop;
+use function array_sum;
 use function count;
 use function htmlspecialchars;
 use function sprintf;
@@ -258,6 +259,7 @@ final class Class_ extends Renderer
             $node->endLine(),
             $node->fileNode()->lineCoverageData(),
             $node->fileNode()->testData(),
+            $node->fileNode()->collectsHitCounts(),
         );
 
         // Trait source sections
@@ -271,6 +273,7 @@ final class Class_ extends Renderer
                 $section->endLine,
                 $section->fileNode->lineCoverageData(),
                 $section->fileNode->testData(),
+                $section->fileNode->collectsHitCounts(),
                 'trait-' . $i . '-',
             );
         }
@@ -287,6 +290,7 @@ final class Class_ extends Renderer
                     $method->endLine,
                     $section->fileNode->lineCoverageData(),
                     $section->fileNode->testData(),
+                    $section->fileNode->collectsHitCounts(),
                     'parent-' . $i . '-',
                 );
             }
@@ -308,7 +312,7 @@ final class Class_ extends Renderer
      * @param array<int, ?array<non-empty-string, positive-int>> $coverageData
      * @param array<string, TestType>                            $testData
      */
-    private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, string $anchorPrefix = ''): string
+    private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
@@ -323,9 +327,11 @@ final class Class_ extends Renderer
                 continue;
             }
 
-            $trClass        = '';
-            $popoverContent = '';
-            $popoverTitle   = '';
+            $trClass            = '';
+            $popoverContent     = '';
+            $popoverTitle       = '';
+            $coverageCount      = '';
+            $coverageCountClass = 'col-0';
 
             if (array_key_exists($i, $coverageData)) {
                 $numTests = ($coverageData[$i] !== null ? count($coverageData[$i]) : 0);
@@ -339,6 +345,11 @@ final class Class_ extends Renderer
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
                     } else {
                         $popoverTitle = '1 test covers line ' . $i;
+                    }
+
+                    if ($collectsHitCounts) {
+                        $coverageCount      = (string) array_sum($coverageData[$i]);
+                        $coverageCountClass = 'coverage-count';
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -371,7 +382,7 @@ final class Class_ extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix, $coverageCount, $coverageCountClass);
         }
 
         $linesTemplate->setVar(['lines' => $lines]);

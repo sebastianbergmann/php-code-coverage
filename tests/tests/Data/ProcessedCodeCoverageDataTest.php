@@ -17,6 +17,40 @@ use SebastianBergmann\CodeCoverage\TestCase;
 #[Small]
 final class ProcessedCodeCoverageDataTest extends TestCase
 {
+    public function testDoesNotCollectHitCountsByDefault(): void
+    {
+        $this->assertFalse((new ProcessedCodeCoverageData)->collectsHitCounts());
+    }
+
+    public function testCollectsHitCountsWhenCreatedForDriverThatCollectsHitCounts(): void
+    {
+        $this->assertTrue((new ProcessedCodeCoverageData(true))->collectsHitCounts());
+    }
+
+    public function testMergedDataCollectsHitCountsWhenBothOperandsDo(): void
+    {
+        $coverage = new ProcessedCodeCoverageData(true);
+
+        $coverage->merge(new ProcessedCodeCoverageData(true));
+
+        $this->assertTrue($coverage->collectsHitCounts());
+    }
+
+    public function testMergedDataDoesNotCollectHitCountsWhenOnlyOneOperandDoes(): void
+    {
+        $coverage = new ProcessedCodeCoverageData(true);
+
+        $coverage->merge(new ProcessedCodeCoverageData);
+
+        $this->assertFalse($coverage->collectsHitCounts());
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->merge(new ProcessedCodeCoverageData(true));
+
+        $this->assertFalse($coverage->collectsHitCounts());
+    }
+
     public function testMergeWithLineCoverage(): void
     {
         $coverage = $this->getLineCoverageForBankAccountForFirstTwoTests()->getData();

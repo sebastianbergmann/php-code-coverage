@@ -16,6 +16,7 @@ use function array_keys;
 use function array_merge;
 use function array_pop;
 use function array_slice;
+use function array_sum;
 use function array_unique;
 use function count;
 use function explode;
@@ -470,16 +471,19 @@ final class File extends Renderer
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
 
-        $coverageData = $node->lineCoverageData();
-        $testData     = $node->testData();
-        $codeLines    = $this->highlightedSourceFor($node);
-        $lines        = '';
-        $i            = 1;
+        $coverageData      = $node->lineCoverageData();
+        $collectsHitCounts = $node->collectsHitCounts();
+        $testData          = $node->testData();
+        $codeLines         = $this->highlightedSourceFor($node);
+        $lines             = '';
+        $i                 = 1;
 
         foreach ($codeLines as $line) {
-            $trClass        = '';
-            $popoverContent = '';
-            $popoverTitle   = '';
+            $trClass            = '';
+            $popoverContent     = '';
+            $popoverTitle       = '';
+            $coverageCount      = '';
+            $coverageCountClass = 'col-0';
 
             if (array_key_exists($i, $coverageData)) {
                 $numTests = ($coverageData[$i] !== null ? count($coverageData[$i]) : 0);
@@ -493,6 +497,11 @@ final class File extends Renderer
                         $popoverTitle = $numTests . ' tests cover line ' . $i;
                     } else {
                         $popoverTitle = '1 test covers line ' . $i;
+                    }
+
+                    if ($collectsHitCounts) {
+                        $coverageCount      = (string) array_sum($coverageData[$i]);
+                        $coverageCountClass = 'coverage-count';
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -529,7 +538,7 @@ final class File extends Renderer
                 );
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
 
             $i++;
         }

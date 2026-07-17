@@ -53,6 +53,22 @@ final class ProcessedCodeCoverageData
      */
     private array $functionCoverage = [];
 
+    /**
+     * Whether the hit counts in this object are exact execution counts (the driver that collected
+     * the data counts how often a line was executed) or only mean "executed at least once".
+     */
+    private bool $collectsHitCounts;
+
+    public function __construct(bool $collectsHitCounts = false)
+    {
+        $this->collectsHitCounts = $collectsHitCounts;
+    }
+
+    public function collectsHitCounts(): bool
+    {
+        return $this->collectsHitCounts;
+    }
+
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
         foreach ($rawData->lineCoverage() as $file => $lines) {
@@ -182,9 +198,13 @@ final class ProcessedCodeCoverageData
      * This preserves the deduplication semantics of the list-based representation that was used
      * before hit counts were recorded. Accumulation of hit counts within a single test run
      * happens in markCodeAsExecutedByTestCase() and recordHit() instead.
+     *
+     * The merged data only contains exact hit counts if both operands do.
      */
     public function merge(self $newData): void
     {
+        $this->collectsHitCounts = $this->collectsHitCounts && $newData->collectsHitCounts;
+
         foreach ($newData->lineCoverage as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = $lines;

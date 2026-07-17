@@ -23,7 +23,8 @@ final class FakeDriver extends Driver
      * @var list<RawCodeCoverageData>
      */
     private array $coveragePerStop;
-    private int $stops = 0;
+    private int $stops              = 0;
+    private bool $collectsHitCounts = false;
 
     public function __construct(RawCodeCoverageData ...$coveragePerStop)
     {
@@ -51,6 +52,16 @@ final class FakeDriver extends Driver
         $this->stops++;
 
         return $coverage;
+    }
+
+    public function markAsCollectingHitCounts(): void
+    {
+        $this->collectsHitCounts = true;
+    }
+
+    public function collectsHitCounts(): bool
+    {
+        return $this->collectsHitCounts;
     }
 
     protected function canCollectBranchCoverage(): bool

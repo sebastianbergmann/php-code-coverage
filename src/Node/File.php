@@ -88,6 +88,7 @@ final class File extends AbstractNode
     private array $functions = [];
     private readonly LinesOfCode $linesOfCode;
     private readonly bool $hasBranchCoverageData;
+    private readonly bool $collectsHitCounts;
     private ?int $numClasses      = null;
     private int $numTestedClasses = 0;
 
@@ -140,7 +141,7 @@ final class File extends AbstractNode
      * @param array<string, Trait_>                                       $traits
      * @param array<string, Function_>                                    $functions
      */
-    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false)
+    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false)
     {
         parent::__construct($name, $parent);
 
@@ -150,6 +151,7 @@ final class File extends AbstractNode
         $this->testData              = $testData;
         $this->linesOfCode           = $linesOfCode;
         $this->hasBranchCoverageData = $hasBranchCoverageData;
+        $this->collectsHitCounts     = $collectsHitCounts;
         $this->rawClasses            = $classes;
         $this->rawTraits             = $traits;
 
@@ -279,6 +281,16 @@ final class File extends AbstractNode
     public function hasBranchCoverageData(): bool
     {
         return $this->hasBranchCoverageData;
+    }
+
+    /**
+     * Whether the values in lineCoverageData() are exact execution counts (the driver that
+     * collected the data counts how often a line was executed) or only mean "executed at
+     * least once".
+     */
+    public function collectsHitCounts(): bool
+    {
+        return $this->collectsHitCounts;
     }
 
     public function numberOfFilesWithoutBranchCoverageData(): int

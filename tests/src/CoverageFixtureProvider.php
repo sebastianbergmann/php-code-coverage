@@ -1089,6 +1089,130 @@ final readonly class CoverageFixtureProvider
         return $coverage;
     }
 
+    /**
+     * Same tests as lineCoverageForBankAccount(), but collected by a driver that
+     * counts how often a line was executed.
+     */
+    public function lineCoverageWithHitCountsForBankAccount(): CodeCoverage
+    {
+        $data = $this->lineCoverageXdebugDataForBankAccount();
+
+        // getBalance() is called twice by the first test ...
+        $data[0] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8  => 2,
+                9  => -2,
+                13 => -1,
+                14 => -1,
+                15 => -1,
+                16 => -1,
+                18 => -1,
+                22 => -1,
+                24 => -1,
+                25 => -2,
+                29 => -1,
+                31 => -1,
+                32 => -2,
+                33 => -2,
+                35 => 1,
+            ],
+        ]);
+
+        // ... and three times by the last test, which also calls depositMoney() twice
+        $data[3] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8  => 3,
+                9  => -2,
+                13 => 1,
+                14 => 1,
+                15 => 1,
+                16 => -1,
+                18 => 1,
+                22 => 2,
+                24 => 2,
+                25 => -2,
+                29 => 1,
+                31 => 1,
+                32 => -2,
+                33 => -2,
+            ],
+        ]);
+
+        $driver = new FakeDriver(...$data);
+        $driver->markAsCollectingHitCounts();
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            null,
+            true,
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                ],
+            ),
+            time: 0.1,
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ],
+            ),
+            time: 0.2,
+        );
+
+        $coverage->start(
+            'BankAccountTest::testBalanceCannotBecomeNegative2',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                ],
+            ),
+            time: 0.3,
+        );
+
+        $coverage->start(
+            'BankAccountTest::testDepositWithdrawMoney',
+        );
+
+        $coverage->stop(
+            true,
+            null,
+            TargetCollection::fromArray(
+                [
+                    Target::forMethod(BankAccount::class, 'getBalance'),
+                    Target::forMethod(BankAccount::class, 'depositMoney'),
+                    Target::forMethod(BankAccount::class, 'withdrawMoney'),
+                ],
+            ),
+            time: 0.4,
+        );
+
+        return $coverage;
+    }
+
     public function pathCoverageForBankAccount(): CodeCoverage
     {
         $data = $this->pathCoverageXdebugDataForBankAccount();

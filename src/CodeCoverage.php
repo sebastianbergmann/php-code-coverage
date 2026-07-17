@@ -72,7 +72,7 @@ final class CodeCoverage
     {
         $this->driver = $driver;
         $this->filter = $filter;
-        $this->data   = new ProcessedCodeCoverageData;
+        $this->data   = new ProcessedCodeCoverageData($driver->collectsHitCounts());
     }
 
     /**
@@ -94,7 +94,7 @@ final class CodeCoverage
     {
         $this->currentId    = null;
         $this->currentSize  = null;
-        $this->data         = new ProcessedCodeCoverageData;
+        $this->data         = new ProcessedCodeCoverageData($this->driver->collectsHitCounts());
         $this->tests        = [];
         $this->cachedReport = null;
     }

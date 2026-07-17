@@ -67,6 +67,7 @@ final readonly class Builder
             $root,
             $this->buildDirectoryStructure($codeCoverage),
             $testResults,
+            $codeCoverage->collectsHitCounts(),
         );
 
         return $root;
@@ -76,7 +77,7 @@ final readonly class Builder
      * @param array<array-key, mixed>           $items
      * @param array<non-empty-string, TestType> $tests
      */
-    private function addItems(Directory $root, array $items, array $tests): void
+    private function addItems(Directory $root, array $items, array $tests, bool $collectsHitCounts): void
     {
         foreach ($items as $key => $value) {
             $key = (string) $key;
@@ -103,13 +104,14 @@ final readonly class Builder
                             $analysisResult->functions(),
                             $analysisResult->linesOfCode(),
                             $value->functionCoverage !== [],
+                            $collectsHitCounts,
                         ),
                     );
                 }
             } elseif (is_array($value)) {
                 $child = $root->addDirectory($key);
 
-                $this->addItems($child, $value, $tests);
+                $this->addItems($child, $value, $tests, $collectsHitCounts);
             }
         }
     }

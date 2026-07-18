@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugBranchCoverageType from XdebugDriver
  */
 final class ProcessedBranchCoverageData
@@ -28,7 +28,7 @@ final class ProcessedBranchCoverageData
     public readonly int $line_start;
     public readonly int $line_end;
 
-    /** @var array<TestIdType, positive-int> map of test id to the number of times the test traversed the branch */
+    /** @var array<TestIndexType, positive-int> map of test index to the number of times the test traversed the branch */
     public array $hit;
 
     /** @var array<int, int> */
@@ -54,9 +54,9 @@ final class ProcessedBranchCoverageData
     }
 
     /**
-     * @param array<TestIdType, positive-int> $hit
-     * @param array<int, int>                 $out
-     * @param array<int, int>                 $out_hit
+     * @param array<TestIndexType, positive-int> $hit
+     * @param array<int, int>                    $out
+     * @param array<int, int>                    $out_hit
      */
     public function __construct(
         int $op_start,
@@ -91,8 +91,8 @@ final class ProcessedBranchCoverageData
 
         $hit = $this->hit;
 
-        foreach ($data->hit as $testCaseId => $count) {
-            $hit[$testCaseId] = max($hit[$testCaseId] ?? 0, $count);
+        foreach ($data->hit as $testIndex => $count) {
+            $hit[$testIndex] = max($hit[$testIndex] ?? 0, $count);
         }
 
         return new self(
@@ -107,11 +107,38 @@ final class ProcessedBranchCoverageData
     }
 
     /**
-     * @param TestIdType   $testCaseId
-     * @param positive-int $count
+     * @param array<TestIndexType, TestIndexType> $remap
      */
-    public function recordHit(string $testCaseId, int $count): void
+    #[NoDiscard]
+    public function withRemappedTestIndexes(array $remap): self
     {
-        $this->hit[$testCaseId] = ($this->hit[$testCaseId] ?? 0) + $count;
+        if ($this->hit === []) {
+            return $this;
+        }
+
+        $hit = [];
+
+        foreach ($this->hit as $testIndex => $count) {
+            $hit[$remap[$testIndex] ?? $testIndex] = $count;
+        }
+
+        return new self(
+            $this->op_start,
+            $this->op_end,
+            $this->line_start,
+            $this->line_end,
+            $hit,
+            $this->out,
+            $this->out_hit,
+        );
+    }
+
+    /**
+     * @param TestIndexType $testIndex
+     * @param positive-int  $count
+     */
+    public function recordHit(int $testIndex, int $count): void
+    {
+        $this->hit[$testIndex] = ($this->hit[$testIndex] ?? 0) + $count;
     }
 }

@@ -98,17 +98,19 @@ final class MergerTest extends TestCase
     public function testMergesCodeCoverageData(): void
     {
         $coverageA = new ProcessedCodeCoverageData;
-        $coverageA->setLineCoverage(['/src/Foo.php' => [1 => ['test1' => 1], 2 => null]]);
+        $coverageA->setTestIds(['test1']);
+        $coverageA->setLineCoverage(['/src/Foo.php' => [1 => [0 => 1], 2 => null]]);
 
         $coverageB = new ProcessedCodeCoverageData;
-        $coverageB->setLineCoverage(['/src/Foo.php' => [1 => [], 2 => ['test2' => 1]]]);
+        $coverageB->setTestIds(['test2']);
+        $coverageB->setLineCoverage(['/src/Foo.php' => [1 => [], 2 => [0 => 1]]]);
 
         $pathA = $this->writeFile('a.php', $this->makeItem([], $coverageA));
         $pathB = $this->writeFile('b.php', $this->makeItem([], $coverageB));
 
         $result = (new Merger)->merge([$pathA, $pathB]);
 
-        $merged = $result['codeCoverage']->lineCoverage();
+        $merged = $this->lineCoverageKeyedByTestId($result['codeCoverage']);
 
         $this->assertArrayHasKey('/src/Foo.php', $merged);
 

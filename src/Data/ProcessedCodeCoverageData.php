@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function array_flip;
 use function array_key_exists;
 use function array_keys;
 use function count;
@@ -26,15 +27,16 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  *
  * @phpstan-type TestIdType non-empty-string
+ * @phpstan-type TestIndexType non-negative-int
  * @phpstan-type FunctionCoverageType array<non-empty-string, array<non-empty-string, ProcessedFunctionCoverageData>>
- * @phpstan-type LineCoverageType array<non-empty-string, array<positive-int, null|array<TestIdType, positive-int>>>
+ * @phpstan-type LineCoverageType array<non-empty-string, array<positive-int, null|array<TestIndexType, positive-int>>>
  */
 final class ProcessedCodeCoverageData
 {
     /**
      * Line coverage data.
      * An array of filenames, each having an array of linenumbers, each executable line having a map of
-     * testcase id to the number of times the testcase executed the line (1 for drivers that do not
+     * test index to the number of times the testcase executed the line (1 for drivers that do not
      * collect hit counts).
      *
      * @var LineCoverageType
@@ -42,9 +44,19 @@ final class ProcessedCodeCoverageData
     private array $lineCoverage = [];
 
     /**
+     * Test case ids are interned: the first time a test case records coverage it is assigned the
+     * next free index, and all per-line, per-branch, and per-path hit maps are keyed by that index
+     * instead of the id string. This keeps the hit maps small and makes inserting and merging
+     * cheap. Use testIds() to resolve an index back to the test case id.
+     *
+     * @var array<TestIdType, TestIndexType>
+     */
+    private array $testIdToIndex = [];
+
+    /**
      * Function coverage data.
      * Maintains base format of raw data (@see https://xdebug.org/docs/code_coverage), but each 'hit' entry is a map
-     * of testcase id to the number of times the testcase traversed the branch or path (1 for drivers that do not
+     * of test index to the number of times the testcase traversed the branch or path (1 for drivers that do not
      * collect hit counts).
      *
      * @var FunctionCoverageType
@@ -98,6 +110,8 @@ final class ProcessedCodeCoverageData
      */
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
     {
+        $testIndex = $this->testIndex($testCaseId);
+
         foreach ($executedCode->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
@@ -108,7 +122,7 @@ final class ProcessedCodeCoverageData
 
             foreach ($lines as $k => $v) {
                 if ($v >= Driver::LINE_EXECUTED) {
-                    $fileCoverage[$k][$testCaseId] = ($fileCoverage[$k][$testCaseId] ?? 0) + $v;
+                    $fileCoverage[$k][$testIndex] = ($fileCoverage[$k][$testIndex] ?? 0) + $v;
                 }
             }
 
@@ -125,13 +139,13 @@ final class ProcessedCodeCoverageData
 
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] >= Driver::BRANCH_HIT) {
-                        $functionCoverage->recordBranchHit($branchId, $testCaseId, $branchData['hit']);
+                        $functionCoverage->recordBranchHit($branchId, $testIndex, $branchData['hit']);
                     }
                 }
 
                 foreach ($functionData['paths'] as $pathId => $pathData) {
                     if ($pathData['hit'] >= Driver::BRANCH_HIT) {
-                        $functionCoverage->recordPathHit($pathId, $testCaseId, $pathData['hit']);
+                        $functionCoverage->recordPathHit($pathId, $testIndex, $pathData['hit']);
                     }
                 }
             }
@@ -191,6 +205,22 @@ final class ProcessedCodeCoverageData
     }
 
     /**
+     * @param array<TestIndexType, TestIdType> $testIds
+     */
+    public function setTestIds(array $testIds): void
+    {
+        $this->testIdToIndex = array_flip($testIds);
+    }
+
+    /**
+     * @return array<TestIndexType, TestIdType>
+     */
+    public function testIds(): array
+    {
+        return array_flip($this->testIdToIndex);
+    }
+
+    /**
      * @param non-empty-string $oldFile
      * @param non-empty-string $newFile
      */
@@ -223,7 +253,9 @@ final class ProcessedCodeCoverageData
     {
         $this->collectsHitCounts = $this->collectsHitCounts && $newData->collectsHitCounts;
 
-        foreach ($newData->lineCoverage as $file => $lines) {
+        [$newLineCoverage, $newFunctionCoverage] = $this->withTestIndexesRemappedToThisObject($newData);
+
+        foreach ($newLineCoverage as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = $lines;
                 $this->lineCoverageSorted  = false;
@@ -243,9 +275,9 @@ final class ProcessedCodeCoverageData
                     is_array($data) &&
                     array_key_exists($line, $fileCoverage) &&
                     is_array($fileCoverage[$line])) {
-                    foreach ($data as $testId => $hits) {
-                        $fileCoverage[$line][$testId] = max(
-                            $fileCoverage[$line][$testId] ?? 0,
+                    foreach ($data as $testIndex => $hits) {
+                        $fileCoverage[$line][$testIndex] = max(
+                            $fileCoverage[$line][$testIndex] ?? 0,
                             $hits,
                         );
                     }
@@ -255,7 +287,7 @@ final class ProcessedCodeCoverageData
             unset($fileCoverage);
         }
 
-        foreach ($newData->functionCoverage as $file => $functions) {
+        foreach ($newFunctionCoverage as $file => $functions) {
             if (!isset($this->functionCoverage[$file])) {
                 $this->functionCoverage[$file] = $functions;
                 $this->functionCoverageSorted  = false;
@@ -283,6 +315,75 @@ final class ProcessedCodeCoverageData
     }
 
     /**
+     * @param TestIdType $testCaseId
+     *
+     * @return TestIndexType
+     */
+    private function testIndex(string $testCaseId): int
+    {
+        if (!isset($this->testIdToIndex[$testCaseId])) {
+            $this->testIdToIndex[$testCaseId] = count($this->testIdToIndex);
+        }
+
+        return $this->testIdToIndex[$testCaseId];
+    }
+
+    /**
+     * The test indexes of another ProcessedCodeCoverageData object are meaningless in the context
+     * of this object: the same index may refer to a different test case id. This method interns
+     * the other object's test case ids into this object's index table and returns the other
+     * object's line and function coverage with all test indexes translated accordingly. When both
+     * objects agree on the numbering the data is returned as-is.
+     *
+     * @return array{0: LineCoverageType, 1: FunctionCoverageType}
+     */
+    private function withTestIndexesRemappedToThisObject(self $newData): array
+    {
+        $remap           = [];
+        $remapIsIdentity = true;
+
+        foreach ($newData->testIdToIndex as $testId => $index) {
+            $remap[$index] = $this->testIndex($testId);
+
+            if ($remap[$index] !== $index) {
+                $remapIsIdentity = false;
+            }
+        }
+
+        if ($remapIsIdentity) {
+            return [$newData->lineCoverage, $newData->functionCoverage];
+        }
+
+        $lineCoverage = $newData->lineCoverage;
+
+        foreach ($lineCoverage as $file => $lines) {
+            foreach ($lines as $line => $data) {
+                if ($data === null || $data === []) {
+                    continue;
+                }
+
+                $remapped = [];
+
+                foreach ($data as $index => $hits) {
+                    $remapped[$remap[$index] ?? $index] = $hits;
+                }
+
+                $lineCoverage[$file][$line] = $remapped;
+            }
+        }
+
+        $functionCoverage = $newData->functionCoverage;
+
+        foreach ($functionCoverage as $file => $functions) {
+            foreach ($functions as $functionName => $functionData) {
+                $functionCoverage[$file][$functionName] = $functionData->withRemappedTestIndexes($remap);
+            }
+        }
+
+        return [$lineCoverage, $functionCoverage];
+    }
+
+    /**
      * Determine the priority for a line.
      *
      * 1 = the line is not set
@@ -292,8 +393,8 @@ final class ProcessedCodeCoverageData
      *
      * During a merge, a higher number is better.
      *
-     * @param array<positive-int, null|array<TestIdType, positive-int>> $data
-     * @param positive-int                                              $line
+     * @param array<positive-int, null|array<TestIndexType, positive-int>> $data
+     * @param positive-int                                                 $line
      *
      * @return 1|2|3|4
      */
@@ -307,7 +408,7 @@ final class ProcessedCodeCoverageData
     }
 
     /**
-     * @param null|array<TestIdType, positive-int> $data
+     * @param null|array<TestIndexType, positive-int> $data
      *
      * @return 2|3|4
      */

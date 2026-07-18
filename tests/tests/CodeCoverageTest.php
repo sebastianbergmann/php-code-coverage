@@ -51,7 +51,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage(),
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
         );
 
         $this->assertEquals(
@@ -127,7 +127,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage(),
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
         );
     }
 
@@ -141,7 +141,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccountInReverseOrder(),
-            $coverage->getData()->lineCoverage(),
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
         );
     }
 
@@ -156,7 +156,7 @@ final class CodeCoverageTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->getData()->lineCoverage(),
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
         );
     }
 
@@ -471,7 +471,7 @@ final class CodeCoverageTest extends TestCase
         $this->assertArrayHasKey($file, $parseErrors);
         $this->assertStringContainsString('Syntax error', $parseErrors[$file]);
 
-        $lineCoverage = $coverage->getData()->lineCoverage();
+        $lineCoverage = $this->lineCoverageKeyedByTestId($coverage->getData());
 
         $this->assertArrayHasKey($file, $lineCoverage);
 

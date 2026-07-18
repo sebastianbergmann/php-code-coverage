@@ -12,9 +12,9 @@ namespace SebastianBergmann\CodeCoverage\Node;
 use function array_filter;
 use function array_keys;
 use function count;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
@@ -33,7 +33,8 @@ use SebastianBergmann\CodeCoverage\Test\TestSizes;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestType from CodeCoverage
+ * @phpstan-import-type TestDataType from Builder
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
  * @phpstan-import-type LinesType from AnalysisResult
  * @phpstan-import-type TestSizeSet from TestSizes
  * @phpstan-import-type TestSizeCounts from TestSizes
@@ -46,7 +47,7 @@ final class File extends AbstractNode
     private string $sha1;
 
     /**
-     * @var array<positive-int, ?array<non-empty-string, positive-int>>
+     * @var array<positive-int, ?array<TestIndexType, positive-int>>
      */
     private array $lineCoverageData;
 
@@ -56,7 +57,7 @@ final class File extends AbstractNode
     private array $functionCoverageData;
 
     /**
-     * @var array<non-empty-string, TestType>
+     * @var array<TestIndexType, TestDataType>
      */
     private readonly array $testData;
     private int $numExecutableLines = 0;
@@ -132,13 +133,13 @@ final class File extends AbstractNode
     private readonly array $rawTraits;
 
     /**
-     * @param non-empty-string                                            $sha1
-     * @param array<positive-int, ?array<non-empty-string, positive-int>> $lineCoverageData
-     * @param array<non-empty-string, ProcessedFunctionCoverageData>      $functionCoverageData
-     * @param array<non-empty-string, TestType>                           $testData
-     * @param array<string, Class_>                                       $classes
-     * @param array<string, Trait_>                                       $traits
-     * @param array<string, Function_>                                    $functions
+     * @param non-empty-string                                         $sha1
+     * @param array<positive-int, ?array<TestIndexType, positive-int>> $lineCoverageData
+     * @param array<non-empty-string, ProcessedFunctionCoverageData>   $functionCoverageData
+     * @param array<TestIndexType, TestDataType>                       $testData
+     * @param array<string, Class_>                                    $classes
+     * @param array<string, Trait_>                                    $traits
+     * @param array<string, Function_>                                 $functions
      */
     public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false)
     {
@@ -171,7 +172,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<positive-int, ?array<non-empty-string, positive-int>>
+     * @return array<positive-int, ?array<TestIndexType, positive-int>>
      */
     public function lineCoverageData(): array
     {
@@ -187,7 +188,7 @@ final class File extends AbstractNode
     }
 
     /**
-     * @return array<non-empty-string, TestType>
+     * @return array<TestIndexType, TestDataType>
      */
     public function testData(): array
     {

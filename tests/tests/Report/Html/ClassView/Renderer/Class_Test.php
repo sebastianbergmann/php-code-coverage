@@ -140,12 +140,12 @@ final class Class_Test extends TestCase
 
         $filePath         = TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleClass.php';
         $lineCoverageData = [
-            7 => ['SmallTest' => 1],
-            9 => ['MediumTest' => 1],
+            7 => [0 => 1],
+            9 => [1 => 1],
         ];
         $testData = [
-            'SmallTest'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
-            'MediumTest' => ['size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+            0 => ['name' => 'SmallTest', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+            1 => ['name' => 'MediumTest', 'size' => 'medium', 'status' => 'passed', 'time' => 0.0],
         ];
 
         $fileNode = new File(

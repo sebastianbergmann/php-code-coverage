@@ -78,11 +78,11 @@ final class FileTest extends TestCase
         );
 
         $lineCoverageData = [
-            1 => ['test1' => 1],
-            2 => ['test1' => 1],
-            3 => ['test1' => 1],
-            4 => ['test1' => 1],
-            5 => ['test1' => 1],
+            1 => [0 => 1],
+            2 => [0 => 1],
+            3 => [0 => 1],
+            4 => [0 => 1],
+            5 => [0 => 1],
         ];
 
         $file = new File(
@@ -91,7 +91,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             [],
             ['myFunc' => $function],
@@ -141,11 +141,11 @@ final class FileTest extends TestCase
         );
 
         $lineCoverageData = [
-            1 => ['test1' => 1],
-            2 => ['test1' => 1],
-            3 => ['test1' => 1],
-            4 => ['test1' => 1],
-            5 => ['test1' => 1],
+            1 => [0 => 1],
+            2 => [0 => 1],
+            3 => [0 => 1],
+            4 => [0 => 1],
+            5 => [0 => 1],
         ];
 
         $file = new File(
@@ -154,7 +154,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             ['MyTrait' => $trait],
             [],
@@ -236,11 +236,11 @@ final class FileTest extends TestCase
         );
 
         $lineCoverageData = [
-            1 => ['test1' => 1],
-            2 => ['test1' => 1],
-            3 => ['test1' => 1],
-            4 => ['test1' => 1],
-            5 => ['test1' => 1],
+            1 => [0 => 1],
+            2 => [0 => 1],
+            3 => [0 => 1],
+            4 => [0 => 1],
+            5 => [0 => 1],
         ];
 
         $file = new File(
@@ -249,7 +249,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             ['MyTrait' => $trait],
             [],
@@ -346,9 +346,9 @@ final class FileTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['tSmall' => 1], 2 => ['tSmall' => 1]],
+            [1 => [0 => 1], 2 => [0 => 1]],
             [],
-            ['tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0         => ['name' => 'tSmall', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass' => $class],
             [],
             [],
@@ -367,13 +367,13 @@ final class FileTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['tSmall' => 1, 'tMedium' => 1, 'tLarge' => 1, 'tSmall2' => 1]],
+            [1 => [0 => 1, 1 => 1, 2 => 1, 3 => 1]],
             [],
             [
-                'tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
-                'tMedium' => ['size' => 'medium', 'status' => 'passed', 'time' => 0.0],
-                'tLarge'  => ['size' => 'large', 'status' => 'passed', 'time' => 0.0],
-                'tSmall2' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
+                0 => ['name' => 'tSmall', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+                1 => ['name' => 'tMedium', 'size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+                2 => ['name' => 'tLarge', 'size' => 'large', 'status' => 'passed', 'time' => 0.0],
+                3 => ['name' => 'tSmall2', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
             ],
             [],
             [],
@@ -499,7 +499,7 @@ final class FileTest extends TestCase
     {
         $file = $this->createFileNodeWithFunction();
 
-        $this->assertArrayHasKey('test1', $file->testData());
+        $this->assertArrayHasKey(0, $file->testData());
     }
 
     public function testExposesClasses(): void
@@ -608,11 +608,11 @@ final class FileTest extends TestCase
         );
 
         $lineCoverageData = [
-            1 => ['test1' => 1],
-            2 => ['test1' => 1],
-            3 => ['test1' => 1],
-            4 => ['test1' => 1],
-            5 => ['test1' => 1],
+            1 => [0 => 1],
+            2 => [0 => 1],
+            3 => [0 => 1],
+            4 => [0 => 1],
+            5 => [0 => 1],
         ];
 
         $file = new File(
@@ -621,7 +621,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             ['MyTrait' => $trait],
             [],
@@ -691,7 +691,7 @@ final class FileTest extends TestCase
             ['traitMethod' => $traitMethod],
         );
 
-        $lineCoverageData = array_fill(1, 10, ['test1' => 1]);
+        $lineCoverageData = array_fill(1, 10, [0 => 1]);
 
         return new File(
             'test.php',
@@ -699,7 +699,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             [],
-            ['test1'   => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0         => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass' => $class],
             ['MyTrait' => $trait],
             [],
@@ -743,16 +743,16 @@ final class FileTest extends TestCase
             1,
         );
 
-        $lineCoverageData = array_fill(1, 10, ['test1' => 1]);
+        $lineCoverageData = array_fill(1, 10, [0 => 1]);
 
         $functionCoverageData = [
             'MyClass->classMethod' => new ProcessedFunctionCoverageData(
-                [new ProcessedBranchCoverageData(0, 5, 1, 5, ['test1' => 1], [], [])],
-                [new ProcessedPathCoverageData([0 => 0], ['test1' => 1])],
+                [new ProcessedBranchCoverageData(0, 5, 1, 5, [0 => 1], [], [])],
+                [new ProcessedPathCoverageData([0 => 0], [0 => 1])],
             ),
             'myFunc' => new ProcessedFunctionCoverageData(
-                [new ProcessedBranchCoverageData(0, 5, 6, 10, ['test1' => 1], [], [])],
-                [new ProcessedPathCoverageData([0 => 0], ['test1' => 1])],
+                [new ProcessedBranchCoverageData(0, 5, 6, 10, [0 => 1], [], [])],
+                [new ProcessedPathCoverageData([0 => 0], [0 => 1])],
             ),
         ];
 
@@ -762,7 +762,7 @@ final class FileTest extends TestCase
             'abc123',
             $lineCoverageData,
             $functionCoverageData,
-            ['test1'   => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0         => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass' => $class],
             [],
             ['myFunc' => $function],
@@ -817,9 +817,9 @@ final class FileTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['test1' => 1], 2 => [], 3 => null],
+            [1 => [0 => 1], 2 => [], 3 => null],
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             ['MyTrait' => $trait],
             [],
@@ -845,24 +845,24 @@ final class FileTest extends TestCase
         $untestedFunc = new Function_('untestedFunc', 'untestedFunc', '', 11, 12, 'function untestedFunc(): void', 1);
 
         $lineCoverageData = [
-            1  => ['tSmall' => 1],
-            2  => ['tSmall' => 1],
-            3  => ['tMedium' => 1],
-            4  => ['tMedium' => 1],
-            5  => ['tLarge' => 1],
-            6  => ['tLarge' => 1],
-            7  => ['tSmall' => 1, 'tMedium' => 1],
-            8  => ['tSmall' => 1, 'tMedium' => 1],
-            9  => ['tSmall' => 1],
-            10 => ['tSmall' => 1],
+            1  => [0 => 1],
+            2  => [0 => 1],
+            3  => [1 => 1],
+            4  => [1 => 1],
+            5  => [2 => 1],
+            6  => [2 => 1],
+            7  => [0 => 1, 1 => 1],
+            8  => [0 => 1, 1 => 1],
+            9  => [0 => 1],
+            10 => [0 => 1],
             11 => [],
             12 => [],
         ];
 
         $testData = [
-            'tSmall'  => ['size' => 'small', 'status' => 'passed', 'time' => 0.0],
-            'tMedium' => ['size' => 'medium', 'status' => 'passed', 'time' => 0.0],
-            'tLarge'  => ['size' => 'large', 'status' => 'passed', 'time' => 0.0],
+            0 => ['name' => 'tSmall', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+            1 => ['name' => 'tMedium', 'size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+            2 => ['name' => 'tLarge', 'size' => 'large', 'status' => 'passed', 'time' => 0.0],
         ];
 
         return new File(
@@ -904,9 +904,9 @@ final class FileTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['test1' => 1], 2 => []],
+            [1 => [0 => 1], 2 => []],
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             [],
             ['myFunc' => $function],

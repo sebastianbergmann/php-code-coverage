@@ -27,6 +27,9 @@ use SebastianBergmann\CodeCoverage\Util\PathReducer;
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestType from CodeCoverage
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
+ *
+ * @phpstan-type TestDataType array{name: non-empty-string, size: string, status: string, time: float}
  */
 final readonly class Builder
 {
@@ -66,7 +69,7 @@ final readonly class Builder
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($codeCoverage),
-            $testResults,
+            $this->testDataByTestIndex($codeCoverage->testIds(), $testResults),
             $codeCoverage->collectsHitCounts(),
         );
 
@@ -74,8 +77,38 @@ final readonly class Builder
     }
 
     /**
-     * @param array<array-key, mixed>           $items
-     * @param array<non-empty-string, TestType> $tests
+     * Combines the test index to test id table of the coverage data with the test results into
+     * a map of test index to test data, so that consumers of the report tree can resolve the
+     * test indexes used in the coverage data without a separate lookup table.
+     *
+     * @param array<TestIndexType, non-empty-string> $testIds
+     * @param array<non-empty-string, TestType>      $testResults
+     *
+     * @return array<TestIndexType, TestDataType>
+     */
+    private function testDataByTestIndex(array $testIds, array $testResults): array
+    {
+        $testData = [];
+
+        foreach ($testIds as $index => $id) {
+            if (!isset($testResults[$id])) {
+                continue;
+            }
+
+            $testData[$index] = [
+                'name'   => $id,
+                'size'   => $testResults[$id]['size'],
+                'status' => $testResults[$id]['status'],
+                'time'   => $testResults[$id]['time'],
+            ];
+        }
+
+        return $testData;
+    }
+
+    /**
+     * @param array<array-key, mixed>            $items
+     * @param array<TestIndexType, TestDataType> $tests
      */
     private function addItems(Directory $root, array $items, array $tests, bool $collectsHitCounts): void
     {

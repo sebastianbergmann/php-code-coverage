@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugPathCoverageType from XdebugDriver
  */
 final class ProcessedPathCoverageData
@@ -26,7 +26,7 @@ final class ProcessedPathCoverageData
     /** @var array<int, int> */
     public readonly array $path;
 
-    /** @var array<TestIdType, positive-int> map of test id to the number of times the test executed the path */
+    /** @var array<TestIndexType, positive-int> map of test index to the number of times the test executed the path */
     public array $hit;
 
     /**
@@ -41,8 +41,8 @@ final class ProcessedPathCoverageData
     }
 
     /**
-     * @param array<int, int>                 $path
-     * @param array<TestIdType, positive-int> $hit
+     * @param array<int, int>                    $path
+     * @param array<TestIndexType, positive-int> $hit
      */
     public function __construct(
         array $path,
@@ -67,8 +67,8 @@ final class ProcessedPathCoverageData
 
         $hit = $this->hit;
 
-        foreach ($data->hit as $testCaseId => $count) {
-            $hit[$testCaseId] = max($hit[$testCaseId] ?? 0, $count);
+        foreach ($data->hit as $testIndex => $count) {
+            $hit[$testIndex] = max($hit[$testIndex] ?? 0, $count);
         }
 
         return new self(
@@ -78,11 +78,33 @@ final class ProcessedPathCoverageData
     }
 
     /**
-     * @param TestIdType   $testCaseId
-     * @param positive-int $count
+     * @param array<TestIndexType, TestIndexType> $remap
      */
-    public function recordHit(string $testCaseId, int $count): void
+    #[NoDiscard]
+    public function withRemappedTestIndexes(array $remap): self
     {
-        $this->hit[$testCaseId] = ($this->hit[$testCaseId] ?? 0) + $count;
+        if ($this->hit === []) {
+            return $this;
+        }
+
+        $hit = [];
+
+        foreach ($this->hit as $testIndex => $count) {
+            $hit[$remap[$testIndex] ?? $testIndex] = $count;
+        }
+
+        return new self(
+            $this->path,
+            $hit,
+        );
+    }
+
+    /**
+     * @param TestIndexType $testIndex
+     * @param positive-int  $count
+     */
+    public function recordHit(int $testIndex, int $count): void
+    {
+        $this->hit[$testIndex] = ($this->hit[$testIndex] ?? 0) + $count;
     }
 }

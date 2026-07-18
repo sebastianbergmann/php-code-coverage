@@ -31,7 +31,7 @@ use SebastianBergmann\Template\Template;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
+ * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
  */
 final class Class_ extends Renderer
 {
@@ -308,9 +308,9 @@ final class Class_ extends Renderer
     }
 
     /**
-     * @param non-empty-string                                   $filePath
-     * @param array<int, ?array<non-empty-string, positive-int>> $coverageData
-     * @param array<string, TestType>                            $testData
+     * @param non-empty-string                      $filePath
+     * @param array<int, ?array<int, positive-int>> $coverageData
+     * @param array<int, TestDataType>              $testData
      */
     private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
     {
@@ -363,7 +363,7 @@ final class Class_ extends Renderer
                         }
 
                         if (isset($testData[$test])) {
-                            $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                            $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                         }
                     }
 

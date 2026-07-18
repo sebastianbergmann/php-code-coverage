@@ -81,9 +81,9 @@ final class DirectoryTest extends TestCase
             'test.php',
             $root,
             'abc123',
-            [1 => ['test1' => 1]],
+            [1 => [0 => 1]],
             [],
-            ['test1' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             [],
             [],
             ['myFunc' => $function],
@@ -479,7 +479,7 @@ final class DirectoryTest extends TestCase
             1,
         );
 
-        $lineCoverageData = array_fill(1, 15, ['test1' => 1]);
+        $lineCoverageData = array_fill(1, 15, [0 => 1]);
 
         return new File(
             $name,
@@ -487,7 +487,7 @@ final class DirectoryTest extends TestCase
             'sha1hash',
             $lineCoverageData,
             [],
-            ['test1'              => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0                    => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass_' . $suffix => $class],
             ['MyTrait_' . $suffix => $trait],
             ['myFunc_' . $suffix  => $function],
@@ -531,9 +531,9 @@ final class DirectoryTest extends TestCase
             $name,
             $parent,
             'sha1hash',
-            [1 => ['t' => 1], 2 => ['t' => 1]],
+            [1 => [0 => 1], 2 => [0 => 1]],
             [],
-            ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
+            [0   => ['name' => 't', 'size' => $size, 'status' => 'passed', 'time' => 0.0]],
             ['C' => $class],
             [],
             [],
@@ -559,9 +559,9 @@ final class DirectoryTest extends TestCase
             $name,
             $parent,
             'sha1hash',
-            [1 => ['t' => 1], 2 => ['t' => 1]],
+            [1 => [0 => 1], 2 => [0 => 1]],
             [],
-            ['t' => ['size' => $size, 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 't', 'size' => $size, 'status' => 'passed', 'time' => 0.0]],
             [],
             [],
             ['f' => $function],

@@ -18,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestIdType from ProcessedCodeCoverageData
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
  * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
  * @phpstan-import-type XdebugBranchCoverageType from XdebugDriver
  * @phpstan-import-type XdebugPathCoverageType from XdebugDriver
@@ -114,28 +114,52 @@ final readonly class ProcessedFunctionCoverageData
     }
 
     /**
-     * @param TestIdType   $testCaseId
-     * @param positive-int $count
+     * @param array<TestIndexType, TestIndexType> $remap
      */
-    public function recordBranchHit(int $branchId, string $testCaseId, int $count): void
+    #[NoDiscard]
+    public function withRemappedTestIndexes(array $remap): self
+    {
+        $branches = [];
+
+        foreach ($this->branches as $branchId => $branch) {
+            $branches[$branchId] = $branch->withRemappedTestIndexes($remap);
+        }
+
+        $paths = [];
+
+        foreach ($this->paths as $pathId => $path) {
+            $paths[$pathId] = $path->withRemappedTestIndexes($remap);
+        }
+
+        return new self(
+            $branches,
+            $paths,
+        );
+    }
+
+    /**
+     * @param TestIndexType $testIndex
+     * @param positive-int  $count
+     */
+    public function recordBranchHit(int $branchId, int $testIndex, int $count): void
     {
         if (!isset($this->branches[$branchId])) {
             return;
         }
 
-        $this->branches[$branchId]->recordHit($testCaseId, $count);
+        $this->branches[$branchId]->recordHit($testIndex, $count);
     }
 
     /**
-     * @param TestIdType   $testCaseId
-     * @param positive-int $count
+     * @param TestIndexType $testIndex
+     * @param positive-int  $count
      */
-    public function recordPathHit(int $pathId, string $testCaseId, int $count): void
+    public function recordPathHit(int $pathId, int $testIndex, int $count): void
     {
         if (!isset($this->paths[$pathId])) {
             return;
         }
 
-        $this->paths[$pathId]->recordHit($testCaseId, $count);
+        $this->paths[$pathId]->recordHit($testIndex, $count);
     }
 }

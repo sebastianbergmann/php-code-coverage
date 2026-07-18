@@ -46,7 +46,7 @@ use SebastianBergmann\Template\Template;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
+ * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
  */
 final class File extends Renderer
 {
@@ -520,7 +520,7 @@ final class File extends Renderer
                             $lineCss = 'covered-by-small-tests';
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';
@@ -687,7 +687,7 @@ final class File extends Renderer
                         // @codeCoverageIgnoreEnd
                     }
 
-                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                    $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                 }
 
                 $popoverContent .= '</ul>';
@@ -798,7 +798,7 @@ final class File extends Renderer
                         // @codeCoverageIgnoreEnd
                     }
 
-                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                    $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                 }
 
                 $popoverContent .= '</ul>';
@@ -883,7 +883,7 @@ final class File extends Renderer
                             // @codeCoverageIgnoreEnd
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';
@@ -1000,7 +1000,7 @@ final class File extends Renderer
                             // @codeCoverageIgnoreEnd
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';

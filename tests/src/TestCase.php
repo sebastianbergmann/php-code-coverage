@@ -456,6 +456,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $coverage;
     }
 
+    /**
+     * @return array<string, array<string, ProcessedFunctionCoverageData>>
+     */
     protected function getExpectedPathCoverageDataArrayForBankAccount(): array
     {
         return [
@@ -965,5 +968,135 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function pathCoverageForBankAccountWithPartialBranchAndPathCoverage(): CodeCoverage
     {
         return new CoverageFixtureProvider()->pathCoverageForBankAccountWithPartialBranchAndPathCoverage();
+    }
+
+    /**
+     * Returns the line coverage of the given object with the interned test indexes resolved
+     * back to test case ids, so that it can be compared to the readable fixtures above.
+     *
+     * @return array<string, array<int, null|array<string, int>>>
+     */
+    protected function lineCoverageKeyedByTestId(ProcessedCodeCoverageData $data): array
+    {
+        $testIds      = $data->testIds();
+        $lineCoverage = [];
+
+        foreach ($data->lineCoverage() as $file => $lines) {
+            $lineCoverage[$file] = [];
+
+            foreach ($lines as $line => $tests) {
+                if ($tests === null || $tests === []) {
+                    $lineCoverage[$file][$line] = $tests;
+
+                    continue;
+                }
+
+                $resolved = [];
+
+                foreach ($tests as $testIndex => $hits) {
+                    $resolved[$testIds[$testIndex]] = $hits;
+                }
+
+                $lineCoverage[$file][$line] = $resolved;
+            }
+        }
+
+        return $lineCoverage;
+    }
+
+    /**
+     * Returns the function coverage of the given object as plain arrays, with the interned
+     * test indexes resolved back to test case ids. Use functionCoverageObjectsAsArrays() to
+     * bring an id-keyed fixture into the same shape for comparison.
+     *
+     * @return array<string, array<string, array{branches: array<int, array<string, mixed>>, paths: array<int, array<string, mixed>>}>>
+     */
+    protected function functionCoverageKeyedByTestId(ProcessedCodeCoverageData $data): array
+    {
+        $testIds          = $data->testIds();
+        $functionCoverage = [];
+
+        foreach ($data->functionCoverage() as $file => $functions) {
+            foreach ($functions as $functionName => $functionData) {
+                $functionCoverage[$file][$functionName] = $this->functionCoverageObjectAsArray($functionData, $testIds);
+            }
+        }
+
+        return $functionCoverage;
+    }
+
+    /**
+     * @param array<string, array<string, ProcessedFunctionCoverageData>> $functionCoverage
+     *
+     * @return array<string, array<string, array{branches: array<int, array<string, mixed>>, paths: array<int, array<string, mixed>>}>>
+     */
+    protected function functionCoverageObjectsAsArrays(array $functionCoverage): array
+    {
+        $result = [];
+
+        foreach ($functionCoverage as $file => $functions) {
+            foreach ($functions as $functionName => $functionData) {
+                $result[$file][$functionName] = $this->functionCoverageObjectAsArray($functionData, []);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<int, string> $testIds
+     *
+     * @return array{branches: array<int, array<string, mixed>>, paths: array<int, array<string, mixed>>}
+     */
+    private function functionCoverageObjectAsArray(ProcessedFunctionCoverageData $functionData, array $testIds): array
+    {
+        $branches = [];
+
+        foreach ($functionData->branches as $branchId => $branch) {
+            $branches[$branchId] = [
+                'op_start'   => $branch->op_start,
+                'op_end'     => $branch->op_end,
+                'line_start' => $branch->line_start,
+                'line_end'   => $branch->line_end,
+                'hit'        => $this->hitsKeyedByTestId($branch->hit, $testIds),
+                'out'        => $branch->out,
+                'out_hit'    => $branch->out_hit,
+            ];
+        }
+
+        $paths = [];
+
+        foreach ($functionData->paths as $pathId => $path) {
+            $paths[$pathId] = [
+                'path' => $path->path,
+                'hit'  => $this->hitsKeyedByTestId($path->hit, $testIds),
+            ];
+        }
+
+        return [
+            'branches' => $branches,
+            'paths'    => $paths,
+        ];
+    }
+
+    /**
+     * @param array<array-key, int> $hit
+     * @param array<int, string>    $testIds
+     *
+     * @return array<array-key, int>
+     */
+    private function hitsKeyedByTestId(array $hit, array $testIds): array
+    {
+        if ($testIds === []) {
+            return $hit;
+        }
+
+        $resolved = [];
+
+        foreach ($hit as $testIndex => $count) {
+            $resolved[$testIds[$testIndex]] = $count;
+        }
+
+        return $resolved;
     }
 }

@@ -59,7 +59,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $this->assertEquals(
             $this->getExpectedLineCoverageDataArrayForBankAccount(),
-            $coverage->lineCoverage(),
+            $this->lineCoverageKeyedByTestId($coverage),
         );
     }
 
@@ -70,8 +70,8 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->merge($this->getPathCoverageForBankAccountForLastTwoTests()->getData());
 
         $this->assertEquals(
-            $this->getExpectedPathCoverageDataArrayForBankAccount(),
-            $coverage->functionCoverage(),
+            $this->functionCoverageObjectsAsArrays($this->getExpectedPathCoverageDataArrayForBankAccount()),
+            $this->functionCoverageKeyedByTestId($coverage),
         );
     }
 
@@ -82,8 +82,8 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->merge($this->getPathCoverageForBankAccount()->getData());
 
         $this->assertEquals(
-            $this->getExpectedPathCoverageDataArrayForBankAccount(),
-            $coverage->functionCoverage(),
+            $this->functionCoverageObjectsAsArrays($this->getExpectedPathCoverageDataArrayForBankAccount()),
+            $this->functionCoverageKeyedByTestId($coverage),
         );
     }
 
@@ -218,26 +218,28 @@ final class ProcessedCodeCoverageDataTest extends TestCase
     public function testMergeOfLinesPresentInOnlyOneOfTheTwoFiles(): void
     {
         $existingCoverage = new ProcessedCodeCoverageData;
+        $existingCoverage->setTestIds(['test1']);
         $existingCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    8 => ['test1' => 1],
+                    8 => [0 => 1],
                 ],
             ],
         );
 
         $newCoverage = new ProcessedCodeCoverageData;
+        $newCoverage->setTestIds(['test2']);
         $newCoverage->setLineCoverage(
             [
                 '/some/path/SomeClass.php' => [
-                    9 => ['test2' => 1],
+                    9 => [0 => 1],
                 ],
             ],
         );
 
         $existingCoverage->merge($newCoverage);
 
-        $lineCoverage = $existingCoverage->lineCoverage();
+        $lineCoverage = $this->lineCoverageKeyedByTestId($existingCoverage);
 
         $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
 
@@ -255,7 +257,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setLineCoverage(
             [
                 '/some/path/OldName.php' => [
-                    8 => ['test1' => 1],
+                    8 => [0 => 1],
                 ],
             ],
         );
@@ -281,7 +283,7 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->setLineCoverage(
             [
                 '/some/path/OldName.php' => [
-                    8 => ['test1' => 1],
+                    8 => [0 => 1],
                 ],
             ],
         );

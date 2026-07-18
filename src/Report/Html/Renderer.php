@@ -68,7 +68,7 @@ use SebastianBergmann\Template\Template;
  *     coverageDataJson?: string,
  * }
  *
- * @phpstan-import-type TestType from \SebastianBergmann\CodeCoverage\CodeCoverage
+ * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
  */
 abstract class Renderer
 {
@@ -522,9 +522,9 @@ abstract class Renderer
     }
 
     /**
-     * @param TestType $testData
+     * @param TestDataType $testData
      */
-    protected function createPopoverContentForTest(string $test, array $testData): string
+    protected function createPopoverContentForTest(array $testData): string
     {
         $testCSS = '';
 
@@ -548,7 +548,7 @@ abstract class Renderer
         return sprintf(
             '<li%s>%s</li>',
             $testCSS,
-            htmlspecialchars($test, self::HTML_SPECIAL_CHARS_FLAGS),
+            htmlspecialchars($testData['name'], self::HTML_SPECIAL_CHARS_FLAGS),
         );
     }
 

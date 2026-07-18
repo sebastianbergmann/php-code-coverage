@@ -9,17 +9,20 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
  */
 final readonly class FileCoverageData
 {
     /**
-     * @var array<positive-int, null|array<non-empty-string, positive-int>>
+     * @var array<positive-int, null|array<TestIndexType, positive-int>>
      */
     public array $lineCoverage;
 
@@ -29,8 +32,8 @@ final readonly class FileCoverageData
     public array $functionCoverage;
 
     /**
-     * @param array<positive-int, null|array<non-empty-string, positive-int>> $lineCoverage
-     * @param array<non-empty-string, ProcessedFunctionCoverageData>          $functionCoverage
+     * @param array<positive-int, null|array<TestIndexType, positive-int>> $lineCoverage
+     * @param array<non-empty-string, ProcessedFunctionCoverageData>       $functionCoverage
      */
     public function __construct(array $lineCoverage, array $functionCoverage)
     {

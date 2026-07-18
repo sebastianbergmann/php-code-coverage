@@ -219,13 +219,25 @@ final class Facade
 
         $fileReport->getWriter()->startElement('coverage');
 
+        $testData = $file->testData();
+
         foreach ($file->lineCoverageData() as $line => $tests) {
             if (!is_array($tests) || count($tests) === 0) {
                 continue;
             }
 
+            $testsById = [];
+
+            foreach ($tests as $testIndex => $count) {
+                if (!isset($testData[$testIndex])) {
+                    continue;
+                }
+
+                $testsById[$testData[$testIndex]['name']] = $count;
+            }
+
             $coverage = $fileReport->lineCoverage((string) $line);
-            $coverage->finalize($tests);
+            $coverage->finalize($testsById);
         }
         $fileReport->getWriter()->endElement();
 

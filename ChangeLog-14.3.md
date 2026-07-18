@@ -15,6 +15,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* [#1259](https://github.com/sebastianbergmann/php-code-coverage/issues/1259): Degrade gracefully when a source file cannot be parsed
 * The serialization format for `.cov` files was bumped from version 1 to version 2; files serialized with previous versions cannot be loaded or merged any more
 
 ### Fixed

@@ -300,5 +300,45 @@ abstract class SourceAnalyserTestCase extends TestCase
         $this->assertArrayHasKey('SebastianBergmann\CodeCoverage\StaticAnalysis\f', $analysisResult->functions());
     }
 
+    public function testFileThatCannotBeParsedHasDegradedAnalysisResult(): void
+    {
+        $analysisResult = $this->analyser()->analyse(
+            TEST_FILES_PATH . 'source_that_cannot_be_parsed.php',
+            file_get_contents(TEST_FILES_PATH . 'source_that_cannot_be_parsed.php'),
+            true,
+            true,
+        );
+
+        $this->assertFalse($analysisResult->wasParsed());
+        $this->assertStringContainsString('Syntax error', $analysisResult->parseError());
+
+        $this->assertSame([], $analysisResult->interfaces());
+        $this->assertSame([], $analysisResult->classes());
+        $this->assertSame([], $analysisResult->traits());
+        $this->assertSame([], $analysisResult->functions());
+        $this->assertSame([], $analysisResult->executableLines());
+        $this->assertSame([], $analysisResult->branchOperatorLines());
+        $this->assertSame([], $analysisResult->deadLines());
+
+        $this->assertSame(6, $analysisResult->linesOfCode()->linesOfCode());
+        $this->assertSame(0, $analysisResult->linesOfCode()->commentLinesOfCode());
+        $this->assertSame(6, $analysisResult->linesOfCode()->nonCommentLinesOfCode());
+
+        $this->assertSame([2, 3, 4], $analysisResult->ignoredLines());
+    }
+
+    public function testFileThatCannotBeParsedHasNoIgnoredLinesWhenAnnotationsAreDisabled(): void
+    {
+        $analysisResult = $this->analyser()->analyse(
+            TEST_FILES_PATH . 'source_that_cannot_be_parsed.php',
+            file_get_contents(TEST_FILES_PATH . 'source_that_cannot_be_parsed.php'),
+            false,
+            false,
+        );
+
+        $this->assertFalse($analysisResult->wasParsed());
+        $this->assertSame([], $analysisResult->ignoredLines());
+    }
+
     abstract protected function analyser(): SourceAnalyser;
 }

@@ -60,6 +60,11 @@ final readonly class AnalysisResult
     private array $ignoredLines;
 
     /**
+     * @var ?non-empty-string
+     */
+    private ?string $parseError;
+
+    /**
      * @param array<string, Interface_> $interfaces
      * @param array<string, Class_>     $classes
      * @param array<string, Trait_>     $traits
@@ -68,8 +73,9 @@ final readonly class AnalysisResult
      * @param array<positive-int, true> $branchOperatorLines
      * @param array<positive-int, true> $deadLines
      * @param array<int, int>           $ignoredLines
+     * @param ?non-empty-string         $parseError
      */
-    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines)
+    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines, ?string $parseError = null)
     {
         $this->interfaces          = $interfaces;
         $this->classes             = $classes;
@@ -80,6 +86,7 @@ final readonly class AnalysisResult
         $this->branchOperatorLines = $branchOperatorLines;
         $this->deadLines           = $deadLines;
         $this->ignoredLines        = $ignoredLines;
+        $this->parseError          = $parseError;
     }
 
     /**
@@ -149,5 +156,21 @@ final readonly class AnalysisResult
     public function ignoredLines(): array
     {
         return $this->ignoredLines;
+    }
+
+    /**
+     * @phpstan-assert-if-false !null $this->parseError()
+     */
+    public function wasParsed(): bool
+    {
+        return $this->parseError === null;
+    }
+
+    /**
+     * @return ?non-empty-string
+     */
+    public function parseError(): ?string
+    {
+        return $this->parseError;
     }
 }

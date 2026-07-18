@@ -154,6 +154,21 @@ final class CodeCoverage
     }
 
     /**
+     * Returns the files that could not be parsed for static analysis,
+     * mapped to the parser's error message.
+     *
+     * Code coverage for these files is based on the raw data reported by the
+     * driver: no refinement of executable lines, no dead code detection, and
+     * no information about code units.
+     *
+     * @return array<non-empty-string, non-empty-string>
+     */
+    public function parseErrors(): array
+    {
+        return $this->analyser()->parseErrors();
+    }
+
+    /**
      * @param non-empty-string $id
      */
     public function start(string $id, ?TestSize $size = null, bool $clear = false): void

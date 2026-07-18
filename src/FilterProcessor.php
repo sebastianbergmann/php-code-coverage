@@ -94,7 +94,12 @@ final readonly class FilterProcessor
                 continue;
             }
 
-            $analysisResult      = $analyser->analyse($filename);
+            $analysisResult = $analyser->analyse($filename);
+
+            if (!$analysisResult->wasParsed()) {
+                continue;
+            }
+
             $linesToBranchMap    = $analysisResult->executableLines();
             $branchOperatorLines = $analysisResult->branchOperatorLines();
 

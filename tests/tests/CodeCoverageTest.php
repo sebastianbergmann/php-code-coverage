@@ -448,6 +448,38 @@ final class CodeCoverageTest extends TestCase
         $this->assertTrue($coverage->validate(TargetCollection::fromArray([]))->isSuccess());
     }
 
+    public function testFileThatCannotBeParsedHasCoverageBasedOnRawDriverData(): void
+    {
+        $file = TEST_FILES_PATH . 'source_that_cannot_be_parsed.php';
+
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+                $file => [3 => 1, 5 => 1],
+            ]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('A test', null, true);
+        $coverage->stop();
+
+        $parseErrors = $coverage->parseErrors();
+
+        $this->assertArrayHasKey($file, $parseErrors);
+        $this->assertStringContainsString('Syntax error', $parseErrors[$file]);
+
+        $lineCoverage = $coverage->getData()->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+
+        // Line 3 is removed by the line-based @codeCoverageIgnore annotations,
+        // which do not require the parser; line 5 keeps the raw driver data
+        $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
+    }
+
     private function requireDriver(): CodeCoverage
     {
         if ($this->coverage === null) {

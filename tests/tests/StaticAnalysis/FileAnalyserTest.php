@@ -55,6 +55,36 @@ final class FileAnalyserTest extends TestCase
         $this->assertSame($result, $analyser->analyse($file));
     }
 
+    public function testRecordsParseErrorForFileThatCannotBeParsed(): void
+    {
+        $file = TEST_FILES_PATH . 'source_that_cannot_be_parsed.php';
+
+        $sourceAnalyser = $this->createStub(SourceAnalyser::class);
+
+        $sourceAnalyser->method('analyse')->willReturn($this->degradedAnalysisResult());
+
+        $analyser = new FileAnalyser($sourceAnalyser, false, false);
+
+        $analyser->analyse($file);
+
+        $this->assertSame([$file => 'the parse error'], $analyser->parseErrors());
+    }
+
+    public function testDoesNotRecordParseErrorForFileThatCanBeParsed(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_class_and_outside_function.php';
+
+        $sourceAnalyser = $this->createStub(SourceAnalyser::class);
+
+        $sourceAnalyser->method('analyse')->willReturn($this->analysisResult());
+
+        $analyser = new FileAnalyser($sourceAnalyser, false, false);
+
+        $analyser->analyse($file);
+
+        $this->assertSame([], $analyser->parseErrors());
+    }
+
     private function analysisResult(): AnalysisResult
     {
         return new AnalysisResult(
@@ -67,6 +97,22 @@ final class FileAnalyserTest extends TestCase
             [],
             [],
             [],
+        );
+    }
+
+    private function degradedAnalysisResult(): AnalysisResult
+    {
+        return new AnalysisResult(
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(0, 0, 0),
+            [],
+            [],
+            [],
+            [],
+            'the parse error',
         );
     }
 }

@@ -98,6 +98,7 @@ use function str_ends_with;
 use function str_replace;
 use function token_get_all;
 use function trim;
+use ParseError;
 use SebastianBergmann\CodeCoverage\Serialization\FileCouldNotBeReadException;
 
 /**
@@ -210,7 +211,14 @@ final class SyntaxHighlighter
             // @codeCoverageIgnoreEnd
         }
 
-        $tokens              = token_get_all($buffer, TOKEN_PARSE);
+        try {
+            $tokens = token_get_all($buffer, TOKEN_PARSE);
+        } catch (ParseError) {
+            // TOKEN_PARSE requires the file to be parseable by the PHP
+            // runtime; fall back to purely lexical tokenization
+            $tokens = token_get_all($buffer);
+        }
+
         $result              = [''];
         $i                   = 0;
         $stringFlag          = false;

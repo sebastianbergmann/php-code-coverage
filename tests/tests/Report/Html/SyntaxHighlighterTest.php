@@ -24,4 +24,12 @@ final class SyntaxHighlighterTest extends TestCase
 
         $this->assertStringContainsString('<span class="html">', implode("\n", $highlighted));
     }
+
+    public function testHighlightsFileThatCannotBeParsed(): void
+    {
+        $highlighted = (new SyntaxHighlighter)->highlight(TEST_FILES_PATH . 'source_that_cannot_be_parsed.php');
+
+        $this->assertCount(5, $highlighted);
+        $this->assertStringContainsString('<span class="default">$b</span>', $highlighted[4]);
+    }
 }

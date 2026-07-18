@@ -140,6 +140,22 @@ final class AnalysisResultTest extends TestCase
         $this->assertSame([], $this->analysisResult()->deadLines());
     }
 
+    public function testWasParsedWhenThereIsNoParseError(): void
+    {
+        $analysisResult = $this->analysisResult();
+
+        $this->assertTrue($analysisResult->wasParsed());
+        $this->assertNull($analysisResult->parseError());
+    }
+
+    public function testWasNotParsedWhenThereIsAParseError(): void
+    {
+        $analysisResult = $this->analysisResult(parseError: 'the parse error');
+
+        $this->assertFalse($analysisResult->wasParsed());
+        $this->assertSame('the parse error', $analysisResult->parseError());
+    }
+
     /**
      * @param array<string, Interface_> $interfaces
      * @param array<string, Class_>     $classes
@@ -149,8 +165,9 @@ final class AnalysisResultTest extends TestCase
      * @param array<positive-int, true> $branchOperatorLines
      * @param array<positive-int, true> $deadLines
      * @param array<int, int>           $ignoredLines
+     * @param ?non-empty-string         $parseError
      */
-    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = []): AnalysisResult
+    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = [], ?string $parseError = null): AnalysisResult
     {
         return new AnalysisResult(
             $interfaces,
@@ -162,6 +179,7 @@ final class AnalysisResultTest extends TestCase
             $branchOperatorLines,
             $deadLines,
             $ignoredLines,
+            $parseError,
         );
     }
 }

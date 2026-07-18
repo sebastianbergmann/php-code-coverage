@@ -108,6 +108,27 @@ final class FilterProcessorTest extends TestCase
         $this->assertSame([2], array_keys($lineCoverage[$file]));
     }
 
+    public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');
+
+        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            $file => [1 => -1, 3 => 1, 5 => 1],
+        ]);
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, true, true);
+
+        $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
+
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+        $this->assertSame([1 => -1, 3 => 1, 5 => 1], $lineCoverage[$file]);
+    }
+
     public function testApplyExecutableLinesFilterSkipsNonFilterFiles(): void
     {
         $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([

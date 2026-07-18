@@ -82,7 +82,12 @@ final class CachingSourceAnalyser implements SourceAnalyser
             $ignoreDeprecatedCode,
         );
 
-        $this->write($cacheFile, $analysisResult);
+        // The cache key does not include the PHP-Parser version, so a cached
+        // degraded result would outlive a PHP-Parser upgrade that adds support
+        // for the syntax that could not be parsed
+        if ($analysisResult->wasParsed()) {
+            $this->write($cacheFile, $analysisResult);
+        }
 
         return $analysisResult;
     }

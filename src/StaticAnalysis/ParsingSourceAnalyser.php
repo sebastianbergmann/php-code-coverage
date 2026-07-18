@@ -18,7 +18,6 @@ use function assert;
 use function is_array;
 use function ksort;
 use function max;
-use function sprintf;
 use function substr_count;
 use function token_get_all;
 use function trim;
@@ -27,7 +26,6 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use SebastianBergmann\CodeCoverage\ParserException;
 use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 
 /**
@@ -75,19 +73,15 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
             /* @noinspection UnusedFunctionResultInspection */
             $traverser->traverse($nodes);
-            // @codeCoverageIgnoreStart
         } catch (Error $error) {
-            throw new ParserException(
-                sprintf(
-                    'Cannot parse %s: %s',
-                    $sourceCodeFile,
-                    $error->getMessage(),
-                ),
-                $error->getCode(),
+            return $this->resultForFileThatCannotBeParsed(
+                $sourceCodeFile,
+                $sourceCode,
+                $useAnnotationsForIgnoringCode,
+                $linesOfCode,
                 $error,
             );
         }
-        // @codeCoverageIgnoreEnd
 
         $ignoredLines = array_replace(
             $this->findLinesIgnoredByLineBasedAnnotations(
@@ -123,6 +117,43 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $executableLinesFindingVisitor->branchOperatorLines(),
             $deadLines,
             $ignoredLines,
+        );
+    }
+
+    /**
+     * A file that cannot be parsed gets a degraded analysis result: no code
+     * units, no executable lines, and no dead lines. Lines ignored using
+     * line-based annotations are still found, because that scan is based on
+     * token_get_all() and does not require the parser.
+     *
+     * @param non-empty-string $sourceCodeFile
+     * @param positive-int     $linesOfCode
+     */
+    private function resultForFileThatCannotBeParsed(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, int $linesOfCode, Error $error): AnalysisResult
+    {
+        $ignoredLines = $this->findLinesIgnoredByLineBasedAnnotations(
+            $sourceCodeFile,
+            $sourceCode,
+            $useAnnotationsForIgnoringCode,
+        );
+
+        ksort($ignoredLines);
+
+        $parseError = $error->getMessage();
+
+        assert($parseError !== '');
+
+        return new AnalysisResult(
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode($linesOfCode, 0, $linesOfCode),
+            [],
+            [],
+            [],
+            array_keys($ignoredLines),
+            $parseError,
         );
     }
 

@@ -96,11 +96,19 @@ final class ProcessedCodeCoverageData
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
     {
         foreach ($executedCode->lineCoverage() as $file => $lines) {
+            if (!isset($this->lineCoverage[$file])) {
+                $this->lineCoverage[$file] = [];
+            }
+
+            $fileCoverage = &$this->lineCoverage[$file];
+
             foreach ($lines as $k => $v) {
                 if ($v >= Driver::LINE_EXECUTED) {
-                    $this->lineCoverage[$file][$k][$testCaseId] = ($this->lineCoverage[$file][$k][$testCaseId] ?? 0) + $v;
+                    $fileCoverage[$k][$testCaseId] = ($fileCoverage[$k][$testCaseId] ?? 0) + $v;
                 }
             }
+
+            unset($fileCoverage);
         }
 
         foreach ($executedCode->functionCoverage() as $file => $functions) {

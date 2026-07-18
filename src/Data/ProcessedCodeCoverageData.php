@@ -56,6 +56,8 @@ final class ProcessedCodeCoverageData
      * the data counts how often a line was executed) or only mean "executed at least once".
      */
     private bool $collectsHitCounts;
+    private bool $lineCoverageSorted     = true;
+    private bool $functionCoverageSorted = true;
 
     public function __construct(bool $collectsHitCounts = false)
     {
@@ -72,6 +74,7 @@ final class ProcessedCodeCoverageData
         foreach ($rawData->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
+                $this->lineCoverageSorted  = false;
 
                 foreach ($lines as $k => $v) {
                     $this->lineCoverage[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
@@ -98,6 +101,7 @@ final class ProcessedCodeCoverageData
         foreach ($executedCode->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
+                $this->lineCoverageSorted  = false;
             }
 
             $fileCoverage = &$this->lineCoverage[$file];
@@ -139,7 +143,8 @@ final class ProcessedCodeCoverageData
      */
     public function setLineCoverage(array $lineCoverage): void
     {
-        $this->lineCoverage = $lineCoverage;
+        $this->lineCoverage       = $lineCoverage;
+        $this->lineCoverageSorted = false;
     }
 
     /**
@@ -147,7 +152,7 @@ final class ProcessedCodeCoverageData
      */
     public function lineCoverage(): array
     {
-        ksort($this->lineCoverage);
+        $this->sortLineCoverage();
 
         return $this->lineCoverage;
     }
@@ -157,7 +162,8 @@ final class ProcessedCodeCoverageData
      */
     public function setFunctionCoverage(array $functionCoverage): void
     {
-        $this->functionCoverage = $functionCoverage;
+        $this->functionCoverage       = $functionCoverage;
+        $this->functionCoverageSorted = false;
     }
 
     /**
@@ -165,7 +171,11 @@ final class ProcessedCodeCoverageData
      */
     public function functionCoverage(): array
     {
-        ksort($this->functionCoverage);
+        if (!$this->functionCoverageSorted) {
+            ksort($this->functionCoverage);
+
+            $this->functionCoverageSorted = true;
+        }
 
         return $this->functionCoverage;
     }
@@ -175,7 +185,7 @@ final class ProcessedCodeCoverageData
      */
     public function coveredFiles(): array
     {
-        ksort($this->lineCoverage);
+        $this->sortLineCoverage();
 
         return array_keys($this->lineCoverage);
     }
@@ -188,10 +198,12 @@ final class ProcessedCodeCoverageData
     {
         if (isset($this->lineCoverage[$oldFile])) {
             $this->lineCoverage[$newFile] = $this->lineCoverage[$oldFile];
+            $this->lineCoverageSorted     = false;
         }
 
         if (isset($this->functionCoverage[$oldFile])) {
             $this->functionCoverage[$newFile] = $this->functionCoverage[$oldFile];
+            $this->functionCoverageSorted     = false;
         }
 
         unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile]);
@@ -214,6 +226,7 @@ final class ProcessedCodeCoverageData
         foreach ($newData->lineCoverage as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = $lines;
+                $this->lineCoverageSorted  = false;
 
                 continue;
             }
@@ -245,6 +258,7 @@ final class ProcessedCodeCoverageData
         foreach ($newData->functionCoverage as $file => $functions) {
             if (!isset($this->functionCoverage[$file])) {
                 $this->functionCoverage[$file] = $functions;
+                $this->functionCoverageSorted  = false;
 
                 continue;
             }
@@ -256,6 +270,15 @@ final class ProcessedCodeCoverageData
                     $this->initPreviouslyUnseenFunction($file, $functionName, $functionData);
                 }
             }
+        }
+    }
+
+    private function sortLineCoverage(): void
+    {
+        if (!$this->lineCoverageSorted) {
+            ksort($this->lineCoverage);
+
+            $this->lineCoverageSorted = true;
         }
     }
 
@@ -312,6 +335,10 @@ final class ProcessedCodeCoverageData
     {
         if (is_array($functionData)) {
             $functionData = ProcessedFunctionCoverageData::fromXdebugCoverage($functionData);
+        }
+
+        if (!isset($this->functionCoverage[$file])) {
+            $this->functionCoverageSorted = false;
         }
 
         $this->functionCoverage[$file][$functionName] = $functionData;

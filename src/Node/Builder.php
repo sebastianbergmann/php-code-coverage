@@ -10,7 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
-use function array_shift;
+use function array_pop;
 use function explode;
 use function is_array;
 use function is_file;
@@ -166,51 +166,27 @@ final readonly class Builder
         $functionCoverage = $codeCoverage->functionCoverage();
 
         foreach ($codeCoverage->coveredFiles() as $originalPath) {
-            $result = $this->insertIntoDirectoryStructure(
-                $result,
-                explode(DIRECTORY_SEPARATOR, $originalPath),
-                new FileCoverageData(
-                    $lineCoverage[$originalPath] ?? [],
-                    $functionCoverage[$originalPath] ?? [],
-                ),
+            $segments = explode(DIRECTORY_SEPARATOR, $originalPath);
+            $file     = array_pop($segments);
+
+            $cursor = &$result;
+
+            foreach ($segments as $segment) {
+                if (!isset($cursor[$segment]) || !is_array($cursor[$segment])) {
+                    $cursor[$segment] = [];
+                }
+
+                $cursor = &$cursor[$segment];
+            }
+
+            $cursor[$file . '/f'] = new FileCoverageData(
+                $lineCoverage[$originalPath] ?? [],
+                $functionCoverage[$originalPath] ?? [],
             );
+
+            unset($cursor);
         }
 
         return $result;
-    }
-
-    /**
-     * @param array<array-key, mixed> $structure
-     * @param list<string>            $path
-     *
-     * @return array<array-key, mixed>
-     */
-    private function insertIntoDirectoryStructure(array $structure, array $path, FileCoverageData $leaf): array
-    {
-        $segment = array_shift($path);
-
-        if ($segment === null) {
-            // @codeCoverageIgnoreStart
-            return $structure;
-            // @codeCoverageIgnoreEnd
-        }
-
-        if ($path === []) {
-            $structure[$segment . '/f'] = $leaf;
-
-            return $structure;
-        }
-
-        $child = $structure[$segment] ?? [];
-
-        if (!is_array($child)) {
-            // @codeCoverageIgnoreStart
-            $child = [];
-            // @codeCoverageIgnoreEnd
-        }
-
-        $structure[$segment] = $this->insertIntoDirectoryStructure($child, $path, $leaf);
-
-        return $structure;
     }
 }

@@ -11,8 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_key_exists;
 use function array_keys;
-use function array_merge;
-use function array_unique;
 use function count;
 use function is_array;
 use function ksort;
@@ -212,36 +210,28 @@ final class ProcessedCodeCoverageData
                 continue;
             }
 
-            // we should compare the lines if any of two contains data
-            $compareLineNumbers = array_unique(
-                array_merge(
-                    array_keys($this->lineCoverage[$file]),
-                    array_keys($newData->lineCoverage[$file]),
-                ),
-            );
+            $fileCoverage = &$this->lineCoverage[$file];
 
-            foreach ($compareLineNumbers as $line) {
-                if (!array_key_exists($line, $newData->lineCoverage[$file])) {
-                    continue;
-                }
-
-                $thatPriority = $this->priorityForLine($newData->lineCoverage[$file], $line);
-                $thisPriority = $this->priorityForLine($this->lineCoverage[$file], $line);
+            foreach ($lines as $line => $data) {
+                $thatPriority = $this->priorityForValue($data);
+                $thisPriority = $this->priorityForLine($fileCoverage, $line);
 
                 if ($thatPriority > $thisPriority) {
-                    $this->lineCoverage[$file][$line] = $newData->lineCoverage[$file][$line];
+                    $fileCoverage[$line] = $data;
                 } elseif ($thatPriority === $thisPriority &&
-                    array_key_exists($line, $this->lineCoverage[$file]) &&
-                    is_array($this->lineCoverage[$file][$line]) &&
-                    is_array($newData->lineCoverage[$file][$line])) {
-                    foreach ($newData->lineCoverage[$file][$line] as $testId => $hits) {
-                        $this->lineCoverage[$file][$line][$testId] = max(
-                            $this->lineCoverage[$file][$line][$testId] ?? 0,
+                    is_array($data) &&
+                    array_key_exists($line, $fileCoverage) &&
+                    is_array($fileCoverage[$line])) {
+                    foreach ($data as $testId => $hits) {
+                        $fileCoverage[$line][$testId] = max(
+                            $fileCoverage[$line][$testId] ?? 0,
                             $hits,
                         );
                     }
                 }
             }
+
+            unset($fileCoverage);
         }
 
         foreach ($newData->functionCoverage as $file => $functions) {
@@ -282,12 +272,22 @@ final class ProcessedCodeCoverageData
             return 1;
         }
 
-        if (is_array($data[$line]) && count($data[$line]) === 0) {
-            return 2;
+        return $this->priorityForValue($data[$line]);
+    }
+
+    /**
+     * @param null|array<TestIdType, positive-int> $data
+     *
+     * @return 2|3|4
+     */
+    private function priorityForValue(null|array $data): int
+    {
+        if ($data === null) {
+            return 3;
         }
 
-        if ($data[$line] === null) {
-            return 3;
+        if (count($data) === 0) {
+            return 2;
         }
 
         return 4;

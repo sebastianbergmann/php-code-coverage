@@ -55,7 +55,7 @@ final readonly class AnalysisResult
     private array $deadLines;
 
     /**
-     * @var array<int, int>
+     * @var array<int, true>
      */
     private array $ignoredLines;
 
@@ -72,7 +72,7 @@ final readonly class AnalysisResult
      * @param LinesType                 $executableLines
      * @param array<positive-int, true> $branchOperatorLines
      * @param array<positive-int, true> $deadLines
-     * @param array<int, int>           $ignoredLines
+     * @param array<int, true>          $ignoredLines
      * @param ?non-empty-string         $parseError
      */
     public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines, ?string $parseError = null)
@@ -151,7 +151,7 @@ final readonly class AnalysisResult
     }
 
     /**
-     * @return array<int, int>
+     * @return array<int, true>
      */
     public function ignoredLines(): array
     {

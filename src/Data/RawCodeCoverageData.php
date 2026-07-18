@@ -9,19 +9,16 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
-use function array_diff;
 use function array_diff_key;
-use function array_flip;
-use function array_intersect;
 use function array_intersect_key;
 use function array_map;
-use function count;
 use function explode;
 use function file_get_contents;
 use function in_array;
 use function is_file;
+use function max;
+use function min;
 use function preg_replace;
-use function range;
 use function str_ends_with;
 use function str_starts_with;
 use function trim;
@@ -159,7 +156,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $lines
+     * @param array<positive-int, mixed> $lines keyed by line number
      */
     public function keepLineCoverageDataOnlyForLines(string $filename, array $lines): void
     {
@@ -169,13 +166,13 @@ final class RawCodeCoverageData
 
         $this->lineCoverage[$filename] = array_intersect_key(
             $this->lineCoverage[$filename],
-            array_flip($lines),
+            $lines,
         );
     }
 
     /**
-     * @param non-empty-string   $filename
-     * @param list<positive-int> $lines
+     * @param non-empty-string           $filename
+     * @param array<positive-int, mixed> $lines    keyed by line number
      */
     public function addMissingExecutableLines(string $filename, array $lines): void
     {
@@ -183,7 +180,7 @@ final class RawCodeCoverageData
             return;
         }
 
-        foreach ($lines as $line) {
+        foreach ($lines as $line => $_) {
             if (!isset($this->lineCoverage[$filename][$line])) {
                 $this->lineCoverage[$filename][$line] = Driver::LINE_NOT_EXECUTED;
             }
@@ -243,7 +240,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $lines
+     * @param array<positive-int, mixed> $lines keyed by line number
      */
     public function keepFunctionCoverageDataOnlyForLines(string $filename, array $lines): void
     {
@@ -253,13 +250,29 @@ final class RawCodeCoverageData
 
         foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
             foreach ($functionData['branches'] as $branchId => $branch) {
-                if (count(array_diff(range($branch['line_start'], $branch['line_end']), $lines)) > 0) {
-                    unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+                $allBranchLinesIncluded = true;
 
-                    foreach ($functionData['paths'] as $pathId => $path) {
-                        if (in_array($branchId, $path['path'], true)) {
-                            unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
-                        }
+                // Xdebug reports loop back-edge branches with line_start > line_end
+                $firstLine = min($branch['line_start'], $branch['line_end']);
+                $lastLine  = max($branch['line_start'], $branch['line_end']);
+
+                for ($line = $firstLine; $line <= $lastLine; $line++) {
+                    if (!isset($lines[$line])) {
+                        $allBranchLinesIncluded = false;
+
+                        break;
+                    }
+                }
+
+                if ($allBranchLinesIncluded) {
+                    continue;
+                }
+
+                unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+
+                foreach ($functionData['paths'] as $pathId => $path) {
+                    if (in_array($branchId, $path['path'], true)) {
+                        unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
                     }
                 }
             }
@@ -267,7 +280,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $lines
+     * @param array<int, mixed> $lines keyed by line number
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
@@ -281,19 +294,35 @@ final class RawCodeCoverageData
 
         $this->lineCoverage[$filename] = array_diff_key(
             $this->lineCoverage[$filename],
-            array_flip($lines),
+            $lines,
         );
 
         if (isset($this->functionCoverage[$filename])) {
             foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branch) {
-                    if (count(array_intersect($lines, range($branch['line_start'], $branch['line_end']))) > 0) {
-                        unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+                    $branchTouchesRemovedLine = false;
 
-                        foreach ($functionData['paths'] as $pathId => $path) {
-                            if (in_array($branchId, $path['path'], true)) {
-                                unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
-                            }
+                    // Xdebug reports loop back-edge branches with line_start > line_end
+                    $firstLine = min($branch['line_start'], $branch['line_end']);
+                    $lastLine  = max($branch['line_start'], $branch['line_end']);
+
+                    for ($line = $firstLine; $line <= $lastLine; $line++) {
+                        if (isset($lines[$line])) {
+                            $branchTouchesRemovedLine = true;
+
+                            break;
+                        }
+                    }
+
+                    if (!$branchTouchesRemovedLine) {
+                        continue;
+                    }
+
+                    unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+
+                    foreach ($functionData['paths'] as $pathId => $path) {
+                        if (in_array($branchId, $path['path'], true)) {
+                            unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
                         }
                     }
                 }

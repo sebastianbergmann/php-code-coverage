@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_keys;
 use function file_get_contents;
 use function range;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -44,12 +45,12 @@ abstract class SourceAnalyserTestCase extends TestCase
                 41,
                 42,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_ignore.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -57,12 +58,12 @@ abstract class SourceAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             [],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_without_ignore.php',
                 file_get_contents(TEST_FILES_PATH . 'source_without_ignore.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -72,12 +73,12 @@ abstract class SourceAnalyserTestCase extends TestCase
             [
                 3,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -89,12 +90,12 @@ abstract class SourceAnalyserTestCase extends TestCase
             [
                 2,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_class_and_fqcn_constant.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -112,12 +113,12 @@ abstract class SourceAnalyserTestCase extends TestCase
                 32,
                 33,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_oneline_annotations.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_oneline_annotations.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -132,12 +133,12 @@ abstract class SourceAnalyserTestCase extends TestCase
                 35,
                 36,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_ignore.php'),
                 false,
                 false,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -188,12 +189,12 @@ abstract class SourceAnalyserTestCase extends TestCase
                 18,
                 19,
             ],
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_ignore_attributes.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_ignore_attributes.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -202,12 +203,12 @@ abstract class SourceAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             range(5, 13),
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_enum_and_enum_level_ignore_annotation.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_enum_and_enum_level_ignore_annotation.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
@@ -216,23 +217,23 @@ abstract class SourceAnalyserTestCase extends TestCase
     {
         $this->assertSame(
             range(9, 12),
-            $this->analyser()->analyse(
+            array_keys($this->analyser()->analyse(
                 TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php',
                 file_get_contents(TEST_FILES_PATH . 'source_with_enum_and_method_level_ignore_annotation.php'),
                 true,
                 true,
-            )->ignoredLines(),
+            )->ignoredLines()),
         );
     }
 
     public function testIgnoreEndWithoutStartIsHandledGracefully(): void
     {
-        $ignoredLines = $this->analyser()->analyse(
+        $ignoredLines = array_keys($this->analyser()->analyse(
             TEST_FILES_PATH . 'source_with_codeCoverageIgnoreEnd_without_start.php',
             file_get_contents(TEST_FILES_PATH . 'source_with_codeCoverageIgnoreEnd_without_start.php'),
             true,
             true,
-        )->ignoredLines();
+        )->ignoredLines());
 
         // Line 5 has the @codeCoverageIgnoreEnd without a prior start,
         // so it should still be included in ignored lines (start defaults to the token line)
@@ -324,7 +325,7 @@ abstract class SourceAnalyserTestCase extends TestCase
         $this->assertSame(0, $analysisResult->linesOfCode()->commentLinesOfCode());
         $this->assertSame(6, $analysisResult->linesOfCode()->nonCommentLinesOfCode());
 
-        $this->assertSame([2, 3, 4], $analysisResult->ignoredLines());
+        $this->assertSame([2, 3, 4], array_keys($analysisResult->ignoredLines()));
     }
 
     public function testFileThatCannotBeParsedHasNoIgnoredLinesWhenAnnotationsAreDisabled(): void
@@ -337,7 +338,7 @@ abstract class SourceAnalyserTestCase extends TestCase
         );
 
         $this->assertFalse($analysisResult->wasParsed());
-        $this->assertSame([], $analysisResult->ignoredLines());
+        $this->assertSame([], array_keys($analysisResult->ignoredLines()));
     }
 
     abstract protected function analyser(): SourceAnalyser;

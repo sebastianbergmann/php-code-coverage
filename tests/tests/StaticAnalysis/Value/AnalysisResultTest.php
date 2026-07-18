@@ -123,7 +123,7 @@ final class AnalysisResultTest extends TestCase
 
     public function testHasIgnoredLines(): void
     {
-        $ignoredLines = [8 => 8];
+        $ignoredLines = [8 => true];
 
         $this->assertSame($ignoredLines, $this->analysisResult(ignoredLines: $ignoredLines)->ignoredLines());
     }
@@ -164,7 +164,7 @@ final class AnalysisResultTest extends TestCase
      * @param array<positive-int, int>  $executableLines
      * @param array<positive-int, true> $branchOperatorLines
      * @param array<positive-int, true> $deadLines
-     * @param array<int, int>           $ignoredLines
+     * @param array<int, true>          $ignoredLines
      * @param ?non-empty-string         $parseError
      */
     private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = [], ?string $parseError = null): AnalysisResult

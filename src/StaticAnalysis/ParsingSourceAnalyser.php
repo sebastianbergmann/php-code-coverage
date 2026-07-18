@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use const T_COMMENT;
 use const T_DOC_COMMENT;
 use function array_intersect_key;
-use function array_keys;
 use function array_replace;
 use function assert;
 use function is_array;
@@ -94,8 +93,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
         ksort($ignoredLines);
 
-        $ignoredLines = array_keys($ignoredLines);
-
         $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
 
         $deadLines = array_intersect_key(
@@ -152,7 +149,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             [],
             [],
             [],
-            array_keys($ignoredLines),
+            $ignoredLines,
             $parseError,
         );
     }

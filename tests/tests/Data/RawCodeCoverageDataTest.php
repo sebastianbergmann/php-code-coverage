@@ -215,9 +215,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeClass.php', [9, 13]);
-        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999]);
-        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeClass.php', [9 => true, 13 => true]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/SomeOtherClass.php', [999 => true]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/AnotherClass.php', [28 => true]);
 
         $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
@@ -259,9 +259,9 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->removeCoverageDataForLines('/some/path/SomeClass.php', [9, 13]);
-        $dataObject->removeCoverageDataForLines('/some/path/SomeOtherClass.php', [999]);
-        $dataObject->removeCoverageDataForLines('/some/path/AnotherClass.php', [28]);
+        $dataObject->removeCoverageDataForLines('/some/path/SomeClass.php', [9 => true, 13 => true]);
+        $dataObject->removeCoverageDataForLines('/some/path/SomeOtherClass.php', [999 => true]);
+        $dataObject->removeCoverageDataForLines('/some/path/AnotherClass.php', [28 => true]);
 
         $this->assertEquals($expectedFilterResult, $dataObject->lineCoverage());
     }
@@ -369,10 +369,10 @@ final class RawCodeCoverageDataTest extends TestCase
         $coverage->removeCoverageDataForLines(
             $filename,
             [
-                29,
-                31,
-                32,
-                33,
+                29 => true,
+                31 => true,
+                32 => true,
+                33 => true,
             ],
         );
 
@@ -718,7 +718,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/UnknownFile.php', [8]);
+        $dataObject->keepLineCoverageDataOnlyForLines('/some/path/UnknownFile.php', [8 => true]);
 
         $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }
@@ -795,7 +795,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->removeCoverageDataForLines('/some/path/UnknownFile.php', [8]);
+        $dataObject->removeCoverageDataForLines('/some/path/UnknownFile.php', [8 => true]);
 
         $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }
@@ -810,7 +810,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->addMissingExecutableLines('/some/path/SomeClass.php', [8, 9, 10]);
+        $dataObject->addMissingExecutableLines('/some/path/SomeClass.php', [8 => true, 9 => true, 10 => true]);
 
         $lineCoverage = $dataObject->lineCoverage();
 
@@ -836,7 +836,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithoutPathCoverage($lineDataFromDriver);
 
-        $dataObject->addMissingExecutableLines('/some/path/UnknownFile.php', [8, 9]);
+        $dataObject->addMissingExecutableLines('/some/path/UnknownFile.php', [8 => true, 9 => true]);
 
         $this->assertEquals($lineDataFromDriver, $dataObject->lineCoverage());
     }
@@ -950,7 +950,75 @@ final class RawCodeCoverageDataTest extends TestCase
 
         // Branch 0 spans lines 11-12, but only line 11 is kept, so the branch
         // and the path referencing it are removed.
-        $dataObject->keepFunctionCoverageDataOnlyForLines($filename, [11]);
+        $dataObject->keepFunctionCoverageDataOnlyForLines($filename, [11 => true]);
+
+        $functionCoverage = $dataObject->functionCoverage();
+
+        $this->assertArrayHasKey($filename, $functionCoverage);
+        $this->assertArrayHasKey('foo', $functionCoverage[$filename]);
+
+        $functionData = $functionCoverage[$filename]['foo'];
+
+        $this->assertEmpty($functionData['branches']);
+        $this->assertEmpty($functionData['paths']);
+    }
+
+    public function testFunctionCoverageDataForBranchWithInvertedLineRangeIsFiltered(): void
+    {
+        $filename = '/some/path/SomeClass.php';
+
+        // Xdebug reports loop back-edge branches with line_start > line_end
+        $rawDataFromDriver = [
+            $filename => [
+                'lines' => [
+                    11 => 1,
+                    12 => 1,
+                ],
+                'functions' => [
+                    'foo' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 5,
+                                'line_start' => 12,
+                                'line_end'   => 11,
+                                'hit'        => 1,
+                                'out'        => [],
+                                'out_hit'    => [],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [0 => 0],
+                                'hit'  => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+
+        // Branch 0 spans lines 11-12 (reported inverted), but only line 11 is
+        // kept, so the branch and the path referencing it are removed.
+        $dataObject->keepFunctionCoverageDataOnlyForLines($filename, [11 => true]);
+
+        $functionCoverage = $dataObject->functionCoverage();
+
+        $this->assertArrayHasKey($filename, $functionCoverage);
+        $this->assertArrayHasKey('foo', $functionCoverage[$filename]);
+
+        $functionData = $functionCoverage[$filename]['foo'];
+
+        $this->assertEmpty($functionData['branches']);
+        $this->assertEmpty($functionData['paths']);
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
+
+        // Line 12 is removed and the inverted branch touches it, so the
+        // branch and the path referencing it are removed.
+        $dataObject->removeCoverageDataForLines($filename, [12 => true]);
 
         $functionCoverage = $dataObject->functionCoverage();
 
@@ -977,7 +1045,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
 
-        $dataObject->keepFunctionCoverageDataOnlyForLines('/some/path/UnknownFile.php', [11]);
+        $dataObject->keepFunctionCoverageDataOnlyForLines('/some/path/UnknownFile.php', [11 => true]);
 
         $this->assertArrayNotHasKey('/some/path/UnknownFile.php', $dataObject->functionCoverage());
     }

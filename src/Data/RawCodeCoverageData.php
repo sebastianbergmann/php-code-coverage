@@ -23,17 +23,41 @@ use function str_ends_with;
 use function str_starts_with;
 use function trim;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
+ * The types defined here are the contract for the raw code coverage data
+ * that drivers must produce.
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
- * @phpstan-import-type XdebugFunctionsCoverageType from XdebugDriver
- * @phpstan-import-type XdebugCodeCoverageWithoutPathCoverageType from XdebugDriver
- * @phpstan-import-type XdebugCodeCoverageWithPathCoverageType from XdebugDriver
+ * @phpstan-type LinesCoverageType array<positive-int, int>
+ * @phpstan-type BranchCoverageType array{
+ *     op_start: int,
+ *     op_end: int,
+ *     line_start: int,
+ *     line_end: int,
+ *     hit: int,
+ *     out: array<int, int>,
+ *     out_hit: array<int, int>,
+ * }
+ * @phpstan-type PathCoverageType array{
+ *     path: array<int, int>,
+ *     hit: int,
+ * }
+ * @phpstan-type FunctionCoverageType array{
+ *     branches: array<int, BranchCoverageType>,
+ *     paths: array<int, PathCoverageType>,
+ * }
+ * @phpstan-type FunctionsCoverageType array<non-empty-string, FunctionCoverageType>
+ * @phpstan-type PathAndBranchesCoverageType array{
+ *     lines: LinesCoverageType,
+ *     functions: FunctionsCoverageType,
+ * }
+ * @phpstan-type CodeCoverageWithoutPathCoverageType array<non-empty-string, LinesCoverageType>
+ * @phpstan-type CodeCoverageWithPathCoverageType array<non-empty-string, PathAndBranchesCoverageType>
  */
 final class RawCodeCoverageData
 {
@@ -43,17 +67,17 @@ final class RawCodeCoverageData
     private static array $emptyLineCache = [];
 
     /**
-     * @var XdebugCodeCoverageWithoutPathCoverageType
+     * @var CodeCoverageWithoutPathCoverageType
      */
     private array $lineCoverage;
 
     /**
-     * @var array<non-empty-string, XdebugFunctionsCoverageType>
+     * @var array<non-empty-string, FunctionsCoverageType>
      */
     private array $functionCoverage;
 
     /**
-     * @param XdebugCodeCoverageWithoutPathCoverageType $rawCoverage
+     * @param CodeCoverageWithoutPathCoverageType $rawCoverage
      */
     public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {
@@ -61,7 +85,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param XdebugCodeCoverageWithPathCoverageType $rawCoverage
+     * @param CodeCoverageWithPathCoverageType $rawCoverage
      */
     public static function fromXdebugWithPathCoverage(array $rawCoverage): self
     {
@@ -92,8 +116,8 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param XdebugCodeCoverageWithoutPathCoverageType            $lineCoverage
-     * @param array<non-empty-string, XdebugFunctionsCoverageType> $functionCoverage
+     * @param CodeCoverageWithoutPathCoverageType            $lineCoverage
+     * @param array<non-empty-string, FunctionsCoverageType> $functionCoverage
      */
     public static function fromLineAndBranchCoverage(array $lineCoverage, array $functionCoverage): self
     {
@@ -120,8 +144,8 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param XdebugCodeCoverageWithoutPathCoverageType            $lineCoverage
-     * @param array<non-empty-string, XdebugFunctionsCoverageType> $functionCoverage
+     * @param CodeCoverageWithoutPathCoverageType            $lineCoverage
+     * @param array<non-empty-string, FunctionsCoverageType> $functionCoverage
      */
     private function __construct(array $lineCoverage, array $functionCoverage)
     {
@@ -135,7 +159,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @return XdebugCodeCoverageWithoutPathCoverageType
+     * @return CodeCoverageWithoutPathCoverageType
      */
     public function lineCoverage(): array
     {
@@ -143,7 +167,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @return array<non-empty-string, XdebugFunctionsCoverageType>
+     * @return array<non-empty-string, FunctionsCoverageType>
      */
     public function functionCoverage(): array
     {

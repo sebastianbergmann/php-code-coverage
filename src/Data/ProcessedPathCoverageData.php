@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function max;
 use NoDiscard;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -19,7 +18,7 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
- * @phpstan-import-type XdebugPathCoverageType from XdebugDriver
+ * @phpstan-import-type PathCoverageType from RawCodeCoverageData
  */
 final class ProcessedPathCoverageData
 {
@@ -30,7 +29,7 @@ final class ProcessedPathCoverageData
     public array $hit;
 
     /**
-     * @param XdebugPathCoverageType $xdebugCoverageData
+     * @param PathCoverageType $xdebugCoverageData
      */
     public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {

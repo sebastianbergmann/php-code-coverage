@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_map;
 use NoDiscard;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -19,9 +18,9 @@ use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
- * @phpstan-import-type XdebugFunctionCoverageType from XdebugDriver
- * @phpstan-import-type XdebugBranchCoverageType from XdebugDriver
- * @phpstan-import-type XdebugPathCoverageType from XdebugDriver
+ * @phpstan-import-type FunctionCoverageType from RawCodeCoverageData
+ * @phpstan-import-type BranchCoverageType from RawCodeCoverageData
+ * @phpstan-import-type PathCoverageType from RawCodeCoverageData
  */
 final readonly class ProcessedFunctionCoverageData
 {
@@ -32,12 +31,12 @@ final readonly class ProcessedFunctionCoverageData
     public array $paths;
 
     /**
-     * @param XdebugFunctionCoverageType $xdebugCoverageData
+     * @param FunctionCoverageType $xdebugCoverageData
      */
     public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
         $branches = array_map(
-            /** @param XdebugBranchCoverageType $branch */
+            /** @param BranchCoverageType $branch */
             static function (array $branch): ProcessedBranchCoverageData
             {
                 return ProcessedBranchCoverageData::fromXdebugCoverage($branch);
@@ -46,7 +45,7 @@ final readonly class ProcessedFunctionCoverageData
         );
 
         $paths = array_map(
-            /** @param XdebugPathCoverageType $path */
+            /** @param PathCoverageType $path */
             static function (array $path): ProcessedPathCoverageData
             {
                 return ProcessedPathCoverageData::fromXdebugCoverage($path);

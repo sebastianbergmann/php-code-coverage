@@ -29,6 +29,36 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  * The types defined here are the contract for the raw code coverage data
  * that drivers must produce.
  *
+ * Line coverage (LinesCoverageType) maps line numbers to Driver::LINE_NOT_EXECUTABLE (-2),
+ * Driver::LINE_NOT_EXECUTED (-1), or a value >= Driver::LINE_EXECUTED (1). Drivers whose
+ * collectsHitCounts() method returns true report how often a line was executed; other
+ * drivers report 1 for "executed at least once".
+ *
+ * The hit value of a branch or path is Driver::BRANCH_NOT_HIT (0) or a value >=
+ * Driver::BRANCH_HIT (1), the number of times the branch or path was traversed. It is an
+ * exact traversal count only when collectsHitCounts() returns true.
+ *
+ * Function coverage (FunctionsCoverageType) is keyed "Namespace\Class->method" for
+ * methods, "Namespace\function" for functions, and "{main}" for code that is not part of
+ * a function or method.
+ *
+ * op_start and op_end of a branch are opcode indexes for drivers with opcode granularity;
+ * drivers without it fill in 0 for both. Consumers must not assign meaning to these
+ * values beyond identity and ordering.
+ *
+ * out and out_hit of a branch describe the edges to successor branches. They are optional
+ * for drivers that do not model a branch graph: empty arrays are valid, reports that
+ * render a control flow graph degrade gracefully.
+ *
+ * line_start and line_end of a branch are not guaranteed to be ordered: Xdebug reports
+ * loop back-edge branches with line_start > line_end. Consumers must normalize with
+ * min()/max().
+ *
+ * The stripping of the trait method suffix that Xdebug appends to function keys
+ * ("Foo->bar{trait-method:...}") happens in fromXdebugWithPathCoverage() and is not part
+ * of this contract: data passed to fromLineAndBranchCoverage() must already use canonical
+ * function keys.
+ *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage

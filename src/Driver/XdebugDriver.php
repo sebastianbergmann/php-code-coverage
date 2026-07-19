@@ -81,7 +81,11 @@ final class XdebugDriver extends Driver
 
         $this->ensureWithoutPathCoverage($data);
 
+        // This line executes after xdebug_get_code_coverage() took the snapshot
+        // and can therefore never be attributed to a test
+        // @codeCoverageIgnoreStart
         return RawCodeCoverageData::fromLineCoverage($data);
+        // @codeCoverageIgnoreEnd
     }
 
     public function name(): string

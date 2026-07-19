@@ -70,7 +70,7 @@ final class ControlFlowGraphTest extends TestCase
             [
                 0 => new ProcessedBranchCoverageData(0, 4, 10, 12, [0 => 1], [0 => 5, 1 => 9], [0 => 1, 1 => 0]),
                 5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => ControlFlowGraph::XDEBUG_EXIT_BRANCH], [0 => 1]),
-                9 => new ProcessedBranchCoverageData(9, 12, 15, 14, [], [0 => ControlFlowGraph::XDEBUG_EXIT_BRANCH], [0 => 0]),
+                9 => new ProcessedBranchCoverageData(9, 12, 14, 15, [], [0 => ControlFlowGraph::XDEBUG_EXIT_BRANCH], [0 => 0]),
             ],
             [
                 0 => new ProcessedPathCoverageData([0, 5], [0 => 1]),

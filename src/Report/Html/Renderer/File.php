@@ -23,7 +23,6 @@ use function explode;
 use function htmlspecialchars;
 use function implode;
 use function json_encode;
-use function max;
 use function min;
 use function range;
 use function sprintf;
@@ -601,7 +600,7 @@ final class File extends Renderer
             /** @var ProcessedBranchCoverageData $branch */
             foreach ($method->branches as $branchId => $branch) {
                 if (count($branch->out) > 1) {
-                    $decisionLine = max($branch->line_start, $branch->line_end);
+                    $decisionLine = $branch->line_end;
 
                     if (isset($lineData[$decisionLine]) && !isset($decisionPointData[$decisionLine])) {
                         $targets = [];
@@ -858,8 +857,8 @@ final class File extends Renderer
 
             /** @var ProcessedBranchCoverageData $branch */
             foreach ($methodData->branches as $branch) {
-                $lineStart  = min($branch->line_start, $branch->line_end);
-                $lineEnd    = max($branch->line_start, $branch->line_end);
+                $lineStart  = $branch->line_start;
+                $lineEnd    = $branch->line_end;
                 $linesLabel = $lineStart === $lineEnd
                     ? sprintf('<a href="#%d">L%d</a>', $lineStart, $lineStart)
                     : sprintf('<a href="#%d">L%d</a>&ndash;<a href="#%d">L%d</a>', $lineStart, $lineStart, $lineEnd, $lineEnd);
@@ -974,7 +973,7 @@ final class File extends Renderer
                     }
 
                     $branch     = $methodData->branches[$branchId];
-                    $branchLine = min($branch->line_start, $branch->line_end);
+                    $branchLine = $branch->line_start;
 
                     $branchLabels[] = sprintf('<a href="#%d">L%d</a>', $branchLine, $branchLine);
                 }
@@ -1133,7 +1132,7 @@ final class File extends Renderer
         $startLine = PHP_INT_MAX;
 
         foreach ($methodData->branches as $branch) {
-            $startLine = min($startLine, $branch->line_start, $branch->line_end);
+            $startLine = min($startLine, $branch->line_start);
         }
 
         return $startLine;

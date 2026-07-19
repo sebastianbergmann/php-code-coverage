@@ -12,8 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use function fclose;
 use function fwrite;
 use function implode;
-use function max;
-use function min;
 use function preg_replace;
 use function proc_close;
 use function proc_open;
@@ -85,11 +83,9 @@ final class ControlFlowGraph
                 }
             }
 
-            $lineStart = min($branch->line_start, $branch->line_end);
-            $lineEnd   = max($branch->line_start, $branch->line_end);
-            $label     = $lineStart === $lineEnd
-                ? sprintf('L%d', $lineStart)
-                : sprintf('L%d-L%d', $lineStart, $lineEnd);
+            $label = $branch->line_start === $branch->line_end
+                ? sprintf('L%d', $branch->line_start)
+                : sprintf('L%d-L%d', $branch->line_start, $branch->line_end);
 
             $dot .= sprintf(
                 '  b%d [label="%s", class="%s"];' . "\n",

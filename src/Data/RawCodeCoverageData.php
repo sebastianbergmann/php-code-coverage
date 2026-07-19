@@ -16,8 +16,6 @@ use function explode;
 use function file_get_contents;
 use function in_array;
 use function is_file;
-use function max;
-use function min;
 use function preg_replace;
 use function str_ends_with;
 use function str_starts_with;
@@ -316,11 +314,7 @@ final class RawCodeCoverageData
             foreach ($functionData['branches'] as $branchId => $branch) {
                 $allBranchLinesIncluded = true;
 
-                // Xdebug reports loop back-edge branches with line_start > line_end
-                $firstLine = min($branch['line_start'], $branch['line_end']);
-                $lastLine  = max($branch['line_start'], $branch['line_end']);
-
-                for ($line = $firstLine; $line <= $lastLine; $line++) {
+                for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
                     if (!isset($lines[$line])) {
                         $allBranchLinesIncluded = false;
 
@@ -366,11 +360,7 @@ final class RawCodeCoverageData
                 foreach ($functionData['branches'] as $branchId => $branch) {
                     $branchTouchesRemovedLine = false;
 
-                    // Xdebug reports loop back-edge branches with line_start > line_end
-                    $firstLine = min($branch['line_start'], $branch['line_end']);
-                    $lastLine  = max($branch['line_start'], $branch['line_end']);
-
-                    for ($line = $firstLine; $line <= $lastLine; $line++) {
+                    for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
                         if (isset($lines[$line])) {
                             $branchTouchesRemovedLine = true;
 

@@ -50,9 +50,9 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  * for drivers that do not model a branch graph: empty arrays are valid, reports that
  * render a control flow graph degrade gracefully.
  *
- * line_start and line_end of a branch are not guaranteed to be ordered: Xdebug reports
- * loop back-edge branches with line_start > line_end. Consumers must normalize with
- * min()/max().
+ * line_start <= line_end is an invariant of BranchCoverageType. Xdebug reports loop
+ * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage() normalizes
+ * them, so consumers do not have to.
  *
  * The stripping of the trait method suffix that Xdebug appends to function keys
  * ("Foo->bar{trait-method:...}") happens in fromXdebugWithPathCoverage() and is not part
@@ -135,6 +135,16 @@ final class RawCodeCoverageData
                     $fileCoverageData['functions'][$newKey] = $data;
 
                     unset($fileCoverageData['functions'][$existingKey]);
+                }
+            }
+
+            // Xdebug reports loop back-edge branches with line_start > line_end
+            foreach ($fileCoverageData['functions'] as $functionKey => $functionData) {
+                foreach ($functionData['branches'] as $branchId => $branch) {
+                    if ($branch['line_start'] > $branch['line_end']) {
+                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId]['line_start'] = $branch['line_end'];
+                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId]['line_end']   = $branch['line_start'];
+                    }
                 }
             }
 

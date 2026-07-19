@@ -963,7 +963,7 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertEmpty($functionData['paths']);
     }
 
-    public function testFunctionCoverageDataForBranchWithInvertedLineRangeIsFiltered(): void
+    public function testBranchWithInvertedLineRangeIsNormalized(): void
     {
         $filename = '/some/path/SomeClass.php';
 
@@ -1000,35 +1000,16 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
 
-        // Branch 0 spans lines 11-12 (reported inverted), but only line 11 is
-        // kept, so the branch and the path referencing it are removed.
-        $dataObject->keepFunctionCoverageDataOnlyForLines($filename, [11 => true]);
-
         $functionCoverage = $dataObject->functionCoverage();
 
         $this->assertArrayHasKey($filename, $functionCoverage);
         $this->assertArrayHasKey('foo', $functionCoverage[$filename]);
+        $this->assertArrayHasKey(0, $functionCoverage[$filename]['foo']['branches']);
 
-        $functionData = $functionCoverage[$filename]['foo'];
+        $branch = $functionCoverage[$filename]['foo']['branches'][0];
 
-        $this->assertEmpty($functionData['branches']);
-        $this->assertEmpty($functionData['paths']);
-
-        $dataObject = RawCodeCoverageData::fromXdebugWithPathCoverage($rawDataFromDriver);
-
-        // Line 12 is removed and the inverted branch touches it, so the
-        // branch and the path referencing it are removed.
-        $dataObject->removeCoverageDataForLines($filename, [12 => true]);
-
-        $functionCoverage = $dataObject->functionCoverage();
-
-        $this->assertArrayHasKey($filename, $functionCoverage);
-        $this->assertArrayHasKey('foo', $functionCoverage[$filename]);
-
-        $functionData = $functionCoverage[$filename]['foo'];
-
-        $this->assertEmpty($functionData['branches']);
-        $this->assertEmpty($functionData['paths']);
+        $this->assertSame(11, $branch['line_start']);
+        $this->assertSame(12, $branch['line_end']);
     }
 
     public function testKeepFunctionCoverageDataOnlyForLinesWithUnknownFile(): void

@@ -33,6 +33,11 @@ final class PhpParserVersionTest extends TestCase
         $this->assertStringStartsWith($prettyVersion, $version);
     }
 
+    public function testVersionOfPhpParserInstalledThroughComposerIsExactlyKnown(): void
+    {
+        $this->assertTrue(PhpParserVersion::isExact());
+    }
+
     public function testExtractsVersionOfPhpParserFromPharManifest(): void
     {
         $manifest = "phpunit/phpunit: 13.3.0\nnikic/php-parser: 5.6.1 (abc1234)\nsebastian/version: 7.0.0\n";

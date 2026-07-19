@@ -94,11 +94,13 @@ final class CachingSourceAnalyser implements SourceAnalyser
             $ignoreDeprecatedCode,
         );
 
-        // The version of PHP-Parser cannot always be determined exactly (see
-        // PhpParserVersion::id()), in which case a cached degraded result
-        // would outlive a PHP-Parser upgrade that adds support for the syntax
-        // that could not be parsed
-        if ($analysisResult->wasParsed()) {
+        // A degraded analysis result for a file that could not be parsed is
+        // only cached when the version of PHP-Parser is exactly known: the
+        // version is part of the cache key, so a PHP-Parser upgrade that adds
+        // support for the syntax that could not be parsed invalidates the
+        // cache entry. When the version is not exactly known, a cached
+        // degraded result could outlive such an upgrade.
+        if ($analysisResult->wasParsed() || PhpParserVersion::isExact()) {
             $this->write($cacheFile, $analysisResult);
         }
 

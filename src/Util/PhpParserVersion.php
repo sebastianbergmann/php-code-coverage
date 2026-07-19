@@ -15,6 +15,7 @@ use function file_get_contents;
 use function filemtime;
 use function filesize;
 use function is_file;
+use function str_ends_with;
 use function str_starts_with;
 use function strlen;
 use function substr;
@@ -34,6 +35,7 @@ final class PhpParserVersion
      * @var ?non-empty-string
      */
     private static ?string $version = null;
+    private static bool $exact      = false;
 
     /**
      * Returns a string that identifies the version of nikic/php-parser that is
@@ -53,6 +55,20 @@ final class PhpParserVersion
         }
 
         return self::$version;
+    }
+
+    /**
+     * Whether id() identifies the version of nikic/php-parser exactly:
+     * whenever the installed version of nikic/php-parser can change, id() is
+     * guaranteed to change as well. This does not hold for a version that was
+     * installed from a branch and has no source reference recorded, and it
+     * does not hold when the version cannot be determined at all.
+     */
+    public static function isExact(): bool
+    {
+        self::id();
+
+        return self::$exact;
     }
 
     /**
@@ -110,10 +126,33 @@ final class PhpParserVersion
         }
 
         if ($reference === null) {
+            self::$exact = self::isExactVersion($version);
+
             return $version;
         }
 
+        self::$exact = true;
+
         return $version . ' (' . $reference . ')';
+    }
+
+    /**
+     * A version string identifies the installed code exactly when it carries
+     * a source reference or refers to an immutable release. A branch version
+     * such as "dev-main" or "5.6.x-dev" without a source reference does not:
+     * the branch can move without the version string changing.
+     */
+    private static function isExactVersion(string $version): bool
+    {
+        if (str_ends_with($version, ')')) {
+            return true;
+        }
+
+        if (str_starts_with($version, 'dev-')) {
+            return false;
+        }
+
+        return !str_ends_with($version, '-dev');
     }
 
     /**
@@ -138,6 +177,8 @@ final class PhpParserVersion
                 $version = self::versionFromManifest($contents);
 
                 if ($version !== null) {
+                    self::$exact = self::isExactVersion($version);
+
                     return $version;
                 }
             }
@@ -147,6 +188,8 @@ final class PhpParserVersion
         $size             = filesize($phar);
 
         if ($modificationTime !== false && $size !== false) {
+            self::$exact = true;
+
             return $phar . ':' . $modificationTime . ':' . $size;
         }
 

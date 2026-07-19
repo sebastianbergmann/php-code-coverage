@@ -71,7 +71,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 29 => -1,
                 31 => -1,
@@ -94,7 +94,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => array_fill(1, 100, -1),
         ]);
 
@@ -166,7 +166,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => -1],
         ]);
 
@@ -220,7 +220,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => 1, 31 => 1],
         ]);
 
@@ -251,7 +251,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => -1],
         ]);
 
@@ -347,7 +347,7 @@ final class CodeCoverageTest extends TestCase
         $this->expectException(TestIdMissingException::class);
 
         $coverage->append(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([]),
+            RawCodeCoverageData::fromLineCoverage([]),
         );
     }
 
@@ -357,7 +357,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => 1],
         ]);
 
@@ -370,7 +370,7 @@ final class CodeCoverageTest extends TestCase
     {
         $coverage = $this->requireDriver();
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([]);
+        $data = RawCodeCoverageData::fromLineCoverage([]);
 
         $coverage->append($data, 'A test', true);
 
@@ -412,7 +412,7 @@ final class CodeCoverageTest extends TestCase
         $coverage->cacheStaticAnalysis($tmpDir);
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => -1],
         ]);
 
@@ -429,7 +429,7 @@ final class CodeCoverageTest extends TestCase
         $coverage->disableAnnotationsForIgnoringCode();
         $coverage->filter()->includeFile(TEST_FILES_PATH . 'BankAccount.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [29 => -1],
         ]);
 
@@ -453,7 +453,7 @@ final class CodeCoverageTest extends TestCase
         $file = TEST_FILES_PATH . 'source_that_cannot_be_parsed.php';
 
         $driver = new FakeDriver(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 $file => [3 => 1, 5 => 1],
             ]),
         );

@@ -278,7 +278,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckDoesNotThrowWhenAllCoveredLinesAreAllowed(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 2 => 1],
         ]);
 
@@ -299,7 +299,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckThrowsWhenUnintentionallyCoveredCodeIsDetected(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 2 => 1],
         ]);
 
@@ -320,7 +320,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckDoesNotThrowWhenCoveredLineIsInLinesToBeUsed(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 2 => 1],
         ]);
 
@@ -341,7 +341,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckIgnoresLinesWithFlagOtherThanOne(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 2 => -1, 3 => -2],
         ]);
 
@@ -362,7 +362,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckDoesNotThrowWhenNoCoverageData(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([]);
+        $data = RawCodeCoverageData::fromLineCoverage([]);
 
         $mapper = new Mapper($this->emptyMap());
 
@@ -381,7 +381,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckReportsMethodLevelWhenMethodIsTargeted(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -413,7 +413,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckReportsClassLevelWhenClassIsTargeted(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -445,7 +445,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckExcludesSubclassesOfExcludedParent(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -469,7 +469,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckHandlesMultipleFiles(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'a.php' => [1 => 1],
             'b.php' => [2 => 1],
         ]);
@@ -491,7 +491,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckReportsMethodLevelWhenAnyMethodTargetIsPresent(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1, 10 => 1],
         ]);
 
@@ -528,7 +528,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckReportsClassLevelWhenTraitIsTargeted(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -563,7 +563,7 @@ final class UnintentionallyCoveredCodeCheckerTest extends TestCase
 
     public function testCheckUsesClassLevelTargetsFromUsesCollection(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 

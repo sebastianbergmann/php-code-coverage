@@ -107,9 +107,19 @@ final class RawCodeCoverageData
     /**
      * @param CodeCoverageWithoutPathCoverageType $rawCoverage
      */
-    public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
+    public static function fromLineCoverage(array $rawCoverage): self
     {
         return new self($rawCoverage, []);
+    }
+
+    /**
+     * @param CodeCoverageWithoutPathCoverageType $rawCoverage
+     *
+     * @deprecated Use fromLineCoverage() instead; kept as a delegate until phpunit/phpunit has been updated
+     */
+    public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
+    {
+        return self::fromLineCoverage($rawCoverage);
     }
 
     /**

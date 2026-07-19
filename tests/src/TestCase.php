@@ -70,7 +70,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getXdebugDataForNamespacedBankAccount()
     {
         return [
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
                     13 => 1,
                     14 => -2,
@@ -87,7 +87,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     37 => -2,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
                     13 => 1,
                     18 => 1,
@@ -95,7 +95,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     34 => 1,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
                     13 => 1,
                     18 => 1,
@@ -103,7 +103,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     27 => 1,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'NamespacedBankAccount.php' => [
                     13 => 1,
                     18 => 1,
@@ -687,7 +687,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub
             ->method('stop')
-            ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            ->willReturn(RawCodeCoverageData::fromLineCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_eval.php' => [
                         3 => 1,
@@ -734,7 +734,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $stub
             ->method('stop')
-            ->willReturn(RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            ->willReturn(RawCodeCoverageData::fromLineCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_class_and_outside_function.php' => [
                         6  => 1,

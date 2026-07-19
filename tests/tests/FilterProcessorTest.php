@@ -42,7 +42,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyFilterRemovesExcludedFiles(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'included.php' => [1 => 1],
             'excluded.php' => [1 => 1],
         ]);
@@ -60,7 +60,7 @@ final class FilterProcessorTest extends TestCase
     {
         $file = self::realpath(__FILE__);
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             $file => [1 => 1],
         ]);
 
@@ -74,7 +74,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyFilterSkipsFilteringWhenFilterIsEmpty(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'any_file.php' => [1 => 1],
         ]);
 
@@ -89,7 +89,7 @@ final class FilterProcessorTest extends TestCase
     {
         $file = self::realpath(__FILE__);
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             $file => [1 => -1, 2 => 1, 3 => -1],
         ]);
 
@@ -112,7 +112,7 @@ final class FilterProcessorTest extends TestCase
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             $file => [1 => -1, 3 => 1, 5 => 1],
         ]);
 
@@ -131,7 +131,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyExecutableLinesFilterSkipsNonFilterFiles(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'not_a_real_file.php' => [1 => 1, 2 => 1],
         ]);
 
@@ -154,7 +154,7 @@ final class FilterProcessorTest extends TestCase
     {
         $file = self::realpath(__FILE__);
 
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             $file => [1 => 1, 2 => 1, 3 => 1],
         ]);
 
@@ -175,7 +175,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyIgnoredLinesFilterSkipsNonFilterFiles(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'not_a_real_file.php' => [1 => 1, 2 => 1],
         ]);
 
@@ -196,7 +196,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterClearsDataWhenLinesToBeCoveredIsFalse(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1],
         ]);
 
@@ -217,7 +217,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterReturnsEarlyWhenLinesToBeCoveredIsEmpty(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1],
         ]);
 
@@ -241,7 +241,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterKeepsOnlyCoveredLines(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 2 => 1, 3 => 1],
         ]);
 
@@ -265,7 +265,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterRemovesFilesNotInCoversList(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'covered.php'   => [1 => 1],
             'uncovered.php' => [1 => 1],
         ]);
@@ -288,7 +288,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterRunsUnintentionallyCoveredCodeCheckForSmallTests(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -309,7 +309,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterSkipsUnintentionallyCoveredCodeCheckForMediumTests(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -333,7 +333,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterSkipsUnintentionallyCoveredCodeCheckForLargeTests(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -357,7 +357,7 @@ final class FilterProcessorTest extends TestCase
 
     public function testApplyCoversAndUsesFilterSkipsUnintentionallyCoveredCodeCheckWhenDisabled(): void
     {
-        $data = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data = RawCodeCoverageData::fromLineCoverage([
             'file.php' => [1 => 1, 5 => 1],
         ]);
 
@@ -406,7 +406,7 @@ final class FilterProcessorTest extends TestCase
         $analyser = new FileAnalyser(new ParsingSourceAnalyser, false, false);
 
         $data->initializeUnseenData(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 $file => [1 => -1],
             ]),
         );
@@ -439,7 +439,7 @@ final class FilterProcessorTest extends TestCase
 
         // Mark the real file as covered so only the non-existent file remains uncovered
         $data->initializeUnseenData(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 $realFile => [1 => -1],
             ]),
         );

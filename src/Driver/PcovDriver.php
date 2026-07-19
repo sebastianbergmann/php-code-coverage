@@ -66,7 +66,7 @@ final class PcovDriver extends Driver
             clear();
         }
 
-        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($collected);
+        return RawCodeCoverageData::fromLineCoverage($collected);
         // @codeCoverageIgnoreEnd
     }
 

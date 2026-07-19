@@ -81,7 +81,7 @@ final class XdebugDriver extends Driver
 
         $this->ensureWithoutPathCoverage($data);
 
-        return RawCodeCoverageData::fromXdebugWithoutPathCoverage($data);
+        return RawCodeCoverageData::fromLineCoverage($data);
     }
 
     public function name(): string

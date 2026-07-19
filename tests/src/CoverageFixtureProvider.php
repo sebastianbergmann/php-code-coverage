@@ -30,7 +30,7 @@ final readonly class CoverageFixtureProvider
     public function lineCoverageXdebugDataForBankAccount(): array
     {
         return [
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
@@ -49,7 +49,7 @@ final readonly class CoverageFixtureProvider
                     35 => 1,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
@@ -64,7 +64,7 @@ final readonly class CoverageFixtureProvider
                     33 => -2,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
@@ -78,7 +78,7 @@ final readonly class CoverageFixtureProvider
                     25 => -2,
                 ],
             ]),
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+            RawCodeCoverageData::fromLineCoverage([
                 TEST_FILES_PATH . 'BankAccount.php' => [
                     8  => 1,
                     9  => -2,
@@ -1098,7 +1098,7 @@ final readonly class CoverageFixtureProvider
         $data = $this->lineCoverageXdebugDataForBankAccount();
 
         // getBalance() is called twice by the first test ...
-        $data[0] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data[0] = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 8  => 2,
                 9  => -2,
@@ -1119,7 +1119,7 @@ final readonly class CoverageFixtureProvider
         ]);
 
         // ... and three times by the last test, which also calls depositMoney() twice
-        $data[3] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data[3] = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 8  => 3,
                 9  => -2,
@@ -1377,7 +1377,7 @@ final readonly class CoverageFixtureProvider
     {
         $data = $this->lineCoverageXdebugDataForBankAccount();
 
-        $data[] = RawCodeCoverageData::fromXdebugWithoutPathCoverage([
+        $data[] = RawCodeCoverageData::fromLineCoverage([
             TEST_FILES_PATH . 'BankAccount.php' => [
                 8  => -1,
                 9  => -2,
@@ -1663,7 +1663,7 @@ final readonly class CoverageFixtureProvider
     private function xdebugFakeForFileWithIgnoredLines(): Driver
     {
         return new FakeDriver(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            RawCodeCoverageData::fromLineCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_ignore.php' => [
                         2 => 1,
@@ -1678,7 +1678,7 @@ final readonly class CoverageFixtureProvider
     private function xdebugFakeForClassesWithTraitsAndInheritance(): Driver
     {
         return new FakeDriver(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            RawCodeCoverageData::fromLineCoverage(
                 [
                     TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ChildClass.php' => [
                         11 => 1,
@@ -1701,7 +1701,7 @@ final readonly class CoverageFixtureProvider
     private function xdebugFakeForClassWithAnonymousFunction(): Driver
     {
         return new FakeDriver(
-            RawCodeCoverageData::fromXdebugWithoutPathCoverage(
+            RawCodeCoverageData::fromLineCoverage(
                 [
                     TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php' => [
                         7  => 1,

@@ -12,12 +12,12 @@ namespace SebastianBergmann\CodeCoverage\Serialization;
 use const PHP_EOL;
 use function preg_replace_callback;
 use function serialize;
-use function str_starts_with;
 use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\PathReducer;
+use SebastianBergmann\CodeCoverage\Util\Phar;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\GitState\Builder as GitStateBuilder;
@@ -107,7 +107,7 @@ final readonly class Serializer
 
         $serializedData = serialize($data);
 
-        if (str_starts_with(self::class, 'PHPUnitPHAR\\')) {
+        if (Phar::isBundled()) {
             // @codeCoverageIgnoreStart
             $serializedData = $this->stripPharPrefix($serializedData);
             // @codeCoverageIgnoreEnd

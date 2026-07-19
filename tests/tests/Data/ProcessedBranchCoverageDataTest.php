@@ -87,4 +87,36 @@ final class ProcessedBranchCoverageDataTest extends TestCase
 
         $this->assertSame([0 => 2, 1 => 3], $merged->hit);
     }
+
+    public function testRemappingTestIndexesReturnsSelfWhenThereAreNoHits(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
+
+        $this->assertSame($data, $data->withRemappedTestIndexes([0 => 1]));
+    }
+
+    public function testRemapsTestIndexesOfHits(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [0 => 1, 1 => 2], [0 => 6], [0 => 1]);
+
+        $remapped = $data->withRemappedTestIndexes([0 => 2, 1 => 3]);
+
+        $this->assertNotSame($data, $remapped);
+        $this->assertSame([2 => 1, 3 => 2], $remapped->hit);
+        $this->assertSame(0, $remapped->op_start);
+        $this->assertSame(5, $remapped->op_end);
+        $this->assertSame(11, $remapped->line_start);
+        $this->assertSame(12, $remapped->line_end);
+        $this->assertSame([0 => 6], $remapped->out);
+        $this->assertSame([0 => 1], $remapped->out_hit);
+    }
+
+    public function testKeepsTestIndexesOfHitsThatAreNotRemapped(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [0 => 1, 1 => 2], [], []);
+
+        $remapped = $data->withRemappedTestIndexes([0 => 2]);
+
+        $this->assertSame([2 => 1, 1 => 2], $remapped->hit);
+    }
 }

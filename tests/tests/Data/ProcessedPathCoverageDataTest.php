@@ -77,4 +77,31 @@ final class ProcessedPathCoverageDataTest extends TestCase
 
         $this->assertSame([0 => 2, 1 => 3], $merged->hit);
     }
+
+    public function testRemappingTestIndexesReturnsSelfWhenThereAreNoHits(): void
+    {
+        $data = new ProcessedPathCoverageData([0 => 0], []);
+
+        $this->assertSame($data, $data->withRemappedTestIndexes([0 => 1]));
+    }
+
+    public function testRemapsTestIndexesOfHits(): void
+    {
+        $data = new ProcessedPathCoverageData([0 => 0, 1 => 8], [0 => 1, 1 => 2]);
+
+        $remapped = $data->withRemappedTestIndexes([0 => 2, 1 => 3]);
+
+        $this->assertNotSame($data, $remapped);
+        $this->assertSame([2 => 1, 3 => 2], $remapped->hit);
+        $this->assertSame([0 => 0, 1 => 8], $remapped->path);
+    }
+
+    public function testKeepsTestIndexesOfHitsThatAreNotRemapped(): void
+    {
+        $data = new ProcessedPathCoverageData([0 => 0], [0 => 1, 1 => 2]);
+
+        $remapped = $data->withRemappedTestIndexes([0 => 2]);
+
+        $this->assertSame([2 => 1, 1 => 2], $remapped->hit);
+    }
 }

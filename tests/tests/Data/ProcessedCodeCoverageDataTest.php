@@ -87,6 +87,33 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         );
     }
 
+    public function testMarkCodeAsExecutedByTestCaseInitializesPreviouslyUnseenFile(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'BankAccountTest::testBalanceIsInitiallyZero',
+            RawCodeCoverageData::fromLineCoverage(
+                [
+                    '/some/path/SomeClass.php' => [
+                        8 => 1,
+                        9 => -1,
+                    ],
+                ],
+            ),
+        );
+
+        $lineCoverage = $coverage->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileCoverage = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileCoverage);
+        $this->assertSame([0 => 1], $fileCoverage[8]);
+        $this->assertArrayNotHasKey(9, $fileCoverage);
+    }
+
     public function testMergeOfAPreviouslyUnseenLine(): void
     {
         $newCoverage = new ProcessedCodeCoverageData;

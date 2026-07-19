@@ -124,4 +124,20 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
         $this->assertSame([0 => 1, 1 => 2], $merged->paths[0]->hit);
         $this->assertSame([2 => 3], $merged->paths[1]->hit);
     }
+
+    public function testRemapsTestIndexesOfBranchesAndPaths(): void
+    {
+        $data = new ProcessedFunctionCoverageData(
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [0 => 1], [], [])],
+            [0 => new ProcessedPathCoverageData([0 => 0], [1 => 2])],
+        );
+
+        $remapped = $data->withRemappedTestIndexes([0 => 2, 1 => 3]);
+
+        $this->assertNotSame($data, $remapped);
+        $this->assertArrayHasKey(0, $remapped->branches);
+        $this->assertArrayHasKey(0, $remapped->paths);
+        $this->assertSame([2 => 1], $remapped->branches[0]->hit);
+        $this->assertSame([3 => 2], $remapped->paths[0]->hit);
+    }
 }

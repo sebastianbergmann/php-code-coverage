@@ -87,6 +87,34 @@ final class BuilderTest extends TestCase
         $this->assertCount(2, $root->directories());
     }
 
+    public function testCombinesTestResultsWithTestIndexesIntoTestData(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+
+        $tests = $coverage->getTests();
+
+        $root = $this->builder()->build($coverage->getData(), $tests);
+
+        $this->assertCount(1, $root->files());
+
+        $file = $root->files()[0];
+
+        $testIds  = $coverage->getData()->testIds();
+        $testData = $file->testData();
+
+        $this->assertNotEmpty($testData);
+        $this->assertSameSize($testIds, $testData);
+
+        foreach ($testIds as $index => $id) {
+            $this->assertArrayHasKey($index, $testData);
+            $this->assertArrayHasKey($id, $tests);
+            $this->assertSame($id, $testData[$index]['name']);
+            $this->assertSame($tests[$id]['size'], $testData[$index]['size']);
+            $this->assertSame($tests[$id]['status'], $testData[$index]['status']);
+            $this->assertSame($tests[$id]['time'], $testData[$index]['time']);
+        }
+    }
+
     public function testUsesBasePathAsRootPathWhenCommonPathIsCurrentDirectory(): void
     {
         $data = new ProcessedCodeCoverageData;

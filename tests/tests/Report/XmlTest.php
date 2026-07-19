@@ -18,6 +18,9 @@ use DateTimeImmutable;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
 use SplFileInfo;
@@ -183,6 +186,38 @@ final class XmlTest extends TestCase
 
         $this->assertNotFalse($index);
         $this->assertStringContainsString('<directory name="Target"', $index);
+    }
+
+    public function testCoveringTestThatHasNoTestDataIsOmittedFromLineCoverage(): void
+    {
+        $codeCoverage = $this->getLineCoverageForBankAccount();
+
+        $tests = $codeCoverage->getTests();
+
+        unset($tests['BankAccountTest::testDepositWithdrawMoney']);
+
+        $report = (new Builder(new FileAnalyser(new ParsingSourceAnalyser, false, false)))->build(
+            $codeCoverage->getData(),
+            $tests,
+        );
+
+        (new Facade)->process(
+            TEST_FILES_PATH . 'tmp',
+            $report,
+            $tests,
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
+
+        $contents = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.xml');
+
+        $this->assertNotFalse($contents);
+        $this->assertStringContainsString('BankAccountTest::testBalanceIsInitiallyZero', $contents);
+        $this->assertStringNotContainsString('BankAccountTest::testDepositWithdrawMoney', $contents);
     }
 
     public function testBuildInformationIsOmittedWhenRuntimeIsNotProvided(): void

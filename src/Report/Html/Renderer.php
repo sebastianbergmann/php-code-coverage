@@ -272,12 +272,7 @@ abstract class Renderer
 
     protected function setCommonTemplateVariables(Template $template, AbstractNode $node): void
     {
-        $pathToRoot    = $this->pathToRoot($node);
-        $classesTarget = '_classes/index.html';
-
-        if ($node instanceof FileNode && isset($this->fileToClassMap[$node->id()])) {
-            $classesTarget = $this->fileToClassMap[$node->id()];
-        }
+        $pathToRoot = $this->pathToRoot($node);
 
         $template->setVar(
             [
@@ -291,9 +286,21 @@ abstract class Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
-                'view_switcher'    => $this->views->classView() ? $this->viewSwitcher($pathToRoot, 'files', 'index.html', $classesTarget) : '',
+                'view_switcher'    => $this->views->classView() ? $this->viewSwitcher($pathToRoot, 'files', 'index.html', $this->classViewTarget($node)) : '',
             ],
         );
+    }
+
+    /**
+     * Target of the "Classes" tab, relative to the root of the report.
+     */
+    protected function classViewTarget(AbstractNode $node): string
+    {
+        if ($node instanceof FileNode && isset($this->fileToClassMap[$node->id()])) {
+            return $this->fileToClassMap[$node->id()];
+        }
+
+        return '_classes/index.html';
     }
 
     protected function escapeHtml(string $value): string

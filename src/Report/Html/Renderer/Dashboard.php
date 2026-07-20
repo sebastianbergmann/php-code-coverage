@@ -63,6 +63,11 @@ final class Dashboard extends Renderer
         }
     }
 
+    protected function classViewTarget(AbstractNode $node): string
+    {
+        return '_classes/dashboard.html';
+    }
+
     protected function activeBreadcrumb(AbstractNode $node): string
     {
         return sprintf(

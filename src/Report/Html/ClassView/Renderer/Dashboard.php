@@ -82,7 +82,7 @@ final class Dashboard extends Renderer
                 'generator'        => $this->generator,
                 'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
                 'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
-                'view_switcher'    => $this->views->fileView() ? $this->viewSwitcher($pathToRoot, 'classes') : '',
+                'view_switcher'    => $this->views->fileView() ? $this->viewSwitcher($pathToRoot, 'classes', 'dashboard.html') : '',
             ],
         );
     }

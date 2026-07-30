@@ -28,4 +28,4 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1258](https://github.com/sebastianbergmann/php-code-coverage/issues/1258): Coverage of less than 100% can be displayed as 100.00% due to rounding
 
-[14.3.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.3...main
+[14.3.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.4...main

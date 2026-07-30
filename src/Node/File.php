@@ -10,7 +10,6 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_filter;
-use function array_keys;
 use function count;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
@@ -473,46 +472,71 @@ final class File extends AbstractNode
 
         $linesOfCode = $this->linesOfCode->linesOfCode();
 
+        // The test data is fixed for the lifetime of this node; resolving each
+        // test index to its size bit once avoids repeating the string comparisons
+        // for every covering test of every executed line
+        $sizeBitByTestIndex = [];
+
+        foreach ($this->testData as $testIndex => $data) {
+            $sizeBit = TestSizes::bitFor($data['size']);
+
+            if ($sizeBit !== 0) {
+                $sizeBitByTestIndex[$testIndex] = $sizeBit;
+            }
+        }
+
         for ($lineNumber = 1; $lineNumber <= $linesOfCode; $lineNumber++) {
-            if (isset($this->lineCoverageData[$lineNumber])) {
-                foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
-                    $codeUnit->executableLines++;
+            $lineData = $this->lineCoverageData[$lineNumber] ?? null;
+
+            if ($lineData === null) {
+                continue;
+            }
+
+            $codeUnits = $this->codeUnitsByLine[$lineNumber] ?? [];
+
+            foreach ($codeUnits as $codeUnit) {
+                $codeUnit->executableLines++;
+            }
+
+            $this->numExecutableLines++;
+
+            if ($lineData === []) {
+                continue;
+            }
+
+            foreach ($codeUnits as $codeUnit) {
+                $codeUnit->executedLines++;
+            }
+
+            $this->numExecutedLines++;
+
+            if ($sizeBitByTestIndex === []) {
+                continue;
+            }
+
+            $coveringTestSizes = 0;
+
+            foreach ($lineData as $testIndex => $hits) {
+                $coveringTestSizes |= $sizeBitByTestIndex[$testIndex] ?? 0;
+
+                if ($coveringTestSizes === TestSizes::ALL) {
+                    break;
+                }
+            }
+
+            if ($coveringTestSizes === 0) {
+                continue;
+            }
+
+            foreach (TestSizes::COMBINATIONS as $combination) {
+                if (($combination & $coveringTestSizes) === 0) {
+                    continue;
                 }
 
-                $this->numExecutableLines++;
+                $this->numExecutedLinesByTestSize[$combination]++;
 
-                if (count($this->lineCoverageData[$lineNumber]) > 0) {
-                    foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
-                        $codeUnit->executedLines++;
-                    }
-
-                    $this->numExecutedLines++;
-
-                    $coveringTestSizes = 0;
-
-                    foreach (array_keys($this->lineCoverageData[$lineNumber]) as $testId) {
-                        if (isset($this->testData[$testId])) {
-                            $coveringTestSizes |= TestSizes::bitFor($this->testData[$testId]['size']);
-
-                            if ($coveringTestSizes === TestSizes::ALL) {
-                                break;
-                            }
-                        }
-                    }
-
-                    if ($coveringTestSizes !== 0) {
-                        foreach (TestSizes::COMBINATIONS as $combination) {
-                            if (($combination & $coveringTestSizes) === 0) {
-                                continue;
-                            }
-
-                            $this->numExecutedLinesByTestSize[$combination]++;
-
-                            foreach ($this->codeUnitsByLine[$lineNumber] ?? [] as $codeUnit) {
-                                $codeUnit->executedLinesByTestSize[$combination]++;
-                            }
-                        }
-                    }
+                foreach ($codeUnits as $codeUnit) {
+                    $codeUnit->executedLinesByTestSize[$combination]++;
                 }
             }
         }

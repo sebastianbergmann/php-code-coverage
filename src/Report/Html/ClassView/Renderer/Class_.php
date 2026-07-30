@@ -32,6 +32,7 @@ use SebastianBergmann\Template\Template;
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
+ * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
  */
 final class Class_ extends Renderer
 {
@@ -46,9 +47,10 @@ final class Class_ extends Renderer
 
         $template->setVar(
             [
+                'summary'  => $this->renderSummary($this->nodeData($node), 'Methods', 'Classes'),
                 'items'    => $this->renderItems($node),
                 'sections' => $sections,
-                'legend'   => '<p><span class="legend covered-by-small-tests">Covered by small (and larger) tests</span><span class="legend covered-by-medium-tests">Covered by medium (and large) tests</span><span class="legend covered-by-large-tests">Covered by large tests (and tests of unknown size)</span><span class="legend not-covered">Not covered</span><span class="legend not-coverable">Not coverable</span></p>',
+                'legend'   => $this->lineCoverageLegend(),
             ],
         );
 
@@ -98,56 +100,56 @@ final class Class_ extends Renderer
 
         foreach ($nsPath as $step) {
             $breadcrumbs .= sprintf(
-                '         <li class="breadcrumb-item"><a href="%sindex.html">%s</a></li>' . "\n",
+                '     <li><a href="%sindex.html">%s</a></li>' . "\n",
                 array_pop($pathToRoot),
                 $step->name(),
             );
         }
 
         $breadcrumbs .= sprintf(
-            '         <li class="breadcrumb-item active">%s</li>' . "\n",
+            '     <li class="current">%s</li>' . "\n",
             $node->shortName(),
         );
 
         return $breadcrumbs;
     }
 
+    /**
+     * @return CoverageItemData
+     */
+    private function nodeData(ClassNode $node): array
+    {
+        return [
+            'name'                            => '',
+            'numClasses'                      => $node->numberOfMethods() > 0 ? 1 : 0,
+            'numTestedClasses'                => ($node->numberOfMethods() > 0 && $node->numberOfTestedMethods() === $node->numberOfMethods()) ? 1 : 0,
+            'numMethods'                      => $node->numberOfMethods(),
+            'numTestedMethods'                => $node->numberOfTestedMethods(),
+            'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
+            'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
+            'numExecutedLines'                => $node->numberOfExecutedLines(),
+            'numExecutableLines'              => $node->numberOfExecutableLines(),
+            'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
+            'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
+            'numExecutedBranches'             => $node->numberOfExecutedBranches(),
+            'numExecutableBranches'           => $node->numberOfExecutableBranches(),
+            'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
+            'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
+            'numExecutedPaths'                => $node->numberOfExecutedPaths(),
+            'numExecutablePaths'              => $node->numberOfExecutablePaths(),
+            'testedMethodsPercent'            => $node->percentageOfTestedMethods()->asFloat(),
+            'testedMethodsPercentAsString'    => $node->percentageOfTestedMethods()->asString(),
+            'testedClassesPercent'            => $node->percentageOfTestedClasses()->asFloat(),
+            'testedClassesPercentAsString'    => $node->percentageOfTestedClasses()->asString(),
+            'coverageDataJson'                => $this->coverageDataJsonForClassNode($node),
+        ];
+    }
+
     private function renderItems(ClassNode $node): string
     {
-        $templateName = $this->templateNameForTier('class_item');
-        $template     = new Template($templateName, '{{', '}}');
+        $methodItemTemplate = new Template($this->templateNameForTier('class_item'), '{{', '}}');
 
-        $methodTemplateName = $this->templateNameForTier('method_item');
-        $methodItemTemplate = new Template($methodTemplateName, '{{', '}}');
-
-        $items = $this->renderItemTemplate(
-            $template,
-            [
-                'name'                            => 'Total',
-                'numClasses'                      => $node->numberOfMethods() > 0 ? 1 : 0,
-                'numTestedClasses'                => ($node->numberOfMethods() > 0 && $node->numberOfTestedMethods() === $node->numberOfMethods()) ? 1 : 0,
-                'numMethods'                      => $node->numberOfMethods(),
-                'numTestedMethods'                => $node->numberOfTestedMethods(),
-                'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
-                'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
-                'numExecutedLines'                => $node->numberOfExecutedLines(),
-                'numExecutableLines'              => $node->numberOfExecutableLines(),
-                'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
-                'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
-                'numExecutedBranches'             => $node->numberOfExecutedBranches(),
-                'numExecutableBranches'           => $node->numberOfExecutableBranches(),
-                'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
-                'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
-                'numExecutedPaths'                => $node->numberOfExecutedPaths(),
-                'numExecutablePaths'              => $node->numberOfExecutablePaths(),
-                'testedMethodsPercent'            => $node->percentageOfTestedMethods()->asFloat(),
-                'testedMethodsPercentAsString'    => $node->percentageOfTestedMethods()->asString(),
-                'testedClassesPercent'            => $node->percentageOfTestedClasses()->asFloat(),
-                'testedClassesPercentAsString'    => $node->percentageOfTestedClasses()->asString(),
-                'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
-                'coverageDataJson'                => $this->coverageDataJsonForClassNode($node),
-            ],
-        );
+        $items = '';
 
         // Own methods
         foreach ($node->class_()->methods as $method) {
@@ -327,11 +329,10 @@ final class Class_ extends Renderer
                 continue;
             }
 
-            $trClass            = '';
-            $popoverContent     = '';
-            $popoverTitle       = '';
-            $coverageCount      = '';
-            $coverageCountClass = 'col-0';
+            $trClass        = '';
+            $popoverContent = '';
+            $popoverTitle   = '';
+            $coverageCount  = '';
 
             if (array_key_exists($i, $coverageData)) {
                 $numTests = ($coverageData[$i] !== null ? count($coverageData[$i]) : 0);
@@ -348,8 +349,7 @@ final class Class_ extends Renderer
                     }
 
                     if ($collectsHitCounts) {
-                        $coverageCount      = (string) array_sum($coverageData[$i]);
-                        $coverageCountClass = 'coverage-count';
+                        $coverageCount = (string) array_sum($coverageData[$i]);
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -375,17 +375,13 @@ final class Class_ extends Renderer
             $popover = '';
 
             if ($popoverTitle !== '') {
-                $popover = sprintf(
-                    ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                    $popoverTitle,
-                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                );
+                $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix, $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix, $coverageCount);
         }
 
-        $linesTemplate->setVar(['lines' => $lines]);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => $collectsHitCounts ? ' with-hit-counts' : '']);
 
         return $linesTemplate->render();
     }

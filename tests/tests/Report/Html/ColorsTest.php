@@ -37,8 +37,8 @@ final class ColorsTest extends TestCase
         $this->assertSame('#371e09', $colors->dangerDark());
         $this->assertSame('#d45500', $colors->dangerBar());
         $this->assertSame('#b54400', $colors->dangerBarDark());
-        $this->assertSame('var(--bs-gray-200)', $colors->breadcrumbs());
-        $this->assertSame('var(--bs-gray-800)', $colors->breadcrumbsDark());
+        $this->assertSame('#eef1f5', $colors->breadcrumbs());
+        $this->assertSame('#22272e', $colors->breadcrumbsDark());
     }
 
     public function testCanBeCreatedFromCustomValues(): void

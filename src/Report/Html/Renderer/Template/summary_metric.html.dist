@@ -1,0 +1,6 @@
+    <div class="metric" data-metric="{{group}}-card" data-level="{{level}}">
+     <span class="metric-name">{{label}}</span>
+     <span class="metric-percentage" data-metric="{{group}}-percent" data-level="{{level}}">{{percent}}</span>
+     <span class="metric-bar" data-metric="{{group}}-bar" data-level="{{level}}">{{bar}}</span>
+     <span class="metric-count" data-metric="{{group}}-number" data-level="{{level}}">{{number}}</span>
+    </div>

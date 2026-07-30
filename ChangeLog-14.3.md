@@ -16,6 +16,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * [#1259](https://github.com/sebastianbergmann/php-code-coverage/issues/1259): Degrade gracefully when a source file cannot be parsed
+* The HTML report no longer depends on Bootstrap and jQuery; its markup, stylesheet, and JavaScript have been rewritten
+* The headline coverage figures of a directory, file, namespace, or class are now shown above its coverage table instead of in a `Total` row
+* The dashboard shows the bubble chart and the CRAP index table side by side, for classes as well as for methods
+* The CSS custom properties that carry the configured colors were renamed from `--phpunit-*` to `--coverage-*`; custom CSS files that use these, or that use Bootstrap's `--bs-*` custom properties, need to be updated
+* `SebastianBergmann\CodeCoverage\Report\Html\Colors::default()` now uses `#eef1f5` and `#22272e` for the breadcrumb colors instead of `var(--bs-gray-200)` and `var(--bs-gray-800)`
+* The file listing of a directory no longer links directly to the branch and path coverage views of a file; these are reachable through the tabs on the file's own page
 * The serialization format for `.cov` files was bumped from version 1 to version 2; files serialized with previous versions cannot be loaded or merged any more
 
 ### Fixed

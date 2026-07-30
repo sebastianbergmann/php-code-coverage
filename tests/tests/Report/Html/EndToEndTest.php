@@ -74,20 +74,24 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($source);
 
+        // the gutter is only rendered when the driver collects hit counts
+        $this->assertStringContainsString('<table class="source with-hit-counts">', $source);
+
         // line 8 was executed twice by testBalanceIsInitiallyZero and three times by testDepositWithdrawMoney
-        $this->assertStringContainsString('<td class="coverage-count">5</td>', $source);
+        $this->assertStringContainsString('<td class="hit-count">5</td>', $source);
 
         // line 22 was executed once by testBalanceCannotBecomeNegative2 and twice by testDepositWithdrawMoney
-        $this->assertStringContainsString('<td class="coverage-count">3</td>', $source);
+        $this->assertStringContainsString('<td class="hit-count">3</td>', $source);
 
         // uncovered and non-executable lines do not get a hit count
-        $this->assertStringContainsString('<td class="col-0"></td>', $source);
+        $this->assertStringContainsString('<td class="hit-count"></td>', $source);
 
         $classView = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
 
         $this->assertNotFalse($classView);
-        $this->assertStringContainsString('<td class="coverage-count">5</td>', $classView);
-        $this->assertStringContainsString('<td class="coverage-count">3</td>', $classView);
+        $this->assertStringContainsString('<table class="source with-hit-counts">', $classView);
+        $this->assertStringContainsString('<td class="hit-count">5</td>', $classView);
+        $this->assertStringContainsString('<td class="hit-count">3</td>', $classView);
     }
 
     public function testHitCountsAreNotShownInGutterWhenDriverDoesNotCollectThem(): void
@@ -100,8 +104,8 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($source);
         $this->assertNotFalse($classView);
-        $this->assertStringNotContainsString('coverage-count', $source);
-        $this->assertStringNotContainsString('coverage-count', $classView);
+        $this->assertStringNotContainsString('with-hit-counts', $source);
+        $this->assertStringNotContainsString('with-hit-counts', $classView);
     }
 
     public function testMissingBranchCoverageDataIsMarkedInDirectorySummary(): void
@@ -202,14 +206,14 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString('1 test covers line 14', $branch);
 
         // 3 out of 4 branches of setBalance are covered
-        $this->assertStringContainsString('<span class="warning">3/4</span>', $branch);
+        $this->assertStringContainsString('<span class="badge warning">3/4</span>', $branch);
 
         // line 13 is included in a covered and in an uncovered path
         $this->assertStringContainsString('warning popin', $path);
         $this->assertStringContainsString('1 test covers line 13', $path);
 
         // 1 out of 2 paths of setBalance is covered
-        $this->assertStringContainsString('<span class="warning">1/2</span>', $path);
+        $this->assertStringContainsString('<span class="badge warning">1/2</span>', $path);
 
         // functions without branch and path data are omitted from the structure sections
         $this->assertStringNotContainsString('declarationOnly', $branch);

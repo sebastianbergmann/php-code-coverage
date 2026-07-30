@@ -1,5 +1,4 @@
-<table id="code" class="table table-borderless table-condensed">
-<tbody>
-{{lines}}
-</tbody>
-</table>
+   <table class="source{{gutter}}">
+    <tbody>
+{{lines}}    </tbody>
+   </table>

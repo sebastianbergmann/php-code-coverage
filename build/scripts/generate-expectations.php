@@ -66,7 +66,7 @@ function withPlaceholders(string $content): string
     );
 
     $content = str_replace($runtimeString, '<a href="%s" target="_top">%s</a>', $content);
-    $content = preg_replace('#( at )[^<]+(\.</small>)#', '${1}%s${2}', $content);
+    $content = preg_replace('#( at )[^<]+(\.</p>)#', '${1}%s${2}', $content);
     $content = str_replace('php-code-coverage ' . Version::id() . '</a>', 'php-code-coverage %s</a>', $content);
     $content = str_replace('?v=' . Version::id(), '?v=%s', $content);
     $content = preg_replace('#(<div class="cfg-graph"[^>]*>).*?(</div>)#s', '${1}%A${2}', $content);

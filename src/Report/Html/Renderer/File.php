@@ -46,6 +46,7 @@ use SebastianBergmann\Template\Template;
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
+ * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
  */
 final class File extends Renderer
 {
@@ -64,9 +65,10 @@ final class File extends Renderer
 
         $template->setVar(
             [
+                'summary'   => $this->renderSummary($this->nodeData($node), 'Functions and Methods', 'Classes and Traits'),
                 'items'     => $this->renderItems($node),
                 'lines'     => $this->renderSourceWithLineCoverage($node),
-                'legend'    => '<p><span class="legend covered-by-small-tests">Covered by small (and larger) tests</span><span class="legend covered-by-medium-tests">Covered by medium (and large) tests</span><span class="legend covered-by-large-tests">Covered by large tests (and tests of unknown size)</span><span class="legend not-covered">Not covered</span><span class="legend not-coverable">Not coverable</span></p>',
+                'legend'    => $this->lineCoverageLegend(),
                 'structure' => '',
             ],
         );
@@ -93,7 +95,7 @@ final class File extends Renderer
                     'tabs'      => $this->renderViewTabs($node->name(), 'branch'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithBranchCoverage($node),
-                    'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'legend'    => $this->branchCoverageLegend(),
                     'structure' => $this->renderBranchStructure($node),
                 ],
             );
@@ -115,7 +117,7 @@ final class File extends Renderer
                     'tabs'      => $this->renderViewTabs($node->name(), 'path'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithPathCoverage($node),
-                    'legend'    => '<p><span class="success"><strong>Fully covered</strong></span><span class="warning"><strong>Partially covered</strong></span><span class="danger"><strong>Not covered</strong></span></p>',
+                    'legend'    => $this->branchCoverageLegend(),
                     'structure' => $this->renderPathStructure($node),
                 ],
             );
@@ -132,6 +134,37 @@ final class File extends Renderer
         }
     }
 
+    /**
+     * @return CoverageItemData
+     */
+    private function nodeData(FileNode $node): array
+    {
+        return [
+            'name'                            => '',
+            'numClasses'                      => $node->numberOfClassesAndTraits(),
+            'numTestedClasses'                => $node->numberOfTestedClassesAndTraits(),
+            'numMethods'                      => $node->numberOfFunctionsAndMethods(),
+            'numTestedMethods'                => $node->numberOfTestedFunctionsAndMethods(),
+            'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
+            'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
+            'numExecutedLines'                => $node->numberOfExecutedLines(),
+            'numExecutableLines'              => $node->numberOfExecutableLines(),
+            'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
+            'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
+            'numExecutedBranches'             => $node->numberOfExecutedBranches(),
+            'numExecutableBranches'           => $node->numberOfExecutableBranches(),
+            'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
+            'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
+            'numExecutedPaths'                => $node->numberOfExecutedPaths(),
+            'numExecutablePaths'              => $node->numberOfExecutablePaths(),
+            'testedMethodsPercent'            => $node->percentageOfTestedFunctionsAndMethods()->asFloat(),
+            'testedMethodsPercentAsString'    => $node->percentageOfTestedFunctionsAndMethods()->asString(),
+            'testedClassesPercent'            => $node->percentageOfTestedClassesAndTraits()->asFloat(),
+            'testedClassesPercentAsString'    => $node->percentageOfTestedClassesAndTraits()->asString(),
+            'coverageDataJson'                => $this->coverageDataJsonFor($node),
+        ];
+    }
+
     private function renderItems(FileNode $node): string
     {
         $template = new Template($this->templateNameForTier('file_item'), '{{', '}}');
@@ -142,36 +175,7 @@ final class File extends Renderer
             '}}',
         );
 
-        $items = $this->renderItemTemplate(
-            $template,
-            [
-                'name'                            => 'Total',
-                'numClasses'                      => $node->numberOfClassesAndTraits(),
-                'numTestedClasses'                => $node->numberOfTestedClassesAndTraits(),
-                'numMethods'                      => $node->numberOfFunctionsAndMethods(),
-                'numTestedMethods'                => $node->numberOfTestedFunctionsAndMethods(),
-                'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
-                'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
-                'numExecutedLines'                => $node->numberOfExecutedLines(),
-                'numExecutableLines'              => $node->numberOfExecutableLines(),
-                'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
-                'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
-                'numExecutedBranches'             => $node->numberOfExecutedBranches(),
-                'numExecutableBranches'           => $node->numberOfExecutableBranches(),
-                'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
-                'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
-                'numExecutedPaths'                => $node->numberOfExecutedPaths(),
-                'numExecutablePaths'              => $node->numberOfExecutablePaths(),
-                'testedMethodsPercent'            => $node->percentageOfTestedFunctionsAndMethods()->asFloat(),
-                'testedMethodsPercentAsString'    => $node->percentageOfTestedFunctionsAndMethods()->asString(),
-                'testedClassesPercent'            => $node->percentageOfTestedClassesAndTraits()->asFloat(),
-                'testedClassesPercentAsString'    => $node->percentageOfTestedClassesAndTraits()->asString(),
-                'crap'                            => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
-                'coverageDataJson'                => $this->coverageDataJsonFor($node),
-            ],
-        );
-
-        $items .= $this->renderFunctionItems(
+        $items = $this->renderFunctionItems(
             $node->functions(),
             $methodItemTemplate,
         );
@@ -478,11 +482,10 @@ final class File extends Renderer
         $i                 = 1;
 
         foreach ($codeLines as $line) {
-            $trClass            = '';
-            $popoverContent     = '';
-            $popoverTitle       = '';
-            $coverageCount      = '';
-            $coverageCountClass = 'col-0';
+            $trClass        = '';
+            $popoverContent = '';
+            $popoverTitle   = '';
+            $coverageCount  = '';
 
             if (array_key_exists($i, $coverageData)) {
                 $numTests = ($coverageData[$i] !== null ? count($coverageData[$i]) : 0);
@@ -499,8 +502,7 @@ final class File extends Renderer
                     }
 
                     if ($collectsHitCounts) {
-                        $coverageCount      = (string) array_sum($coverageData[$i]);
-                        $coverageCountClass = 'coverage-count';
+                        $coverageCount = (string) array_sum($coverageData[$i]);
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -530,19 +532,15 @@ final class File extends Renderer
             $popover = '';
 
             if ($popoverTitle !== '') {
-                $popover = sprintf(
-                    ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                    $popoverTitle,
-                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                );
+                $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount);
 
             $i++;
         }
 
-        $linesTemplate->setVar(['lines' => $lines]);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => $collectsHitCounts ? ' with-hit-counts' : '']);
 
         return $linesTemplate->render();
     }
@@ -555,24 +553,18 @@ final class File extends Renderer
             'path'   => ['href' => $fileName . '_path.html', 'label' => 'Path Coverage'],
         ];
 
-        $html = '   <ul class="nav nav-tabs mb-3">' . "\n";
+        $html = '   <ul class="tabs">' . "\n";
 
         foreach ($tabs as $view => $tab) {
-            $active = $view === $activeView ? ' active' : '';
-            $aria   = $view === $activeView ? ' aria-current="page"' : '';
-
             $html .= sprintf(
-                '    <li class="nav-item"><a class="nav-link%s" href="%s"%s>%s</a></li>' . "\n",
-                $active,
+                '    <li><a href="%s"%s>%s</a></li>' . "\n",
                 $tab['href'],
-                $aria,
+                $view === $activeView ? ' aria-current="page"' : '',
                 $tab['label'],
             );
         }
 
-        $html .= '   </ul>';
-
-        return $html;
+        return $html . '   </ul>' . "\n";
     }
 
     private function renderSourceWithBranchCoverage(FileNode $node): string
@@ -640,8 +632,7 @@ final class File extends Renderer
             $trClass = '';
             $popover = '';
 
-            $coverageCount      = '';
-            $coverageCountClass = 'coverage-count';
+            $coverageCount = '';
 
             $currentLineData = $lineData[$i] ?? [
                 'includedInBranches'    => 0,
@@ -692,17 +683,13 @@ final class File extends Renderer
                 $popoverContent .= '</ul>';
                 $trClass = $lineCss . ' popin';
 
-                $popover = sprintf(
-                    ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                    $popoverTitle,
-                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                );
+                $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount);
         }
 
-        $linesTemplate->setVar(['lines' => $lines]);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
 
         return $linesTemplate->render();
     }
@@ -760,9 +747,6 @@ final class File extends Renderer
             $trClass = '';
             $popover = '';
 
-            $coverageCount      = '';
-            $coverageCountClass = 'coverage-count';
-
             $currentLineData = $lineData[$i] ?? [
                 'includedInPaths'    => [],
                 'includedInHitPaths' => [],
@@ -803,17 +787,13 @@ final class File extends Renderer
                 $popoverContent .= '</ul>';
                 $trClass = $lineCss . ' popin';
 
-                $popover = sprintf(
-                    ' data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true"',
-                    $popoverTitle,
-                    htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                );
+                $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
             }
 
-            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount, $coverageCountClass);
+            $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
         }
 
-        $linesTemplate->setVar(['lines' => $lines]);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => '']);
 
         return $linesTemplate->render();
     }
@@ -842,16 +822,16 @@ final class File extends Renderer
             }
 
             $badge = sprintf(
-                ' <span class="%s">%d/%d</span>',
+                ' <span class="badge %s">%d/%d</span>',
                 $hitBranchCount === $branchCount ? 'success' : ($hitBranchCount === 0 ? 'danger' : 'warning'),
                 $hitBranchCount,
                 $branchCount,
             );
 
-            $branches .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h5>' . "\n";
-            $branches .= '<table class="table table-bordered table-sm structure-table">' . "\n";
-            $branches .= '<thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
-            $branches .= '<tbody>' . "\n";
+            $branches .= '   <h3 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h3>' . "\n";
+            $branches .= '   <table class="structure-table">' . "\n";
+            $branches .= '    <thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
+            $branches .= '    <tbody>' . "\n";
 
             $branchIndex = 1;
 
@@ -887,16 +867,17 @@ final class File extends Renderer
 
                     $popoverContent .= '</ul>';
 
+                    $label = $numTests === 1 ? '1 test' : $numTests . ' tests';
+
                     $testsLabel = sprintf(
-                        '<span class="popin" data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true">%s</span>',
-                        $numTests === 1 ? '1 test' : $numTests . ' tests',
-                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                        '<button type="button" class="popin"%s>%s</button>',
+                        $this->popoverAttributes($label, $popoverContent),
+                        $label,
                     );
                 }
 
                 $branches .= sprintf(
-                    '<tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    '     <tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
                     $statusClass,
                     $branchIndex,
                     $linesLabel,
@@ -907,7 +888,7 @@ final class File extends Renderer
                 $branchIndex++;
             }
 
-            $branches .= '</tbody></table>' . "\n";
+            $branches .= '    </tbody>' . "\n" . '   </table>' . "\n";
         }
 
         $branchesTemplate->setVar(['branches' => $branches]);
@@ -939,26 +920,26 @@ final class File extends Renderer
             }
 
             $badge = sprintf(
-                ' <span class="%s">%d/%d</span>',
+                ' <span class="badge %s">%d/%d</span>',
                 $hitPathCount === $pathCount ? 'success' : ($hitPathCount === 0 ? 'danger' : 'warning'),
                 $hitPathCount,
                 $pathCount,
             );
 
-            $paths .= '<h5 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h5>' . "\n";
+            $paths .= '   <h3 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h3>' . "\n";
 
             $renderedPaths = $methodData->paths;
 
             if ($pathCount > self::MAX_RENDERED_PATHS) {
                 $renderedPaths = array_slice($methodData->paths, 0, self::MAX_RENDERED_PATHS, true);
 
-                $paths .= '<details><summary>' . $pathCount . ' paths &mdash; click to expand</summary>' . "\n";
-                $paths .= '<p>Only the first ' . self::MAX_RENDERED_PATHS . ' paths are shown, consider refactoring your code to bring the number of paths down.</p>' . "\n";
+                $paths .= '   <details><summary>' . $pathCount . ' paths &mdash; click to expand</summary>' . "\n";
+                $paths .= '   <p>Only the first ' . self::MAX_RENDERED_PATHS . ' paths are shown, consider refactoring your code to bring the number of paths down.</p>' . "\n";
             }
 
-            $paths .= '<table class="table table-bordered table-sm structure-table">' . "\n";
-            $paths .= '<thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
-            $paths .= '<tbody>' . "\n";
+            $paths .= '   <table class="structure-table">' . "\n";
+            $paths .= '    <thead><tr><th>#</th><th>Branches</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
+            $paths .= '    <tbody>' . "\n";
 
             $pathIndex = 1;
 
@@ -1004,16 +985,17 @@ final class File extends Renderer
 
                     $popoverContent .= '</ul>';
 
+                    $label = $numTests === 1 ? '1 test' : $numTests . ' tests';
+
                     $testsLabel = sprintf(
-                        '<span class="popin" data-bs-title="%s" data-bs-content="%s" data-bs-placement="top" data-bs-html="true">%s</span>',
-                        $numTests === 1 ? '1 test' : $numTests . ' tests',
-                        htmlspecialchars($popoverContent, self::HTML_SPECIAL_CHARS_FLAGS),
-                        $numTests === 1 ? '1 test' : $numTests . ' tests',
+                        '<button type="button" class="popin"%s>%s</button>',
+                        $this->popoverAttributes($label, $popoverContent),
+                        $label,
                     );
                 }
 
                 $paths .= sprintf(
-                    '<tr class="%s path-row" data-path-index="%d"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    '     <tr class="%s path-row" data-path-index="%d"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
                     $statusClass,
                     $pathIndex - 1,
                     $pathIndex,
@@ -1025,7 +1007,7 @@ final class File extends Renderer
                 $pathIndex++;
             }
 
-            $paths .= '</tbody></table>' . "\n";
+            $paths .= '    </tbody>' . "\n" . '   </table>' . "\n";
 
             $pathsJson = [];
             $pathIdx   = 0;
@@ -1059,13 +1041,13 @@ final class File extends Renderer
             $svg = $this->controlFlowGraph()->renderSvg($methodData, $renderedPaths);
 
             $paths .= sprintf(
-                '<div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
+                '   <div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
                 htmlspecialchars(json_encode($pathsJson, JSON_THROW_ON_ERROR), self::HTML_SPECIAL_CHARS_FLAGS),
                 $svg,
             );
 
             if ($pathCount > self::MAX_RENDERED_PATHS) {
-                $paths .= '</details>' . "\n";
+                $paths .= '   </details>' . "\n";
             }
         }
 

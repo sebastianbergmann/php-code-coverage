@@ -71,8 +71,8 @@ final class Dashboard extends Renderer
     protected function activeBreadcrumb(AbstractNode $node): string
     {
         return sprintf(
-            '         <li class="breadcrumb-item"><a href="index.html">%s</a></li>' . "\n" .
-            '         <li class="breadcrumb-item active">(Dashboard)</li>' . "\n",
+            '     <li><a href="index.html">%s</a></li>' . "\n" .
+            '     <li class="current">Dashboard</li>' . "\n",
             $this->escapeHtml($node->name()),
         );
     }
@@ -190,19 +190,19 @@ final class Dashboard extends Renderer
     {
         usort($items, static fn (array $a, array $b): int => ((float) $b['crap'] <=> (float) $a['crap']));
 
-        $html = '<table class="table">' . "\n";
-        $html .= ' <thead>' . "\n";
-        $html .= '  <tr>' . "\n";
-        $html .= sprintf('   <th>%s</th>' . "\n", $entityLabel);
-        $html .= '   <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>' . "\n";
-        $html .= '   <th class="text-right">Coverage</th>' . "\n";
-        $html .= '  </tr>' . "\n";
-        $html .= ' </thead>' . "\n";
-        $html .= ' <tbody>' . "\n";
+        $html = '     <table class="crap">' . "\n";
+        $html .= '      <thead>' . "\n";
+        $html .= '       <tr>' . "\n";
+        $html .= sprintf('        <th scope="col">%s</th>' . "\n", $entityLabel);
+        $html .= '        <th scope="col" class="number"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>' . "\n";
+        $html .= '        <th scope="col" class="number">Coverage</th>' . "\n";
+        $html .= '       </tr>' . "\n";
+        $html .= '      </thead>' . "\n";
+        $html .= '      <tbody>' . "\n";
 
         foreach ($items as $item) {
             $html .= sprintf(
-                '  <tr><td><a href="%s">%s</a></td><td class="text-right">%s</td><td class="text-right">%s%%</td></tr>' . "\n",
+                '       <tr><td><a href="%s">%s</a></td><td class="number">%s</td><td class="number">%s%%</td></tr>' . "\n",
                 htmlspecialchars($item['link']),
                 htmlspecialchars($item['name']),
                 $item['crap'],
@@ -210,8 +210,8 @@ final class Dashboard extends Renderer
             );
         }
 
-        $html .= ' </tbody>' . "\n";
-        $html .= '</table>';
+        $html .= '      </tbody>' . "\n";
+        $html .= '     </table>';
 
         return $html;
     }

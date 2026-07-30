@@ -9,9 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use function count;
 use function sprintf;
-use function str_repeat;
 use function usort;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
@@ -24,6 +22,8 @@ use SebastianBergmann\Template\Template;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
  */
 final class Directory extends Renderer
 {
@@ -33,7 +33,7 @@ final class Directory extends Renderer
 
         $this->setCommonTemplateVariables($template, $node);
 
-        $items = $this->renderItem($node, true);
+        $items = '';
 
         $directories = $node->directories();
 
@@ -59,8 +59,10 @@ final class Directory extends Renderer
 
         $template->setVar(
             [
-                'id'    => $node->id(),
-                'items' => $items,
+                'id'      => $node->id(),
+                'items'   => $items,
+                'summary' => $this->renderSummary($this->itemData($node), 'Functions and Methods', 'Classes and Traits'),
+                'legend'  => $this->thresholdsLegend(),
             ],
         );
 
@@ -75,9 +77,13 @@ final class Directory extends Renderer
         }
     }
 
-    private function renderItem(Node $node, bool $total = false): string
+    /**
+     * @return CoverageItemData
+     */
+    private function itemData(Node $node): array
     {
-        $data = [
+        return [
+            'name'                              => '',
             'numClasses'                        => $node->numberOfClassesAndTraits(),
             'numTestedClasses'                  => $node->numberOfTestedClassesAndTraits(),
             'numMethods'                        => $node->numberOfFunctionsAndMethods(),
@@ -101,43 +107,19 @@ final class Directory extends Renderer
             'numFilesWithoutBranchCoverageData' => $node->numberOfFilesWithoutBranchCoverageData(),
             'coverageDataJson'                  => $this->coverageDataJsonFor($node),
         ];
+    }
 
-        if ($total) {
-            $data['name'] = 'Total';
+    private function renderItem(Node $node): string
+    {
+        $name = $this->escapeHtml($node->name());
+        $data = $this->itemData($node);
+
+        if ($node instanceof DirectoryNode) {
+            $data['icon'] = '<span class="icon icon-directory" aria-hidden="true"></span>';
+            $data['name'] = sprintf('<a href="%s/index.html">%s</a>', $name, $name);
         } else {
-            $name         = $this->escapeHtml($node->name());
-            $up           = str_repeat('../', count($node->pathAsArray()) - 2);
-            $data['icon'] = sprintf('<img src="%s_icons/file-code.svg" class="octicon" />', $up);
-
-            if ($node instanceof DirectoryNode) {
-                $data['name'] = sprintf(
-                    '<a href="%s/index.html">%s</a>',
-                    $name,
-                    $name,
-                );
-                $data['icon'] = sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
-            } elseif ($this->hasPathCoverage) {
-                $data['name'] = sprintf(
-                    '%s <a class="small" href="%s.html">[line]</a> <a class="small" href="%s_branch.html">[branch]</a> <a class="small" href="%s_path.html">[path]</a>',
-                    $name,
-                    $name,
-                    $name,
-                    $name,
-                );
-            } elseif ($this->hasBranchCoverage) {
-                $data['name'] = sprintf(
-                    '%s <a class="small" href="%s.html">[line]</a> <a class="small" href="%s_branch.html">[branch]</a>',
-                    $node->name(),
-                    $node->name(),
-                    $node->name(),
-                );
-            } else {
-                $data['name'] = sprintf(
-                    '<a href="%s.html">%s</a>',
-                    $name,
-                    $name,
-                );
-            }
+            $data['icon'] = '<span class="icon icon-file" aria-hidden="true"></span>';
+            $data['name'] = sprintf('<a href="%s.html">%s</a>', $name, $name);
         }
 
         return $this->renderItemTemplate(

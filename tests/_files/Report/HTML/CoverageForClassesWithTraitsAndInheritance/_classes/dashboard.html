@@ -2,49 +2,40 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard for Example</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="../_css/bootstrap.min.css?v=%s" rel="stylesheet" type="text/css">
-  <link href="../_css/style.css?v=%s" rel="stylesheet" type="text/css">
-  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="../_css/style.css?v=%s">
+  <link rel="stylesheet" href="../_css/custom.css">
  </head>
  <body>
-  <header>
-   <div class="container-fluid">
-    <div class="row">
-     <div class="col-md-12">
-      <nav aria-label="breadcrumb">
-       <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="index.html">Example</a></li>
-         <li class="breadcrumb-item active">(Dashboard)</li>
-
-       </ol>
-      </nav>
-      <ul class="nav nav-tabs mt-2">
-       <li class="nav-item"><a class="nav-link" href="../dashboard.html">Files</a></li>
-       <li class="nav-item"><a class="nav-link active" href="../_classes/index.html">Classes</a></li>
-      </ul>
-
-     </div>
-    </div>
-   </div>
+  <header class="masthead">
+   <nav aria-label="Breadcrumb">
+    <ol class="breadcrumbs">
+     <li><a href="index.html">Example</a></li>
+     <li class="current">Dashboard</li>
+    </ol>
+   </nav>
+   <ul class="tabs">
+    <li><a href="../dashboard.html">Files</a></li>
+    <li><a href="../_classes/index.html" aria-current="page">Classes</a></li>
+   </ul>
   </header>
-  <div class="container-fluid">
-   <div class="row dashboard-row">
-    <div class="col-md-6">
-     <h3>Classes</h3>
-     <p class="text-muted small">Bubble size = executable lines. Hover for details, click to navigate.</p>
-     <div class="file-coverage-chart">
+  <main class="dashboard">
+   <section>
+    <h2>Classes</h2>
+    <div class="panel">
+     <div class="chart">
+      <p class="hint">Line coverage against cyclomatic complexity. Bubble size is the number of executable lines; hover for details, click to navigate.</p>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
  <style>
-  .bubble-success { fill: var(--phpunit-success-bar); opacity: 0.7; }
-  .bubble-warning { fill: var(--phpunit-warning-bar); opacity: 0.7; }
-  .bubble-danger { fill: var(--phpunit-danger-bar); opacity: 0.7; }
-  .bubble-success:hover, .bubble-warning:hover, .bubble-danger:hover { opacity: 1; stroke: var(--bs-emphasis-color); stroke-width: 1.5; }
-  .chart-grid { stroke: var(--bs-border-color); stroke-width: 0.5; stroke-dasharray: 4,4; opacity: 0.5; }
-  .chart-axis { stroke: var(--bs-border-color); stroke-width: 1; }
-  .chart-label { fill: var(--bs-body-color); font-size: 11px; font-family: var(--bs-font-sans-serif, sans-serif); }
-  .chart-title { fill: var(--bs-body-color); font-size: 12px; font-family: var(--bs-font-sans-serif, sans-serif); }
+  .bubble-success { fill: var(--coverage-success-bar); opacity: 0.7; }
+  .bubble-warning { fill: var(--coverage-warning-bar); opacity: 0.7; }
+  .bubble-danger { fill: var(--coverage-danger-bar); opacity: 0.7; }
+  .bubble-success:hover, .bubble-warning:hover, .bubble-danger:hover { opacity: 1; stroke: var(--text); stroke-width: 1.5; }
+  .chart-grid { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 4,4; opacity: 0.5; }
+  .chart-axis { stroke: var(--border); stroke-width: 1; }
+  .chart-label { fill: var(--text); font-size: 11px; font-family: var(--font-sans); }
+  .chart-title { fill: var(--text); font-size: 12px; font-family: var(--font-sans); }
  </style>
  <line x1="60.0" y1="20" x2="60.0" y2="350" class="chart-grid"/>
  <text x="60.0" y="368" text-anchor="middle" class="chart-label">0%</text>
@@ -75,43 +66,42 @@
  <a href="../ParentClass.php.html#5"><circle cx="60.0" cy="240.0" r="14.1" class="bubble-danger"><title>Example\ParentClass — Coverage: 0.0% | Lines: 1 | Complexity: 1</title></circle></a>
 </svg>
      </div>
-    </div>
-    <div class="col-md-6 dashboard-column">
-     <h3>&nbsp;</h3>
-     <p class="text-muted small">Sorted by descending CRAP (Change Risk Anti-Patterns) index.</p>
-     <div class="scrollbox">
-<table class="table">
- <thead>
-  <tr>
-   <th>Class</th>
-   <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
-   <th class="text-right">Coverage</th>
-  </tr>
- </thead>
- <tbody>
-  <tr><td><a href="../ExampleClass.php.html#5">Example\ExampleClass</a></td><td class="text-right">2.50</td><td class="text-right">50.0%</td></tr>
-  <tr><td><a href="../ParentClass.php.html#5">Example\ParentClass</a></td><td class="text-right">2</td><td class="text-right">0.0%</td></tr>
-  <tr><td><a href="../ChildClass.php.html#5">Example\ChildClass</a></td><td class="text-right">1</td><td class="text-right">100.0%</td></tr>
- </tbody>
-</table>
+     <div>
+      <p class="hint">Sorted by descending <abbr title="Change Risk Anti-Patterns">CRAP</abbr> index.</p>
+      <div class="scrollbox">
+     <table class="crap">
+      <thead>
+       <tr>
+        <th scope="col">Class</th>
+        <th scope="col" class="number"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        <th scope="col" class="number">Coverage</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr><td><a href="../ExampleClass.php.html#5">Example\ExampleClass</a></td><td class="number">2.50</td><td class="number">50.0%</td></tr>
+       <tr><td><a href="../ParentClass.php.html#5">Example\ParentClass</a></td><td class="number">2</td><td class="number">0.0%</td></tr>
+       <tr><td><a href="../ChildClass.php.html#5">Example\ChildClass</a></td><td class="number">1</td><td class="number">100.0%</td></tr>
+      </tbody>
+     </table>
+      </div>
      </div>
     </div>
-   </div>
-   <div class="row dashboard-row">
-    <div class="col-md-6">
-     <h3>Methods</h3>
-     <p class="text-muted small">Bubble size = executable lines. Hover for details, click to navigate.</p>
-     <div class="file-coverage-chart">
+   </section>
+   <section>
+    <h2>Methods</h2>
+    <div class="panel">
+     <div class="chart">
+      <p class="hint">Line coverage against cyclomatic complexity. Bubble size is the number of executable lines; hover for details, click to navigate.</p>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
  <style>
-  .bubble-success { fill: var(--phpunit-success-bar); opacity: 0.7; }
-  .bubble-warning { fill: var(--phpunit-warning-bar); opacity: 0.7; }
-  .bubble-danger { fill: var(--phpunit-danger-bar); opacity: 0.7; }
-  .bubble-success:hover, .bubble-warning:hover, .bubble-danger:hover { opacity: 1; stroke: var(--bs-emphasis-color); stroke-width: 1.5; }
-  .chart-grid { stroke: var(--bs-border-color); stroke-width: 0.5; stroke-dasharray: 4,4; opacity: 0.5; }
-  .chart-axis { stroke: var(--bs-border-color); stroke-width: 1; }
-  .chart-label { fill: var(--bs-body-color); font-size: 11px; font-family: var(--bs-font-sans-serif, sans-serif); }
-  .chart-title { fill: var(--bs-body-color); font-size: 12px; font-family: var(--bs-font-sans-serif, sans-serif); }
+  .bubble-success { fill: var(--coverage-success-bar); opacity: 0.7; }
+  .bubble-warning { fill: var(--coverage-warning-bar); opacity: 0.7; }
+  .bubble-danger { fill: var(--coverage-danger-bar); opacity: 0.7; }
+  .bubble-success:hover, .bubble-warning:hover, .bubble-danger:hover { opacity: 1; stroke: var(--text); stroke-width: 1.5; }
+  .chart-grid { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 4,4; opacity: 0.5; }
+  .chart-axis { stroke: var(--border); stroke-width: 1; }
+  .chart-label { fill: var(--text); font-size: 11px; font-family: var(--font-sans); }
+  .chart-title { fill: var(--text); font-size: 12px; font-family: var(--font-sans); }
  </style>
  <line x1="60.0" y1="20" x2="60.0" y2="350" class="chart-grid"/>
  <text x="60.0" y="368" text-anchor="middle" class="chart-label">0%</text>
@@ -141,35 +131,31 @@
  <a href="../ParentClass.php.html#7"><circle cx="60.0" cy="185.0" r="20.0" class="bubble-danger"><title>Example\ParentClass::parentMethod — Coverage: 0.0% | Lines: 1 | Complexity: 1</title></circle></a>
 </svg>
      </div>
-    </div>
-    <div class="col-md-6 dashboard-column">
-     <h3>&nbsp;</h3>
-     <p class="text-muted small">Sorted by descending CRAP (Change Risk Anti-Patterns) index.</p>
-     <div class="scrollbox">
-<table class="table">
- <thead>
-  <tr>
-   <th>Method</th>
-   <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
-   <th class="text-right">Coverage</th>
-  </tr>
- </thead>
- <tbody>
-  <tr><td><a href="../ExampleClass.php.html#12">Example\ExampleClass::doMore</a></td><td class="text-right">2</td><td class="text-right">0.0%</td></tr>
-  <tr><td><a href="../ParentClass.php.html#7">Example\ParentClass::parentMethod</a></td><td class="text-right">2</td><td class="text-right">0.0%</td></tr>
-  <tr><td><a href="../ChildClass.php.html#9">Example\ChildClass::childMethod</a></td><td class="text-right">1</td><td class="text-right">100.0%</td></tr>
-  <tr><td><a href="../ExampleClass.php.html#7">Example\ExampleClass::doSomething</a></td><td class="text-right">1</td><td class="text-right">100.0%</td></tr>
- </tbody>
-</table>
+     <div>
+      <p class="hint">Sorted by descending <abbr title="Change Risk Anti-Patterns">CRAP</abbr> index.</p>
+      <div class="scrollbox">
+     <table class="crap">
+      <thead>
+       <tr>
+        <th scope="col">Method</th>
+        <th scope="col" class="number"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        <th scope="col" class="number">Coverage</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr><td><a href="../ExampleClass.php.html#12">Example\ExampleClass::doMore</a></td><td class="number">2</td><td class="number">0.0%</td></tr>
+       <tr><td><a href="../ParentClass.php.html#7">Example\ParentClass::parentMethod</a></td><td class="number">2</td><td class="number">0.0%</td></tr>
+       <tr><td><a href="../ChildClass.php.html#9">Example\ChildClass::childMethod</a></td><td class="number">1</td><td class="number">100.0%</td></tr>
+       <tr><td><a href="../ExampleClass.php.html#7">Example\ExampleClass::doSomething</a></td><td class="number">1</td><td class="number">100.0%</td></tr>
+      </tbody>
+     </table>
+      </div>
      </div>
     </div>
-   </div>
-   <footer>
-    <hr/>
-    <p>
-     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage %s</a> using <a href="%s" target="_top">%s</a> at %s.</small>
-    </p>
-   </footer>
-  </div>
+   </section>
+  </main>
+  <footer>
+   <p class="credits">Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage %s</a> using <a href="%s" target="_top">%s</a> at %s.</p>
+  </footer>
  </body>
 </html>

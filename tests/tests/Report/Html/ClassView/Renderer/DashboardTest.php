@@ -80,11 +80,11 @@ final class DashboardTest extends TestCase
         $this->assertNotFalse($output);
 
         // Inactive breadcrumbs for ancestors
-        $this->assertStringContainsString('<li class="breadcrumb-item"><a href="../../index.html">(Global)</a></li>', $output);
-        $this->assertStringContainsString('<li class="breadcrumb-item"><a href="../index.html">App</a></li>', $output);
+        $this->assertStringContainsString('<li><a href="../../index.html">(Global)</a></li>', $output);
+        $this->assertStringContainsString('<li><a href="../index.html">App</a></li>', $output);
         // Active-ish breadcrumb for current node (dashboard uses index.html link)
-        $this->assertStringContainsString('<li class="breadcrumb-item"><a href="index.html">Models</a></li>', $output);
-        $this->assertStringContainsString('(Dashboard)', $output);
+        $this->assertStringContainsString('<li><a href="index.html">Models</a></li>', $output);
+        $this->assertStringContainsString('<li class="current">Dashboard</li>', $output);
         // pathToRoot for nested namespace + _classes
         $this->assertStringContainsString('../../../_css/', $output);
 

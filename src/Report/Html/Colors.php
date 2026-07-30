@@ -54,8 +54,8 @@ final readonly class Colors
             '#371e09',
             '#d45500',
             '#b54400',
-            'var(--bs-gray-200)',
-            'var(--bs-gray-800)',
+            '#eef1f5',
+            '#22272e',
         );
     }
 

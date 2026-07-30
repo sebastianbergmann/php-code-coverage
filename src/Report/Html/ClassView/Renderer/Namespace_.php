@@ -25,6 +25,8 @@ use SebastianBergmann\Template\Template;
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
+ *
+ * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
  */
 final class Namespace_ extends Renderer
 {
@@ -35,10 +37,10 @@ final class Namespace_ extends Renderer
 
         $this->setCommonTemplateVariablesForNamespace($template, $node);
 
-        $items = $this->renderItem($node);
+        $items = '';
 
         foreach ($node->childNamespaces() as $ns) {
-            $items .= $this->renderItem($node, $ns);
+            $items .= $this->renderItem($ns);
         }
 
         foreach ($node->classes() as $class) {
@@ -47,8 +49,10 @@ final class Namespace_ extends Renderer
 
         $template->setVar(
             [
-                'id'    => $node->id(),
-                'items' => $items,
+                'id'      => $node->id(),
+                'items'   => $items,
+                'summary' => $this->renderSummary($this->itemData($node), 'Methods', 'Classes'),
+                'legend'  => $this->thresholdsLegend(),
             ],
         );
 
@@ -98,68 +102,66 @@ final class Namespace_ extends Renderer
         foreach ($path as $step) {
             if ($step !== $node) {
                 $breadcrumbs .= sprintf(
-                    '         <li class="breadcrumb-item"><a href="%sindex.html">%s</a></li>' . "\n",
+                    '     <li><a href="%sindex.html">%s</a></li>' . "\n",
                     array_pop($pathToRoot),
                     $step->name(),
                 );
             } else {
                 $breadcrumbs .= sprintf(
-                    '         <li class="breadcrumb-item active">%s</li>' . "\n",
+                    '     <li class="current">%s</li>' . "\n",
                     $step->name(),
                 );
-                $breadcrumbs .= '         <li class="breadcrumb-item">(<a href="dashboard.html">Dashboard</a>)</li>' . "\n";
+                $breadcrumbs .= '     <li class="secondary"><a href="dashboard.html">Dashboard</a></li>' . "\n";
             }
         }
 
         return $breadcrumbs;
     }
 
-    private function renderItem(NamespaceNode $currentPage, ?NamespaceNode $child = null): string
+    /**
+     * @return CoverageItemData
+     */
+    private function itemData(NamespaceNode $node): array
     {
-        $statsNode = $child ?? $currentPage;
-
-        $data = [
-            'numClasses'                      => $statsNode->numberOfClasses(),
-            'numTestedClasses'                => $statsNode->numberOfTestedClasses(),
-            'numMethods'                      => $statsNode->numberOfMethods(),
-            'numTestedMethods'                => $statsNode->numberOfTestedMethods(),
-            'linesExecutedPercent'            => $statsNode->percentageOfExecutedLines()->asFloat(),
-            'linesExecutedPercentAsString'    => $statsNode->percentageOfExecutedLines()->asString(),
-            'numExecutedLines'                => $statsNode->numberOfExecutedLines(),
-            'numExecutableLines'              => $statsNode->numberOfExecutableLines(),
-            'branchesExecutedPercent'         => $statsNode->percentageOfExecutedBranches()->asFloat(),
-            'branchesExecutedPercentAsString' => $statsNode->percentageOfExecutedBranches()->asString(),
-            'numExecutedBranches'             => $statsNode->numberOfExecutedBranches(),
-            'numExecutableBranches'           => $statsNode->numberOfExecutableBranches(),
-            'pathsExecutedPercent'            => $statsNode->percentageOfExecutedPaths()->asFloat(),
-            'pathsExecutedPercentAsString'    => $statsNode->percentageOfExecutedPaths()->asString(),
-            'numExecutedPaths'                => $statsNode->numberOfExecutedPaths(),
-            'numExecutablePaths'              => $statsNode->numberOfExecutablePaths(),
-            'testedMethodsPercent'            => $statsNode->percentageOfTestedMethods()->asFloat(),
-            'testedMethodsPercentAsString'    => $statsNode->percentageOfTestedMethods()->asString(),
-            'testedClassesPercent'            => $statsNode->percentageOfTestedClasses()->asFloat(),
-            'testedClassesPercentAsString'    => $statsNode->percentageOfTestedClasses()->asString(),
-            'coverageDataJson'                => $this->coverageDataJsonForNamespace($statsNode),
+        return [
+            'name'                            => '',
+            'numClasses'                      => $node->numberOfClasses(),
+            'numTestedClasses'                => $node->numberOfTestedClasses(),
+            'numMethods'                      => $node->numberOfMethods(),
+            'numTestedMethods'                => $node->numberOfTestedMethods(),
+            'linesExecutedPercent'            => $node->percentageOfExecutedLines()->asFloat(),
+            'linesExecutedPercentAsString'    => $node->percentageOfExecutedLines()->asString(),
+            'numExecutedLines'                => $node->numberOfExecutedLines(),
+            'numExecutableLines'              => $node->numberOfExecutableLines(),
+            'branchesExecutedPercent'         => $node->percentageOfExecutedBranches()->asFloat(),
+            'branchesExecutedPercentAsString' => $node->percentageOfExecutedBranches()->asString(),
+            'numExecutedBranches'             => $node->numberOfExecutedBranches(),
+            'numExecutableBranches'           => $node->numberOfExecutableBranches(),
+            'pathsExecutedPercent'            => $node->percentageOfExecutedPaths()->asFloat(),
+            'pathsExecutedPercentAsString'    => $node->percentageOfExecutedPaths()->asString(),
+            'numExecutedPaths'                => $node->numberOfExecutedPaths(),
+            'numExecutablePaths'              => $node->numberOfExecutablePaths(),
+            'testedMethodsPercent'            => $node->percentageOfTestedMethods()->asFloat(),
+            'testedMethodsPercentAsString'    => $node->percentageOfTestedMethods()->asString(),
+            'testedClassesPercent'            => $node->percentageOfTestedClasses()->asFloat(),
+            'testedClassesPercentAsString'    => $node->percentageOfTestedClasses()->asString(),
+            'coverageDataJson'                => $this->coverageDataJsonForNamespace($node),
         ];
+    }
 
-        if ($child === null) {
-            $data['name'] = 'Total';
-        } else {
-            $data['icon'] = sprintf(
-                '<img src="%s_icons/file-directory.svg" class="octicon" />',
-                $this->pathToRootForNamespace($currentPage),
-            );
-            $data['name'] = sprintf(
-                '<a href="%s/index.html">%s</a>',
-                $child->name(),
-                $child->name(),
-            );
-        }
+    private function renderItem(NamespaceNode $node): string
+    {
+        $data = $this->itemData($node);
 
-        $templateName = $this->templateNameForTier('namespace_item');
+        $data['icon'] = '<span class="icon icon-directory" aria-hidden="true"></span>';
+        $data['name'] = sprintf(
+            '<a href="%s/index.html">%s</a>',
+            $node->name(),
+            $node->name(),
+        );
 
         return $this->renderItemTemplate(
-            new Template($templateName, '{{', '}}'),
+            new Template($this->templateNameForTier('namespace_item'), '{{', '}}'),
             $data,
         );
     }
@@ -188,11 +190,8 @@ final class Namespace_ extends Renderer
             'testedClassesPercent'            => $class->percentageOfTestedClasses()->asFloat(),
             'testedClassesPercentAsString'    => $class->percentageOfTestedClasses()->asString(),
             'coverageDataJson'                => $this->coverageDataJsonForClassNode($class),
-            'icon'                            => sprintf(
-                '<img src="%s_icons/file-code.svg" class="octicon" />',
-                $this->pathToRootForNamespace($class->parent()),
-            ),
-            'name' => sprintf(
+            'icon'                            => '<span class="icon icon-file" aria-hidden="true"></span>',
+            'name'                            => sprintf(
                 '<a href="%s.html">%s</a>',
                 $class->shortName(),
                 $class->shortName(),

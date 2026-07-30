@@ -182,21 +182,12 @@ final readonly class Facade
 
     private function copyFiles(string $target): void
     {
-        $dir = $this->directory($target . '_css');
-
-        copy($this->templatePath . 'css/bootstrap.min.css', $dir . 'bootstrap.min.css');
-        copy($this->customCssFile->path(), $dir . 'custom.css');
-        copy($this->templatePath . 'css/octicons.css', $dir . 'octicons.css');
-
-        $dir = $this->directory($target . '_icons');
-        copy($this->templatePath . 'icons/file-code.svg', $dir . 'file-code.svg');
-        copy($this->templatePath . 'icons/file-directory.svg', $dir . 'file-directory.svg');
+        copy($this->customCssFile->path(), $this->directory($target . '_css') . 'custom.css');
 
         $dir = $this->directory($target . '_js');
-        copy($this->templatePath . 'js/bootstrap.bundle.min.js', $dir . 'bootstrap.bundle.min.js');
-        copy($this->templatePath . 'js/jquery.min.js', $dir . 'jquery.min.js');
-        copy($this->templatePath . 'js/file.js', $dir . 'file.js');
-        copy($this->templatePath . 'js/test-size-filter.js', $dir . 'test-size-filter.js');
+
+        copy($this->templatePath . 'js/coverage-table.js', $dir . 'coverage-table.js');
+        copy($this->templatePath . 'js/source-view.js', $dir . 'source-view.js');
     }
 
     private function renderCss(string $target): void

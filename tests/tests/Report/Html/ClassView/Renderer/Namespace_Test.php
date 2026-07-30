@@ -81,10 +81,10 @@ final class Namespace_Test extends TestCase
         $this->assertNotFalse($output);
 
         // Inactive breadcrumbs for ancestors
-        $this->assertStringContainsString('<li class="breadcrumb-item"><a href="../../index.html">(Global)</a></li>', $output);
-        $this->assertStringContainsString('<li class="breadcrumb-item"><a href="../index.html">App</a></li>', $output);
+        $this->assertStringContainsString('<li><a href="../../index.html">(Global)</a></li>', $output);
+        $this->assertStringContainsString('<li><a href="../index.html">App</a></li>', $output);
         // Active breadcrumb for current node
-        $this->assertStringContainsString('<li class="breadcrumb-item active">Models</li>', $output);
+        $this->assertStringContainsString('<li class="current">Models</li>', $output);
         // pathToRoot uses parent depth + _classes level
         $this->assertStringContainsString('../../../_css/', $output);
     }

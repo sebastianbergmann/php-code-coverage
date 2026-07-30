@@ -2,309 +2,172 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Code Coverage for %sBankAccount.php</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="_css/bootstrap.min.css?v=%s" rel="stylesheet" type="text/css">
-  <link href="_css/octicons.css?v=%s" rel="stylesheet" type="text/css">
-  <link href="_css/style.css?v=%s" rel="stylesheet" type="text/css">
-  <link href="_css/custom.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="_css/style.css?v=%s">
+  <link rel="stylesheet" href="_css/custom.css">
  </head>
  <body>
-  <header>
-   <div class="container-fluid">
-    <div class="row">
-     <div class="col-md-12">
-      <nav aria-label="breadcrumb">
-       <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="index.html">%s</a></li>
-         <li class="breadcrumb-item active">BankAccount.php</li>
-
-       </ol>
-      </nav>
-      <ul class="nav nav-tabs mt-2">
-       <li class="nav-item"><a class="nav-link active" href="index.html">Files</a></li>
-       <li class="nav-item"><a class="nav-link" href="_classes/BankAccount.html">Classes</a></li>
-      </ul>
-
-     </div>
+  <header class="masthead">
+   <nav aria-label="Breadcrumb">
+    <ol class="breadcrumbs">
+     <li><a href="index.html">%s</a></li>
+     <li class="current">BankAccount.php</li>
+    </ol>
+   </nav>
+   <ul class="tabs">
+    <li><a href="index.html" aria-current="page">Files</a></li>
+    <li><a href="_classes/BankAccount.html">Classes</a></li>
+   </ul>
+  </header>
+  <main>
+   <ul class="tabs">
+    <li><a href="BankAccount.php.html">Line Coverage</a></li>
+    <li><a href="BankAccount.php_branch.html" aria-current="page">Branch Coverage</a></li>
+    <li><a href="BankAccount.php_path.html">Path Coverage</a></li>
+   </ul>
+   <div class="summary" data-coverage="{&quot;linesTotal&quot;:8,&quot;linesAll&quot;:5,&quot;methodsTotal&quot;:4,&quot;methodsAll&quot;:3,&quot;classesTotal&quot;:1,&quot;classesAll&quot;:0,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;classesSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;classesMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;classesLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;classesSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;classesSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;classesML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0,&quot;classesSML&quot;:0}">
+    <div class="metric" data-metric="lines-card" data-level="warning">
+     <span class="metric-name">Lines</span>
+     <span class="metric-percentage" data-metric="lines-percent" data-level="warning">62.50%</span>
+     <span class="metric-bar" data-metric="lines-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 62.50%"></span></span></span>
+     <span class="metric-count" data-metric="lines-number" data-level="warning">5 / 8</span>
+    </div>
+    <div class="metric" data-metric="branches-card" data-level="danger">
+     <span class="metric-name">Branches</span>
+     <span class="metric-percentage" data-metric="branches-percent" data-level="danger">42.85%</span>
+     <span class="metric-bar" data-metric="branches-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 42.85%"></span></span></span>
+     <span class="metric-count" data-metric="branches-number" data-level="danger">3 / 7</span>
+    </div>
+    <div class="metric" data-metric="paths-card" data-level="warning">
+     <span class="metric-name">Paths</span>
+     <span class="metric-percentage" data-metric="paths-percent" data-level="warning">60.00%</span>
+     <span class="metric-bar" data-metric="paths-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 60.00%"></span></span></span>
+     <span class="metric-count" data-metric="paths-number" data-level="warning">3 / 5</span>
+    </div>
+    <div class="metric" data-metric="methods-card" data-level="warning">
+     <span class="metric-name">Functions and Methods</span>
+     <span class="metric-percentage" data-metric="methods-percent" data-level="warning">75.00%</span>
+     <span class="metric-bar" data-metric="methods-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 75.00%"></span></span></span>
+     <span class="metric-count" data-metric="methods-number" data-level="warning">3 / 4</span>
+    </div>
+    <div class="metric" data-metric="classes-card" data-level="danger">
+     <span class="metric-name">Classes and Traits</span>
+     <span class="metric-percentage" data-metric="classes-percent" data-level="danger">0.00%</span>
+     <span class="metric-bar" data-metric="classes-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></span>
+     <span class="metric-count" data-metric="classes-number" data-level="danger">0 / 1</span>
     </div>
    </div>
-  </header>
-  <div class="container-fluid">
-   <ul class="nav nav-tabs mb-3">
-    <li class="nav-item"><a class="nav-link" href="BankAccount.php.html">Line Coverage</a></li>
-    <li class="nav-item"><a class="nav-link active" href="BankAccount.php_branch.html" aria-current="page">Branch Coverage</a></li>
-    <li class="nav-item"><a class="nav-link" href="BankAccount.php_path.html">Path Coverage</a></li>
-   </ul>
-   <div class="btn-group mb-2" role="group" aria-label="Test size filter" data-low-upper-bound="50" data-high-lower-bound="90">
-    <input type="checkbox" class="btn-check" id="filter-size-small" data-test-size-filter="small" autocomplete="off">
-    <label class="btn btn-sm btn-outline-secondary" for="filter-size-small">Small</label>
-    <input type="checkbox" class="btn-check" id="filter-size-medium" data-test-size-filter="medium" autocomplete="off">
-    <label class="btn btn-sm btn-outline-secondary" for="filter-size-medium">Medium</label>
-    <input type="checkbox" class="btn-check" id="filter-size-large" data-test-size-filter="large" autocomplete="off">
-    <label class="btn btn-sm btn-outline-secondary" for="filter-size-large">Large</label>
-    <button type="button" class="btn btn-sm btn-outline-secondary active" data-test-size-filter-all>All</button>
+   <div class="toolbar">
+    <div class="test-size-filter" role="group" aria-label="Show coverage by test size" data-low-upper-bound="50" data-high-lower-bound="90">
+     <span class="control-label">Covered by tests of size</span>
+     <input type="checkbox" id="filter-size-small" data-test-size-filter="small" autocomplete="off"><label for="filter-size-small">Small</label>
+     <input type="checkbox" id="filter-size-medium" data-test-size-filter="medium" autocomplete="off"><label for="filter-size-medium">Medium</label>
+     <input type="checkbox" id="filter-size-large" data-test-size-filter="large" autocomplete="off"><label for="filter-size-large">Large</label>
+     <button type="button" data-test-size-filter-all aria-pressed="true">Any</button>
+    </div>
    </div>
-   <div class="table-responsive">
-    <table class="table table-bordered">
+   <div class="table-scroll">
+    <table class="coverage">
      <thead>
       <tr>
-       <td>&nbsp;</td>
-       <td colspan="16"><div align="center"><strong>Code Coverage</strong></div></td>
-      </tr>
-      <tr>
-       <td>&nbsp;</td>
-       <td colspan="3"><div align="center"><strong>Lines</strong></div></td>
-       <td colspan="3"><div align="center"><strong>Branches</strong></div></td>
-       <td colspan="3"><div align="center"><strong>Paths</strong></div></td>
-       <td colspan="4"><div align="center"><strong>Functions and Methods</strong></div></td>
-       <td colspan="3"><div align="center"><strong>Classes and Traits</strong></div></td>
+       <th scope="col" class="name">Name</th>
+       <th scope="colgroup" colspan="3">Lines</th>
+       <th scope="colgroup" colspan="3">Branches</th>
+       <th scope="colgroup" colspan="3">Paths</th>
+       <th scope="colgroup" colspan="3">Functions and Methods</th>
+       <th scope="col" class="crap"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+       <th scope="colgroup" colspan="3">Classes and Traits</th>
       </tr>
      </thead>
      <tbody>
       <tr data-coverage="{&quot;linesTotal&quot;:8,&quot;linesAll&quot;:5,&quot;methodsTotal&quot;:4,&quot;methodsAll&quot;:3,&quot;classesTotal&quot;:1,&quot;classesAll&quot;:0,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;classesSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;classesMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;classesLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;classesSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;classesSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;classesML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0,&quot;classesSML&quot;:0}">
-       <td class="warning">Total</td>
-       <td class="warning big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="62.50" aria-valuemin="0" aria-valuemax="100" style="width: 62.50%">
-           <span class="visually-hidden">62.50% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small" data-metric="lines-percent"><div align="right">62.50%</div></td>
-       <td class="warning small" data-metric="lines-number"><div align="right">5&nbsp;/&nbsp;8</div></td>
-       <td class="danger big">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="42.85" aria-valuemin="0" aria-valuemax="100" style="width: 42.85%">
-           <span class="visually-hidden">42.85% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small"><div align="right">42.85%</div></td>
-       <td class="danger small"><div align="right">3&nbsp;/&nbsp;7</div></td>
-       <td class="warning big">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60.00" aria-valuemin="0" aria-valuemax="100" style="width: 60.00%">
-           <span class="visually-hidden">60.00% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small"><div align="right">60.00%</div></td>
-       <td class="warning small"><div align="right">3&nbsp;/&nbsp;5</div></td>
-       <td class="warning big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="75.00" aria-valuemin="0" aria-valuemax="100" style="width: 75.00%">
-           <span class="visually-hidden">75.00% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small" data-metric="methods-percent"><div align="right">75.00%</div></td>
-       <td class="warning small" data-metric="methods-number"><div align="right">3&nbsp;/&nbsp;4</div></td>
-       <td class="warning small"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></td>
-       <td class="danger big" data-metric="classes-bar">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small" data-metric="classes-percent"><div align="right">0.00%</div></td>
-       <td class="danger small" data-metric="classes-number"><div align="right">0&nbsp;/&nbsp;1</div></td>
+       <th scope="row" class="name" data-metric="lines-name" data-level="warning">BankAccount</th>
+       <td class="bar-cell" data-metric="lines-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 62.50%"></span></span></td>
+       <td class="percentage" data-metric="lines-percent" data-level="warning">62.50%</td>
+       <td class="count" data-metric="lines-number" data-level="warning">5 / 8</td>
+       <td class="bar-cell" data-metric="branches-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 42.85%"></span></span></td>
+       <td class="percentage" data-metric="branches-percent" data-level="danger">42.85%</td>
+       <td class="count" data-metric="branches-number" data-level="danger">3 / 7</td>
+       <td class="bar-cell" data-metric="paths-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 60.00%"></span></span></td>
+       <td class="percentage" data-metric="paths-percent" data-level="warning">60.00%</td>
+       <td class="count" data-metric="paths-number" data-level="warning">3 / 5</td>
+       <td class="bar-cell" data-metric="methods-bar" data-level="warning"><span class="bar" aria-hidden="true"><span style="width: 75.00%"></span></span></td>
+       <td class="percentage" data-metric="methods-percent" data-level="warning">75.00%</td>
+       <td class="count" data-metric="methods-number" data-level="warning">3 / 4</td>
+       <td class="crap" data-level="warning">6.60</td>
+       <td class="bar-cell" data-metric="classes-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></td>
+       <td class="percentage" data-metric="classes-percent" data-level="danger">0.00%</td>
+       <td class="count" data-metric="classes-number" data-level="danger">0 / 1</td>
       </tr>
-
-      <tr data-coverage="{&quot;linesTotal&quot;:8,&quot;linesAll&quot;:5,&quot;methodsTotal&quot;:4,&quot;methodsAll&quot;:3,&quot;classesTotal&quot;:1,&quot;classesAll&quot;:0,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;classesSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;classesMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;classesLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;classesSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;classesSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;classesML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0,&quot;classesSML&quot;:0}">
-       <td class="warning">BankAccount</td>
-       <td class="warning big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="62.50" aria-valuemin="0" aria-valuemax="100" style="width: 62.50%">
-           <span class="visually-hidden">62.50% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small" data-metric="lines-percent"><div align="right">62.50%</div></td>
-       <td class="warning small" data-metric="lines-number"><div align="right">5&nbsp;/&nbsp;8</div></td>
-       <td class="danger big">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="42.85" aria-valuemin="0" aria-valuemax="100" style="width: 42.85%">
-           <span class="visually-hidden">42.85% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small"><div align="right">42.85%</div></td>
-       <td class="danger small"><div align="right">3&nbsp;/&nbsp;7</div></td>
-       <td class="warning big">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60.00" aria-valuemin="0" aria-valuemax="100" style="width: 60.00%">
-           <span class="visually-hidden">60.00% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small"><div align="right">60.00%</div></td>
-       <td class="warning small"><div align="right">3&nbsp;/&nbsp;5</div></td>
-       <td class="warning big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="75.00" aria-valuemin="0" aria-valuemax="100" style="width: 75.00%">
-           <span class="visually-hidden">75.00% covered (warning)</span>
-         </div>
-       </div>
-</td>
-       <td class="warning small" data-metric="methods-percent"><div align="right">75.00%</div></td>
-       <td class="warning small" data-metric="methods-number"><div align="right">3&nbsp;/&nbsp;4</div></td>
-       <td class="warning small">6.60</td>
-       <td class="danger big" data-metric="classes-bar">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small" data-metric="classes-percent"><div align="right">0.00%</div></td>
-       <td class="danger small" data-metric="classes-number"><div align="right">0&nbsp;/&nbsp;1</div></td>
-      </tr>
-
       <tr data-coverage="{&quot;linesTotal&quot;:1,&quot;linesAll&quot;:1,&quot;methodsTotal&quot;:1,&quot;methodsAll&quot;:1,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0}">
-       <td class="success">&nbsp;<a href="#6"><abbr title="getBalance()">getBalance</abbr></a></td>
-       <td class="success big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="lines-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="lines-number"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="methods-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="methods-number"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success small">1</td>
-       <td class="success" colspan="3"></td>
+       <th scope="row" class="name" data-metric="lines-name" data-level="success">&nbsp;<a href="#6"><abbr title="getBalance()">getBalance</abbr></a></th>
+       <td class="bar-cell" data-metric="lines-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="lines-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="lines-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="branches-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="branches-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="branches-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="paths-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="paths-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="paths-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="methods-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="methods-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="methods-number" data-level="success">1 / 1</td>
+       <td class="crap" data-level="success">1</td>
+       <td colspan="3" data-level="success"></td>
       </tr>
-
       <tr data-coverage="{&quot;linesTotal&quot;:3,&quot;linesAll&quot;:0,&quot;methodsTotal&quot;:1,&quot;methodsAll&quot;:0,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0}">
-       <td class="danger">&nbsp;<a href="#11"><abbr title="setBalance($balance)">setBalance</abbr></a></td>
-       <td class="danger big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small" data-metric="lines-percent"><div align="right">0.00%</div></td>
-       <td class="danger small" data-metric="lines-number"><div align="right">0&nbsp;/&nbsp;3</div></td>
-       <td class="danger big">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small"><div align="right">0.00%</div></td>
-       <td class="danger small"><div align="right">0&nbsp;/&nbsp;4</div></td>
-       <td class="danger big">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small"><div align="right">0.00%</div></td>
-       <td class="danger small"><div align="right">0&nbsp;/&nbsp;2</div></td>
-       <td class="danger big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
-           <span class="visually-hidden">0.00% covered (danger)</span>
-         </div>
-       </div>
-</td>
-       <td class="danger small" data-metric="methods-percent"><div align="right">0.00%</div></td>
-       <td class="danger small" data-metric="methods-number"><div align="right">0&nbsp;/&nbsp;1</div></td>
-       <td class="danger small">6</td>
-       <td class="danger" colspan="3"></td>
+       <th scope="row" class="name" data-metric="lines-name" data-level="danger">&nbsp;<a href="#11"><abbr title="setBalance($balance)">setBalance</abbr></a></th>
+       <td class="bar-cell" data-metric="lines-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></td>
+       <td class="percentage" data-metric="lines-percent" data-level="danger">0.00%</td>
+       <td class="count" data-metric="lines-number" data-level="danger">0 / 3</td>
+       <td class="bar-cell" data-metric="branches-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></td>
+       <td class="percentage" data-metric="branches-percent" data-level="danger">0.00%</td>
+       <td class="count" data-metric="branches-number" data-level="danger">0 / 4</td>
+       <td class="bar-cell" data-metric="paths-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></td>
+       <td class="percentage" data-metric="paths-percent" data-level="danger">0.00%</td>
+       <td class="count" data-metric="paths-number" data-level="danger">0 / 2</td>
+       <td class="bar-cell" data-metric="methods-bar" data-level="danger"><span class="bar" aria-hidden="true"><span style="width: 0.00%"></span></span></td>
+       <td class="percentage" data-metric="methods-percent" data-level="danger">0.00%</td>
+       <td class="count" data-metric="methods-number" data-level="danger">0 / 1</td>
+       <td class="crap" data-level="danger">6</td>
+       <td colspan="3" data-level="danger"></td>
       </tr>
-
       <tr data-coverage="{&quot;linesTotal&quot;:2,&quot;linesAll&quot;:2,&quot;methodsTotal&quot;:1,&quot;methodsAll&quot;:1,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0}">
-       <td class="success">&nbsp;<a href="#20"><abbr title="depositMoney($balance)">depositMoney</abbr></a></td>
-       <td class="success big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="lines-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="lines-number"><div align="right">2&nbsp;/&nbsp;2</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="methods-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="methods-number"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success small">1</td>
-       <td class="success" colspan="3"></td>
+       <th scope="row" class="name" data-metric="lines-name" data-level="success">&nbsp;<a href="#20"><abbr title="depositMoney($balance)">depositMoney</abbr></a></th>
+       <td class="bar-cell" data-metric="lines-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="lines-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="lines-number" data-level="success">2 / 2</td>
+       <td class="bar-cell" data-metric="branches-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="branches-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="branches-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="paths-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="paths-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="paths-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="methods-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="methods-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="methods-number" data-level="success">1 / 1</td>
+       <td class="crap" data-level="success">1</td>
+       <td colspan="3" data-level="success"></td>
       </tr>
-
       <tr data-coverage="{&quot;linesTotal&quot;:2,&quot;linesAll&quot;:2,&quot;methodsTotal&quot;:1,&quot;methodsAll&quot;:1,&quot;linesSmall&quot;:0,&quot;methodsSmall&quot;:0,&quot;linesMedium&quot;:0,&quot;methodsMedium&quot;:0,&quot;linesLarge&quot;:0,&quot;methodsLarge&quot;:0,&quot;linesSM&quot;:0,&quot;methodsSM&quot;:0,&quot;linesSL&quot;:0,&quot;methodsSL&quot;:0,&quot;linesML&quot;:0,&quot;methodsML&quot;:0,&quot;linesSML&quot;:0,&quot;methodsSML&quot;:0}">
-       <td class="success">&nbsp;<a href="#27"><abbr title="withdrawMoney($balance)">withdrawMoney</abbr></a></td>
-       <td class="success big" data-metric="lines-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="lines-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="lines-number"><div align="right">2&nbsp;/&nbsp;2</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small"><div align="right">100.00%</div></td>
-       <td class="success small"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success big" data-metric="methods-bar">       <div class="progress">
-         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="100.00" aria-valuemin="0" aria-valuemax="100" style="width: 100.00%">
-           <span class="visually-hidden">100.00% covered (success)</span>
-         </div>
-       </div>
-</td>
-       <td class="success small" data-metric="methods-percent"><div align="right">100.00%</div></td>
-       <td class="success small" data-metric="methods-number"><div align="right">1&nbsp;/&nbsp;1</div></td>
-       <td class="success small">1</td>
-       <td class="success" colspan="3"></td>
+       <th scope="row" class="name" data-metric="lines-name" data-level="success">&nbsp;<a href="#27"><abbr title="withdrawMoney($balance)">withdrawMoney</abbr></a></th>
+       <td class="bar-cell" data-metric="lines-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="lines-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="lines-number" data-level="success">2 / 2</td>
+       <td class="bar-cell" data-metric="branches-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="branches-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="branches-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="paths-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="paths-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="paths-number" data-level="success">1 / 1</td>
+       <td class="bar-cell" data-metric="methods-bar" data-level="success"><span class="bar" aria-hidden="true"><span style="width: 100.00%"></span></span></td>
+       <td class="percentage" data-metric="methods-percent" data-level="success">100.00%</td>
+       <td class="count" data-metric="methods-number" data-level="success">1 / 1</td>
+       <td class="crap" data-level="success">1</td>
+       <td colspan="3" data-level="success"></td>
       </tr>
-
-
      </tbody>
     </table>
    </div>

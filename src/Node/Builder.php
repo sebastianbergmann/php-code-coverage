@@ -91,15 +91,16 @@ final readonly class Builder
         $testData = [];
 
         foreach ($testIds as $index => $id) {
-            if (!isset($testResults[$id])) {
-                continue;
-            }
+            // Coverage data and test results are provided through separate setters
+            // and can disagree; a test that covered code must remain attributable
+            // in reports even when its metadata is missing
+            $result = $testResults[$id] ?? ['size' => 'unknown', 'status' => 'unknown', 'time' => 0.0];
 
             $testData[$index] = [
                 'name'   => $id,
-                'size'   => $testResults[$id]['size'],
-                'status' => $testResults[$id]['status'],
-                'time'   => $testResults[$id]['time'],
+                'size'   => $result['size'],
+                'status' => $result['status'],
+                'time'   => $result['time'],
             ];
         }
 

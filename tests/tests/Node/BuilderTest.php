@@ -115,6 +115,31 @@ final class BuilderTest extends TestCase
         }
     }
 
+    public function testKeepsAttributionForCoveringTestsThatAreMissingFromTheTestResults(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+
+        $root = $this->builder()->build($coverage->getData(), []);
+
+        $this->assertCount(1, $root->files());
+
+        $file = $root->files()[0];
+
+        $testIds  = $coverage->getData()->testIds();
+        $testData = $file->testData();
+
+        $this->assertNotEmpty($testData);
+        $this->assertSameSize($testIds, $testData);
+
+        foreach ($testIds as $index => $id) {
+            $this->assertArrayHasKey($index, $testData);
+            $this->assertSame($id, $testData[$index]['name']);
+            $this->assertSame('unknown', $testData[$index]['size']);
+            $this->assertSame('unknown', $testData[$index]['status']);
+            $this->assertSame(0.0, $testData[$index]['time']);
+        }
+    }
+
     public function testUsesBasePathAsRootPathWhenCommonPathIsCurrentDirectory(): void
     {
         $data = new ProcessedCodeCoverageData;

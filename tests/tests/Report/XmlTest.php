@@ -188,7 +188,7 @@ final class XmlTest extends TestCase
         $this->assertStringContainsString('<directory name="Target"', $index);
     }
 
-    public function testCoveringTestThatHasNoTestDataIsOmittedFromLineCoverage(): void
+    public function testCoveringTestThatHasNoTestDataIsStillAttributedInLineCoverage(): void
     {
         $codeCoverage = $this->getLineCoverageForBankAccount();
 
@@ -217,7 +217,7 @@ final class XmlTest extends TestCase
 
         $this->assertNotFalse($contents);
         $this->assertStringContainsString('BankAccountTest::testBalanceIsInitiallyZero', $contents);
-        $this->assertStringNotContainsString('BankAccountTest::testDepositWithdrawMoney', $contents);
+        $this->assertStringContainsString('BankAccountTest::testDepositWithdrawMoney', $contents);
     }
 
     public function testBuildInformationIsOmittedWhenRuntimeIsNotProvided(): void

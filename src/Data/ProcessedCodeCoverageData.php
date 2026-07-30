@@ -288,12 +288,7 @@ final class ProcessedCodeCoverageData
                     is_array($data) &&
                     array_key_exists($line, $fileCoverage) &&
                     is_array($fileCoverage[$line])) {
-                    foreach ($data as $testIndex => $hits) {
-                        $fileCoverage[$line][$testIndex] = max(
-                            $fileCoverage[$line][$testIndex] ?? 0,
-                            $hits,
-                        );
-                    }
+                    $fileCoverage[$line] = HitMap::merge($fileCoverage[$line], $data);
                 }
             }
 
@@ -376,13 +371,7 @@ final class ProcessedCodeCoverageData
                     continue;
                 }
 
-                $remapped = [];
-
-                foreach ($data as $index => $hits) {
-                    $remapped[$remap[$index] ?? $index] = $hits;
-                }
-
-                $lineCoverage[$file][$line] = $remapped;
+                $lineCoverage[$file][$line] = HitMap::withRemappedTestIndexes($data, $remap);
             }
         }
 

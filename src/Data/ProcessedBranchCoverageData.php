@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
-use function max;
 use NoDiscard;
 
 /**
@@ -88,18 +87,12 @@ final class ProcessedBranchCoverageData
             return $this;
         }
 
-        $hit = $this->hit;
-
-        foreach ($data->hit as $testIndex => $count) {
-            $hit[$testIndex] = max($hit[$testIndex] ?? 0, $count);
-        }
-
         return new self(
             $this->op_start,
             $this->op_end,
             $this->line_start,
             $this->line_end,
-            $hit,
+            HitMap::merge($this->hit, $data->hit),
             $this->out,
             $this->out_hit,
         );
@@ -115,18 +108,12 @@ final class ProcessedBranchCoverageData
             return $this;
         }
 
-        $hit = [];
-
-        foreach ($this->hit as $testIndex => $count) {
-            $hit[$remap[$testIndex] ?? $testIndex] = $count;
-        }
-
         return new self(
             $this->op_start,
             $this->op_end,
             $this->line_start,
             $this->line_end,
-            $hit,
+            HitMap::withRemappedTestIndexes($this->hit, $remap),
             $this->out,
             $this->out_hit,
         );

@@ -355,27 +355,11 @@ final class RawCodeCoverageData
 
         foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
             foreach ($functionData['branches'] as $branchId => $branch) {
-                $allBranchLinesIncluded = true;
-
-                for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
-                    if (!isset($lines[$line])) {
-                        $allBranchLinesIncluded = false;
-
-                        break;
-                    }
-                }
-
-                if ($allBranchLinesIncluded) {
+                if ($this->branchIsConfinedToLines($branch, $lines)) {
                     continue;
                 }
 
-                unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
-
-                foreach ($functionData['paths'] as $pathId => $path) {
-                    if (in_array($branchId, $path['path'], true)) {
-                        unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
-                    }
-                }
+                $this->removeBranchAndDependentPaths($filename, $functionName, $branchId, $functionData);
             }
         }
     }
@@ -405,27 +389,11 @@ final class RawCodeCoverageData
         if (isset($this->functionCoverage[$filename])) {
             foreach ($this->functionCoverage[$filename] as $functionName => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branch) {
-                    $branchTouchesRemovedLine = false;
-
-                    for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
-                        if (isset($lines[$line])) {
-                            $branchTouchesRemovedLine = true;
-
-                            break;
-                        }
-                    }
-
-                    if (!$branchTouchesRemovedLine) {
+                    if (!$this->branchTouchesLines($branch, $lines)) {
                         continue;
                     }
 
-                    unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
-
-                    foreach ($functionData['paths'] as $pathId => $path) {
-                        if (in_array($branchId, $path['path'], true)) {
-                            unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
-                        }
-                    }
+                    $this->removeBranchAndDependentPaths($filename, $functionName, $branchId, $functionData);
                 }
             }
         }
@@ -444,6 +412,53 @@ final class RawCodeCoverageData
         foreach ($this->lineCoverage as $filename => $coverage) {
             foreach ($this->getEmptyLinesForFile($filename) as $emptyLine) {
                 unset($this->lineCoverage[$filename][$emptyLine]);
+            }
+        }
+    }
+
+    /**
+     * @param BranchCoverageType $branch
+     * @param array<int, mixed>  $lines  keyed by line number
+     */
+    private function branchIsConfinedToLines(array $branch, array $lines): bool
+    {
+        for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
+            if (!isset($lines[$line])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param BranchCoverageType $branch
+     * @param array<int, mixed>  $lines  keyed by line number
+     */
+    private function branchTouchesLines(array $branch, array $lines): bool
+    {
+        for ($line = $branch['line_start']; $line <= $branch['line_end']; $line++) {
+            if (isset($lines[$line])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes a branch and every path that traverses it.
+     *
+     * @param non-empty-string     $functionName
+     * @param FunctionCoverageType $functionData the snapshot whose paths are searched for the branch
+     */
+    private function removeBranchAndDependentPaths(string $filename, string $functionName, int $branchId, array $functionData): void
+    {
+        unset($this->functionCoverage[$filename][$functionName]['branches'][$branchId]);
+
+        foreach ($functionData['paths'] as $pathId => $path) {
+            if (in_array($branchId, $path['path'], true)) {
+                unset($this->functionCoverage[$filename][$functionName]['paths'][$pathId]);
             }
         }
     }

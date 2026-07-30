@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function implode;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
@@ -16,15 +18,33 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
  */
 final class Registry
 {
-    private static ?FileAnalyser $analyser = null;
+    /**
+     * Analysers are shared per configuration, not globally: a CodeCoverage object that does not
+     * cache static analysis results must not be served the analyser of a CodeCoverage object that
+     * does, and vice versa. Sharing a single analyser regardless of the configuration means that
+     * whichever object asks for an analyser first decides whether the static analysis cache is
+     * used for the rest of the process.
+     *
+     * @var array<non-empty-string, FileAnalyser>
+     */
+    private static array $analysers = [];
 
     /**
      * @param ?non-empty-string $cacheDirectory
      */
     public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): FileAnalyser
     {
-        if (self::$analyser !== null) {
-            return self::$analyser;
+        $key = implode(
+            "\0",
+            [
+                $cacheDirectory ?? '',
+                $useAnnotationsForIgnoringCode ? '1' : '0',
+                $ignoreDeprecatedCode ? '1' : '0',
+            ],
+        );
+
+        if (isset(self::$analysers[$key])) {
+            return self::$analysers[$key];
         }
 
         $sourceAnalyser = new ParsingSourceAnalyser;
@@ -36,12 +56,12 @@ final class Registry
             );
         }
 
-        self::$analyser = new FileAnalyser(
+        self::$analysers[$key] = new FileAnalyser(
             $sourceAnalyser,
             $useAnnotationsForIgnoringCode,
             $ignoreDeprecatedCode,
         );
 
-        return self::$analyser;
+        return self::$analysers[$key];
     }
 }

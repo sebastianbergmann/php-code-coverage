@@ -54,15 +54,41 @@ final class RegistryTest extends TestCase
         );
     }
 
-    public function testReturnsSameAnalyserOnSubsequentCalls(): void
+    public function testReturnsSameAnalyserOnSubsequentCallsForSameConfiguration(): void
     {
         $analyser = Registry::analyser(null, false, false);
 
         $this->assertSame($analyser, Registry::analyser(null, false, false));
     }
 
+    public function testReturnsDifferentAnalyserForDifferentCacheDirectory(): void
+    {
+        $cacheDirectory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-registry-test';
+
+        $this->assertNotSame(
+            Registry::analyser(null, false, false),
+            Registry::analyser($cacheDirectory, false, false),
+        );
+    }
+
+    public function testReturnsDifferentAnalyserWhenAnnotationsForIgnoringCodeAreUsed(): void
+    {
+        $this->assertNotSame(
+            Registry::analyser(null, false, false),
+            Registry::analyser(null, true, false),
+        );
+    }
+
+    public function testReturnsDifferentAnalyserWhenDeprecatedCodeIsIgnored(): void
+    {
+        $this->assertNotSame(
+            Registry::analyser(null, false, false),
+            Registry::analyser(null, false, true),
+        );
+    }
+
     private function resetRegistry(): void
     {
-        (new ReflectionClass(Registry::class))->setStaticPropertyValue('analyser', null);
+        (new ReflectionClass(Registry::class))->setStaticPropertyValue('analysers', []);
     }
 }

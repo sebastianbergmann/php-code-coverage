@@ -37,7 +37,7 @@ final class CachingSourceAnalyser implements SourceAnalyser
      * same development branch installed without git metadata) cannot be
      * misread after such a change.
      */
-    private const int CACHE_FORMAT_VERSION = 2;
+    private const int CACHE_FORMAT_VERSION = 3;
 
     /**
      * @var non-empty-string

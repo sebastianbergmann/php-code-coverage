@@ -208,4 +208,130 @@ final class ClassWithDeadCode
 
         return 3;
     }
+
+    public function liveOneLineIfTrueWithElse(): int
+    {
+        if (true) { $x = 1; } else { $x = 2; }
+
+        return $x;
+    }
+
+    public function liveCodeOnTheLineOfATerminator(): int
+    {
+        return 1; $x = 2;
+    }
+
+    public function liveLineSharedByBothTernaryArms(int $n): int
+    {
+        return true
+            ? $n : $n + 1;
+    }
+
+    public function liveForBodyWithCommaSeparatedConditions(int $n): int
+    {
+        for ($i = 0; false, $i < $n; $i++) {
+            $n--;
+        }
+
+        return $n;
+    }
+
+    public function deadAfterExhaustiveIfElse(bool $b): int
+    {
+        if ($b) {
+            return 1;
+        } else {
+            return 2;
+        }
+
+        return 3;
+    }
+
+    public function deadAfterWhileTrue(int $n): void
+    {
+        while (true) {
+            $n++;
+        }
+
+        $x = 1;
+    }
+
+    public function liveAfterWhileTrueWithBreak(bool $b): int
+    {
+        while (true) {
+            if ($b) {
+                break;
+            }
+        }
+
+        return 1;
+    }
+
+    public function liveAfterWhileTrueWithGoto(bool $b): int
+    {
+        while (true) {
+            if ($b) {
+                goto done;
+            }
+        }
+
+        done:
+
+        return 1;
+    }
+
+    public function deadAfterExhaustiveMatch(int $n): int
+    {
+        match ($n) {
+            1       => throw new \RuntimeException,
+            default => throw new \InvalidArgumentException,
+        };
+
+        return 1;
+    }
+
+    public function liveAfterMatchWithNonThrowingArm(int $n): int
+    {
+        match ($n) {
+            1       => throw new \RuntimeException,
+            default => 0,
+        };
+
+        return 1;
+    }
+
+    public function deadAfterExhaustiveSwitch(int $n): int
+    {
+        switch ($n) {
+            case 1:
+                return 1;
+            case 2:
+            default:
+                throw new \RuntimeException;
+        }
+
+        return 2;
+    }
+
+    public function liveAfterSwitchWithBreak(int $n): int
+    {
+        switch ($n) {
+            case 1:
+                break;
+            default:
+                return 1;
+        }
+
+        return 2;
+    }
+
+    public function liveAfterSwitchWithoutDefault(int $n): int
+    {
+        switch ($n) {
+            case 1:
+                return 1;
+        }
+
+        return 2;
+    }
 }

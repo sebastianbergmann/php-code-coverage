@@ -57,6 +57,7 @@ final class DeadCodeFindingVisitorTest extends TestCase
                 68,  // elseif after if (true) — condition line itself
                 69,  // dead body of elseif after if (true)
                 70,  // closing `}` wrapper line, dropped by the intersection
+                72,  // after an if (true) whose body returns
                 80,  // body of elseif (false)
                 89,  // body of while (false)
                 96,  // body of for (...; false; ...)
@@ -64,6 +65,10 @@ final class DeadCodeFindingVisitorTest extends TestCase
                 120, // dead arm of ternary with literal-true condition
                 136, // body of if (false), with a trailing Nop that must be skipped
                 158, // after goto
+                247, // after an if/else in which every branch returns
+                256, // after a while (true) without break or goto
+                290, // after a match in which every arm throws
+                313, // after a switch with a default case in which every case terminates
             ],
             array_keys($deadLines),
         );
@@ -73,8 +78,42 @@ final class DeadCodeFindingVisitorTest extends TestCase
     {
         $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code.php');
 
-        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 72, 78, 83, 88, 95, 104, 110, 113, 125, 130] as $liveLine) {
+        foreach ([8, 15, 21, 27, 34, 42, 49, 58, 67, 78, 83, 88, 95, 104, 110, 113, 125, 130] as $liveLine) {
             $this->assertArrayNotHasKey($liveLine, $deadLines);
+        }
+    }
+
+    public function testLinesSharedBetweenDeadAndReachableCodeAreNotDead(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code.php');
+
+        foreach ([
+            214, // one-line if (true) { ... } else { ... }; the else arm shares the line with the live if body
+            216, // return after a one-line if (true) with an else; the if does not terminate the control flow
+            221, // dead code on the line of the return that precedes it
+            226, // condition line of a ternary with arms on a shared line
+            227, // dead else arm of a ternary sharing its line with the live if arm
+            232, // for loop whose comma-separated conditions end in a live expression
+            233, // body of that for loop; only the last condition expression counts
+            236, // return after that for loop
+        ] as $liveLine) {
+            $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
+        }
+    }
+
+    public function testConstructsThatCanCompleteNormallyDoNotTerminateTheControlFlow(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code.php');
+
+        foreach ([
+            253, // body of a while (true); the loop itself is not dead
+            267, // after a while (true) that contains a break
+            280, // after a while (true) that contains a goto out of the loop
+            300, // after a match with an arm that does not throw
+            325, // after a switch that contains a break
+            335, // after a switch without a default case
+        ] as $liveLine) {
+            $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
         }
     }
 

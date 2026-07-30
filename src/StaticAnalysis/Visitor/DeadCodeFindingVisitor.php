@@ -9,7 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_key_last;
 use function ksort;
+use function max;
+use function min;
 use function strtolower;
 use PhpParser\Node;
 use PhpParser\NodeFinder;
@@ -22,10 +25,23 @@ use PhpParser\NodeVisitorAbstract;
  *
  *  - Statements that follow an unconditional control-flow transfer within the
  *    same `stmts` array (`return`, `throw`, exit/die, `break`, `continue`, `goto`).
+ *    An `if` statement whose every reachable branch ends in such a transfer
+ *    (an exhaustive `if`/`elseif`/`else` chain, or an `if (true)`) counts as an
+ *    unconditional transfer itself, as does an infinite loop (`while (true)`,
+ *    `do {} while (true)`, `for (;;)`) whose body contains neither `break`
+ *    nor `goto`, a `match` statement whose every arm throws or exits, and a
+ *    `switch` statement with a `default` case whose control flow cannot leave
+ *    the switch normally (no `break` or `continue`, terminating final case).
  *  - Bodies of branches with literal-constant conditions: `if (false) { ... }`,
  *    `elseif (false) { ... }`, `while (false) { ... }`, `for (...; false; ...) { ... }`,
  *    the `elseif`/`else` tail after an `if (true)`, and the unreachable arm of
  *    a ternary with a literal-constant condition.
+ *
+ * Dead-line reporting is line-based while reachability is statement-based: a
+ * line that also carries reachable code (dead code following a terminator on
+ * the terminator's own line, a dead `else` sharing a line with the live `if`
+ * body) must never be reported. Dead ranges are therefore clipped to the lines
+ * past the last line that contains reachable code.
  *
  * A label makes the code that follows it reachable again via `goto`. Since
  * `goto` may also jump into a conditional block (only loops and switches are
@@ -110,16 +126,25 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        $lastLiveLine = $node->cond->getEndLine();
+        $liveStmts    = $node->stmts;
+
+        if ($liveStmts !== []) {
+            $lastLiveLine = $liveStmts[array_key_last($liveStmts)]->getEndLine();
+        }
+
         foreach ($node->elseifs as $elseif) {
             if ($this->containsLabel($elseif->stmts)) {
+                $lastLiveLine = max($lastLiveLine, $elseif->getEndLine());
+
                 continue;
             }
 
-            $this->markRange($elseif->getStartLine(), $elseif->getEndLine());
+            $this->markRange(max($elseif->getStartLine(), $lastLiveLine + 1), $elseif->getEndLine());
         }
 
         if ($node->else !== null && !$this->containsLabel($node->else->stmts)) {
-            $this->markRange($node->else->getStartLine(), $node->else->getEndLine());
+            $this->markRange(max($node->else->getStartLine(), $lastLiveLine + 1), $node->else->getEndLine());
         }
     }
 
@@ -130,13 +155,22 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($this->isLiteralTrue($node->cond)) {
-            $this->markRange($node->else->getStartLine(), $node->else->getEndLine());
+            if ($node->if !== null) {
+                $lastLiveLine = $node->if->getEndLine();
+            } else {
+                $lastLiveLine = $node->cond->getEndLine();
+            }
+
+            $this->markRange(max($node->else->getStartLine(), $lastLiveLine + 1), $node->else->getEndLine());
 
             return;
         }
 
         if ($this->isLiteralFalse($node->cond) && $node->if !== null) {
-            $this->markRange($node->if->getStartLine(), $node->if->getEndLine());
+            $this->markRange(
+                max($node->if->getStartLine(), $node->cond->getEndLine() + 1),
+                min($node->if->getEndLine(), $node->else->getStartLine() - 1),
+            );
         }
     }
 
@@ -145,12 +179,14 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
      */
     private function markStatementsAfterTerminator(array $stmts): void
     {
-        $terminated = false;
+        $terminated   = false;
+        $lastLiveLine = 0;
 
         foreach ($stmts as $stmt) {
             if (!$terminated) {
                 if ($this->isTerminator($stmt)) {
-                    $terminated = true;
+                    $terminated   = true;
+                    $lastLiveLine = $stmt->getEndLine();
                 }
 
                 continue;
@@ -163,7 +199,7 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
             }
 
             if (!$stmt instanceof Node\Stmt\Nop) {
-                $this->markRange($stmt->getStartLine(), $stmt->getEndLine());
+                $this->markRange(max($stmt->getStartLine(), $lastLiveLine + 1), $stmt->getEndLine());
             }
         }
     }
@@ -220,8 +256,163 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($stmt instanceof Node\Stmt\Expression) {
-            return $stmt->expr instanceof Node\Expr\Throw_ ||
-                $stmt->expr instanceof Node\Expr\Exit_;
+            return $this->expressionTerminates($stmt->expr);
+        }
+
+        if ($stmt instanceof Node\Stmt\If_) {
+            return $this->ifAlwaysTerminates($stmt);
+        }
+
+        if ($stmt instanceof Node\Stmt\While_ && $this->isLiteralTrue($stmt->cond)) {
+            return $this->infiniteLoopTerminates($stmt->stmts);
+        }
+
+        if ($stmt instanceof Node\Stmt\Do_ && $this->isLiteralTrue($stmt->cond)) {
+            return $this->infiniteLoopTerminates($stmt->stmts);
+        }
+
+        if ($stmt instanceof Node\Stmt\For_ && $this->forLoopsForever($stmt)) {
+            return $this->infiniteLoopTerminates($stmt->stmts);
+        }
+
+        if ($stmt instanceof Node\Stmt\Switch_) {
+            return $this->switchAlwaysTerminates($stmt);
+        }
+
+        return false;
+    }
+
+    private function switchAlwaysTerminates(Node\Stmt\Switch_ $node): bool
+    {
+        $cases = $node->cases;
+
+        if ($cases === []) {
+            return false;
+        }
+
+        $hasDefault = false;
+
+        foreach ($cases as $case) {
+            if ($case->cond === null) {
+                $hasDefault = true;
+
+                break;
+            }
+        }
+
+        if (!$hasDefault) {
+            return false;
+        }
+
+        // A break leaves the switch and a continue either does the same or
+        // leaves an enclosing loop; either way the control flow can end up
+        // behind the switch, so the mere presence of one disqualifies it
+        $escape = (new NodeFinder)->findFirst($cases, static function (Node $node): bool
+        {
+            return $node instanceof Node\Stmt\Break_ || $node instanceof Node\Stmt\Continue_;
+        });
+
+        if ($escape !== null) {
+            return false;
+        }
+
+        // Through fallthrough, the control flow of every case that does not
+        // terminate on its own reaches the statements of the last case, so
+        // only the last case has to terminate
+        return $this->alwaysTerminates($cases[array_key_last($cases)]->stmts);
+    }
+
+    private function expressionTerminates(Node\Expr $expr): bool
+    {
+        if ($expr instanceof Node\Expr\Throw_ || $expr instanceof Node\Expr\Exit_) {
+            return true;
+        }
+
+        if (!$expr instanceof Node\Expr\Match_) {
+            return false;
+        }
+
+        // Evaluating a match either throws an UnhandledMatchError or evaluates
+        // one of its arms; when every arm throws or exits, the match as a
+        // whole cannot complete normally
+        foreach ($expr->arms as $arm) {
+            if (!$this->expressionTerminates($arm->body)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array<Node\Stmt> $stmts
+     */
+    private function infiniteLoopTerminates(array $stmts): bool
+    {
+        // A break can leave the loop and a goto can jump to a label behind
+        // it; whether one actually does is not decided here, so the mere
+        // presence of either disqualifies the loop
+        $escape = (new NodeFinder)->findFirst($stmts, static function (Node $node): bool
+        {
+            return $node instanceof Node\Stmt\Break_ || $node instanceof Node\Stmt\Goto_;
+        });
+
+        return $escape === null;
+    }
+
+    private function forLoopsForever(Node\Stmt\For_ $node): bool
+    {
+        $conditions = $node->cond;
+
+        if ($conditions === []) {
+            return true;
+        }
+
+        return $this->isLiteralTrue($conditions[array_key_last($conditions)]);
+    }
+
+    private function ifAlwaysTerminates(Node\Stmt\If_ $node): bool
+    {
+        if ($this->isLiteralTrue($node->cond)) {
+            if (!$this->alwaysTerminates($node->stmts)) {
+                return false;
+            }
+
+            // A goto into any branch can resume the control flow behind this statement
+            return !$this->containsLabel([$node]);
+        }
+
+        if ($node->else === null) {
+            return false;
+        }
+
+        if (!$this->alwaysTerminates($node->stmts)) {
+            return false;
+        }
+
+        foreach ($node->elseifs as $elseif) {
+            if (!$this->alwaysTerminates($elseif->stmts)) {
+                return false;
+            }
+        }
+
+        if (!$this->alwaysTerminates($node->else->stmts)) {
+            return false;
+        }
+
+        // A goto into any branch can resume the control flow behind this statement
+        return !$this->containsLabel([$node]);
+    }
+
+    /**
+     * @param array<Node\Stmt> $stmts
+     */
+    private function alwaysTerminates(array $stmts): bool
+    {
+        foreach ($stmts as $stmt) {
+            if ($this->isTerminator($stmt)) {
+                return true;
+            }
         }
 
         return false;
@@ -267,17 +458,15 @@ final class DeadCodeFindingVisitor extends NodeVisitorAbstract
 
     private function forBodyIsUnreachable(Node\Stmt\For_ $node): bool
     {
-        if ($node->cond === []) {
+        $conditions = $node->cond;
+
+        if ($conditions === []) {
             return false;
         }
 
-        foreach ($node->cond as $condition) {
-            if ($this->isLiteralFalse($condition)) {
-                return true;
-            }
-        }
-
-        return false;
+        // Only the last of the comma-separated condition expressions
+        // determines whether the loop body is entered
+        return $this->isLiteralFalse($conditions[array_key_last($conditions)]);
     }
 
     private function isLiteralTrue(?Node $node): bool

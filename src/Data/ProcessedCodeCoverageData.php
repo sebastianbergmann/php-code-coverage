@@ -53,6 +53,15 @@ final class ProcessedCodeCoverageData
     private array $testIdToIndex = [];
 
     /**
+     * The next index that testIndex() will assign. Tracked separately instead of derived
+     * from count($this->testIdToIndex) so that a sparse or non-zero-based index table
+     * installed through setTestIds() cannot cause two test case ids to share an index.
+     *
+     * @var TestIndexType
+     */
+    private int $nextTestIndex = 0;
+
+    /**
      * Function coverage data.
      * Maintains base format of raw data (@see RawCodeCoverageData), but each 'hit' entry is a map
      * of test index to the number of times the testcase traversed the branch or path (1 for drivers that do not
@@ -209,6 +218,11 @@ final class ProcessedCodeCoverageData
     public function setTestIds(array $testIds): void
     {
         $this->testIdToIndex = array_flip($testIds);
+        $this->nextTestIndex = 0;
+
+        if ($testIds !== []) {
+            $this->nextTestIndex = max(array_keys($testIds)) + 1;
+        }
     }
 
     /**
@@ -321,7 +335,8 @@ final class ProcessedCodeCoverageData
     private function testIndex(string $testCaseId): int
     {
         if (!isset($this->testIdToIndex[$testCaseId])) {
-            $this->testIdToIndex[$testCaseId] = count($this->testIdToIndex);
+            $this->testIdToIndex[$testCaseId] = $this->nextTestIndex;
+            $this->nextTestIndex++;
         }
 
         return $this->testIdToIndex[$testCaseId];

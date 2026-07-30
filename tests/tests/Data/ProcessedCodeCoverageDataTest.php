@@ -114,6 +114,35 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $this->assertArrayNotHasKey(9, $fileCoverage);
     }
 
+    public function testSetTestIdsWithSparseIndexTableDoesNotCauseIndexCollisions(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->setTestIds([1 => 'TestA']);
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'TestB',
+            RawCodeCoverageData::fromLineCoverage(
+                [
+                    '/some/path/SomeClass.php' => [
+                        8 => 1,
+                    ],
+                ],
+            ),
+        );
+
+        $this->assertSame([1 => 'TestA', 2 => 'TestB'], $coverage->testIds());
+
+        $lineCoverage = $coverage->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileCoverage = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileCoverage);
+        $this->assertSame([2 => 1], $fileCoverage[8]);
+    }
+
     public function testMergeOfAPreviouslyUnseenLine(): void
     {
         $newCoverage = new ProcessedCodeCoverageData;

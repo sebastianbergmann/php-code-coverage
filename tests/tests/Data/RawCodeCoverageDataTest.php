@@ -124,6 +124,41 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertSame($functionCoverage, $dataObject->functionCoverage());
     }
 
+    public function testFromLineAndBranchCoverageNormalizesReversedBranchLineRanges(): void
+    {
+        $functionCoverage = [
+            '/some/path/SomeClass.php' => [
+                'foo' => [
+                    'branches' => [
+                        0 => [
+                            'op_start'   => 0,
+                            'op_end'     => 0,
+                            'line_start' => 10,
+                            'line_end'   => 8,
+                            'hit'        => 1,
+                            'out'        => [],
+                            'out_hit'    => [],
+                        ],
+                    ],
+                    'paths' => [],
+                ],
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineAndBranchCoverage([], $functionCoverage);
+
+        $normalizedFunctionCoverage = $dataObject->functionCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $normalizedFunctionCoverage);
+        $this->assertArrayHasKey('foo', $normalizedFunctionCoverage['/some/path/SomeClass.php']);
+        $this->assertArrayHasKey(0, $normalizedFunctionCoverage['/some/path/SomeClass.php']['foo']['branches']);
+
+        $branch = $normalizedFunctionCoverage['/some/path/SomeClass.php']['foo']['branches'][0];
+
+        $this->assertSame(8, $branch['line_start']);
+        $this->assertSame(10, $branch['line_end']);
+    }
+
     public function testClear(): void
     {
         $lineDataFromDriver = [
@@ -910,6 +945,37 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertArrayHasKey(9, $fileLines);
         $this->assertSame(1, $fileLines[8]);
         $this->assertSame(1, $fileLines[9]);
+    }
+
+    public function testMarkExecutableLineByBranchDoesNotOverwriteHitCountsOfExecutedLines(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8  => 3,
+                9  => -1,
+                10 => 5,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        // All three lines belong to branch 0. The not-executed line 9 is marked
+        // with the hit count of the first executed member of the group, but the
+        // executed lines 8 and 10 keep their own hit counts.
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 9 => 0, 10 => 0]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertArrayHasKey(10, $fileLines);
+        $this->assertSame(3, $fileLines[8]);
+        $this->assertSame(3, $fileLines[9]);
+        $this->assertSame(5, $fileLines[10]);
     }
 
     public function testKeepFunctionCoverageDataOnlyForLines(): void

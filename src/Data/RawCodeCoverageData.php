@@ -11,7 +11,9 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use function array_diff_key;
 use function array_intersect_key;
+use function array_is_list;
 use function array_map;
+use function assert;
 use function explode;
 use function file_get_contents;
 use function in_array;
@@ -49,8 +51,8 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  * render a control flow graph degrade gracefully.
  *
  * line_start <= line_end is an invariant of BranchCoverageType. Xdebug reports loop
- * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage() normalizes
- * them, so consumers do not have to.
+ * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage() and
+ * fromLineAndBranchCoverage() normalize them, so consumers do not have to.
  *
  * The stripping of the trait method suffix that Xdebug appends to function keys
  * ("Foo->bar{trait-method:...}") happens in fromXdebugWithPathCoverage() and is not part
@@ -159,6 +161,30 @@ final class RawCodeCoverageData
      */
     public static function fromLineAndBranchCoverage(array $lineCoverage, array $functionCoverage): self
     {
+        // Producers may pass Xdebug-shaped loop back-edge branches with
+        // line_start > line_end; establish the line_start <= line_end
+        // invariant that the line-based filtering relies on
+        foreach ($functionCoverage as $file => $functions) {
+            foreach ($functions as $functionKey => $functionData) {
+                $normalized = false;
+
+                foreach ($functionData['branches'] as $branchId => $branch) {
+                    if ($branch['line_start'] > $branch['line_end']) {
+                        $lineStart            = $branch['line_start'];
+                        $branch['line_start'] = $branch['line_end'];
+                        $branch['line_end']   = $lineStart;
+
+                        $functionData['branches'][$branchId] = $branch;
+                        $normalized                          = true;
+                    }
+                }
+
+                if ($normalized) {
+                    $functionCoverage[$file][$functionKey] = $functionData;
+                }
+            }
+        }
+
         return new self($lineCoverage, $functionCoverage);
     }
 
@@ -222,6 +248,10 @@ final class RawCodeCoverageData
      */
     public function keepLineCoverageDataOnlyForLines(string $filename, array $lines): void
     {
+        // A non-empty list means the caller passed line numbers as values,
+        // the contract of this method before version 14.3 of this library
+        assert($lines === [] || !array_is_list($lines));
+
         if (!isset($this->lineCoverage[$filename])) {
             return;
         }
@@ -292,6 +322,15 @@ final class RawCodeCoverageData
             }
 
             foreach ($linesByBranch[$branch] as $lineInBranch) {
+                // A line that was executed keeps its own hit count; propagating
+                // another group member's count would discard real data of
+                // drivers that collect hit counts
+                $current = $this->lineCoverage[$filename][$lineInBranch] ?? null;
+
+                if ($current !== null && $current >= Driver::LINE_EXECUTED) {
+                    continue;
+                }
+
                 $this->lineCoverage[$filename][$lineInBranch] = $lineStatus;
             }
 
@@ -306,6 +345,10 @@ final class RawCodeCoverageData
      */
     public function keepFunctionCoverageDataOnlyForLines(string $filename, array $lines): void
     {
+        // A non-empty list means the caller passed line numbers as values,
+        // the contract of this method before version 14.3 of this library
+        assert($lines === [] || !array_is_list($lines));
+
         if (!isset($this->functionCoverage[$filename])) {
             return;
         }
@@ -342,6 +385,10 @@ final class RawCodeCoverageData
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
+        // A non-empty list means the caller passed line numbers as values,
+        // the contract of this method before version 14.3 of this library
+        assert($lines === [] || !array_is_list($lines));
+
         if ($lines === []) {
             return;
         }

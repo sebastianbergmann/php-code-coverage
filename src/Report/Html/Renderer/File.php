@@ -167,7 +167,7 @@ final class File extends Renderer
 
     private function renderItems(FileNode $node): string
     {
-        $template = new Template($this->templateNameForTier('file_item'), '{{', '}}');
+        $template = $this->template($this->templateNameForTier('file_item'));
 
         $methodItemTemplate = new Template(
             $this->templateNameForTier('method_item'),
@@ -472,7 +472,7 @@ final class File extends Renderer
     private function renderSourceWithLineCoverage(FileNode $node): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+        $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
 
         $coverageData      = $node->lineCoverageData();
         $collectsHitCounts = $node->collectsHitCounts();
@@ -570,7 +570,7 @@ final class File extends Renderer
     private function renderSourceWithBranchCoverage(FileNode $node): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+        $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
 
         $functionCoverageData = $node->functionCoverageData();
         $testData             = $node->testData();
@@ -697,7 +697,7 @@ final class File extends Renderer
     private function renderSourceWithPathCoverage(FileNode $node): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+        $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
 
         $functionCoverageData = $node->functionCoverageData();
         $testData             = $node->testData();

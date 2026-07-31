@@ -123,7 +123,7 @@ final class Directory extends Renderer
         }
 
         return $this->renderItemTemplate(
-            new Template($this->templateNameForTier('directory_item'), '{{', '}}'),
+            $this->template($this->templateNameForTier('directory_item')),
             $data,
         );
     }

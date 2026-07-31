@@ -147,7 +147,7 @@ final class Class_ extends Renderer
 
     private function renderItems(ClassNode $node): string
     {
-        $methodItemTemplate = new Template($this->templateNameForTier('class_item'), '{{', '}}');
+        $methodItemTemplate = $this->template($this->templateNameForTier('class_item'));
 
         $items = '';
 
@@ -317,7 +317,7 @@ final class Class_ extends Renderer
     private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
-        $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
+        $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
 
         $codeLines = $this->syntaxHighlighter->highlight($filePath);
         $lines     = '';

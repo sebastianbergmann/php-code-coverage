@@ -106,6 +106,11 @@ abstract class Renderer
      */
     private array $fileToClassMap = [];
 
+    /**
+     * @var array<non-empty-string, Template>
+     */
+    private array $templates = [];
+
     public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage, Views $views = Views::FileViewAndClassView)
     {
         $this->templatePath      = $templatePath;
@@ -125,6 +130,22 @@ abstract class Renderer
     public function setFileToClassMap(array $map): void
     {
         $this->fileToClassMap = $map;
+    }
+
+    /**
+     * The text of a template does not change while a report is rendered, so the
+     * same instance is used again instead of reading and parsing the same
+     * template file for every node, source line, and coverage bar.
+     *
+     * An instance returned by this method still carries the values of its
+     * previous use: only use it for templates that have all of their
+     * placeholders set on every use.
+     *
+     * @param non-empty-string $name
+     */
+    protected function template(string $name): Template
+    {
+        return $this->templates[$name] ??= new Template($name, '{{', '}}');
     }
 
     /**
@@ -203,7 +224,7 @@ abstract class Renderer
         $labels['classes'] = $classesLabel;
 
         $metrics  = $this->metrics($data);
-        $template = new Template($this->templatePath . 'summary_metric.html', '{{', '}}');
+        $template = $this->template($this->templatePath . 'summary_metric.html');
         $rendered = '';
 
         foreach ($labels as $group => $label) {
@@ -221,7 +242,7 @@ abstract class Renderer
             $rendered .= $template->render();
         }
 
-        $summary = new Template($this->templatePath . 'summary.html', '{{', '}}');
+        $summary = $this->template($this->templatePath . 'summary.html');
 
         $summary->setVar(
             [
@@ -360,11 +381,7 @@ abstract class Renderer
 
     protected function coverageBar(float $percent): string
     {
-        $template = new Template(
-            $this->templatePath . 'coverage_bar.html',
-            '{{',
-            '}}',
-        );
+        $template = $this->template($this->templatePath . 'coverage_bar.html');
 
         $template->setVar(['percent' => sprintf('%.2F', round($percent, 2, RoundingMode::TowardsZero))]);
 

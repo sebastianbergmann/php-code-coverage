@@ -161,7 +161,7 @@ final class Namespace_ extends Renderer
         );
 
         return $this->renderItemTemplate(
-            new Template($this->templateNameForTier('namespace_item'), '{{', '}}'),
+            $this->template($this->templateNameForTier('namespace_item')),
             $data,
         );
     }

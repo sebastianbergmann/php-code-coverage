@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => '0ac6e384ac13a51b8b4b0ea6222ad8a83fe4c0fb',
+        'pretty_version' => '14.2.x-dev',
+        'version' => '14.2.9999999.9999999-dev',
+        'reference' => '80d9f3d4c44dc8ceb308082440883c4634935af0',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '0ac6e384ac13a51b8b4b0ea6222ad8a83fe4c0fb',
+            'pretty_version' => '14.2.x-dev',
+            'version' => '14.2.9999999.9999999-dev',
+            'reference' => '80d9f3d4c44dc8ceb308082440883c4634935af0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -47,9 +47,9 @@
             'dev_requirement' => true,
         ),
         'phpstan/phpstan' => array(
-            'pretty_version' => '2.2.5',
-            'version' => '2.2.5.0',
-            'reference' => '909c1e5fef7989ac0d0c1c5c42e32a5c4f6198a0',
+            'pretty_version' => '2.2.7',
+            'version' => '2.2.7.0',
+            'reference' => '692db47b9dddb0487934e5236e77d48594aef921',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpstan/phpstan',
             'aliases' => array(),
@@ -65,9 +65,9 @@
             'dev_requirement' => true,
         ),
         'phpstan/phpstan-strict-rules' => array(
-            'pretty_version' => '2.0.11',
-            'version' => '2.0.11.0',
-            'reference' => '9b000a578b85b32945b358b172c7b20e91189024',
+            'pretty_version' => '2.0.12',
+            'version' => '2.0.12.0',
+            'reference' => '2bc5ae19ae965663b62ac907ee6342c3903ec93b',
             'type' => 'phpstan-extension',
             'install_path' => __DIR__ . '/../phpstan/phpstan-strict-rules',
             'aliases' => array(),

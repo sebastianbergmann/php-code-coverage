@@ -19,6 +19,7 @@ use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Util\PathReducer;
 
 /**
@@ -28,6 +29,7 @@ use SebastianBergmann\CodeCoverage\Util\PathReducer;
  *
  * @phpstan-import-type TestType from CodeCoverage
  * @phpstan-import-type TestIndexType from ProcessedCodeCoverageData
+ * @phpstan-import-type TestSizeSet from TestSizes
  *
  * @phpstan-type TestDataType array{name: non-empty-string, size: string, status: string, time: float}
  */
@@ -66,10 +68,16 @@ final readonly class Builder
 
         $root = new Directory($rootPath, null);
 
+        $testData = $this->testDataByTestIndex($codeCoverage->testIds(), $testResults);
+
         $this->addItems(
             $root,
             $this->buildDirectoryStructure($codeCoverage),
-            $this->testDataByTestIndex($codeCoverage->testIds(), $testResults),
+            $testData,
+            // The test data is the same for every file of the report, so the
+            // size of each test is resolved to its bit here instead of once
+            // per file
+            File::sizeBitByTestIndex($testData),
             $codeCoverage->collectsHitCounts(),
         );
 
@@ -110,8 +118,9 @@ final readonly class Builder
     /**
      * @param array<array-key, mixed>            $items
      * @param array<TestIndexType, TestDataType> $tests
+     * @param array<TestIndexType, TestSizeSet>  $sizeBitByTestIndex
      */
-    private function addItems(Directory $root, array $items, array $tests, bool $collectsHitCounts): void
+    private function addItems(Directory $root, array $items, array $tests, array $sizeBitByTestIndex, bool $collectsHitCounts): void
     {
         foreach ($items as $key => $value) {
             $key = (string) $key;
@@ -139,13 +148,14 @@ final readonly class Builder
                             $analysisResult->linesOfCode(),
                             $value->functionCoverage !== [],
                             $collectsHitCounts,
+                            $sizeBitByTestIndex,
                         ),
                     );
                 }
             } elseif (is_array($value)) {
                 $child = $root->addDirectory($key);
 
-                $this->addItems($child, $value, $tests, $collectsHitCounts);
+                $this->addItems($child, $value, $tests, $sizeBitByTestIndex, $collectsHitCounts);
             }
         }
     }

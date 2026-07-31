@@ -54,6 +54,9 @@ final class TestSizes
         self::SMALL | self::MEDIUM | self::LARGE => 0,
     ];
 
+    /**
+     * @return 0|self::LARGE|self::MEDIUM|self::SMALL
+     */
     public static function bitFor(string $size): int
     {
         if ($size === 'small') {

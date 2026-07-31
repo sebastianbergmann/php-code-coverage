@@ -132,6 +132,31 @@ final class File extends AbstractNode
     private readonly array $rawTraits;
 
     /**
+     * Resolves the size of each test to the bit that represents it, so that the
+     * string comparisons are not repeated for every covering test of every
+     * executed line. The result is the same for every file of a report, which
+     * is why Builder resolves it once and passes it to every file.
+     *
+     * @param array<TestIndexType, TestDataType> $testData
+     *
+     * @return array<TestIndexType, TestSizeSet>
+     */
+    public static function sizeBitByTestIndex(array $testData): array
+    {
+        $sizeBitByTestIndex = [];
+
+        foreach ($testData as $testIndex => $data) {
+            $sizeBit = TestSizes::bitFor($data['size']);
+
+            if ($sizeBit !== 0) {
+                $sizeBitByTestIndex[$testIndex] = $sizeBit;
+            }
+        }
+
+        return $sizeBitByTestIndex;
+    }
+
+    /**
      * @param non-empty-string                                         $sha1
      * @param array<positive-int, ?array<TestIndexType, positive-int>> $lineCoverageData
      * @param array<non-empty-string, ProcessedFunctionCoverageData>   $functionCoverageData
@@ -139,8 +164,9 @@ final class File extends AbstractNode
      * @param array<string, Class_>                                    $classes
      * @param array<string, Trait_>                                    $traits
      * @param array<string, Function_>                                 $functions
+     * @param ?array<TestIndexType, TestSizeSet>                       $sizeBitByTestIndex   derived from $testData when not given
      */
-    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false)
+    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false, ?array $sizeBitByTestIndex = null)
     {
         parent::__construct($name, $parent);
 
@@ -154,7 +180,7 @@ final class File extends AbstractNode
         $this->rawClasses            = $classes;
         $this->rawTraits             = $traits;
 
-        $this->calculateStatistics($classes, $traits, $functions);
+        $this->calculateStatistics($classes, $traits, $functions, $sizeBitByTestIndex ?? self::sizeBitByTestIndex($testData));
     }
 
     public function count(): int
@@ -460,30 +486,18 @@ final class File extends AbstractNode
     }
 
     /**
-     * @param array<string, Class_>    $classes
-     * @param array<string, Trait_>    $traits
-     * @param array<string, Function_> $functions
+     * @param array<string, Class_>             $classes
+     * @param array<string, Trait_>             $traits
+     * @param array<string, Function_>          $functions
+     * @param array<TestIndexType, TestSizeSet> $sizeBitByTestIndex
      */
-    private function calculateStatistics(array $classes, array $traits, array $functions): void
+    private function calculateStatistics(array $classes, array $traits, array $functions, array $sizeBitByTestIndex): void
     {
         $this->processClasses($classes);
         $this->processTraits($traits);
         $this->processFunctions($functions);
 
         $linesOfCode = $this->linesOfCode->linesOfCode();
-
-        // The test data is fixed for the lifetime of this node; resolving each
-        // test index to its size bit once avoids repeating the string comparisons
-        // for every covering test of every executed line
-        $sizeBitByTestIndex = [];
-
-        foreach ($this->testData as $testIndex => $data) {
-            $sizeBit = TestSizes::bitFor($data['size']);
-
-            if ($sizeBit !== 0) {
-                $sizeBitByTestIndex[$testIndex] = $sizeBit;
-            }
-        }
 
         for ($lineNumber = 1; $lineNumber <= $linesOfCode; $lineNumber++) {
             $lineData = $this->lineCoverageData[$lineNumber] ?? null;

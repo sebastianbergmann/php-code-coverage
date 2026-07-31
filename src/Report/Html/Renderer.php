@@ -71,6 +71,7 @@ use SebastianBergmann\Template\Template;
  * @phpstan-type CoverageMetric array{level: string, percent: string, number: string, bar: string}
  *
  * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
+ * @phpstan-import-type TestIndexType from \SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData
  */
 abstract class Renderer
 {
@@ -110,6 +111,11 @@ abstract class Renderer
      * @var array<non-empty-string, Template>
      */
     private array $templates = [];
+
+    /**
+     * @var array<TestIndexType, string>
+     */
+    private array $popoverContentForTest = [];
 
     public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage, Views $views = Views::FileViewAndClassView)
     {
@@ -552,10 +558,18 @@ abstract class Renderer
     }
 
     /**
-     * @param TestDataType $testData
+     * The list item for a test is the same everywhere that test covers a line,
+     * and a test usually covers many lines, so it is only built once.
+     *
+     * @param TestIndexType $testIndex
+     * @param TestDataType  $testData
      */
-    protected function createPopoverContentForTest(array $testData): string
+    protected function createPopoverContentForTest(int $testIndex, array $testData): string
     {
+        if (isset($this->popoverContentForTest[$testIndex])) {
+            return $this->popoverContentForTest[$testIndex];
+        }
+
         $testCSS = '';
 
         switch ($testData['status']) {
@@ -575,7 +589,7 @@ abstract class Renderer
                 break;
         }
 
-        return sprintf(
+        return $this->popoverContentForTest[$testIndex] = sprintf(
             '<li%s>%s</li>',
             $testCSS,
             htmlspecialchars($testData['name'], self::HTML_SPECIAL_CHARS_FLAGS),

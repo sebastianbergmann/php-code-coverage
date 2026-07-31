@@ -521,7 +521,7 @@ final class File extends Renderer
                             $lineCss = 'covered-by-small-tests';
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';
@@ -677,7 +677,7 @@ final class File extends Renderer
                         // @codeCoverageIgnoreEnd
                     }
 
-                    $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
+                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                 }
 
                 $popoverContent .= '</ul>';
@@ -781,7 +781,7 @@ final class File extends Renderer
                         // @codeCoverageIgnoreEnd
                     }
 
-                    $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
+                    $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                 }
 
                 $popoverContent .= '</ul>';
@@ -862,7 +862,7 @@ final class File extends Renderer
                             // @codeCoverageIgnoreEnd
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';
@@ -980,7 +980,7 @@ final class File extends Renderer
                             // @codeCoverageIgnoreEnd
                         }
 
-                        $popoverContent .= $this->createPopoverContentForTest($testData[$test]);
+                        $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
                     $popoverContent .= '</ul>';

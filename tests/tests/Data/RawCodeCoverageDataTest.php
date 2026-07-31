@@ -978,6 +978,114 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertSame(5, $fileLines[10]);
     }
 
+    public function testMarkExecutableLineByBranchMarksLinesOfBranchThatWasNotExecutedWithStatusOfItsLastLine(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8 => -2,
+                9 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        // Both lines belong to branch 0 and neither of them was executed. No
+        // line of the branch settles it, so the status of its last line wins:
+        // line 8 is overwritten with the status of line 9, not the other way
+        // around.
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 9 => 0]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertSame(-1, $fileLines[8]);
+        $this->assertSame(-1, $fileLines[9]);
+    }
+
+    public function testMarkExecutableLineByBranchUsesTheOrderOfTheCoverageDataAndNotTheOrderOfLineNumbers(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                10 => -1,
+                8  => -2,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        // The coverage data is not required to be ordered by line number. The
+        // last line of the branch is line 8 because it comes last in the
+        // coverage data, so its status is the one that wins.
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 10 => 0]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(8, $fileLines);
+        $this->assertArrayHasKey(10, $fileLines);
+        $this->assertSame(-2, $fileLines[8]);
+        $this->assertSame(-2, $fileLines[10]);
+    }
+
+    public function testMarkExecutableLineByBranchMarksLineOfBranchThatTheDriverDidNotReport(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8 => 1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        // Lines 9 and 10 belong to the same branch as line 8 but are missing
+        // from the coverage data. They are added with the status of the branch.
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 9 => 0, 10 => 0]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayHasKey(9, $fileLines);
+        $this->assertArrayHasKey(10, $fileLines);
+        $this->assertSame(1, $fileLines[9]);
+        $this->assertSame(1, $fileLines[10]);
+    }
+
+    public function testMarkExecutableLineByBranchDoesNotMarkLinesOfBranchThatIsNotInTheCoverageData(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8 => 1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        // No line of branch 1 is in the coverage data, so there is no status to
+        // propagate and its lines must not be added.
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', [8 => 0, 20 => 1, 21 => 1]);
+
+        $lineCoverage = $dataObject->lineCoverage();
+
+        $this->assertArrayHasKey('/some/path/SomeClass.php', $lineCoverage);
+
+        $fileLines = $lineCoverage['/some/path/SomeClass.php'];
+
+        $this->assertArrayNotHasKey(20, $fileLines);
+        $this->assertArrayNotHasKey(21, $fileLines);
+        $this->assertSame([8 => 1], $fileLines);
+    }
+
     public function testKeepFunctionCoverageDataOnlyForLines(): void
     {
         $filename = '/some/path/SomeClass.php';

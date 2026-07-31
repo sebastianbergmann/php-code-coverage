@@ -304,40 +304,47 @@ final class RawCodeCoverageData
             return;
         }
 
-        $linesByBranch = [];
+        $lineCoverage = $this->lineCoverage[$filename];
 
-        foreach ($linesToBranchMap as $line => $branch) {
-            $linesByBranch[$branch][] = $line;
-        }
+        // All lines of a branch share the status of the first line of that
+        // branch that was executed. When no line of a branch was executed,
+        // they share the status of the last line of that branch, which is
+        // the status the lines before it were overwritten with.
+        $statusByBranch = [];
 
-        foreach ($this->lineCoverage[$filename] as $line => $lineStatus) {
+        foreach ($lineCoverage as $line => $lineStatus) {
             if (!isset($linesToBranchMap[$line])) {
                 continue;
             }
 
             $branch = $linesToBranchMap[$line];
+            $status = $statusByBranch[$branch] ?? null;
 
-            if (!isset($linesByBranch[$branch])) {
+            if ($status !== null && $status >= Driver::LINE_EXECUTED) {
                 continue;
             }
 
-            foreach ($linesByBranch[$branch] as $lineInBranch) {
-                // A line that was executed keeps its own hit count; propagating
-                // another group member's count would discard real data of
-                // drivers that collect hit counts
-                $current = $this->lineCoverage[$filename][$lineInBranch] ?? null;
-
-                if ($current !== null && $current >= Driver::LINE_EXECUTED) {
-                    continue;
-                }
-
-                $this->lineCoverage[$filename][$lineInBranch] = $lineStatus;
-            }
-
-            if ($lineStatus >= Driver::LINE_EXECUTED) {
-                unset($linesByBranch[$branch]);
-            }
+            $statusByBranch[$branch] = $lineStatus;
         }
+
+        foreach ($linesToBranchMap as $line => $branch) {
+            if (!isset($statusByBranch[$branch])) {
+                continue;
+            }
+
+            $status = $lineCoverage[$line] ?? null;
+
+            // A line that was executed keeps its own hit count; propagating
+            // another line's count would discard real data of drivers that
+            // collect hit counts
+            if ($status !== null && $status >= Driver::LINE_EXECUTED) {
+                continue;
+            }
+
+            $lineCoverage[$line] = $statusByBranch[$branch];
+        }
+
+        $this->lineCoverage[$filename] = $lineCoverage;
     }
 
     /**

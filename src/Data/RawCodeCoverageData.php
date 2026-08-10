@@ -142,8 +142,11 @@ final class RawCodeCoverageData
             foreach ($fileCoverageData['functions'] as $functionKey => $functionData) {
                 foreach ($functionData['branches'] as $branchId => $branch) {
                     if ($branch['line_start'] > $branch['line_end']) {
-                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId]['line_start'] = $branch['line_end'];
-                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId]['line_end']   = $branch['line_start'];
+                        $lineStart            = $branch['line_start'];
+                        $branch['line_start'] = $branch['line_end'];
+                        $branch['line_end']   = $lineStart;
+
+                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId] = $branch;
                     }
                 }
             }

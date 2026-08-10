@@ -6,9 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'TomasVotruba\\TypeCoverage\\' => array($vendorDir . '/tomasvotruba/type-coverage/src'),
+    'Rector\\TypePerfect\\' => array($vendorDir . '/tomasvotruba/type-coverage/packages/type-perfect/src'),
     'PHPStan\\ExtensionInstaller\\' => array($vendorDir . '/phpstan/extension-installer/src'),
     'PHPStan\\' => array($vendorDir . '/phpstan/phpstan-strict-rules/src'),
-    'Nette\\' => array($vendorDir . '/nette/utils/src'),
     'Ergebnis\\PHPStan\\Rules\\' => array($vendorDir . '/ergebnis/phpstan-rules/src'),
 );

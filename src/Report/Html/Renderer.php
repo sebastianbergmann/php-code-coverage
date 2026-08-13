@@ -22,6 +22,7 @@ use function round;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
+use function strtolower;
 use function substr_count;
 use RoundingMode;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
@@ -92,6 +93,18 @@ abstract class Renderer
         TestSizes::MEDIUM | TestSizes::LARGE                    => 'ML',
         TestSizes::SMALL | TestSizes::MEDIUM | TestSizes::LARGE => 'SML',
     ];
+
+    /**
+     * The individual test sizes the test size filter can offer, in the order
+     * in which they are offered.
+     *
+     * @var array<int, non-empty-string>
+     */
+    private const array TEST_SIZE_LABELS = [
+        TestSizes::SMALL  => 'Small',
+        TestSizes::MEDIUM => 'Medium',
+        TestSizes::LARGE  => 'Large',
+    ];
     protected readonly SyntaxHighlighter $syntaxHighlighter;
     protected string $templatePath;
     protected string $generator;
@@ -99,6 +112,13 @@ abstract class Renderer
     protected Thresholds $thresholds;
     protected bool $hasBranchCoverage;
     protected bool $hasPathCoverage;
+
+    /**
+     * The test sizes for which the report has coverage data.
+     *
+     * @var int<0, 7>
+     */
+    protected int $testSizes;
     protected Views $views;
     protected string $version;
 
@@ -117,7 +137,10 @@ abstract class Renderer
      */
     private array $popoverContentForTest = [];
 
-    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage, Views $views = Views::FileViewAndClassView)
+    /**
+     * @param int<0, 7> $testSizes
+     */
+    public function __construct(string $templatePath, string $generator, string $date, Thresholds $thresholds, bool $hasBranchCoverage, bool $hasPathCoverage, int $testSizes = TestSizes::ALL, Views $views = Views::FileViewAndClassView)
     {
         $this->templatePath      = $templatePath;
         $this->generator         = $generator;
@@ -126,6 +149,7 @@ abstract class Renderer
         $this->version           = Version::id();
         $this->hasBranchCoverage = $hasBranchCoverage;
         $this->hasPathCoverage   = $hasPathCoverage;
+        $this->testSizes         = $testSizes;
         $this->views             = $views;
         $this->syntaxHighlighter = new SyntaxHighlighter;
     }
@@ -274,10 +298,66 @@ abstract class Renderer
                 'version'          => $this->version,
                 'runtime'          => $this->runtimeString(),
                 'generator'        => $this->generator,
-                'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
-                'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
+                'test_size_filter' => $this->testSizeFilter(),
                 'view_switcher'    => $this->views->classView() ? $this->viewSwitcher($pathToRoot, 'files', 'index.html', $this->classViewTarget($node)) : '',
             ],
+        );
+    }
+
+    /**
+     * The toolbar that filters the coverage metrics by test size.
+     *
+     * A test size for which the report has no coverage data is offered, but
+     * disabled: filtering by it could only ever result in 0%, and showing it
+     * as unavailable tells the difference between "no test of this size
+     * covers any code" and "tests of this size cover nothing", which an
+     * enabled checkbox that results in 0% does not. When no test size at all
+     * has coverage data, the toolbar is not rendered because there is nothing
+     * it could filter by.
+     */
+    protected function testSizeFilter(): string
+    {
+        if ($this->testSizes === 0) {
+            return '';
+        }
+
+        $checkboxes = '';
+
+        foreach (self::TEST_SIZE_LABELS as $testSize => $label) {
+            $id = strtolower($label);
+
+            // the checkbox itself is visually hidden, so the explanation has
+            // to be on the label that is styled to look like a button
+            $disabled = '';
+            $title    = '';
+
+            if (($this->testSizes & $testSize) !== $testSize) {
+                $disabled = ' disabled';
+                $title    = sprintf(' title="No code in this report is covered by tests of size %s"', $id);
+            }
+
+            $checkboxes .= sprintf(
+                '     <input type="checkbox" id="filter-size-%s" data-test-size-filter="%s" autocomplete="off"%s><label for="filter-size-%s"%s>%s</label>' . "\n",
+                $id,
+                $id,
+                $disabled,
+                $id,
+                $title,
+                $label,
+            );
+        }
+
+        return sprintf(
+            '   <div class="toolbar">' . "\n" .
+            '    <div class="test-size-filter" role="group" aria-label="Show coverage by test size" data-low-upper-bound="%s" data-high-lower-bound="%s">' . "\n" .
+            '     <span class="control-label">Covered by tests of size</span>' . "\n" .
+            '%s' .
+            '     <button type="button" data-test-size-filter-all aria-pressed="true">Any</button>' . "\n" .
+            '    </div>' . "\n" .
+            '   </div>' . "\n",
+            $this->thresholds->lowUpperBound(),
+            $this->thresholds->highLowerBound(),
+            $checkboxes,
         );
     }
 

@@ -1451,6 +1451,68 @@ final readonly class CoverageFixtureProvider
     }
 
     /**
+     * Records line coverage for BankAccount.php where the covering tests are
+     * all small except for one large test, so that the test size filter of the
+     * HTML report has to leave out one of the three test sizes.
+     */
+    public function lineCoverageForBankAccountWithoutMediumTests(): CodeCoverage
+    {
+        $data = $this->lineCoverageXdebugDataForBankAccount();
+
+        $driver = new FakeDriver(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('BankAccountTest::testBalanceIsInitiallyZero', TestSize::Small, true);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative', TestSize::Small);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative2', TestSize::Small);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testDepositWithdrawMoney', TestSize::Large);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    /**
+     * Records line coverage for BankAccount.php where all covering tests have
+     * the same size, so that the test size filter of the HTML report cannot
+     * show anything the unfiltered report does not already show.
+     */
+    public function lineCoverageForBankAccountWithSmallTestsOnly(): CodeCoverage
+    {
+        $data = $this->lineCoverageXdebugDataForBankAccount();
+
+        $driver = new FakeDriver(...$data);
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'BankAccount.php');
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('BankAccountTest::testBalanceIsInitiallyZero', TestSize::Small, true);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative', TestSize::Small);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testBalanceCannotBecomeNegative2', TestSize::Small);
+        $coverage->stop();
+
+        $coverage->start('BankAccountTest::testDepositWithdrawMoney', TestSize::Small);
+        $coverage->stop();
+
+        return $coverage;
+    }
+
+    /**
      * Records branch and path coverage for BankAccount.php where the covering
      * tests have different sizes so that the size-dependent rendering branches
      * in the branch and path source views are exercised.

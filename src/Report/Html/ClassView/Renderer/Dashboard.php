@@ -80,8 +80,7 @@ final class Dashboard extends Renderer
                 'version'          => $this->version,
                 'runtime'          => $this->runtimeString(),
                 'generator'        => $this->generator,
-                'low_upper_bound'  => (string) $this->thresholds->lowUpperBound(),
-                'high_lower_bound' => (string) $this->thresholds->highLowerBound(),
+                'test_size_filter' => $this->testSizeFilter(),
                 'view_switcher'    => $this->views->fileView() ? $this->viewSwitcher($pathToRoot, 'classes', 'dashboard.html') : '',
             ],
         );

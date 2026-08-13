@@ -15,16 +15,7 @@
    </nav>
 {{view_switcher}}  </header>
   <main>
-{{tabs}}{{summary}}   <div class="toolbar">
-    <div class="test-size-filter" role="group" aria-label="Show coverage by test size" data-low-upper-bound="{{low_upper_bound}}" data-high-lower-bound="{{high_lower_bound}}">
-     <span class="control-label">Covered by tests of size</span>
-     <input type="checkbox" id="filter-size-small" data-test-size-filter="small" autocomplete="off"><label for="filter-size-small">Small</label>
-     <input type="checkbox" id="filter-size-medium" data-test-size-filter="medium" autocomplete="off"><label for="filter-size-medium">Medium</label>
-     <input type="checkbox" id="filter-size-large" data-test-size-filter="large" autocomplete="off"><label for="filter-size-large">Large</label>
-     <button type="button" data-test-size-filter-all aria-pressed="true">Any</button>
-    </div>
-   </div>
-   <div class="table-scroll">
+{{tabs}}{{summary}}{{test_size_filter}}   <div class="table-scroll">
     <table class="coverage">
      <thead>
       <tr>

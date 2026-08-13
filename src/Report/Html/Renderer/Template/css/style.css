@@ -333,6 +333,16 @@ main > .tabs {
     color: var(--text);
 }
 
+/* a test size that no test of the report has covered any code with */
+.test-size-filter input:disabled + label,
+.test-size-filter input:disabled + label:hover {
+    border-color: var(--border);
+    border-style: dashed;
+    color: var(--text-muted);
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .test-size-filter input:checked + label,
 .test-size-filter button[aria-pressed="true"] {
     border-color: var(--accent);

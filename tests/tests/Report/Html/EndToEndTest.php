@@ -161,6 +161,53 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString($bankAccountCoverageData, $classView);
     }
 
+    public function testTestSizeFilterDisablesTestSizesThatHaveNoCoverageData(): void
+    {
+        $report = new Facade;
+        $report->process($this->lineCoverageForBankAccountWithoutMediumTests()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        foreach (['index.html', 'BankAccount.php.html', '_classes' . DIRECTORY_SEPARATOR . 'index.html'] as $file) {
+            $contents = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . $file);
+
+            $this->assertNotFalse($contents);
+
+            $this->assertStringContainsString('data-test-size-filter="small" autocomplete="off">', $contents, $file);
+            $this->assertStringContainsString('data-test-size-filter="large" autocomplete="off">', $contents, $file);
+
+            // no test of size medium covered any code, so filtering by that
+            // test size could only ever result in 0%
+            $this->assertStringContainsString('data-test-size-filter="medium" autocomplete="off" disabled>', $contents, $file);
+            $this->assertStringContainsString('title="No code in this report is covered by tests of size medium"', $contents, $file);
+        }
+    }
+
+    public function testTestSizeFilterIsRenderedWhenOnlyOneTestSizeHasCoverageData(): void
+    {
+        $report = new Facade;
+        $report->process($this->lineCoverageForBankAccountWithSmallTestsOnly()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        foreach (['index.html', 'BankAccount.php.html', '_classes' . DIRECTORY_SEPARATOR . 'index.html'] as $file) {
+            $contents = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . $file);
+
+            $this->assertNotFalse($contents);
+
+            $this->assertStringContainsString('data-test-size-filter="small" autocomplete="off">', $contents, $file);
+            $this->assertStringContainsString('data-test-size-filter="medium" autocomplete="off" disabled>', $contents, $file);
+            $this->assertStringContainsString('data-test-size-filter="large" autocomplete="off" disabled>', $contents, $file);
+        }
+    }
+
+    public function testTestSizeFilterIsNotRenderedWhenCoverageDataHasNoTestSizes(): void
+    {
+        $report = new Facade;
+        $report->process($this->getLineCoverageForBankAccount()->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $index = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'index.html');
+
+        $this->assertNotFalse($index);
+        $this->assertStringNotContainsString('test-size-filter', $index);
+    }
+
     public function testTestSizeAndStatusAreReflectedInSourceRendering(): void
     {
         $report = new Facade;

@@ -960,6 +960,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return new CoverageFixtureProvider()->coverageForBankAccountWithVariousTestSizesAndStatuses();
     }
 
+    protected function lineCoverageForBankAccountWithoutMediumTests(): CodeCoverage
+    {
+        return new CoverageFixtureProvider()->lineCoverageForBankAccountWithoutMediumTests();
+    }
+
+    protected function lineCoverageForBankAccountWithSmallTestsOnly(): CodeCoverage
+    {
+        return new CoverageFixtureProvider()->lineCoverageForBankAccountWithSmallTestsOnly();
+    }
+
     protected function pathCoverageForBankAccountWithVariousTestSizes(): CodeCoverage
     {
         return new CoverageFixtureProvider()->pathCoverageForBankAccountWithVariousTestSizes();

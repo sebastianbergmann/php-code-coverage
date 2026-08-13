@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.3.1] - 2026-MM-DD
+
+### Changed
+
+* The test size filter of the HTML report now disables the buttons for test sizes that have no coverage data
+* The test size filter of the HTML report is no longer rendered when the coverage data has no test sizes at all
+
 ## [14.3.0] - 2026-08-07
 
 ### Added
@@ -28,4 +35,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1258](https://github.com/sebastianbergmann/php-code-coverage/issues/1258): Coverage of less than 100% can be displayed as 100.00% due to rounding
 
+[14.3.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.0...main
 [14.3.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.4...14.3.0

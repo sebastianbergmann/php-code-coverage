@@ -27,6 +27,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Class_ as Clas
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Dashboard as ClassDashboard;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer\Namespace_ as NamespaceRenderer;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -61,6 +62,7 @@ final readonly class Facade
         $date              = date('D M j G:i:s T Y');
         $hasBranchCoverage = $report->numberOfExecutableBranches() > 0;
         $hasPathCoverage   = $report->numberOfExecutablePaths() > 0;
+        $testSizes         = $this->testSizes($report);
 
         if ($this->views->classView()) {
             $rootNamespace = new Builder()->build($report);
@@ -69,11 +71,11 @@ final readonly class Facade
         if ($this->views->fileView()) {
             $fileToClassMap = isset($rootNamespace) ? $this->buildFileToClassMap($rootNamespace) : [];
 
-            $this->renderFileView($report, $target, $date, $hasBranchCoverage, $hasPathCoverage, $fileToClassMap);
+            $this->renderFileView($report, $target, $date, $hasBranchCoverage, $hasPathCoverage, $testSizes, $fileToClassMap);
         }
 
         if (isset($rootNamespace)) {
-            $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage, $hasPathCoverage);
+            $this->renderClassView($rootNamespace, $target, $date, $hasBranchCoverage, $hasPathCoverage, $testSizes);
         }
 
         $this->copyFiles($target);
@@ -81,13 +83,36 @@ final readonly class Facade
     }
 
     /**
+     * The test sizes for which the report has coverage data.
+     *
+     * A test that did not cover any code is not part of the coverage data, so
+     * a test size for which no line was executed is a test size that cannot be
+     * filtered by in a meaningful way.
+     *
+     * @return int<0, 7>
+     */
+    private function testSizes(DirectoryNode $report): int
+    {
+        $testSizes = 0;
+
+        foreach ([TestSizes::SMALL, TestSizes::MEDIUM, TestSizes::LARGE] as $testSize) {
+            if ($report->numberOfExecutedLinesByTestSize($testSize) > 0) {
+                $testSizes |= $testSize;
+            }
+        }
+
+        return $testSizes;
+    }
+
+    /**
+     * @param int<0, 7>             $testSizes
      * @param array<string, string> $fileToClassMap
      */
-    private function renderFileView(DirectoryNode $report, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage, array $fileToClassMap): void
+    private function renderFileView(DirectoryNode $report, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage, int $testSizes, array $fileToClassMap): void
     {
-        $dashboard = new Dashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
-        $directory = new Directory($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
-        $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $dashboard = new Dashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
+        $directory = new Directory($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
+        $file      = new File($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
 
         $file->setFileToClassMap($fileToClassMap);
 
@@ -114,13 +139,16 @@ final readonly class Facade
         }
     }
 
-    private function renderClassView(NamespaceNode $rootNamespace, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage): void
+    /**
+     * @param int<0, 7> $testSizes
+     */
+    private function renderClassView(NamespaceNode $rootNamespace, string $target, string $date, bool $hasBranchCoverage, bool $hasPathCoverage, int $testSizes): void
     {
         $classTarget = $this->views->fileView() ? $this->directory($target . '_classes') : $target;
 
-        $namespaceRenderer = new NamespaceRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
-        $classRenderer     = new ClassRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
-        $dashboard         = new ClassDashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $this->views);
+        $namespaceRenderer = new NamespaceRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
+        $classRenderer     = new ClassRenderer($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
+        $dashboard         = new ClassDashboard($this->templatePath, $this->generator, $date, $this->thresholds, $hasBranchCoverage, $hasPathCoverage, $testSizes, $this->views);
 
         $namespaceRenderer->render($rootNamespace, $classTarget . 'index.html');
         $dashboard->render($rootNamespace, $classTarget . 'dashboard.html');

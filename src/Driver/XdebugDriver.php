@@ -60,7 +60,10 @@ final class XdebugDriver extends Driver
     {
         $flags = XDEBUG_CC_UNUSED;
 
-        if ($this->granularity() === Granularity::LineBranchAndPath) {
+        // Xdebug does not have a mode that collects branch coverage
+        // without also collecting path coverage
+        if ($this->granularity() === Granularity::LineAndBranch ||
+            $this->granularity() === Granularity::LineBranchAndPath) {
             $flags |= XDEBUG_CC_DEAD_CODE | XDEBUG_CC_BRANCH_CHECK;
         }
 
@@ -77,6 +80,14 @@ final class XdebugDriver extends Driver
             $this->ensureWithPathCoverage($data);
 
             return RawCodeCoverageData::fromXdebugWithPathCoverage($data);
+        }
+
+        if ($this->granularity() === Granularity::LineAndBranch) {
+            $this->ensureWithPathCoverage($data);
+
+            // The path coverage information that Xdebug collects along with the
+            // branch coverage information is discarded
+            return RawCodeCoverageData::fromXdebugWithBranchCoverage($data);
         }
 
         $this->ensureWithoutPathCoverage($data);
@@ -119,8 +130,8 @@ final class XdebugDriver extends Driver
     /**
      * The shape of the data returned by xdebug_get_code_coverage() is
      * determined by the flags that were passed to xdebug_start_code_coverage()
-     * in start(): when XDEBUG_CC_BRANCH_CHECK was set, path coverage is
-     * included.
+     * in start(): when XDEBUG_CC_BRANCH_CHECK was set, branch and path coverage
+     * are included.
      *
      * @param array<non-empty-string, mixed> $data
      *

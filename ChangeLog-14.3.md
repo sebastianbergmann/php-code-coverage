@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.3.2] - 2026-MM-DD
+
+### Fixed
+
+* No branch coverage was collected when Xdebug was used and branch coverage was requested without path coverage (`Granularity::LineAndBranch`) (Xdebug was started without `XDEBUG_CC_BRANCH_CHECK` and only line coverage was collected)
+
 ## [14.3.1] - 2026-08-16
 
 ### Changed
@@ -35,5 +41,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1258](https://github.com/sebastianbergmann/php-code-coverage/issues/1258): Coverage of less than 100% can be displayed as 100.00% due to rounding
 
+[14.3.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.1...main
 [14.3.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.0...14.3.1
 [14.3.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.2.4...14.3.0

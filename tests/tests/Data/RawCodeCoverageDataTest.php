@@ -81,6 +81,89 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertEquals($lineData, $dataObject->lineCoverage());
     }
 
+    /**
+     * Xdebug has no mode that collects branch coverage without also collecting
+     * path coverage. Function names are decoded and branches are normalized the
+     * same way as for path coverage, but the path data is discarded.
+     */
+    public function testBranchDataFromPathCoverageXDebugFormat(): void
+    {
+        $rawDataFromDriver = [
+            '/some/path/FooTrait.php' => [
+                'lines' => [
+                    11 => 1,
+                    12 => -1,
+                ],
+                'functions' => [
+                    'App\\FooTrait->returnsTrue{trait-method:/some/path/FooTrait.php:9-16}' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 5,
+                                'line_start' => 12,
+                                'line_end'   => 11,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 6,
+                                ],
+                                'out_hit' => [
+                                    0 => 1,
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                            0 => [
+                                'path' => [
+                                    0 => 0,
+                                ],
+                                'hit' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromXdebugWithBranchCoverage($rawDataFromDriver);
+
+        $this->assertSame(
+            [
+                '/some/path/FooTrait.php' => [
+                    11 => 1,
+                    12 => -1,
+                ],
+            ],
+            $dataObject->lineCoverage(),
+        );
+
+        $this->assertSame(
+            [
+                '/some/path/FooTrait.php' => [
+                    'App\\FooTrait->returnsTrue' => [
+                        'branches' => [
+                            0 => [
+                                'op_start'   => 0,
+                                'op_end'     => 5,
+                                'line_start' => 11,
+                                'line_end'   => 12,
+                                'hit'        => 1,
+                                'out'        => [
+                                    0 => 6,
+                                ],
+                                'out_hit' => [
+                                    0 => 1,
+                                ],
+                            ],
+                        ],
+                        'paths' => [
+                        ],
+                    ],
+                ],
+            ],
+            $dataObject->functionCoverage(),
+        );
+    }
+
     public function testLineAndBranchDataFromGenericFormat(): void
     {
         $lineCoverage = [

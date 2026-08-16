@@ -51,13 +51,14 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  * render a control flow graph degrade gracefully.
  *
  * line_start <= line_end is an invariant of BranchCoverageType. Xdebug reports loop
- * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage() and
- * fromLineAndBranchCoverage() normalize them, so consumers do not have to.
+ * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage(),
+ * fromXdebugWithBranchCoverage(), and fromLineAndBranchCoverage() normalize them, so
+ * consumers do not have to.
  *
  * The stripping of the trait method suffix that Xdebug appends to function keys
- * ("Foo->bar{trait-method:...}") happens in fromXdebugWithPathCoverage() and is not part
- * of this contract: data passed to fromLineAndBranchCoverage() must already use canonical
- * function keys.
+ * ("Foo->bar{trait-method:...}") happens in fromXdebugWithPathCoverage() and
+ * fromXdebugWithBranchCoverage() and is not part of this contract: data passed to
+ * fromLineAndBranchCoverage() must already use canonical function keys.
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
@@ -119,40 +120,32 @@ final class RawCodeCoverageData
      */
     public static function fromXdebugWithPathCoverage(array $rawCoverage): self
     {
-        $lineCoverage     = [];
+        [$lineCoverage, $functionCoverage] = self::processXdebugPathAndBranchCoverage($rawCoverage);
+
+        return new self($lineCoverage, $functionCoverage);
+    }
+
+    /**
+     * Xdebug has no mode that collects branch coverage without also collecting
+     * path coverage. When only branch coverage was requested, the path coverage
+     * information that Xdebug reports along with it is discarded here.
+     *
+     * @param CodeCoverageWithPathCoverageType $rawCoverage
+     */
+    public static function fromXdebugWithBranchCoverage(array $rawCoverage): self
+    {
+        [$lineCoverage, $rawFunctionCoverage] = self::processXdebugPathAndBranchCoverage($rawCoverage);
+
         $functionCoverage = [];
 
-        foreach ($rawCoverage as $file => $fileCoverageData) {
-            // Xdebug annotates the function name of traits, strip that off
-            foreach ($fileCoverageData['functions'] as $existingKey => $data) {
-                if (str_ends_with($existingKey, '}') && !str_starts_with($existingKey, '{')) { // don't want to catch {main}
-                    $newKey = preg_replace('/\{.*}$/', '', $existingKey);
+        foreach ($rawFunctionCoverage as $file => $functions) {
+            $functionCoverage[$file] = [];
 
-                    if ($newKey === null) {
-                        continue;
-                    }
+            foreach ($functions as $functionKey => $functionData) {
+                $functionData['paths'] = [];
 
-                    $fileCoverageData['functions'][$newKey] = $data;
-
-                    unset($fileCoverageData['functions'][$existingKey]);
-                }
+                $functionCoverage[$file][$functionKey] = $functionData;
             }
-
-            // Xdebug reports loop back-edge branches with line_start > line_end
-            foreach ($fileCoverageData['functions'] as $functionKey => $functionData) {
-                foreach ($functionData['branches'] as $branchId => $branch) {
-                    if ($branch['line_start'] > $branch['line_end']) {
-                        $lineStart            = $branch['line_start'];
-                        $branch['line_start'] = $branch['line_end'];
-                        $branch['line_end']   = $lineStart;
-
-                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId] = $branch;
-                    }
-                }
-            }
-
-            $lineCoverage[$file]     = $fileCoverageData['lines'];
-            $functionCoverage[$file] = $fileCoverageData['functions'];
         }
 
         return new self($lineCoverage, $functionCoverage);
@@ -495,5 +488,51 @@ final class RawCodeCoverageData
         }
 
         return self::$emptyLineCache[$filename];
+    }
+
+    /**
+     * @param CodeCoverageWithPathCoverageType $rawCoverage
+     *
+     * @return array{CodeCoverageWithoutPathCoverageType, array<non-empty-string, FunctionsCoverageType>}
+     */
+    private static function processXdebugPathAndBranchCoverage(array $rawCoverage): array
+    {
+        $lineCoverage     = [];
+        $functionCoverage = [];
+
+        foreach ($rawCoverage as $file => $fileCoverageData) {
+            // Xdebug annotates the function name of traits, strip that off
+            foreach ($fileCoverageData['functions'] as $existingKey => $data) {
+                if (str_ends_with($existingKey, '}') && !str_starts_with($existingKey, '{')) { // don't want to catch {main}
+                    $newKey = preg_replace('/\{.*}$/', '', $existingKey);
+
+                    if ($newKey === null) {
+                        continue;
+                    }
+
+                    $fileCoverageData['functions'][$newKey] = $data;
+
+                    unset($fileCoverageData['functions'][$existingKey]);
+                }
+            }
+
+            // Xdebug reports loop back-edge branches with line_start > line_end
+            foreach ($fileCoverageData['functions'] as $functionKey => $functionData) {
+                foreach ($functionData['branches'] as $branchId => $branch) {
+                    if ($branch['line_start'] > $branch['line_end']) {
+                        $lineStart            = $branch['line_start'];
+                        $branch['line_start'] = $branch['line_end'];
+                        $branch['line_end']   = $lineStart;
+
+                        $fileCoverageData['functions'][$functionKey]['branches'][$branchId] = $branch;
+                    }
+                }
+            }
+
+            $lineCoverage[$file]     = $fileCoverageData['lines'];
+            $functionCoverage[$file] = $fileCoverageData['functions'];
+        }
+
+        return [$lineCoverage, $functionCoverage];
     }
 }

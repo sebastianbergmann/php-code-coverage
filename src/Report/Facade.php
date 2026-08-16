@@ -17,6 +17,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Colors;
 use SebastianBergmann\CodeCoverage\Report\Html\CustomCssFile;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlFacade;
 use SebastianBergmann\CodeCoverage\Report\Html\Views;
+use SebastianBergmann\CodeCoverage\Report\Jsonl\Facade as JsonlFacade;
 use SebastianBergmann\CodeCoverage\Report\Xml\Facade as XmlFacade;
 use SebastianBergmann\CodeCoverage\Serialization\Serializer;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
@@ -92,6 +93,17 @@ final readonly class Facade
             $coverageVersion,
             $driverExtensionName,
             $driverExtensionVersion,
+        );
+    }
+
+    /**
+     * @param non-empty-string $target
+     */
+    public function renderJsonl(string $target): void
+    {
+        (new JsonlFacade)->process(
+            $this->report,
+            $target,
         );
     }
 

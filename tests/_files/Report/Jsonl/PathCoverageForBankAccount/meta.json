@@ -1,0 +1,10 @@
+{
+    "schemaVersion": 1,
+    "generator": "php-code-coverage %s",
+    "generatedAt": "%s",
+    "sourceRoot": "%s",
+    "branchCoverage": true,
+    "files": 1,
+    "executableLines": 8,
+    "executedLines": 5
+}

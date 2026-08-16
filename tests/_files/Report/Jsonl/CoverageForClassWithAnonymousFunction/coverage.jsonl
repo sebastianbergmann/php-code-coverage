@@ -1,0 +1,1 @@
+{"file":"source_with_class_and_anonymous_function.php","executable":8,"executed":8,"symbols":[{"name":"CoveredClassWithAnonymousFunctionInStaticMethod::runAnonymous","lines":"5-18","state":"covered"}]}

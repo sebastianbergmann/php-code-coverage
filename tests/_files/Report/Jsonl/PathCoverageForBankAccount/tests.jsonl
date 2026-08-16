@@ -1,0 +1,4 @@
+{"test":"BankAccountTest::testBalanceCannotBecomeNegative","covers":{"BankAccount.php":["29"]}}
+{"test":"BankAccountTest::testBalanceCannotBecomeNegative2","covers":{"BankAccount.php":["22"]}}
+{"test":"BankAccountTest::testBalanceIsInitiallyZero","covers":{"BankAccount.php":["8"]}}
+{"test":"BankAccountTest::testDepositWithdrawMoney","covers":{"BankAccount.php":["8","22","24","29","31"]}}

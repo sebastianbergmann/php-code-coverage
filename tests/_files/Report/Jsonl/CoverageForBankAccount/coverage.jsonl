@@ -1,0 +1,1 @@
+{"file":"BankAccount.php","executable":8,"executed":5,"uncovered":["13-14","16"],"symbols":[{"name":"BankAccount::getBalance","lines":"6-9","state":"covered"},{"name":"BankAccount::setBalance","lines":"11-18","state":"uncovered"},{"name":"BankAccount::depositMoney","lines":"20-25","state":"covered"},{"name":"BankAccount::withdrawMoney","lines":"27-33","state":"covered"}]}

@@ -11,7 +11,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Jsonl;
 
 use const DIRECTORY_SEPARATOR;
 use const JSON_PRETTY_PRINT;
-use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const SORT_STRING;
@@ -23,7 +22,6 @@ use function fwrite;
 use function is_dir;
 use function is_file;
 use function is_writable;
-use function json_encode;
 use function ksort;
 use function str_replace;
 use function str_starts_with;
@@ -34,15 +32,16 @@ use function usort;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Generator;
-use JsonException;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
+use SebastianBergmann\CodeCoverage\JsonException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\PathExistsButIsNotDirectoryException;
 use SebastianBergmann\CodeCoverage\Util\EnsuresUtf8;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\CodeCoverage\Util\Json;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
@@ -234,7 +233,7 @@ final class Facade
             'executedLines'   => $report->numberOfExecutedLines(),
         ];
 
-        Filesystem::write($target, json_encode($meta, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "\n");
+        Filesystem::write($target, Json::encode($meta, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "\n");
     }
 
     /**
@@ -451,7 +450,7 @@ final class Facade
      */
     private function encode(array $record): string
     {
-        return json_encode($record, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return Json::encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     /**

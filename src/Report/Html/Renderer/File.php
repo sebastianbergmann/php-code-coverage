@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use const JSON_THROW_ON_ERROR;
 use const PHP_INT_MAX;
 use function array_key_exists;
 use function array_keys;
@@ -22,7 +21,6 @@ use function count;
 use function explode;
 use function htmlspecialchars;
 use function implode;
-use function json_encode;
 use function min;
 use function range;
 use function sprintf;
@@ -36,6 +34,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\Util\Json;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
@@ -1042,7 +1041,7 @@ final class File extends Renderer
 
             $paths .= sprintf(
                 '   <div class="cfg-graph" data-paths="%s">%s</div>' . "\n",
-                htmlspecialchars(json_encode($pathsJson, JSON_THROW_ON_ERROR), self::HTML_SPECIAL_CHARS_FLAGS),
+                htmlspecialchars(Json::encode($pathsJson), self::HTML_SPECIAL_CHARS_FLAGS),
                 $svg,
             );
 

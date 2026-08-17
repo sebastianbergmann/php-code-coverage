@@ -14,10 +14,8 @@ use const ENT_HTML401;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
-use const JSON_THROW_ON_ERROR;
 use function count;
 use function htmlspecialchars;
-use function json_encode;
 use function round;
 use function rtrim;
 use function sprintf;
@@ -33,6 +31,7 @@ use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
+use SebastianBergmann\CodeCoverage\Util\Json;
 use SebastianBergmann\CodeCoverage\Version;
 use SebastianBergmann\Environment\Runtime;
 use SebastianBergmann\Template\Template;
@@ -526,7 +525,7 @@ abstract class Renderer
      */
     protected function buildCoverageDataJson(array $data): string
     {
-        return json_encode($data, JSON_THROW_ON_ERROR);
+        return Json::encode($data);
     }
 
     protected function coverageDataJsonFor(AbstractNode $node): string

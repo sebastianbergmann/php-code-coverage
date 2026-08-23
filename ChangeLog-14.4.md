@@ -16,5 +16,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   * `tests.jsonl` reports one JSON object per line, one for each test that executed at least one line: the identifier of the test, and per source file the lines that the test executed
   * Consecutive line numbers are reported as `"45-52"`, single line numbers as `"77"`
   * Source files without executable code are not reported; records are sorted by path and by test identifier, and paths use `/` on all platforms, so that the same coverage data yields byte-identical output
+* `enableCollectionOfDataNotFilteredUsingTargets()` and `dataNotFilteredUsingTargets()` to allow collection of code coverage data that is not filtered using code coverage targets
 
 [14.4.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3...main

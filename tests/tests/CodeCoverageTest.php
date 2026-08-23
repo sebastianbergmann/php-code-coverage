@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use function array_fill;
+use function array_keys;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
@@ -20,6 +21,7 @@ use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\Environment\Runtime;
 
@@ -478,6 +480,141 @@ final class CodeCoverageTest extends TestCase
         // Line 3 is removed by the line-based @codeCoverageIgnore annotations,
         // which do not require the parser; line 5 keeps the raw driver data
         $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
+    }
+
+    public function testDataNotFilteredUsingTargetsIsNotCollectedByDefault(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass();
+
+        $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
+
+        $this->expectException(DataNotFilteredUsingTargetsNotCollectedException::class);
+
+        $coverage->dataNotFilteredUsingTargets();
+    }
+
+    public function testDataNotFilteredUsingTargetsIsNotNarrowedToTargetsOfTest(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(true);
+
+        $this->assertSame(
+            [TEST_FILES_PATH . 'BankAccount.php'],
+            $this->filesExecutedByTest($coverage, 'A test'),
+        );
+
+        $this->assertSame(
+            [
+                TEST_FILES_PATH . 'BankAccount.php',
+                TEST_FILES_PATH . 'CoveredClass.php',
+            ],
+            array_keys($coverage->dataNotFilteredUsingTargets()->lineCoverage()),
+        );
+    }
+
+    public function testDataNotFilteredUsingTargetsIsCollectedForTestThatCoversNothing(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(true, false);
+
+        $this->assertSame([], $this->filesExecutedByTest($coverage, 'A test'));
+
+        $this->assertSame(
+            [
+                TEST_FILES_PATH . 'BankAccount.php',
+                TEST_FILES_PATH . 'CoveredClass.php',
+            ],
+            array_keys($coverage->dataNotFilteredUsingTargets()->lineCoverage()),
+        );
+    }
+
+    public function testDataNotFilteredUsingTargetsIsDiscardedWhenTheNextTestStarts(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(true);
+
+        $this->assertTrue($coverage->hasDataNotFilteredUsingTargets());
+
+        $coverage->start('Another test');
+
+        $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
+    }
+
+    public function testDataNotFilteredUsingTargetsIsDiscardedWhenCollectedDataIsCleared(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(true);
+
+        $this->assertTrue($coverage->hasDataNotFilteredUsingTargets());
+
+        $coverage->clear();
+
+        $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
+    }
+
+    public function testCollectionOfDataNotFilteredUsingTargetsCanBeDisabled(): void
+    {
+        $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(true);
+
+        $this->assertTrue($coverage->hasDataNotFilteredUsingTargets());
+
+        $coverage->disableCollectionOfDataNotFilteredUsingTargets();
+
+        $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function filesExecutedByTest(CodeCoverage $coverage, string $testId): array
+    {
+        $files = [];
+
+        foreach ($this->lineCoverageKeyedByTestId($coverage->getData(true)) as $file => $lines) {
+            foreach ($lines as $tests) {
+                if (isset($tests[$testId])) {
+                    $files[] = $file;
+
+                    break;
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * The test declares that it covers BankAccount, but also executes code in
+     * CoveredClass.
+     */
+    private function coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass(bool $collectDataNotFilteredUsingTargets = false, bool $coversBankAccount = true): CodeCoverage
+    {
+        $bankAccount  = TEST_FILES_PATH . 'BankAccount.php';
+        $coveredClass = TEST_FILES_PATH . 'CoveredClass.php';
+
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([
+                $bankAccount  => [8 => 1],
+                $coveredClass => [27 => 1],
+            ]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFiles([$bankAccount, $coveredClass]);
+
+        $coverage = new CodeCoverage($driver, $filter);
+        $coverage->excludeUncoveredFiles();
+
+        if ($collectDataNotFilteredUsingTargets) {
+            $coverage->enableCollectionOfDataNotFilteredUsingTargets();
+        }
+
+        $covers = false;
+
+        if ($coversBankAccount) {
+            $covers = TargetCollection::fromArray([Target::forFile($bankAccount)]);
+        }
+
+        $coverage->start('A test');
+        $coverage->stop(true, null, $covers);
+
+        return $coverage;
     }
 
     private function requireDriver(): CodeCoverage

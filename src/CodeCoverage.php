@@ -49,6 +49,14 @@ final class CodeCoverage
     private bool $includeUncoveredFiles              = true;
     private bool $ignoreDeprecatedCode               = false;
     private bool $useAnnotationsForIgnoringCode      = true;
+    private bool $collectDataNotFilteredUsingTargets = false;
+
+    /**
+     * The code coverage data for the test that was processed most recently, as
+     * it was before it was filtered using the code coverage targets that test
+     * declares.
+     */
+    private ?RawCodeCoverageData $dataNotFilteredUsingTargets = null;
 
     /**
      * @var list<class-string>
@@ -92,11 +100,12 @@ final class CodeCoverage
      */
     public function clear(): void
     {
-        $this->currentId    = null;
-        $this->currentSize  = null;
-        $this->data         = new ProcessedCodeCoverageData($this->driver->collectsHitCounts());
-        $this->tests        = [];
-        $this->cachedReport = null;
+        $this->currentId                   = null;
+        $this->currentSize                 = null;
+        $this->data                        = new ProcessedCodeCoverageData($this->driver->collectsHitCounts());
+        $this->tests                       = [];
+        $this->cachedReport                = null;
+        $this->dataNotFilteredUsingTargets = null;
     }
 
     /**
@@ -182,7 +191,8 @@ final class CodeCoverage
 
         $this->driver->start();
 
-        $this->cachedReport = null;
+        $this->cachedReport                = null;
+        $this->dataNotFilteredUsingTargets = null;
     }
 
     public function stop(bool $append = true, ?TestStatus $status = null, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null, float $time = 0.0): RawCodeCoverageData
@@ -242,6 +252,17 @@ final class CodeCoverage
 
         if ($this->useAnnotationsForIgnoringCode) {
             $filterProcessor->applyIgnoredLinesFilter($rawData, $this->filter, $this->analyser());
+        }
+
+        /*
+         * The data is kept before it is filtered using the code coverage
+         * targets of the test, and before it is discarded for a test that
+         * declares that it covers nothing: what a test executed is not what it
+         * declares it covers, and a consumer that asks what code a test
+         * depends on needs the former.
+         */
+        if ($this->collectDataNotFilteredUsingTargets) {
+            $this->dataNotFilteredUsingTargets = clone $rawData;
         }
 
         $this->data->initializeUnseenData($rawData);
@@ -352,6 +373,54 @@ final class CodeCoverage
     public function doNotIgnoreDeprecatedCode(): void
     {
         $this->ignoreDeprecatedCode = false;
+    }
+
+    /**
+     * Keeps the code coverage data for each test as it was before it was
+     * filtered using the code coverage targets that test declares.
+     *
+     * The data is kept for one test at a time, and is only meaningful until the
+     * next test is processed.
+     */
+    public function enableCollectionOfDataNotFilteredUsingTargets(): void
+    {
+        $this->collectDataNotFilteredUsingTargets = true;
+    }
+
+    public function disableCollectionOfDataNotFilteredUsingTargets(): void
+    {
+        $this->collectDataNotFilteredUsingTargets = false;
+        $this->dataNotFilteredUsingTargets        = null;
+    }
+
+    /**
+     * @phpstan-assert-if-true !null $this->dataNotFilteredUsingTargets
+     */
+    public function hasDataNotFilteredUsingTargets(): bool
+    {
+        return $this->dataNotFilteredUsingTargets !== null;
+    }
+
+    /**
+     * Returns the code coverage data for the test that was processed most
+     * recently, as it was before it was filtered using the code coverage
+     * targets that test declares.
+     *
+     * The data is still filtered using the code coverage filter: code that is
+     * not part of the code that is subject to code coverage analysis is not
+     * reported by the driver in the first place.
+     *
+     * @throws DataNotFilteredUsingTargetsNotCollectedException
+     */
+    public function dataNotFilteredUsingTargets(): RawCodeCoverageData
+    {
+        if (!$this->hasDataNotFilteredUsingTargets()) {
+            throw new DataNotFilteredUsingTargetsNotCollectedException(
+                'Code coverage data that is not filtered using code coverage targets was not collected',
+            );
+        }
+
+        return $this->dataNotFilteredUsingTargets;
     }
 
     /**

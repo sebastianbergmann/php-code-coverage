@@ -327,9 +327,9 @@ final class AbstractNodeTest extends TestCase
             $lineCoverageData,
             [],
             $testData,
-            ['SmallClass'  => $smallClass],
+            ['SmallClass' => $smallClass],
             ['MediumTrait' => $mediumTrait],
-            ['largeFunc'   => $largeFunc],
+            ['largeFunc' => $largeFunc],
             new LinesOfCode(8, 0, 8),
         );
     }
@@ -372,7 +372,7 @@ final class AbstractNodeTest extends TestCase
                 5 => [0 => 1],
             ],
             [],
-            [0         => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass' => $class],
             [],
             [],

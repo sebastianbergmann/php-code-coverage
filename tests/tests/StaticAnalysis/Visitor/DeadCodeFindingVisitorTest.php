@@ -191,7 +191,7 @@ final class DeadCodeFindingVisitorTest extends TestCase
         $deadBody = new Expression(new Assign(new Variable('x'), new Int_(1)));
         $ifFalse  = new If_(
             new ConstFetch(new Name('false')),
-            ['stmts'     => [$deadBody]],
+            ['stmts' => [$deadBody]],
             ['startLine' => 5, 'endLine' => 10],
         );
         $ifTrue = new If_(new ConstFetch(new Name('true')), ['stmts' => [], 'else' => new Else_([])]);

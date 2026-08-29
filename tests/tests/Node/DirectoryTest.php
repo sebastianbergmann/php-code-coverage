@@ -487,10 +487,10 @@ final class DirectoryTest extends TestCase
             'sha1hash',
             $lineCoverageData,
             [],
-            [0                    => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 'test1', 'size' => 'small', 'status' => 'passed', 'time' => 0.0]],
             ['MyClass_' . $suffix => $class],
             ['MyTrait_' . $suffix => $trait],
-            ['myFunc_' . $suffix  => $function],
+            ['myFunc_' . $suffix => $function],
             new LinesOfCode(15, 0, 15),
         );
     }
@@ -533,7 +533,7 @@ final class DirectoryTest extends TestCase
             'sha1hash',
             [1 => [0 => 1], 2 => [0 => 1]],
             [],
-            [0   => ['name' => 't', 'size' => $size, 'status' => 'passed', 'time' => 0.0]],
+            [0 => ['name' => 't', 'size' => $size, 'status' => 'passed', 'time' => 0.0]],
             ['C' => $class],
             [],
             [],

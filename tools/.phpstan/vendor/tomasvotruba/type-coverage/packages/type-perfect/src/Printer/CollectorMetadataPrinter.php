@@ -140,7 +140,14 @@ final readonly class CollectorMetadataPrinter
                 }
 
                 $printedParamType = $this->standard->prettyPrint([$paramType]);
-                $printedParamType = str_replace('\Closure', 'callable', $printedParamType);
+                // normalize only the native global "\Closure"/"Closure" to "callable", never a
+                // namespaced class whose short name ends with "Closure" (e.g.
+                // PhpParser\Node\Expr\Closure or Some\App\CustomClosure)
+                $printedParamType = preg_replace(
+                    '#(^|\|)\\\\?Closure(?=$|\|)#',
+                    '$1callable',
+                    $printedParamType
+                ) ?? $printedParamType;
                 $printedParamType = ltrim($printedParamType, '\\');
                 $printedParamType = str_replace('|\\', '|', $printedParamType);
             }

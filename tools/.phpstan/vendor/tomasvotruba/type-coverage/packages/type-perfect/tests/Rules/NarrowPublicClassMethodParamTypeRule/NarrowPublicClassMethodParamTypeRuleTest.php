@@ -154,6 +154,27 @@ final class NarrowPublicClassMethodParamTypeRuleTest extends RuleTestCase
 
         yield [[__DIR__ . '/Fixture/SkipClosure.php'], []];
 
+        // skip class whose short name is exactly "Closure" (e.g. PhpParser\Node\Expr\Closure),
+        // passed as the exact same type
+        yield [[
+            __DIR__ . '/Fixture/SkipClassNamedClosure.php',
+            __DIR__ . '/Source/ClassNamedClosure/CallWithClassNamedClosure.php',
+        ], []];
+
+        // skip class whose short name only starts with "Closure" (e.g. ClosureContract),
+        // passed as the exact same type
+        yield [[
+            __DIR__ . '/Fixture/SkipClosurePrefixClass.php',
+            __DIR__ . '/Source/PrefixClosure/CallWithClosurePrefix.php',
+        ], []];
+
+        // skip class whose short name only ends with "Closure" (e.g. Some\App\CustomClosure),
+        // passed as the exact same type
+        yield [[
+            __DIR__ . '/Fixture/SkipClosureSuffixClass.php',
+            __DIR__ . '/Source/SuffixClosure/CallWithClosureSuffix.php',
+        ], []];
+
         yield [[__DIR__ . '/Fixture/SkipCallable.php'], []];
 
         yield [[__DIR__ . '/Fixture/SkipEnum.php'], []];

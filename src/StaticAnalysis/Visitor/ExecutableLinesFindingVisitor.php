@@ -20,6 +20,7 @@ use function explode;
 use function is_array;
 use function max;
 use function reset;
+use function spl_object_id;
 use function str_replace;
 use function strtolower;
 use function trim;
@@ -120,6 +121,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private array $commentsToCheckForUnset = [];
     private int $spreadDepth               = 0;
+    private int $propertyHookDepth         = 0;
+
+    /**
+     * @var array<int, true> keyed by spl_object_id() of expressions that are
+     *                       the value of an array literal element
+     */
+    private array $arrayItemValues = [];
 
     public function __construct(string $source)
     {
@@ -128,8 +136,16 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): null
     {
-        if ($node instanceof Node\ArrayItem && $node->unpack) {
-            $this->spreadDepth++;
+        if ($node instanceof Node\ArrayItem) {
+            if ($node->unpack) {
+                $this->spreadDepth++;
+            }
+
+            $this->rememberArrayItemValue($node->value);
+        }
+
+        if ($node instanceof Node\PropertyHook) {
+            $this->propertyHookDepth++;
         }
 
         $this->collectMatchingComments($node);
@@ -269,6 +285,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Node\ArrayItem && $node->unpack) {
             $this->spreadDepth--;
+        }
+
+        if ($node instanceof Node\PropertyHook) {
+            $this->propertyHookDepth--;
         }
 
         return null;
@@ -496,6 +516,16 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($this->isArrayItemValue($node)) {
+            if ($node->if !== null) {
+                $this->rememberArrayItemValue($node->if);
+            }
+
+            $this->rememberArrayItemValue($node->else);
+
+            return;
+        }
+
         if (null !== $node->if &&
             $node->getStartLine() !== $node->if->getEndLine()) {
             $this->setLineBranch(
@@ -517,6 +547,12 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function enterCoalesce(Node\Expr\BinaryOp\Coalesce $node): void
     {
         if ($node->getStartLine() === $node->getEndLine()) {
+            return;
+        }
+
+        if ($this->isArrayItemValue($node)) {
+            $this->rememberArrayItemValue($node->right);
+
             return;
         }
 
@@ -639,8 +675,25 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         for ($line = max(1, $start); $line <= $end; $line++) {
             $this->executableLinesGroupedByBranch[$line] = $branch;
-            $this->branchOperatorLines[$line]            = true;
+
+            // Drivers that cannot see the inside of property hooks (PCOV
+            // 1.0.12 and earlier, for instance) report no line of a hook
+            // body at all; forcing such lines to "not executed" would make
+            // them permanently red
+            if ($this->propertyHookDepth === 0) {
+                $this->branchOperatorLines[$line] = true;
+            }
         }
+    }
+
+    private function rememberArrayItemValue(Node\Expr $node): void
+    {
+        $this->arrayItemValues[spl_object_id($node)] = true;
+    }
+
+    private function isArrayItemValue(Node\Expr $node): bool
+    {
+        return isset($this->arrayItemValues[spl_object_id($node)]);
     }
 
     private function matchConditionHasNoOpcode(Node\Expr $cond): bool

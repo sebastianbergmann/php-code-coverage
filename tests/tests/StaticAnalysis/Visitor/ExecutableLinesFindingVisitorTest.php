@@ -364,6 +364,66 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayHasKey(11, $branchOperatorLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
+    public function testTernaryInsideArrayLiteralDoesNotCreateSeparateBranches(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_ternary_in_array_literal.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        $this->assertArrayHasKey(5, $executableLines);
+
+        $branch = $executableLines[5];
+
+        foreach ([6, 7, 8, 9, 10, 11, 12, 13, 14] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
+            $this->assertSame($branch, $executableLines[$line]);
+        }
+
+        // The engine folds constant operands of a ternary or coalesce
+        // operator into the opcode that builds the array literal, so no
+        // driver can report these lines on their own
+        foreach ([7, 8, 10, 11, 13] as $line) {
+            $this->assertArrayNotHasKey($line, $branchOperatorLines);
+        }
+    }
+
+    #[RequiresPhp('>=8.4.0')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
+    public function testLongFormPropertyHookBodyIsNotMarkedAsBranchOperator(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_ternary_in_property_hook.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
+
+        foreach ([9, 10, 11] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
+
+            // PCOV 1.0.12 and earlier report no line of a property hook body
+            $this->assertArrayNotHasKey($line, $branchOperatorLines);
+        }
+    }
+
     private function doTestSelfDescribingAssert(string $filename): void
     {
         $source = file_get_contents($filename);

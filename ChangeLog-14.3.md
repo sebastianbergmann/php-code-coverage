@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* [#1305](https://github.com/sebastianbergmann/php-code-coverage/issues/1305): Lines that the driver cannot report are marked as not covered
 * No branch coverage was collected when Xdebug was used and branch coverage was requested without path coverage (`Granularity::LineAndBranch`) (Xdebug was started without `XDEBUG_CC_BRANCH_CHECK` and only line coverage was collected)
 
 ## [14.3.1] - 2026-08-16

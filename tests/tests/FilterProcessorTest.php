@@ -10,9 +10,12 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use function array_keys;
+use function ksort;
 use function realpath;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -106,6 +109,80 @@ final class FilterProcessorTest extends TestCase
 
         $this->assertArrayHasKey($file, $lineCoverage);
         $this->assertSame([2], array_keys($lineCoverage[$file]));
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
+    public function testApplyExecutableLinesFilterDoesNotMarkTernaryArmsInArrayLiteralAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_ternary_in_array_literal.php');
+
+        // Line coverage as reported by Xdebug 3.5 after calling row(7) and
+        // row(null): both arms of every operator were taken, yet lines 8
+        // (": null,") and 11 (": [],") are missing because the engine folds
+        // constant operands into the opcode that builds the array literal
+        $data = RawCodeCoverageData::fromLineCoverage([
+            $file => [6 => 1, 7 => 1, 10 => 1, 12 => 1, 13 => 1, 15 => -2],
+        ]);
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, true, true);
+
+        $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
+
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+
+        $linesForFile = $lineCoverage[$file];
+
+        ksort($linesForFile);
+
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => 1,
+                7  => 1,
+                8  => 1,
+                9  => 1,
+                10 => 1,
+                11 => 1,
+                12 => 1,
+                13 => 1,
+                14 => 1,
+            ],
+            $linesForFile,
+        );
+    }
+
+    #[RequiresPhp('>=8.4.0')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
+    public function testApplyExecutableLinesFilterDoesNotMarkPropertyHookBodyAsNotExecutedWhenDriverDoesNotReportIt(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_ternary_in_property_hook.php');
+
+        // Line coverage as reported by PCOV 1.0.12, which collects no line of
+        // a property hook body at all, after reading $label on an instance
+        // created with and one created without a value
+        $data = RawCodeCoverageData::fromLineCoverage([
+            $file => [5 => 1],
+        ]);
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, true, true);
+
+        $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
+
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+
+        // Lines 9, 10 and 11 must not be reported as not executed: the driver
+        // cannot see them, so nothing is known about them
+        $this->assertSame([5 => 1], $lineCoverage[$file]);
     }
 
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void

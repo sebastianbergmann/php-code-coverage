@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_keys;
+use function array_unique;
 use function assert;
 use function explode;
 use function file_get_contents;
@@ -422,6 +424,32 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
             // PCOV 1.0.12 and earlier report no line of a property hook body
             $this->assertArrayNotHasKey($line, $branchOperatorLines);
         }
+    }
+
+    #[RequiresPhp('>=8.4.0')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1314')]
+    public function testStatementsOfLongFormPropertyHookBodiesAreGroupedByBranch(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_branches_in_property_hooks.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        // Lines 11 ("} else {") and 13 ("}") carry no opcode, just like the
+        // corresponding lines of a method body
+        $this->assertSame([6, 9, 10, 12], array_keys($executableLines));
+
+        // Neither the hooks of a property nor the arms of the if statement
+        // share a branch with each other
+        $this->assertCount(4, array_unique($executableLines));
     }
 
     private function doTestSelfDescribingAssert(string $filename): void

@@ -185,6 +185,37 @@ final class FilterProcessorTest extends TestCase
         $this->assertSame([5 => 1], $lineCoverage[$file]);
     }
 
+    #[RequiresPhp('>=8.4.0')]
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1314')]
+    public function testApplyExecutableLinesFilterDoesNotMarkUnexecutedLinesOfPropertyHookBodyAsExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_branches_in_property_hooks.php');
+
+        // Line coverage as reported by Xdebug 3.5 after assigning an even
+        // value to $value: the else arm of the set hook (line 12) was not
+        // executed and the get hook was not called at all
+        $data = RawCodeCoverageData::fromLineCoverage([
+            $file => [9 => 1, 10 => 1, 12 => -1, 14 => 1, 17 => 1],
+        ]);
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $analyser = new FileAnalyser(new ParsingSourceAnalyser, true, true);
+
+        $this->processor->applyExecutableLinesFilter($data, $filter, $analyser);
+
+        $lineCoverage = $data->lineCoverage();
+
+        $this->assertArrayHasKey($file, $lineCoverage);
+
+        $linesForFile = $lineCoverage[$file];
+
+        ksort($linesForFile);
+
+        $this->assertSame([9 => 1, 10 => 1, 12 => -1], $linesForFile);
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');

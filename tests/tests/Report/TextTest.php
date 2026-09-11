@@ -39,6 +39,16 @@ final class TextTest extends TestCase
         );
     }
 
+    public function testPathCoverageForBankAccountTestWhenColorsAreEnabled(): void
+    {
+        $text = new Text(Thresholds::default(), false, false);
+
+        $this->assertStringMatchesFormatFile(
+            TEST_FILES_PATH . 'Report/Text/BankAccount-path-colors.txt',
+            str_replace(PHP_EOL, "\n", $text->process($this->getPathCoverageForBankAccount()->getReport(), true)),
+        );
+    }
+
     public function testTextOnlySummaryForBankAccountTest(): void
     {
         $text = new Text(Thresholds::default(), false, true);

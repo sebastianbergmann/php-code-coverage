@@ -4,7 +4,7 @@ Code Coverage Report:
   %s
 
  Summary:
-  Classes:        (0/0)
-  Methods:        (0/0)
-  Lines:   100.00% (1/1)
+  Classes:         (0/0)
+  Methods:         (0/0)
+  Lines:    100.00% (1/1)
 

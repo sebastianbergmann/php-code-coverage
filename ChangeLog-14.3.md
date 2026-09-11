@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.3.4] - 2026-MM-DD
+
+### Fixed
+
+* The summary of the text report was misaligned when path and branch coverage was reported
+
 ## [14.3.3] - 2026-09-10
 
 ### Fixed
@@ -48,6 +54,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * [#1258](https://github.com/sebastianbergmann/php-code-coverage/issues/1258): Coverage of less than 100% can be displayed as 100.00% due to rounding
 
+[14.3.4]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.3...14.3
 [14.3.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.2...14.3.3
 [14.3.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.1...14.3.2
 [14.3.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.0...14.3.1

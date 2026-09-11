@@ -92,7 +92,7 @@ final readonly class Text
         }
 
         $classes = sprintf(
-            '  Classes: %6s (%d/%d)',
+            '  Classes:  %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedClassesAndTraits(),
                 $report->numberOfClassesAndTraits(),
@@ -102,7 +102,7 @@ final readonly class Text
         );
 
         $methods = sprintf(
-            '  Methods: %6s (%d/%d)',
+            '  Methods:  %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedMethods(),
                 $report->numberOfMethods(),
@@ -116,7 +116,7 @@ final readonly class Text
 
         if ($hasPathCoverage) {
             $paths = sprintf(
-                '  Paths:   %6s (%d/%d)',
+                '  Paths:    %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedPaths(),
                     $report->numberOfExecutablePaths(),
@@ -128,7 +128,7 @@ final readonly class Text
 
         if ($hasBranchCoverage) {
             $branches = sprintf(
-                '  Branches:   %6s (%d/%d)',
+                '  Branches: %6s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedBranches(),
                     $report->numberOfExecutableBranches(),
@@ -139,7 +139,7 @@ final readonly class Text
         }
 
         $lines = sprintf(
-            '  Lines:   %6s (%d/%d)',
+            '  Lines:    %6s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfExecutedLines(),
                 $report->numberOfExecutableLines(),
@@ -148,7 +148,7 @@ final readonly class Text
             $report->numberOfExecutableLines(),
         );
 
-        $padding = max(array_map(strlen(...), [$classes, $methods, $lines]));
+        $padding = max(array_map(strlen(...), [$classes, $methods, $paths, $branches, $lines]));
 
         if ($this->showOnlySummary) {
             $title   = 'Code Coverage Report Summary:';

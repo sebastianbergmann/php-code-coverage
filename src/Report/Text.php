@@ -92,7 +92,7 @@ final readonly class Text
         }
 
         $classes = sprintf(
-            '  Classes:  %6s (%d/%d)',
+            '  Classes:  %7s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedClassesAndTraits(),
                 $report->numberOfClassesAndTraits(),
@@ -102,7 +102,7 @@ final readonly class Text
         );
 
         $methods = sprintf(
-            '  Methods:  %6s (%d/%d)',
+            '  Methods:  %7s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfTestedMethods(),
                 $report->numberOfMethods(),
@@ -116,7 +116,7 @@ final readonly class Text
 
         if ($hasPathCoverage) {
             $paths = sprintf(
-                '  Paths:    %6s (%d/%d)',
+                '  Paths:    %7s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedPaths(),
                     $report->numberOfExecutablePaths(),
@@ -128,7 +128,7 @@ final readonly class Text
 
         if ($hasBranchCoverage) {
             $branches = sprintf(
-                '  Branches: %6s (%d/%d)',
+                '  Branches: %7s (%d/%d)',
                 Percentage::fromFractionAndTotal(
                     $report->numberOfExecutedBranches(),
                     $report->numberOfExecutableBranches(),
@@ -139,7 +139,7 @@ final readonly class Text
         }
 
         $lines = sprintf(
-            '  Lines:    %6s (%d/%d)',
+            '  Lines:    %7s (%d/%d)',
             Percentage::fromFractionAndTotal(
                 $report->numberOfExecutedLines(),
                 $report->numberOfExecutableLines(),

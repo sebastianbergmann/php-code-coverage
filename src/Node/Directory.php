@@ -20,6 +20,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
+use Traversable;
 
 /**
  * @template-implements IteratorAggregate<int, AbstractNode>
@@ -122,7 +123,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
     }
 
     /**
-     * @return RecursiveIteratorIterator<Iterator>
+     * @return RecursiveIteratorIterator<Iterator>&Traversable<int, AbstractNode>
      */
     public function getIterator(): RecursiveIteratorIterator
     {

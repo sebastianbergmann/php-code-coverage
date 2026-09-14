@@ -18,6 +18,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use Traversable;
 
 /**
  * @template-implements IteratorAggregate<int, AbstractNode>
@@ -86,7 +87,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
     }
 
     /**
-     * @return RecursiveIteratorIterator<Iterator<AbstractNode>>
+     * @return RecursiveIteratorIterator<Iterator>&Traversable<int, AbstractNode>
      */
     public function getIterator(): RecursiveIteratorIterator
     {

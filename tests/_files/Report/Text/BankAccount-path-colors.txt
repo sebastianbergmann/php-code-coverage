@@ -1,14 +1,14 @@
 
 
-[1;37;40mCode Coverage Report:   [0m
-[1;37;40m  %s   [0m
-[1;37;40m                        [0m
-[1;37;40m Summary:               [0m
-[37;41m  Classes:   0.00% (0/1)[0m
-[30;43m  Methods:  75.00% (3/4)[0m
-[30;43m  Paths:    60.00% (3/5)[0m
-[37;41m  Branches: 42.85% (3/7)[0m
-[30;43m  Lines:    62.50% (5/8)[0m
+[1;37;40mCode Coverage Report:    [0m
+[1;37;40m  %s    [0m
+[1;37;40m                         [0m
+[1;37;40m Summary:                [0m
+[37;41m  Classes:    0.00% (0/1)[0m
+[30;43m  Methods:   75.00% (3/4)[0m
+[30;43m  Paths:     60.00% (3/5)[0m
+[37;41m  Branches:  42.85% (3/7)[0m
+[30;43m  Lines:     62.50% (5/8)[0m
 
 BankAccount
   [30;43mMethods:  75.00% ( 3/ 4)[0m   [30;43mPaths:  60.00% (  3/  5)[0m   [37;41mBranches:  42.85% (  3/  7)[0m   [30;43mLines:  62.50% (  5/  8)[0m

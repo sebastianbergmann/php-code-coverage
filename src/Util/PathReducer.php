@@ -53,7 +53,9 @@ final class PathReducer
 
             $newFile = basename($normalised);
 
-            $data->renameFile($file, $newFile === '' ? $file : $newFile);
+            if ($newFile !== '' && $newFile !== $file) {
+                $data->renameFile($file, $newFile);
+            }
 
             return dirname($normalised);
         }

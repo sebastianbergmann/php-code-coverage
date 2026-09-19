@@ -64,6 +64,22 @@ final class FacadeTest extends TestCase
         $this->assertStringContainsString('Summary:', $result);
     }
 
+    public function testFromSerializedDataForSingleFileKeepsCoverageOfThatFile(): void
+    {
+        $serializedFile = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'FacadeTest_serialized.php';
+
+        (new Serializer)->serialize($serializedFile, $this->getLineCoverageForBankAccount());
+
+        $serializedData = (new Unserializer)->unserialize($serializedFile);
+
+        $this->assertSame(['BankAccount.php'], $serializedData['codeCoverage']->coveredFiles());
+
+        $summary = Facade::fromSerializedData($serializedData)->summary();
+
+        $this->assertSame(8, $summary->numberOfExecutableLines());
+        $this->assertSame(5, $summary->numberOfExecutedLines());
+    }
+
     public function testSummaryReturnsLineCoverageSummary(): void
     {
         $facade  = Facade::fromObject($this->getLineCoverageForBankAccount());

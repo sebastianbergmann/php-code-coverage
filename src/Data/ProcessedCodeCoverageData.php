@@ -239,6 +239,10 @@ final class ProcessedCodeCoverageData
      */
     public function renameFile(string $oldFile, string $newFile): void
     {
+        if ($oldFile === $newFile) {
+            return;
+        }
+
         if (isset($this->lineCoverage[$oldFile])) {
             $this->lineCoverage[$newFile] = $this->lineCoverage[$oldFile];
             $this->lineCoverageSorted     = false;

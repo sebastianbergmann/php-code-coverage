@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* [#1331](https://github.com/sebastianbergmann/php-code-coverage/issues/1331): Single-file source is reported as 0/0 lines when the report is built from serialised data
 * The summary of the text report was misaligned when path and branch coverage was reported
 
 ## [14.3.3] - 2026-09-10

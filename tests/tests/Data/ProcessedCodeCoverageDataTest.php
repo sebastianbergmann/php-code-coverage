@@ -333,6 +333,31 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $this->assertArrayNotHasKey('/some/path/OldName.php', $coverage->functionCoverage());
     }
 
+    public function testRenameFileToSameNameKeepsCoverageData(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+        $coverage->setLineCoverage(
+            [
+                '/some/path/Name.php' => [
+                    8 => [0 => 1],
+                ],
+            ],
+        );
+        $coverage->setFunctionCoverage(
+            [
+                '/some/path/Name.php' => [
+                    'someFunction' => new ProcessedFunctionCoverageData([], []),
+                ],
+            ],
+        );
+
+        $coverage->renameFile('/some/path/Name.php', '/some/path/Name.php');
+
+        $this->assertSame(['/some/path/Name.php' => [8 => [0 => 1]]], $coverage->lineCoverage());
+        $this->assertArrayHasKey('/some/path/Name.php', $coverage->functionCoverage());
+        $this->assertArrayHasKey('someFunction', $coverage->functionCoverage()['/some/path/Name.php']);
+    }
+
     public function testRenameFileWithoutFunctionCoverage(): void
     {
         $coverage = new ProcessedCodeCoverageData;

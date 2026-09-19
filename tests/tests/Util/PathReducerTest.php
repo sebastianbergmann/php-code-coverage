@@ -37,6 +37,16 @@ final class PathReducerTest extends TestCase
         $this->assertSame(['file.php'], $data->coveredFiles());
     }
 
+    public function testReduceWithSingleFileWithoutDirectoryKeepsFileAndReturnsCurrentDirectory(): void
+    {
+        $data = $this->dataWithFiles(['file.php']);
+
+        $result = (new PathReducer)->reduce($data);
+
+        $this->assertSame('.', $result);
+        $this->assertSame(['file.php'], $data->coveredFiles());
+    }
+
     public function testReduceWithSinglePharFileStripsSchemeAndReturnsDirname(): void
     {
         $data = $this->dataWithFiles(['phar:///path/to/file.php']);

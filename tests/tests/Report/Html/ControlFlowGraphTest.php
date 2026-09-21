@@ -39,10 +39,10 @@ final class ControlFlowGraphTest extends TestCase
         $this->assertStringContainsString('b9 [label="L14-L15", class="uncovered"];', $dot);
 
         $this->assertStringContainsString('entry -> b0;', $dot);
-        $this->assertStringContainsString('b0 -> b5 [id="edge-0-5", class="covered path-0"];', $dot);
-        $this->assertStringContainsString('b0 -> b9 [id="edge-0-9", class="uncovered path-1"];', $dot);
-        $this->assertStringContainsString('b5 -> exit [id="edge-5-exit", class="covered path-0"];', $dot);
-        $this->assertStringContainsString('b9 -> exit [id="edge-9-exit", class="uncovered path-1"];', $dot);
+        $this->assertStringContainsString('b0 -> b5 [id="cfg-Foo-Bar--baz_edge-0-5", class="covered path-0"];', $dot);
+        $this->assertStringContainsString('b0 -> b9 [id="cfg-Foo-Bar--baz_edge-0-9", class="uncovered path-1"];', $dot);
+        $this->assertStringContainsString('b5 -> exit [id="cfg-Foo-Bar--baz_edge-5-exit", class="covered path-0"];', $dot);
+        $this->assertStringContainsString('b9 -> exit [id="cfg-Foo-Bar--baz_edge-9-exit", class="uncovered path-1"];', $dot);
 
         $this->assertStringNotContainsString('fillcolor', $dot);
         $this->assertStringNotContainsString('#', $dot);
@@ -52,7 +52,7 @@ final class ControlFlowGraphTest extends TestCase
     {
         $dot = (new ControlFlowGraph)->generateDot('foo', $this->methodData());
 
-        $this->assertStringContainsString('b0 -> b5 [id="edge-0-5", class="covered"];', $dot);
+        $this->assertStringContainsString('b0 -> b5 [id="cfg-foo_edge-0-5", class="covered"];', $dot);
         $this->assertStringNotContainsString('path-0', $dot);
     }
 
@@ -69,6 +69,7 @@ final class ControlFlowGraphTest extends TestCase
 
         $this->assertStringContainsString('<g id="cfg-Foo-Bar--baz" class="graph"', $first);
         $this->assertStringContainsString('id="cfg&#45;Foo&#45;Bar&#45;&#45;baz_node1"', $first);
+        $this->assertStringContainsString('id="cfg&#45;Foo&#45;Bar&#45;&#45;baz_edge&#45;0&#45;5"', $first);
         $this->assertStringContainsString('<g id="cfg--closure--path-to-file-php-14-14-" class="graph"', $second);
         $this->assertStringNotContainsString('page0,1_', $second);
     }

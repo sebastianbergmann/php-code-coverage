@@ -78,14 +78,18 @@ final class ControlFlowGraph
      *
      * The graph carries an identifier derived from the name of the method,
      * which dot also uses as the prefix of the identifiers it generates for
-     * the nodes. All graphs of a report therefore have distinct identifiers.
+     * the nodes and which is the prefix of the identifiers of the edges.
+     * All graphs of a report and all of their elements therefore have
+     * distinct identifiers.
      *
      * @param null|array<int, ProcessedPathCoverageData> $paths
      */
     public function generateDot(string $methodName, ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
     {
+        $id = $this->id($methodName);
+
         $dot = "digraph {\n";
-        $dot .= sprintf("  id=\"%s\";\n", $this->id($methodName));
+        $dot .= sprintf("  id=\"%s\";\n", $id);
         $dot .= "  rankdir=TB;\n";
         $dot .= "  bgcolor=transparent;\n";
         $dot .= '  node [shape=box, style=filled, fontname="sans-serif", fontsize=11];' . "\n";
@@ -146,9 +150,10 @@ final class ControlFlowGraph
                 }
 
                 $dot .= sprintf(
-                    '  b%d -> %s [id="edge-%s", class="%s"];' . "\n",
+                    '  b%d -> %s [id="%s_edge-%s", class="%s"];' . "\n",
                     $branchId,
                     $destNode,
+                    $id,
                     $edgeKey,
                     implode(' ', $classes),
                 );

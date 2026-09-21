@@ -141,8 +141,14 @@
             return;
         }
 
+        var svgGraph = graph.querySelector('g.graph');
+
+        if (svgGraph === null) {
+            return;
+        }
+
         edges.forEach(function (edge) {
-            var element = graph.querySelector('#edge-' + CSS.escape(edge));
+            var element = graph.querySelector('#' + CSS.escape(svgGraph.id + '_edge-' + edge));
 
             if (element !== null) {
                 element.classList.add('highlighted');

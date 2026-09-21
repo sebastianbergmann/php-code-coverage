@@ -44,6 +44,7 @@ use SebastianBergmann\Template\Template;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
+ * @phpstan-import-type TestIndexType from \SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData
  * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
  * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
  */
@@ -702,36 +703,60 @@ final class File extends Renderer
         $testData             = $node->testData();
         $codeLines            = $this->highlightedSourceFor($node);
 
-        $lineData = [];
+        $numberOfLines = count($codeLines);
 
-        foreach (array_keys($codeLines) as $line) {
-            $lineData[$line + 1] = [
-                'includedInPaths'    => [],
-                'includedInHitPaths' => [],
-                'tests'              => [],
-            ];
-        }
+        /** @var array<int, int> $pathsPerLine */
+        $pathsPerLine = [];
+
+        /** @var array<int, int> $hitPathsPerLine */
+        $hitPathsPerLine = [];
+
+        /** @var array<int, array<TestIndexType, true>> $testsPerLine */
+        $testsPerLine = [];
 
         /** @var ProcessedFunctionCoverageData $method */
         foreach ($functionCoverageData as $method) {
+            /** @var array<int, list<int>> $linesOfBranch */
+            $linesOfBranch = [];
+
+            /** @var ProcessedBranchCoverageData $branch */
+            foreach ($method->branches as $branchId => $branch) {
+                $linesOfBranch[$branchId] = [];
+
+                foreach (range($branch->line_start, $branch->line_end) as $line) {
+                    if ($line >= 1 && $line <= $numberOfLines) {
+                        $linesOfBranch[$branchId][] = $line;
+                    }
+                }
+            }
+
             /** @var ProcessedPathCoverageData $path */
-            foreach ($method->paths as $pathId => $path) {
+            foreach ($method->paths as $path) {
+                /** @var array<int, true> $linesOfPath */
+                $linesOfPath = [];
+
                 foreach ($path->path as $branchTaken) {
-                    if (!isset($method->branches[$branchTaken])) {
+                    if (!isset($linesOfBranch[$branchTaken])) {
                         // @codeCoverageIgnoreStart
                         continue;
                         // @codeCoverageIgnoreEnd
                     }
 
-                    foreach (range($method->branches[$branchTaken]->line_start, $method->branches[$branchTaken]->line_end) as $line) {
-                        if (!isset($lineData[$line])) {
-                            continue;
-                        }
-                        $lineData[$line]['includedInPaths'][] = $pathId;
+                    foreach ($linesOfBranch[$branchTaken] as $line) {
+                        $linesOfPath[$line] = true;
+                    }
+                }
 
-                        if ($path->hit !== []) {
-                            $lineData[$line]['includedInHitPaths'][] = $pathId;
-                            $lineData[$line]['tests']                = array_unique(array_merge($lineData[$line]['tests'], array_keys($path->hit)));
+                $hit = $path->hit !== [];
+
+                foreach (array_keys($linesOfPath) as $line) {
+                    $pathsPerLine[$line] = ($pathsPerLine[$line] ?? 0) + 1;
+
+                    if ($hit) {
+                        $hitPathsPerLine[$line] = ($hitPathsPerLine[$line] ?? 0) + 1;
+
+                        foreach (array_keys($path->hit) as $test) {
+                            $testsPerLine[$line][$test] = true;
                         }
                     }
                 }
@@ -746,14 +771,12 @@ final class File extends Renderer
             $trClass = '';
             $popover = '';
 
-            $currentLineData = $lineData[$i] ?? [
-                'includedInPaths'    => [],
-                'includedInHitPaths' => [],
-                'tests'              => [],
+            $currentLineData = [
+                'tests' => array_keys($testsPerLine[$i] ?? []),
             ];
 
-            $includedInPathsCount    = count(array_unique($currentLineData['includedInPaths']));
-            $includedInHitPathsCount = count(array_unique($currentLineData['includedInHitPaths']));
+            $includedInPathsCount    = $pathsPerLine[$i] ?? 0;
+            $includedInHitPathsCount = $hitPathsPerLine[$i] ?? 0;
 
             if ($includedInPathsCount > 0) {
                 $lineCss = 'success';

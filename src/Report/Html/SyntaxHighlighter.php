@@ -87,13 +87,12 @@ use const T_WHILE;
 use const T_YIELD;
 use const T_YIELD_FROM;
 use const TOKEN_PARSE;
-use function array_values;
 use function count;
 use function explode;
 use function file_get_contents;
 use function htmlspecialchars;
 use function is_string;
-use function sprintf;
+use function str_contains;
 use function str_ends_with;
 use function str_replace;
 use function token_get_all;
@@ -219,8 +218,8 @@ final class SyntaxHighlighter
             $tokens = token_get_all($buffer);
         }
 
-        $result              = [''];
-        $i                   = 0;
+        $result              = [];
+        $current             = '';
         $stringFlag          = false;
         $fileEndsWithNewLine = str_ends_with($buffer, "\n");
 
@@ -229,17 +228,11 @@ final class SyntaxHighlighter
         foreach ($tokens as $j => $token) {
             if (is_string($token)) {
                 if ($token === '"' && ($tokens[$j - 1] ?? null) !== '\\') {
-                    $result[$i] = ($result[$i] ?? '') . sprintf(
-                        '<span class="string">%s</span>',
-                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
-                    );
+                    $current .= '<span class="string">' . htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS) . '</span>';
 
                     $stringFlag = !$stringFlag;
                 } else {
-                    $result[$i] = ($result[$i] ?? '') . sprintf(
-                        '<span class="keyword">%s</span>',
-                        htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS),
-                    );
+                    $current .= '<span class="keyword">' . htmlspecialchars($token, self::HTML_SPECIAL_CHARS_FLAGS) . '</span>';
                 }
 
                 continue;
@@ -254,65 +247,58 @@ final class SyntaxHighlighter
             );
 
             if ($value === "\n") {
-                $result[++$i] = '';
+                $result[] = $current;
+                $current  = '';
+
+                continue;
+            }
+
+            if ($stringFlag) {
+                $colour = 'string';
+            } elseif ($tokenId === T_INLINE_HTML) {
+                $colour = 'html';
+            } elseif ($tokenId === T_COMMENT || $tokenId === T_DOC_COMMENT) {
+                $colour = 'comment';
+            } elseif (isset(self::KEYWORD_TOKENS[$tokenId])) {
+                $colour = 'keyword';
             } else {
-                $lines = explode("\n", $value);
+                $colour = 'default';
+            }
 
-                foreach ($lines as $jj => $line) {
-                    $line = trim($line);
+            // Most tokens are confined to a single line
+            if (!str_contains($value, "\n")) {
+                $line = trim($value);
 
-                    if ($line !== '') {
-                        if ($stringFlag) {
-                            $colour = 'string';
-                        } else {
-                            $colour = 'default';
+                if ($line !== '') {
+                    $current .= '<span class="' . $colour . '">' . $line . '</span>';
+                }
 
-                            if ($this->isInlineHtml($tokenId)) {
-                                $colour = 'html';
-                            } elseif ($this->isComment($tokenId)) {
-                                $colour = 'comment';
-                            } elseif ($this->isKeyword($tokenId)) {
-                                $colour = 'keyword';
-                            }
-                        }
+                continue;
+            }
 
-                        $result[$i] = ($result[$i] ?? '') . sprintf(
-                            '<span class="%s">%s</span>',
-                            $colour,
-                            $line,
-                        );
-                    }
+            $lines = explode("\n", $value);
+            $last  = count($lines) - 1;
 
-                    if (isset($lines[$jj + 1])) {
-                        $result[++$i] = '';
-                    }
+            foreach ($lines as $jj => $line) {
+                $line = trim($line);
+
+                if ($line !== '') {
+                    $current .= '<span class="' . $colour . '">' . $line . '</span>';
+                }
+
+                if ($jj < $last) {
+                    $result[] = $current;
+                    $current  = '';
                 }
             }
         }
 
-        if ($fileEndsWithNewLine) {
-            unset($result[count($result) - 1]);
+        if (!$fileEndsWithNewLine) {
+            $result[] = $current;
         }
-
-        $result = array_values($result);
 
         self::$cache[$file] = $result;
 
         return $result;
-    }
-
-    private function isComment(int $token): bool
-    {
-        return $token === T_COMMENT || $token === T_DOC_COMMENT;
-    }
-
-    private function isInlineHtml(int $token): bool
-    {
-        return $token === T_INLINE_HTML;
-    }
-
-    private function isKeyword(int $token): bool
-    {
-        return isset(self::KEYWORD_TOKENS[$token]);
     }
 }

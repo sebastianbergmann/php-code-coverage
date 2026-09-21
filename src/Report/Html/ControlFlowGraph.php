@@ -9,15 +9,19 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const PHP_OS_FAMILY;
+use function assert;
 use function fclose;
+use function fflush;
+use function fread;
 use function fwrite;
 use function implode;
 use function preg_replace;
 use function proc_close;
 use function proc_open;
 use function sprintf;
-use function stream_get_contents;
-use function stream_set_blocking;
+use function str_contains;
+use function stream_select;
 use function strlen;
 use function substr;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
@@ -34,12 +38,25 @@ final class ControlFlowGraph
      * Branch identifier used by Xdebug for the exit of a function (XDEBUG_BRANCH_EXIT in xdebug_branch_info.h).
      */
     public const int XDEBUG_EXIT_BRANCH = 2147483645;
-    private ?bool $dotAvailable         = null;
+
+    private const int DOT_TIMEOUT_SECONDS = 30;
+    private ?bool $dotAvailable           = null;
+
+    /** @var null|resource */
+    private $process;
+
+    /** @var array<int, resource> */
+    private array $pipes = [];
     private readonly string $dotBinary;
 
     public function __construct(string $dotBinary = 'dot')
     {
         $this->dotBinary = $dotBinary;
+    }
+
+    public function __destruct()
+    {
+        $this->stopDot();
     }
 
     /**
@@ -192,70 +209,114 @@ final class ControlFlowGraph
         return $edgePathClasses;
     }
 
+    /**
+     * dot spends most of its time initializing itself (plugins, font
+     * configuration), not laying out a graph. All graphs of a report are
+     * therefore piped through a single dot process, which emits the SVG of
+     * each graph as soon as that graph has been read.
+     */
     private function dotToSvg(string $dot): string
     {
         if ($this->dotAvailable === false) {
             return '';
         }
 
-        $descriptorSpec = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
-        ];
-
-        $process = @proc_open($this->dotBinary . ' -Tsvg', $descriptorSpec, $pipes);
-
-        if ($process === false || !isset($pipes[0], $pipes[1], $pipes[2])) {
-            // @codeCoverageIgnoreStart
-            $this->dotAvailable = false;
-
+        if ($this->process === null && !$this->startDot()) {
             return '';
-            // @codeCoverageIgnoreEnd
         }
 
-        // Use non-blocking I/O to avoid deadlock when dot's output
-        // buffer fills up before we finish writing the input
-        stream_set_blocking($pipes[1], false);
+        assert(isset($this->pipes[0], $this->pipes[1]));
 
         $written = 0;
         $length  = strlen($dot);
-        $svg     = '';
 
         while ($written < $length) {
-            $chunk = @fwrite($pipes[0], substr($dot, $written));
+            $chunk = @fwrite($this->pipes[0], substr($dot, $written));
 
             if ($chunk === false || $chunk === 0) {
                 // @codeCoverageIgnoreStart
-                break;
+                $this->stopDot();
+
+                return '';
                 // @codeCoverageIgnoreEnd
             }
 
             $written += $chunk;
-
-            // Drain available output to prevent pipe buffer deadlock
-            $svg .= stream_get_contents($pipes[1]);
         }
 
-        fclose($pipes[0]);
+        fflush($this->pipes[0]);
 
-        // Read remaining output
-        stream_set_blocking($pipes[1], true);
-        $svg .= stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
+        $svg = '';
 
-        $exitCode = proc_close($process);
+        while (!str_contains($svg, '</svg>')) {
+            $read   = [$this->pipes[1]];
+            $write  = null;
+            $except = null;
 
-        if ($exitCode !== 0 || $svg === '') {
-            $this->dotAvailable = false;
+            if (@stream_select($read, $write, $except, self::DOT_TIMEOUT_SECONDS) !== 1) {
+                // @codeCoverageIgnoreStart
+                $this->stopDot();
 
-            return '';
+                return '';
+                // @codeCoverageIgnoreEnd
+            }
+
+            $chunk = fread($this->pipes[1], 65536);
+
+            if ($chunk === false || $chunk === '') {
+                // dot has exited, for instance because it could not parse the graph
+                $this->stopDot();
+
+                return '';
+            }
+
+            $svg .= $chunk;
         }
 
         $this->dotAvailable = true;
 
         // Strip XML declaration and DOCTYPE, keep only the <svg> element
         return preg_replace('/^.*?(<svg\b)/s', '$1', $svg) ?? '';
+    }
+
+    private function startDot(): bool
+    {
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['file', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null', 'w'],
+        ];
+
+        $process = @proc_open($this->dotBinary . ' -Tsvg', $descriptorSpec, $pipes);
+
+        if ($process === false || !isset($pipes[0], $pipes[1])) {
+            // @codeCoverageIgnoreStart
+            $this->dotAvailable = false;
+
+            return false;
+            // @codeCoverageIgnoreEnd
+        }
+
+        $this->process = $process;
+        $this->pipes   = $pipes;
+
+        return true;
+    }
+
+    private function stopDot(): void
+    {
+        if ($this->process === null) {
+            return;
+        }
+
+        foreach ($this->pipes as $pipe) {
+            @fclose($pipe);
+        }
+
+        proc_close($this->process);
+
+        $this->process      = null;
+        $this->pipes        = [];
+        $this->dotAvailable = false;
     }
 }

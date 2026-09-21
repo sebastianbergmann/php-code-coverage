@@ -14,12 +14,15 @@ use const ENT_HTML401;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
+use function assert;
 use function count;
+use function file_get_contents;
 use function htmlspecialchars;
 use function round;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
+use function str_replace;
 use function strtolower;
 use function substr_count;
 use RoundingMode;
@@ -135,6 +138,7 @@ abstract class Renderer
      * @var array<TestIndexType, string>
      */
     private array $popoverContentForTest = [];
+    private ?string $lineFormat          = null;
 
     /**
      * @param int<0, 7> $testSizes
@@ -609,18 +613,15 @@ abstract class Renderer
 
     protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $anchorPrefix = '', string $coverageCount = ''): string
     {
-        $template->setVar(
-            [
-                'anchor'        => $anchorPrefix . $lineNumber,
-                'lineNumber'    => (string) $lineNumber,
-                'lineContent'   => $lineContent,
-                'class'         => $class === '' ? '' : sprintf(' class="%s"', $class),
-                'popover'       => $popover,
-                'coverageCount' => $coverageCount,
-            ],
+        return sprintf(
+            $this->lineFormat(),
+            $anchorPrefix . $lineNumber,
+            $lineNumber,
+            $lineContent,
+            $class === '' ? '' : ' class="' . $class . '"',
+            $popover,
+            $coverageCount,
         );
-
-        return $template->render();
     }
 
     /**
@@ -687,6 +688,28 @@ abstract class Renderer
             $runtime->getVendorUrl(),
             $runtime->getName(),
             $runtime->getVersion(),
+        );
+    }
+
+    /**
+     * The line template is rendered once per source line, so it is compiled
+     * into a sprintf() format once instead of being searched for its
+     * placeholders on every line.
+     */
+    private function lineFormat(): string
+    {
+        if ($this->lineFormat !== null) {
+            return $this->lineFormat;
+        }
+
+        $template = file_get_contents($this->templatePath . 'line.html.dist');
+
+        assert($template !== false);
+
+        return $this->lineFormat = str_replace(
+            ['%', '{{anchor}}', '{{lineNumber}}', '{{lineContent}}', '{{class}}', '{{popover}}', '{{coverageCount}}'],
+            ['%%', '%1$s', '%2$d', '%3$s', '%4$s', '%5$s', '%6$s'],
+            $template,
         );
     }
 

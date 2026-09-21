@@ -1060,7 +1060,7 @@ final class File extends Renderer
                 $pathIdx++;
             }
 
-            $svg = $this->controlFlowGraph()->renderSvg($methodData, $renderedPaths);
+            $svg = $this->controlFlowGraph()->renderSvg($methodName, $methodData, $renderedPaths);
 
             $paths .= sprintf(
                 '   <div class="cfg-graph" data-paths="%s">%s</div>' . "\n",

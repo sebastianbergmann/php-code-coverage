@@ -62,11 +62,11 @@ final class ControlFlowGraph
     /**
      * @param null|array<int, ProcessedPathCoverageData> $paths
      */
-    public function renderSvg(ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
+    public function renderSvg(string $methodName, ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
     {
-        $dot = $this->generateDot($methodData, $paths);
+        $dot = $this->generateDot($methodName, $methodData, $paths);
 
-        return $this->dotToSvg($dot);
+        return $this->dotToSvg($dot, $this->id($methodName));
     }
 
     /**
@@ -76,11 +76,16 @@ final class ControlFlowGraph
      * literals; the report's stylesheet maps them to the configured color
      * scheme in both light mode and dark mode.
      *
+     * The graph carries an identifier derived from the name of the method,
+     * which dot also uses as the prefix of the identifiers it generates for
+     * the nodes. All graphs of a report therefore have distinct identifiers.
+     *
      * @param null|array<int, ProcessedPathCoverageData> $paths
      */
-    public function generateDot(ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
+    public function generateDot(string $methodName, ProcessedFunctionCoverageData $methodData, ?array $paths = null): string
     {
         $dot = "digraph {\n";
+        $dot .= sprintf("  id=\"%s\";\n", $this->id($methodName));
         $dot .= "  rankdir=TB;\n";
         $dot .= "  bgcolor=transparent;\n";
         $dot .= '  node [shape=box, style=filled, fontname="sans-serif", fontsize=11];' . "\n";
@@ -215,7 +220,23 @@ final class ControlFlowGraph
      * therefore piped through a single dot process, which emits the SVG of
      * each graph as soon as that graph has been read.
      */
-    private function dotToSvg(string $dot): string
+    /**
+     * The identifier of the graph: the name of the method with every
+     * character that is not a letter, a digit, or an underscore replaced by
+     * a hyphen, so that it is usable as an HTML identifier as well as in a
+     * CSS selector.
+     *
+     * @return non-empty-string
+     */
+    private function id(string $methodName): string
+    {
+        return 'cfg-' . preg_replace('/[^A-Za-z0-9_]/', '-', $methodName);
+    }
+
+    /**
+     * @param non-empty-string $id
+     */
+    private function dotToSvg(string $dot, string $id): string
     {
         if ($this->dotAvailable === false) {
             return '';
@@ -276,7 +297,11 @@ final class ControlFlowGraph
         $this->dotAvailable = true;
 
         // Strip XML declaration and DOCTYPE, keep only the <svg> element
-        return preg_replace('/^.*?(<svg\b)/s', '$1', $svg) ?? '';
+        $svg = preg_replace('/^.*?(<svg\b)/s', '$1', $svg) ?? '';
+
+        // dot prefixes the identifier of every graph but the first one that
+        // it reads from its input with the page number
+        return preg_replace('/(<g id=")[^"]*(" class="graph")/', '${1}' . $id . '$2', $svg, 1) ?? '';
     }
 
     private function startDot(): bool

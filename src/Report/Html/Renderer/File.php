@@ -505,7 +505,7 @@ final class File extends Renderer
                     }
 
                     $lineCss        = 'covered-by-large-tests';
-                    $popoverContent = '<ul>';
+                    $popoverContent = '&lt;ul&gt;';
 
                     foreach (array_keys($coverageData[$i]) as $test) {
                         if (!isset($testData[$test])) {
@@ -523,7 +523,7 @@ final class File extends Renderer
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
-                    $popoverContent .= '</ul>';
+                    $popoverContent .= '&lt;/ul&gt;';
                     $trClass = $lineCss . ' popin';
                 }
             }
@@ -660,7 +660,7 @@ final class File extends Renderer
                     $coverageCount = $markers;
                 }
 
-                $popoverContent = '<ul>';
+                $popoverContent = '&lt;ul&gt;';
 
                 if (count($currentLineData['tests']) === 1) {
                     $popoverTitle = '1 test covers line ' . $i;
@@ -679,7 +679,7 @@ final class File extends Renderer
                     $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                 }
 
-                $popoverContent .= '</ul>';
+                $popoverContent .= '&lt;/ul&gt;';
                 $trClass = $lineCss . ' popin';
 
                 $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
@@ -764,7 +764,7 @@ final class File extends Renderer
                     $lineCss = 'warning';
                 }
 
-                $popoverContent = '<ul>';
+                $popoverContent = '&lt;ul&gt;';
 
                 if (count($currentLineData['tests']) === 1) {
                     $popoverTitle = '1 test covers line ' . $i;
@@ -783,7 +783,7 @@ final class File extends Renderer
                     $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                 }
 
-                $popoverContent .= '</ul>';
+                $popoverContent .= '&lt;/ul&gt;';
                 $trClass = $lineCss . ' popin';
 
                 $popover = $this->popoverAttributes($popoverTitle, $popoverContent);
@@ -852,7 +852,7 @@ final class File extends Renderer
                     $statusClass = 'success';
                     $statusLabel = 'Covered';
 
-                    $popoverContent = '<ul>';
+                    $popoverContent = '&lt;ul&gt;';
 
                     foreach (array_keys($branch->hit) as $test) {
                         if (!isset($testData[$test])) {
@@ -864,7 +864,7 @@ final class File extends Renderer
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
-                    $popoverContent .= '</ul>';
+                    $popoverContent .= '&lt;/ul&gt;';
 
                     $label = $numTests === 1 ? '1 test' : $numTests . ' tests';
 
@@ -970,7 +970,7 @@ final class File extends Renderer
                     $statusClass = 'success';
                     $statusLabel = 'Covered';
 
-                    $popoverContent = '<ul>';
+                    $popoverContent = '&lt;ul&gt;';
 
                     foreach (array_keys($path->hit) as $test) {
                         if (!isset($testData[$test])) {
@@ -982,7 +982,7 @@ final class File extends Renderer
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
 
-                    $popoverContent .= '</ul>';
+                    $popoverContent .= '&lt;/ul&gt;';
 
                     $label = $numTests === 1 ? '1 test' : $numTests . ' tests';
 

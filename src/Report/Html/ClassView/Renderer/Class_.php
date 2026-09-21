@@ -353,7 +353,7 @@ final class Class_ extends Renderer
                     }
 
                     $lineCss        = 'covered-by-large-tests';
-                    $popoverContent = '<ul>';
+                    $popoverContent = '&lt;ul&gt;';
 
                     foreach (array_keys($coverageData[$i]) as $test) {
                         if ($lineCss === 'covered-by-large-tests' && isset($testData[$test]) && $testData[$test]['size'] === 'medium') {
@@ -367,7 +367,7 @@ final class Class_ extends Renderer
                         }
                     }
 
-                    $popoverContent .= '</ul>';
+                    $popoverContent .= '&lt;/ul&gt;';
                     $trClass = $lineCss . ' popin';
                 }
             }

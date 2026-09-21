@@ -632,7 +632,7 @@ abstract class Renderer
         return sprintf(
             ' data-popover-title="%s" data-popover-content="%s"',
             htmlspecialchars($title, self::HTML_SPECIAL_CHARS_FLAGS),
-            htmlspecialchars($content, self::HTML_SPECIAL_CHARS_FLAGS),
+            $content,
         );
     }
 
@@ -668,10 +668,13 @@ abstract class Renderer
                 break;
         }
 
-        return $this->popoverContentForTest[$testIndex] = sprintf(
-            '<li%s>%s</li>',
-            $testCSS,
-            htmlspecialchars($testData['name'], self::HTML_SPECIAL_CHARS_FLAGS),
+        return $this->popoverContentForTest[$testIndex] = htmlspecialchars(
+            sprintf(
+                '<li%s>%s</li>',
+                $testCSS,
+                htmlspecialchars($testData['name'], self::HTML_SPECIAL_CHARS_FLAGS),
+            ),
+            self::HTML_SPECIAL_CHARS_FLAGS,
         );
     }
 

@@ -15,6 +15,7 @@ use function tempnam;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -386,6 +387,36 @@ final class CodeCoverageTest extends TestCase
         $data = $coverage->getData();
 
         $this->assertContains(TEST_FILES_PATH . 'BankAccount.php', $data->coveredFiles());
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testMergeDoesNotAddLinesFromDataForFileThatWasNotExecutedToDataForFileThatWasExecuted(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_returned_match_expression.php';
+
+        $executed = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $executed->filter()->includeFile($file);
+        $executed->append(RawCodeCoverageData::fromLineCoverage([$file => [9 => 1, 10 => 1]]), 'test');
+
+        $notExecuted = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $notExecuted->filter()->includeFile($file);
+
+        $this->assertSame([$file => [8 => [], 9 => [], 10 => []]], $notExecuted->getData()->lineCoverage());
+
+        $notExecuted->merge($executed);
+
+        $this->assertSame(
+            [$file => [9 => ['test' => 1], 10 => ['test' => 1]]],
+            $this->lineCoverageKeyedByTestId($notExecuted->getData()),
+        );
     }
 
     public function testGetDataExcludesUncoveredFilesWhenRaw(): void

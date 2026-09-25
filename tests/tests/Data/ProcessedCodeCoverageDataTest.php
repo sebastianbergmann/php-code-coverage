@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Data;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\TestCase;
 
 #[CoversClass(ProcessedCodeCoverageData::class)]
@@ -374,5 +375,144 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $this->assertArrayHasKey('/some/path/NewName.php', $coverage->lineCoverage());
         $this->assertArrayNotHasKey('/some/path/OldName.php', $coverage->lineCoverage());
         $this->assertArrayNotHasKey('/some/path/NewName.php', $coverage->functionCoverage());
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisIsReplacedByExecutedDataDuringMerge(): void
+    {
+        $coverage = $this->seededFromStaticAnalysis();
+
+        $coverage->merge($this->executedByTest('test'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisIsIgnoredDuringMergeWhenExecutedDataExists(): void
+    {
+        $coverage = $this->executedByTest('test');
+
+        $coverage->merge($this->seededFromStaticAnalysis());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisRemainsReplaceableAfterMergingItWithDataSeededFromStaticAnalysis(): void
+    {
+        $coverage = $this->seededFromStaticAnalysis();
+
+        $coverage->merge($this->seededFromStaticAnalysis());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => [], 10 => [], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+
+        $coverage->merge($this->executedByTest('test'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisRemainsReplaceableAfterMergingItIntoEmptyData(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->merge($this->seededFromStaticAnalysis());
+        $coverage->merge($this->executedByTest('test'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisRemainsReplaceableAfterRenamingTheFile(): void
+    {
+        $coverage = $this->seededFromStaticAnalysis('/some/path/OldName.php');
+
+        $coverage->renameFile('/some/path/OldName.php', '/some/path/SomeClass.php');
+
+        $coverage->merge($this->executedByTest('test'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataSeededFromStaticAnalysisIsNoLongerReplaceableOnceATestExecutedTheFile(): void
+    {
+        $coverage = $this->seededFromStaticAnalysis();
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'first',
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => 1]]),
+        );
+
+        $coverage->merge($this->executedByTest('second'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => ['first' => 1], 10 => ['second' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDataThatWasNotSeededFromStaticAnalysisIsMerged(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1]]),
+        );
+
+        $coverage->merge($this->executedByTest('test'));
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => [], 10 => ['test' => 1], 11 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    /**
+     * @param non-empty-string $file
+     */
+    private function seededFromStaticAnalysis(string $file = '/some/path/SomeClass.php'): ProcessedCodeCoverageData
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUncoveredFiles(
+            RawCodeCoverageData::fromLineCoverage([$file => [9 => -1, 10 => -1, 11 => -1]]),
+        );
+
+        return $coverage;
+    }
+
+    /**
+     * @param non-empty-string $testId
+     */
+    private function executedByTest(string $testId): ProcessedCodeCoverageData
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [10 => 1, 11 => -1]]);
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($data);
+        $coverage->markCodeAsExecutedByTestCase($testId, $data);
+
+        return $coverage;
     }
 }

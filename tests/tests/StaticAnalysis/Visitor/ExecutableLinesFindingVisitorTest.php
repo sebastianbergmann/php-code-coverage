@@ -110,6 +110,23 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertArrayHasKey(12, $executableLines);
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
+    public function testDefaultValuesOfParametersOfAbstractMethodsAreNotExecutable(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_abstract_method_with_constant_default_values.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $this->assertSame([17], array_keys($executableLinesFindingVisitor->executableLinesGroupedByBranch()));
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/967')]
     public function testMatchArmsAreProcessedCorrectly(): void
     {

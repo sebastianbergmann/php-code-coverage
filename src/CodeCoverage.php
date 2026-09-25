@@ -265,13 +265,15 @@ final class CodeCoverage
             $this->dataNotFilteredUsingTargets = clone $rawData;
         }
 
-        $this->data->initializeUnseenData($rawData);
+        if ($id === self::UNCOVERED_FILES) {
+            $this->data->initializeUncoveredFiles($rawData);
 
-        if (!$append) {
             return;
         }
 
-        if ($id === self::UNCOVERED_FILES) {
+        $this->data->initializeUnseenData($rawData);
+
+        if (!$append) {
             return;
         }
 

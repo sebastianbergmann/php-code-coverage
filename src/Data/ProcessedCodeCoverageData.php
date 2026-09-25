@@ -72,6 +72,18 @@ final class ProcessedCodeCoverageData
     private array $functionCoverage = [];
 
     /**
+     * Files whose data was not collected by a driver but seeded from static analysis because no
+     * test executed them. Which lines are executable for such a file is decided by static
+     * analysis alone, whereas for an executed file it also depends on which lines the driver
+     * reports. Merging both kinds of data for the same file would therefore count lines as not
+     * executed that no driver ever reports, so merge() lets data collected by a driver replace
+     * seeded data instead of merging it.
+     *
+     * @var array<non-empty-string, true>
+     */
+    private array $filesSeededFromStaticAnalysis = [];
+
+    /**
      * Whether the hit counts in this object are exact execution counts (the driver that collected
      * the data counts how often a line was executed) or only mean "executed at least once".
      */
@@ -114,6 +126,21 @@ final class ProcessedCodeCoverageData
     }
 
     /**
+     * Initializes the data for files that were not executed by any test from data that was seeded
+     * from static analysis, see RawCodeCoverageData::fromUncoveredFile().
+     */
+    public function initializeUncoveredFiles(RawCodeCoverageData $rawData): void
+    {
+        foreach (array_keys($rawData->lineCoverage()) as $file) {
+            if (!isset($this->lineCoverage[$file])) {
+                $this->filesSeededFromStaticAnalysis[$file] = true;
+            }
+        }
+
+        $this->initializeUnseenData($rawData);
+    }
+
+    /**
      * @param non-empty-string $testCaseId
      */
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
@@ -125,6 +152,8 @@ final class ProcessedCodeCoverageData
                 $this->lineCoverage[$file] = [];
                 $this->lineCoverageSorted  = false;
             }
+
+            unset($this->filesSeededFromStaticAnalysis[$file]);
 
             $fileCoverage = &$this->lineCoverage[$file];
 
@@ -253,7 +282,11 @@ final class ProcessedCodeCoverageData
             $this->functionCoverageSorted     = false;
         }
 
-        unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile]);
+        if (isset($this->filesSeededFromStaticAnalysis[$oldFile])) {
+            $this->filesSeededFromStaticAnalysis[$newFile] = true;
+        }
+
+        unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile], $this->filesSeededFromStaticAnalysis[$oldFile]);
     }
 
     /**
@@ -265,6 +298,9 @@ final class ProcessedCodeCoverageData
      * happens in markCodeAsExecutedByTestCase() and recordHit() instead.
      *
      * The merged data only contains exact hit counts if both operands do.
+     *
+     * Data for a file that was seeded from static analysis is replaced by data for that file
+     * that was collected by a driver, it is not merged with it.
      */
     public function merge(self $newData): void
     {
@@ -272,10 +308,31 @@ final class ProcessedCodeCoverageData
 
         [$newLineCoverage, $newFunctionCoverage] = $this->withTestIndexesRemappedToThisObject($newData);
 
+        $filesToSkip = [];
+
         foreach ($newLineCoverage as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = $lines;
                 $this->lineCoverageSorted  = false;
+
+                if (isset($newData->filesSeededFromStaticAnalysis[$file])) {
+                    $this->filesSeededFromStaticAnalysis[$file] = true;
+                }
+
+                continue;
+            }
+
+            if (isset($newData->filesSeededFromStaticAnalysis[$file])) {
+                $filesToSkip[$file] = true;
+
+                continue;
+            }
+
+            if (isset($this->filesSeededFromStaticAnalysis[$file])) {
+                $this->lineCoverage[$file] = $lines;
+                $this->lineCoverageSorted  = false;
+
+                unset($this->functionCoverage[$file], $this->filesSeededFromStaticAnalysis[$file]);
 
                 continue;
             }
@@ -300,6 +357,10 @@ final class ProcessedCodeCoverageData
         }
 
         foreach ($newFunctionCoverage as $file => $functions) {
+            if (isset($filesToSkip[$file])) {
+                continue;
+            }
+
             if (!isset($this->functionCoverage[$file])) {
                 $this->functionCoverage[$file] = $functions;
                 $this->functionCoverageSorted  = false;

@@ -506,7 +506,7 @@ final class RawCodeCoverageData
                 if (str_ends_with($existingKey, '}') && !str_starts_with($existingKey, '{')) { // don't want to catch {main}
                     $newKey = preg_replace('/\{.*}$/', '', $existingKey);
 
-                    if ($newKey === null) {
+                    if ($newKey === null || $newKey === '') {
                         continue;
                     }
 

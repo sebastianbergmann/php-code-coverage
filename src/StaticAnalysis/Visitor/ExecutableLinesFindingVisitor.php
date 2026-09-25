@@ -394,7 +394,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private function enterCallableOrClassLike(Node $node): void
     {
+        // An abstract method is never executed, not even the expressions of
+        // the default values of its parameters
         if ($node instanceof Node\Stmt\ClassMethod && $node->isAbstract()) {
+            $this->markRangeForUnset($node->getStartLine(), $node->getEndLine());
+
             return;
         }
 

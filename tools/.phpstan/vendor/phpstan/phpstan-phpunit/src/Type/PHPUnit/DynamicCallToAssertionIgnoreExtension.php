@@ -8,7 +8,7 @@ use PHPStan\Analyser\IgnoreErrorExtension;
 use PHPStan\Analyser\Scope;
 use PHPUnit\Framework\TestCase;
 use function is_string;
-use function str_starts_with;
+use function strpos;
 
 final class DynamicCallToAssertionIgnoreExtension implements IgnoreErrorExtension
 {
@@ -33,7 +33,7 @@ final class DynamicCallToAssertionIgnoreExtension implements IgnoreErrorExtensio
 
 		if (
 			!$node->name instanceof Node\Identifier
-			|| !str_starts_with($node->name->name, 'assert')
+			|| strpos($node->name->name, 'assert') !== 0
 		) {
 			return false;
 		}

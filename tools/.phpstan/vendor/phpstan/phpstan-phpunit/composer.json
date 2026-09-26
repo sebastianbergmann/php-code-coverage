@@ -9,7 +9,7 @@
 	"require": {
 		"php": "^7.4 || ^8.0",
 		"phar-io/version": "^3.2",
-		"phpstan/phpstan": "^2.2.3"
+		"phpstan/phpstan": "^2.2.6"
 	},
 	"conflict": {
 		"phpunit/phpunit": "<7.0"

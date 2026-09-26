@@ -1,0 +1,20 @@
+{
+	"require": {
+		"php": "^8.1",
+		"phpstan/phpstan": "@dev",
+		"phpstan/phpstan-phpunit": "@dev",
+		"phpunit/phpunit": "^12.5",
+		"phpstan/extension-installer": "^1.4"
+	},
+	"repositories": [
+		{
+			"type": "path",
+			"url": "../../"
+		}
+	],
+	"config": {
+		"allow-plugins": {
+			"phpstan/extension-installer": true
+		}
+	}
+}

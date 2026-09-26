@@ -5,6 +5,7 @@ namespace PHPStan\Rules\PHPUnit;
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\NodeAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -77,8 +78,9 @@ class AssertSameBooleanExpectedRule implements Rule
 	}
 
 	/**
-	 * @param array<Node\Arg|Node\VariadicPlaceholder> $args
-	 * @return list<Node\Arg|Node\VariadicPlaceholder>
+	 * @template T of NodeAbstract
+	 * @param array<T> $args
+	 * @return list<T>
 	 */
 	private static function rewriteArgs(array $args): array
 	{

@@ -7,12 +7,11 @@ use PharIo\Version\Version;
 use PharIo\Version\VersionConstraintParser;
 use PHPStan\Analyser\Scope;
 use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
+use PHPStan\Php\ConfiguredPhpVersionRangeHelper;
 use PHPStan\Php\PhpMinorVersionIterator;
-use PHPStan\Php\PhpVersion;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\RuleErrorBuilder;
-use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\IntegerRangeType;
+use PHPStan\ShouldNotHappenException;
 use function count;
 use function is_numeric;
 use function preg_match;
@@ -28,8 +27,6 @@ final class AttributeVersionRequirementHelper
 
 	private PHPUnitVersion $PHPUnitVersion;
 
-	private PhpVersion $fallbackPhpVersion;
-
 	/**
 	 * When phpstan-deprecation-rules is installed, rule reports deprecated usages.
 	 */
@@ -42,9 +39,11 @@ final class AttributeVersionRequirementHelper
 
 	private bool $bleedingEdge;
 
+	private ConfiguredPhpVersionRangeHelper $phpVersionRangeHelper;
+
 	public function __construct(
 		PHPUnitVersion $PHPUnitVersion,
-		PhpVersion $phpVersion,
+		ConfiguredPhpVersionRangeHelper $phpVersionRangeHelper,
 		bool $deprecationRulesInstalled = false,
 		bool $bleedingEdge = false,
 		bool $warnAboutIncompleteVersion = true
@@ -52,9 +51,9 @@ final class AttributeVersionRequirementHelper
 	{
 		$this->PHPUnitVersion = $PHPUnitVersion;
 		$this->deprecationRulesInstalled = $deprecationRulesInstalled;
-		$this->fallbackPhpVersion = $phpVersion;
 		$this->warnAboutIncompleteVersion = $warnAboutIncompleteVersion;
 		$this->bleedingEdge = $bleedingEdge;
+		$this->phpVersionRangeHelper = $phpVersionRangeHelper;
 	}
 
 	/**
@@ -64,11 +63,6 @@ final class AttributeVersionRequirementHelper
 	 */
 	public function checkVersionRequirement(array $attributes, Scope $scope): array
 	{
-		$phpstanPharIoVersions = $this->getAnalyzedPhpVersions($scope);
-		if ($phpstanPharIoVersions === []) {
-			return [];
-		}
-
 		$errors = [];
 		$parser = new VersionConstraintParser();
 		foreach ($attributes as $attr) {
@@ -84,7 +78,7 @@ final class AttributeVersionRequirementHelper
 
 			if ($this->warnAboutIncompleteVersion($versionRequirement)) {
 				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement is incomplete.'),
+					sprintf('Version requirement %s is incomplete. Expect a version composed of major, minor and patch.', $versionRequirement),
 				)
 					->identifier('phpunit.attributeRequiresPhpVersion')
 					->build();
@@ -99,7 +93,7 @@ final class AttributeVersionRequirementHelper
 
 				$pharIoVersions = strpos($attr->getName(), 'RequiresPhpunit') !== false
 					? $this->PHPUnitVersion->getPharIoVersions()
-					: $phpstanPharIoVersions;
+					: $this->getAnalyzedPhpVersions();
 				if ($pharIoVersions === []) {
 					continue;
 				}
@@ -136,9 +130,25 @@ final class AttributeVersionRequirementHelper
 					}
 				}
 
+				if (count($pharIoVersions) < 2) {
+					throw new ShouldNotHappenException();
+				}
+
+				if (strpos($attr->getName(), 'RequiresPhpunit') !== false) {
+					$tip = 'PHPUnit version inferred from composer.json requirements.';
+				} else {
+					$tip = 'PHP version for analysis inferred from NEON config phpVersion or composer.json requirements. Invoke PHPStan with -vvv to get more details.';
+				}
+
 				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement will always evaluate to false.'),
+					sprintf(
+						'Version requirement %s does not match %s...%s.',
+						$versionRequirement,
+						$pharIoVersions[0]->getVersionString(),
+						$pharIoVersions[count($pharIoVersions) - 1]->getVersionString(),
+					),
 				)
+					->tip($tip)
 					->identifier('phpunit.attributeRequiresPhpVersion')
 					->build();
 
@@ -147,7 +157,7 @@ final class AttributeVersionRequirementHelper
 
 			if ($this->PHPUnitVersion->requiresPhpversionAttributeWithOperator()->yes()) {
 				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement is missing operator.'),
+					sprintf('Version requirement %s is missing operator.', $versionRequirement),
 				)
 					->identifier('phpunit.attributeRequiresPhpVersion')
 					->build();
@@ -156,7 +166,7 @@ final class AttributeVersionRequirementHelper
 				&& $this->PHPUnitVersion->deprecatesPhpversionAttributeWithoutOperator()->yes()
 			) {
 				$errors[] = RuleErrorBuilder::message(
-					sprintf('Version requirement without operator is deprecated.'),
+					sprintf('Version requirement %s without operator is deprecated.', $versionRequirement),
 				)
 					->identifier('phpunit.attributeRequiresPhpVersion')
 					->build();
@@ -166,23 +176,17 @@ final class AttributeVersionRequirementHelper
 	}
 
 	/**
-	 * @return Version[]
+	 * @return list<Version>
 	 */
-	private function getAnalyzedPhpVersions(Scope $scope): array
+	private function getAnalyzedPhpVersions(): array
 	{
-		$scopePhpVersion = $scope->getPhpVersion()->getType();
-		if ($scopePhpVersion instanceof ConstantIntegerType) {
-			$v = new PhpVersion($scopePhpVersion->getValue());
-			return [new Version($v->getVersionString())];
-		} elseif ($scopePhpVersion instanceof IntegerRangeType) {
-			if ($scopePhpVersion->getMin() === null || $scopePhpVersion->getMax() === null) {
-				return [];
-			}
-
+		// @phpstan-ignore phpstanApi.method
+		[$minVersion, $maxVersion] = $this->phpVersionRangeHelper->getVersionRange();
+		if ($minVersion !== null && $maxVersion !== null) {
 			$versions = [];
 			$minorVersionIterator = new PhpMinorVersionIterator(
-				new PhpVersion($scopePhpVersion->getMin()),
-				new PhpVersion($scopePhpVersion->getMax()),
+				$minVersion,
+				$maxVersion,
 			);
 			foreach ($minorVersionIterator as $phpstanVersion) {
 				$versions[] = new Version($phpstanVersion->getVersionString());
@@ -190,7 +194,7 @@ final class AttributeVersionRequirementHelper
 			return $versions;
 		}
 
-		return [new Version($this->fallbackPhpVersion->getVersionString())];
+		return [];
 	}
 
 	// see https://github.com/sebastianbergmann/phpunit/issues/6451

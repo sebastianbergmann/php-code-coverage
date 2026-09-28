@@ -12,7 +12,7 @@ concurrency:
 
 env:
   COMPOSER_ROOT_VERSION: 14.4.x-dev
-  PHP_VERSION: 8.4
+  PHP_VERSION: 8.5
 
 permissions:
   contents: read
@@ -137,6 +137,7 @@ jobs:
           - 8.4
           - 8.5
           - 8.6
+          - 8.7
 
         coverage-driver:
           - pcov

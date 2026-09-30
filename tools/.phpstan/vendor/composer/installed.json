@@ -255,17 +255,17 @@
         },
         {
             "name": "phpstan/phpstan-phpunit",
-            "version": "2.0.19",
-            "version_normalized": "2.0.19.0",
+            "version": "2.0.20",
+            "version_normalized": "2.0.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-phpunit.git",
-                "reference": "33a190a5e8e69fd18308443a80d4f43f42d43604"
+                "reference": "ef0c8f5c5e01b2b1863043738d90fbde52559159"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/33a190a5e8e69fd18308443a80d4f43f42d43604",
-                "reference": "33a190a5e8e69fd18308443a80d4f43f42d43604",
+                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/ef0c8f5c5e01b2b1863043738d90fbde52559159",
+                "reference": "ef0c8f5c5e01b2b1863043738d90fbde52559159",
                 "shasum": ""
             },
             "require": {
@@ -284,7 +284,7 @@
                 "phpunit/phpunit": "^9.6",
                 "shipmonk/name-collision-detector": "^2.1"
             },
-            "time": "2026-09-26T17:07:06+00:00",
+            "time": "2026-09-30T14:50:48+00:00",
             "type": "phpstan-extension",
             "extra": {
                 "phpstan": {
@@ -310,7 +310,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-phpunit/issues",
-                "source": "https://github.com/phpstan/phpstan-phpunit/tree/2.0.19"
+                "source": "https://github.com/phpstan/phpstan-phpunit/tree/2.0.20"
             },
             "install-path": "../phpstan/phpstan-phpunit"
         },

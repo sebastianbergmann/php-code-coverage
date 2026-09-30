@@ -12,6 +12,8 @@ rules:
 conditionalTags:
 	PHPStan\Rules\PHPUnit\AssertEqualsIsDiscouragedRule:
 		phpstan.rules.rule: [%strictRulesInstalled%, %featureToggles.bleedingEdge%]
+	PHPStan\Rules\PHPUnit\AssertEmptyIsDiscouragedRule:
+		phpstan.rules.rule: [%strictRulesInstalled%, %featureToggles.bleedingEdge%]
 
 	PHPStan\Rules\PHPUnit\DataProviderDataRule:
 		phpstan.rules.rule: %featureToggles.bleedingEdge%
@@ -38,6 +40,9 @@ services:
 
 	-
 		class: PHPStan\Rules\PHPUnit\AssertEqualsIsDiscouragedRule
+
+	-
+		class: PHPStan\Rules\PHPUnit\AssertEmptyIsDiscouragedRule
 
 	-
 		class: PHPStan\Rules\PHPUnit\DataProviderDataRule

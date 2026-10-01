@@ -261,6 +261,7 @@ final class CodeCoverage
 
         $filterProcessor = new FilterProcessor;
 
+        $filterProcessor->removeDataForKnownFilesThatWereNotExecuted($rawData, $this->data);
         $filterProcessor->applyFilter($rawData, $this->filter);
 
         $analyser = $this->analyser($this->filesIn($rawData));

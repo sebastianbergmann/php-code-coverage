@@ -18,6 +18,7 @@ use function is_file;
 use function usort;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
@@ -77,6 +78,41 @@ final readonly class FilterProcessor
 
             $rawData->keepLineCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
             $rawData->keepFunctionCoverageDataOnlyForLines($fileToBeCovered, $includedLines);
+        }
+    }
+
+    /**
+     * Removes the line coverage data for files for which data is known when no line of that
+     * file was executed.
+     *
+     * Xdebug 3.6, for instance, reports data for every file it analysed since the collection of
+     * code coverage data was first started, not only for files that were executed since the
+     * collection of code coverage data was started most recently. Processing that data for every
+     * test would make processing the data for a test more expensive with every file that was
+     * loaded before. The only information such data can add is lines of functions and methods
+     * that were not executed and that were not reported before, and the data for functions and
+     * methods for which no line was reported is seeded from static analysis, see
+     * unreportedCodeUnits().
+     *
+     * Data for files with branch and path coverage data is not removed.
+     */
+    public function removeDataForKnownFilesThatWereNotExecuted(RawCodeCoverageData $rawData, ProcessedCodeCoverageData $data): void
+    {
+        $knownLines       = $data->lineCoverage();
+        $functionCoverage = $rawData->functionCoverage();
+
+        foreach ($rawData->lineCoverage() as $file => $lines) {
+            if (!isset($knownLines[$file]) || isset($functionCoverage[$file])) {
+                continue;
+            }
+
+            foreach ($lines as $status) {
+                if ($status >= Driver::LINE_EXECUTED) {
+                    continue 2;
+                }
+            }
+
+            $rawData->removeCoverageDataForFile($file);
         }
     }
 

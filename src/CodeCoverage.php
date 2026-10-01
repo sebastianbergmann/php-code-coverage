@@ -140,6 +140,8 @@ final class CodeCoverage
     public function getData(bool $raw = false): ProcessedCodeCoverageData
     {
         if (!$raw) {
+            $this->addUnreportedCodeUnits();
+
             if ($this->includeUncoveredFiles) {
                 $this->addUncoveredFilesFromFilter();
             }
@@ -580,6 +582,22 @@ final class CodeCoverage
 
         foreach ($uncoveredFilesData as $rawData) {
             $this->append($rawData, self::UNCOVERED_FILES);
+        }
+    }
+
+    private function addUnreportedCodeUnits(): void
+    {
+        $unreportedCodeUnits = (new FilterProcessor)->unreportedCodeUnits(
+            $this->filter,
+            $this->data,
+            $this->analyser(),
+            $this->useAnnotationsForIgnoringCode,
+        );
+
+        foreach ($unreportedCodeUnits as $file => $codeUnits) {
+            foreach ($codeUnits as $lines) {
+                $this->data->initializeUnreportedCodeUnit($file, $lines);
+            }
         }
     }
 

@@ -10,8 +10,14 @@
 namespace SebastianBergmann\CodeCoverage;
 
 use const DIRECTORY_SEPARATOR;
+use const PHP_BINARY;
 use function array_fill;
 use function array_keys;
+use function escapeshellarg;
+use function json_decode;
+use function putenv;
+use function shell_exec;
+use function sprintf;
 use function sys_get_temp_dir;
 use function tempnam;
 use function uniqid;
@@ -21,6 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\RequiresPhp;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\Attributes\Ticket;
 use ReflectionClass;
 use ReflectionProperty;
@@ -796,6 +803,64 @@ final class CodeCoverageTest extends TestCase
         );
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReport(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported()->getData()),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReportWhenUncoveredFilesAreExcluded(): void
+    {
+        $file     = TEST_FILES_PATH . 'source_with_two_methods.php';
+        $coverage = $this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported();
+
+        $coverage->excludeUncoveredFiles();
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
+        );
+    }
+
+    public function testGetDataExcludesFunctionsAndMethodsTheDriverDidNotReportWhenRaw(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1]]],
+            $this->lineCoverageKeyedByTestId($this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported()->getData(true)),
+        );
+    }
+
+    #[RequiresPhpExtension('xdebug', '>= 3.1.0')]
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesOfMethodThatWasNotExecutedAreReportedForClassThatWasCompiledBeforeCollectionOfCodeCoverageDataWasStarted(): void
+    {
+        putenv('XDEBUG_MODE=coverage');
+
+        $output = shell_exec(
+            sprintf(
+                '%s -d xdebug.mode=coverage %s',
+                escapeshellarg(PHP_BINARY),
+                escapeshellarg(TEST_FILES_PATH . 'collect_coverage_for_class_compiled_before_collection_was_started.php'),
+            ),
+        );
+
+        $this->assertIsString($output);
+
+        $this->assertSame(
+            [8 => [0 => 1], 13 => []],
+            json_decode($output, true),
+            $output,
+        );
+    }
+
     public function testDataNotFilteredUsingTargetsIsNotCollectedByDefault(): void
     {
         $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass();
@@ -960,6 +1025,29 @@ final class CodeCoverageTest extends TestCase
             ['A test' => ['size' => 'medium', 'status' => 'unknown', 'time' => 0.0]],
             $coverage->getTests(),
         );
+    }
+
+    /**
+     * The driver reports the lines of ClassWithTwoMethods::one(), which the test executed, but
+     * not the lines of ClassWithTwoMethods::two(), like Xdebug 3.6 does when the class was
+     * compiled before the collection of code coverage data was started.
+     */
+    private function coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported(): CodeCoverage
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage(
+            new FakeDriver(RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]])),
+            $filter,
+        );
+
+        $coverage->start('test');
+        $coverage->stop();
+
+        return $coverage;
     }
 
     /**

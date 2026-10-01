@@ -12,10 +12,13 @@ namespace SebastianBergmann\CodeCoverage;
 use function array_diff;
 use function array_diff_key;
 use function array_flip;
+use function array_key_exists;
 use function array_keys;
 use function is_file;
+use function usort;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\Test\Target\Mapper;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
@@ -163,5 +166,115 @@ final readonly class FilterProcessor
         }
 
         return $result;
+    }
+
+    /**
+     * Returns data seeded from static analysis for the functions and methods for which no line
+     * is known in files for which data is known, one entry per function or method.
+     *
+     * Such a function or method was not executed, otherwise the driver would have reported its
+     * lines. Xdebug 3.6, for instance, does not report the lines of a function that was compiled
+     * before the collection of code coverage data was started unless a file is compiled while
+     * code coverage data is collected. The data is seeded the same way as the data for a file
+     * that was not executed, see uncoveredFilesFromFilter().
+     *
+     * @return array<non-empty-string, list<array<positive-int, int>>>
+     */
+    public function unreportedCodeUnits(Filter $filter, ProcessedCodeCoverageData $data, FileAnalyser $analyser, bool $useAnnotationsForIgnoringCode): array
+    {
+        $result = [];
+
+        foreach ($data->lineCoverage() as $file => $knownLines) {
+            if (!$filter->isFile($file)) {
+                continue;
+            }
+
+            $analysisResult = $analyser->analyse($file);
+
+            if (!$analysisResult->wasParsed()) {
+                continue;
+            }
+
+            $unreportedCodeUnits = [];
+
+            foreach ($this->linesOfFunctionsAndMethods($analysisResult) as [$startLine, $endLine]) {
+                if (!$this->anyLineIsKnown($knownLines, $startLine, $endLine)) {
+                    $unreportedCodeUnits[] = [$startLine, $endLine];
+                }
+            }
+
+            if ($unreportedCodeUnits === []) {
+                continue;
+            }
+
+            $seededData = RawCodeCoverageData::fromUncoveredFile($file, $analyser);
+
+            $this->applyFilter($seededData, $filter);
+            $this->applyExecutableLinesFilter($seededData, $filter, $analyser);
+
+            if ($useAnnotationsForIgnoringCode) {
+                $this->applyIgnoredLinesFilter($seededData, $filter, $analyser);
+            }
+
+            $seededLines = $seededData->lineCoverage()[$file] ?? [];
+
+            foreach ($unreportedCodeUnits as [$startLine, $endLine]) {
+                $lines = [];
+
+                foreach ($seededLines as $line => $status) {
+                    if ($line >= $startLine && $line <= $endLine) {
+                        $lines[$line] = $status;
+                    }
+                }
+
+                if ($lines !== []) {
+                    $result[$file][] = $lines;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return list<array{positive-int, positive-int}>
+     */
+    private function linesOfFunctionsAndMethods(AnalysisResult $analysisResult): array
+    {
+        $lines = [];
+
+        foreach ($analysisResult->functions() as $function) {
+            $lines[] = [$function->startLine(), $function->endLine()];
+        }
+
+        foreach ($analysisResult->classes() as $class) {
+            foreach ($class->methods() as $method) {
+                $lines[] = [$method->startLine(), $method->endLine()];
+            }
+        }
+
+        foreach ($analysisResult->traits() as $trait) {
+            foreach ($trait->methods() as $method) {
+                $lines[] = [$method->startLine(), $method->endLine()];
+            }
+        }
+
+        usort($lines, static fn (array $a, array $b): int => $a[0] <=> $b[0]);
+
+        return $lines;
+    }
+
+    /**
+     * @param array<positive-int, mixed> $knownLines
+     */
+    private function anyLineIsKnown(array $knownLines, int $startLine, int $endLine): bool
+    {
+        for ($line = $startLine; $line <= $endLine; $line++) {
+            if (array_key_exists($line, $knownLines)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

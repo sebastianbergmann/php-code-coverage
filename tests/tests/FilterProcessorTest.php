@@ -43,6 +43,46 @@ final class FilterProcessorTest extends TestCase
         $this->processor = new FilterProcessor;
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testRemovesDataForKnownFileOfWhichNoLineWasExecuted(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['known.php' => [8 => -1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame([], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForKnownFileOfWhichALineWasExecuted(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['known.php' => [8 => 1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['known.php' => [8 => 1, 13 => -1]], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForFileThatIsNotKnown(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['unknown.php' => [8 => -1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['unknown.php' => [8 => -1, 13 => -1]], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForKnownFileWithBranchAndPathCoverageData(): void
+    {
+        $data = RawCodeCoverageData::fromLineAndBranchCoverage(
+            ['known.php' => [8 => -1, 13 => -1]],
+            ['known.php' => ['foo' => ['branches' => [], 'paths' => []]]],
+        );
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['known.php' => [8 => -1, 13 => -1]], $data->lineCoverage());
+    }
+
     public function testApplyFilterRemovesExcludedFiles(): void
     {
         $data = RawCodeCoverageData::fromLineCoverage([
@@ -629,6 +669,20 @@ final class FilterProcessorTest extends TestCase
     public function testUnreportedCodeUnitsSkipsFileThatDoesNotExist(): void
     {
         $this->assertSame([], $this->unreportedCodeUnits('/does/not/exist.php', [8 => -1]));
+    }
+
+    /**
+     * @param non-empty-string $file
+     */
+    private function dataFor(string $file): ProcessedCodeCoverageData
+    {
+        $data = new ProcessedCodeCoverageData;
+
+        $data->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => -1]]),
+        );
+
+        return $data;
     }
 
     /**

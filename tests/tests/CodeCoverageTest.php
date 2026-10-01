@@ -551,6 +551,37 @@ final class CodeCoverageTest extends TestCase
     }
 
     #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataForFileThatWasReportedBeforeIsIgnoredWhenNoLineOfTheFileWasExecuted(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        // Xdebug 3.6 reports data for every file it analysed since the collection of code
+        // coverage data was first started, even when no line of the file was executed
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]]),
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => -1, 9 => -1, 13 => -1, 14 => -1]]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('first');
+        $coverage->stop();
+
+        $coverage->start('second');
+        $coverage->stop();
+
+        $this->assertSame(['first'], array_keys($coverage->getTests()));
+
+        $this->assertSame(
+            [$file => [8 => ['first' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
     public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReport(): void
     {
         $file = TEST_FILES_PATH . 'source_with_two_methods.php';

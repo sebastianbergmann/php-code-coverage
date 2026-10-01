@@ -256,7 +256,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject->clear();
 
-        $this->assertEmpty($dataObject->lineCoverage());
+        $this->assertSame([], $dataObject->lineCoverage());
     }
 
     public function testRemoveCoverageDataForFile(): void
@@ -784,7 +784,7 @@ final class RawCodeCoverageDataTest extends TestCase
         $lineCoverage = $dataObject->lineCoverage();
 
         $this->assertArrayHasKey($filename, $lineCoverage);
-        $this->assertNotEmpty($lineCoverage[$filename]);
+        $this->assertNotSame([], $lineCoverage[$filename]);
 
         foreach ($lineCoverage[$filename] as $line => $status) {
             if ($line === 32) {
@@ -797,7 +797,7 @@ final class RawCodeCoverageDataTest extends TestCase
             $this->assertSame(-1, $status);
         }
 
-        $this->assertEmpty($dataObject->functionCoverage());
+        $this->assertSame([], $dataObject->functionCoverage());
     }
 
     public function testFromUncoveredFileMarksDeadLinesAsNotExecutable(): void
@@ -1216,8 +1216,8 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $functionData = $functionCoverage[$filename]['foo'];
 
-        $this->assertEmpty($functionData['branches']);
-        $this->assertEmpty($functionData['paths']);
+        $this->assertSame([], $functionData['branches']);
+        $this->assertSame([], $functionData['paths']);
     }
 
     public function testKeepFunctionCoverageDataOnlyForLinesKeepsBranchWhoseLinesAreAllIncluded(): void

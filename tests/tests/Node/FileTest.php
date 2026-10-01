@@ -107,12 +107,12 @@ final class FileTest extends TestCase
 
         $traits = $file->traits();
 
-        $this->assertNotEmpty($traits);
+        $this->assertNotSame([], $traits);
         $this->assertArrayHasKey('MyTrait', $traits);
 
         $trait = $traits['MyTrait'];
 
-        $this->assertNotEmpty($trait->methods);
+        $this->assertNotSame([], $trait->methods);
         $this->assertArrayHasKey('traitMethod', $trait->methods);
     }
 

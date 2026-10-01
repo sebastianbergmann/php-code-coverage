@@ -83,7 +83,7 @@ final class BuilderTest extends TestCase
             }
         }
 
-        $this->assertNotEmpty($classes);
+        $this->assertNotSame([], $classes);
         $classNode = $classes[0];
         $this->assertCount(1, $classNode->traitSections());
         $this->assertSame('App\\MyTrait', $classNode->traitSections()[0]->traitName);
@@ -200,7 +200,7 @@ final class BuilderTest extends TestCase
             }
         }
 
-        $this->assertNotEmpty($classes);
+        $this->assertNotSame([], $classes);
         $this->assertCount(0, $classes[0]->traitSections());
     }
 
@@ -225,7 +225,7 @@ final class BuilderTest extends TestCase
             }
         }
 
-        $this->assertNotEmpty($classes);
+        $this->assertNotSame([], $classes);
         $this->assertCount(0, $classes[0]->parentSections());
     }
 
@@ -319,7 +319,7 @@ final class BuilderTest extends TestCase
             }
         }
 
-        $this->assertNotEmpty($classes);
+        $this->assertNotSame([], $classes);
         $this->assertCount(0, $classes[0]->parentSections());
     }
 

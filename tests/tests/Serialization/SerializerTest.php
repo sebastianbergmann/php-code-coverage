@@ -82,7 +82,7 @@ final class SerializerTest extends TestCase
         $this->assertIsArray($data);
         $this->assertArrayHasKey('basePath', $data);
         $this->assertIsString($data['basePath']);
-        $this->assertNotEmpty($data['basePath']);
+        $this->assertNotSame('', $data['basePath']);
     }
 
     public function testSerializedDataPreservesCoverageData(): void
@@ -169,7 +169,7 @@ final class SerializerTest extends TestCase
         $this->assertArrayHasKey('basePath', $data);
         $this->assertArrayHasKey('codeCoverage', $data);
         $this->assertIsString($data['basePath']);
-        $this->assertNotEmpty($data['basePath']);
+        $this->assertNotSame('', $data['basePath']);
         $this->assertInstanceOf(ProcessedCodeCoverageData::class, $data['codeCoverage']);
         $this->assertCount(count($coverage->getData()->coveredFiles()), $data['codeCoverage']->coveredFiles());
     }

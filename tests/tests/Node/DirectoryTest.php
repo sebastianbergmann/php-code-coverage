@@ -170,7 +170,7 @@ final class DirectoryTest extends TestCase
             $nodes[] = $node;
         }
 
-        $this->assertNotEmpty($nodes);
+        $this->assertNotSame([], $nodes);
     }
 
     public function testClassesAggregatesFromChildren(): void

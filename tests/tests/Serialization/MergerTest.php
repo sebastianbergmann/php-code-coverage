@@ -83,7 +83,7 @@ final class MergerTest extends TestCase
         $result = (new Merger)->merge([$path]);
 
         $this->assertNotSame('old timestamp', $result['buildInformation']['timestamp']);
-        $this->assertNotEmpty($result['buildInformation']['timestamp']);
+        $this->assertNotSame('', $result['buildInformation']['timestamp']);
     }
 
     public function testMergedResultUsesCurrentVersion(): void

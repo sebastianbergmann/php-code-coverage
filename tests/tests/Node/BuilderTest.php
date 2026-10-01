@@ -102,7 +102,7 @@ final class BuilderTest extends TestCase
         $testIds  = $coverage->getData()->testIds();
         $testData = $file->testData();
 
-        $this->assertNotEmpty($testData);
+        $this->assertNotSame([], $testData);
         $this->assertSameSize($testIds, $testData);
 
         foreach ($testIds as $index => $id) {
@@ -128,7 +128,7 @@ final class BuilderTest extends TestCase
         $testIds  = $coverage->getData()->testIds();
         $testData = $file->testData();
 
-        $this->assertNotEmpty($testData);
+        $this->assertNotSame([], $testData);
         $this->assertSameSize($testIds, $testData);
 
         foreach ($testIds as $index => $id) {

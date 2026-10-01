@@ -85,7 +85,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
 
         // for(;;) has no init/cond/loop, so no branch is set for the for statement
         // for(;; ++$i) has only loop part
-        $this->assertNotEmpty($result);
+        $this->assertNotSame([], $result);
     }
 
     #[Ticket('https://github.com/sebastianbergmann/phpunit/issues/6442')]

@@ -60,7 +60,7 @@ final class FacadeTest extends TestCase
         $facade = Facade::fromSerializedData($serializedData);
         $result = $facade->renderText(null);
 
-        $this->assertNotEmpty($result);
+        $this->assertNotSame('', $result);
         $this->assertStringContainsString('Summary:', $result);
     }
 

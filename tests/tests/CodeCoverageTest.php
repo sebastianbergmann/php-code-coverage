@@ -229,7 +229,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->append($data, 'A test', true);
 
-        $this->assertNotEmpty($coverage->getTests());
+        $this->assertNotSame([], $coverage->getTests());
     }
 
     public function testIncludeAndExcludeUncoveredFiles(): void
@@ -260,7 +260,7 @@ final class CodeCoverageTest extends TestCase
 
         $coverage->append($data, 'A test', true);
 
-        $this->assertNotEmpty($coverage->getData()->coveredFiles());
+        $this->assertNotSame([], $coverage->getData()->coveredFiles());
     }
 
     public function testIgnoreAndDoNotIgnoreDeprecatedCode(): void
@@ -287,7 +287,7 @@ final class CodeCoverageTest extends TestCase
 
         $directory = sys_get_temp_dir();
 
-        $this->assertNotEmpty($directory);
+        $this->assertNotSame('', $directory);
 
         $coverage->cacheStaticAnalysis($directory);
 
@@ -307,7 +307,7 @@ final class CodeCoverageTest extends TestCase
 
         $dir = sys_get_temp_dir();
 
-        $this->assertNotEmpty($dir);
+        $this->assertNotSame('', $dir);
 
         $coverage->cacheStaticAnalysis($dir);
 

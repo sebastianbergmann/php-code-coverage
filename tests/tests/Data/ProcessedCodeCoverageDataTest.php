@@ -487,6 +487,49 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         );
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatWereNotSeenBeforeAreInitializedForFileThatWasSeenBefore(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1]]),
+        );
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -1, 11 => -2]]),
+        );
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => [], 10 => [], 11 => null]],
+            $coverage->lineCoverage(),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatWereSeenBeforeAreNotInitializedAgain(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -2]]),
+        );
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'test',
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => 1]]),
+        );
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -1]]),
+        );
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => ['test' => 1], 10 => null]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
     /**
      * @param non-empty-string $file
      */

@@ -513,6 +513,36 @@ final class CodeCoverageTest extends TestCase
         $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatAreReportedForFileAfterTheFileWasFirstReportedAreNotDiscarded(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        // Xdebug 3.6 reports the lines of ClassWithTwoMethods::two() only once a file
+        // was compiled while code coverage data was collected when source_with_two_methods.php
+        // was compiled before the collection of code coverage data was started
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]]),
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1, 13 => -1, 14 => -1]]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('first');
+        $coverage->stop();
+
+        $coverage->start('second');
+        $coverage->stop();
+
+        $this->assertSame(
+            [$file => [8 => ['first' => 1, 'second' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData(true)),
+        );
+    }
+
     public function testDataNotFilteredUsingTargetsIsNotCollectedByDefault(): void
     {
         $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass();

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function array_diff_key;
 use function array_flip;
 use function array_key_exists;
 use function array_keys;
@@ -101,16 +102,23 @@ final class ProcessedCodeCoverageData
         return $this->collectsHitCounts;
     }
 
+    /**
+     * Lines that are reported for a file that was seen before are initialized when they were
+     * not seen before: a driver does not necessarily report all lines of a file the first time
+     * it reports data for that file. Xdebug 3.6, for instance, reports the lines of a function
+     * that was compiled before the collection of code coverage data was started only after a
+     * file was compiled while code coverage data was collected.
+     */
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
         foreach ($rawData->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
                 $this->lineCoverageSorted  = false;
+            }
 
-                foreach ($lines as $k => $v) {
-                    $this->lineCoverage[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
-                }
+            foreach (array_diff_key($lines, $this->lineCoverage[$file]) as $k => $v) {
+                $this->lineCoverage[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
             }
         }
 

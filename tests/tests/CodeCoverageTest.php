@@ -9,13 +9,20 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use const PHP_BINARY;
 use function array_fill;
 use function array_keys;
+use function escapeshellarg;
+use function json_decode;
+use function putenv;
+use function shell_exec;
+use function sprintf;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
@@ -513,6 +520,125 @@ final class CodeCoverageTest extends TestCase
         $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatAreReportedForFileAfterTheFileWasFirstReportedAreNotDiscarded(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        // Xdebug 3.6 reports the lines of ClassWithTwoMethods::two() only once a file
+        // was compiled while code coverage data was collected when source_with_two_methods.php
+        // was compiled before the collection of code coverage data was started
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]]),
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1, 13 => -1, 14 => -1]]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('first');
+        $coverage->stop();
+
+        $coverage->start('second');
+        $coverage->stop();
+
+        $this->assertSame(
+            [$file => [8 => ['first' => 1, 'second' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData(true)),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataForFileThatWasReportedBeforeIsIgnoredWhenNoLineOfTheFileWasExecuted(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        // Xdebug 3.6 reports data for every file it analysed since the collection of code
+        // coverage data was first started, even when no line of the file was executed
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]]),
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => -1, 9 => -1, 13 => -1, 14 => -1]]),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('first');
+        $coverage->stop();
+
+        $coverage->start('second');
+        $coverage->stop();
+
+        $this->assertSame(['first'], array_keys($coverage->getTests()));
+
+        $this->assertSame(
+            [$file => [8 => ['first' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReport(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported()->getData()),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReportWhenUncoveredFilesAreExcluded(): void
+    {
+        $file     = TEST_FILES_PATH . 'source_with_two_methods.php';
+        $coverage = $this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported();
+
+        $coverage->excludeUncoveredFiles();
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
+        );
+    }
+
+    public function testGetDataExcludesFunctionsAndMethodsTheDriverDidNotReportWhenRaw(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1]]],
+            $this->lineCoverageKeyedByTestId($this->coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported()->getData(true)),
+        );
+    }
+
+    #[RequiresPhpExtension('xdebug', '>= 3.1.0')]
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesOfMethodThatWasNotExecutedAreReportedForClassThatWasCompiledBeforeCollectionOfCodeCoverageDataWasStarted(): void
+    {
+        putenv('XDEBUG_MODE=coverage');
+
+        $output = shell_exec(
+            sprintf(
+                '%s -d xdebug.mode=coverage %s',
+                escapeshellarg(PHP_BINARY),
+                escapeshellarg(TEST_FILES_PATH . 'collect_coverage_for_class_compiled_before_collection_was_started.php'),
+            ),
+        );
+
+        $this->assertIsString($output);
+
+        $this->assertSame(
+            [8 => [0 => 1], 13 => []],
+            json_decode($output, true),
+            $output,
+        );
+    }
+
     public function testDataNotFilteredUsingTargetsIsNotCollectedByDefault(): void
     {
         $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass();
@@ -588,6 +714,29 @@ final class CodeCoverageTest extends TestCase
         $coverage->disableCollectionOfDataNotFilteredUsingTargets();
 
         $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
+    }
+
+    /**
+     * The driver reports the lines of ClassWithTwoMethods::one(), which the test executed, but
+     * not the lines of ClassWithTwoMethods::two(), like Xdebug 3.6 does when the class was
+     * compiled before the collection of code coverage data was started.
+     */
+    private function coverageForClassWithTwoMethodsOfWhichOnlyOneIsReported(): CodeCoverage
+    {
+        $file = TEST_FILES_PATH . 'source_with_two_methods.php';
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage(
+            new FakeDriver(RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]])),
+            $filter,
+        );
+
+        $coverage->start('test');
+        $coverage->stop();
+
+        return $coverage;
     }
 
     /**

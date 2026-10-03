@@ -9,7 +9,6 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
-use function array_merge;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;

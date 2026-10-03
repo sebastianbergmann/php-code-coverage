@@ -349,7 +349,11 @@ final class ProcessedCodeCoverageData
                     is_array($data) &&
                     array_key_exists($line, $fileCoverage) &&
                     is_array($fileCoverage[$line])) {
-                    $fileCoverage[$line] = HitMap::merge($fileCoverage[$line], $data);
+                    // The hits are merged into the line's hit map in place:
+                    // merging them into a copy would copy the hits of every
+                    // test merged so far, which made merging the coverage of
+                    // many tests that execute the same line quadratic.
+                    HitMap::mergeInto($fileCoverage[$line], $data);
                 }
             }
 

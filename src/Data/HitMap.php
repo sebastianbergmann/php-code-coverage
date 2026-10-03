@@ -37,11 +37,26 @@ final class HitMap
      */
     public static function merge(array $hit, array $additionalHit): array
     {
+        self::mergeInto($hit, $additionalHit);
+
+        return $hit;
+    }
+
+    /**
+     * Merges the hit counts of the second operand into the first one in place,
+     * combining them as merge() does. Merging the hit counts of many tests into
+     * a growing map, one test after another, does not copy the map each time.
+     *
+     * @param array<TestIndexType, positive-int> $hit
+     * @param array<TestIndexType, positive-int> $additionalHit
+     *
+     * @param-out array<TestIndexType, positive-int> $hit
+     */
+    public static function mergeInto(array &$hit, array $additionalHit): void
+    {
         foreach ($additionalHit as $testIndex => $count) {
             $hit[$testIndex] = max($hit[$testIndex] ?? 0, $count);
         }
-
-        return $hit;
     }
 
     /**

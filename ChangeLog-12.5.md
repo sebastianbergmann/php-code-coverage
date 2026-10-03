@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#1244](https://github.com/sebastianbergmann/php-code-coverage/pull/1244): Do not build code unit map when test has no coverage targets
+* `CodeCoverage::merge()` copies all tests merged so far on every call, which makes merging the code coverage of many processes quadratic
 
 ## [12.5.7] - 2026-06-01
 

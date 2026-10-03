@@ -3,12 +3,13 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
-         executionOrder="depends,defects"
+         executionOrder="defects"
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnPhpunitDeprecations="true"
          failOnPhpunitDeprecation="true"
          failOnRisky="true"
          failOnWarning="true"
+         warnWhenPhpIsNotConfiguredForDevelopment="true"
          colors="true">
     <testsuites>
         <testsuite name="default">

@@ -148,6 +148,44 @@ final class CodeCoverageTest extends TestCase
         );
     }
 
+    public function testMergesTheTestsOfAnotherInstance(): void
+    {
+        $coverage = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $coverage->setTests(
+            [
+                'testOne' => ['size' => 'small', 'status' => 'success', 'time' => 0.1],
+                'testTwo' => ['size' => 'small', 'status' => 'failure', 'time' => 0.2],
+            ],
+        );
+
+        $other = new CodeCoverage(
+            $this->createStub(Driver::class),
+            new Filter,
+        );
+
+        $other->setTests(
+            [
+                'testTwo'   => ['size' => 'medium', 'status' => 'success', 'time' => 0.3],
+                'testThree' => ['size' => 'large', 'status' => 'success', 'time' => 0.4],
+            ],
+        );
+
+        $coverage->merge($other);
+
+        $this->assertSame(
+            [
+                'testOne'   => ['size' => 'small', 'status' => 'success', 'time' => 0.1],
+                'testTwo'   => ['size' => 'medium', 'status' => 'success', 'time' => 0.3],
+                'testThree' => ['size' => 'large', 'status' => 'success', 'time' => 0.4],
+            ],
+            $coverage->getTests(),
+        );
+    }
+
     public function testMerge2(): void
     {
         $coverage = new CodeCoverage(

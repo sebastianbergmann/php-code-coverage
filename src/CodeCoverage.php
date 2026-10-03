@@ -332,7 +332,13 @@ final class CodeCoverage
 
         $this->data->merge($that->data);
 
-        $this->tests = array_merge($this->tests, $that->getTests());
+        // The tests are added to the ones merged so far rather than merged
+        // with them into a new array: that would copy every test merged so
+        // far on each merge, which made merging the code coverage of many
+        // processes, one after another, quadratic.
+        foreach ($that->getTests() as $id => $test) {
+            $this->tests[$id] = $test;
+        }
 
         $this->cachedReport = null;
     }

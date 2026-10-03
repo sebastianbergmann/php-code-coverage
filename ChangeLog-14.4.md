@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.4.1] - 2026-MM-DD
+
+### Fixed
+
+* `CodeCoverage::merge()` copies all tests merged so far on every call, which makes merging the code coverage of many processes quadratic
+
 ## [14.4.0] - 2026-09-30
 
 ### Added
@@ -18,4 +24,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   * Source files without executable code are not reported; records are sorted by path and by test identifier, and paths use `/` on all platforms, so that the same coverage data yields byte-identical output
 * `enableCollectionOfDataNotFilteredUsingTargets()` and `dataNotFilteredUsingTargets()` to allow collection of code coverage data that is not filtered using code coverage targets
 
+[14.4.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.4.0...main
 [14.4.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.3.5...14.4.0

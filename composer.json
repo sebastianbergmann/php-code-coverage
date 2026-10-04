@@ -40,7 +40,7 @@
         "sebastian/environment": "^9.3.3",
         "sebastian/git-state": "^1.0",
         "sebastian/lines-of-code": "^5.0.2",
-        "sebastian/version": "^7.0",
+        "sebastian/version": "^7.0.1",
         "theseer/tokenizer": "^2.0.1"
     },
     "require-dev": {

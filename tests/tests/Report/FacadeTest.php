@@ -135,6 +135,7 @@ final class FacadeTest extends TestCase
             TEST_FILES_PATH . 'Report/Text/BankAccount-line.txt',
             str_replace(PHP_EOL, "\n", $contents),
         );
+        $this->assertSame($contents, $result);
     }
 
     public function testRenderClover(): void

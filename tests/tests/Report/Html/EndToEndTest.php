@@ -133,7 +133,7 @@ final class EndToEndTest extends TestCase
             'Generated files and expected files not match',
         );
 
-        foreach ($expectedFilesIterator as $path => $fileInfo) {
+        foreach ($expectedFilesIterator as $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             $filename = $fileInfo->getFilename();
 

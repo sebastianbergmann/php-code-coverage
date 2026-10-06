@@ -31,7 +31,7 @@ final class XmlTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $path => $fileInfo) {
+        foreach (new FilesystemIterator(TEST_FILES_PATH . 'tmp') as $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             unlink($fileInfo->getPathname());
         }
@@ -88,7 +88,7 @@ final class XmlTest extends TestCase
             'Generated files and expected files not match',
         );
 
-        foreach ($expectedFilesIterator as $path => $fileInfo) {
+        foreach ($expectedFilesIterator as $fileInfo) {
             /* @var \SplFileInfo $fileInfo */
             $filename = $fileInfo->getFilename();
 

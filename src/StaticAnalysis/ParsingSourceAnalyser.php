@@ -86,7 +86,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
         $ignoredLines = array_unique(
             array_merge(
                 $this->findLinesIgnoredByLineBasedAnnotations(
-                    $sourceCodeFile,
                     $sourceCode,
                     $useAnnotationsForIgnoringCode,
                 ),
@@ -114,7 +113,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
     /**
      * @return array<int, int>
      */
-    private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): array
+    private function findLinesIgnoredByLineBasedAnnotations(string $source, bool $useAnnotationsForIgnoringCode): array
     {
         if (!$useAnnotationsForIgnoringCode) {
             return [];

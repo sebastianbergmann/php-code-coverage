@@ -185,13 +185,7 @@ final readonly class Facade
         );
 
         if ($target !== null) {
-            Filesystem::write(
-                $target,
-                new Text($thresholds, $showUncoveredFiles, $showOnlySummary)->process(
-                    $this->report,
-                    $showColors,
-                ),
-            );
+            Filesystem::write($target, $buffer);
         }
 
         return $buffer;

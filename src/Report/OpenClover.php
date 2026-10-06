@@ -94,7 +94,7 @@ final class OpenClover
                     $namespace = $class->namespace;
                 }
 
-                foreach ($class->methods as $methodName => $method) {
+                foreach ($class->methods as $method) {
                     /** @phpstan-ignore equal.notAllowed */
                     if ($method->executableLines == 0) {
                         continue;

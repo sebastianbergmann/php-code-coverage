@@ -6,7 +6,7 @@ use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\BetterReflection\Reflection\ReflectionMethod;
 use PHPStan\Node\Expr\TypeExpr;
-use PHPStan\Rules\Rule;
+use PHPStan\Rules\MultipleNodeTypesRule;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use function array_slice;
@@ -15,9 +15,9 @@ use function max;
 use const PHP_INT_MAX;
 
 /**
- * @implements Rule<Node>
+ * @implements MultipleNodeTypesRule<Node>
  */
-class DataProviderDataRule implements Rule
+class DataProviderDataRule implements MultipleNodeTypesRule
 {
 
 	private TestMethodsHelper $testMethodsHelper;
@@ -35,6 +35,11 @@ class DataProviderDataRule implements Rule
 		$this->testMethodsHelper = $testMethodsHelper;
 		$this->dataProviderHelper = $dataProviderHelper;
 		$this->PHPUnitVersion = $PHPUnitVersion;
+	}
+
+	public function getNodeTypes(): array
+	{
+		return [Node\Stmt\Return_::class, Node\Expr\Yield_::class, Node\Expr\YieldFrom::class];
 	}
 
 	public function getNodeType(): string

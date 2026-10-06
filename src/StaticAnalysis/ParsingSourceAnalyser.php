@@ -74,7 +74,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
             $traverser->traverse($nodes);
         } catch (Error $error) {
             return $this->resultForFileThatCannotBeParsed(
-                $sourceCodeFile,
                 $sourceCode,
                 $useAnnotationsForIgnoringCode,
                 $linesOfCode,
@@ -84,7 +83,6 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
         $ignoredLines = array_replace(
             $this->findLinesIgnoredByLineBasedAnnotations(
-                $sourceCodeFile,
                 $sourceCode,
                 $useAnnotationsForIgnoringCode,
             ),
@@ -123,13 +121,11 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
      * line-based annotations are still found, because that scan is based on
      * token_get_all() and does not require the parser.
      *
-     * @param non-empty-string $sourceCodeFile
-     * @param positive-int     $linesOfCode
+     * @param positive-int $linesOfCode
      */
-    private function resultForFileThatCannotBeParsed(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, int $linesOfCode, Error $error): AnalysisResult
+    private function resultForFileThatCannotBeParsed(string $sourceCode, bool $useAnnotationsForIgnoringCode, int $linesOfCode, Error $error): AnalysisResult
     {
         $ignoredLines = $this->findLinesIgnoredByLineBasedAnnotations(
-            $sourceCodeFile,
             $sourceCode,
             $useAnnotationsForIgnoringCode,
         );
@@ -157,7 +153,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
     /**
      * @return array<int, true>
      */
-    private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): array
+    private function findLinesIgnoredByLineBasedAnnotations(string $source, bool $useAnnotationsForIgnoringCode): array
     {
         if (!$useAnnotationsForIgnoringCode) {
             return [];

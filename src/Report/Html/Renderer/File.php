@@ -590,7 +590,7 @@ final class File extends Renderer
         /** @var ProcessedFunctionCoverageData $method */
         foreach ($functionCoverageData as $method) {
             /** @var ProcessedBranchCoverageData $branch */
-            foreach ($method->branches as $branchId => $branch) {
+            foreach ($method->branches as $branch) {
                 if (count($branch->out) > 1) {
                     $decisionLine = $branch->line_end;
 

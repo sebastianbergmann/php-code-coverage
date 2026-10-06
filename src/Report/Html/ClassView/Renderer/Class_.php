@@ -158,7 +158,7 @@ final class Class_ extends Renderer
 
         // Trait methods
         foreach ($node->traitSections() as $i => $section) {
-            foreach ($section->trait->methods as $methodName => $method) {
+            foreach ($section->trait->methods as $method) {
                 $items .= $this->renderMethodItem(
                     $methodItemTemplate,
                     $method,
@@ -170,7 +170,7 @@ final class Class_ extends Renderer
 
         // Inherited methods
         foreach ($node->parentSections() as $i => $section) {
-            foreach ($section->methods as $methodName => $method) {
+            foreach ($section->methods as $method) {
                 $items .= $this->renderMethodItem(
                     $methodItemTemplate,
                     $method,

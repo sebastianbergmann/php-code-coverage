@@ -884,12 +884,10 @@ final class File extends Renderer
 
             if (count($methodData->paths) > 100) {
                 $pathStructure .= '<p>' . count($methodData->paths) . ' is too many paths to sensibly render, consider refactoring your code to bring this number down.</p>';
-
-                continue;
-            }
-
-            foreach ($methodData->paths as $path) {
-                $pathStructure .= $this->renderPathLines($path, $methodData->branches, $codeLines, $testData);
+            } else {
+                foreach ($methodData->paths as $path) {
+                    $pathStructure .= $this->renderPathLines($path, $methodData->branches, $codeLines, $testData);
+                }
             }
 
             if ($pathStructure !== '') {

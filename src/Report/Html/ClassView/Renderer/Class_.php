@@ -255,7 +255,6 @@ final class Class_ extends Renderer
 
         // Own source
         $sections .= $this->renderSourceSection(
-            $node->shortName(),
             $node->filePath(),
             $node->startLine(),
             $node->endLine(),
@@ -269,7 +268,6 @@ final class Class_ extends Renderer
             $sections .= $this->renderSectionHeader('From ' . $section->traitName);
 
             $sections .= $this->renderSourceSection(
-                $section->traitName,
                 $section->filePath,
                 $section->startLine,
                 $section->endLine,
@@ -286,7 +284,6 @@ final class Class_ extends Renderer
 
             foreach ($section->methods as $method) {
                 $sections .= $this->renderSourceSection(
-                    $section->className . '::' . $method->methodName,
                     $section->filePath,
                     $method->startLine,
                     $method->endLine,
@@ -314,7 +311,7 @@ final class Class_ extends Renderer
      * @param array<int, ?array<TestIndexType, positive-int>> $coverageData
      * @param array<TestIndexType, TestDataType>              $testData
      */
-    private function renderSourceSection(string $label, string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
+    private function renderSourceSection(string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');

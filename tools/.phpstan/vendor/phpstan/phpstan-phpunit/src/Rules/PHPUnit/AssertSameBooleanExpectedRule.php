@@ -51,6 +51,10 @@ class AssertSameBooleanExpectedRule implements Rule
 				RuleErrorBuilder::message('You should use assertTrue() instead of assertSame() when expecting "true"')
 					->identifier('phpunit.assertTrue')
 					->fixNode($node, static function (CallLike $node) {
+						if (AssertRuleHelper::hasNamedOrUnpackedArguments($node)) {
+							return $node;
+						}
+
 						$node->name = new Node\Identifier('assertTrue');
 						$node->args = self::rewriteArgs($node->args);
 

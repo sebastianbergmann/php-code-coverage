@@ -5,6 +5,7 @@ namespace PHPStan\Rules\PHPUnit;
 use Countable;
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\NodeAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -50,6 +51,21 @@ class AssertSameWithCountRule implements Rule
 			return [
 				RuleErrorBuilder::message('You should use assertCount($expectedCount, $variable) instead of assertSame($expectedCount, count($variable)).')
 					->identifier('phpunit.assertCount')
+					->fixNode($node, static function (CallLike $node) use ($scope) {
+						if (AssertRuleHelper::hasNamedOrUnpackedArguments($node)) {
+							return $node;
+						}
+
+						$newArgs = self::rewriteArgs($node->args, $scope);
+						if ($newArgs === null) {
+							return $node;
+						}
+
+						$node->name = new Node\Identifier('assertCount');
+						$node->args = $newArgs;
+
+						return $node;
+					})
 					->build(),
 			];
 		}
@@ -58,6 +74,21 @@ class AssertSameWithCountRule implements Rule
 			return [
 				RuleErrorBuilder::message('You should use assertCount($expectedCount, $variable) instead of assertSame($expectedCount, $variable->count()).')
 					->identifier('phpunit.assertCount')
+					->fixNode($node, static function (CallLike $node) use ($scope) {
+						if (AssertRuleHelper::hasNamedOrUnpackedArguments($node)) {
+							return $node;
+						}
+
+						$newArgs = self::rewriteArgs($node->args, $scope);
+						if ($newArgs === null) {
+							return $node;
+						}
+
+						$node->name = new Node\Identifier('assertCount');
+						$node->args = $newArgs;
+
+						return $node;
+					})
 					->build(),
 			];
 		}
@@ -107,6 +138,50 @@ class AssertSameWithCountRule implements Rule
 			$isNormalCount = (new ConstantIntegerType(COUNT_NORMAL))->isSuperTypeOf($mode)->result->or($countedType->getIterableValueType()->isArray()->negate());
 		}
 		return $isNormalCount;
+	}
+
+	/**
+	 * @template T of NodeAbstract
+	 * @param array<T> $args
+	 * @return list<T|Node\Arg>|null
+	 */
+	private static function rewriteArgs(array $args, Scope $scope): ?array
+	{
+		$newArgs = [];
+		foreach ($args as $i => $arg) {
+			if (!$arg instanceof Node\Arg) {
+				$newArgs[] = $arg;
+				continue;
+			}
+
+			if ($i !== 1 || !$arg->value instanceof CallLike) {
+				$newArgs[] = $arg;
+				continue;
+			}
+
+			$callLike = $arg->value;
+
+			// for now skip more complex cases
+			if (AssertRuleHelper::hasNamedOrUnpackedArguments($callLike)) {
+				return null;
+			}
+
+			if (self::isCountFunctionCall($callLike, $scope)) {
+				if (count($callLike->getArgs()) !== 1) {
+					return null;
+				}
+
+				$newArgs[] = new Node\Arg($callLike->getArgs()[0]->value);
+				continue;
+			} elseif (self::isCountableMethodCall($callLike, $scope)) {
+				$newArgs[] = new Node\Arg($callLike->var);
+				continue;
+			}
+
+			return null;
+		}
+
+		return $newArgs;
 	}
 
 }

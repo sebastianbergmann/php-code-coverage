@@ -51,6 +51,10 @@ class AssertSameNullExpectedRule implements Rule
 				RuleErrorBuilder::message('You should use assertNull() instead of assertSame(null, $actual).')
 					->identifier('phpunit.assertNull')
 					->fixNode($node, static function (CallLike $node) {
+						if (AssertRuleHelper::hasNamedOrUnpackedArguments($node)) {
+							return $node;
+						}
+
 						$node->name = new Node\Identifier('assertNull');
 						$node->args = self::rewriteArgs($node->args);
 

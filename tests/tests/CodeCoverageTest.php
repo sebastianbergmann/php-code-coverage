@@ -15,6 +15,7 @@ use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -24,6 +25,7 @@ use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
+use SebastianBergmann\CodeCoverage\Test\TestSize;
 use SebastianBergmann\Environment\Runtime;
 
 #[CoversClass(CodeCoverage::class)]
@@ -31,6 +33,29 @@ use SebastianBergmann\Environment\Runtime;
 final class CodeCoverageTest extends TestCase
 {
     private ?CodeCoverage $coverage = null;
+
+    /**
+     * @return non-empty-array<non-empty-string, array{0: TestSize}>
+     */
+    public static function sizesForWhichUnintentionallyCoveredCodeIsNotChecked(): array
+    {
+        return [
+            'medium' => [TestSize::Medium],
+            'large'  => [TestSize::Large],
+        ];
+    }
+
+    /**
+     * @return non-empty-array<non-empty-string, array{0: ?TestSize}>
+     */
+    public static function sizesForWhichUnintentionallyCoveredCodeIsChecked(): array
+    {
+        return [
+            'no size' => [null],
+            'unknown' => [TestSize::Unknown],
+            'small'   => [TestSize::Small],
+        ];
+    }
 
     protected function setUp(): void
     {
@@ -628,6 +653,68 @@ final class CodeCoverageTest extends TestCase
         $this->assertFalse($coverage->hasDataNotFilteredUsingTargets());
     }
 
+    #[DataProvider('sizesForWhichUnintentionallyCoveredCodeIsNotChecked')]
+    public function testAppendDoesNotCheckForUnintentionallyCoveredCodeWhenSizePassedIsMediumOrLarge(TestSize $size): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount(), null, 0.0, $size);
+
+        $this->assertSame(
+            ['A test' => ['size' => $size->asString(), 'status' => 'unknown', 'time' => 0.0]],
+            $coverage->getTests(),
+        );
+    }
+
+    #[DataProvider('sizesForWhichUnintentionallyCoveredCodeIsChecked')]
+    public function testAppendChecksForUnintentionallyCoveredCodeWhenSizeIsNeitherMediumNorLarge(?TestSize $size): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $this->expectException(UnintentionallyCoveredCodeException::class);
+
+        $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount(), null, 0.0, $size);
+    }
+
+    public function testSizePassedToAppendTakesPrecedenceOverSizePassedToStart(): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $coverage->start('A test', TestSize::Small);
+        $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount(), null, 0.0, TestSize::Medium);
+
+        $this->assertSame(
+            ['A test' => ['size' => 'medium', 'status' => 'unknown', 'time' => 0.0]],
+            $coverage->getTests(),
+        );
+    }
+
+    public function testSmallSizePassedToAppendTakesPrecedenceOverMediumSizePassedToStart(): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $coverage->start('A test', TestSize::Medium);
+
+        $this->expectException(UnintentionallyCoveredCodeException::class);
+
+        $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount(), null, 0.0, TestSize::Small);
+    }
+
+    public function testStopUsesSizePassedToStart(): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode(
+            $this->dataForTestThatExecutesBankAccountAndCoveredClass(),
+        );
+
+        $coverage->start('A test', TestSize::Medium);
+        $coverage->stop(true, null, $this->coversBankAccount());
+
+        $this->assertSame(
+            ['A test' => ['size' => 'medium', 'status' => 'unknown', 'time' => 0.0]],
+            $coverage->getTests(),
+        );
+    }
+
     /**
      * @return list<string>
      */
@@ -684,6 +771,44 @@ final class CodeCoverageTest extends TestCase
         $coverage->stop(true, null, $covers);
 
         return $coverage;
+    }
+
+    /**
+     * The driver returns the given data, one element per call to stop().
+     */
+    private function coverageThatChecksForUnintentionallyCoveredCode(RawCodeCoverageData ...$coveragePerStop): CodeCoverage
+    {
+        $filter = new Filter;
+
+        $filter->includeFiles(
+            [
+                TEST_FILES_PATH . 'BankAccount.php',
+                TEST_FILES_PATH . 'CoveredClass.php',
+            ],
+        );
+
+        $coverage = new CodeCoverage(new FakeDriver(...$coveragePerStop), $filter);
+
+        $coverage->enableCheckForUnintentionallyCoveredCode();
+
+        return $coverage;
+    }
+
+    /**
+     * The test executes code in BankAccount, which it covers according to
+     * coversBankAccount(), and in CoveredClass, which it does not cover.
+     */
+    private function dataForTestThatExecutesBankAccountAndCoveredClass(): RawCodeCoverageData
+    {
+        return RawCodeCoverageData::fromLineCoverage([
+            TEST_FILES_PATH . 'BankAccount.php'  => [8 => 1],
+            TEST_FILES_PATH . 'CoveredClass.php' => [27 => 1],
+        ]);
+    }
+
+    private function coversBankAccount(): TargetCollection
+    {
+        return TargetCollection::fromArray([Target::forFile(TEST_FILES_PATH . 'BankAccount.php')]);
     }
 
     private function requireDriver(): CodeCoverage

@@ -214,7 +214,7 @@ final class CodeCoverage
      * @throws TestIdMissingException
      * @throws UnintentionallyCoveredCodeException
      */
-    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null, float $time = 0.0): void
+    public function append(RawCodeCoverageData $rawData, ?string $id = null, bool $append = true, ?TestStatus $status = null, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null, float $time = 0.0, ?TestSize $size = null): void
     {
         if ($id === null) {
             $id = $this->currentId;
@@ -236,7 +236,9 @@ final class CodeCoverage
             $uses = TargetCollection::fromArray([]);
         }
 
-        $size = $this->currentSize;
+        if ($size === null) {
+            $size = $this->currentSize;
+        }
 
         if ($size === null) {
             $size = TestSize::Unknown;

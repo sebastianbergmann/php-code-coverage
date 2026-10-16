@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function array_diff_key;
 use function array_flip;
 use function array_key_exists;
 use function array_keys;
@@ -84,6 +85,16 @@ final class ProcessedCodeCoverageData
     private array $filesSeededFromStaticAnalysis = [];
 
     /**
+     * Lines of functions and methods that were seeded from static analysis because the driver
+     * did not report any of their lines, grouped by function or method. Like for files that were
+     * seeded from static analysis, merge() lets data collected by a driver for such a function or
+     * method replace the seeded data instead of merging it.
+     *
+     * @var array<non-empty-string, list<array<positive-int, true>>>
+     */
+    private array $codeUnitsSeededFromStaticAnalysis = [];
+
+    /**
      * Whether the hit counts in this object are exact execution counts (the driver that collected
      * the data counts how often a line was executed) or only mean "executed at least once".
      */
@@ -101,16 +112,23 @@ final class ProcessedCodeCoverageData
         return $this->collectsHitCounts;
     }
 
+    /**
+     * Lines that are reported for a file that was seen before are initialized when they were
+     * not seen before: a driver does not necessarily report all lines of a file the first time
+     * it reports data for that file. Xdebug 3.6, for instance, reports the lines of a function
+     * that was compiled before the collection of code coverage data was started only after a
+     * file was compiled while code coverage data was collected.
+     */
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
         foreach ($rawData->lineCoverage() as $file => $lines) {
             if (!isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
                 $this->lineCoverageSorted  = false;
+            }
 
-                foreach ($lines as $k => $v) {
-                    $this->lineCoverage[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
-                }
+            foreach (array_diff_key($lines, $this->lineCoverage[$file]) as $k => $v) {
+                $this->lineCoverage[$file][$k] = $v === Driver::LINE_NOT_EXECUTABLE ? null : [];
             }
         }
 
@@ -141,6 +159,33 @@ final class ProcessedCodeCoverageData
     }
 
     /**
+     * Initializes the data for a function or method, in a file for which data was collected,
+     * from data that was seeded from static analysis because the driver did not report any line
+     * of that function or method.
+     *
+     * @param non-empty-string         $file
+     * @param array<positive-int, int> $lines the lines of the function or method
+     */
+    public function initializeUnreportedCodeUnit(string $file, array $lines): void
+    {
+        if (!isset($this->lineCoverage[$file]) || isset($this->filesSeededFromStaticAnalysis[$file])) {
+            return;
+        }
+
+        $seededLines = [];
+
+        foreach (array_diff_key($lines, $this->lineCoverage[$file]) as $line => $status) {
+            $this->lineCoverage[$file][$line] = $status === Driver::LINE_NOT_EXECUTABLE ? null : [];
+
+            $seededLines[$line] = true;
+        }
+
+        if ($seededLines !== []) {
+            $this->codeUnitsSeededFromStaticAnalysis[$file][] = $seededLines;
+        }
+    }
+
+    /**
      * @param non-empty-string $testCaseId
      */
     public function markCodeAsExecutedByTestCase(string $testCaseId, RawCodeCoverageData $executedCode): void
@@ -154,6 +199,10 @@ final class ProcessedCodeCoverageData
             }
 
             unset($this->filesSeededFromStaticAnalysis[$file]);
+
+            if (isset($this->codeUnitsSeededFromStaticAnalysis[$file])) {
+                $this->forgetCodeUnitsSeededFromStaticAnalysisThatWereExecuted($file, $lines);
+            }
 
             $fileCoverage = &$this->lineCoverage[$file];
 
@@ -286,7 +335,16 @@ final class ProcessedCodeCoverageData
             $this->filesSeededFromStaticAnalysis[$newFile] = true;
         }
 
-        unset($this->lineCoverage[$oldFile], $this->functionCoverage[$oldFile], $this->filesSeededFromStaticAnalysis[$oldFile]);
+        if (isset($this->codeUnitsSeededFromStaticAnalysis[$oldFile])) {
+            $this->codeUnitsSeededFromStaticAnalysis[$newFile] = $this->codeUnitsSeededFromStaticAnalysis[$oldFile];
+        }
+
+        unset(
+            $this->lineCoverage[$oldFile],
+            $this->functionCoverage[$oldFile],
+            $this->filesSeededFromStaticAnalysis[$oldFile],
+            $this->codeUnitsSeededFromStaticAnalysis[$oldFile],
+        );
     }
 
     /**
@@ -300,7 +358,8 @@ final class ProcessedCodeCoverageData
      * The merged data only contains exact hit counts if both operands do.
      *
      * Data for a file that was seeded from static analysis is replaced by data for that file
-     * that was collected by a driver, it is not merged with it.
+     * that was collected by a driver, it is not merged with it. The same is true for data for a
+     * function or method that was seeded from static analysis.
      */
     public function merge(self $newData): void
     {
@@ -319,6 +378,10 @@ final class ProcessedCodeCoverageData
                     $this->filesSeededFromStaticAnalysis[$file] = true;
                 }
 
+                if (isset($newData->codeUnitsSeededFromStaticAnalysis[$file])) {
+                    $this->codeUnitsSeededFromStaticAnalysis[$file] = $newData->codeUnitsSeededFromStaticAnalysis[$file];
+                }
+
                 continue;
             }
 
@@ -334,10 +397,21 @@ final class ProcessedCodeCoverageData
 
                 unset($this->functionCoverage[$file], $this->filesSeededFromStaticAnalysis[$file]);
 
+                if (isset($newData->codeUnitsSeededFromStaticAnalysis[$file])) {
+                    $this->codeUnitsSeededFromStaticAnalysis[$file] = $newData->codeUnitsSeededFromStaticAnalysis[$file];
+                }
+
                 continue;
             }
 
             $fileCoverage = &$this->lineCoverage[$file];
+
+            $lines = $this->withoutCodeUnitsSeededFromStaticAnalysisThatWereReportedByDriver(
+                $file,
+                $fileCoverage,
+                $lines,
+                $newData->codeUnitsSeededFromStaticAnalysis[$file] ?? [],
+            );
 
             foreach ($lines as $line => $data) {
                 $thatPriority = $this->priorityForValue($data);
@@ -380,6 +454,127 @@ final class ProcessedCodeCoverageData
                 }
             }
         }
+    }
+
+    /**
+     * Data for a function or method that was seeded from static analysis is replaced by data
+     * for that function or method that was collected by a driver: data for a function or method
+     * that was seeded from static analysis on this side is removed when the other side has data
+     * for it that was collected by a driver, and data for a function or method that was seeded
+     * from static analysis on the other side is not merged when this side has data for it that
+     * was collected by a driver.
+     *
+     * @param non-empty-string                                             $file
+     * @param array<positive-int, null|array<TestIndexType, positive-int>> $fileCoverage    this side's data for the file
+     * @param array<positive-int, null|array<TestIndexType, positive-int>> $lines           the other side's data for the file
+     * @param list<array<positive-int, true>>                              $seededCodeUnits the other side's functions and methods that were seeded from static analysis
+     *
+     * @return array<positive-int, null|array<TestIndexType, positive-int>> the other side's data for the file that is to be merged
+     */
+    private function withoutCodeUnitsSeededFromStaticAnalysisThatWereReportedByDriver(string $file, array &$fileCoverage, array $lines, array $seededCodeUnits): array
+    {
+        $linesSeededOnOtherSide = $this->linesOf($seededCodeUnits);
+        $seededOnThisSide       = [];
+
+        foreach ($this->codeUnitsSeededFromStaticAnalysis[$file] ?? [] as $codeUnit) {
+            if (!$this->hasDataCollectedByDriverForCodeUnit($codeUnit, $lines, $linesSeededOnOtherSide)) {
+                $seededOnThisSide[] = $codeUnit;
+
+                continue;
+            }
+
+            foreach (array_keys($codeUnit) as $line) {
+                unset($fileCoverage[$line]);
+            }
+        }
+
+        $linesSeededOnThisSide = $this->linesOf($seededOnThisSide);
+
+        foreach ($seededCodeUnits as $codeUnit) {
+            if ($this->hasDataCollectedByDriverForCodeUnit($codeUnit, $fileCoverage, $linesSeededOnThisSide)) {
+                $lines = array_diff_key($lines, $codeUnit);
+
+                continue;
+            }
+
+            $seededLines = array_diff_key($codeUnit, $linesSeededOnThisSide);
+
+            if ($seededLines !== []) {
+                $seededOnThisSide[] = $seededLines;
+            }
+        }
+
+        $this->setCodeUnitsSeededFromStaticAnalysis($file, $seededOnThisSide);
+
+        return $lines;
+    }
+
+    /**
+     * @param array<positive-int, true>  $codeUnit
+     * @param array<positive-int, mixed> $lines
+     * @param array<positive-int, true>  $seededLines
+     */
+    private function hasDataCollectedByDriverForCodeUnit(array $codeUnit, array $lines, array $seededLines): bool
+    {
+        foreach (array_keys($codeUnit) as $line) {
+            if (array_key_exists($line, $lines) && !isset($seededLines[$line])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param non-empty-string         $file
+     * @param array<positive-int, int> $lines
+     */
+    private function forgetCodeUnitsSeededFromStaticAnalysisThatWereExecuted(string $file, array $lines): void
+    {
+        $notExecuted = [];
+
+        foreach ($this->codeUnitsSeededFromStaticAnalysis[$file] ?? [] as $codeUnit) {
+            foreach (array_keys($codeUnit) as $line) {
+                if (isset($lines[$line]) && $lines[$line] >= Driver::LINE_EXECUTED) {
+                    continue 2;
+                }
+            }
+
+            $notExecuted[] = $codeUnit;
+        }
+
+        $this->setCodeUnitsSeededFromStaticAnalysis($file, $notExecuted);
+    }
+
+    /**
+     * @param non-empty-string                $file
+     * @param list<array<positive-int, true>> $codeUnits
+     */
+    private function setCodeUnitsSeededFromStaticAnalysis(string $file, array $codeUnits): void
+    {
+        if ($codeUnits === []) {
+            unset($this->codeUnitsSeededFromStaticAnalysis[$file]);
+
+            return;
+        }
+
+        $this->codeUnitsSeededFromStaticAnalysis[$file] = $codeUnits;
+    }
+
+    /**
+     * @param list<array<positive-int, true>> $codeUnits
+     *
+     * @return array<positive-int, true>
+     */
+    private function linesOf(array $codeUnits): array
+    {
+        $lines = [];
+
+        foreach ($codeUnits as $codeUnit) {
+            $lines += $codeUnit;
+        }
+
+        return $lines;
     }
 
     private function sortLineCoverage(): void

@@ -38,7 +38,7 @@
         "phpunit/php-text-template": "^6.0.1",
         "sebastian/complexity": "^6.0",
         "sebastian/environment": "^9.3.3",
-        "sebastian/git-state": "^1.0",
+        "sebastian/git-state": "^1.1.0",
         "sebastian/lines-of-code": "^5.0.2",
         "sebastian/version": "^7.0.1",
         "theseer/tokenizer": "^2.0.1"

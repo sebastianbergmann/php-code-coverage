@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [14.5.1] - 2026-MM-DD
+## [14.5.1] - 2026-11-02
 
 ### Fixed
 
@@ -14,5 +14,5 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Optional `$size` parameter for `CodeCoverage::append()` that, when passed, is used instead of the size that was passed to `start()`
 
-[14.5.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.0...main
+[14.5.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.0...14.5.1
 [14.5.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.4.1...14.5.0

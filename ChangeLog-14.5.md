@@ -2,10 +2,17 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.5.1] - 2026-MM-DD
+
+### Fixed
+
+* [#1372](https://github.com/sebastianbergmann/php-code-coverage/issues/1372): Code on the opening or closing line of a multi-line `match` is not treated as executable
+
 ## [14.5.0] - 2026-10-30
 
 ### Added
 
 * Optional `$size` parameter for `CodeCoverage::append()` that, when passed, is used instead of the size that was passed to `start()`
 
+[14.5.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.0...main
 [14.5.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.4.1...14.5.0

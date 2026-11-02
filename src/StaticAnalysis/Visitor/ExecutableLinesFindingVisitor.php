@@ -117,6 +117,32 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private array $unsets = [];
 
     /**
+     * @var list<array{int, int}> line and file position of the start of a
+     *                            match expression that may share its first
+     *                            line with other code
+     */
+    private array $matchStartLines = [];
+
+    /**
+     * @var list<array{int, int}> line and file position of the end of a
+     *                            match expression that may share its last
+     *                            line with other code
+     */
+    private array $matchEndLines = [];
+
+    /**
+     * @var array<int, int> keyed by line number, file position of the start
+     *                      of the rightmost node that starts on that line
+     */
+    private array $rightmostNodeStartOnLine = [];
+
+    /**
+     * @var array<int, int> keyed by line number, file position of the end
+     *                      of the leftmost node that ends on that line
+     */
+    private array $leftmostNodeEndOnLine = [];
+
+    /**
      * @var array<int, string>
      */
     private array $commentsToCheckForUnset = [];
@@ -136,6 +162,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): null
     {
+        $this->rememberNodePosition($node);
+
         if ($node instanceof Node\ArrayItem) {
             if ($node->unpack) {
                 $this->spreadDepth++;
@@ -297,6 +325,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     public function afterTraverse(array $nodes): null
     {
         $this->stripBlankAndCommentOnlyLines();
+        $this->markMatchBoundaryLinesWithoutOtherCodeForUnset();
 
         $this->executableLinesGroupedByBranch = array_diff_key(
             $this->executableLinesGroupedByBranch,
@@ -380,12 +409,64 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $firstArmLine = reset($node->arms)->getStartLine();
         $lastArmLine  = end($node->arms)->getEndLine();
 
+        // The match expression itself emits no opcode on the lines before its
+        // first arm (when its condition is a constant) and on the lines after
+        // its last arm, but other code on its first or last line may. Whether
+        // there is such code is only known once all nodes have been visited.
         if ($node->getStartLine() < $firstArmLine && $this->matchConditionHasNoOpcode($node->cond)) {
-            $this->markRangeForUnset($node->getStartLine(), $firstArmLine - 1);
+            $this->matchStartLines[] = [$node->getStartLine(), $node->getStartFilePos()];
+
+            $this->markRangeForUnset($node->getStartLine() + 1, $firstArmLine - 1);
         }
 
         if ($node->getEndLine() > $lastArmLine) {
-            $this->markRangeForUnset($lastArmLine + 1, $node->getEndLine());
+            $this->matchEndLines[] = [$node->getEndLine(), $node->getEndFilePos()];
+
+            $this->markRangeForUnset($lastArmLine + 1, $node->getEndLine() - 1);
+        }
+    }
+
+    /**
+     * A node that ends on the first line of a match expression before the
+     * match expression starts, or that starts on its last line after the
+     * match expression ends, is code that shares the line with the match
+     * expression. Such a line must not be removed from the executable lines.
+     */
+    private function markMatchBoundaryLinesWithoutOtherCodeForUnset(): void
+    {
+        foreach ($this->matchStartLines as [$line, $matchStart]) {
+            if (isset($this->leftmostNodeEndOnLine[$line]) && $this->leftmostNodeEndOnLine[$line] < $matchStart) {
+                continue;
+            }
+
+            $this->unsets[$line] = true;
+        }
+
+        foreach ($this->matchEndLines as [$line, $matchEnd]) {
+            if (isset($this->rightmostNodeStartOnLine[$line]) && $this->rightmostNodeStartOnLine[$line] > $matchEnd) {
+                continue;
+            }
+
+            $this->unsets[$line] = true;
+        }
+    }
+
+    private function rememberNodePosition(Node $node): void
+    {
+        // A Nop statement only holds comments
+        if ($node instanceof Node\Stmt\Nop) {
+            return;
+        }
+
+        $startLine = $node->getStartLine();
+        $endLine   = $node->getEndLine();
+
+        if (!isset($this->rightmostNodeStartOnLine[$startLine]) || $node->getStartFilePos() > $this->rightmostNodeStartOnLine[$startLine]) {
+            $this->rightmostNodeStartOnLine[$startLine] = $node->getStartFilePos();
+        }
+
+        if (!isset($this->leftmostNodeEndOnLine[$endLine]) || $node->getEndFilePos() < $this->leftmostNodeEndOnLine[$endLine]) {
+            $this->leftmostNodeEndOnLine[$endLine] = $node->getEndFilePos();
         }
     }
 

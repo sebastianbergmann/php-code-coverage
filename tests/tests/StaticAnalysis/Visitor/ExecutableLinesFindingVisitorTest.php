@@ -301,7 +301,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1154')]
-    public function testMatchTrueDoesNotMarkOpenerAndCloserAsExecutable(): void
+    public function testMatchTrueDoesNotMarkOpenerAndCloserAsBranchOperatorLines(): void
     {
         $source = file_get_contents(__DIR__ . '/../../../_files/source_match_true_expression.php');
         assert($source !== false);
@@ -314,14 +314,37 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $traverser->addVisitor($executableLinesFindingVisitor);
         $traverser->traverse($nodes);
 
-        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $executableLines     = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        $branchOperatorLines = $executableLinesFindingVisitor->branchOperatorLines();
 
-        $this->assertArrayNotHasKey(8, $executableLines);
+        // The opener shares its line with the assignment to $this->result
+        $this->assertArrayHasKey(8, $executableLines);
+        $this->assertArrayNotHasKey(8, $branchOperatorLines);
         $this->assertArrayNotHasKey(13, $executableLines);
         $this->assertArrayHasKey(9, $executableLines);
         $this->assertArrayHasKey(10, $executableLines);
         $this->assertArrayHasKey(11, $executableLines);
         $this->assertArrayHasKey(12, $executableLines);
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1372')]
+    public function testOpenerAndCloserOfMatchExpressionAreOnlyExecutableWhenTheyShareTheirLineWithOtherCode(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_match_expression_sharing_lines_with_other_code.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $this->assertSame(
+            [4, 5, 6, 7, 13, 14],
+            array_keys($executableLinesFindingVisitor->executableLinesGroupedByBranch()),
+        );
     }
 
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1160')]

@@ -347,6 +347,31 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         );
     }
 
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1379')]
+    public function testOpenerOfMatchExpressionNestedInArmOfMatchExpressionCompiledToJumpTableIsNotExecutable(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_with_match_expression_nested_in_match_arm.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        // Lines 6 and 29 carry no opcode: the arm conditions of the outer
+        // match expression are compiled into the jump table of its MATCH
+        // opcode on line 4 and line 27, respectively. Line 17 carries the
+        // comparison with 'array' because a match expression with a single
+        // condition is not compiled to a jump table.
+        $this->assertSame(
+            [4, 5, 7, 8, 10, 16, 17, 18, 19, 21, 27, 28, 30, 31, 33],
+            array_keys($executableLinesFindingVisitor->executableLinesGroupedByBranch()),
+        );
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1160')]
     public function testTernaryInsideSpreadDoesNotCreateSeparateBranches(): void
     {

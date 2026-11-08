@@ -143,6 +143,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private array $leftmostNodeEndOnLine = [];
 
     /**
+     * @var array<int, true> keyed by spl_object_id(), the conditions of the
+     *                       arms of match expressions that are compiled to
+     *                       a jump table and therefore emit no opcode
+     */
+    private array $matchConditionsWithoutOpcode = [];
+
+    /**
      * @var array<int, string>
      */
     private array $commentsToCheckForUnset = [];
@@ -406,6 +413,19 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($this->matchUsesJumpTable($node)) {
+            foreach ($node->arms as $arm) {
+                foreach ($arm->conds ?? [] as $cond) {
+                    $this->matchConditionsWithoutOpcode[spl_object_id($cond)] = true;
+
+                    if ($cond instanceof Node\Expr\UnaryMinus ||
+                        $cond instanceof Node\Expr\UnaryPlus) {
+                        $this->matchConditionsWithoutOpcode[spl_object_id($cond->expr)] = true;
+                    }
+                }
+            }
+        }
+
         $firstArmLine = reset($node->arms)->getStartLine();
         $lastArmLine  = end($node->arms)->getEndLine();
 
@@ -455,6 +475,14 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         // A Nop statement only holds comments
         if ($node instanceof Node\Stmt\Nop) {
+            return;
+        }
+
+        // The condition of an arm of a match expression that is compiled to a
+        // jump table is not code that shares its line with a nested match
+        // expression: the MATCH opcode is attributed to the line of the
+        // enclosing match expression
+        if (isset($this->matchConditionsWithoutOpcode[spl_object_id($node)])) {
             return;
         }
 
@@ -793,6 +821,45 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function isArrayItemValue(Node\Expr $node): bool
     {
         return isset($this->arrayItemValues[spl_object_id($node)]);
+    }
+
+    /**
+     * Mirrors zend_compile_match(): a match expression with at least two
+     * conditions that all are int or string constants is compiled to a
+     * single MATCH opcode with a jump table instead of one comparison per
+     * condition.
+     */
+    private function matchUsesJumpTable(Node\Expr\Match_ $node): bool
+    {
+        $numberOfConditions = 0;
+
+        foreach ($node->arms as $arm) {
+            foreach ($arm->conds ?? [] as $cond) {
+                if (!$this->isIntOrStringConstant($cond)) {
+                    return false;
+                }
+
+                $numberOfConditions++;
+            }
+        }
+
+        return $numberOfConditions >= 2;
+    }
+
+    /**
+     * Of the expressions that the Zend compiler only turns into a constant by
+     * constant folding (-1, 'a' . 'b', ...), only a signed integer literal is
+     * recognized here.
+     */
+    private function isIntOrStringConstant(Node\Expr $expr): bool
+    {
+        if ($expr instanceof Node\Expr\UnaryMinus ||
+            $expr instanceof Node\Expr\UnaryPlus) {
+            return $expr->expr instanceof Node\Scalar\Int_;
+        }
+
+        return $expr instanceof Node\Scalar\Int_ ||
+               $expr instanceof Node\Scalar\String_;
     }
 
     private function matchConditionHasNoOpcode(Node\Expr $cond): bool

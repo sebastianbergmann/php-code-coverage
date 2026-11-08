@@ -43,6 +43,46 @@ final class FilterProcessorTest extends TestCase
         $this->processor = new FilterProcessor;
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testRemovesDataForKnownFileOfWhichNoLineWasExecuted(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['known.php' => [8 => -1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame([], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForKnownFileOfWhichALineWasExecuted(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['known.php' => [8 => 1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['known.php' => [8 => 1, 13 => -1]], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForFileThatIsNotKnown(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['unknown.php' => [8 => -1, 13 => -1]]);
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['unknown.php' => [8 => -1, 13 => -1]], $data->lineCoverage());
+    }
+
+    public function testDoesNotRemoveDataForKnownFileWithBranchAndPathCoverageData(): void
+    {
+        $data = RawCodeCoverageData::fromLineAndBranchCoverage(
+            ['known.php' => [8 => -1, 13 => -1]],
+            ['known.php' => ['foo' => ['branches' => [], 'paths' => []]]],
+        );
+
+        $this->processor->removeDataForKnownFilesThatWereNotExecuted($data, $this->dataFor('known.php'));
+
+        $this->assertSame(['known.php' => [8 => -1, 13 => -1]], $data->lineCoverage());
+    }
+
     public function testApplyFilterRemovesExcludedFiles(): void
     {
         $data = RawCodeCoverageData::fromLineCoverage([
@@ -572,6 +612,102 @@ final class FilterProcessorTest extends TestCase
         $result = $this->processor->uncoveredFilesFromFilter($filter, $data, $analyser);
 
         $this->assertCount(2, $result);
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testUnreportedCodeUnitsReturnsDataSeededFromStaticAnalysisForFunctionsAndMethodsForWhichNoLineIsKnown(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_two_methods.php');
+
+        $this->assertSame(
+            [$file => [[13 => -1]]],
+            $this->unreportedCodeUnits($file, [8 => -1]),
+        );
+    }
+
+    public function testUnreportedCodeUnitsReturnsNothingWhenLinesOfAllFunctionsAndMethodsAreKnown(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_two_methods.php');
+
+        $this->assertSame([], $this->unreportedCodeUnits($file, [8 => -1, 13 => -1]));
+    }
+
+    public function testUnreportedCodeUnitsMarksDeadCodeAsNotExecutable(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/BankAccount.php');
+
+        $this->assertSame(
+            [$file => [[29 => -1, 31 => -1, 32 => -2]]],
+            $this->unreportedCodeUnits($file, [8 => -1, 13 => -1, 14 => -1, 16 => -1, 22 => -1, 24 => -1]),
+        );
+    }
+
+    public function testUnreportedCodeUnitsDoesNotReturnIgnoredLines(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_ignore.php');
+
+        $this->assertSame([], $this->unreportedCodeUnits($file, [2 => -1], true));
+    }
+
+    public function testUnreportedCodeUnitsReturnsIgnoredLinesWhenAnnotationsForIgnoringCodeAreNotUsed(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_ignore.php');
+
+        $this->assertSame(
+            [$file => [[15 => -1], [25 => -1], [30 => -1]]],
+            $this->unreportedCodeUnits($file, [2 => -1]),
+        );
+    }
+
+    public function testUnreportedCodeUnitsSkipsFileThatCannotBeParsed(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');
+
+        $this->assertSame([], $this->unreportedCodeUnits($file, [5 => -1]));
+    }
+
+    public function testUnreportedCodeUnitsSkipsFileThatDoesNotExist(): void
+    {
+        $this->assertSame([], $this->unreportedCodeUnits('/does/not/exist.php', [8 => -1]));
+    }
+
+    /**
+     * @param non-empty-string $file
+     */
+    private function dataFor(string $file): ProcessedCodeCoverageData
+    {
+        $data = new ProcessedCodeCoverageData;
+
+        $data->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage([$file => [8 => -1]]),
+        );
+
+        return $data;
+    }
+
+    /**
+     * @param non-empty-string         $file
+     * @param array<positive-int, int> $knownLines
+     *
+     * @return array<non-empty-string, list<array<positive-int, int>>>
+     */
+    private function unreportedCodeUnits(string $file, array $knownLines, bool $useAnnotationsForIgnoringCode = false): array
+    {
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $data = new ProcessedCodeCoverageData;
+
+        $data->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage([$file => $knownLines]),
+        );
+
+        return $this->processor->unreportedCodeUnits(
+            $filter,
+            $data,
+            new FileAnalyser(new ParsingSourceAnalyser, $useAnnotationsForIgnoringCode, false),
+            $useAnnotationsForIgnoringCode,
+        );
     }
 
     /**

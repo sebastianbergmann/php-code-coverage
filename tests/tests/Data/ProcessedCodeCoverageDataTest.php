@@ -487,6 +487,199 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         );
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatWereNotSeenBeforeAreInitializedForFileThatWasSeenBefore(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1]]),
+        );
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -1, 11 => -2]]),
+        );
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => [], 10 => [], 11 => null]],
+            $coverage->lineCoverage(),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testLinesThatWereSeenBeforeAreNotInitializedAgain(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -2]]),
+        );
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'test',
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => 1]]),
+        );
+
+        $coverage->initializeUnseenData(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [9 => -1, 10 => -1]]),
+        );
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => ['test' => 1], 10 => null]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testUnreportedCodeUnitIsInitializedFromDataSeededFromStaticAnalysis(): void
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [8 => 1]]);
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($data);
+        $coverage->markCodeAsExecutedByTestCase('test', $data);
+
+        $coverage->initializeUnreportedCodeUnit('/some/path/SomeClass.php', [12 => -1, 13 => -1, 14 => -2]);
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['test' => 1], 12 => [], 13 => [], 14 => null]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    public function testUnreportedCodeUnitIsNotInitializedForFileForWhichNoDataWasCollected(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnreportedCodeUnit('/some/path/SomeClass.php', [12 => -1, 13 => -1]);
+
+        $this->assertSame([], $coverage->lineCoverage());
+    }
+
+    public function testUnreportedCodeUnitIsNotInitializedForFileThatWasSeededFromStaticAnalysis(): void
+    {
+        $coverage = $this->seededFromStaticAnalysis();
+
+        $coverage->initializeUnreportedCodeUnit('/some/path/SomeClass.php', [12 => -1, 13 => -1]);
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [9 => [], 10 => [], 11 => []]],
+            $coverage->lineCoverage(),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitIsReplacedByExecutedDataDuringMerge(): void
+    {
+        $coverage = $this->withCodeUnitSeededFromStaticAnalysis();
+
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitIsIgnoredDuringMergeWhenExecutedDataExists(): void
+    {
+        $coverage = $this->withCodeUnitExecutedByTest();
+
+        $coverage->merge($this->withCodeUnitSeededFromStaticAnalysis());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['second' => 1, 'first' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitRemainsReplaceableAfterMergingItWithDataSeededFromStaticAnalysis(): void
+    {
+        $coverage = $this->withCodeUnitSeededFromStaticAnalysis();
+
+        $coverage->merge($this->withCodeUnitSeededFromStaticAnalysis());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1], 12 => [], 13 => []]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitRemainsReplaceableAfterMergingItIntoEmptyData(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->merge($this->withCodeUnitSeededFromStaticAnalysis());
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitRemainsReplaceableAfterItReplacedDataSeededFromStaticAnalysisForFile(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUncoveredFiles(
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [8 => -1, 12 => -1, 13 => -1]]),
+        );
+
+        $coverage->merge($this->withCodeUnitSeededFromStaticAnalysis());
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitRemainsReplaceableAfterRenamingTheFile(): void
+    {
+        $coverage = $this->withCodeUnitSeededFromStaticAnalysis('/some/path/OldName.php');
+
+        $coverage->renameFile('/some/path/OldName.php', '/some/path/SomeClass.php');
+
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testDataSeededFromStaticAnalysisForCodeUnitIsNoLongerReplaceableOnceATestExecutedTheCodeUnit(): void
+    {
+        $coverage = $this->withCodeUnitSeededFromStaticAnalysis();
+
+        $coverage->markCodeAsExecutedByTestCase(
+            'third',
+            RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [12 => 1]]),
+        );
+
+        $coverage->merge($this->withCodeUnitExecutedByTest());
+
+        $this->assertSame(
+            ['/some/path/SomeClass.php' => [8 => ['first' => 1, 'second' => 1], 12 => ['third' => 1], 13 => ['second' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+    }
+
     /**
      * @param non-empty-string $file
      */
@@ -512,6 +705,41 @@ final class ProcessedCodeCoverageDataTest extends TestCase
 
         $coverage->initializeUnseenData($data);
         $coverage->markCodeAsExecutedByTestCase($testId, $data);
+
+        return $coverage;
+    }
+
+    /**
+     * The function or method on line 8 was executed by a test, the driver did not report
+     * any line of the function or method on lines 12 and 13.
+     *
+     * @param non-empty-string $file
+     */
+    private function withCodeUnitSeededFromStaticAnalysis(string $file = '/some/path/SomeClass.php'): ProcessedCodeCoverageData
+    {
+        $data = RawCodeCoverageData::fromLineCoverage([$file => [8 => 1]]);
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($data);
+        $coverage->markCodeAsExecutedByTestCase('first', $data);
+        $coverage->initializeUnreportedCodeUnit($file, [12 => -1, 13 => -1]);
+
+        return $coverage;
+    }
+
+    /**
+     * The functions or methods on line 8 and on lines 12 and 13 were executed by a test,
+     * the driver does not report line 12.
+     */
+    private function withCodeUnitExecutedByTest(): ProcessedCodeCoverageData
+    {
+        $data = RawCodeCoverageData::fromLineCoverage(['/some/path/SomeClass.php' => [8 => 1, 13 => 1]]);
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($data);
+        $coverage->markCodeAsExecutedByTestCase('second', $data);
 
         return $coverage;
     }

@@ -15,6 +15,7 @@ use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CacheWarmer;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesClassifier;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Registry;
@@ -77,10 +78,16 @@ final class CodeCoverage
     private ?Directory $cachedReport = null;
 
     /**
-     * How the executable lines are determined; selected for the driver when
-     * the first file is analysed.
+     * How the executable lines are determined; selected for the driver when it
+     * is first needed.
      */
     private ?ExecutableLinesClassifier $executableLinesClassifier = null;
+
+    /**
+     * Whether the files in the filter were passed to Registry::analyser() as
+     * the files that are expected to be analysed.
+     */
+    private bool $filesToAnalyseWerePassed = false;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -461,6 +468,31 @@ final class CodeCoverage
     }
 
     /**
+     * Warms the cache for the static analysis of the files in the filter: the
+     * files are analysed the way they are analysed when the code coverage data
+     * of this object is processed, with the configuration of this object and
+     * with the executable lines determined from the syntax or from the
+     * bytecode of the files, whichever is used for its driver (see
+     * ExecutableLinesClassifier).
+     *
+     * @internal This method is not covered by the backward compatibility promise for phpunit/php-code-coverage
+     *
+     * @throws StaticAnalysisCacheNotConfiguredException
+     *
+     * @return array{cacheHits: non-negative-int, cacheMisses: non-negative-int}
+     */
+    public function warmCache(): array
+    {
+        return (new CacheWarmer)->warmCache(
+            $this->cacheDirectory(),
+            $this->useAnnotationsForIgnoringCode,
+            $this->ignoreDeprecatedCode,
+            $this->filter,
+            $this->executableLinesClassifier(),
+        );
+    }
+
+    /**
      * @throws StaticAnalysisCacheNotConfiguredException
      *
      * @return non-empty-string
@@ -566,20 +598,28 @@ final class CodeCoverage
     {
         $filesToAnalyse = [];
 
-        if ($this->executableLinesClassifier === null) {
-            $this->executableLinesClassifier = ExecutableLinesClassifier::select(
-                $this->driver->linesDependOnCompilation(),
-            );
-
-            $filesToAnalyse = $this->filter->files();
+        if (!$this->filesToAnalyseWerePassed) {
+            $filesToAnalyse                 = $this->filter->files();
+            $this->filesToAnalyseWerePassed = true;
         }
 
         return Registry::analyser(
             $this->cacheDirectory,
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode,
-            $this->executableLinesClassifier,
+            $this->executableLinesClassifier(),
             $filesToAnalyse,
         );
+    }
+
+    private function executableLinesClassifier(): ExecutableLinesClassifier
+    {
+        if ($this->executableLinesClassifier === null) {
+            $this->executableLinesClassifier = ExecutableLinesClassifier::select(
+                $this->driver->linesDependOnCompilation(),
+            );
+        }
+
+        return $this->executableLinesClassifier;
     }
 }

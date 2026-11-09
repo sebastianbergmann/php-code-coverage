@@ -9,10 +9,12 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use const DIRECTORY_SEPARATOR;
 use function array_fill;
 use function array_keys;
 use function sys_get_temp_dir;
 use function tempnam;
+use function uniqid;
 use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,6 +26,7 @@ use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\CacheWarmer;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesClassifier;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
@@ -377,6 +380,45 @@ final class CodeCoverageTest extends TestCase
         $coverage->cacheStaticAnalysis($dir);
 
         $this->assertSame($dir, $coverage->cacheDirectory());
+    }
+
+    public function testWarmCacheThrowsWhenStaticAnalysisCacheIsNotConfigured(): void
+    {
+        $coverage = new CodeCoverage(new FakeDriver, new Filter);
+
+        $this->expectException(StaticAnalysisCacheNotConfiguredException::class);
+
+        $coverage->warmCache();
+    }
+
+    public function testWarmsCacheForFilesInFilter(): void
+    {
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'source_without_ignore.php');
+
+        $coverage = new CodeCoverage(new FakeDriver, $filter);
+        $coverage->cacheStaticAnalysis(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-warm-cache-test-' . uniqid());
+
+        $this->assertSame(['cacheHits' => 0, 'cacheMisses' => 1], $coverage->warmCache());
+        $this->assertSame(['cacheHits' => 1, 'cacheMisses' => 0], $coverage->warmCache());
+    }
+
+    #[RequiresPhp('>= 8.6.0-dev')]
+    public function testWarmsCacheForAnalysisOfBytecodeForDriverWhoseLinesDoNotDependOnCompilation(): void
+    {
+        $driver = new FakeDriver;
+        $driver->markAsNotDependingOnCompilation();
+
+        $this->assertWarmsCacheFor(ExecutableLinesClassifier::Bytecode, $driver);
+    }
+
+    public function testWarmsCacheForAnalysisOfSyntaxForDriverWhoseLinesDependOnCompilationWhenCodeIsNotCompiledLikeForBytecodeAnalysis(): void
+    {
+        if (ExecutableLinesClassifier::compilationMatchesBytecodeAnalysis()) {
+            $this->markTestSkipped('This test requires that code is not compiled by OPcache without optimizations');
+        }
+
+        $this->assertWarmsCacheFor(ExecutableLinesClassifier::Syntax, new FakeDriver);
     }
 
     public function testCacheDirectoryThrowsWhenNotConfigured(): void
@@ -817,6 +859,28 @@ final class CodeCoverageTest extends TestCase
         $coverage->stop(true, null, $covers);
 
         return $coverage;
+    }
+
+    /**
+     * Asserts that the cache for the static analysis that is warmed for the
+     * given driver is the cache for the analysis with the given classifier.
+     */
+    private function assertWarmsCacheFor(ExecutableLinesClassifier $classifier, FakeDriver $driver): void
+    {
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-warm-cache-test-' . uniqid();
+
+        $filter = new Filter;
+        $filter->includeFile(TEST_FILES_PATH . 'source_for_bytecode_analysis.php');
+
+        $coverage = new CodeCoverage($driver, $filter);
+        $coverage->cacheStaticAnalysis($directory);
+
+        $this->assertSame(['cacheHits' => 0, 'cacheMisses' => 1], $coverage->warmCache());
+
+        $this->assertSame(
+            ['cacheHits' => 1, 'cacheMisses' => 0],
+            (new CacheWarmer)->warmCache($directory, true, false, $filter, $classifier),
+        );
     }
 
     /**

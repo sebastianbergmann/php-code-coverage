@@ -202,6 +202,23 @@ EOT;
         );
     }
 
+    public function testDoesNotCountImplicitReturnOfFunctionThatReturnsByReference(): void
+    {
+        $dump = <<<'EOT'
+Example::&values:
+     ; (lines=4, args=0, vars=1, tmps=0)
+     ; (before optimizer)
+     ; /path/to/Example.php:3-8
+L0005 0000 ASSIGN CV0($values) array(...)
+L0007 0001 VERIFY_RETURN_TYPE CV0($values)
+L0007 0002 RETURN_BY_REF CV0($values)
+L0008 0003 VERIFY_RETURN_TYPE
+L0008 0004 RETURN_BY_REF (function) null
+EOT;
+
+        $this->assertSame(['/path/to/Example.php' => [5 => true, 7 => true]], $this->parse($dump));
+    }
+
     public function testDoesNotCountCheckThatFunctionWhoseReturnTypeIsNeverDoesNotReturn(): void
     {
         $dump = <<<'EOT'

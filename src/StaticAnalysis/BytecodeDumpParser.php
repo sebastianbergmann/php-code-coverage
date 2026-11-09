@@ -83,6 +83,7 @@ final class BytecodeDumpParser
     private const array IMPLICIT_RETURN_OPCODES = [
         'GENERATOR_RETURN'  => true,
         'RETURN'            => true,
+        'RETURN_BY_REF'     => true,
         'VERIFY_NEVER_TYPE' => true,
     ];
 

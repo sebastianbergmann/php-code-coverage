@@ -7,6 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * [#1379](https://github.com/sebastianbergmann/php-code-coverage/issues/1379): Opening line of a `match` nested in an arm of a `match` that is compiled to a jump table is treated as executable
+* [#1380](https://github.com/sebastianbergmann/php-code-coverage/issues/1380): Opening line of a `match` is reported as not covered when merging coverage data from processes that compiled the file differently
 
 ## [14.5.1] - 2026-11-02
 

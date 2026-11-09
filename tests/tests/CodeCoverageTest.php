@@ -457,7 +457,7 @@ final class CodeCoverageTest extends TestCase
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
     public function testMergeDoesNotAddLinesFromDataForFileThatWasNotExecutedToDataForFileThatWasExecuted(): void
     {
-        $file = TEST_FILES_PATH . 'source_with_returned_match_expression.php';
+        $file = TEST_FILES_PATH . 'source_with_property_hook_and_method.php';
 
         $executed = new CodeCoverage(
             $this->createStub(Driver::class),
@@ -465,7 +465,8 @@ final class CodeCoverageTest extends TestCase
         );
 
         $executed->filter()->includeFile($file);
-        $executed->append(RawCodeCoverageData::fromLineCoverage([$file => [9 => 1, 10 => 1]]), 'test');
+        // PCOV 1.0.12 and earlier do not report the lines of property hooks
+        $executed->append(RawCodeCoverageData::fromLineCoverage([$file => [14 => 1]]), 'test');
 
         $notExecuted = new CodeCoverage(
             $this->createStub(Driver::class),
@@ -474,12 +475,12 @@ final class CodeCoverageTest extends TestCase
 
         $notExecuted->filter()->includeFile($file);
 
-        $this->assertSame([$file => [8 => [], 9 => [], 10 => []]], $notExecuted->getData()->lineCoverage());
+        $this->assertSame([$file => [8 => [], 14 => []]], $notExecuted->getData()->lineCoverage());
 
         $notExecuted->merge($executed);
 
         $this->assertSame(
-            [$file => [9 => ['test' => 1], 10 => ['test' => 1]]],
+            [$file => [14 => ['test' => 1]]],
             $this->lineCoverageKeyedByTestId($notExecuted->getData()),
         );
     }

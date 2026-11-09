@@ -18,6 +18,7 @@ use function ctype_space;
 use function end;
 use function explode;
 use function is_array;
+use function is_string;
 use function max;
 use function reset;
 use function spl_object_id;
@@ -430,10 +431,11 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         $lastArmLine  = end($node->arms)->getEndLine();
 
         // The match expression itself emits no opcode on the lines before its
-        // first arm (when its condition is a constant) and on the lines after
-        // its last arm, but other code on its first or last line may. Whether
-        // there is such code is only known once all nodes have been visited.
-        if ($node->getStartLine() < $firstArmLine && $this->matchConditionHasNoOpcode($node->cond)) {
+        // first arm (unless its subject or the MATCH opcode of a jump table
+        // does) and on the lines after its last arm, but other code on its
+        // first or last line may. Whether there is such code is only known
+        // once all nodes have been visited.
+        if ($node->getStartLine() < $firstArmLine && !$this->matchOpeningLineAlwaysCarriesOpcode($node)) {
             $this->matchStartLines[] = [$node->getStartLine(), $node->getStartFilePos()];
 
             $this->markRangeForUnset($node->getStartLine() + 1, $firstArmLine - 1);
@@ -862,15 +864,40 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                $expr instanceof Node\Scalar\String_;
     }
 
-    private function matchConditionHasNoOpcode(Node\Expr $cond): bool
+    /**
+     * The opening line of a match expression carries an opcode when its
+     * subject compiles to one, or when the match expression is compiled to a
+     * jump table: the MATCH opcode is then attributed to that line.
+     *
+     * Whether a match expression with conditions such as class constants is
+     * compiled to a jump table depends on the compiler (OPcache does not
+     * substitute such constants) and on whether the class was already loaded
+     * when the file was compiled. Treating the opening line as executable only
+     * when it carries an opcode however the file was compiled keeps coverage
+     * data of runs that compiled the file differently consistent.
+     */
+    private function matchOpeningLineAlwaysCarriesOpcode(Node\Expr\Match_ $node): bool
     {
-        if (!$cond instanceof Node\Expr\ConstFetch) {
-            return false;
+        return !$this->matchSubjectMayHaveNoOpcode($node->cond) ||
+               $this->matchUsesJumpTable($node);
+    }
+
+    /**
+     * A compiled variable, a literal, and a constant that the compiler
+     * substitutes do not compile to an opcode of their own: they are operands
+     * of the opcodes that use them.
+     */
+    private function matchSubjectMayHaveNoOpcode(Node\Expr $subject): bool
+    {
+        if ($subject instanceof Node\Expr\Variable) {
+            return is_string($subject->name) && $subject->name !== 'this';
         }
 
-        $name = strtolower($cond->name->toString());
-
-        return $name === 'true' || $name === 'false' || $name === 'null';
+        return $subject instanceof Node\Expr\ConstFetch ||
+               $subject instanceof Node\Expr\ClassConstFetch ||
+               $subject instanceof Node\Scalar\Int_ ||
+               $subject instanceof Node\Scalar\Float_ ||
+               $subject instanceof Node\Scalar\String_;
     }
 
     /**

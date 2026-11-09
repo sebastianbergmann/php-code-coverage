@@ -202,6 +202,28 @@ EOT;
         );
     }
 
+    public function testDoesNotCountCheckThatFunctionWhoseReturnTypeIsNeverDoesNotReturn(): void
+    {
+        $dump = <<<'EOT'
+Example::fail:
+     ; (lines=4, args=0, vars=0, tmps=1)
+     ; (before optimizer)
+     ; /path/to/Example.php:3-6
+L0005 0000 T0 = NEW 0 string("Exception")
+L0005 0001 DO_FCALL
+L0005 0002 THROW T0
+L0006 0003 VERIFY_NEVER_TYPE
+
+Example::empty:
+     ; (lines=1, args=0, vars=0, tmps=0)
+     ; (before optimizer)
+     ; /path/to/Example.php:8-10
+L0010 0000 VERIFY_NEVER_TYPE
+EOT;
+
+        $this->assertSame(['/path/to/Example.php' => [5 => true, 10 => true]], $this->parse($dump));
+    }
+
     #[TestDox('Rejects dump without line numbers (PHP < 8.6)')]
     public function testRejectsDumpWithoutLineNumbers(): void
     {

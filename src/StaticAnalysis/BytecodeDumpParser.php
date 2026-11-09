@@ -27,7 +27,9 @@ use function preg_match;
  *   when every such driver reports it when it is executed
  * - is not structural (GENERATOR_CREATE on the signature line of a generator)
  * - is not the return that the compiler appends to every function and file
- *   on its last line (the implicit return)
+ *   on its last line (the implicit return), or the check that a function
+ *   whose return type is never does not return, which the compiler appends
+ *   to such a function in place of the implicit return
  *
  * The implicit return of a function, method, or closure whose body is empty
  * is the only code of that function, so its line is executable.
@@ -72,6 +74,16 @@ final class BytecodeDumpParser
 
     private const array STRUCTURAL_OPCODES = [
         'GENERATOR_CREATE' => true,
+    ];
+
+    /**
+     * The opcodes that the compiler appends to every function and file on its
+     * last line.
+     */
+    private const array IMPLICIT_RETURN_OPCODES = [
+        'GENERATOR_RETURN'  => true,
+        'RETURN'            => true,
+        'VERIFY_NEVER_TYPE' => true,
     ];
 
     /**
@@ -159,7 +171,7 @@ final class BytecodeDumpParser
         $last               = array_key_last($oplines);
 
         if ($last !== null &&
-            ($oplines[$last]['opcode'] === 'RETURN' || $oplines[$last]['opcode'] === 'GENERATOR_RETURN') &&
+            isset(self::IMPLICIT_RETURN_OPCODES[$oplines[$last]['opcode']]) &&
             $oplines[$last]['line'] === $opArray['end']) {
             $implicitReturnLine = $oplines[$last]['line'];
 

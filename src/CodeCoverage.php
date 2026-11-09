@@ -15,6 +15,7 @@ use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesClassifier;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Registry;
 use SebastianBergmann\CodeCoverage\Test\Target\MapBuilder;
@@ -74,6 +75,12 @@ final class CodeCoverage
      */
     private array $tests             = [];
     private ?Directory $cachedReport = null;
+
+    /**
+     * How the executable lines are determined; selected for the driver when
+     * the first file is analysed.
+     */
+    private ?ExecutableLinesClassifier $executableLinesClassifier = null;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -557,10 +564,22 @@ final class CodeCoverage
 
     private function analyser(): FileAnalyser
     {
+        $filesToAnalyse = [];
+
+        if ($this->executableLinesClassifier === null) {
+            $this->executableLinesClassifier = ExecutableLinesClassifier::select(
+                $this->driver->linesDependOnCompilation(),
+            );
+
+            $filesToAnalyse = $this->filter->files();
+        }
+
         return Registry::analyser(
             $this->cacheDirectory,
             $this->useAnnotationsForIgnoringCode,
             $this->ignoreDeprecatedCode,
+            $this->executableLinesClassifier,
+            $filesToAnalyse,
         );
     }
 }

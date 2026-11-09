@@ -23,8 +23,9 @@ final class FakeDriver extends Driver
      * @var list<RawCodeCoverageData>
      */
     private array $coveragePerStop;
-    private int $stops              = 0;
-    private bool $collectsHitCounts = false;
+    private int $stops                     = 0;
+    private bool $collectsHitCounts        = false;
+    private bool $linesDependOnCompilation = true;
 
     public function __construct(RawCodeCoverageData ...$coveragePerStop)
     {
@@ -62,6 +63,19 @@ final class FakeDriver extends Driver
     public function collectsHitCounts(): bool
     {
         return $this->collectsHitCounts;
+    }
+
+    /**
+     * Emulates a driver that reports the lines of code it has instrumented.
+     */
+    public function markAsNotDependingOnCompilation(): void
+    {
+        $this->linesDependOnCompilation = false;
+    }
+
+    public function linesDependOnCompilation(): bool
+    {
+        return $this->linesDependOnCompilation;
     }
 
     protected function canCollectBranchCoverage(): bool

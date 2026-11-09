@@ -17,12 +17,14 @@ use function unlink;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesClassifier;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
@@ -577,6 +579,49 @@ final class CodeCoverageTest extends TestCase
         $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
     }
 
+    #[RequiresPhp('>= 8.6.0')]
+    public function testDeterminesExecutableLinesFromBytecodeForDriverWhoseLinesDoNotDependOnCompilation(): void
+    {
+        $driver = $this->driverForSourceForBytecodeAnalysis();
+        $driver->markAsNotDependingOnCompilation();
+
+        $this->assertSame(
+            [
+                18 => ['A test' => 1],
+                24 => ['A test' => 1],
+                26 => ['A test' => 1],
+                31 => ['A test' => 1],
+                33 => ['A test' => 1],
+                37 => [],
+                41 => [],
+            ],
+            $this->lineCoverageOfSourceForBytecodeAnalysis($driver),
+        );
+    }
+
+    public function testDeterminesExecutableLinesFromSyntaxForDriverWhoseLinesDependOnCompilationWhenCodeIsNotCompiledLikeForBytecodeAnalysis(): void
+    {
+        if (ExecutableLinesClassifier::compilationMatchesBytecodeAnalysis()) {
+            $this->markTestSkipped('This test requires that code is not compiled by OPcache without optimizations');
+        }
+
+        $this->assertSame(
+            [
+                7  => ['A test' => 1],
+                18 => ['A test' => 1],
+                24 => ['A test' => 1],
+                26 => ['A test' => 1],
+                31 => ['A test' => 1],
+                32 => ['A test' => 1],
+                33 => ['A test' => 1],
+                34 => ['A test' => 1],
+                37 => [],
+                41 => [],
+            ],
+            $this->lineCoverageOfSourceForBytecodeAnalysis($this->driverForSourceForBytecodeAnalysis()),
+        );
+    }
+
     public function testDataNotFilteredUsingTargetsIsNotCollectedByDefault(): void
     {
         $coverage = $this->coverageForTestThatCoversBankAccountButAlsoExecutesCoveredClass();
@@ -772,6 +817,48 @@ final class CodeCoverageTest extends TestCase
         $coverage->stop(true, null, $covers);
 
         return $coverage;
+    }
+
+    /**
+     * The driver reports every line of source_for_bytecode_analysis.php that
+     * the analysis of its syntax or of its bytecode counts as executable.
+     */
+    private function driverForSourceForBytecodeAnalysis(): FakeDriver
+    {
+        return new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([
+                TEST_FILES_PATH . 'source_for_bytecode_analysis.php' => [
+                    7  => Driver::LINE_EXECUTED,
+                    18 => Driver::LINE_EXECUTED,
+                    24 => Driver::LINE_EXECUTED,
+                    26 => Driver::LINE_EXECUTED,
+                    31 => Driver::LINE_EXECUTED,
+                    32 => Driver::LINE_EXECUTED,
+                    33 => Driver::LINE_EXECUTED,
+                    34 => Driver::LINE_EXECUTED,
+                    37 => Driver::LINE_NOT_EXECUTED,
+                    41 => Driver::LINE_NOT_EXECUTED,
+                ],
+            ]),
+        );
+    }
+
+    /**
+     * @return array<int, ?array<string, int>>
+     */
+    private function lineCoverageOfSourceForBytecodeAnalysis(FakeDriver $driver): array
+    {
+        $file = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('A test');
+        $coverage->stop();
+
+        return $this->lineCoverageKeyedByTestId($coverage->getData())[$file] ?? [];
     }
 
     /**

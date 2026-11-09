@@ -56,9 +56,40 @@ final class CachingSourceAnalyserTest extends SourceAnalyserTestCase
         $this->assertSame($firstResult->parseError(), $secondResult->parseError());
     }
 
+    public function testCachesResultsOfAnalysersWithDifferentCacheKeyComponentsSeparately(): void
+    {
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-caching-test-' . uniqid();
+        $file      = TEST_FILES_PATH . 'source_without_ignore.php';
+        $source    = $this->source($file);
+
+        $first  = new CachingSourceAnalyser($directory, new ParsingSourceAnalyser);
+        $second = new CachingSourceAnalyser($directory, new ParsingSourceAnalyser, 'second');
+
+        $first->analyse($file, $source, true, true);
+        $second->analyse($file, $source, true, true);
+        $second->analyse($file, $source, true, true);
+
+        $this->assertSame(1, $second->cacheMisses());
+        $this->assertSame(1, $second->cacheHits());
+    }
+
     protected function analyser(): SourceAnalyser
     {
         return $this->cachingAnalyser();
+    }
+
+    /**
+     * @param non-empty-string $file
+     */
+    private function source(string $file): string
+    {
+        $source = file_get_contents($file);
+
+        if ($source === false) {
+            $this->fail('Could not read ' . $file);
+        }
+
+        return $source;
     }
 
     private function cachingAnalyser(): CachingSourceAnalyser

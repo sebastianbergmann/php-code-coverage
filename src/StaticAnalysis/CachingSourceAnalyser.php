@@ -44,6 +44,7 @@ final class CachingSourceAnalyser implements SourceAnalyser
      */
     private readonly string $directory;
     private readonly SourceAnalyser $sourceAnalyser;
+    private readonly string $cacheKeyComponent;
 
     /**
      * @var non-negative-int
@@ -57,13 +58,15 @@ final class CachingSourceAnalyser implements SourceAnalyser
 
     /**
      * @param non-empty-string $directory
+     * @param string           $cacheKeyComponent distinguishes the results of source analysers that analyse code differently, see ExecutableLinesClassifier::cacheKey()
      */
-    public function __construct(string $directory, SourceAnalyser $sourceAnalyser)
+    public function __construct(string $directory, SourceAnalyser $sourceAnalyser, string $cacheKeyComponent = '')
     {
         Filesystem::createDirectory($directory);
 
-        $this->directory      = $directory;
-        $this->sourceAnalyser = $sourceAnalyser;
+        $this->directory         = $directory;
+        $this->sourceAnalyser    = $sourceAnalyser;
+        $this->cacheKeyComponent = $cacheKeyComponent;
     }
 
     /**
@@ -176,20 +179,20 @@ final class CachingSourceAnalyser implements SourceAnalyser
      */
     private function cacheFile(string $source, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): string
     {
-        $cacheKey = hash(
-            'sha256',
-            implode(
-                "\0",
-                [
-                    $source,
-                    Version::id(),
-                    self::CACHE_FORMAT_VERSION,
-                    PhpParserVersion::id(),
-                    $useAnnotationsForIgnoringCode,
-                    $ignoreDeprecatedCode,
-                ],
-            ),
-        );
+        $components = [
+            $source,
+            Version::id(),
+            self::CACHE_FORMAT_VERSION,
+            PhpParserVersion::id(),
+            $useAnnotationsForIgnoringCode,
+            $ignoreDeprecatedCode,
+        ];
+
+        if ($this->cacheKeyComponent !== '') {
+            $components[] = $this->cacheKeyComponent;
+        }
+
+        $cacheKey = hash('sha256', implode("\0", $components));
 
         return $this->directory . DIRECTORY_SEPARATOR . $cacheKey;
     }

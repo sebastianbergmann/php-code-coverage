@@ -77,6 +77,11 @@ final class PcovDriverTest extends TestCase
         $this->assertFalse($this->driver()->collectsHitCounts());
     }
 
+    public function testReportsLinesThatDependOnCompilation(): void
+    {
+        $this->assertTrue($this->driver()->linesDependOnCompilation());
+    }
+
     private function driver(): PcovDriver
     {
         return new PcovDriver(new Filter);

@@ -82,6 +82,11 @@ final class XdebugDriverTest extends TestCase
         $this->assertFalse($this->driver()->collectsHitCounts());
     }
 
+    public function testReportsLinesThatDependOnCompilation(): void
+    {
+        $this->assertTrue($this->driver()->linesDependOnCompilation());
+    }
+
     public function testFilterWorks(): void
     {
         $bankAccount = TEST_FILES_PATH . 'BankAccount.php';

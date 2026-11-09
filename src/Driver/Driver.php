@@ -113,6 +113,25 @@ abstract class Driver
         return false;
     }
 
+    /**
+     * Whether the lines this driver reports depend on how PHP compiled the
+     * code: drivers that observe the bytecode PHP executes (Xdebug, PCOV)
+     * report the lines that the opcodes of that bytecode are attributed to,
+     * and the bytecode PHP generates for the same source code differs with
+     * the configuration of OPcache and with which classes are already loaded
+     * when a file is compiled. A driver that reports the lines of code that
+     * it has instrumented, for instance, does not depend on that.
+     *
+     * The executable lines are determined from the bytecode of the analysed
+     * code, rather than from its syntax, when the lines a driver reports do
+     * not depend on how PHP compiled the code, or when PHP compiles the code
+     * the same way as that analysis does; see ExecutableLinesClassifier.
+     */
+    public function linesDependOnCompilation(): bool
+    {
+        return true;
+    }
+
     protected function canCollectBranchCoverage(): bool
     {
         return false;

@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 #[CoversClass(BytecodeLines::class)]
 #[UsesClass(BytecodeDumpParser::class)]
@@ -34,6 +35,13 @@ final class BytecodeLinesTest extends TestCase
      * @var list<non-empty-string>
      */
     private array $temporaryFiles = [];
+
+    protected function setUp(): void
+    {
+        // Whether bytecode can be analysed is determined once per process,
+        // usually by a test that is run before this one
+        (new ReflectionClass(BytecodeLines::class))->setStaticPropertyValue('available', null);
+    }
 
     protected function tearDown(): void
     {

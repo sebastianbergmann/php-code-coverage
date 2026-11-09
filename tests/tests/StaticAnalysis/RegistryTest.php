@@ -145,6 +145,20 @@ final class RegistryTest extends TestCase
         );
     }
 
+    #[RequiresPhp('< 8.6.0')]
+    public function testCreatesCachingAnalyserThatDeterminesExecutableLinesFromSyntaxWhenBytecodeCannotBeAnalysedBeforePhp86(): void
+    {
+        $file           = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+        $cacheDirectory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-registry-test-' . uniqid();
+
+        $this->assertSame(
+            Registry::analyser(null, false, false)->analyse($file)->executableLines(),
+            Registry::analyser($cacheDirectory, false, false, ExecutableLinesClassifier::Bytecode, [$file])
+                ->analyse($file)
+                ->executableLines(),
+        );
+    }
+
     private function resetRegistry(): void
     {
         $registry = new ReflectionClass(Registry::class);

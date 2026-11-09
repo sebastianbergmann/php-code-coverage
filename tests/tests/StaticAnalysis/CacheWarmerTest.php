@@ -14,7 +14,6 @@ use function sys_get_temp_dir;
 use function uniqid;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -56,7 +55,6 @@ final class CacheWarmerTest extends TestCase
         $this->assertSame(1, $result['cacheMisses']);
     }
 
-    #[RequiresPhp('>= 8.6.0')]
     public function testWarmsCacheForAnalysisOfBytecode(): void
     {
         $filter = new Filter;

@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
+use function iterator_to_array;
 use function sys_get_temp_dir;
 use function uniqid;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -71,6 +72,29 @@ final class CachingSourceAnalyserTest extends SourceAnalyserTestCase
 
         $this->assertSame(1, $second->cacheMisses());
         $this->assertSame(1, $second->cacheHits());
+    }
+
+    public function testYieldsFilesWhoseAnalysisIsNotCached(): void
+    {
+        $analyser = new CachingSourceAnalyser(
+            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-caching-test-' . uniqid(),
+            new ParsingSourceAnalyser,
+        );
+        $cached    = TEST_FILES_PATH . 'source_without_ignore.php';
+        $notCached = TEST_FILES_PATH . 'source_with_ignore.php';
+        $missing   = TEST_FILES_PATH . 'does_not_exist.php';
+
+        $analyser->analyse($cached, $this->source($cached), true, true);
+
+        $this->assertSame(
+            [$notCached, $missing],
+            iterator_to_array($analyser->uncachedFiles([$cached, $notCached, $missing], true, true), false),
+        );
+
+        $this->assertSame(
+            [$cached, $notCached, $missing],
+            iterator_to_array($analyser->uncachedFiles([$cached, $notCached, $missing], false, true), false),
+        );
     }
 
     protected function analyser(): SourceAnalyser

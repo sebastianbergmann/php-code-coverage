@@ -17,6 +17,7 @@ use function implode;
 use function is_file;
 use function serialize;
 use function unserialize;
+use Generator;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\PhpParserVersion;
 use SebastianBergmann\CodeCoverage\Version;
@@ -108,6 +109,25 @@ final class CachingSourceAnalyser implements SourceAnalyser
         }
 
         return $analysisResult;
+    }
+
+    /**
+     * Yields the given files for which no result of their analysis is cached.
+     *
+     * @param iterable<non-empty-string> $sourceCodeFiles
+     *
+     * @return Generator<non-empty-string>
+     */
+    public function uncachedFiles(iterable $sourceCodeFiles, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): Generator
+    {
+        foreach ($sourceCodeFiles as $sourceCodeFile) {
+            $sourceCode = @file_get_contents($sourceCodeFile);
+
+            if ($sourceCode === false ||
+                !is_file($this->cacheFile($sourceCode, $useAnnotationsForIgnoringCode, $ignoreDeprecatedCode))) {
+                yield $sourceCodeFile;
+            }
+        }
     }
 
     /**

@@ -579,7 +579,7 @@ final class CodeCoverageTest extends TestCase
         $this->assertSame([5 => ['A test' => 1]], $lineCoverage[$file]);
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testDeterminesExecutableLinesFromBytecodeForDriverWhoseLinesDoNotDependOnCompilation(): void
     {
         $driver = $this->driverForSourceForBytecodeAnalysis();

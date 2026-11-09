@@ -50,14 +50,14 @@ final class ExecutableLinesClassifierTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     #[TestDox('Selects bytecode for driver whose lines do not depend on compilation (PHP >= 8.6)')]
     public function testSelectsBytecodeForDriverWhoseLinesDoNotDependOnCompilation(): void
     {
         $this->assertSame(ExecutableLinesClassifier::Bytecode, ExecutableLinesClassifier::select(false));
     }
 
-    #[RequiresPhp('< 8.6.0')]
+    #[RequiresPhp('< 8.6.0-dev')]
     #[TestDox('Selects syntax for driver whose lines do not depend on compilation (PHP < 8.6)')]
     public function testSelectsSyntaxForDriverWhoseLinesDoNotDependOnCompilationBeforePhp86(): void
     {

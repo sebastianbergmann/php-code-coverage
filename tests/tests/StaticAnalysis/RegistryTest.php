@@ -114,7 +114,7 @@ final class RegistryTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testCreatesAnalyserThatDeterminesExecutableLinesFromBytecode(): void
     {
         $file = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
@@ -129,7 +129,7 @@ final class RegistryTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testCreatesCachingAnalyserThatDeterminesExecutableLinesFromBytecode(): void
     {
         $file           = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
@@ -145,7 +145,7 @@ final class RegistryTest extends TestCase
         );
     }
 
-    #[RequiresPhp('< 8.6.0')]
+    #[RequiresPhp('< 8.6.0-dev')]
     public function testCreatesCachingAnalyserThatDeterminesExecutableLinesFromSyntaxWhenBytecodeCannotBeAnalysedBeforePhp86(): void
     {
         $file           = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';

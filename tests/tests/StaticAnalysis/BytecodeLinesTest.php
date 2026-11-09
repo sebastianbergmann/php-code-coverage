@@ -50,19 +50,19 @@ final class BytecodeLinesTest extends TestCase
         }
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testIsAvailableAsOfPhp86(): void
     {
         $this->assertTrue(BytecodeLines::isAvailable());
     }
 
-    #[RequiresPhp('< 8.6.0')]
+    #[RequiresPhp('< 8.6.0-dev')]
     public function testIsNotAvailableBeforePhp86(): void
     {
         $this->assertFalse(BytecodeLines::isAvailable());
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testDeterminesExecutableLinesOfFile(): void
     {
         $this->assertSame(
@@ -71,7 +71,7 @@ final class BytecodeLinesTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testDeterminesExecutableLinesOfFileWhosePathIsNotCanonical(): void
     {
         $file = TEST_FILES_PATH . '..' . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR . 'source_for_bytecode_analysis.php';
@@ -82,7 +82,7 @@ final class BytecodeLinesTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testCompilesExpectedFilesTogetherWithFirstFileThatIsAnalysed(): void
     {
         $expected = $this->temporaryCopyOf(self::FILE);
@@ -100,7 +100,7 @@ final class BytecodeLinesTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testCompilesExpectedFilesThatFollowFileThatCannotBeCompiled(): void
     {
         $cannotBeCompiled = TEST_FILES_PATH . 'source_that_cannot_be_parsed.php';
@@ -120,19 +120,19 @@ final class BytecodeLinesTest extends TestCase
         );
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testReturnsNullForFileThatCannotBeCompiled(): void
     {
         $this->assertNull((new BytecodeLines)->executableLines(TEST_FILES_PATH . 'source_that_cannot_be_parsed.php'));
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testReturnsNullForFileThatDoesNotExist(): void
     {
         $this->assertNull((new BytecodeLines)->executableLines(TEST_FILES_PATH . 'does_not_exist.php'));
     }
 
-    #[RequiresPhp('< 8.6.0')]
+    #[RequiresPhp('< 8.6.0-dev')]
     public function testReturnsNullForFilesWhenPhpCannotDumpBytecodeWithLineNumbers(): void
     {
         $bytecodeLines = new BytecodeLines;

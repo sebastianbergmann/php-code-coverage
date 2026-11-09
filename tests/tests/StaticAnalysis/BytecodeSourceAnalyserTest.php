@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 #[Group('static-analysis')]
 final class BytecodeSourceAnalyserTest extends TestCase
 {
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testDeterminesExecutableLinesFromBytecode(): void
     {
         $result = $this->analyse(
@@ -46,7 +46,7 @@ final class BytecodeSourceAnalyserTest extends TestCase
         $this->assertSame([], $result->branchOperatorLines());
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testDeterminesEverythingElseFromSyntax(): void
     {
         $file   = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
@@ -62,7 +62,7 @@ final class BytecodeSourceAnalyserTest extends TestCase
         $this->assertTrue($result->wasParsed());
     }
 
-    #[RequiresPhp('>= 8.6.0')]
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testOnlyCountsDeadLinesThatAreExecutable(): void
     {
         $file   = TEST_FILES_PATH . 'source_with_dead_code.php';

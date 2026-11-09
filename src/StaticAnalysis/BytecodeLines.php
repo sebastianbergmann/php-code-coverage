@@ -94,7 +94,7 @@ final class BytecodeLines
         if (self::$available === null) {
             self::$available = PHP_VERSION_ID >= 80600 &&
                                function_exists('proc_open') &&
-                               (new self)->executableLines(__FILE__) !== [];
+                               (new self)->executableLines(__FILE__) !== null;
         }
 
         return self::$available;

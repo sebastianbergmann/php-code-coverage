@@ -24,11 +24,28 @@ final readonly class CacheWarmer
      *
      * @return array{cacheHits: non-negative-int, cacheMisses: non-negative-int}
      */
-    public function warmCache(string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, Filter $filter): array
+    public function warmCache(string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, Filter $filter, ExecutableLinesClassifier $classifier = ExecutableLinesClassifier::Syntax): array
     {
+        $sourceAnalyser = new ParsingSourceAnalyser;
+        $bytecodeLines  = null;
+
+        if ($classifier === ExecutableLinesClassifier::Bytecode) {
+            $bytecodeLines  = new BytecodeLines;
+            $sourceAnalyser = new BytecodeSourceAnalyser($sourceAnalyser, $bytecodeLines);
+        }
+
         $analyser = new CachingSourceAnalyser(
             $cacheDirectory,
-            new ParsingSourceAnalyser,
+            $sourceAnalyser,
+            $classifier->cacheKey(),
+        );
+
+        $bytecodeLines?->expect(
+            $analyser->uncachedFiles(
+                $filter->files(),
+                $useAnnotationsForIgnoringCode,
+                $ignoreDeprecatedCode,
+            ),
         );
 
         foreach ($filter->files() as $file) {

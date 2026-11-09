@@ -14,6 +14,7 @@ use function sys_get_temp_dir;
 use function uniqid;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,10 @@ use SebastianBergmann\CodeCoverage\Filter;
 #[UsesClass(ParsingSourceAnalyser::class)]
 #[UsesClass(CodeUnitFindingVisitor::class)]
 #[UsesClass(IgnoredLinesFindingVisitor::class)]
+#[UsesClass(BytecodeSourceAnalyser::class)]
+#[UsesClass(BytecodeLines::class)]
+#[UsesClass(BytecodeDumpParser::class)]
+#[UsesClass(ExecutableLinesClassifier::class)]
 #[Group('static-analysis')]
 #[Small]
 final class CacheWarmerTest extends TestCase
@@ -49,5 +54,33 @@ final class CacheWarmerTest extends TestCase
         $this->assertArrayHasKey('cacheMisses', $result);
         $this->assertSame(0, $result['cacheHits']);
         $this->assertSame(1, $result['cacheMisses']);
+    }
+
+    #[RequiresPhp('>= 8.6.0')]
+    public function testWarmsCacheForAnalysisOfBytecode(): void
+    {
+        $filter = new Filter;
+
+        $filter->includeFile(TEST_FILES_PATH . 'source_for_bytecode_analysis.php');
+        $filter->includeFile(TEST_FILES_PATH . 'source_without_ignore.php');
+
+        $cacheDirectory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-cache-warmer-test-' . uniqid();
+
+        $cacheWarmer = new CacheWarmer;
+
+        $this->assertSame(
+            ['cacheHits' => 0, 'cacheMisses' => 2],
+            $cacheWarmer->warmCache($cacheDirectory, true, true, $filter, ExecutableLinesClassifier::Bytecode),
+        );
+
+        $this->assertSame(
+            ['cacheHits' => 2, 'cacheMisses' => 0],
+            $cacheWarmer->warmCache($cacheDirectory, true, true, $filter, ExecutableLinesClassifier::Bytecode),
+        );
+
+        $this->assertSame(
+            ['cacheHits' => 0, 'cacheMisses' => 2],
+            $cacheWarmer->warmCache($cacheDirectory, true, true, $filter),
+        );
     }
 }

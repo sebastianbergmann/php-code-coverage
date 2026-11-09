@@ -46,8 +46,8 @@ use Generator;
  * which other files were compiled before, either.
  *
  * Starting a process takes much longer than compiling a file, so the files
- * that are expected to be analysed (see {@see expect()}) are compiled in one
- * process together with the first file that is analysed.
+ * that are about to be analysed (see {@see expect()}) are compiled in one
+ * process together with the first of them that is analysed.
  *
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  *
@@ -80,9 +80,11 @@ final class BytecodeLines
     private array $lines = [];
 
     /**
-     * @var list<iterable<non-empty-string>>
+     * The files that are about to be analysed.
+     *
+     * @var iterable<non-empty-string>
      */
-    private array $expected = [];
+    private iterable $expected = [];
 
     /**
      * Whether the executable lines of files can be determined from their
@@ -109,15 +111,20 @@ final class BytecodeLines
     }
 
     /**
-     * The given files are iterated when the next file is analysed, so that
-     * they can be filtered lazily: the files whose analysis is cached, for
-     * instance, need not be compiled.
+     * Declares the files that are about to be analysed. They replace the files
+     * that were declared before, which have been analysed by then: only files
+     * that are analysed are compiled, so that the result of their analysis can
+     * be cached.
+     *
+     * The files are iterated when the next file is compiled, so that they can
+     * be filtered lazily: the files whose analysis is cached, for instance,
+     * need not be compiled.
      *
      * @param iterable<non-empty-string> $files
      */
     public function expect(iterable $files): void
     {
-        $this->expected[] = $files;
+        $this->expected = $files;
     }
 
     /**
@@ -135,8 +142,8 @@ final class BytecodeLines
     }
 
     /**
-     * Compiles the given file together with the expected files that have not
-     * been compiled yet. A file that cannot be compiled ends the process that
+     * Compiles the given file together with the files that are about to be
+     * analysed and that have not been compiled yet. A file that cannot be compiled ends the process that
      * compiles it, so the files after it are compiled in another process.
      *
      * @param non-empty-string $file
@@ -145,11 +152,9 @@ final class BytecodeLines
     {
         $batch = [$file => true];
 
-        foreach ($this->expected as $expected) {
-            foreach ($expected as $candidate) {
-                if (!array_key_exists($candidate, $this->lines)) {
-                    $batch[$candidate] = true;
-                }
+        foreach ($this->expected as $candidate) {
+            if (!array_key_exists($candidate, $this->lines)) {
+                $batch[$candidate] = true;
             }
         }
 

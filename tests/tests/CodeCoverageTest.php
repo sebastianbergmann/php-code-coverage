@@ -21,13 +21,17 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Ticket;
+use ReflectionClass;
+use ReflectionProperty;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\BytecodeLines;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\CacheWarmer;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ExecutableLinesClassifier;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Registry;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 use SebastianBergmann\CodeCoverage\Test\TestSize;
@@ -380,6 +384,49 @@ final class CodeCoverageTest extends TestCase
         $coverage->cacheStaticAnalysis($dir);
 
         $this->assertSame($dir, $coverage->cacheDirectory());
+    }
+
+    #[RequiresPhp('>= 8.6.0-dev')]
+    public function testDeterminesTheBytecodeOnlyOfTheFilesThatAreAnalysed(): void
+    {
+        $executed    = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+        $notExecuted = TEST_FILES_PATH . 'source_without_ignore.php';
+
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromLineCoverage([
+                $executed => [18 => Driver::LINE_EXECUTED],
+            ]),
+        );
+
+        $driver->markAsNotDependingOnCompilation();
+
+        $filter = new Filter;
+        $filter->includeFiles([$executed, $notExecuted]);
+
+        $this->resetRegistry();
+
+        try {
+            $coverage = new CodeCoverage($driver, $filter);
+
+            $coverage->start('test');
+            $coverage->stop();
+
+            $this->assertSame(
+                [$executed],
+                $this->filesWhoseBytecodeWasAnalysed(),
+                'Only the bytecode of the files that were executed is analysed when the coverage data of a test is processed',
+            );
+
+            $coverage->getData();
+
+            $this->assertSame(
+                [$executed, $notExecuted],
+                $this->filesWhoseBytecodeWasAnalysed(),
+                'The bytecode of the files that were not executed is analysed when they are added to the coverage data',
+            );
+        } finally {
+            $this->resetRegistry();
+        }
     }
 
     public function testWarmCacheThrowsWhenStaticAnalysisCacheIsNotConfigured(): void
@@ -859,6 +906,31 @@ final class CodeCoverageTest extends TestCase
         $coverage->stop(true, null, $covers);
 
         return $coverage;
+    }
+
+    /**
+     * @return list<string> the files whose bytecode was analysed by the analysers that Registry creates
+     */
+    private function filesWhoseBytecodeWasAnalysed(): array
+    {
+        $bytecodeLines = (new ReflectionClass(Registry::class))->getStaticPropertyValue('bytecodeLines');
+
+        $this->assertInstanceOf(BytecodeLines::class, $bytecodeLines);
+
+        $lines = (new ReflectionProperty(BytecodeLines::class, 'lines'))->getValue($bytecodeLines);
+
+        $this->assertIsArray($lines);
+
+        return array_keys($lines);
+    }
+
+    private function resetRegistry(): void
+    {
+        $registry = new ReflectionClass(Registry::class);
+
+        $registry->setStaticPropertyValue('analysers', []);
+        $registry->setStaticPropertyValue('cachingSourceAnalysers', []);
+        $registry->setStaticPropertyValue('bytecodeLines', null);
     }
 
     /**

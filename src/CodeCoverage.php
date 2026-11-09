@@ -9,6 +9,9 @@
  */
 namespace SebastianBergmann\CodeCoverage;
 
+use function array_diff;
+use function array_keys;
+use function array_values;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
@@ -82,12 +85,6 @@ final class CodeCoverage
      * is first needed.
      */
     private ?ExecutableLinesClassifier $executableLinesClassifier = null;
-
-    /**
-     * Whether the files in the filter were passed to Registry::analyser() as
-     * the files that are expected to be analysed.
-     */
-    private bool $filesToAnalyseWerePassed = false;
 
     public function __construct(Driver $driver, Filter $filter)
     {
@@ -263,10 +260,13 @@ final class CodeCoverage
         $filterProcessor = new FilterProcessor;
 
         $filterProcessor->applyFilter($rawData, $this->filter);
-        $filterProcessor->applyExecutableLinesFilter($rawData, $this->filter, $this->analyser());
+
+        $analyser = $this->analyser($this->filesIn($rawData));
+
+        $filterProcessor->applyExecutableLinesFilter($rawData, $this->filter, $analyser);
 
         if ($this->useAnnotationsForIgnoringCode) {
-            $filterProcessor->applyIgnoredLinesFilter($rawData, $this->filter, $this->analyser());
+            $filterProcessor->applyIgnoredLinesFilter($rawData, $this->filter, $analyser);
         }
 
         /*
@@ -573,7 +573,9 @@ final class CodeCoverage
         $uncoveredFilesData = (new FilterProcessor)->uncoveredFilesFromFilter(
             $this->filter,
             $this->data,
-            $this->analyser(),
+            $this->analyser(
+                array_values(array_diff($this->filter->files(), $this->data->coveredFiles())),
+            ),
         );
 
         foreach ($uncoveredFilesData as $rawData) {
@@ -588,21 +590,17 @@ final class CodeCoverage
         }
 
         $this->targetMapper = new Mapper(
-            (new MapBuilder)->build($this->filter, $this->analyser()),
+            (new MapBuilder)->build($this->filter, $this->analyser($this->filter->files())),
         );
 
         return $this->targetMapper;
     }
 
-    private function analyser(): FileAnalyser
+    /**
+     * @param list<non-empty-string> $filesToAnalyse the files that are about to be analysed, so that the bytecode of those whose analysis is not cached yet is analysed together (see Registry::analyser())
+     */
+    private function analyser(array $filesToAnalyse = []): FileAnalyser
     {
-        $filesToAnalyse = [];
-
-        if (!$this->filesToAnalyseWerePassed) {
-            $filesToAnalyse                 = $this->filter->files();
-            $this->filesToAnalyseWerePassed = true;
-        }
-
         return Registry::analyser(
             $this->cacheDirectory,
             $this->useAnnotationsForIgnoringCode,
@@ -610,6 +608,22 @@ final class CodeCoverage
             $this->executableLinesClassifier(),
             $filesToAnalyse,
         );
+    }
+
+    /**
+     * @return list<non-empty-string> the files in the given code coverage data that are analysed
+     */
+    private function filesIn(RawCodeCoverageData $data): array
+    {
+        $files = [];
+
+        foreach (array_keys($data->lineCoverage()) as $file) {
+            if ($this->filter->isFile($file)) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
     }
 
     private function executableLinesClassifier(): ExecutableLinesClassifier

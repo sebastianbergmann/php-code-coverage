@@ -42,7 +42,7 @@ final class Registry
 
     /**
      * @param ?non-empty-string          $cacheDirectory
-     * @param iterable<non-empty-string> $filesToAnalyse the files that are expected to be analysed, so that the bytecode of the files that are not cached yet can be analysed together
+     * @param iterable<non-empty-string> $filesToAnalyse the files that are about to be analysed, so that the bytecode of those whose analysis is not cached yet is analysed together (see BytecodeLines::expect())
      */
     public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, ExecutableLinesClassifier $classifier = ExecutableLinesClassifier::Syntax, iterable $filesToAnalyse = []): FileAnalyser
     {

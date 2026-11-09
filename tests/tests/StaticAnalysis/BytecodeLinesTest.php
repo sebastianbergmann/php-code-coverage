@@ -101,6 +101,25 @@ final class BytecodeLinesTest extends TestCase
     }
 
     #[RequiresPhp('>= 8.6.0-dev')]
+    public function testFilesThatAreAboutToBeAnalysedReplaceTheFilesThatWereDeclaredBefore(): void
+    {
+        $declaredBefore = $this->temporaryCopyOf(self::FILE);
+        $declared       = $this->temporaryCopyOf(self::FILE);
+
+        $bytecodeLines = new BytecodeLines;
+        $bytecodeLines->expect([$declaredBefore]);
+        $bytecodeLines->expect([$declared]);
+
+        $this->assertNotNull($bytecodeLines->executableLines(self::FILE));
+
+        unlink($declaredBefore);
+        unlink($declared);
+
+        $this->assertNotNull($bytecodeLines->executableLines($declared), 'The files that were declared last are compiled together with the first file that is analysed');
+        $this->assertNull($bytecodeLines->executableLines($declaredBefore), 'The files that were declared before are not compiled');
+    }
+
+    #[RequiresPhp('>= 8.6.0-dev')]
     public function testCompilesExpectedFilesThatFollowFileThatCannotBeCompiled(): void
     {
         $cannotBeCompiled = TEST_FILES_PATH . 'source_that_cannot_be_parsed.php';

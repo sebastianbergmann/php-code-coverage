@@ -30,9 +30,21 @@ final class Registry
     private static array $analysers = [];
 
     /**
-     * @param ?non-empty-string $cacheDirectory
+     * @var array<non-empty-string, CachingSourceAnalyser>
      */
-    public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): FileAnalyser
+    private static array $cachingSourceAnalysers = [];
+
+    /**
+     * The executable lines of a file that were determined from its bytecode do
+     * not depend on the configuration of the analyser, so they are shared.
+     */
+    private static ?BytecodeLines $bytecodeLines = null;
+
+    /**
+     * @param ?non-empty-string          $cacheDirectory
+     * @param iterable<non-empty-string> $filesToAnalyse the files that are expected to be analysed, so that the bytecode of the files that are not cached yet can be analysed together
+     */
+    public static function analyser(?string $cacheDirectory, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode, ExecutableLinesClassifier $classifier = ExecutableLinesClassifier::Syntax, iterable $filesToAnalyse = []): FileAnalyser
     {
         $key = implode(
             "\0",
@@ -40,28 +52,58 @@ final class Registry
                 $cacheDirectory ?? '',
                 $useAnnotationsForIgnoringCode ? '1' : '0',
                 $ignoreDeprecatedCode ? '1' : '0',
+                $classifier->value,
             ],
         );
 
-        if (isset(self::$analysers[$key])) {
-            return self::$analysers[$key];
-        }
+        if (!isset(self::$analysers[$key])) {
+            $sourceAnalyser = new ParsingSourceAnalyser;
 
-        $sourceAnalyser = new ParsingSourceAnalyser;
+            if ($classifier === ExecutableLinesClassifier::Bytecode) {
+                $sourceAnalyser = new BytecodeSourceAnalyser(
+                    $sourceAnalyser,
+                    self::bytecodeLines(),
+                );
+            }
 
-        if ($cacheDirectory !== null) {
-            $sourceAnalyser = new CachingSourceAnalyser(
-                $cacheDirectory,
+            if ($cacheDirectory !== null) {
+                $sourceAnalyser = new CachingSourceAnalyser(
+                    $cacheDirectory,
+                    $sourceAnalyser,
+                    $classifier->cacheKey(),
+                );
+
+                self::$cachingSourceAnalysers[$key] = $sourceAnalyser;
+            }
+
+            self::$analysers[$key] = new FileAnalyser(
                 $sourceAnalyser,
+                $useAnnotationsForIgnoringCode,
+                $ignoreDeprecatedCode,
             );
         }
 
-        self::$analysers[$key] = new FileAnalyser(
-            $sourceAnalyser,
-            $useAnnotationsForIgnoringCode,
-            $ignoreDeprecatedCode,
-        );
+        if ($classifier === ExecutableLinesClassifier::Bytecode && $filesToAnalyse !== []) {
+            if (isset(self::$cachingSourceAnalysers[$key])) {
+                $filesToAnalyse = self::$cachingSourceAnalysers[$key]->uncachedFiles(
+                    $filesToAnalyse,
+                    $useAnnotationsForIgnoringCode,
+                    $ignoreDeprecatedCode,
+                );
+            }
+
+            self::bytecodeLines()->expect($filesToAnalyse);
+        }
 
         return self::$analysers[$key];
+    }
+
+    private static function bytecodeLines(): BytecodeLines
+    {
+        if (self::$bytecodeLines === null) {
+            self::$bytecodeLines = new BytecodeLines;
+        }
+
+        return self::$bytecodeLines;
     }
 }

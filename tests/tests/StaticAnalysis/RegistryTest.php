@@ -10,9 +10,12 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const DIRECTORY_SEPARATOR;
+use function array_keys;
 use function sys_get_temp_dir;
+use function uniqid;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +25,14 @@ use ReflectionClass;
 #[UsesClass(FileAnalyser::class)]
 #[UsesClass(ParsingSourceAnalyser::class)]
 #[UsesClass(CachingSourceAnalyser::class)]
+#[UsesClass(BytecodeSourceAnalyser::class)]
+#[UsesClass(BytecodeLines::class)]
+#[UsesClass(BytecodeDumpParser::class)]
+#[UsesClass(ExecutableLinesClassifier::class)]
+#[UsesClass(CodeUnitFindingVisitor::class)]
+#[UsesClass(IgnoredLinesFindingVisitor::class)]
+#[UsesClass(ExecutableLinesFindingVisitor::class)]
+#[UsesClass(DeadCodeFindingVisitor::class)]
 #[Small]
 #[Group('static-analysis')]
 final class RegistryTest extends TestCase
@@ -87,8 +98,59 @@ final class RegistryTest extends TestCase
         );
     }
 
+    public function testReturnsDifferentAnalyserForDifferentWayOfDeterminingExecutableLines(): void
+    {
+        $this->assertNotSame(
+            Registry::analyser(null, false, false, ExecutableLinesClassifier::Syntax),
+            Registry::analyser(null, false, false, ExecutableLinesClassifier::Bytecode),
+        );
+    }
+
+    public function testDeterminesExecutableLinesFromSyntaxByDefault(): void
+    {
+        $this->assertSame(
+            Registry::analyser(null, false, false),
+            Registry::analyser(null, false, false, ExecutableLinesClassifier::Syntax),
+        );
+    }
+
+    #[RequiresPhp('>= 8.6.0')]
+    public function testCreatesAnalyserThatDeterminesExecutableLinesFromBytecode(): void
+    {
+        $file = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+
+        $this->assertSame(
+            [18, 24, 26, 31, 33, 37, 41],
+            array_keys(
+                Registry::analyser(null, false, false, ExecutableLinesClassifier::Bytecode, [$file])
+                    ->analyse($file)
+                    ->executableLines(),
+            ),
+        );
+    }
+
+    #[RequiresPhp('>= 8.6.0')]
+    public function testCreatesCachingAnalyserThatDeterminesExecutableLinesFromBytecode(): void
+    {
+        $file           = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+        $cacheDirectory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-code-coverage-registry-test-' . uniqid();
+
+        $this->assertSame(
+            [18, 24, 26, 31, 33, 37, 41],
+            array_keys(
+                Registry::analyser($cacheDirectory, false, false, ExecutableLinesClassifier::Bytecode, [$file])
+                    ->analyse($file)
+                    ->executableLines(),
+            ),
+        );
+    }
+
     private function resetRegistry(): void
     {
-        (new ReflectionClass(Registry::class))->setStaticPropertyValue('analysers', []);
+        $registry = new ReflectionClass(Registry::class);
+
+        $registry->setStaticPropertyValue('analysers', []);
+        $registry->setStaticPropertyValue('cachingSourceAnalysers', []);
+        $registry->setStaticPropertyValue('bytecodeLines', null);
     }
 }

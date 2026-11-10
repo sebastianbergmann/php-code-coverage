@@ -82,7 +82,7 @@ final class XmlTest extends TestCase
         $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new FilesystemIterator($actualFilesPath);
 
-        $this->assertEquals(
+        $this->assertSame(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
             'Generated files and expected files not match',

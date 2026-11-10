@@ -29,8 +29,8 @@ final class CodeUnitFindingVisitorTest extends TestCase
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/ClassThatUsesAnonymousClass.php');
 
-        $this->assertEmpty($codeUnitFindingVisitor->functions());
-        $this->assertEmpty($codeUnitFindingVisitor->traits());
+        $this->assertCount(0, $codeUnitFindingVisitor->functions());
+        $this->assertCount(0, $codeUnitFindingVisitor->traits());
 
         $classes = $codeUnitFindingVisitor->classes();
 
@@ -63,8 +63,8 @@ final class CodeUnitFindingVisitorTest extends TestCase
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/ClassWithNameThatIsPartOfItsNamespacesName.php');
 
-        $this->assertEmpty($codeUnitFindingVisitor->functions());
-        $this->assertEmpty($codeUnitFindingVisitor->traits());
+        $this->assertCount(0, $codeUnitFindingVisitor->functions());
+        $this->assertCount(0, $codeUnitFindingVisitor->traits());
 
         $classes = $codeUnitFindingVisitor->classes();
 
@@ -82,8 +82,8 @@ final class CodeUnitFindingVisitorTest extends TestCase
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithUnionTypes.php');
 
-        $this->assertEmpty($codeUnitFindingVisitor->classes());
-        $this->assertEmpty($codeUnitFindingVisitor->traits());
+        $this->assertCount(0, $codeUnitFindingVisitor->classes());
+        $this->assertCount(0, $codeUnitFindingVisitor->traits());
 
         $functions = $codeUnitFindingVisitor->functions();
 
@@ -99,8 +99,8 @@ final class CodeUnitFindingVisitorTest extends TestCase
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithIntersectionTypes.php');
 
-        $this->assertEmpty($codeUnitFindingVisitor->classes());
-        $this->assertEmpty($codeUnitFindingVisitor->traits());
+        $this->assertCount(0, $codeUnitFindingVisitor->classes());
+        $this->assertCount(0, $codeUnitFindingVisitor->traits());
 
         $functions = $codeUnitFindingVisitor->functions();
 
@@ -116,8 +116,8 @@ final class CodeUnitFindingVisitorTest extends TestCase
     {
         $codeUnitFindingVisitor = $this->findCodeUnits(__DIR__ . '/../../../_files/FunctionWithDisjunctiveNormalFormTypes.php');
 
-        $this->assertEmpty($codeUnitFindingVisitor->classes());
-        $this->assertEmpty($codeUnitFindingVisitor->traits());
+        $this->assertCount(0, $codeUnitFindingVisitor->classes());
+        $this->assertCount(0, $codeUnitFindingVisitor->traits());
 
         $functions = $codeUnitFindingVisitor->functions();
 

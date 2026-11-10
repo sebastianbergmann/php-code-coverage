@@ -89,7 +89,7 @@ final class RawCodeCoverageDataTest extends TestCase
 
         $dataObject->clear();
 
-        $this->assertEmpty($dataObject->lineCoverage());
+        $this->assertCount(0, $dataObject->lineCoverage());
     }
 
     public function testRemoveCoverageDataForFile(): void

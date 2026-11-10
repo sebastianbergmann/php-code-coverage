@@ -127,7 +127,7 @@ final class EndToEndTest extends TestCase
         $expectedFilesIterator = new FilesystemIterator($expectedFilesPath);
         $actualFilesIterator   = new RegexIterator(new FilesystemIterator($actualFilesPath), '/.html/');
 
-        $this->assertEquals(
+        $this->assertSame(
             iterator_count($expectedFilesIterator),
             iterator_count($actualFilesIterator),
             'Generated files and expected files not match',

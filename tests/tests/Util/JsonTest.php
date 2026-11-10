@@ -41,7 +41,7 @@ final class JsonTest extends TestCase
     public function testThrowsExceptionOfThisPackageWhenDataCannotBeEncoded(): void
     {
         $this->expectException(JsonException::class);
-        $this->expectExceptionMessage('Unable to generate the JSON: Malformed UTF-8 characters, possibly incorrectly encoded');
+        $this->expectExceptionMessageIs('Unable to generate the JSON: Malformed UTF-8 characters, possibly incorrectly encoded');
 
         Json::encode(['file' => "\xB1\x31"]);
     }

@@ -213,9 +213,7 @@ final class MergerTest extends TestCase
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['commit' => 'bbbbbbb'])]]));
 
         $this->expectException(GitInformationMismatchException::class);
-        $this->expectExceptionMessage('field "commit"');
-        $this->expectExceptionMessage('"aaaaaaa"');
-        $this->expectExceptionMessage('"bbbbbbb"');
+        $this->expectExceptionMessageIs('Git information mismatch: field "commit" is "aaaaaaa" in the first file but "bbbbbbb" in another file');
 
         (new Merger)->merge([$pathA, $pathB]);
     }
@@ -226,7 +224,7 @@ final class MergerTest extends TestCase
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['branch' => 'feature'])]]));
 
         $this->expectException(GitInformationMismatchException::class);
-        $this->expectExceptionMessage('field "branch"');
+        $this->expectExceptionMessageIs('Git information mismatch: field "branch" is "main" in the first file but "feature" in another file');
 
         (new Merger)->merge([$pathA, $pathB]);
     }
@@ -237,7 +235,7 @@ final class MergerTest extends TestCase
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['originUrl' => 'https://github.com/b/repo'])]]));
 
         $this->expectException(GitInformationMismatchException::class);
-        $this->expectExceptionMessage('field "originUrl"');
+        $this->expectExceptionMessageIs('Git information mismatch: field "originUrl" is "https://github.com/a/repo" in the first file but "https://github.com/b/repo" in another file');
 
         (new Merger)->merge([$pathA, $pathB]);
     }
@@ -248,7 +246,7 @@ final class MergerTest extends TestCase
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['status' => 'M src/Foo.php'])]]));
 
         $this->expectException(GitInformationMismatchException::class);
-        $this->expectExceptionMessage('field "status"');
+        $this->expectExceptionMessageIs('Git information mismatch: field "status" is "" in the first file but "M src/Foo.php" in another file');
 
         (new Merger)->merge([$pathA, $pathB]);
     }
@@ -259,9 +257,7 @@ final class MergerTest extends TestCase
         $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['git' => $this->makeGit(['isClean' => false])]]));
 
         $this->expectException(GitInformationMismatchException::class);
-        $this->expectExceptionMessage('field "isClean"');
-        $this->expectExceptionMessage('"true"');
-        $this->expectExceptionMessage('"false"');
+        $this->expectExceptionMessageIs('Git information mismatch: field "isClean" is "true" in the first file but "false" in another file');
 
         (new Merger)->merge([$pathA, $pathB]);
     }

@@ -338,7 +338,7 @@ final class MapperTest extends TestCase
     public function testCannotMapInvalidTargets(string $exceptionMessage, TargetCollection $targets): void
     {
         $this->expectException(InvalidCodeCoverageTargetException::class);
-        $this->expectExceptionMessage($exceptionMessage);
+        $this->expectExceptionMessageIs($exceptionMessage);
 
         $this->mapper([])->mapTargets($targets);
     }

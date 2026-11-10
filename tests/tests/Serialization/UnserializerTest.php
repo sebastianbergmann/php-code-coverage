@@ -88,7 +88,7 @@ final class UnserializerTest extends TestCase
         file_put_contents($target, "<?php\nreturn [];\n");
 
         $this->expectException(FileCouldNotBeReadException::class);
-        $this->expectExceptionMessage('does not contain phpunit/php-code-coverage serialization format information');
+        $this->expectExceptionMessageIsOrContains('does not contain phpunit/php-code-coverage serialization format information');
 
         (new Unserializer)->unserialize($target);
     }
@@ -122,7 +122,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage('Failed to unserialize coverage data from ' . $target);
+        $this->expectExceptionMessageIsOrContains('Failed to unserialize coverage data from ' . $target);
 
         (new Unserializer)->unserialize($target);
     }
@@ -170,7 +170,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage.serializationFormat' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.phpCodeCoverage.serializationFormat' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -184,7 +184,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage('Coverage data is not an array');
+        $this->expectExceptionMessageIs('Coverage data is not an array');
 
         (new Unserializer)->unserialize($target);
     }
@@ -198,7 +198,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -212,7 +212,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.runtime' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.runtime' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -226,7 +226,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.runtime.name' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.runtime.name' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -240,7 +240,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.phpCodeCoverage' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -254,7 +254,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage.version' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.phpCodeCoverage.version' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -268,7 +268,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage.driverInformation' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.phpCodeCoverage.driverInformation' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -282,7 +282,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.phpCodeCoverage.driverInformation.name' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.phpCodeCoverage.driverInformation.name' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -296,7 +296,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'codeCoverage' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'codeCoverage' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -324,7 +324,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'basePath' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'basePath' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -381,7 +381,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("invalid 'buildInformation.git' key");
+        $this->expectExceptionMessageIsOrContains("invalid 'buildInformation.git' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -410,7 +410,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.git.originUrl' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.git.originUrl' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -439,7 +439,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'buildInformation.git.isClean' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'buildInformation.git.isClean' key");
 
         (new Unserializer)->unserialize($target);
     }
@@ -468,7 +468,7 @@ final class UnserializerTest extends TestCase
         );
 
         $this->expectException(InvalidCoverageDataException::class);
-        $this->expectExceptionMessage("missing valid 'testResults' key");
+        $this->expectExceptionMessageIsOrContains("missing valid 'testResults' key");
 
         (new Unserializer)->unserialize($target);
     }

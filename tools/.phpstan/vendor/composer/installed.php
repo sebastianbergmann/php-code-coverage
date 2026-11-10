@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => '7651f675aedff89377eb3dfc4662018fc78b0f20',
+        'pretty_version' => '14.5.x-dev',
+        'version' => '14.5.9999999.9999999-dev',
+        'reference' => 'd0c084dcd75a876434cb5b7183633088329f4482',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '7651f675aedff89377eb3dfc4662018fc78b0f20',
+            'pretty_version' => '14.5.x-dev',
+            'version' => '14.5.9999999.9999999-dev',
+            'reference' => 'd0c084dcd75a876434cb5b7183633088329f4482',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -61,6 +61,15 @@
             'reference' => '645a1bd6bead15fc1b8474137467961d0fa30a79',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpstan/phpstan-deprecation-rules' => array(
+            'pretty_version' => '2.0.5',
+            'version' => '2.0.5.0',
+            'reference' => '67bedd65c24bc72840afc45aed48b1059dd44bec',
+            'type' => 'phpstan-extension',
+            'install_path' => __DIR__ . '/../phpstan/phpstan-deprecation-rules',
             'aliases' => array(),
             'dev_requirement' => true,
         ),

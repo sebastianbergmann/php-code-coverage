@@ -1,0 +1,13 @@
+<?php
+
+namespace PHPUnit\Framework;
+
+abstract class Assert
+{
+    /**
+     * @phpstan-assert list<mixed> $array
+     *
+     * @throws ExpectationFailedException
+     */
+    final public static function assertIsList(mixed $array, string $message = ''): void {}
+}

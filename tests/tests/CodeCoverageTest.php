@@ -389,6 +389,9 @@ final class CodeCoverageTest extends TestCase
         $coverage->cacheDirectory();
     }
 
+    /**
+     * @deprecated Tests deprecated functionality
+     */
     public function testDisableBranchAndPathCoverageAndCollectsBranchAndPathCoverage(): void
     {
         $driver = $this->createStub(Driver::class);

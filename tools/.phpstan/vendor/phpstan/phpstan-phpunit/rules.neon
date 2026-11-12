@@ -21,6 +21,9 @@ conditionalTags:
 	PHPStan\Rules\PHPUnit\ClassAttributeRequiresPhpVersionRule:
 		phpstan.rules.rule: %featureToggles.bleedingEdge%
 
+	PHPStan\Rules\PHPUnit\EmptyDataProviderRule:
+		phpstan.rules.rule: %featureToggles.bleedingEdge%
+
 services:
 	-
 		class: PHPStan\Rules\PHPUnit\DataProviderDeclarationRule
@@ -46,3 +49,6 @@ services:
 
 	-
 		class: PHPStan\Rules\PHPUnit\DataProviderDataRule
+
+	-
+		class: PHPStan\Rules\PHPUnit\EmptyDataProviderRule

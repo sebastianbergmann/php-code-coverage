@@ -145,6 +145,14 @@ class AssertTypeSpecifyingExtensionHelper
 						new FuncCall(new Name('count'), [$actual]),
 					),
 				),
+				'GreaterThan' => static fn (Scope $scope, Arg $expected, Arg $actual): Expr\BinaryOp\Greater => new Expr\BinaryOp\Greater(
+					$actual->value,
+					$expected->value,
+				),
+				'LessThan' => static fn (Scope $scope, Arg $expected, Arg $actual): Expr\BinaryOp\Smaller => new Expr\BinaryOp\Smaller(
+					$actual->value,
+					$expected->value,
+				),
 				'InstanceOf' => static fn (Scope $scope, Arg $class, Arg $object): Instanceof_ => new Instanceof_(
 					$object->value,
 					$class->value,

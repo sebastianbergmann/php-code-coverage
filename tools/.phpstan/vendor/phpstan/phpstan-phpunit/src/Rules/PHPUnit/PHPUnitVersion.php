@@ -58,6 +58,14 @@ class PHPUnitVersion
 		return TrinaryLogic::createFromBoolean($this->majorVersion >= 10);
 	}
 
+	public function rejectsEmptyDataProviders(): TrinaryLogic
+	{
+		if ($this->majorVersion === null) {
+			return TrinaryLogic::createMaybe();
+		}
+		return TrinaryLogic::createFromBoolean($this->majorVersion >= 10);
+	}
+
 	public function supportsNamedArgumentsInDataProvider(): TrinaryLogic
 	{
 		if ($this->majorVersion === null) {

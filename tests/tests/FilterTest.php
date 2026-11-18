@@ -107,6 +107,19 @@ final class FilterTest extends TestCase
         $this->assertTrue($filter->isExcluded('regexp code'));
     }
 
+    public function testFileThatIsAlreadyIncludedIsNotIncludedAgain(): void
+    {
+        $filter = new Filter;
+
+        $file = self::realpath(__DIR__ . '/../_files/filter/a.php');
+
+        $filter->includeFile($file);
+        $filter->includeFile($file);
+        $filter->includeFile(__DIR__ . '/../_files/filter/../filter/a.php');
+
+        $this->assertSame([$file], $filter->files());
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/664')]
     public function testTryingToAddFileThatDoesNotExistDoesNotChangeFilter(): void
     {

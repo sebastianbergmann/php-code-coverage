@@ -42,6 +42,14 @@ final class Filter
 
     public function includeFile(string $filename): void
     {
+        // The files are stored under their canonical path, so a file that is
+        // already included under the given path need not be resolved again.
+        // When the code coverage of many processes is merged, one after
+        // another, the same files are included for each of them.
+        if (isset($this->files[$filename])) {
+            return;
+        }
+
         $filename = realpath($filename);
 
         if ($filename === false) {

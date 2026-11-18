@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Data;
 use function array_flip;
 use function array_key_exists;
 use function array_keys;
-use function count;
 use function is_array;
 use function ksort;
 use function max;
@@ -340,8 +339,33 @@ final class ProcessedCodeCoverageData
             $fileCoverage = &$this->lineCoverage[$file];
 
             foreach ($lines as $line => $data) {
-                $thatPriority = $this->priorityForValue($data);
-                $thisPriority = $this->priorityForLine($fileCoverage, $line);
+                // The data for a line is replaced by data with a higher
+                // priority:
+                //
+                // 1 = the line is not set
+                // 2 = the line has not been tested
+                // 3 = the line is dead code
+                // 4 = the line has been tested
+                //
+                // The priorities are determined here, and not by a method
+                // that is called twice for each line that is merged.
+                if ($data === null) {
+                    $thatPriority = 3;
+                } elseif ($data === []) {
+                    $thatPriority = 2;
+                } else {
+                    $thatPriority = 4;
+                }
+
+                if (!array_key_exists($line, $fileCoverage)) {
+                    $thisPriority = 1;
+                } elseif ($fileCoverage[$line] === null) {
+                    $thisPriority = 3;
+                } elseif ($fileCoverage[$line] === []) {
+                    $thisPriority = 2;
+                } else {
+                    $thisPriority = 4;
+                }
 
                 if ($thatPriority > $thisPriority) {
                     $fileCoverage[$line] = $data;
@@ -453,48 +477,6 @@ final class ProcessedCodeCoverageData
         }
 
         return [$lineCoverage, $functionCoverage];
-    }
-
-    /**
-     * Determine the priority for a line.
-     *
-     * 1 = the line is not set
-     * 2 = the line has not been tested
-     * 3 = the line is dead code
-     * 4 = the line has been tested
-     *
-     * During a merge, a higher number is better.
-     *
-     * @param array<positive-int, null|array<TestIndexType, positive-int>> $data
-     * @param positive-int                                                 $line
-     *
-     * @return 1|2|3|4
-     */
-    private function priorityForLine(array $data, int $line): int
-    {
-        if (!array_key_exists($line, $data)) {
-            return 1;
-        }
-
-        return $this->priorityForValue($data[$line]);
-    }
-
-    /**
-     * @param null|array<TestIndexType, positive-int> $data
-     *
-     * @return 2|3|4
-     */
-    private function priorityForValue(null|array $data): int
-    {
-        if ($data === null) {
-            return 3;
-        }
-
-        if (count($data) === 0) {
-            return 2;
-        }
-
-        return 4;
     }
 
     /**

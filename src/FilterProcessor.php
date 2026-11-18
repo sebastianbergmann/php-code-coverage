@@ -117,7 +117,7 @@ final readonly class FilterProcessor
 
             $data->markExecutableLineByBranch(
                 $filename,
-                $linesToBranchMap,
+                $analysisResult->executableLinesOfMultiLineBranches(),
             );
 
             $data->markLinesAsNotExecutable(

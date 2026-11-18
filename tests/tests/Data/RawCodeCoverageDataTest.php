@@ -1169,6 +1169,95 @@ final class RawCodeCoverageDataTest extends TestCase
         $this->assertSame([8 => 1], $fileLines);
     }
 
+    public function testMarkExecutableLineByBranchDoesNotChangeLineThatIsTheOnlyLineOfItsBranch(): void
+    {
+        // The lines are deliberately not in ascending order: which line of a
+        // branch is seen first, and the order in which lines are added, depend
+        // on the order of the lines in the data reported by the driver
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                12 => -1,
+                8  => 2,
+                9  => -1,
+                10 => -2,
+                14 => 3,
+                16 => -1,
+                18 => -1,
+                19 => -2,
+            ],
+        ];
+
+        // Lines 8, 10, and 21 are the only line of their branch, the lines of
+        // the branches 1, 3, and 5 share their branch with other lines
+        $linesToBranchMap = [
+            8  => 0,
+            9  => 1,
+            10 => 2,
+            11 => 1,
+            12 => 1,
+            14 => 3,
+            15 => 3,
+            16 => 3,
+            18 => 5,
+            19 => 5,
+            20 => 5,
+            21 => 6,
+        ];
+
+        $linesOfMultiLineBranches = [
+            9  => 1,
+            11 => 1,
+            12 => 1,
+            14 => 3,
+            15 => 3,
+            16 => 3,
+            18 => 5,
+            19 => 5,
+            20 => 5,
+        ];
+
+        $markedUsingAllLines = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+        $markedUsingAllLines->markExecutableLineByBranch('/some/path/SomeClass.php', $linesToBranchMap);
+
+        $markedUsingLinesOfMultiLineBranches = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+        $markedUsingLinesOfMultiLineBranches->markExecutableLineByBranch('/some/path/SomeClass.php', $linesOfMultiLineBranches);
+
+        $expected = [
+            '/some/path/SomeClass.php' => [
+                12 => -1,
+                8  => 2,
+                9  => -1,
+                10 => -2,
+                14 => 3,
+                16 => 3,
+                18 => -2,
+                19 => -2,
+                11 => -1,
+                15 => 3,
+                20 => -2,
+            ],
+        ];
+
+        $this->assertSame($expected, $markedUsingAllLines->lineCoverage());
+        $this->assertSame($expected, $markedUsingLinesOfMultiLineBranches->lineCoverage());
+    }
+
+    public function testMarkExecutableLineByBranchDoesNotChangeCoverageDataWhenNoLinesShareABranch(): void
+    {
+        $lineDataFromDriver = [
+            '/some/path/SomeClass.php' => [
+                8 => 1,
+                9 => -1,
+            ],
+        ];
+
+        $dataObject = RawCodeCoverageData::fromLineCoverage($lineDataFromDriver);
+
+        $dataObject->markExecutableLineByBranch('/some/path/SomeClass.php', []);
+
+        $this->assertSame($lineDataFromDriver, $dataObject->lineCoverage());
+    }
+
     public function testKeepFunctionCoverageDataOnlyForLines(): void
     {
         $filename = '/some/path/SomeClass.php';

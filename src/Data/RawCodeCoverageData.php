@@ -291,12 +291,15 @@ final class RawCodeCoverageData
     }
 
     /**
+     * A line that is the only line of its branch is not changed: it may be
+     * left out of the map (see AnalysisResult::executableLinesOfMultiLineBranches()).
+     *
      * @param non-empty-string         $filename
      * @param array<positive-int, int> $linesToBranchMap
      */
     public function markExecutableLineByBranch(string $filename, array $linesToBranchMap): void
     {
-        if (!isset($this->lineCoverage[$filename])) {
+        if ($linesToBranchMap === [] || !isset($this->lineCoverage[$filename])) {
             return;
         }
 

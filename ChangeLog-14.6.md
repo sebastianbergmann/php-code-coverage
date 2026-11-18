@@ -18,5 +18,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * When Xdebug or PCOV is used on PHP 8.6 and later, and OPcache is enabled without optimizations and with `opcache.file_update_protection=0`, executable lines are determined from bytecode. Lines that have no opcodes Xdebug or PCOV report, such as the continuation lines of a multi-line function call, are no longer counted as executable
+* When the code coverage data of a test is processed, the status of a line is only propagated to the other lines of its branch for the lines that share their branch with another line, instead of for every executable line of each file the test executed code in. This makes processing the code coverage data of a test faster
 
 [14.6.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5...main

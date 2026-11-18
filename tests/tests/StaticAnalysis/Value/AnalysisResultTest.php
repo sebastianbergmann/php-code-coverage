@@ -114,6 +114,23 @@ final class AnalysisResultTest extends TestCase
         $this->assertSame($executableLines, $this->analysisResult(executableLines: $executableLines)->executableLines());
     }
 
+    public function testHasExecutableLinesOfMultiLineBranches(): void
+    {
+        $executableLines = [5 => 5, 6 => 6, 7 => 6, 9 => 9, 10 => 6, 12 => 12, 13 => 12];
+
+        $this->assertSame(
+            [6 => 6, 7 => 6, 10 => 6, 12 => 12, 13 => 12],
+            $this->analysisResult(executableLines: $executableLines)->executableLinesOfMultiLineBranches(),
+        );
+    }
+
+    public function testHasNoExecutableLinesOfMultiLineBranchesWhenEachExecutableLineIsTheOnlyLineOfItsBranch(): void
+    {
+        $executableLines = [5 => 5, 6 => 6];
+
+        $this->assertSame([], $this->analysisResult(executableLines: $executableLines)->executableLinesOfMultiLineBranches());
+    }
+
     public function testHasBranchOperatorLines(): void
     {
         $branchOperatorLines = [7 => true];

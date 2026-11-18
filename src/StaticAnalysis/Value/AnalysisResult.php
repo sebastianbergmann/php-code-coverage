@@ -45,6 +45,11 @@ final readonly class AnalysisResult
     private array $executableLines;
 
     /**
+     * @var LinesType
+     */
+    private array $executableLinesOfMultiLineBranches;
+
+    /**
      * @var array<positive-int, true>
      */
     private array $branchOperatorLines;
@@ -87,6 +92,27 @@ final readonly class AnalysisResult
         $this->deadLines           = $deadLines;
         $this->ignoredLines        = $ignoredLines;
         $this->parseError          = $parseError;
+
+        $branches          = [];
+        $multiLineBranches = [];
+
+        foreach ($executableLines as $branch) {
+            if (isset($branches[$branch])) {
+                $multiLineBranches[$branch] = true;
+            }
+
+            $branches[$branch] = true;
+        }
+
+        $executableLinesOfMultiLineBranches = [];
+
+        foreach ($executableLines as $line => $branch) {
+            if (isset($multiLineBranches[$branch])) {
+                $executableLinesOfMultiLineBranches[$line] = $branch;
+            }
+        }
+
+        $this->executableLinesOfMultiLineBranches = $executableLinesOfMultiLineBranches;
     }
 
     /**
@@ -132,6 +158,24 @@ final readonly class AnalysisResult
     public function executableLines(): array
     {
         return $this->executableLines;
+    }
+
+    /**
+     * The executable lines that share their branch with at least one other
+     * line.
+     *
+     * The status of a line that is the only line of its branch neither depends
+     * on nor affects the status of another line, so only these lines have to
+     * be considered when the status of a line is propagated to the other lines
+     * of its branch (see RawCodeCoverageData::markExecutableLineByBranch()).
+     * They are determined once, when a file is analysed, rather than for each
+     * test that executes code in that file.
+     *
+     * @return LinesType
+     */
+    public function executableLinesOfMultiLineBranches(): array
+    {
+        return $this->executableLinesOfMultiLineBranches;
     }
 
     /**

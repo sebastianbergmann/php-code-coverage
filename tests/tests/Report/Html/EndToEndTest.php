@@ -102,7 +102,7 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($source);
 
-        $this->assertStringContainsString('<table class="source with-hit-counts">', $source);
+        $this->assertStringContainsString('<table class="source with-hit-counts" data-view="line">', $source);
 
         // line 8 was executed twice by testBalanceIsInitiallyZero and three times by testDepositWithdrawMoney
         $this->assertStringContainsString('<td class="hit-count">5</td>', $source);
@@ -122,7 +122,7 @@ final class EndToEndTest extends TestCase
         $classView = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
 
         $this->assertNotFalse($classView);
-        $this->assertStringContainsString('<table class="source with-hit-counts">', $classView);
+        $this->assertStringContainsString('<table class="source with-hit-counts" data-view="line">', $classView);
         $this->assertStringContainsString('<td class="hit-count">5</td>', $classView);
         $this->assertStringContainsString('<td class="hit-count">3</td>', $classView);
     }
@@ -139,7 +139,7 @@ final class EndToEndTest extends TestCase
         $this->assertNotFalse($classView);
 
         foreach ([$source, $classView] as $html) {
-            $this->assertStringContainsString('<table class="source with-hit-counts">', $html);
+            $this->assertStringContainsString('<table class="source with-hit-counts" data-view="line">', $html);
 
             // line 8 is covered by testBalanceIsInitiallyZero and testDepositWithdrawMoney
             $this->assertStringContainsString('data-popover-title="2 tests cover line 8"', $html);
@@ -408,6 +408,10 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($branch);
         $this->assertNotFalse($path);
+
+        // the views are told apart by the navigation between code that is not covered
+        $this->assertStringContainsString('<table class="source with-hit-counts" data-view="branch">', $branch);
+        $this->assertStringContainsString('<table class="source" data-view="path">', $path);
 
         // the decision on line 13 has one outcome that was taken and one that was not
         $this->assertStringContainsString(

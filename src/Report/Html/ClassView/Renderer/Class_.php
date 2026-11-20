@@ -381,7 +381,7 @@ final class Class_ extends Renderer
             $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix, $coverageCount);
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts', 'view' => 'line']);
 
         return $linesTemplate->render();
     }

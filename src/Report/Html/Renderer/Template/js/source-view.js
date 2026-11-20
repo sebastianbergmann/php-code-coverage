@@ -1,7 +1,7 @@
 /*
  * Interactions of the source code views: popovers that list the tests that
- * cover a line, highlighting of a path in a control flow graph, and the
- * "back to the top" button.
+ * cover a line, highlighting of a path in a control flow graph, navigation
+ * between code that is not covered, and the "back to the top" button.
  */
 'use strict';
 
@@ -162,6 +162,168 @@
             }
         });
     });
+
+    /* ----------------------------------- navigation between code that is not covered */
+
+    /*
+     * A line that is not covered is where to go. In the views for branch and
+     * path coverage, so is a line that is only partially covered and a line
+     * that ends with a decision of which an outcome was not taken. In the view
+     * for line coverage, "warning" marks code that cannot be covered.
+     */
+    function isNotCovered(row, view) {
+        if (row.classList.contains('danger')) {
+            return true;
+        }
+
+        if (view !== 'branch' && view !== 'path') {
+            return false;
+        }
+
+        return row.classList.contains('warning') || row.querySelector('.branch-miss') !== null;
+    }
+
+    /*
+     * Consecutive lines that are not covered are one stop. Lines that are not
+     * executable, blank lines and comments for instance, do not separate them.
+     */
+    var stops = [];
+    var partial = false;
+
+    document.querySelectorAll('table.source').forEach(function (table) {
+        var view = table.dataset.view;
+        var inStop = false;
+
+        if (view === 'branch' || view === 'path') {
+            partial = true;
+        }
+
+        Array.prototype.forEach.call(table.rows, function (row) {
+            if (isNotCovered(row, view)) {
+                if (!inStop) {
+                    stops.push(row);
+                }
+
+                inStop = true;
+            } else if (row.className !== '') {
+                inStop = false;
+            }
+        });
+    });
+
+    if (stops.length > 0) {
+        var what = partial ? 'code that is not fully covered' : 'code that is not covered';
+        var arrow = '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8 3.5 14 11H2z"/></svg>';
+        var current = -1;
+
+        var navigation = document.createElement('nav');
+        var counter = document.createElement('span');
+
+        var button = function (className, label, key) {
+            var element = document.createElement('button');
+
+            element.type = 'button';
+            element.className = className;
+            element.title = label + ' (' + key + ')';
+            element.innerHTML = arrow + '<span class="visually-hidden">' + label + '</span>';
+
+            return element;
+        };
+
+        var previous = button('uncovered-nav-previous', 'Previous ' + what, 'p');
+        var next = button('uncovered-nav-next', 'Next ' + what, 'n');
+
+        navigation.className = 'uncovered-nav';
+        navigation.setAttribute('aria-label', 'Navigation between ' + what);
+
+        counter.className = 'uncovered-nav-counter';
+        counter.setAttribute('aria-live', 'polite');
+        counter.textContent = '\u2013 / ' + stops.length;
+
+        navigation.append(previous, counter, next);
+        document.body.appendChild(navigation);
+
+        var isVisible = function (row) {
+            var box = row.getBoundingClientRect();
+
+            return box.bottom > 0 && box.top < window.innerHeight;
+        };
+
+        /*
+         * Without a current stop, or when the current stop was scrolled out
+         * of view, where to go depends on what is shown: forward to the first
+         * stop that is not above what is shown, backward to the last stop
+         * that is above it.
+         */
+        var stopFromScrollPosition = function (direction) {
+            var index;
+
+            if (direction > 0) {
+                for (index = 0; index < stops.length; index++) {
+                    if (stops[index].getBoundingClientRect().top >= 0) {
+                        return index;
+                    }
+                }
+
+                return 0;
+            }
+
+            for (index = stops.length - 1; index >= 0; index--) {
+                if (stops[index].getBoundingClientRect().top < 0) {
+                    return index;
+                }
+            }
+
+            return stops.length - 1;
+        };
+
+        var go = function (direction) {
+            var from = current;
+
+            if (from !== -1) {
+                stops[from].classList.remove('nav-current');
+            }
+
+            if (from === -1 || !isVisible(stops[from])) {
+                current = stopFromScrollPosition(direction);
+
+                if (current === from) {
+                    current = (from + direction + stops.length) % stops.length;
+                }
+            } else {
+                current = (from + direction + stops.length) % stops.length;
+            }
+
+            stops[current].classList.add('nav-current');
+            stops[current].scrollIntoView({block: 'center'});
+
+            counter.textContent = (current + 1) + ' / ' + stops.length;
+        };
+
+        previous.addEventListener('click', function () {
+            go(-1);
+        });
+
+        next.addEventListener('click', function () {
+            go(1);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.defaultPrevented || event.ctrlKey || event.altKey || event.metaKey) {
+                return;
+            }
+
+            if (event.target instanceof Element && event.target.closest('textarea, select, [contenteditable], input:not([type="checkbox"]):not([type="radio"])') !== null) {
+                return;
+            }
+
+            if (event.key === 'n') {
+                go(1);
+            } else if (event.key === 'p' || event.key === 'N') {
+                go(-1);
+            }
+        });
+    }
 
     /* --------------------------------------------------------- back to the top */
 

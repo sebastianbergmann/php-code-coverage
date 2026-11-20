@@ -1,4 +1,4 @@
-   <table class="source{{gutter}}">
+   <table class="source{{gutter}}" data-view="{{view}}">
     <tbody>
 {{lines}}    </tbody>
    </table>

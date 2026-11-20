@@ -561,7 +561,7 @@ final class File extends Renderer
             $i++;
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts', 'view' => 'line']);
 
         return $linesTemplate->render();
     }
@@ -706,7 +706,7 @@ final class File extends Renderer
             $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover, '', $coverageCount);
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts', 'view' => 'branch']);
 
         return $linesTemplate->render();
     }
@@ -832,7 +832,7 @@ final class File extends Renderer
             $lines .= $this->renderLine($singleLineTemplate, $i, $line, $trClass, $popover);
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => '']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => '', 'view' => 'path']);
 
         return $linesTemplate->render();
     }

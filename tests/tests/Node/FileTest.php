@@ -415,6 +415,55 @@ final class FileTest extends TestCase
         $this->assertSame(0, $file->numberOfTestedFunctionsByTestSize(TestSizes::SMALL));
     }
 
+    public function testExecutedLinesAreNotCountedByTestSizeWhenNoTestDataIsAvailable(): void
+    {
+        $file = new File(
+            'test.php',
+            new Directory('root'),
+            'abc123',
+            [1 => [0 => 1], 2 => []],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(2, 0, 2),
+        );
+
+        $this->assertSame(2, $file->numberOfExecutableLines());
+        $this->assertSame(1, $file->numberOfExecutedLines());
+
+        foreach (TestSizes::COMBINATIONS as $combination) {
+            $this->assertSame(0, $file->numberOfExecutedLinesByTestSize($combination));
+        }
+    }
+
+    public function testLinesExecutedOnlyByTestsOfUnknownSizeAreNotCountedByTestSize(): void
+    {
+        $file = new File(
+            'test.php',
+            new Directory('root'),
+            'abc123',
+            [1 => [0 => 1], 2 => [1 => 1]],
+            [],
+            [
+                0 => ['name' => 'tUnknown', 'size' => 'unknown', 'status' => 'passed', 'time' => 0.0],
+                1 => ['name' => 'tSmall', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+            ],
+            [],
+            [],
+            [],
+            new LinesOfCode(2, 0, 2),
+        );
+
+        $this->assertSame(2, $file->numberOfExecutedLines());
+        $this->assertSame(1, $file->numberOfExecutedLinesByTestSize(TestSizes::SMALL));
+        $this->assertSame(0, $file->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM));
+        $this->assertSame(0, $file->numberOfExecutedLinesByTestSize(TestSizes::LARGE));
+        $this->assertSame(0, $file->numberOfExecutedLinesByTestSize(TestSizes::MEDIUM | TestSizes::LARGE));
+        $this->assertSame(1, $file->numberOfExecutedLinesByTestSize(TestSizes::ALL));
+    }
+
     public function testHasBranchCoverageDataDefaultsToFalse(): void
     {
         $file = $this->createFileNode();

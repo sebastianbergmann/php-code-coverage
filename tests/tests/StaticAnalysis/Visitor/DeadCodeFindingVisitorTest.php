@@ -19,7 +19,9 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -173,6 +175,35 @@ final class DeadCodeFindingVisitorTest extends TestCase
         }
     }
 
+    public function testIdentifiesDeadCodeAfterStatementsThatAlwaysTerminateTheControlFlow(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code_after_statements_that_may_terminate.php');
+
+        $this->assertSame(
+            [
+                7,  // else arm of a multi-line short ternary with a literal true condition
+                16, // after a do-while (true) that contains neither a break nor a goto
+                48, // after an if whose if, elseif, and else bodies all terminate
+            ],
+            array_keys($deadLines),
+        );
+    }
+
+    public function testCodeAfterStatementsThatCanCompleteNormallyIsNotDead(): void
+    {
+        $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_with_dead_code_after_statements_that_may_terminate.php');
+
+        foreach ([
+            27, // after a do-while (true) that contains a break
+            35, // after a switch without cases
+            59, // after an if whose if body does not terminate
+            72, // after an if whose elseif body does not terminate
+            83, // after an if whose else body does not terminate
+        ] as $liveLine) {
+            $this->assertArrayNotHasKey($liveLine, $deadLines, "Line {$liveLine} should be live");
+        }
+    }
+
     public function testReportsNoDeadLinesForSourceWithoutAny(): void
     {
         $deadLines = $this->deadLines(TEST_FILES_PATH . 'source_without_dead_code.php');
@@ -201,6 +232,24 @@ final class DeadCodeFindingVisitorTest extends TestCase
         $visitor->enterNode($ifTrue);
 
         $this->assertSame([], $visitor->deadLines());
+    }
+
+    public function testIgnoresLinesBeforeTheFirstLineOfNodeWithIncompleteLineInformation(): void
+    {
+        // The return statement has no line information and the statement
+        // that follows it only has the line it ends on: the lines of the
+        // latter are marked from the line after the former's last line, which
+        // is line 0 here. That line does not exist and must not be recorded.
+        $return   = new Return_;
+        $deadStmt = new Expression(
+            new Assign(new Variable('x'), new Int_(1)),
+            ['endLine' => 2],
+        );
+
+        $visitor = new DeadCodeFindingVisitor;
+        $visitor->enterNode(new Function_('f', ['stmts' => [$return, $deadStmt]]));
+
+        $this->assertSame([1 => true, 2 => true], $visitor->deadLines());
     }
 
     /**

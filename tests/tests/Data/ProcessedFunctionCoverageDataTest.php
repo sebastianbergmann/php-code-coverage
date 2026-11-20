@@ -54,14 +54,28 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
     public function testRecordBranchHitDelegatesToBranch(): void
     {
         $data = new ProcessedFunctionCoverageData(
-            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], [])],
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [], [0 => 1, 1 => 2], [0 => 0, 1 => 0])],
             [0 => new ProcessedPathCoverageData([0 => 0], [])],
         );
 
-        $data->recordBranchHit(0, 0, 2);
+        $data->recordBranchHit(0, 0, 2, [0 => 0, 1 => 1]);
 
         $this->assertArrayHasKey(0, $data->branches);
         $this->assertSame([0 => 2], $data->branches[0]->hit);
+        $this->assertSame([0 => 0, 1 => 1], $data->branches[0]->out_hit);
+    }
+
+    public function testRecordBranchHitIgnoresBranchThatDoesNotExist(): void
+    {
+        $data = new ProcessedFunctionCoverageData(
+            [0 => new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], [])],
+            [],
+        );
+
+        $data->recordBranchHit(1, 0, 2, []);
+
+        $this->assertArrayHasKey(0, $data->branches);
+        $this->assertSame([], $data->branches[0]->hit);
     }
 
     public function testRecordPathHitDelegatesToPath(): void

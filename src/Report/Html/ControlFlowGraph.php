@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const PHP_OS_FAMILY;
 use function assert;
+use function count;
 use function fclose;
 use function fflush;
 use function fread;
@@ -26,6 +27,7 @@ use function strlen;
 use function substr;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -34,11 +36,6 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
  */
 final class ControlFlowGraph
 {
-    /**
-     * Branch identifier used by Xdebug for the exit of a function (XDEBUG_BRANCH_EXIT in xdebug_branch_info.h).
-     */
-    public const int XDEBUG_EXIT_BRANCH = 2147483645;
-
     private const int DOT_TIMEOUT_SECONDS = 30;
     private ?bool $dotAvailable           = null;
 
@@ -104,7 +101,7 @@ final class ControlFlowGraph
             }
 
             foreach ($branch->out as $destBranchId) {
-                if ($destBranchId === self::XDEBUG_EXIT_BRANCH) {
+                if ($destBranchId === Driver::BRANCH_EXIT) {
                     $hasExit = true;
                 }
             }
@@ -133,13 +130,19 @@ final class ControlFlowGraph
 
         foreach ($methodData->branches as $branchId => $branch) {
             foreach ($branch->out as $edgeIndex => $destBranchId) {
-                $destNode = $destBranchId === self::XDEBUG_EXIT_BRANCH
+                $destNode = $destBranchId === Driver::BRANCH_EXIT
                     ? 'exit'
                     : sprintf('b%d', $destBranchId);
 
                 $edgeHit = isset($branch->out_hit[$edgeIndex]) && $branch->out_hit[$edgeIndex] > 0;
 
-                $edgeKey = $destBranchId === self::XDEBUG_EXIT_BRANCH
+                // The edge to the exit of the function is not reported as taken. When it
+                // is the only edge out of a branch then it was taken when the branch was hit
+                if ($destBranchId === Driver::BRANCH_EXIT && count($branch->out) === 1) {
+                    $edgeHit = $branch->hit !== [];
+                }
+
+                $edgeKey = $destBranchId === Driver::BRANCH_EXIT
                     ? $branchId . '-exit'
                     : $branchId . '-' . $destBranchId;
 
@@ -201,7 +204,7 @@ final class ControlFlowGraph
 
             if ($lastBranchId !== null && isset($methodData->branches[$lastBranchId])) {
                 foreach ($methodData->branches[$lastBranchId]->out as $dest) {
-                    if ($dest === self::XDEBUG_EXIT_BRANCH) {
+                    if ($dest === Driver::BRANCH_EXIT) {
                         $edgeKey = $lastBranchId . '-exit';
 
                         if (!isset($edgePathClasses[$edgeKey])) {

@@ -115,6 +115,71 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $this->assertArrayNotHasKey(9, $fileCoverage);
     }
 
+    public function testEdgesTakenByDifferentTestsAreAccumulated(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        foreach (['testOne' => [1, 0], 'testTwo' => [0, 1]] as $testId => $outHit) {
+            $data = $this->executionOfFunctionWithDecision($outHit);
+
+            $coverage->initializeUnseenData($data);
+            $coverage->markCodeAsExecutedByTestCase($testId, $data);
+        }
+
+        $this->assertSame([0 => 1, 1 => 1], $this->edgesTakenOutOfDecision($coverage));
+    }
+
+    public function testEdgesTakenAreRecordedForFunctionThatWasFirstSeenWithoutBeingExecuted(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $notExecuted = $this->functionWithDecisionThatWasNotExecuted();
+
+        $coverage->initializeUnseenData($notExecuted);
+        $coverage->markCodeAsExecutedByTestCase('testOne', $notExecuted);
+
+        $executed = $this->executionOfFunctionWithDecision([1, 0]);
+
+        $coverage->initializeUnseenData($executed);
+        $coverage->markCodeAsExecutedByTestCase('testTwo', $executed);
+
+        $this->assertSame([0 => 1, 1 => 0], $this->edgesTakenOutOfDecision($coverage));
+    }
+
+    public function testEdgesTakenInRunThatIsNotRecordedAreNotRecorded(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($this->executionOfFunctionWithDecision([1, 0]));
+
+        $executed = $this->executionOfFunctionWithDecision([0, 1]);
+
+        $coverage->initializeUnseenData($executed);
+        $coverage->markCodeAsExecutedByTestCase('testTwo', $executed);
+
+        $this->assertSame([0 => 0, 1 => 1], $this->edgesTakenOutOfDecision($coverage));
+    }
+
+    public function testMergeAccumulatesEdgesTakenInBothOperands(): void
+    {
+        $first  = new ProcessedCodeCoverageData;
+        $second = new ProcessedCodeCoverageData;
+
+        $data = $this->executionOfFunctionWithDecision([1, 0]);
+
+        $first->initializeUnseenData($data);
+        $first->markCodeAsExecutedByTestCase('testOne', $data);
+
+        $data = $this->executionOfFunctionWithDecision([0, 1]);
+
+        $second->initializeUnseenData($data);
+        $second->markCodeAsExecutedByTestCase('testTwo', $data);
+
+        $first->merge($second);
+
+        $this->assertSame([0 => 1, 1 => 1], $this->edgesTakenOutOfDecision($first));
+    }
+
     public function testSetTestIdsWithSparseIndexTableDoesNotCauseIndexCollisions(): void
     {
         $coverage = new ProcessedCodeCoverageData;
@@ -485,6 +550,73 @@ final class ProcessedCodeCoverageDataTest extends TestCase
             ['/some/path/SomeClass.php' => [9 => [], 10 => ['test' => 1], 11 => []]],
             $this->lineCoverageKeyedByTestId($coverage),
         );
+    }
+
+    /**
+     * A function with a decision (branch 0) that leads to branch 1 (edge 0) or to branch 2 (edge 1).
+     *
+     * @param array{0: non-negative-int, 1: non-negative-int} $outHit the edges out of the decision that were taken
+     */
+    private function executionOfFunctionWithDecision(array $outHit): RawCodeCoverageData
+    {
+        return RawCodeCoverageData::fromXdebugWithPathCoverage(
+            [
+                '/some/path/source.php' => [
+                    'lines'     => [3 => 1, 4 => $outHit[0] > 0 ? 1 : -1, 6 => $outHit[1] > 0 ? 1 : -1],
+                    'functions' => [
+                        'f' => [
+                            'branches' => [
+                                0 => ['op_start' => 0, 'op_end' => 2, 'line_start' => 3, 'line_end' => 3, 'hit' => 1, 'out' => [0 => 1, 1 => 2], 'out_hit' => [0 => $outHit[0], 1 => $outHit[1]]],
+                                1 => ['op_start' => 3, 'op_end' => 4, 'line_start' => 4, 'line_end' => 4, 'hit' => $outHit[0], 'out' => [], 'out_hit' => []],
+                                2 => ['op_start' => 5, 'op_end' => 6, 'line_start' => 6, 'line_end' => 6, 'hit' => $outHit[1], 'out' => [], 'out_hit' => []],
+                            ],
+                            'paths' => [
+                                0 => ['path' => [0 => 0, 1 => 1], 'hit' => $outHit[0]],
+                                1 => ['path' => [0 => 0, 1 => 2], 'hit' => $outHit[1]],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        );
+    }
+
+    private function functionWithDecisionThatWasNotExecuted(): RawCodeCoverageData
+    {
+        return RawCodeCoverageData::fromXdebugWithPathCoverage(
+            [
+                '/some/path/source.php' => [
+                    'lines'     => [3 => -1, 4 => -1, 6 => -1],
+                    'functions' => [
+                        'f' => [
+                            'branches' => [
+                                0 => ['op_start' => 0, 'op_end' => 2, 'line_start' => 3, 'line_end' => 3, 'hit' => 0, 'out' => [0 => 1, 1 => 2], 'out_hit' => [0 => 0, 1 => 0]],
+                                1 => ['op_start' => 3, 'op_end' => 4, 'line_start' => 4, 'line_end' => 4, 'hit' => 0, 'out' => [], 'out_hit' => []],
+                                2 => ['op_start' => 5, 'op_end' => 6, 'line_start' => 6, 'line_end' => 6, 'hit' => 0, 'out' => [], 'out_hit' => []],
+                            ],
+                            'paths' => [
+                                0 => ['path' => [0 => 0, 1 => 1], 'hit' => 0],
+                                1 => ['path' => [0 => 0, 1 => 2], 'hit' => 0],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        );
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function edgesTakenOutOfDecision(ProcessedCodeCoverageData $coverage): array
+    {
+        $functionCoverage = $coverage->functionCoverage();
+
+        $this->assertArrayHasKey('/some/path/source.php', $functionCoverage);
+        $this->assertArrayHasKey('f', $functionCoverage['/some/path/source.php']);
+        $this->assertArrayHasKey(0, $functionCoverage['/some/path/source.php']['f']->branches);
+
+        return $functionCoverage['/some/path/source.php']['f']->branches[0]->out_hit;
     }
 
     /**

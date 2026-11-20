@@ -32,14 +32,31 @@ final class ProcessedBranchCoverageData
     /** @var array<int, int> */
     public readonly array $out;
 
-    /** @var array<int, int> */
-    public readonly array $out_hit;
+    /**
+     * Keyed like $out: 0 = the edge was never taken, > 0 = the edge was taken by a test whose
+     * coverage was recorded. This is a flag, not a traversal count.
+     *
+     * @var array<int, non-negative-int>
+     */
+    public array $out_hit;
 
     /**
+     * The structure of the branch is taken from the raw data, what was executed is not:
+     * neither the hits of the branch nor the edges taken out of it are, because the raw data
+     * may be from a run whose coverage is not recorded. Both are recorded by recordHit().
+     *
      * @param BranchCoverageType $xdebugCoverageData
      */
     public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
+        $outHit = $xdebugCoverageData['out_hit'];
+
+        foreach ($outHit as $edge => $taken) {
+            if ($taken !== 0) {
+                $outHit[$edge] = 0;
+            }
+        }
+
         return new self(
             $xdebugCoverageData['op_start'],
             $xdebugCoverageData['op_end'],
@@ -47,14 +64,14 @@ final class ProcessedBranchCoverageData
             $xdebugCoverageData['line_end'],
             [],
             $xdebugCoverageData['out'],
-            $xdebugCoverageData['out_hit'],
+            $outHit,
         );
     }
 
     /**
      * @param array<TestIndexType, positive-int> $hit
      * @param array<int, int>                    $out
-     * @param array<int, int>                    $out_hit
+     * @param array<int, non-negative-int>       $out_hit
      */
     public function __construct(
         int $op_start,
@@ -78,6 +95,9 @@ final class ProcessedBranchCoverageData
      * Hit counts for a test case that occurs in both operands are combined with max(), not summed,
      * because the same test case id on both sides means the same test execution was observed twice.
      *
+     * An edge is taken when it is taken on either side. A branch without hits has no edges
+     * that were taken, which is why such an operand does not contribute anything.
+     *
      * @see ProcessedCodeCoverageData::merge()
      */
     #[NoDiscard]
@@ -87,6 +107,20 @@ final class ProcessedBranchCoverageData
             return $this;
         }
 
+        $outHit = $this->out_hit;
+
+        foreach ($data->out_hit as $edge => $taken) {
+            if (!isset($outHit[$edge]) || $taken <= $outHit[$edge]) {
+                continue;
+            }
+
+            if (($this->out[$edge] ?? null) !== ($data->out[$edge] ?? null)) {
+                continue;
+            }
+
+            $outHit[$edge] = $taken;
+        }
+
         return new self(
             $this->op_start,
             $this->op_end,
@@ -94,7 +128,7 @@ final class ProcessedBranchCoverageData
             $this->line_end,
             HitMap::merge($this->hit, $data->hit),
             $this->out,
-            $this->out_hit,
+            $outHit,
         );
     }
 
@@ -120,11 +154,18 @@ final class ProcessedBranchCoverageData
     }
 
     /**
-     * @param TestIndexType $testIndex
-     * @param positive-int  $count
+     * @param TestIndexType                $testIndex
+     * @param positive-int                 $count
+     * @param array<int, non-negative-int> $outHit    the edges out of the branch that the test took, keyed like $out
      */
-    public function recordHit(int $testIndex, int $count): void
+    public function recordHit(int $testIndex, int $count, array $outHit): void
     {
         $this->hit[$testIndex] = ($this->hit[$testIndex] ?? 0) + $count;
+
+        foreach ($outHit as $edge => $taken) {
+            if (isset($this->out_hit[$edge]) && $taken > $this->out_hit[$edge]) {
+                $this->out_hit[$edge] = $taken;
+            }
+        }
     }
 }

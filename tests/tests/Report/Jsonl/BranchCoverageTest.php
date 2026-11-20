@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 #[CoversClass(BranchCoverage::class)]
 #[Small]
@@ -92,6 +93,31 @@ final class BranchCoverageTest extends TestCase
         $this->assertSame([], $branchCoverage->uncoveredLines);
     }
 
+    /**
+     * The edge to the exit of a function is not reported as taken, not even
+     * when it was taken: "catch (E $e) { a(); }" either enters the catch block
+     * or leaves the function.
+     */
+    public function testDoesNotReportTheEdgeToTheExitOfTheFunctionAsNeverTaken(): void
+    {
+        $branchCoverage = BranchCoverage::fromBranches([
+            new ProcessedBranchCoverageData(0, 0, 34, 34, [0 => 1], [0 => 1, 1 => Driver::BRANCH_EXIT], [0 => 1, 1 => 0]),
+            new ProcessedBranchCoverageData(0, 0, 35, 35, [0 => 1], [0 => Driver::BRANCH_EXIT], [0 => 0]),
+        ]);
+
+        $this->assertSame([], $branchCoverage->uncoveredLines);
+    }
+
+    public function testReportsANeverTakenEdgeOutOfABlockThatCanAlsoLeaveTheFunction(): void
+    {
+        $branchCoverage = BranchCoverage::fromBranches([
+            new ProcessedBranchCoverageData(0, 0, 34, 34, [0 => 1], [0 => 1, 1 => Driver::BRANCH_EXIT], [0 => 0, 1 => 0]),
+            new ProcessedBranchCoverageData(0, 0, 35, 35, [], [0 => Driver::BRANCH_EXIT], [0 => 0]),
+        ]);
+
+        $this->assertSame([34, 35], $branchCoverage->uncoveredLines);
+    }
+
     public function testReportsNothingWhenEveryBlockAndEveryEdgeWasTaken(): void
     {
         $branchCoverage = BranchCoverage::fromBranches([
@@ -105,7 +131,7 @@ final class BranchCoverageTest extends TestCase
     }
 
     /**
-     * @param array<int, int> $outHit edge index to the number of times the edge was taken
+     * @param array<int, non-negative-int> $outHit edge index to whether the edge was taken
      */
     private function branch(int $lineStart, int $lineEnd, bool $hit, array $outHit): ProcessedBranchCoverageData
     {

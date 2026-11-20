@@ -112,6 +112,25 @@ final class PathReducerTest extends TestCase
         $this->assertSame(['lib' . DIRECTORY_SEPARATOR . 'b.php', 'src' . DIRECTORY_SEPARATOR . 'a.php'], $coveredFiles);
     }
 
+    public function testReduceKeepsFileWhosePathIsTheCommonPathOfAllFiles(): void
+    {
+        $commonPath = DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'to';
+
+        $data = $this->dataWithFiles([
+            $commonPath,
+            $commonPath . DIRECTORY_SEPARATOR . 'file.php',
+        ]);
+
+        $result = (new PathReducer)->reduce($data);
+
+        $this->assertSame($commonPath, $result);
+
+        $coveredFiles = $data->coveredFiles();
+        sort($coveredFiles);
+
+        $this->assertSame([$commonPath, 'file.php'], $coveredFiles);
+    }
+
     /**
      * @param list<non-empty-string> $files
      */

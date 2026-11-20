@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 
+use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function is_file;
 use function sys_get_temp_dir;
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
@@ -142,6 +144,19 @@ final class Namespace_Test extends TestCase
         $renderer->render($rootNs, $this->outputFile());
 
         $this->assertFileExists($this->outputFile);
+    }
+
+    public function testCannotRenderToFileThatCannotBeWritten(): void
+    {
+        $renderer = $this->createRenderer(false);
+
+        $rootNs = new NamespaceNode('(Global)', '');
+        $rootNs->promoteToRoot();
+        $rootNs->addClass($this->createClassNode($rootNs, 'Root'));
+
+        $this->expectException(FileCouldNotBeWrittenException::class);
+
+        $renderer->render($rootNs, $this->outputFile() . DIRECTORY_SEPARATOR . 'index.html');
     }
 
     private function createRenderer(bool $hasBranchCoverage): Namespace_

@@ -63,6 +63,13 @@
     });
 
     document.addEventListener('click', function (event) {
+        // A link in the popover leads to a line of the source code
+        if (event.target.closest('.popover a') !== null) {
+            popover.hidePopover();
+
+            return;
+        }
+
         var trigger = event.target.closest('[data-popover-title]');
 
         if (trigger === null) {

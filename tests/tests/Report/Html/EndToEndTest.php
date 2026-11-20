@@ -44,6 +44,7 @@ use RegexIterator;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\FakeDriver;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\Node\Builder;
@@ -154,6 +155,95 @@ final class EndToEndTest extends TestCase
 
             $this->assertStringContainsString('<li class="note">Number next to a line: tests that cover the line</li>', $html);
         }
+    }
+
+    public function testOutcomesOfEveryDecisionThatEndsOnALineAreShown(): void
+    {
+        $branch = $this->branchViewOfFunctionWithUnusualControlFlow();
+
+        // two branches end with a decision on line 13: the edge of the second
+        // one that leads to a branch that is not part of the coverage data is
+        // left out, its two edges that lead to the same branch are one edge
+        $this->assertStringContainsString(
+            '<a id="13" href="#13">13</a></td><td class="hit-count">' .
+            '<span class="branch-markers">' .
+            '<span class="branch-hit" aria-hidden="true" title="#2 (L13): taken">&bull;</span>' .
+            '<span class="branch-miss" aria-hidden="true" title="#3 (L14): not taken">&#9702;</span>' .
+            '</span>' .
+            '<span class="branch-markers">' .
+            '<span class="branch-miss" aria-hidden="true" title="#3 (L14): not taken">&#9702;</span>' .
+            '<span class="branch-hit" aria-hidden="true" title="#4 (L16): taken">&bull;</span>' .
+            '</span>' .
+            '<span class="visually-hidden">2 of 4 outcomes taken</span></td>',
+            $branch,
+        );
+
+        $this->assertStringContainsString(
+            htmlspecialchars('<p class="popover-heading">Outcomes of branch #1</p>', ENT_COMPAT),
+            $branch,
+        );
+
+        $this->assertStringContainsString(
+            htmlspecialchars('<p class="popover-heading">Outcomes of branch #2</p>', ENT_COMPAT),
+            $branch,
+        );
+
+        $this->assertStringContainsString(
+            '<td>Covered</td><td><span class="branch-miss" aria-hidden="true">&#9702;</span> <a href="#14">#3</a><span class="visually-hidden"> (not taken)</span>, ' .
+            '<span class="branch-hit" aria-hidden="true">&bull;</span> <a href="#16">#4</a><span class="visually-hidden"> (taken)</span></td>',
+            $branch,
+        );
+    }
+
+    public function testEdgeToExitOfFunctionIsNotShownAsOutcomeThatWasNotTaken(): void
+    {
+        $branch = $this->branchViewOfFunctionWithUnusualControlFlow();
+
+        // one of the two edges out of the branch that ends on line 16 leads to
+        // the exit of the function: whether it was taken is not reported
+        $this->assertStringContainsString(
+            '<a id="16" href="#16">16</a></td><td class="hit-count">' .
+            '<span class="branch-markers">' .
+            '<span class="branch-hit" aria-hidden="true" title="#5 (L18): taken">&bull;</span>' .
+            '</span>' .
+            '<span class="visually-hidden">1 of 1 outcomes taken</span></td>',
+            $branch,
+        );
+
+        $this->assertStringContainsString(
+            htmlspecialchars('<li><span class="branch-unknown" aria-hidden="true">&ndash;</span> exit of the function: not reported</li>', ENT_COMPAT),
+            $branch,
+        );
+
+        $this->assertStringContainsString(
+            '<td><span class="branch-hit" aria-hidden="true">&bull;</span> <a href="#18">#5</a><span class="visually-hidden"> (taken)</span>, ' .
+            '<span class="branch-unknown" aria-hidden="true">&ndash;</span> exit</td>',
+            $branch,
+        );
+    }
+
+    public function testOutcomesOfDecisionWithManyOutcomesAreCounted(): void
+    {
+        $branch = $this->branchViewOfFunctionWithUnusualControlFlow();
+
+        // nine edges lead out of the branch that ends on line 18, three of them were taken
+        $this->assertStringContainsString(
+            '<a id="18" href="#18">18</a></td><td class="hit-count">' .
+            '<span class="branch-markers branch-miss" aria-hidden="true">3/9</span>' .
+            '<span class="visually-hidden">3 of 9 outcomes taken</span></td>',
+            $branch,
+        );
+
+        // every outcome is listed in the popover, the first one leads back to the first branch
+        $this->assertStringContainsString(
+            htmlspecialchars('<li><span class="branch-hit" aria-hidden="true">&bull;</span> back to <a href="#11">#1 (L11&ndash;L13)</a>: taken</li>', ENT_COMPAT),
+            $branch,
+        );
+
+        $this->assertSame(
+            6,
+            substr_count($branch, htmlspecialchars('</a>: not taken</li><li>', ENT_COMPAT) . htmlspecialchars('<span class="branch-miss"', ENT_COMPAT)) + 1,
+        );
     }
 
     #[DataProvider('hitCounts')]
@@ -319,8 +409,43 @@ final class EndToEndTest extends TestCase
         $this->assertNotFalse($branch);
         $this->assertNotFalse($path);
 
-        // decision point on line 13 has one covered and one uncovered outcome
-        $this->assertStringContainsString('<span class="branch-hit">&bull;</span><span class="branch-miss">&bull;</span>', $branch);
+        // the decision on line 13 has one outcome that was taken and one that was not
+        $this->assertStringContainsString(
+            '<td class="hit-count"><span class="branch-markers">' .
+            '<span class="branch-hit" aria-hidden="true" title="#2 (L14): taken">&bull;</span>' .
+            '<span class="branch-miss" aria-hidden="true" title="#3 (L14&ndash;L16): not taken">&#9702;</span>' .
+            '</span><span class="visually-hidden">1 of 2 outcomes taken</span></td>',
+            $branch,
+        );
+
+        // the outcomes are listed, with links to where they lead, before the tests in the popover of line 13
+        $this->assertStringContainsString(
+            'data-popover-content="' . htmlspecialchars(
+                '<p class="popover-heading">Outcomes of branch #1</p>' .
+                '<ul class="branch-outcomes">' .
+                '<li><span class="branch-hit" aria-hidden="true">&bull;</span> <a href="#14">#2 (L14)</a>: taken</li>' .
+                '<li><span class="branch-miss" aria-hidden="true">&#9702;</span> <a href="#14">#3 (L14&ndash;L16)</a>: not taken</li>' .
+                '</ul>' .
+                '<p class="popover-heading">Tests</p>' .
+                '<ul>',
+                ENT_COMPAT,
+            ),
+            $branch,
+        );
+
+        // where a branch leads to is listed in the "Branches" section
+        $this->assertStringContainsString(
+            '<td><span class="branch-hit" aria-hidden="true">&bull;</span> <a href="#14">#2</a><span class="visually-hidden"> (taken)</span>, ' .
+            '<span class="branch-miss" aria-hidden="true">&#9702;</span> <a href="#14">#3</a><span class="visually-hidden"> (not taken)</span></td>',
+            $branch,
+        );
+        $this->assertStringContainsString('<td>Covered</td><td><a href="#18">#4</a></td>', $branch);
+        $this->assertStringContainsString('<td>Not covered</td><td>exit</td>', $branch);
+
+        // the markers for the outcomes of a decision are explained in the view for branch coverage only
+        $this->assertStringContainsString('<li class="note">Next to a line that ends with a decision:', $branch);
+        $this->assertStringNotContainsString('<li class="note">', $path);
+        $this->assertStringNotContainsString('branch-markers', $path);
 
         // line 14 is included in a covered and in an uncovered branch
         $this->assertStringContainsString('warning popin', $branch);
@@ -502,6 +627,67 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString('<a href="b/c/index.html">b/c</a>', $nested);
 
         $this->assertRelativeLinkTargetsExist($target);
+    }
+
+    /**
+     * The branch coverage view for BankAccount.php where the control flow of
+     * BankAccount::setBalance() is made up to have what code rarely has:
+     *
+     * - branch 0 (#1) and branch 5 (#2) both end with a decision on line 13
+     * - two edges out of branch 5 lead to the same branch, another one leads
+     *   to a branch that is not part of the coverage data
+     * - an edge out of branch 20 (#4) leads to the exit of the function
+     * - nine edges lead out of branch 25 (#5), the first one leads back to branch 0
+     */
+    private function branchViewOfFunctionWithUnusualControlFlow(): string
+    {
+        $file = TEST_FILES_PATH . 'BankAccount.php';
+
+        $branches = [
+            0  => ['op_start' => 0, 'op_end' => 4, 'line_start' => 11, 'line_end' => 13, 'hit' => 1, 'out' => [0 => 5, 1 => 9], 'out_hit' => [0 => 1, 1 => 0]],
+            5  => ['op_start' => 5, 'op_end' => 8, 'line_start' => 13, 'line_end' => 13, 'hit' => 1, 'out' => [0 => 9, 1 => 20, 2 => 20, 3 => 99], 'out_hit' => [0 => 0, 1 => 0, 2 => 1, 3 => 0]],
+            9  => ['op_start' => 9, 'op_end' => 19, 'line_start' => 14, 'line_end' => 14, 'hit' => 0, 'out' => [0 => 20], 'out_hit' => [0 => 0]],
+            20 => ['op_start' => 20, 'op_end' => 24, 'line_start' => 16, 'line_end' => 16, 'hit' => 1, 'out' => [0 => 25, 1 => Driver::BRANCH_EXIT], 'out_hit' => [0 => 1, 1 => 0]],
+            25 => ['op_start' => 25, 'op_end' => 29, 'line_start' => 18, 'line_end' => 18, 'hit' => 1, 'out' => [0 => 0, 1 => 30, 2 => 31, 3 => 32, 4 => 33, 5 => 34, 6 => 35, 7 => 36, 8 => 37], 'out_hit' => [0 => 1, 1 => 1, 2 => 1, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0]],
+        ];
+
+        for ($branchId = 30; $branchId <= 37; $branchId++) {
+            $branches[$branchId] = ['op_start' => $branchId, 'op_end' => $branchId, 'line_start' => 18, 'line_end' => 18, 'hit' => $branchId <= 31 ? 1 : 0, 'out' => [], 'out_hit' => []];
+        }
+
+        $driver = new FakeDriver(
+            RawCodeCoverageData::fromXdebugWithPathCoverage(
+                [
+                    $file => [
+                        'lines'     => [13 => 1, 14 => -1, 16 => 1, 18 => 1],
+                        'functions' => [
+                            'BankAccount->setBalance' => [
+                                'branches' => $branches,
+                                'paths'    => [
+                                    0 => ['path' => [0 => 0, 1 => 5, 2 => 20, 3 => 25, 4 => 30], 'hit' => 1],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('A test');
+        $coverage->stop();
+
+        (new Facade)->process($coverage->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $branch = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php_branch.html');
+
+        $this->assertNotFalse($branch);
+
+        return $branch;
     }
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void

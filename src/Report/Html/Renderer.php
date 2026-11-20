@@ -510,12 +510,23 @@ abstract class Renderer
             '   </ul>' . "\n";
     }
 
-    protected function branchCoverageLegend(): string
+    /**
+     * The markers for the outcomes of a decision are only shown in the view
+     * for branch coverage, not in the view for path coverage.
+     */
+    protected function branchCoverageLegend(bool $explainOutcomeMarkers): string
     {
+        $outcomeMarkers = '';
+
+        if ($explainOutcomeMarkers) {
+            $outcomeMarkers = '    <li class="note">Next to a line that ends with a decision: <span class="branch-hit" aria-hidden="true">&bull;</span> outcome that was taken, <span class="branch-miss" aria-hidden="true">&#9702;</span> outcome that was not taken</li>' . "\n";
+        }
+
         return '   <ul class="legend">' . "\n" .
             '    <li class="success">Fully covered</li>' . "\n" .
             '    <li class="warning">Partially covered</li>' . "\n" .
             '    <li class="danger">Not covered</li>' . "\n" .
+            $outcomeMarkers .
             '   </ul>' . "\n";
     }
 

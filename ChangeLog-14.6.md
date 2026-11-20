@@ -22,5 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * When the code coverage data of a test is processed, the status of a line is only propagated to the other lines of its branch for the lines that share their branch with another line, instead of for every executable line of each file the test executed code in. This makes processing the code coverage data of a test faster
 * `Filter::includeFile()` and `Filter::includeFiles()` no longer resolve the path of a file that is already included under the given path. This makes `CodeCoverage::merge()`, which includes the files of the filter of the object that is merged, faster when the code coverage of many processes is merged
 * The HTML report lists a directory that contains nothing but another directory, or nothing but a single file, together with what it contains (`Report/Html/Renderer`, for example) instead of requiring a click for each level. The same applies to a namespace that contains nothing but another namespace
+* The view for branch coverage of the HTML report shows, next to a line that a branch with more than one successor ends on, which of the edges out of that branch were taken. Previously it showed whether the branches that these edges lead to were executed, and only for one such branch per line
+  * Where the edges lead to is listed together with the tests that cover the line, and in the new "Leads to" column of the "Branches" section
 
 [14.6.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5...main

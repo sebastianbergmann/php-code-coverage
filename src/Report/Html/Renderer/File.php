@@ -16,6 +16,7 @@ use function array_merge;
 use function array_pop;
 use function array_slice;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function htmlspecialchars;
@@ -47,6 +48,14 @@ use SebastianBergmann\Template\Template;
  * @phpstan-import-type TestIndexType from \SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData
  * @phpstan-import-type TestDataType from \SebastianBergmann\CodeCoverage\Node\Builder
  * @phpstan-import-type CoverageItemData from \SebastianBergmann\CodeCoverage\Report\Html\Renderer
+ *
+ * @phpstan-type BranchEdgeType array{
+ *     number: null|positive-int,
+ *     lineStart: int,
+ *     lineEnd: int,
+ *     backward: bool,
+ *     state: 'hit'|'miss'|'unknown',
+ * }
  */
 final class File extends Renderer
 {
@@ -55,8 +64,16 @@ final class File extends Renderer
      * graph highlighting data, and graph edge classes are rendered; path
      * counts grow combinatorially and would bloat the report otherwise.
      */
-    private const int MAX_RENDERED_PATHS        = 100;
-    private ?ControlFlowGraph $controlFlowGraph = null;
+    private const int MAX_RENDERED_PATHS = 100;
+
+    /**
+     * Maximum number of outcomes of decisions that are shown as individual
+     * markers next to a line. The number of outcomes that were taken and the
+     * number of outcomes are shown instead when there are more: a match
+     * expression can have dozens of outcomes.
+     */
+    private const int MAX_RENDERED_OUTCOME_MARKERS = 8;
+    private ?ControlFlowGraph $controlFlowGraph    = null;
 
     public function render(FileNode $node, string $file): void
     {
@@ -95,7 +112,7 @@ final class File extends Renderer
                     'tabs'      => $this->renderViewTabs($node->name(), 'branch'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithBranchCoverage($node),
-                    'legend'    => $this->branchCoverageLegend(),
+                    'legend'    => $this->branchCoverageLegend(true),
                     'structure' => $this->renderBranchStructure($node),
                 ],
             );
@@ -117,7 +134,7 @@ final class File extends Renderer
                     'tabs'      => $this->renderViewTabs($node->name(), 'path'),
                     'items'     => $this->renderItems($node),
                     'lines'     => $this->renderSourceWithPathCoverage($node),
-                    'legend'    => $this->branchCoverageLegend(),
+                    'legend'    => $this->branchCoverageLegend(false),
                     'structure' => $this->renderPathStructure($node),
                 ],
             );
@@ -593,23 +610,20 @@ final class File extends Renderer
 
         /** @var ProcessedFunctionCoverageData $method */
         foreach ($functionCoverageData as $method) {
+            $branchNumbers = $this->branchNumbers($method);
+
             /** @var ProcessedBranchCoverageData $branch */
-            foreach ($method->branches as $branch) {
-                if (count($branch->out) > 1) {
-                    $decisionLine = $branch->line_end;
+            foreach ($method->branches as $branchId => $branch) {
+                // A branch that more than one edge leads out of ends with a decision,
+                // the outcomes of that decision are shown for the line the branch ends on
+                if (count($branch->out) > 1 && isset($lineData[$branch->line_end], $branchNumbers[$branchId])) {
+                    $edges = $this->edgesOutOf($branchId, $branch, $method->branches, $branchNumbers);
 
-                    if (isset($lineData[$decisionLine]) && !isset($decisionPointData[$decisionLine])) {
-                        $targets = [];
-
-                        foreach ($branch->out as $targetBranchId) {
-                            if (isset($method->branches[$targetBranchId])) {
-                                $targets[] = $method->branches[$targetBranchId]->hit !== [];
-                            }
-                        }
-
-                        if (count($targets) > 1) {
-                            $decisionPointData[$decisionLine] = $targets;
-                        }
+                    if (count($edges) > 1) {
+                        $decisionPointData[$branch->line_end][] = [
+                            'number' => $branchNumbers[$branchId],
+                            'edges'  => $edges,
+                        ];
                     }
                 }
 
@@ -653,24 +667,23 @@ final class File extends Renderer
                     $lineCss = 'warning';
                 }
 
+                $popoverContent = '';
+                $numTests       = count($currentLineData['tests']);
+
                 if (isset($decisionPointData[$i])) {
-                    $markers = '';
-
-                    foreach ($decisionPointData[$i] as $isHit) {
-                        $markers .= $isHit
-                            ? '<span class="branch-hit">&bull;</span>'
-                            : '<span class="branch-miss">&bull;</span>';
-                    }
-
-                    $coverageCount = $markers;
+                    $coverageCount  = $this->renderOutcomeMarkers($decisionPointData[$i]);
+                    $popoverContent = htmlspecialchars(
+                        $this->renderOutcomes($decisionPointData[$i], $numTests > 0),
+                        self::HTML_SPECIAL_CHARS_FLAGS,
+                    );
                 }
 
-                $popoverContent = '&lt;ul&gt;';
+                $popoverContent .= '&lt;ul&gt;';
 
-                if (count($currentLineData['tests']) === 1) {
+                if ($numTests === 1) {
                     $popoverTitle = '1 test covers line ' . $i;
                 } else {
-                    $popoverTitle = count($currentLineData['tests']) . ' tests cover line ' . $i;
+                    $popoverTitle = $numTests . ' tests cover line ' . $i;
                 }
                 $popoverTitle .= '. These are covering ' . $currentLineData['includedInHitBranches'] . ' out of the ' . $currentLineData['includedInBranches'] . ' code branches.';
 
@@ -856,13 +869,14 @@ final class File extends Renderer
 
             $branches .= '   <h3 class="structure-heading"><a name="' . htmlspecialchars($methodName, self::HTML_SPECIAL_CHARS_FLAGS) . '">' . $this->abbreviateMethodName($methodName) . '</a>' . $badge . '</h3>' . "\n";
             $branches .= '   <table class="structure-table">' . "\n";
-            $branches .= '    <thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Tests</th></tr></thead>' . "\n";
+            $branches .= '    <thead><tr><th>#</th><th>Lines</th><th>Status</th><th>Leads to</th><th>Tests</th></tr></thead>' . "\n";
             $branches .= '    <tbody>' . "\n";
 
-            $branchIndex = 1;
+            $branchIndex   = 1;
+            $branchNumbers = $this->branchNumbers($methodData);
 
             /** @var ProcessedBranchCoverageData $branch */
-            foreach ($methodData->branches as $branch) {
+            foreach ($methodData->branches as $branchId => $branch) {
                 $lineStart  = $branch->line_start;
                 $lineEnd    = $branch->line_end;
                 $linesLabel = $lineStart === $lineEnd
@@ -903,11 +917,12 @@ final class File extends Renderer
                 }
 
                 $branches .= sprintf(
-                    '     <tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
+                    '     <tr class="%s"><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' . "\n",
                     $statusClass,
                     $branchIndex,
                     $linesLabel,
                     $statusLabel,
+                    $this->renderLeadsTo($this->edgesOutOf($branchId, $branch, $methodData->branches, $branchNumbers)),
                     $testsLabel,
                 );
 
@@ -920,6 +935,237 @@ final class File extends Renderer
         $branchesTemplate->setVar(['branches' => $branches]);
 
         return $branchesTemplate->render();
+    }
+
+    /**
+     * The branches of a function are numbered in the order in which they are
+     * listed in the "Branches" section.
+     *
+     * @return array<int, positive-int>
+     */
+    private function branchNumbers(ProcessedFunctionCoverageData $function): array
+    {
+        $numbers = [];
+        $number  = 1;
+
+        foreach (array_keys($function->branches) as $branchId) {
+            $numbers[$branchId] = $number;
+
+            $number++;
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * The edges that lead out of a branch, each with the branch (or the exit of
+     * the function) it leads to and whether it was taken.
+     *
+     * Whether the edge that leads to the exit of the function was taken is not
+     * reported by the driver. An edge that leads to a branch that is not part
+     * of the coverage data, because its code is ignored for instance, is left
+     * out. Edges that lead to the same branch are one edge.
+     *
+     * @param array<int, ProcessedBranchCoverageData> $branches
+     * @param array<int, positive-int>                $branchNumbers
+     *
+     * @return list<BranchEdgeType>
+     */
+    private function edgesOutOf(int $branchId, ProcessedBranchCoverageData $branch, array $branches, array $branchNumbers): array
+    {
+        $edges = [];
+
+        foreach ($branch->out as $edge => $targetId) {
+            if ($targetId === Driver::BRANCH_EXIT) {
+                $edges[$targetId] ??= [
+                    'number'    => null,
+                    'lineStart' => 0,
+                    'lineEnd'   => 0,
+                    'backward'  => false,
+                    'state'     => 'unknown',
+                ];
+
+                continue;
+            }
+
+            if (!isset($branches[$targetId], $branchNumbers[$targetId])) {
+                continue;
+            }
+
+            $state = 'unknown';
+
+            if (isset($branch->out_hit[$edge])) {
+                $state = $branch->out_hit[$edge] > 0 ? 'hit' : 'miss';
+            }
+
+            if (isset($edges[$targetId])) {
+                if ($state === 'hit' || $edges[$targetId]['state'] === 'unknown') {
+                    $edges[$targetId]['state'] = $state;
+                }
+
+                continue;
+            }
+
+            $edges[$targetId] = [
+                'number'    => $branchNumbers[$targetId],
+                'lineStart' => $branches[$targetId]->line_start,
+                'lineEnd'   => $branches[$targetId]->line_end,
+                'backward'  => $targetId <= $branchId,
+                'state'     => $state,
+            ];
+        }
+
+        return array_values($edges);
+    }
+
+    /**
+     * @param BranchEdgeType $edge
+     */
+    private function edgeLabel(array $edge): string
+    {
+        if ($edge['number'] === null) {
+            return 'exit of the function';
+        }
+
+        if ($edge['lineStart'] === $edge['lineEnd']) {
+            return sprintf('#%d (L%d)', $edge['number'], $edge['lineStart']);
+        }
+
+        return sprintf('#%d (L%d&ndash;L%d)', $edge['number'], $edge['lineStart'], $edge['lineEnd']);
+    }
+
+    /**
+     * The markers that are shown next to a line that one or more decisions end
+     * on: one marker for each outcome of a decision of which it is known
+     * whether it was taken.
+     *
+     * @param non-empty-list<array{number: positive-int, edges: non-empty-list<BranchEdgeType>}> $decisions
+     */
+    private function renderOutcomeMarkers(array $decisions): string
+    {
+        $groups = '';
+        $total  = 0;
+        $taken  = 0;
+
+        foreach ($decisions as $decision) {
+            $markers = '';
+
+            foreach ($decision['edges'] as $edge) {
+                if ($edge['state'] === 'unknown') {
+                    continue;
+                }
+
+                $total++;
+
+                if ($edge['state'] === 'hit') {
+                    $taken++;
+
+                    $markers .= '<span class="branch-hit" aria-hidden="true" title="' . $this->edgeLabel($edge) . ': taken">&bull;</span>';
+                } else {
+                    $markers .= '<span class="branch-miss" aria-hidden="true" title="' . $this->edgeLabel($edge) . ': not taken">&#9702;</span>';
+                }
+            }
+
+            if ($markers !== '') {
+                $groups .= '<span class="branch-markers">' . $markers . '</span>';
+            }
+        }
+
+        if ($total === 0) {
+            return '';
+        }
+
+        if ($total > self::MAX_RENDERED_OUTCOME_MARKERS) {
+            $groups = sprintf(
+                '<span class="branch-markers %s" aria-hidden="true">%d/%d</span>',
+                $taken === $total ? 'branch-hit' : 'branch-miss',
+                $taken,
+                $total,
+            );
+        }
+
+        return $groups . sprintf(
+            '<span class="visually-hidden">%d of %d outcomes taken</span>',
+            $taken,
+            $total,
+        );
+    }
+
+    /**
+     * The outcomes of the decisions that end on a line, for the popover of that line.
+     *
+     * @param non-empty-list<array{number: positive-int, edges: non-empty-list<BranchEdgeType>}> $decisions
+     */
+    private function renderOutcomes(array $decisions, bool $isFollowedByTests): string
+    {
+        $html = '';
+
+        foreach ($decisions as $decision) {
+            $html .= sprintf('<p class="popover-heading">Outcomes of branch #%d</p>', $decision['number']);
+            $html .= '<ul class="branch-outcomes">';
+
+            foreach ($decision['edges'] as $edge) {
+                $label = $this->edgeLabel($edge);
+
+                if ($edge['number'] !== null) {
+                    $label = sprintf('<a href="#%d">%s</a>', $edge['lineStart'], $label);
+                }
+
+                if ($edge['backward']) {
+                    $label = 'back to ' . $label;
+                }
+
+                $html .= match ($edge['state']) {
+                    'hit'     => '<li><span class="branch-hit" aria-hidden="true">&bull;</span> ' . $label . ': taken</li>',
+                    'miss'    => '<li><span class="branch-miss" aria-hidden="true">&#9702;</span> ' . $label . ': not taken</li>',
+                    'unknown' => '<li><span class="branch-unknown" aria-hidden="true">&ndash;</span> ' . $label . ': not reported</li>',
+                };
+            }
+
+            $html .= '</ul>';
+        }
+
+        if ($isFollowedByTests) {
+            $html .= '<p class="popover-heading">Tests</p>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * Where a branch leads to, for the "Branches" section. Whether an edge was
+     * taken is only shown for a branch that ends with a decision.
+     *
+     * @param list<BranchEdgeType> $edges
+     */
+    private function renderLeadsTo(array $edges): string
+    {
+        if ($edges === []) {
+            return '&mdash;';
+        }
+
+        $isDecision = count($edges) > 1;
+        $targets    = [];
+
+        foreach ($edges as $edge) {
+            $target = 'exit';
+
+            if ($edge['number'] !== null) {
+                $target = sprintf('<a href="#%d">#%d</a>', $edge['lineStart'], $edge['number']);
+            }
+
+            if ($isDecision) {
+                $target = match ($edge['state']) {
+                    'hit'     => '<span class="branch-hit" aria-hidden="true">&bull;</span> ' . $target . '<span class="visually-hidden"> (taken)</span>',
+                    'miss'    => '<span class="branch-miss" aria-hidden="true">&#9702;</span> ' . $target . '<span class="visually-hidden"> (not taken)</span>',
+                    'unknown' => '<span class="branch-unknown" aria-hidden="true">&ndash;</span> ' . $target,
+                };
+            }
+
+            $targets[] = $target;
+        }
+
+        return implode(', ', $targets);
     }
 
     private function renderPathStructure(FileNode $node): string

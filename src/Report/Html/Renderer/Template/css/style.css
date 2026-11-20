@@ -539,6 +539,14 @@ table.source tr:has(> td > a:target) {
     font-weight: bold;
 }
 
+.branch-unknown {
+    color: var(--text-muted);
+}
+
+.branch-markers + .branch-markers {
+    margin-left: 0.375rem;
+}
+
 /* -------------------------------------------------------------- coverage of a source line */
 
 .covered-by-small-tests {
@@ -633,6 +641,14 @@ li.warning {
     padding: 0.125rem 0.75rem;
     font-family: var(--font-mono);
     white-space: nowrap;
+}
+
+.popover-heading {
+    margin: 0;
+    padding: 0.5rem 0.75rem 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 /* -------------------------------------------------------------- branch and path structure */

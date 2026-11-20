@@ -57,6 +57,23 @@ final class ControlFlowGraphTest extends TestCase
         $this->assertStringNotContainsString('path-0', $dot);
     }
 
+    public function testEdgeToExitIsOnlyCoveredWhenItIsTheOnlyEdgeOutOfABranchThatWasHit(): void
+    {
+        $dot = (new ControlFlowGraph)->generateDot(
+            'foo',
+            new ProcessedFunctionCoverageData(
+                [
+                    0 => new ProcessedBranchCoverageData(0, 4, 10, 12, [0 => 1], [0 => 5, 1 => Driver::BRANCH_EXIT], [0 => 1, 1 => 0]),
+                    5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => Driver::BRANCH_EXIT], [0 => 0]),
+                ],
+                [],
+            ),
+        );
+
+        $this->assertStringContainsString('b0 -> exit [id="cfg-foo_edge-0-exit", class="uncovered"];', $dot);
+        $this->assertStringContainsString('b5 -> exit [id="cfg-foo_edge-5-exit", class="covered"];', $dot);
+    }
+
     public function testGraphsAreIdentifiedByTheNameOfTheMethod(): void
     {
         $controlFlowGraph = new ControlFlowGraph;
@@ -90,7 +107,8 @@ final class ControlFlowGraphTest extends TestCase
         return new ProcessedFunctionCoverageData(
             [
                 0 => new ProcessedBranchCoverageData(0, 4, 10, 12, [0 => 1], [0 => 5, 1 => 9], [0 => 1, 1 => 0]),
-                5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => Driver::BRANCH_EXIT], [0 => 1]),
+                // the edge to the exit of a function is not reported as taken, not even when it was taken
+                5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => Driver::BRANCH_EXIT], [0 => 0]),
                 9 => new ProcessedBranchCoverageData(9, 12, 14, 15, [], [0 => Driver::BRANCH_EXIT], [0 => 0]),
             ],
             [

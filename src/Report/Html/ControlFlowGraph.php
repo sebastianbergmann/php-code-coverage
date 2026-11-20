@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use const PHP_OS_FAMILY;
 use function assert;
+use function count;
 use function fclose;
 use function fflush;
 use function fread;
@@ -134,6 +135,12 @@ final class ControlFlowGraph
                     : sprintf('b%d', $destBranchId);
 
                 $edgeHit = isset($branch->out_hit[$edgeIndex]) && $branch->out_hit[$edgeIndex] > 0;
+
+                // The edge to the exit of the function is not reported as taken. When it
+                // is the only edge out of a branch then it was taken when the branch was hit
+                if ($destBranchId === Driver::BRANCH_EXIT && count($branch->out) === 1) {
+                    $edgeHit = $branch->hit !== [];
+                }
 
                 $edgeKey = $destBranchId === Driver::BRANCH_EXIT
                     ? $branchId . '-exit'

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 
+use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function is_file;
 use function sys_get_temp_dir;
@@ -19,12 +20,15 @@ use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
+use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\NamespaceNode;
+use SebastianBergmann\CodeCoverage\Report\Html\Views;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
 #[CoversClass(Dashboard::class)]
 #[Small]
@@ -105,7 +109,50 @@ final class DashboardTest extends TestCase
         $this->assertFileExists($this->outputFile);
     }
 
-    private function createRenderer(bool $hasBranchCoverage): Dashboard
+    public function testLinksToClassPagesWhenFileViewIsNotRendered(): void
+    {
+        $renderer = $this->createRenderer(false, Views::OnlyClassView);
+
+        $rootNs = new NamespaceNode('(Global)', '');
+        $rootNs->promoteToRoot();
+        $appNs    = new NamespaceNode('App', 'App', $rootNs);
+        $modelsNs = new NamespaceNode('Models', 'App\\Models', $appNs);
+        $rootNs->addNamespace($appNs);
+        $appNs->addNamespace($modelsNs);
+
+        $rootNs->addClass($this->createClassNode($rootNs, 'Root'));
+        $modelsNs->addClass($this->createClassNode($modelsNs, 'App\\Models\\User'));
+
+        $renderer->render($rootNs, $this->outputFile());
+
+        $output = file_get_contents($this->outputFile);
+
+        $this->assertNotFalse($output);
+
+        // Classes link to their class pages, methods to the line they start on
+        $this->assertStringContainsString('href="Root.html"', $output);
+        $this->assertStringContainsString('href="Root.html#1"', $output);
+        $this->assertStringContainsString('href="App/Models/User.html"', $output);
+        $this->assertStringContainsString('href="App/Models/User.html#1"', $output);
+
+        // The file-view pages the processed types link to are not rendered
+        $this->assertStringNotContainsString('t.php.html', $output);
+    }
+
+    public function testCannotRenderToFileThatCannotBeWritten(): void
+    {
+        $renderer = $this->createRenderer(false);
+
+        $rootNs = new NamespaceNode('(Global)', '');
+        $rootNs->promoteToRoot();
+        $rootNs->addClass($this->createClassNode($rootNs, 'Root'));
+
+        $this->expectException(FileCouldNotBeWrittenException::class);
+
+        $renderer->render($rootNs, $this->outputFile() . DIRECTORY_SEPARATOR . 'dashboard.html');
+    }
+
+    private function createRenderer(bool $hasBranchCoverage, Views $views = Views::FileViewAndClassView): Dashboard
     {
         return new Dashboard(
             __DIR__ . '/../../../../../../src/Report/Html/Renderer/Template/',
@@ -114,6 +161,8 @@ final class DashboardTest extends TestCase
             Thresholds::default(),
             $hasBranchCoverage,
             false,
+            TestSizes::ALL,
+            $views,
         );
     }
 

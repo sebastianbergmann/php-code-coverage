@@ -137,16 +137,17 @@ final readonly class ProcessedFunctionCoverageData
     }
 
     /**
-     * @param TestIndexType $testIndex
-     * @param positive-int  $count
+     * @param TestIndexType                $testIndex
+     * @param positive-int                 $count
+     * @param array<int, non-negative-int> $outHit    the edges out of the branch that the test took
      */
-    public function recordBranchHit(int $branchId, int $testIndex, int $count): void
+    public function recordBranchHit(int $branchId, int $testIndex, int $count, array $outHit): void
     {
         if (!isset($this->branches[$branchId])) {
             return;
         }
 
-        $this->branches[$branchId]->recordHit($testIndex, $count);
+        $this->branches[$branchId]->recordHit($testIndex, $count, $outHit);
     }
 
     /**

@@ -176,7 +176,7 @@ final class ProcessedCodeCoverageData
 
                 foreach ($functionData['branches'] as $branchId => $branchData) {
                     if ($branchData['hit'] >= Driver::BRANCH_HIT) {
-                        $functionCoverage->recordBranchHit($branchId, $testIndex, $branchData['hit']);
+                        $functionCoverage->recordBranchHit($branchId, $testIndex, $branchData['hit'], $branchData['out_hit']);
                     }
                 }
 

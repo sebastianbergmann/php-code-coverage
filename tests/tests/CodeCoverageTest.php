@@ -435,6 +435,43 @@ final class CodeCoverageTest extends TestCase
         $this->assertSame([], $coverage->getTests());
     }
 
+    public function testEdgesTakenInRunWhoseCoverageIsDiscardedAreNotRecorded(): void
+    {
+        $file = TEST_FILES_PATH . 'BankAccount.php';
+
+        $driver = new FakeDriver(
+            $this->executionOfSetBalance(true),
+            $this->executionOfSetBalance(false),
+        );
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('Test whose coverage is discarded');
+        $coverage->stop(false);
+
+        $coverage->start('Test whose coverage is recorded');
+        $coverage->stop();
+
+        $functionCoverage = $coverage->getData()->functionCoverage();
+
+        $this->assertArrayHasKey($file, $functionCoverage);
+        $this->assertArrayHasKey('BankAccount->setBalance', $functionCoverage[$file]);
+
+        $branches = $functionCoverage[$file]['BankAccount->setBalance']->branches;
+
+        $this->assertArrayHasKey(0, $branches);
+        $this->assertArrayHasKey(1, $branches);
+        $this->assertArrayHasKey(2, $branches);
+
+        // only the edge taken by the test whose coverage is recorded was taken
+        $this->assertSame([0 => 0, 1 => 1], $branches[0]->out_hit);
+        $this->assertSame([], $branches[1]->hit);
+        $this->assertSame([0 => 1], $branches[2]->hit);
+    }
+
     public function testAppendReturnsEarlyWhenLineCoverageIsEmpty(): void
     {
         $coverage = $this->requireDriver();
@@ -775,6 +812,42 @@ final class CodeCoverageTest extends TestCase
         $coverage->stop(true, null, $covers);
 
         return $coverage;
+    }
+
+    /**
+     * BankAccount::setBalance() either sets the balance (edge 0 out of the decision
+     * on line 13) or throws an exception (edge 1).
+     */
+    private function executionOfSetBalance(bool $balanceIsSet): RawCodeCoverageData
+    {
+        $set    = $balanceIsSet ? 1 : 0;
+        $thrown = $balanceIsSet ? 0 : 1;
+
+        return RawCodeCoverageData::fromXdebugWithPathCoverage(
+            [
+                TEST_FILES_PATH . 'BankAccount.php' => [
+                    'lines' => [
+                        13 => 1,
+                        14 => $balanceIsSet ? 1 : -1,
+                        16 => $balanceIsSet ? -1 : 1,
+                        18 => $balanceIsSet ? 1 : -1,
+                    ],
+                    'functions' => [
+                        'BankAccount->setBalance' => [
+                            'branches' => [
+                                0 => ['op_start' => 0, 'op_end' => 4, 'line_start' => 11, 'line_end' => 13, 'hit' => 1, 'out' => [0 => 1, 1 => 2], 'out_hit' => [0 => $set, 1 => $thrown]],
+                                1 => ['op_start' => 5, 'op_end' => 8, 'line_start' => 14, 'line_end' => 18, 'hit' => $set, 'out' => [], 'out_hit' => []],
+                                2 => ['op_start' => 9, 'op_end' => 13, 'line_start' => 16, 'line_end' => 16, 'hit' => $thrown, 'out' => [], 'out_hit' => []],
+                            ],
+                            'paths' => [
+                                0 => ['path' => [0 => 0, 1 => 1], 'hit' => $set],
+                                1 => ['path' => [0 => 0, 1 => 2], 'hit' => $thrown],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        );
     }
 
     /**

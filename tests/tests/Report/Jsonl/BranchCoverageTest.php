@@ -105,7 +105,7 @@ final class BranchCoverageTest extends TestCase
     }
 
     /**
-     * @param array<int, int> $outHit edge index to the number of times the edge was taken
+     * @param array<int, non-negative-int> $outHit edge index to whether the edge was taken
      */
     private function branch(int $lineStart, int $lineEnd, bool $hit, array $outHit): ProcessedBranchCoverageData
     {

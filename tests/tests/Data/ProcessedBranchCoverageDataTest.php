@@ -37,14 +37,16 @@ final class ProcessedBranchCoverageDataTest extends TestCase
         $this->assertSame(12, $data->line_end);
         $this->assertSame([], $data->hit);
         $this->assertSame([0 => 6, 1 => 8], $data->out);
-        $this->assertSame([0 => 0, 1 => 1], $data->out_hit);
+
+        // which edges were taken is recorded together with the hits of the branch
+        $this->assertSame([0 => 0, 1 => 0], $data->out_hit);
     }
 
     public function testRecordHitRecordsTraversalCountForTestCase(): void
     {
         $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
 
-        $data->recordHit(0, 3);
+        $data->recordHit(0, 3, []);
 
         $this->assertSame([0 => 3], $data->hit);
     }
@@ -53,10 +55,38 @@ final class ProcessedBranchCoverageDataTest extends TestCase
     {
         $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [], []);
 
-        $data->recordHit(0, 3);
-        $data->recordHit(0, 2);
+        $data->recordHit(0, 3, []);
+        $data->recordHit(0, 2, []);
 
         $this->assertSame([0 => 5], $data->hit);
+    }
+
+    public function testRecordHitRecordsEdgesThatWereTaken(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [0 => 6, 1 => 8], [0 => 0, 1 => 0]);
+
+        $data->recordHit(0, 1, [0 => 1, 1 => 0]);
+
+        $this->assertSame([0 => 1, 1 => 0], $data->out_hit);
+    }
+
+    public function testRecordHitAccumulatesEdgesThatWereTakenAcrossTestCases(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [0 => 6, 1 => 8], [0 => 0, 1 => 0]);
+
+        $data->recordHit(0, 1, [0 => 1, 1 => 0]);
+        $data->recordHit(1, 1, [0 => 0, 1 => 1]);
+
+        $this->assertSame([0 => 1, 1 => 1], $data->out_hit);
+    }
+
+    public function testRecordHitIgnoresEdgesTheBranchDoesNotHave(): void
+    {
+        $data = new ProcessedBranchCoverageData(0, 5, 11, 12, [], [0 => 6], [0 => 0]);
+
+        $data->recordHit(0, 1, [0 => 1, 1 => 1]);
+
+        $this->assertSame([0 => 1], $data->out_hit);
     }
 
     public function testMergeReturnsSelfWhenOtherHasNoHits(): void
@@ -86,6 +116,27 @@ final class ProcessedBranchCoverageDataTest extends TestCase
         $merged = $data->merge($other);
 
         $this->assertSame([0 => 2, 1 => 3], $merged->hit);
+    }
+
+    public function testMergeCombinesEdgesThatWereTaken(): void
+    {
+        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, [0 => 1], [0 => 6, 1 => 8], [0 => 1, 1 => 0]);
+        $other = new ProcessedBranchCoverageData(0, 5, 11, 12, [1 => 1], [0 => 6, 1 => 8], [0 => 0, 1 => 1]);
+
+        $this->assertSame([0 => 1, 1 => 1], $data->merge($other)->out_hit);
+        $this->assertSame([0 => 1, 1 => 1], $other->merge($data)->out_hit);
+
+        // the operands are not changed
+        $this->assertSame([0 => 1, 1 => 0], $data->out_hit);
+        $this->assertSame([0 => 0, 1 => 1], $other->out_hit);
+    }
+
+    public function testMergeIgnoresEdgesThatDoNotLeadToTheSameBranch(): void
+    {
+        $data  = new ProcessedBranchCoverageData(0, 5, 11, 12, [0 => 1], [0 => 6, 1 => 8], [0 => 1, 1 => 0]);
+        $other = new ProcessedBranchCoverageData(0, 5, 11, 12, [1 => 1], [0 => 6, 1 => 9, 2 => 10], [0 => 0, 1 => 1, 2 => 1]);
+
+        $this->assertSame([0 => 1, 1 => 0], $data->merge($other)->out_hit);
     }
 
     public function testRemappingTestIndexesReturnsSelfWhenThereAreNoHits(): void

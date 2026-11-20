@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [14.5.3] - 2026-MM-DD
+
+### Fixed
+
+* Which edges out of a branch were taken is only recorded for the first test that executes a function. Edges that are only taken by other tests, or only in code coverage data that is merged, are shown as not covered in the control flow graphs of the HTML report and are reported as not covered by the JSONL report
+  * The version of the format in which code coverage data is serialized is now 5: which edges were taken has a different meaning in files written by earlier versions, these files can no longer be read
+
 ## [14.5.2] - 2026-11-09
 
 ### Fixed
@@ -21,6 +28,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Optional `$size` parameter for `CodeCoverage::append()` that, when passed, is used instead of the size that was passed to `start()`
 
+[14.5.3]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.2...14.5
 [14.5.2]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.1...14.5.2
 [14.5.1]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.5.0...14.5.1
 [14.5.0]: https://github.com/sebastianbergmann/php-code-coverage/compare/14.4.1...14.5.0

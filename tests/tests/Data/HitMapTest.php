@@ -34,4 +34,17 @@ final class HitMapTest extends TestCase
 
         $this->assertSame([0 => 1, 1 => 3, 2 => 4], $hit);
     }
+
+    public function testRemapsTestIndexes(): void
+    {
+        $hit = [0 => 1, 1 => 3];
+
+        $this->assertSame([2 => 1, 3 => 3], HitMap::withRemappedTestIndexes($hit, [0 => 2, 1 => 3]));
+        $this->assertSame([0 => 1, 1 => 3], $hit);
+    }
+
+    public function testKeepsTestIndexesThatAreNotRemapped(): void
+    {
+        $this->assertSame([2 => 1, 1 => 3], HitMap::withRemappedTestIndexes([0 => 1, 1 => 3], [0 => 2]));
+    }
 }

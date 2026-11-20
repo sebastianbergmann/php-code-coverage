@@ -32,6 +32,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util\Json;
@@ -1050,7 +1051,7 @@ final class File extends Renderer
 
                 if ($lastBranchId !== null && isset($methodData->branches[$lastBranchId])) {
                     foreach ($methodData->branches[$lastBranchId]->out as $dest) {
-                        if ($dest === ControlFlowGraph::XDEBUG_EXIT_BRANCH) {
+                        if ($dest === Driver::BRANCH_EXIT) {
                             $edges[] = $lastBranchId . '-exit';
                         }
                     }

@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 #[CoversClass(ControlFlowGraph::class)]
 #[Small]
@@ -89,8 +90,8 @@ final class ControlFlowGraphTest extends TestCase
         return new ProcessedFunctionCoverageData(
             [
                 0 => new ProcessedBranchCoverageData(0, 4, 10, 12, [0 => 1], [0 => 5, 1 => 9], [0 => 1, 1 => 0]),
-                5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => ControlFlowGraph::XDEBUG_EXIT_BRANCH], [0 => 1]),
-                9 => new ProcessedBranchCoverageData(9, 12, 14, 15, [], [0 => ControlFlowGraph::XDEBUG_EXIT_BRANCH], [0 => 0]),
+                5 => new ProcessedBranchCoverageData(5, 8, 13, 13, [0 => 1], [0 => Driver::BRANCH_EXIT], [0 => 1]),
+                9 => new ProcessedBranchCoverageData(9, 12, 14, 15, [], [0 => Driver::BRANCH_EXIT], [0 => 0]),
             ],
             [
                 0 => new ProcessedPathCoverageData([0, 5], [0 => 1]),

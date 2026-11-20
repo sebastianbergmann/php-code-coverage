@@ -48,9 +48,10 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  *
  * out and out_hit of a branch describe the edges to successor branches: out lists the
  * successors, out_hit is keyed like out and tells for each edge whether it was taken (> 0)
- * or not (0) during the run the data is from. They are optional for drivers that do not
- * model a branch graph: empty arrays are valid, reports that render a control flow graph
- * degrade gracefully.
+ * or not (0) during the run the data is from. The successor Driver::BRANCH_EXIT is the
+ * exit of the function, the edge that leads to it is not reported as taken. They are
+ * optional for drivers that do not model a branch graph: empty arrays are valid, reports
+ * that render a control flow graph degrade gracefully.
  *
  * line_start <= line_end is an invariant of BranchCoverageType. Xdebug reports loop
  * back-edge branches with line_start > line_end; fromXdebugWithPathCoverage(),

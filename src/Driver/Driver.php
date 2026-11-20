@@ -54,7 +54,14 @@ abstract class Driver
      *
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const int BRANCH_HIT      = 1;
+    public const int BRANCH_HIT = 1;
+
+    /**
+     * Identifier that is used for the exit of a function where the successors of a
+     * branch are listed (XDEBUG_BRANCH_EXIT in xdebug_branch_info.h). The edge that
+     * leads to it is not reported as taken, not even when it was taken.
+     */
+    public const int BRANCH_EXIT     = 2147483645;
     private Granularity $granularity = Granularity::Line;
 
     public function granularity(): Granularity

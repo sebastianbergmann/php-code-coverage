@@ -25,6 +25,7 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedMethodType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
+use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ClassNode;
@@ -260,6 +261,16 @@ final class Class_Test extends TestCase
         $renderer->render($classNode, $this->outputFile());
 
         $this->assertFileExists($this->outputFile);
+    }
+
+    public function testCannotRenderToFileThatCannotBeWritten(): void
+    {
+        $renderer = $this->createRenderer(false);
+        $node     = $this->createClassNodeWithTraitAndParent();
+
+        $this->expectException(FileCouldNotBeWrittenException::class);
+
+        $renderer->render($node, $this->outputFile() . DIRECTORY_SEPARATOR . 'ChildClass.html');
     }
 
     private function createRenderer(bool $hasBranchCoverage): Class_

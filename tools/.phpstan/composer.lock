@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf4364b112deaf4433aea04d491db489",
+    "content-hash": "0bdfc5c0643aac2cabb866e65cd19722",
     "packages": [],
     "packages-dev": [
         {
             "name": "ergebnis/phpstan-rules",
-            "version": "2.17.1",
+            "version": "2.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/phpstan-rules.git",
-                "reference": "67c1bcd57666d30a3da0f744e4776c05178aa0c6"
+                "reference": "f8014018e83ee4afbe6a72a529622d1524749c7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/phpstan-rules/zipball/67c1bcd57666d30a3da0f744e4776c05178aa0c6",
-                "reference": "67c1bcd57666d30a3da0f744e4776c05178aa0c6",
+                "url": "https://api.github.com/repos/ergebnis/phpstan-rules/zipball/f8014018e83ee4afbe6a72a529622d1524749c7f",
+                "reference": "f8014018e83ee4afbe6a72a529622d1524749c7f",
                 "shasum": ""
             },
             "require": {
@@ -31,15 +31,15 @@
             "require-dev": {
                 "codeception/codeception": "^4.0.0 || ^5.0.0",
                 "doctrine/orm": "^2.20.0 || ^3.3.0",
-                "ergebnis/composer-normalize": "^2.56.0",
+                "ergebnis/composer-normalize": "^2.56.1",
                 "ergebnis/license": "^2.9.0",
-                "ergebnis/php-cs-fixer-config": "^6.64.1",
+                "ergebnis/php-cs-fixer-config": "^6.64.3",
                 "ergebnis/phpunit-slow-test-detector": "^2.27.0",
                 "ergebnis/rector-rules": "^1.19.0",
                 "fakerphp/faker": "^1.24.1",
                 "phpstan/extension-installer": "^1.4.3",
                 "phpstan/phpstan-deprecation-rules": "^2.0.5",
-                "phpstan/phpstan-phpunit": "^2.1.1",
+                "phpstan/phpstan-phpunit": "^2.1.2",
                 "phpstan/phpstan-strict-rules": "^2.1.1",
                 "phpunit/phpunit": "^9.6.33",
                 "psr/container": "^2.0.2",
@@ -55,7 +55,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-main": "2.17-dev"
+                    "dev-main": "2.18-dev"
                 }
             },
             "autoload": {
@@ -85,43 +85,43 @@
                 "security": "https://github.com/ergebnis/phpstan-rules/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/phpstan-rules"
             },
-            "time": "2026-11-10T09:41:01+00:00",
-            "published-time": "2026-11-10T09:41:10+00:00"
+            "time": "2026-11-19T13:18:51+00:00",
+            "published-time": "2026-11-19T13:18:57+00:00"
         },
         {
             "name": "ergebnis/version",
-            "version": "1.4.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/version.git",
-                "reference": "cfdde08dac36650286acf310a8f99138201a484b"
+                "reference": "c96e48683a76ac73ee66b0191f577d7713460b6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/version/zipball/cfdde08dac36650286acf310a8f99138201a484b",
-                "reference": "cfdde08dac36650286acf310a8f99138201a484b",
+                "url": "https://api.github.com/repos/ergebnis/version/zipball/c96e48683a76ac73ee66b0191f577d7713460b6d",
+                "reference": "c96e48683a76ac73ee66b0191f577d7713460b6d",
                 "shasum": ""
             },
             "require": {
                 "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0"
             },
             "require-dev": {
-                "ergebnis/composer-normalize": "^2.53.0",
-                "ergebnis/data-provider": "^3.6.0",
-                "ergebnis/license": "^2.7.0",
-                "ergebnis/php-cs-fixer-config": "^6.63.2",
-                "ergebnis/phpunit-slow-test-detector": "^2.25.0",
-                "ergebnis/rector-rules": "^1.18.3",
+                "ergebnis/composer-normalize": "^2.56.1",
+                "ergebnis/data-provider": "^3.7.1",
+                "ergebnis/license": "^2.9.0",
+                "ergebnis/php-cs-fixer-config": "^6.64.3",
+                "ergebnis/phpunit-slow-test-detector": "^2.27.0",
+                "ergebnis/rector-rules": "^1.19.0",
                 "ext-bcmath": "*",
                 "fakerphp/faker": "^1.24.1",
                 "infection/infection": "~0.26.6",
                 "phpstan/extension-installer": "^1.4.3",
-                "phpstan/phpstan": "^2.2.14",
+                "phpstan/phpstan": "^2.3.2",
                 "phpstan/phpstan-deprecation-rules": "^2.0.5",
-                "phpstan/phpstan-phpunit": "^2.0.18",
-                "phpstan/phpstan-strict-rules": "^2.0.12",
+                "phpstan/phpstan-phpunit": "^2.1.2",
+                "phpstan/phpstan-strict-rules": "^2.1.1",
                 "phpunit/phpunit": "^9.6.33",
-                "rector/rector": "^2.6.7"
+                "rector/rector": "^2.7.0"
             },
             "suggest": {
                 "ext-bcmath": "If you want to bump Major, Minor, or Patch versions greater than PHP_MAX_INT."
@@ -129,7 +129,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.4-dev"
+                    "dev-main": "1.6-dev"
                 },
                 "composer-normalize": {
                     "indent-size": 2,
@@ -163,8 +163,8 @@
                 "security": "https://github.com/ergebnis/version/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/version"
             },
-            "time": "2026-09-24T19:43:55+00:00",
-            "published-time": "2026-09-24T19:44:08+00:00"
+            "time": "2026-11-19T13:23:04+00:00",
+            "published-time": "2026-11-19T13:23:11+00:00"
         },
         {
             "name": "phar-io/version",
@@ -264,15 +264,16 @@
                 "issues": "https://github.com/phpstan/extension-installer/issues",
                 "source": "https://github.com/phpstan/extension-installer/tree/1.4.3"
             },
-            "time": "2024-09-04T20:21:43+00:00"
+            "time": "2024-09-04T20:21:43+00:00",
+            "published-time": "2024-09-04T20:22:27+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.3.6",
+            "version": "2.3.7",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/00cedebb76cc82c1592414fa4f616cefdccda16f",
-                "reference": "00cedebb76cc82c1592414fa4f616cefdccda16f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/90c91c2498849ab8cc4e873864bbf1cb2bf6ea12",
+                "reference": "90c91c2498849ab8cc4e873864bbf1cb2bf6ea12",
                 "shasum": ""
             },
             "require": {
@@ -328,8 +329,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-15T19:58:26+00:00",
-            "published-time": "2026-11-15T19:58:39+00:00"
+            "time": "2026-11-19T10:31:11+00:00",
+            "published-time": "2026-11-19T10:31:27+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

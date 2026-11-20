@@ -230,6 +230,18 @@ final class FacadeTest extends TestCase
         $this->assertDirectoryDoesNotExist($target . DIRECTORY_SEPARATOR . '_classes');
     }
 
+    public function testRenderJsonl(): void
+    {
+        $facade = Facade::fromObject($this->getLineCoverageForBankAccount());
+        $target = TEST_FILES_PATH . 'tmp';
+
+        $facade->renderJsonl($target);
+
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'meta.json');
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'coverage.jsonl');
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'tests.jsonl');
+    }
+
     public function testRenderXml(): void
     {
         $facade = Facade::fromObject($this->getLineCoverageForBankAccount());

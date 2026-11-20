@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
+use function array_fill_keys;
 use function array_intersect_key;
 use function file_get_contents;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 #[CoversClass(BytecodeSourceAnalyser::class)]
 #[UsesClass(BytecodeDumpParser::class)]
@@ -76,6 +78,45 @@ final class BytecodeSourceAnalyserTest extends TestCase
         );
     }
 
+    public function testUsesExecutableLinesThatWereDeterminedFromBytecode(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+        $syntax = $this->analyse(new ParsingSourceAnalyser, $file);
+
+        $result = $this->analyse(
+            new BytecodeSourceAnalyser(new ParsingSourceAnalyser, $this->bytecodeLines($file, [18, 24, 26])),
+            $file,
+        );
+
+        $this->assertNotSame($syntax->executableLines(), $result->executableLines());
+        $this->assertSame([18 => 18, 24 => 24, 26 => 26], $result->executableLines());
+        $this->assertSame([], $result->branchOperatorLines());
+
+        $this->assertEquals($syntax->interfaces(), $result->interfaces());
+        $this->assertEquals($syntax->classes(), $result->classes());
+        $this->assertEquals($syntax->traits(), $result->traits());
+        $this->assertEquals($syntax->functions(), $result->functions());
+        $this->assertEquals($syntax->linesOfCode(), $result->linesOfCode());
+        $this->assertSame($syntax->ignoredLines(), $result->ignoredLines());
+        $this->assertTrue($result->wasParsed());
+    }
+
+    public function testOnlyCountsDeadLinesThatWereDeterminedToBeExecutableFromBytecode(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_with_dead_code_in_various_contexts.php';
+        $syntax = $this->analyse(new ParsingSourceAnalyser, $file);
+
+        $this->assertArrayHasKey(7, $syntax->deadLines());
+        $this->assertArrayHasKey(14, $syntax->deadLines());
+
+        $result = $this->analyse(
+            new BytecodeSourceAnalyser(new ParsingSourceAnalyser, $this->bytecodeLines($file, [6, 7, 13])),
+            $file,
+        );
+
+        $this->assertSame([7 => true], $result->deadLines());
+    }
+
     public function testUsesAnalysisOfSyntaxForFileThatCannotBeCompiled(): void
     {
         $file = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
@@ -100,6 +141,25 @@ final class BytecodeSourceAnalyserTest extends TestCase
             $this->analyse(new ParsingSourceAnalyser, $file),
             $this->analyse(new BytecodeSourceAnalyser(new ParsingSourceAnalyser, new BytecodeLines), $file),
         );
+    }
+
+    /**
+     * Emulates that the executable lines of a file were determined from its
+     * bytecode, which PHP can only be asked for as of PHP 8.6.
+     *
+     * @param non-empty-string             $file
+     * @param non-empty-list<positive-int> $lines
+     */
+    private function bytecodeLines(string $file, array $lines): BytecodeLines
+    {
+        $bytecodeLines = new BytecodeLines;
+
+        (new ReflectionProperty(BytecodeLines::class, 'lines'))->setValue(
+            $bytecodeLines,
+            [$file => array_fill_keys($lines, true)],
+        );
+
+        return $bytecodeLines;
     }
 
     /**

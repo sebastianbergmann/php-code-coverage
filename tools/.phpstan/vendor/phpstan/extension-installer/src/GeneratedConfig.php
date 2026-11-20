@@ -12,7 +12,7 @@ final class GeneratedConfig
 	public const EXTENSIONS = array (
   'ergebnis/phpstan-rules' => 
   array (
-    'install_path' => '/Users/sb/Work/OpenSource/php-code-coverage/tools/.phpstan/vendor/ergebnis/phpstan-rules',
+    'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/ergebnis/phpstan-rules',
     'relative_install_path' => '../../../ergebnis/phpstan-rules',
     'extra' => 
     array (
@@ -21,12 +21,12 @@ final class GeneratedConfig
         0 => 'rules.neon',
       ),
     ),
-    'version' => '2.17.0',
+    'version' => '2.18.0',
     'phpstanVersionConstraint' => '>=2.1.35.0-dev, <3.0.0.0-dev',
   ),
   'phpstan/phpstan-deprecation-rules' => 
   array (
-    'install_path' => '/Users/sb/Work/OpenSource/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-deprecation-rules',
+    'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-deprecation-rules',
     'relative_install_path' => '../../phpstan-deprecation-rules',
     'extra' => 
     array (
@@ -40,7 +40,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-phpunit' => 
   array (
-    'install_path' => '/Users/sb/Work/OpenSource/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-phpunit',
+    'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-phpunit',
     'relative_install_path' => '../../phpstan-phpunit',
     'extra' => 
     array (
@@ -50,12 +50,12 @@ final class GeneratedConfig
         1 => 'rules.neon',
       ),
     ),
-    'version' => '2.1.1',
+    'version' => '2.1.2',
     'phpstanVersionConstraint' => '>=2.3.0.0-dev, <3.0.0.0-dev',
   ),
   'phpstan/phpstan-strict-rules' => 
   array (
-    'install_path' => '/Users/sb/Work/OpenSource/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-strict-rules',
+    'install_path' => '/usr/local/src/php-code-coverage/tools/.phpstan/vendor/phpstan/phpstan-strict-rules',
     'relative_install_path' => '../../phpstan-strict-rules',
     'extra' => 
     array (

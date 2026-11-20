@@ -9,6 +9,8 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use const PHP_BINARY;
+use function escapeshellarg;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +97,18 @@ final class ControlFlowGraphTest extends TestCase
     public function testRendersNoSvgWhenDotIsNotAvailable(): void
     {
         $controlFlowGraph = new ControlFlowGraph('binary-that-does-not-exist');
+
+        $this->assertSame('', $controlFlowGraph->renderSvg('foo', $this->methodData()));
+
+        // the failure is remembered, subsequent calls do not spawn a process
+        $this->assertSame('', $controlFlowGraph->renderSvg('foo', $this->methodData()));
+    }
+
+    public function testRendersNoSvgWhenDotExitsWithoutOutput(): void
+    {
+        $controlFlowGraph = new ControlFlowGraph(
+            escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEST_FILES_PATH . 'dot_that_exits_without_output.php'),
+        );
 
         $this->assertSame('', $controlFlowGraph->renderSvg('foo', $this->methodData()));
 

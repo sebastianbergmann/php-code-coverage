@@ -13,13 +13,17 @@ use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
 use function iterator_count;
 use function rmdir;
+use function substr_count;
 use function unlink;
 use DateTimeImmutable;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Node\Builder;
+use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
@@ -218,6 +222,42 @@ final class XmlTest extends TestCase
         $this->assertNotFalse($contents);
         $this->assertStringContainsString('BankAccountTest::testBalanceIsInitiallyZero', $contents);
         $this->assertStringContainsString('BankAccountTest::testDepositWithdrawMoney', $contents);
+    }
+
+    public function testTestForWhichNoTestDataIsAvailableIsNotAttributedInLineCoverage(): void
+    {
+        $tests = [
+            0 => ['name' => 'ExampleTest::testOne', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+        ];
+
+        $report = new DirectoryNode('/path/to/src');
+
+        $report->addFile(
+            new FileNode(
+                'Example.php',
+                $report,
+                'abc123',
+                [1 => [0 => 1, 1 => 1], 2 => [1 => 1]],
+                [],
+                $tests,
+                [],
+                [],
+                [],
+                new LinesOfCode(2, 0, 2),
+            ),
+        );
+
+        (new Facade(false))->process(
+            TEST_FILES_PATH . 'tmp',
+            $report,
+            ['ExampleTest::testOne' => ['size' => 'small', 'status' => 'passed', 'time' => 0.0]],
+        );
+
+        $contents = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'Example.php.xml');
+
+        $this->assertNotFalse($contents);
+        $this->assertSame(1, substr_count($contents, '<covered '));
+        $this->assertStringContainsString('<covered by="ExampleTest::testOne"', $contents);
     }
 
     public function testBuildInformationIsOmittedWhenRuntimeIsNotProvided(): void

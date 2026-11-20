@@ -12,7 +12,6 @@ namespace SebastianBergmann\CodeCoverage\Report\Html\ClassView\Renderer;
 use function array_key_exists;
 use function array_keys;
 use function array_pop;
-use function array_sum;
 use function count;
 use function htmlspecialchars;
 use function sprintf;
@@ -51,7 +50,7 @@ final class Class_ extends Renderer
                 'summary'  => $this->renderSummary($this->nodeData($node), 'Methods', 'Classes'),
                 'items'    => $this->renderItems($node),
                 'sections' => $sections,
-                'legend'   => $this->lineCoverageLegend(),
+                'legend'   => $this->lineCoverageLegend($node->fileNode()->collectsHitCounts()),
             ],
         );
 
@@ -345,8 +344,12 @@ final class Class_ extends Renderer
                         $popoverTitle = '1 test covers line ' . $i;
                     }
 
+                    $coverageCount = (string) $numTests;
+
                     if ($collectsHitCounts) {
-                        $coverageCount = (string) array_sum($coverageData[$i]);
+                        [$coverageCount, $executions] = $this->executionCountFor($coverageData[$i]);
+
+                        $popoverTitle .= $executions;
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -378,7 +381,7 @@ final class Class_ extends Renderer
             $lines .= $this->renderLine($singleLineTemplate, $i, $codeLines[$lineIndex], $trClass, $popover, $anchorPrefix, $coverageCount);
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => $collectsHitCounts ? ' with-hit-counts' : '']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
 
         return $linesTemplate->render();
     }

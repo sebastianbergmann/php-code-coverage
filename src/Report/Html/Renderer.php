@@ -14,10 +14,13 @@ use const ENT_HTML401;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
+use function array_sum;
 use function assert;
 use function count;
 use function file_get_contents;
 use function htmlspecialchars;
+use function intdiv;
+use function number_format;
 use function round;
 use function rtrim;
 use function sprintf;
@@ -490,7 +493,12 @@ abstract class Renderer
         );
     }
 
-    protected function lineCoverageLegend(): string
+    /**
+     * The number that is shown next to a line that is covered is how often the
+     * line was executed when the driver collects hit counts. It is the number
+     * of tests that cover the line otherwise.
+     */
+    protected function lineCoverageLegend(bool $collectsHitCounts): string
     {
         return '   <ul class="legend">' . "\n" .
             '    <li class="covered-by-small-tests">Covered by small (and larger) tests</li>' . "\n" .
@@ -498,6 +506,7 @@ abstract class Renderer
             '    <li class="covered-by-large-tests">Covered by large tests (and tests of unknown size)</li>' . "\n" .
             '    <li class="not-covered">Not covered</li>' . "\n" .
             '    <li class="not-coverable">Not coverable</li>' . "\n" .
+            '    <li class="note">Number next to a line: ' . ($collectsHitCounts ? 'how often the line was executed' : 'tests that cover the line') . '</li>' . "\n" .
             '   </ul>' . "\n";
     }
 
@@ -609,6 +618,62 @@ abstract class Renderer
         }
 
         return $this->buildCoverageDataJson($data);
+    }
+
+    /**
+     * Counts of 1000 and more are abbreviated to three significant digits
+     * (1234 is shown as 1.23k), digits that are not shown are cut off.
+     *
+     * @param non-negative-int $count
+     */
+    protected function formatCount(int $count): string
+    {
+        if ($count < 1000) {
+            return (string) $count;
+        }
+
+        $unit   = 1000;
+        $suffix = 'k';
+
+        foreach (['M', 'G', 'T', 'P', 'E'] as $nextSuffix) {
+            if (intdiv($count, $unit) < 1000) {
+                break;
+            }
+
+            $unit *= 1000;
+            $suffix = $nextSuffix;
+        }
+
+        $whole = intdiv($count, $unit);
+        $rest  = $count % $unit;
+
+        $formatted = match (true) {
+            $whole >= 100 => (string) $whole,
+            $whole >= 10  => sprintf('%d.%d', $whole, intdiv($rest, intdiv($unit, 10))),
+            default       => sprintf('%d.%02d', $whole, intdiv($rest, intdiv($unit, 100))),
+        };
+
+        return $formatted . $suffix;
+    }
+
+    /**
+     * What is shown next to a line that is covered when the driver collects
+     * hit counts, and what is appended to the title of the popover that lists
+     * the tests that cover the line.
+     *
+     * @param array<TestIndexType, positive-int> $hits
+     *
+     * @return array{0: string, 1: string}
+     */
+    protected function executionCountFor(array $hits): array
+    {
+        $executions = array_sum($hits);
+
+        if ($executions === 1) {
+            return ['1', '. It was executed once.'];
+        }
+
+        return [$this->formatCount($executions), '. It was executed ' . number_format($executions) . ' times.'];
     }
 
     protected function renderLine(Template $template, int $lineNumber, string $lineContent, string $class, string $popover, string $anchorPrefix = '', string $coverageCount = ''): string

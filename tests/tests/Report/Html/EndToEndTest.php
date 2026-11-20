@@ -14,6 +14,7 @@ use const ENT_COMPAT;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 use const PHP_EOL;
+use const PHP_INT_MAX;
 use function array_keys;
 use function dirname;
 use function explode;
@@ -35,12 +36,16 @@ use function substr;
 use function substr_count;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversNamespace;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\FakeDriver;
+use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
@@ -51,6 +56,27 @@ use SplFileInfo;
 #[Medium]
 final class EndToEndTest extends TestCase
 {
+    /**
+     * @return non-empty-list<array{0: positive-int, 1: non-empty-string, 2: non-empty-string}>
+     */
+    public static function hitCounts(): array
+    {
+        return [
+            [2, '2', '2'],
+            [999, '999', '999'],
+            [1000, '1.00k', '1,000'],
+            [1234, '1.23k', '1,234'],
+            [1239, '1.23k', '1,239'],
+            [12345, '12.3k', '12,345'],
+            [123456, '123k', '123,456'],
+            [999999, '999k', '999,999'],
+            [1000000, '1.00M', '1,000,000'],
+            [1050000, '1.05M', '1,050,000'],
+            [2500000000, '2.50G', '2,500,000,000'],
+            [PHP_INT_MAX, '9.22E', '9,223,372,036,854,775,807'],
+        ];
+    }
+
     protected function tearDown(): void
     {
         $this->removeTemporaryFiles();
@@ -75,17 +101,22 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($source);
 
-        // the gutter is only rendered when the driver collects hit counts
         $this->assertStringContainsString('<table class="source with-hit-counts">', $source);
 
         // line 8 was executed twice by testBalanceIsInitiallyZero and three times by testDepositWithdrawMoney
         $this->assertStringContainsString('<td class="hit-count">5</td>', $source);
+        $this->assertStringContainsString('data-popover-title="2 tests cover line 8. It was executed 5 times."', $source);
 
         // line 22 was executed once by testBalanceCannotBecomeNegative2 and twice by testDepositWithdrawMoney
         $this->assertStringContainsString('<td class="hit-count">3</td>', $source);
 
+        // line 31 was executed once by testDepositWithdrawMoney
+        $this->assertStringContainsString('data-popover-title="1 test covers line 31. It was executed once."', $source);
+
         // uncovered and non-executable lines do not get a hit count
         $this->assertStringContainsString('<td class="hit-count"></td>', $source);
+
+        $this->assertStringContainsString('<li class="note">Number next to a line: how often the line was executed</li>', $source);
 
         $classView = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . '_classes' . DIRECTORY_SEPARATOR . 'BankAccount.html');
 
@@ -95,7 +126,7 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString('<td class="hit-count">3</td>', $classView);
     }
 
-    public function testHitCountsAreNotShownInGutterWhenDriverDoesNotCollectThem(): void
+    public function testNumberOfTestsThatCoverALineIsShownInGutterWhenDriverDoesNotCollectHitCounts(): void
     {
         $report = new Facade;
         $report->process($this->getLineCoverageForBankAccount()->getReport(), TEST_FILES_PATH . 'tmp');
@@ -105,8 +136,50 @@ final class EndToEndTest extends TestCase
 
         $this->assertNotFalse($source);
         $this->assertNotFalse($classView);
-        $this->assertStringNotContainsString('with-hit-counts', $source);
-        $this->assertStringNotContainsString('with-hit-counts', $classView);
+
+        foreach ([$source, $classView] as $html) {
+            $this->assertStringContainsString('<table class="source with-hit-counts">', $html);
+
+            // line 8 is covered by testBalanceIsInitiallyZero and testDepositWithdrawMoney
+            $this->assertStringContainsString('data-popover-title="2 tests cover line 8"', $html);
+            $this->assertStringContainsString('<a id="8" href="#8">8</a></td><td class="hit-count">2</td>', $html);
+
+            // line 24 is covered by testDepositWithdrawMoney
+            $this->assertStringContainsString('data-popover-title="1 test covers line 24"', $html);
+            $this->assertStringContainsString('<a id="24" href="#24">24</a></td><td class="hit-count">1</td>', $html);
+
+            // line 16 is not covered, line 9 is not executable
+            $this->assertStringContainsString('<a id="16" href="#16">16</a></td><td class="hit-count"></td>', $html);
+            $this->assertStringContainsString('<a id="9" href="#9">9</a></td><td class="hit-count"></td>', $html);
+
+            $this->assertStringContainsString('<li class="note">Number next to a line: tests that cover the line</li>', $html);
+        }
+    }
+
+    #[DataProvider('hitCounts')]
+    public function testHitCountsOfOneThousandAndMoreAreAbbreviated(int $hitCount, string $abbreviated, string $exact): void
+    {
+        $file = TEST_FILES_PATH . 'BankAccount.php';
+
+        $driver = new FakeDriver(RawCodeCoverageData::fromLineCoverage([$file => [8 => $hitCount]]));
+
+        $driver->markAsCollectingHitCounts();
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage($driver, $filter);
+
+        $coverage->start('A test');
+        $coverage->stop();
+
+        (new Facade)->process($coverage->getReport(), TEST_FILES_PATH . 'tmp');
+
+        $source = file_get_contents(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'BankAccount.php.html');
+
+        $this->assertNotFalse($source);
+        $this->assertStringContainsString('<a id="8" href="#8">8</a></td><td class="hit-count">' . $abbreviated . '</td>', $source);
+        $this->assertStringContainsString('data-popover-title="1 test covers line 8. It was executed ' . $exact . ' times."', $source);
     }
 
     public function testMissingBranchCoverageDataIsMarkedInDirectorySummary(): void

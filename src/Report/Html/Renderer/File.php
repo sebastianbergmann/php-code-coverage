@@ -15,7 +15,6 @@ use function array_keys;
 use function array_merge;
 use function array_pop;
 use function array_slice;
-use function array_sum;
 use function array_unique;
 use function count;
 use function explode;
@@ -69,7 +68,7 @@ final class File extends Renderer
                 'summary'   => $this->renderSummary($this->nodeData($node), 'Functions and Methods', 'Classes and Traits'),
                 'items'     => $this->renderItems($node),
                 'lines'     => $this->renderSourceWithLineCoverage($node),
-                'legend'    => $this->lineCoverageLegend(),
+                'legend'    => $this->lineCoverageLegend($node->collectsHitCounts()),
                 'structure' => '',
             ],
         );
@@ -502,8 +501,12 @@ final class File extends Renderer
                         $popoverTitle = '1 test covers line ' . $i;
                     }
 
+                    $coverageCount = (string) $numTests;
+
                     if ($collectsHitCounts) {
-                        $coverageCount = (string) array_sum($coverageData[$i]);
+                        [$coverageCount, $executions] = $this->executionCountFor($coverageData[$i]);
+
+                        $popoverTitle .= $executions;
                     }
 
                     $lineCss        = 'covered-by-large-tests';
@@ -541,7 +544,7 @@ final class File extends Renderer
             $i++;
         }
 
-        $linesTemplate->setVar(['lines' => $lines, 'gutter' => $collectsHitCounts ? ' with-hit-counts' : '']);
+        $linesTemplate->setVar(['lines' => $lines, 'gutter' => ' with-hit-counts']);
 
         return $linesTemplate->render();
     }

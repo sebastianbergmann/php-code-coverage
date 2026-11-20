@@ -14,6 +14,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   * Files that cannot be compiled are analysed based on their syntax
 * `Driver::linesDependOnCompilation()` declares whether the lines that a driver reports depend on how PHP compiled the code. It returns `true` by default, which is correct for drivers that observe the bytecode PHP executes, such as Xdebug and PCOV
 * An optional `$classifier` parameter for `CacheWarmer::warmCache()`, so that the cache can also be warmed with results of the bytecode analysis
+* The HTML report shows the number of tests that cover a line next to that line. When the driver collects hit counts, the number of times the line was executed is shown instead: numbers of 1000 and more are abbreviated (`1.23k`, for example), the exact number is shown together with the tests that cover the line
 
 ### Changed
 

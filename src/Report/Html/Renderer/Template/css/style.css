@@ -591,6 +591,11 @@ li.warning {
     font-size: 0.75rem;
 }
 
+.legend li.note {
+    padding-inline: 0;
+    color: var(--text-muted);
+}
+
 /* -------------------------------------------------------------- popover */
 
 .popover {

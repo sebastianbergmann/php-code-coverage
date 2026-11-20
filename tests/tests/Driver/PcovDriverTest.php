@@ -22,21 +22,15 @@ use SebastianBergmann\CodeCoverage\TestCase;
 #[Medium]
 final class PcovDriverTest extends TestCase
 {
-    protected function setUp(): void
+    public function testCannotBeCreatedWhenPcovIsNotAvailable(): void
     {
-        if (PHP_SAPI !== 'cli') {
-            $this->markTestSkipped('This test requires the PHP commandline interpreter');
+        if (extension_loaded('pcov')) {
+            $this->markTestSkipped('This test requires that the PCOV extension is not loaded');
         }
 
-        if (!extension_loaded('pcov')) {
-            $this->markTestSkipped('This test requires the PCOV extension to be loaded');
-        }
+        $this->expectException(PcovNotAvailableException::class);
 
-        $enabled = ini_get('pcov.enabled');
-
-        if ($enabled === false || $enabled === '' || $enabled === '0') {
-            $this->markTestSkipped('This test requires the PCOV extension to be enabled');
-        }
+        new PcovDriver(new Filter);
     }
 
     public function testDefaultsToLineGranularity(): void
@@ -84,6 +78,20 @@ final class PcovDriverTest extends TestCase
 
     private function driver(): PcovDriver
     {
+        if (PHP_SAPI !== 'cli') {
+            $this->markTestSkipped('This test requires the PHP commandline interpreter');
+        }
+
+        if (!extension_loaded('pcov')) {
+            $this->markTestSkipped('This test requires the PCOV extension to be loaded');
+        }
+
+        $enabled = ini_get('pcov.enabled');
+
+        if ($enabled === false || $enabled === '' || $enabled === '0') {
+            $this->markTestSkipped('This test requires the PCOV extension to be enabled');
+        }
+
         return new PcovDriver(new Filter);
     }
 }

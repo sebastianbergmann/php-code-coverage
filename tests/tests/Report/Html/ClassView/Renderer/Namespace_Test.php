@@ -61,6 +61,48 @@ final class Namespace_Test extends TestCase
         $this->assertStringContainsString('<a href="Root.html">Root</a>', $output);
     }
 
+    public function testNamespaceThatOnlyContainsAnotherNamespaceIsCollapsed(): void
+    {
+        $renderer = $this->createRenderer(false);
+
+        $rootNs = new NamespaceNode('(Global)', '');
+        $rootNs->promoteToRoot();
+
+        $appNs      = new NamespaceNode('App', 'App', $rootNs);
+        $domainNs   = new NamespaceNode('Domain', 'App\\Domain', $appNs);
+        $modelsNs   = new NamespaceNode('Models', 'App\\Domain\\Models', $domainNs);
+        $servicesNs = new NamespaceNode('Services', 'App\\Domain\\Services', $domainNs);
+
+        $rootNs->addNamespace($appNs);
+        $appNs->addNamespace($domainNs);
+        $domainNs->addNamespace($modelsNs);
+        $domainNs->addNamespace($servicesNs);
+
+        $libNs  = new NamespaceNode('Lib', 'Lib', $rootNs);
+        $utilNs = new NamespaceNode('Util', 'Lib\\Util', $libNs);
+
+        $rootNs->addNamespace($libNs);
+        $libNs->addNamespace($utilNs);
+        $libNs->addClass($this->createClassNode($libNs, 'Lib\\Helper'));
+
+        $modelsNs->addClass($this->createClassNode($modelsNs, 'App\\Domain\\Models\\User'));
+        $servicesNs->addClass($this->createClassNode($servicesNs, 'App\\Domain\\Services\\Mailer'));
+        $utilNs->addClass($this->createClassNode($utilNs, 'Lib\\Util\\Text'));
+
+        $renderer->render($rootNs, $this->outputFile());
+
+        $output = file_get_contents($this->outputFile);
+
+        $this->assertNotFalse($output);
+
+        // App contains nothing but Domain, which contains two namespaces
+        $this->assertStringContainsString('<a href="App/Domain/index.html">App\\Domain</a>', $output);
+        $this->assertStringNotContainsString('<a href="App/index.html">', $output);
+
+        // Lib contains a namespace and a class
+        $this->assertStringContainsString('<a href="Lib/index.html">Lib</a>', $output);
+    }
+
     public function testRendersNestedNamespaceBreadcrumbs(): void
     {
         $renderer = $this->createRenderer(false);

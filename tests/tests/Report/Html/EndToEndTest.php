@@ -21,6 +21,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function html_entity_decode;
 use function htmlspecialchars;
+use function is_dir;
 use function ksort;
 use function mkdir;
 use function preg_match_all;
@@ -369,6 +370,65 @@ final class EndToEndTest extends TestCase
         $this->assertStringContainsString('Group &lt;A &amp; B&gt;', $index);
         $this->assertStringNotContainsString('Resource <X & Y>.php', $index);
         $this->assertStringNotContainsString('Group <A & B>', $index);
+    }
+
+    public function testDirectoryThatOnlyContainsAnotherDirectoryOrASingleFileIsCollapsed(): void
+    {
+        $source = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'collapsing-source';
+        $target = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'collapsing-report';
+
+        $files = [
+            $source . DIRECTORY_SEPARATOR . 'root.php',
+            $source . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b' . DIRECTORY_SEPARATOR . 'c' . DIRECTORY_SEPARATOR . 'x.php',
+            $source . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b' . DIRECTORY_SEPARATOR . 'c' . DIRECTORY_SEPARATOR . 'y.php',
+            $source . DIRECTORY_SEPARATOR . 'd' . DIRECTORY_SEPARATOR . 'e' . DIRECTORY_SEPARATOR . 'only.php',
+            $source . DIRECTORY_SEPARATOR . 'f' . DIRECTORY_SEPARATOR . 'one.php',
+            $source . DIRECTORY_SEPARATOR . 'f' . DIRECTORY_SEPARATOR . 'two.php',
+        ];
+
+        $analyser  = new FileAnalyser(new ParsingSourceAnalyser, false, false);
+        $processed = new ProcessedCodeCoverageData;
+
+        foreach ($files as $index => $file) {
+            if (!is_dir(dirname($file))) {
+                mkdir(dirname($file), 0o777, true);
+            }
+
+            file_put_contents($file, sprintf("<?php function f%d() { return 1; }\n", $index));
+
+            $processed->initializeUnseenData(RawCodeCoverageData::fromUncoveredFile($file, $analyser));
+        }
+
+        (new Facade)->process((new Builder($analyser))->build($processed, [], ''), $target);
+
+        $index = file_get_contents($target . DIRECTORY_SEPARATOR . 'index.html');
+
+        $this->assertNotFalse($index);
+
+        // a and a/b contain nothing but another directory
+        $this->assertStringContainsString('<span class="icon icon-directory" aria-hidden="true"></span><a href="a/b/c/index.html">a/b/c</a>', $index);
+
+        // d contains nothing but e, which contains nothing but a single file
+        $this->assertStringContainsString('<span class="icon icon-file" aria-hidden="true"></span><a href="d/e/only.php.html">d/e/only.php</a>', $index);
+
+        // f contains two files
+        $this->assertStringContainsString('<a href="f/index.html">f</a>', $index);
+        $this->assertStringContainsString('<a href="root.php.html">root.php</a>', $index);
+
+        $this->assertStringNotContainsString('<a href="a/index.html">', $index);
+        $this->assertStringNotContainsString('<a href="d/index.html">', $index);
+
+        // the pages of the directories that are skipped are still generated
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'index.html');
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b' . DIRECTORY_SEPARATOR . 'index.html');
+        $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'd' . DIRECTORY_SEPARATOR . 'e' . DIRECTORY_SEPARATOR . 'index.html');
+
+        $nested = file_get_contents($target . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'index.html');
+
+        $this->assertNotFalse($nested);
+        $this->assertStringContainsString('<a href="b/c/index.html">b/c</a>', $nested);
+
+        $this->assertRelativeLinkTargetsExist($target);
     }
 
     private function assertFilesEquals(string $expectedFilesPath, string $actualFilesPath): void

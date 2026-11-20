@@ -148,15 +148,29 @@ final class Namespace_ extends Renderer
         ];
     }
 
+    /**
+     * A namespace that contains nothing but another namespace is not worth a
+     * click: the item for such a namespace is the item for the namespace it
+     * contains, named with the namespaces that lead there.
+     */
     private function renderItem(NamespaceNode $node): string
     {
+        $name = $node->name();
+        $path = $node->name();
+
+        while ($node->classes() === [] && count($node->childNamespaces()) === 1) {
+            $node = $node->childNamespaces()[0];
+            $name .= '\\' . $node->name();
+            $path .= '/' . $node->name();
+        }
+
         $data = $this->itemData($node);
 
         $data['icon'] = '<span class="icon icon-directory" aria-hidden="true"></span>';
         $data['name'] = sprintf(
             '<a href="%s/index.html">%s</a>',
-            $node->name(),
-            $node->name(),
+            $path,
+            $name,
         );
 
         return $this->renderItemTemplate(

@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
+use function count;
 use function sprintf;
 use function usort;
 use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
@@ -109,9 +110,20 @@ final class Directory extends Renderer
         ];
     }
 
+    /**
+     * A directory that contains nothing but another directory, or nothing but
+     * a single file, is not worth a click: the item for such a directory is
+     * the item for what it contains, named with the path that leads there.
+     */
     private function renderItem(Node $node): string
     {
         $name = $this->escapeHtml($node->name());
+
+        while ($node instanceof DirectoryNode && count($node->children()) === 1) {
+            $node = $node->children()[0];
+            $name .= '/' . $this->escapeHtml($node->name());
+        }
+
         $data = $this->itemData($node);
 
         if ($node instanceof DirectoryNode) {

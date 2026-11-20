@@ -9,6 +9,7 @@
  */
 namespace SebastianBergmann\CodeCoverage\Data;
 
+use function array_keys;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -158,6 +159,20 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         $coverage->markCodeAsExecutedByTestCase('testTwo', $executed);
 
         $this->assertSame([0 => 0, 1 => 1], $this->edgesTakenOutOfDecision($coverage));
+    }
+
+    public function testEdgesTakenInFunctionThatWasNotInitializedAreNotRecorded(): void
+    {
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->markCodeAsExecutedByTestCase('testOne', $this->executionOfFunctionWithDecision([1, 0]));
+
+        $this->assertSame(
+            ['/some/path/source.php' => [3 => ['testOne' => 1], 4 => ['testOne' => 1]]],
+            $this->lineCoverageKeyedByTestId($coverage),
+        );
+
+        $this->assertSame([], $coverage->functionCoverage());
     }
 
     public function testMergeAccumulatesEdgesTakenInBothOperands(): void
@@ -468,6 +483,28 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         );
     }
 
+    public function testFunctionCoverageSeededFromStaticAnalysisIsIgnoredDuringMergeWhenExecutedDataExists(): void
+    {
+        $executed = $this->executionOfFunctionWithDecision([1, 0]);
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->initializeUnseenData($executed);
+        $coverage->markCodeAsExecutedByTestCase('test', $executed);
+
+        $seeded = new ProcessedCodeCoverageData;
+
+        $seeded->initializeUncoveredFiles($this->functionWithDecisionThatWasNotExecuted('g'));
+
+        $coverage->merge($seeded);
+
+        $functionCoverage = $coverage->functionCoverage();
+
+        $this->assertArrayHasKey('/some/path/source.php', $functionCoverage);
+        $this->assertSame(['f'], array_keys($functionCoverage['/some/path/source.php']));
+        $this->assertSame([0 => 1, 1 => 0], $this->edgesTakenOutOfDecision($coverage));
+    }
+
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1335')]
     public function testDataSeededFromStaticAnalysisRemainsReplaceableAfterMergingItWithDataSeededFromStaticAnalysis(): void
     {
@@ -581,14 +618,17 @@ final class ProcessedCodeCoverageDataTest extends TestCase
         );
     }
 
-    private function functionWithDecisionThatWasNotExecuted(): RawCodeCoverageData
+    /**
+     * @param non-empty-string $functionName
+     */
+    private function functionWithDecisionThatWasNotExecuted(string $functionName = 'f'): RawCodeCoverageData
     {
         return RawCodeCoverageData::fromXdebugWithPathCoverage(
             [
                 '/some/path/source.php' => [
                     'lines'     => [3 => -1, 4 => -1, 6 => -1],
                     'functions' => [
-                        'f' => [
+                        $functionName => [
                             'branches' => [
                                 0 => ['op_start' => 0, 'op_end' => 2, 'line_start' => 3, 'line_end' => 3, 'hit' => 0, 'out' => [0 => 1, 1 => 2], 'out_hit' => [0 => 0, 1 => 0]],
                                 1 => ['op_start' => 3, 'op_end' => 4, 'line_start' => 4, 'line_end' => 4, 'hit' => 0, 'out' => [], 'out_hit' => []],

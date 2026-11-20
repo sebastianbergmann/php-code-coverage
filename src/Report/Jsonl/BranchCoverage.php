@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Jsonl;
 
 use function count;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -54,6 +55,12 @@ final readonly class BranchCoverage
             }
 
             foreach ($branch->out as $edge => $destination) {
+                // The edge to the exit of the function is not reported as taken,
+                // not even when it was taken
+                if ($destination === Driver::BRANCH_EXIT) {
+                    continue;
+                }
+
                 if (($branch->out_hit[$edge] ?? 0) > 0) {
                     continue;
                 }

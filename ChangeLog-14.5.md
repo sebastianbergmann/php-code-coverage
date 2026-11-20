@@ -9,6 +9,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Which edges out of a branch were taken is only recorded for the first test that executes a function. Edges that are only taken by other tests, or only in code coverage data that is merged, are shown as not covered in the control flow graphs of the HTML report and are reported as not covered by the JSONL report
   * The version of the format in which code coverage data is serialized is now 5: which edges were taken has a different meaning in files written by earlier versions, these files can no longer be read
 * The control flow graphs of the HTML report show the edge that leads to the exit of a function as not covered, even when it is the only edge out of a branch that was executed
+* The JSONL report reports the line that a branch ends on as not covered when one of the edges out of that branch leads to the exit of the function
 
 ## [14.5.2] - 2026-11-09
 

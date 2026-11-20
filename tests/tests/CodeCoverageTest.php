@@ -16,6 +16,7 @@ use function sys_get_temp_dir;
 use function tempnam;
 use function uniqid;
 use function unlink;
+use CoveredParentClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Medium;
@@ -497,6 +498,20 @@ final class CodeCoverageTest extends TestCase
         $this->assertFalse($coverage->collectsBranchAndPathCoverage());
     }
 
+    /**
+     * @deprecated Tests deprecated functionality
+     */
+    public function testEnableBranchAndPathCoverage(): void
+    {
+        $coverage = new CodeCoverage(new FakeDriver, new Filter);
+
+        $this->assertFalse($coverage->collectsBranchAndPathCoverage());
+
+        $coverage->enableBranchAndPathCoverage();
+
+        $this->assertTrue($coverage->collectsBranchAndPathCoverage());
+    }
+
     public function testAppendThrowsWhenIdIsNull(): void
     {
         $coverage = new CodeCoverage(
@@ -849,6 +864,33 @@ final class CodeCoverageTest extends TestCase
         $this->expectException(UnintentionallyCoveredCodeException::class);
 
         $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount(), null, 0.0, $size);
+    }
+
+    public function testCodeThatIsUsedByTestIsNotUnintentionallyCoveredCode(): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $coverage->append(
+            $this->dataForTestThatExecutesBankAccountAndCoveredClass(),
+            'A test',
+            true,
+            null,
+            $this->coversBankAccount(),
+            TargetCollection::fromArray([Target::forFile(TEST_FILES_PATH . 'CoveredClass.php')]),
+        );
+
+        $this->assertSame([TEST_FILES_PATH . 'BankAccount.php'], $this->filesExecutedByTest($coverage, 'A test'));
+    }
+
+    public function testCodeInSubclassOfExcludedClassIsNotUnintentionallyCoveredCode(): void
+    {
+        $coverage = $this->coverageThatChecksForUnintentionallyCoveredCode();
+
+        $coverage->excludeSubclassesOfThisClassFromUnintentionallyCoveredCodeCheck(CoveredParentClass::class);
+
+        $coverage->append($this->dataForTestThatExecutesBankAccountAndCoveredClass(), 'A test', true, null, $this->coversBankAccount());
+
+        $this->assertSame([TEST_FILES_PATH . 'BankAccount.php'], $this->filesExecutedByTest($coverage, 'A test'));
     }
 
     public function testSizePassedToAppendTakesPrecedenceOverSizePassedToStart(): void

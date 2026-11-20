@@ -91,6 +91,20 @@ final class ProcessedFunctionCoverageDataTest extends TestCase
         $this->assertSame([0 => 2], $data->paths[0]->hit);
     }
 
+    public function testRecordPathHitIgnoresPathThatDoesNotExist(): void
+    {
+        $data = new ProcessedFunctionCoverageData(
+            [],
+            [0 => new ProcessedPathCoverageData([0 => 0], [])],
+        );
+
+        $data->recordPathHit(1, 0, 2);
+
+        $this->assertArrayHasKey(0, $data->paths);
+        $this->assertArrayNotHasKey(1, $data->paths);
+        $this->assertSame([], $data->paths[0]->hit);
+    }
+
     public function testMergeReturnsSelfWhenBranchesAndPathsAreIdentical(): void
     {
         $branch = new ProcessedBranchCoverageData(0, 14, 20, 25, [], [], []);

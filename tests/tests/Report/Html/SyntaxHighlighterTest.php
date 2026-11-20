@@ -32,4 +32,12 @@ final class SyntaxHighlighterTest extends TestCase
         $this->assertCount(5, $highlighted);
         $this->assertStringContainsString('<span class="default">$b</span>', $highlighted[4]);
     }
+
+    public function testHighlightsLastLineOfFileThatDoesNotEndWithNewline(): void
+    {
+        $highlighted = (new SyntaxHighlighter)->highlight(TEST_FILES_PATH . 'source_without_newline.php');
+
+        $this->assertCount(1, $highlighted);
+        $this->assertStringContainsString('<span class="comment">//&nbsp;This&nbsp;file&nbsp;contains&nbsp;no&nbsp;newline.</span>', $highlighted[0]);
+    }
 }

@@ -24,6 +24,8 @@ use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\ParsingSourceAnalyser;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\ChildClass;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\ClassImplementingInterface;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\ClassUsingTraitUsingTrait;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\GrandParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\BaseDummy;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\Issue1066\Dummy;
@@ -34,6 +36,7 @@ use SebastianBergmann\CodeCoverage\TestFixture\Target\ParentClass;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T1;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\T2;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetEnumeration;
+use SebastianBergmann\CodeCoverage\TestFixture\Target\TargetInterface;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitOne;
 use SebastianBergmann\CodeCoverage\TestFixture\Target\TraitTwo;
 
@@ -621,6 +624,96 @@ final class MapBuilderTest extends TestCase
             ], $files),
             $this->map($files),
         );
+    }
+
+    public function testLinesOfTraitThatIsNotAnalysedAreNotAddedToTraitThatUsesIt(): void
+    {
+        $traitTwo = self::realpath(__DIR__ . '/../../../_files/Target/TraitTwo.php');
+
+        $this->assertSame(
+            [
+                TraitTwo::class => [
+                    $traitTwo => range(4, 11),
+                ],
+            ],
+            $this->map([$traitTwo])['traits'],
+        );
+    }
+
+    public function testLinesOfTraitThatIsNotAnalysedAreNotAddedToClassThatUsesIt(): void
+    {
+        $class = self::realpath(__DIR__ . '/../../../_files/Target/ClassUsingTraitUsingTrait.php');
+
+        $map = $this->map([$class]);
+
+        $this->assertSame([], $map['traits']);
+
+        $this->assertSame(
+            [
+                ClassUsingTraitUsingTrait::class => [
+                    $class => range(4, 11),
+                ],
+            ],
+            $map['classes'],
+        );
+    }
+
+    public function testLinesOfParentClassThatIsNotAnalysedAreNotAddedToClassThatExtendsIt(): void
+    {
+        $childClass = self::realpath(__DIR__ . '/../../../_files/Target/ChildClass.php');
+
+        $map = $this->map([$childClass]);
+
+        $this->assertSame(
+            [
+                ChildClass::class => [
+                    $childClass => range(4, 9),
+                ],
+            ],
+            $map['classes'],
+        );
+
+        $this->assertSame([], $map['classesThatExtendClass']);
+    }
+
+    public function testClassIsMappedToInterfaceItImplements(): void
+    {
+        $interface = self::realpath(__DIR__ . '/../../../_files/Target/TargetInterface.php');
+        $class     = self::realpath(__DIR__ . '/../../../_files/Target/ClassImplementingInterface.php');
+
+        $this->assertSame(
+            [
+                TargetInterface::class => [
+                    $class => range(4, 9),
+                ],
+            ],
+            $this->map([$interface, $class])['classesThatImplementInterface'],
+        );
+    }
+
+    public function testClassIsNotMappedToInterfaceThatIsNotAnalysed(): void
+    {
+        $class = self::realpath(__DIR__ . '/../../../_files/Target/ClassImplementingInterface.php');
+
+        $map = $this->map([$class]);
+
+        $this->assertSame([], $map['classesThatImplementInterface']);
+
+        $this->assertSame(
+            [
+                ClassImplementingInterface::class => [
+                    $class => range(4, 9),
+                ],
+            ],
+            $map['classes'],
+        );
+    }
+
+    public function testInterfaceThatNoAnalysedClassImplementsIsNotMapped(): void
+    {
+        $interface = self::realpath(__DIR__ . '/../../../_files/Target/TargetInterface.php');
+
+        $this->assertSame([], $this->map([$interface])['classesThatImplementInterface']);
     }
 
     /**

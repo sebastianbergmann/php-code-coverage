@@ -538,6 +538,45 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         }
     }
 
+    public function testBooleanAndOnMultipleLinesCreatesSeparateBranchForLineOfRightOperand(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_boolean_and_on_multiple_lines.php',
+        );
+
+        // Assignment
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 6);
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 7);
+        $this->assertLinesAreInDifferentBranches($executableLines, 6, 7);
+
+        // Arm of a ternary operator
+        $this->assertLinesAreInDifferentBranches($executableLines, 15, 16);
+
+        // Body of an arm of a match expression
+        $this->assertLinesAreInDifferentBranches($executableLines, 25, 26);
+
+        // Argument of a function call: the other lines of the function call
+        // stay grouped
+        $this->assertLinesAreInDifferentBranches($executableLines, 44, 45);
+        $this->assertLinesAreInSameBranch($executableLines, 43, 44);
+        $this->assertLinesAreInSameBranch($executableLines, 43, 46);
+
+        // Condition of an if statement: the && starts on a line of its own
+        $this->assertLinesAreInDifferentBranches($executableLines, 53, 54);
+    }
+
+    public function testLineOfRightOperandOfBooleanAndIsNotMarkedAsBranchOperator(): void
+    {
+        $branchOperatorLines = $this->visit(
+            __DIR__ . '/../../../_files/source_boolean_and_on_multiple_lines.php',
+        )->branchOperatorLines();
+
+        // Line 6 is the line of a function call, line 7 is only the line of
+        // a right operand of &&
+        $this->assertArrayHasKey(6, $branchOperatorLines);
+        $this->assertArrayNotHasKey(7, $branchOperatorLines);
+    }
+
     public function testTernaryInOperandOfBooleanAndInsideArrayLiteralCreatesSeparateBranches(): void
     {
         $executableLines = $this->executableLinesGroupedByBranch(
@@ -653,6 +692,11 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
      */
     private function executableLinesGroupedByBranch(string $filename): array
     {
+        return $this->visit($filename)->executableLinesGroupedByBranch();
+    }
+
+    private function visit(string $filename): ExecutableLinesFindingVisitor
+    {
         $source = file_get_contents($filename);
         assert($source !== false);
         $parser = (new ParserFactory)->createForHostVersion();
@@ -664,7 +708,7 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $traverser->addVisitor($executableLinesFindingVisitor);
         $traverser->traverse($nodes);
 
-        return $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+        return $executableLinesFindingVisitor;
     }
 
     /**

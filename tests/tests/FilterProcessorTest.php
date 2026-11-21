@@ -256,6 +256,159 @@ final class FilterProcessorTest extends TestCase
         $this->assertSame([9 => 1, 10 => 1, 12 => -1], $linesForFile);
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkLineOfRightOperandOfBooleanAndThatWasNotExecutedAsExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_on_multiple_lines.php');
+
+        // Line coverage as reported by Xdebug 3.6 after every function was
+        // called such that the left operand of the first && is false, and
+        // condition() such that the left operand of || is true.
+        //
+        // Only the line of the last operand of the assignment (line 7) is
+        // reported as not executed. The lines of the other right operands
+        // (6, 16, 26, 36, 45, and 54) also hold an opcode that is executed
+        // when the operand is not evaluated.
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => 1,
+                7  => -1,
+                9  => 1,
+                14 => 1,
+                15 => 1,
+                16 => 1,
+                17 => -1,
+                19 => 1,
+                24 => 1,
+                25 => 1,
+                26 => 1,
+                27 => -1,
+                30 => 1,
+                35 => 1,
+                36 => 1,
+                38 => 1,
+                43 => 1,
+                44 => 1,
+                45 => 1,
+                46 => 1,
+                48 => 1,
+                53 => 1,
+                54 => 1,
+                55 => 1,
+                58 => -1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    6  => 1,
+                    7  => -1,
+                    9  => 1,
+                    10 => -1,
+                    14 => 1,
+                    15 => 1,
+                    16 => 1,
+                    17 => -1,
+                    19 => 1,
+                    20 => -1,
+                    24 => 1,
+                    25 => 1,
+                    26 => 1,
+                    27 => -1,
+                    30 => 1,
+                    31 => -1,
+                    35 => 1,
+                    36 => 1,
+                    38 => 1,
+                    39 => -1,
+                    43 => 1,
+                    44 => 1,
+                    45 => 1,
+                    48 => 1,
+                    49 => -1,
+                    53 => 1,
+                    54 => 1,
+                    55 => 1,
+                    58 => -1,
+                    59 => -1,
+                    60 => 1,
+                ],
+            ),
+        );
+    }
+
+    public function testApplyExecutableLinesFilterDoesNotMarkLineOfRightOperandOfBooleanAndThatWasNotExecutedAsExecutedWhenOptimizerIsEnabled(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_on_multiple_lines.php');
+
+        // Line coverage as reported by PCOV 1.0.12 for the same calls while
+        // the optimizer of OPcache is enabled: the lines of the right
+        // operands in the assignment (6 and 7), in the argument of the
+        // function call (45), and in the condition (54) are reported as not
+        // executed
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => -1,
+                7  => -1,
+                9  => 1,
+                14 => 1,
+                15 => 1,
+                16 => 1,
+                17 => -1,
+                19 => 1,
+                24 => 1,
+                25 => 1,
+                26 => 1,
+                27 => -1,
+                30 => 1,
+                35 => 1,
+                36 => 1,
+                38 => 1,
+                43 => 1,
+                44 => 1,
+                45 => -1,
+                46 => 1,
+                48 => 1,
+                53 => 1,
+                54 => -1,
+                55 => 1,
+                58 => -1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    6  => -1,
+                    7  => -1,
+                    9  => 1,
+                    14 => 1,
+                    15 => 1,
+                    16 => 1,
+                    17 => -1,
+                    19 => 1,
+                    24 => 1,
+                    25 => 1,
+                    26 => 1,
+                    27 => -1,
+                    30 => 1,
+                    35 => 1,
+                    36 => 1,
+                    38 => 1,
+                    43 => 1,
+                    44 => 1,
+                    45 => -1,
+                    48 => 1,
+                    53 => 1,
+                    54 => -1,
+                    55 => 1,
+                    58 => -1,
+                    60 => 1,
+                ],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterDoesNotMarkOperandOfBooleanAndThatIsEvaluatedByCompilerAsNotExecuted(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_with_operand_without_variable.php');

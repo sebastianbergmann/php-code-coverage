@@ -404,6 +404,10 @@ class MyClass
         ) {
             ++$var;                         // +1
         }
+        if ($var ||                         // +1
+            $var && $var) {                 // +1
+            ++$var;                         // +1
+        }
         return $var                         // +1
             && $var;                        // +1
     }

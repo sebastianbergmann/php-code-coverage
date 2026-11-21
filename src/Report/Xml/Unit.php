@@ -29,7 +29,11 @@ final readonly class Unit
         int $start,
         int $executable,
         int $executed,
-        float $crap
+        float $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ) {
         $this->xmlWriter = $xmlWriter;
 
@@ -38,6 +42,13 @@ final readonly class Unit
         $this->xmlWriter->writeAttribute('executable', (string) $executable);
         $this->xmlWriter->writeAttribute('executed', (string) $executed);
         $this->xmlWriter->writeAttribute('crap', (string) $crap);
+
+        if ($executableBranches > 0) {
+            $this->xmlWriter->writeAttribute('executableBranches', (string) $executableBranches);
+            $this->xmlWriter->writeAttribute('executedBranches', (string) $executedBranches);
+            $this->xmlWriter->writeAttribute('executablePaths', (string) $executablePaths);
+            $this->xmlWriter->writeAttribute('executedPaths', (string) $executedPaths);
+        }
 
         $this->xmlWriter->startElement('namespace');
         $this->xmlWriter->writeAttribute('name', $this->ensureUtf8($namespace));
@@ -52,7 +63,11 @@ final readonly class Unit
         string $executable,
         string $executed,
         string $coverage,
-        string $crap
+        string $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ): void {
         new Method(
             $this->xmlWriter,
@@ -64,6 +79,10 @@ final readonly class Unit
             $executed,
             $coverage,
             $crap,
+            $executableBranches,
+            $executedBranches,
+            $executablePaths,
+            $executedPaths,
         );
     }
 }

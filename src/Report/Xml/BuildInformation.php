@@ -28,11 +28,13 @@ final readonly class BuildInformation
         string $coverageVersion,
         string $driverExtensionName,
         string $driverExtensionVersion,
+        bool $branchCoverage,
     ) {
         $xmlWriter->startElement('build');
         $xmlWriter->writeAttribute('time', $buildDate->format('D M j G:i:s T Y'));
         $xmlWriter->writeAttribute('phpunit', $phpUnitVersion);
         $xmlWriter->writeAttribute('coverage', $coverageVersion);
+        $xmlWriter->writeAttribute('branchCoverage', $branchCoverage ? 'true' : 'false');
 
         $xmlWriter->startElement('runtime');
         $xmlWriter->writeAttribute('name', $runtime->getName());

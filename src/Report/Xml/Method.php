@@ -31,7 +31,11 @@ final readonly class Method
         string $executable,
         string $executed,
         string $coverage,
-        string $crap
+        string $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ) {
         $this->xmlWriter = $xmlWriter;
 
@@ -49,5 +53,12 @@ final readonly class Method
         $this->xmlWriter->writeAttribute('executable', $executable);
         $this->xmlWriter->writeAttribute('executed', $executed);
         $this->xmlWriter->writeAttribute('coverage', $coverage);
+
+        if ($executableBranches > 0) {
+            $this->xmlWriter->writeAttribute('executableBranches', (string) $executableBranches);
+            $this->xmlWriter->writeAttribute('executedBranches', (string) $executedBranches);
+            $this->xmlWriter->writeAttribute('executablePaths', (string) $executablePaths);
+            $this->xmlWriter->writeAttribute('executedPaths', (string) $executedPaths);
+        }
     }
 }

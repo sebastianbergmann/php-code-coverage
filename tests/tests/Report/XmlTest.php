@@ -16,9 +16,12 @@ use function rmdir;
 use function substr_count;
 use function unlink;
 use DateTimeImmutable;
+use DOMDocument;
+use DOMXPath;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
@@ -29,6 +32,9 @@ use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\Environment\Runtime;
 use SplFileInfo;
 
+/**
+ * @phpstan-import-type TestType from CodeCoverage
+ */
 #[CoversClass(Facade::class)]
 #[CoversClass(BuildInformation::class)]
 #[CoversClass(Coverage::class)]
@@ -151,6 +157,108 @@ final class XmlTest extends TestCase
         );
 
         $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+    }
+
+    public function testForBankAccountTestWithBranchAndPathCoverage(): void
+    {
+        $codeCoverage = $this->getPathCoverageForBankAccount();
+
+        $expectedFilesPath = self::$TEST_REPORT_PATH_SOURCE . DIRECTORY_SEPARATOR . 'PathCoverageForBankAccount';
+
+        $xml = new Facade(false);
+
+        $xml->process(
+            TEST_FILES_PATH . 'tmp',
+            $codeCoverage->getReport(),
+            $codeCoverage->getTests(),
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
+
+        $this->assertFilesEquals($expectedFilesPath, TEST_FILES_PATH . 'tmp');
+    }
+
+    public function testBranchAndPathCoverageIsOmittedWhenItWasNotCollected(): void
+    {
+        $codeCoverage = $this->getLineCoverageForBankAccount();
+
+        $this->process($codeCoverage->getReport(), $codeCoverage->getTests());
+
+        $index = $this->xpathFor('index.xml');
+        $file  = $this->xpathFor('BankAccount.php.xml');
+
+        $this->assertSame('false', $index->evaluate('string(/c:phpunit/c:build/@branchCoverage)'));
+        $this->assertSame(0.0, $index->evaluate('count(//c:branches | //c:paths)'));
+        $this->assertSame(0.0, $file->evaluate('count(//c:branches | //c:paths)'));
+        $this->assertSame(0.0, $file->evaluate('count(//@executableBranches | //@executedBranches | //@executablePaths | //@executedPaths)'));
+    }
+
+    public function testDirectoryReportsNumberOfFilesForWhichBranchAndPathCoverageIsNotAvailable(): void
+    {
+        $this->process($this->reportWithFileWithoutBranchCoverageData(), []);
+
+        $index = $this->xpathFor('index.xml');
+        $root  = '/c:phpunit/c:project/c:directory/c:totals';
+
+        $this->assertSame('true', $index->evaluate('string(/c:phpunit/c:build/@branchCoverage)'));
+        $this->assertSame('7', $index->evaluate('string(' . $root . '/c:branches/@count)'));
+        $this->assertSame('1', $index->evaluate('string(' . $root . '/c:branches/@filesWithoutData)'));
+        $this->assertSame('5', $index->evaluate('string(' . $root . '/c:paths/@count)'));
+        $this->assertSame('1', $index->evaluate('string(' . $root . '/c:paths/@filesWithoutData)'));
+    }
+
+    public function testBranchAndPathCoverageIsOmittedForFileAndDirectoryForWhichItIsNotAvailable(): void
+    {
+        $this->process($this->reportWithFileWithoutBranchCoverageData(), []);
+
+        $index     = $this->xpathFor('index.xml');
+        $directory = '/c:phpunit/c:project/c:directory/c:directory[@name="Target"]';
+
+        $this->assertSame(1.0, $index->evaluate('count(' . $directory . '/c:totals/c:lines)'));
+        $this->assertSame(0.0, $index->evaluate('count(' . $directory . '/c:totals/c:branches | ' . $directory . '/c:totals/c:paths)'));
+        $this->assertSame(1.0, $index->evaluate('count(' . $directory . '/c:file/c:totals/c:lines)'));
+        $this->assertSame(0.0, $index->evaluate('count(' . $directory . '/c:file/c:totals/c:branches | ' . $directory . '/c:file/c:totals/c:paths)'));
+
+        $file = $this->xpathFor('Target/TargetClass.php.xml');
+
+        $this->assertSame(0.0, $file->evaluate('count(//c:branches | //c:paths)'));
+        $this->assertSame(0.0, $file->evaluate('count(//@executableBranches | //@executedBranches | //@executablePaths | //@executedPaths)'));
+    }
+
+    public function testFileReportsBranchAndPathCoverageWithoutNumberOfFiles(): void
+    {
+        $this->process($this->reportWithFileWithoutBranchCoverageData(), []);
+
+        $index = $this->xpathFor('index.xml');
+        $file  = '/c:phpunit/c:project/c:directory/c:file[@name="BankAccount.php"]/c:totals';
+
+        $this->assertSame('7', $index->evaluate('string(' . $file . '/c:branches/@count)'));
+        $this->assertSame('3', $index->evaluate('string(' . $file . '/c:branches/@tested)'));
+        $this->assertSame('5', $index->evaluate('string(' . $file . '/c:paths/@count)'));
+        $this->assertSame('3', $index->evaluate('string(' . $file . '/c:paths/@tested)'));
+        $this->assertSame(0.0, $index->evaluate('count(' . $file . '/c:branches/@filesWithoutData | ' . $file . '/c:paths/@filesWithoutData)'));
+    }
+
+    public function testBranchAndPathCoverageIsOmittedForMethodForWhichItIsNotAvailable(): void
+    {
+        $codeCoverage = $this->pathCoverageForBankAccountWithPartialBranchAndPathCoverage();
+
+        $this->process($codeCoverage->getReport(), $codeCoverage->getTests());
+
+        $file = $this->xpathFor('BankAccount.php.xml');
+
+        $this->assertSame('4', $file->evaluate('string(//c:method[@name="setBalance"]/@executableBranches)'));
+        $this->assertSame('3', $file->evaluate('string(//c:method[@name="setBalance"]/@executedBranches)'));
+        $this->assertSame('2', $file->evaluate('string(//c:method[@name="setBalance"]/@executablePaths)'));
+        $this->assertSame('1', $file->evaluate('string(//c:method[@name="setBalance"]/@executedPaths)'));
+        $this->assertSame(1.0, $file->evaluate('count(//c:method[@name="getBalance"])'));
+        $this->assertSame(0.0, $file->evaluate('count(//c:method[@name="getBalance"]/@executableBranches | //c:method[@name="getBalance"]/@executedBranches | //c:method[@name="getBalance"]/@executablePaths | //c:method[@name="getBalance"]/@executedPaths)'));
+        $this->assertSame('4', $file->evaluate('string(//c:class[@name="BankAccount"]/@executableBranches)'));
+        $this->assertSame('3', $file->evaluate('string(//c:class[@name="BankAccount"]/@executedBranches)'));
     }
 
     public function testTraitsAreRendered(): void
@@ -328,6 +436,37 @@ final class XmlTest extends TestCase
         $this->assertNotFalse($index);
 
         return $index;
+    }
+
+    /**
+     * @param array<non-empty-string, TestType> $tests
+     */
+    private function process(DirectoryNode $report, array $tests): void
+    {
+        (new Facade(false))->process(
+            TEST_FILES_PATH . 'tmp',
+            $report,
+            $tests,
+            new Runtime,
+            new DateTimeImmutable,
+            '13.1.0',
+            '14.0.0',
+            'Xdebug',
+            '3.5.1',
+        );
+    }
+
+    private function xpathFor(string $file): DOMXPath
+    {
+        $document = new DOMDocument;
+
+        $this->assertTrue($document->load(TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . $file));
+
+        $xpath = new DOMXPath($document);
+
+        $xpath->registerNamespace('c', Facade::XML_NAMESPACE);
+
+        return $xpath;
     }
 
     private function concatenatedReportFiles(): string

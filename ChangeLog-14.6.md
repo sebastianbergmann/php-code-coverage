@@ -16,6 +16,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * An optional `$classifier` parameter for `CacheWarmer::warmCache()`, so that the cache can also be warmed with results of the bytecode analysis
 * The HTML report shows the number of tests that cover a line next to that line. When the driver collects hit counts, the number of times the line was executed is shown instead: numbers of 1000 and more are abbreviated (`1.23k`, for example), the exact number is shown together with the tests that cover the line
 * The HTML report has navigation between code that is not covered: the `n` and `p` keys, and two buttons, jump to the next and to the previous lines that are not covered. In the views for branch and path coverage, lines that are only partially covered are included
+* [#1056](https://github.com/sebastianbergmann/php-code-coverage/issues/1056): The XML report includes branch and path coverage
+  * `<totals>` has `<branches>` and `<paths>` elements with `count`, `tested`, and `percent` attributes. They are left out for a file or directory for which no branch and path coverage data is available. For a directory, their `filesWithoutData` attribute tells for how many of its files no such data is available
+  * `<class>`, `<trait>`, `<method>`, and `<function>` have `executableBranches`, `executedBranches`, `executablePaths`, and `executedPaths` attributes when branch and path coverage data is available for them
+  * `<build>` has a `branchCoverage` attribute that tells whether branch and path coverage data was collected
 
 ### Changed
 

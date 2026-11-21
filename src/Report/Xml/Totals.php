@@ -41,6 +41,46 @@ final readonly class Totals
         $this->xmlWriter->endElement();
     }
 
+    /**
+     * @param ?int $filesWithoutData Number of files below a directory for which no branch coverage data is available, null for a file
+     */
+    public function setNumBranches(int $count, int $tested, ?int $filesWithoutData): void
+    {
+        $this->xmlWriter->startElement('branches');
+        $this->xmlWriter->writeAttribute('count', (string) $count);
+        $this->xmlWriter->writeAttribute('tested', (string) $tested);
+        $this->xmlWriter->writeAttribute(
+            'percent',
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
+        );
+
+        if ($filesWithoutData !== null) {
+            $this->xmlWriter->writeAttribute('filesWithoutData', (string) $filesWithoutData);
+        }
+
+        $this->xmlWriter->endElement();
+    }
+
+    /**
+     * @param ?int $filesWithoutData Number of files below a directory for which no path coverage data is available, null for a file
+     */
+    public function setNumPaths(int $count, int $tested, ?int $filesWithoutData): void
+    {
+        $this->xmlWriter->startElement('paths');
+        $this->xmlWriter->writeAttribute('count', (string) $count);
+        $this->xmlWriter->writeAttribute('tested', (string) $tested);
+        $this->xmlWriter->writeAttribute(
+            'percent',
+            $count === 0 ? '0' : Percentage::fromFractionAndTotal($tested, $count)->asStringWithoutPercentSign(),
+        );
+
+        if ($filesWithoutData !== null) {
+            $this->xmlWriter->writeAttribute('filesWithoutData', (string) $filesWithoutData);
+        }
+
+        $this->xmlWriter->endElement();
+    }
+
     public function setNumClasses(int $count, int $tested): void
     {
         $this->xmlWriter->startElement('classes');

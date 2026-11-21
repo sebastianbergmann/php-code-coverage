@@ -87,6 +87,7 @@ final class Facade
             $coverageVersion,
             $driverExtensionName,
             $driverExtensionVersion,
+            $this->hasBranchCoverageData($report),
         );
 
         $this->project->startProject();
@@ -95,7 +96,7 @@ final class Facade
         $this->project->finalize();
     }
 
-    private function setBuildInformation(?Runtime $runtime, ?DateTimeImmutable $buildDate, ?string $phpUnitVersion, ?string $coverageVersion, ?string $driverExtensionName, ?string $driverExtensionVersion): void
+    private function setBuildInformation(?Runtime $runtime, ?DateTimeImmutable $buildDate, ?string $phpUnitVersion, ?string $coverageVersion, ?string $driverExtensionName, ?string $driverExtensionVersion, bool $branchCoverage): void
     {
         if ($runtime === null) {
             return;
@@ -128,6 +129,7 @@ final class Facade
             Version::id(),
             $driverExtensionName,
             $driverExtensionVersion,
+            $branchCoverage,
         );
     }
 
@@ -264,6 +266,10 @@ final class Facade
                 $unit->executableLines,
                 $unit->executedLines,
                 (float) $unit->crap,
+                $unit->executableBranches,
+                $unit->executedBranches,
+                $unit->executablePaths,
+                $unit->executedPaths,
             );
         } else {
             $report->getWriter()->startElement('trait');
@@ -275,6 +281,10 @@ final class Facade
                 $unit->executableLines,
                 $unit->executedLines,
                 (float) $unit->crap,
+                $unit->executableBranches,
+                $unit->executedBranches,
+                $unit->executablePaths,
+                $unit->executedPaths,
             );
         }
 
@@ -290,6 +300,10 @@ final class Facade
                 (string) $method->executedLines,
                 (string) $method->coverage,
                 (string) $method->crap,
+                $method->executableBranches,
+                $method->executedBranches,
+                $method->executablePaths,
+                $method->executedPaths,
             );
 
             $report->getWriter()->endElement();
@@ -311,6 +325,10 @@ final class Facade
             (string) $function->executedLines,
             (string) $function->coverage,
             (string) $function->crap,
+            $function->executableBranches,
+            $function->executedBranches,
+            $function->executablePaths,
+            $function->executedPaths,
         );
 
         $report->getWriter()->endElement();
@@ -346,6 +364,26 @@ final class Facade
             $node->numberOfExecutedLines(),
         );
 
+        if ($this->hasBranchCoverageData($node)) {
+            $filesWithoutData = null;
+
+            if ($node instanceof DirectoryNode) {
+                $filesWithoutData = $node->numberOfFilesWithoutBranchCoverageData();
+            }
+
+            $totals->setNumBranches(
+                $node->numberOfExecutableBranches(),
+                $node->numberOfExecutedBranches(),
+                $filesWithoutData,
+            );
+
+            $totals->setNumPaths(
+                $node->numberOfExecutablePaths(),
+                $node->numberOfExecutedPaths(),
+                $filesWithoutData,
+            );
+        }
+
         $totals->setNumMethods(
             $node->numberOfMethods(),
             $node->numberOfTestedMethods(),
@@ -367,6 +405,19 @@ final class Facade
         );
 
         $totals->getWriter()->endElement();
+    }
+
+    /**
+     * Branch and path coverage data is not available for a file that was not
+     * loaded while the tests ran, even when it was collected for other files.
+     */
+    private function hasBranchCoverageData(AbstractNode $node): bool
+    {
+        if ($node instanceof FileNode) {
+            return $node->hasBranchCoverageData();
+        }
+
+        return count($node) > $node->numberOfFilesWithoutBranchCoverageData();
     }
 
     private function targetDirectory(): string

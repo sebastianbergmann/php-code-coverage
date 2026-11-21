@@ -68,7 +68,11 @@ final class Report extends File
         string $executable,
         string $executed,
         string $coverage,
-        string $crap
+        string $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ): void {
         new Method(
             $this->xmlWriter,
@@ -80,6 +84,10 @@ final class Report extends File
             $executed,
             $coverage,
             $crap,
+            $executableBranches,
+            $executedBranches,
+            $executablePaths,
+            $executedPaths,
         );
     }
 
@@ -89,9 +97,13 @@ final class Report extends File
         int $start,
         int $executable,
         int $executed,
-        float $crap
+        float $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ): Unit {
-        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap);
+        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap, $executableBranches, $executedBranches, $executablePaths, $executedPaths);
     }
 
     public function traitObject(
@@ -100,9 +112,13 @@ final class Report extends File
         int $start,
         int $executable,
         int $executed,
-        float $crap
+        float $crap,
+        int $executableBranches,
+        int $executedBranches,
+        int $executablePaths,
+        int $executedPaths,
     ): Unit {
-        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap);
+        return new Unit($this->xmlWriter, $name, $namespace, $start, $executable, $executed, $crap, $executableBranches, $executedBranches, $executablePaths, $executedPaths);
     }
 
     public function source(): Source

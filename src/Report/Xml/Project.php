@@ -46,6 +46,7 @@ final class Project extends Node
         string $coverageVersion,
         string $driverExtensionName,
         string $driverExtensionVersion,
+        bool $branchCoverage,
     ): void {
         new BuildInformation(
             $this->xmlWriter,
@@ -55,6 +56,7 @@ final class Project extends Node
             $coverageVersion,
             $driverExtensionName,
             $driverExtensionVersion,
+            $branchCoverage,
         );
     }
 

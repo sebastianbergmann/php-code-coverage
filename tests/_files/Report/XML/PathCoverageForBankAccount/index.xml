@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <build time="%s" phpunit="%s" coverage="%s" branchCoverage="true">
+    <runtime name="%s" version="%s" url="%s"/>
+    <driver%S/>
+  </build>
+  <project source="%s">
+    <tests>
+      <test name="BankAccountTest::testBalanceIsInitiallyZero" size="unknown" status="unknown" time="0.500000"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative" size="unknown" status="unknown" time="0.600000"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative2" size="unknown" status="unknown" time="0.700000"/>
+      <test name="BankAccountTest::testDepositWithdrawMoney" size="unknown" status="unknown" time="0.800000"/>
+    </tests>
+    <directory name="%s">
+      <totals>
+        <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
+        <branches count="7" tested="3" percent="42.85" filesWithoutData="0"/>
+        <paths count="5" tested="3" percent="60.00" filesWithoutData="0"/>
+        <methods count="4" tested="3" percent="75.00"/>
+        <functions count="0" tested="0" percent="0"/>
+        <classes count="1" tested="0" percent="0.00"/>
+        <traits count="0" tested="0" percent="0"/>
+      </totals>
+      <file name="BankAccount.php" href="BankAccount.php.xml" hash="efd997ec85ed298e59743e5c354216b0ff22e2e5">
+        <totals>
+          <lines total="35" comments="0" code="35" executable="8" executed="5" percent="62.50"/>
+          <branches count="7" tested="3" percent="42.85"/>
+          <paths count="5" tested="3" percent="60.00"/>
+          <methods count="4" tested="3" percent="75.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="0" percent="0.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>

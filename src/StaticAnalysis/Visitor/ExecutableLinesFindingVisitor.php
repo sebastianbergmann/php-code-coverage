@@ -746,6 +746,24 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         );
     }
 
+    /**
+     * The line of the right operand of a && that spans multiple lines gets a
+     * branch of its own: the right operand is not evaluated when the left
+     * operand is false, and its line must then not get its status from the
+     * other lines of the statement.
+     *
+     * Whether this has an effect depends on what the driver reports. Xdebug
+     * and PCOV only report the line of the last operand of an assignment or
+     * of an expression statement as not executed: the line of any other
+     * right operand also holds an opcode that is executed when the operand is
+     * not evaluated (the jump of the && that follows, or the opcode that
+     * returns the result). PCOV reports more of these lines as not executed
+     * when the optimizer of OPcache is enabled.
+     *
+     * The grouping is kept wherever the line of an operand may not carry an
+     * opcode of its own, as that line could then no longer get its status
+     * from the other lines of the statement.
+     */
     private function enterBooleanAnd(Node\Expr\BinaryOp $node): void
     {
         $this->enterDefault($node);

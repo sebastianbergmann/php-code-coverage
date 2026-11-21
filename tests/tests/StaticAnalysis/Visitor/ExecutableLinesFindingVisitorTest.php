@@ -538,6 +538,32 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         }
     }
 
+    public function testBooleanAndInsideExpressionThatIsEvaluatedBeforeItIsCompiledDoesNotCreateSeparateBranch(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_boolean_and_in_expression_evaluated_before_compilation.php',
+        );
+
+        // Condition of an arm of a match expression: the line of the right
+        // operand stays in the branch of the body of the arm, which starts
+        // on that line
+        $this->assertLinesAreInSameBranch($executableLines, 8, 7);
+
+        // Condition of a ternary operator in an element of an array literal
+        $this->assertLinesAreInSameBranch($executableLines, 16, 17);
+
+        // Operand of ! and of || in an element of an array literal
+        $this->assertLinesAreInSameBranch($executableLines, 25, 26);
+        $this->assertLinesAreInSameBranch($executableLines, 27, 28);
+
+        // Initializer of a static variable
+        $this->assertLinesAreInSameBranch($executableLines, 34, 35);
+
+        // The body of a closure is compiled separately, even when the
+        // closure is an element of an array literal
+        $this->assertLinesAreInDifferentBranches($executableLines, 45, 46);
+    }
+
     #[RequiresPhp('>=8.4.0')]
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
     public function testLongFormPropertyHookBodyIsNotMarkedAsBranchOperator(): void
@@ -588,6 +614,45 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         // Neither the hooks of a property nor the arms of the if statement
         // share a branch with each other
         $this->assertCount(4, array_unique($executableLines));
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function executableLinesGroupedByBranch(string $filename): array
+    {
+        $source = file_get_contents($filename);
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        return $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+    }
+
+    /**
+     * @param array<int, int> $executableLines
+     */
+    private function assertLinesAreInSameBranch(array $executableLines, int $line, int $otherLine): void
+    {
+        $this->assertArrayHasKey($line, $executableLines);
+        $this->assertArrayHasKey($otherLine, $executableLines);
+        $this->assertSame($executableLines[$line], $executableLines[$otherLine]);
+    }
+
+    /**
+     * @param array<int, int> $executableLines
+     */
+    private function assertLinesAreInDifferentBranches(array $executableLines, int $line, int $otherLine): void
+    {
+        $this->assertArrayHasKey($line, $executableLines);
+        $this->assertArrayHasKey($otherLine, $executableLines);
+        $this->assertNotSame($executableLines[$line], $executableLines[$otherLine]);
     }
 
     private function doTestSelfDescribingAssert(string $filename): void

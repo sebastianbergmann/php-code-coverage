@@ -12,6 +12,7 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 use function array_any;
 use function array_diff_key;
 use function array_intersect_key;
+use function array_pop;
 use function assert;
 use function count;
 use function ctype_space;
@@ -160,6 +161,28 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private int $propertyHookDepth         = 0;
 
     /**
+     * Depth of the nesting in expressions that the compiler tries to evaluate
+     * before it compiles them: the elements of an array literal, the
+     * conditions of the arms of a match expression, and the initializer of a
+     * static variable. A constant that is substituted by that evaluation is
+     * no longer attributed to its own line, and neither is the opcode of the
+     * operator it is an operand of ($b !== null, for instance).
+     */
+    private int $constantEvaluationDepth = 0;
+
+    /**
+     * @var list<int> the depth of the enclosing functions, methods, closures,
+     *                and property hooks, which are compiled separately
+     */
+    private array $constantEvaluationDepthStack = [];
+
+    /**
+     * @var array<int, true> keyed by spl_object_id(), the conditions of the
+     *                       arms of match expressions
+     */
+    private array $matchConditions = [];
+
+    /**
      * @var array<int, true> keyed by spl_object_id() of expressions that are
      *                       the value of an array literal element
      */
@@ -174,6 +197,15 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): null
     {
         $this->rememberNodePosition($node);
+
+        if ($node instanceof Node\FunctionLike) {
+            $this->constantEvaluationDepthStack[] = $this->constantEvaluationDepth;
+            $this->constantEvaluationDepth        = 0;
+        }
+
+        if ($this->isEvaluatedBeforeItIsCompiled($node)) {
+            $this->constantEvaluationDepth++;
+        }
 
         if ($node instanceof Node\ArrayItem) {
             if ($node->unpack) {
@@ -329,6 +361,14 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function leaveNode(Node $node): null
     {
+        if ($this->isEvaluatedBeforeItIsCompiled($node)) {
+            $this->constantEvaluationDepth--;
+        }
+
+        if ($node instanceof Node\FunctionLike) {
+            $this->constantEvaluationDepth = array_pop($this->constantEvaluationDepthStack) ?? 0;
+        }
+
         if ($node instanceof Node\ArrayItem && $node->unpack) {
             $this->spreadDepth--;
         }
@@ -413,6 +453,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     private function enterMatch(Node\Expr\Match_ $node): void
     {
         foreach ($node->arms as $arm) {
+            foreach ($arm->conds ?? [] as $cond) {
+                $this->matchConditions[spl_object_id($cond)] = true;
+            }
+
             $this->setLineBranch(
                 $arm->body->getStartLine(),
                 $arm->body->getEndLine(),
@@ -706,7 +750,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     {
         $this->enterDefault($node);
 
-        if ($this->spreadDepth > 0) {
+        if ($this->spreadDepth > 0 || $this->constantEvaluationDepth > 0) {
             return;
         }
 
@@ -872,6 +916,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 $this->branchOperatorLines[$line] = true;
             }
         }
+    }
+
+    private function isEvaluatedBeforeItIsCompiled(Node $node): bool
+    {
+        return $node instanceof Node\ArrayItem ||
+               $node instanceof Node\StaticVar ||
+               isset($this->matchConditions[spl_object_id($node)]);
     }
 
     private function rememberArrayItemValue(Node\Expr $node): void

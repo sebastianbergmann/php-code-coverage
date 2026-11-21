@@ -290,6 +290,69 @@ final class FilterProcessorTest extends TestCase
         );
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkOperandOfBooleanAndInExpressionThatIsEvaluatedBeforeItIsCompiledAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_in_expression_evaluated_before_compilation.php');
+
+        // Line coverage as reported by Xdebug 3.6 after every operand of
+        // every && was evaluated, except for those in the closure, which was
+        // not called: lines 7, 17, 26, 28, and 35 are missing because the
+        // opcodes of the right operands of && are attributed to other lines
+        $this->assertSame(
+            [
+                7  => 1,
+                8  => 1,
+                9  => 1,
+                10 => 1,
+                16 => 1,
+                17 => 1,
+                18 => 1,
+                19 => 1,
+                24 => 1,
+                25 => 1,
+                26 => 1,
+                27 => 1,
+                28 => 1,
+                29 => 1,
+                34 => 1,
+                35 => 1,
+                37 => 1,
+                42 => 1,
+                43 => 1,
+                44 => 1,
+                45 => -1,
+                46 => -1,
+                47 => 1,
+                48 => 1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    8  => 1,
+                    10 => 1,
+                    12 => -1,
+                    16 => 1,
+                    18 => 1,
+                    19 => 1,
+                    20 => -1,
+                    25 => 1,
+                    27 => 1,
+                    30 => -1,
+                    34 => 1,
+                    37 => 1,
+                    38 => -1,
+                    43 => 1,
+                    45 => -1,
+                    46 => -1,
+                    47 => 1,
+                    49 => -1,
+                    50 => 1,
+                ],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');

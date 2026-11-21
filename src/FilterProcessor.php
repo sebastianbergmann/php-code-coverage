@@ -151,7 +151,10 @@ final readonly class FilterProcessor
 
             $data->addMissingExecutableLines(
                 $filename,
-                $analysisResult->branchOperatorLines(),
+                $this->branchOperatorLinesOfReportedCodeUnits(
+                    $analysisResult,
+                    $data->lineCoverage()[$filename] ?? [],
+                ),
             );
 
             $data->markExecutableLineByBranch(
@@ -273,6 +276,39 @@ final readonly class FilterProcessor
     }
 
     /**
+     * Returns the lines that are marked as not executed when the driver did not report them,
+     * without the lines of functions and methods for which the driver did not report any line.
+     *
+     * Marking a line of such a function or method as not executed would make a line of it
+     * known, and its other lines would then never be reported: unreportedCodeUnits() only seeds
+     * data for functions and methods for which no line is known.
+     *
+     * @param array<int, int> $reportedLines
+     *
+     * @return array<positive-int, true>
+     */
+    private function branchOperatorLinesOfReportedCodeUnits(AnalysisResult $analysisResult, array $reportedLines): array
+    {
+        $lines = $analysisResult->branchOperatorLines();
+
+        if (array_diff_key($lines, $reportedLines) === []) {
+            return $lines;
+        }
+
+        foreach ($this->linesOfFunctionsAndMethods($analysisResult) as [$startLine, $endLine]) {
+            if ($this->anyLineIsKnown($reportedLines, $startLine, $endLine)) {
+                continue;
+            }
+
+            for ($line = $startLine; $line <= $endLine; $line++) {
+                unset($lines[$line]);
+            }
+        }
+
+        return $lines;
+    }
+
+    /**
      * @return list<array{positive-int, positive-int}>
      */
     private function linesOfFunctionsAndMethods(AnalysisResult $analysisResult): array
@@ -301,7 +337,7 @@ final readonly class FilterProcessor
     }
 
     /**
-     * @param array<positive-int, mixed> $knownLines
+     * @param array<int, mixed> $knownLines
      */
     private function anyLineIsKnown(array $knownLines, int $startLine, int $endLine): bool
     {

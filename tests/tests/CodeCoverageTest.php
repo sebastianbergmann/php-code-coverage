@@ -846,6 +846,28 @@ final class CodeCoverageTest extends TestCase
     }
 
     #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testGetDataIncludesAllLinesOfFunctionsAndMethodsTheDriverDidNotReport(): void
+    {
+        $file = TEST_FILES_PATH . 'source_with_method_with_function_call_that_is_not_reported.php';
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $coverage = new CodeCoverage(
+            new FakeDriver(RawCodeCoverageData::fromLineCoverage([$file => [8 => 1, 9 => -1]])),
+            $filter,
+        );
+
+        $coverage->start('test');
+        $coverage->stop();
+
+        $this->assertSame(
+            [$file => [8 => ['test' => 1], 13 => [], 15 => []]],
+            $this->lineCoverageKeyedByTestId($coverage->getData()),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
     public function testGetDataIncludesFunctionsAndMethodsTheDriverDidNotReportWhenUncoveredFilesAreExcluded(): void
     {
         $file     = TEST_FILES_PATH . 'source_with_two_methods.php';

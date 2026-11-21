@@ -414,6 +414,32 @@ final class FilterProcessorTest extends TestCase
         );
     }
 
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testApplyExecutableLinesFilterDoesNotMarkLinesOfMethodThatWasNotReportedAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_method_with_function_call_that_is_not_reported.php');
+
+        // Line coverage as reported by Xdebug 3.6 after calling one() when
+        // the class was compiled before the collection of code coverage data
+        // was started: no line of two() is reported. Marking the line with
+        // the function call (line 13) as not executed would keep the other
+        // line of two() from being seeded from static analysis
+        $this->assertSame(
+            [8 => 1],
+            $this->lineCoverageAfterExecutableLinesFilter($file, [8 => 1, 9 => -1]),
+        );
+    }
+
+    public function testApplyExecutableLinesFilterMarksLinesOfMethodThatWasReportedAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_method_with_function_call_that_is_not_reported.php');
+
+        $this->assertSame(
+            [8 => 1, 13 => -1, 15 => -1],
+            $this->lineCoverageAfterExecutableLinesFilter($file, [8 => 1, 9 => -1, 15 => -1]),
+        );
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');
@@ -780,6 +806,17 @@ final class FilterProcessorTest extends TestCase
         $this->assertSame(
             [$file => [[13 => -1]]],
             $this->unreportedCodeUnits($file, [8 => -1]),
+        );
+    }
+
+    #[Ticket('https://bugs.xdebug.org/view.php?id=2438')]
+    public function testUnreportedCodeUnitsReturnsAllLinesOfMethodForWhichNoLineIsKnown(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_with_method_with_function_call_that_is_not_reported.php');
+
+        $this->assertSame(
+            [$file => [[13 => -1, 15 => -1]]],
+            $this->unreportedCodeUnits($file, [8 => 1]),
         );
     }
 

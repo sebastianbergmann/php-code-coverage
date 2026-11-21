@@ -488,6 +488,56 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         }
     }
 
+    public function testBooleanAndInsideArrayLiteralDoesNotCreateSeparateBranches(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_boolean_and_in_array_literal.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayHasKey(5, $executableLines);
+
+        $branch = $executableLines[5];
+
+        foreach ([6, 7, 8, 9, 10, 11] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
+            $this->assertSame($branch, $executableLines[$line]);
+        }
+    }
+
+    public function testBooleanAndInsideSpreadDoesNotCreateSeparateBranches(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../../../_files/source_boolean_and_in_spread.php');
+        assert($source !== false);
+        $parser = (new ParserFactory)->createForHostVersion();
+        $nodes  = $parser->parse($source);
+        assert($nodes !== null);
+        $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($source);
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($executableLinesFindingVisitor);
+        $traverser->traverse($nodes);
+
+        $executableLines = $executableLinesFindingVisitor->executableLinesGroupedByBranch();
+
+        $this->assertArrayHasKey(5, $executableLines);
+
+        $branch = $executableLines[5];
+
+        foreach ([6, 7, 8, 9, 10, 11] as $line) {
+            $this->assertArrayHasKey($line, $executableLines);
+            $this->assertSame($branch, $executableLines[$line]);
+        }
+    }
+
     #[RequiresPhp('>=8.4.0')]
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
     public function testLongFormPropertyHookBodyIsNotMarkedAsBranchOperator(): void

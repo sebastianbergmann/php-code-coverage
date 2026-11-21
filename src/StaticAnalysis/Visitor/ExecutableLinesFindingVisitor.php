@@ -258,6 +258,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
+        if ($node instanceof Node\Expr\BinaryOp\BooleanAnd ||
+            $node instanceof Node\Expr\BinaryOp\LogicalAnd) {
+            $this->enterBooleanAnd($node);
+
+            return null;
+        }
+
         if ($node instanceof Node\Stmt\If_ ||
             $node instanceof Node\Stmt\ElseIf_) {
             $this->enterConditional($node);
@@ -690,6 +697,32 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             $node->getEndLine(),
             ++$this->nextBranch,
         );
+    }
+
+    private function enterBooleanAnd(Node\Expr\BinaryOp $node): void
+    {
+        $this->enterDefault($node);
+
+        if ($this->spreadDepth > 0) {
+            return;
+        }
+
+        if ($this->isArrayItemValue($node)) {
+            $this->rememberArrayItemValue($node->left);
+            $this->rememberArrayItemValue($node->right);
+
+            return;
+        }
+
+        $line = $node->right->getStartLine();
+
+        if ($line <= $node->left->getEndLine() ||
+            $line !== $node->right->getEndLine() ||
+            !isset($this->executableLinesGroupedByBranch[$line])) {
+            return;
+        }
+
+        $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
     }
 
     /**

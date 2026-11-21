@@ -358,6 +358,35 @@ class MyClass
         $short = $var                       // +1
             ?? null;                        // +1
     }
+    public function withBooleanAnd()
+    {
+        $var = true && false;               // +1
+        $var = true                         // +1
+            && false;                       // +1
+        $var = true                         // +1
+            && false                        // +2
+            && null;                        // -1
+        $var = (true                        // +2
+            and false);                     // +1
+        $var = true                         // +1
+            && intval(                      // 0
+                $var                        // 0
+            );                              // 0
+        $var = intval(                      // +1
+            $var                            // 0
+        ) && intval(                        // 0
+            $var                            // 0
+        );                                  // 0
+        $var = true                         // +1
+            || false;                       // 0
+        if ($var                            // +1
+            && $var
+        ) {
+            ++$var;                         // +1
+        }
+        return $var                         // +1
+            && $var;                        // +1
+    }
     public function withCall()
     {
         $var = 1;                           // +1

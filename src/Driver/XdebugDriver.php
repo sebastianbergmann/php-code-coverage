@@ -15,6 +15,7 @@ use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
 use function extension_loaded;
+use function get_included_files;
 use function in_array;
 use function phpversion;
 use function version_compare;
@@ -51,7 +52,7 @@ final class XdebugDriver extends Driver
             xdebug_set_filter(
                 XDEBUG_FILTER_CODE_COVERAGE,
                 XDEBUG_PATH_INCLUDE,
-                $filter->files(),
+                (new PathPrefixBuilder)->build($filter->files(), get_included_files()),
             );
         }
     }

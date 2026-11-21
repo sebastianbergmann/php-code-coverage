@@ -136,6 +136,63 @@ final class XdebugDriverTest extends TestCase
         );
     }
 
+    public function testIsLimitedToDirectoryOfFilesInFilterWhenNoOtherFileInItWasLoaded(): void
+    {
+        $data = $this->collectCoverageUsingFilter('nothing-is-loaded-before');
+
+        /*
+         * That the file in filter-directories/src that is not in the filter
+         * is reported shows that the driver is limited to that directory
+         * instead of to the file in it that is in the filter. The data for
+         * the file that is not in the filter is removed when the filter is
+         * applied.
+         *
+         * The file in filter-directories/src-old is not reported.
+         */
+        $this->assertSame(
+            [
+                'BankAccount.php',
+                'filter-directories/src/a.php',
+                'filter-directories/src/b.php',
+            ],
+            $data['reported'],
+        );
+
+        $this->assertSame(
+            [
+                'BankAccount.php',
+                'filter-directories/src/a.php',
+            ],
+            $data['filtered'],
+        );
+    }
+
+    public function testIsLimitedToFilesInFilterWhenOtherFileInTheirDirectoryWasLoaded(): void
+    {
+        $data = $this->collectCoverageUsingFilter('file-that-is-not-included-is-loaded-before');
+
+        /*
+         * The file that was loaded before the driver was created is reported
+         * because it was compiled before the driver was limited.
+         */
+        $this->assertSame(
+            [
+                'BankAccount.php',
+                'filter-directories/src/a.php',
+                'filter-directories/src/loaded_before.php',
+            ],
+            $data['reported'],
+        );
+
+        $this->assertSame(
+            [
+                'BankAccount.php',
+                'filter-directories/src/a.php',
+            ],
+            $data['filtered'],
+        );
+    }
+
     private function driver(): XdebugDriver
     {
         return new XdebugDriver(new Filter);
@@ -167,6 +224,36 @@ final class XdebugDriverTest extends TestCase
             'lines'    => (bool) ($data['lines'] ?? false),
             'branches' => (bool) ($data['branches'] ?? false),
             'paths'    => (bool) ($data['paths'] ?? false),
+        ];
+    }
+
+    /**
+     * @param 'file-that-is-not-included-is-loaded-before'|'nothing-is-loaded-before' $scenario
+     *
+     * @return array{reported: mixed, filtered: mixed}
+     */
+    private function collectCoverageUsingFilter(string $scenario): array
+    {
+        putenv('XDEBUG_MODE=coverage');
+
+        $output = shell_exec(
+            sprintf(
+                '%s -d xdebug.mode=coverage %s %s',
+                escapeshellarg(PHP_BINARY),
+                escapeshellarg(TEST_FILES_PATH . 'collect_coverage_using_xdebug_driver_and_filter.php'),
+                escapeshellarg($scenario),
+            ),
+        );
+
+        $this->assertIsString($output);
+
+        $data = json_decode($output, true);
+
+        $this->assertTrue(is_array($data), 'Failed collecting code coverage data: ' . $output);
+
+        return [
+            'reported' => $data['reported'] ?? null,
+            'filtered' => $data['filtered'] ?? null,
         ];
     }
 }

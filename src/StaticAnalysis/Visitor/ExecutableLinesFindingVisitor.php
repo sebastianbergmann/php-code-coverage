@@ -754,11 +754,20 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        $line = $node->right->getStartLine();
+        $line     = $node->right->getStartLine();
+        $leftLine = $node->left->getEndLine();
 
-        if ($line <= $node->left->getEndLine() ||
+        if ($line <= $leftLine ||
             $line !== $node->right->getEndLine() ||
-            !isset($this->executableLinesGroupedByBranch[$line])) {
+            !isset($this->executableLinesGroupedByBranch[$line], $this->executableLinesGroupedByBranch[$leftLine])) {
+            return;
+        }
+
+        // The line of the right operand may be the first line of a range of
+        // lines that was grouped before (the body of an arrow function, an
+        // arm of a ternary operator or of a match expression): the other
+        // lines of that range can only get their status from that line
+        if ($this->executableLinesGroupedByBranch[$line] !== $this->executableLinesGroupedByBranch[$leftLine]) {
             return;
         }
 

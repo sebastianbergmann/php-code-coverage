@@ -369,6 +369,51 @@ final class FilterProcessorTest extends TestCase
         );
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkLinesGroupedWithRightOperandOfBooleanAndAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_with_right_operand_on_first_line_of_grouped_lines.php');
+
+        // Line coverage as reported by Xdebug 3.6 after every operand of
+        // every && was evaluated: the closing line of the body of the arrow
+        // function (line 7) is reported as not executed, and the second line
+        // of the first arm of the ternary operator (line 16) is missing
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => 1,
+                7  => 1,
+                9  => 1,
+                14 => 1,
+                15 => 1,
+                16 => 1,
+                17 => 1,
+                23 => 1,
+                24 => 1,
+                25 => 1,
+                26 => 1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    6  => 1,
+                    7  => -1,
+                    9  => 1,
+                    10 => -1,
+                    14 => 1,
+                    15 => 1,
+                    17 => 1,
+                    18 => -1,
+                    23 => 1,
+                    24 => 1,
+                    26 => 1,
+                    28 => -1,
+                    29 => 1,
+                ],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');

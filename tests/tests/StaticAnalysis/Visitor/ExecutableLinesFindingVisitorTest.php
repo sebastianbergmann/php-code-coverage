@@ -575,6 +575,27 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertLinesAreInDifferentBranches($executableLines, 45, 46);
     }
 
+    public function testBooleanAndWithRightOperandOnFirstLineOfGroupedLinesDoesNotCreateSeparateBranch(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_boolean_and_with_right_operand_on_first_line_of_grouped_lines.php',
+        );
+
+        // The right operand starts the body of an arrow function
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 6);
+        $this->assertLinesAreInSameBranch($executableLines, 6, 7);
+
+        // The line of the right operand starts an arm of a ternary operator
+        $this->assertLinesAreInDifferentBranches($executableLines, 14, 15);
+        $this->assertLinesAreInSameBranch($executableLines, 15, 16);
+
+        // Both operands are in the body of an arm of a match expression:
+        // the line of the right operand is split off, the other lines of
+        // the body stay grouped with the line of the left operand
+        $this->assertLinesAreInDifferentBranches($executableLines, 23, 24);
+        $this->assertLinesAreInSameBranch($executableLines, 23, 25);
+    }
+
     #[RequiresPhp('>=8.4.0')]
     #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1305')]
     public function testLongFormPropertyHookBodyIsNotMarkedAsBranchOperator(): void

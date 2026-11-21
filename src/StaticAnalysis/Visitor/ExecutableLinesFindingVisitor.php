@@ -714,6 +714,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if ($this->isConstant($node->left) || $this->isConstant($node->right)) {
+            return;
+        }
+
         $line = $node->right->getStartLine();
 
         if ($line <= $node->left->getEndLine() ||
@@ -723,6 +727,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
+    }
+
+    private function isConstant(Node\Expr $expr): bool
+    {
+        return $expr instanceof Node\Scalar ||
+               $expr instanceof Node\Expr\ConstFetch ||
+               $expr instanceof Node\Expr\ClassConstFetch;
     }
 
     /**

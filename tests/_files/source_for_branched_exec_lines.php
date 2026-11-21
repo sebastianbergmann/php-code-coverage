@@ -360,15 +360,15 @@ class MyClass
     }
     public function withBooleanAnd()
     {
-        $var = true && false;               // +1
-        $var = true                         // +1
-            && false;                       // +1
-        $var = true                         // +1
-            && false                        // +2
-            && null;                        // -1
-        $var = (true                        // +2
-            and false);                     // +1
-        $var = true                         // +1
+        $var = $var && $var;                // +1
+        $var = $var                         // +1
+            && $var;                        // +1
+        $var = $var                         // +1
+            && $var                         // +2
+            && $var;                        // -1
+        $var = ($var                        // +2
+            and $var);                      // +1
+        $var = $var                         // +1
             && intval(                      // 0
                 $var                        // 0
             );                              // 0
@@ -378,7 +378,15 @@ class MyClass
             $var                            // 0
         );                                  // 0
         $var = true                         // +1
-            || false;                       // 0
+            && $var;                        // 0
+        $var = self::C1                     // +1
+            && $var;                        // 0
+        $var = 1                            // +1
+            && $var;                        // 0
+        $var = $var                         // +1
+            && true;                        // 0
+        $var = $var                         // +1
+            || $var;                        // 0
         if ($var                            // +1
             && $var
         ) {

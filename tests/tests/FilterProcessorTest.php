@@ -256,6 +256,40 @@ final class FilterProcessorTest extends TestCase
         $this->assertSame([9 => 1, 10 => 1, 12 => -1], $linesForFile);
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkOperandOfBooleanAndThatIsEvaluatedByCompilerAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_with_operand_without_variable.php');
+
+        // Line coverage as reported by Xdebug 3.6 after calling supportsSsl()
+        // with an array and with null, and canFork(), while ext-curl is
+        // loaded: line 5 is missing because the compiler evaluates
+        // \defined('CURL_VERSION_SSL')
+        $this->assertSame(
+            [5 => 1, 6 => 1, 7 => 1, 12 => 1, 13 => 1, 14 => 1],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [6 => 1, 7 => 1, 8 => -1, 12 => 1, 13 => 1, 14 => 1, 15 => -1, 16 => 1],
+            ),
+        );
+    }
+
+    public function testApplyExecutableLinesFilterDoesNotMarkOperandOfBooleanAndThatIsEvaluatedByOptimizerAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_with_operand_without_variable.php');
+
+        // Line coverage as reported by PCOV 1.0.12 for the same calls while
+        // ext-pcntl and ext-posix are loaded and the optimizer of OPcache is
+        // enabled: lines 12 and 13 are missing as well because the optimizer
+        // evaluates \function_exists()
+        $this->assertSame(
+            [5 => 1, 6 => 1, 7 => 1, 12 => 1, 13 => 1, 14 => 1],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [6 => 1, 7 => 1, 14 => 1, 16 => 1],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');
@@ -679,6 +713,32 @@ final class FilterProcessorTest extends TestCase
     public function testUnreportedCodeUnitsSkipsFileThatDoesNotExist(): void
     {
         $this->assertSame([], $this->unreportedCodeUnits('/does/not/exist.php', [8 => -1]));
+    }
+
+    /**
+     * @param non-empty-string         $file
+     * @param array<positive-int, int> $lines the lines as reported by a driver
+     *
+     * @return array<int, int>
+     */
+    private function lineCoverageAfterExecutableLinesFilter(string $file, array $lines): array
+    {
+        $data = RawCodeCoverageData::fromLineCoverage([$file => $lines]);
+
+        $filter = new Filter;
+        $filter->includeFile($file);
+
+        $this->processor->applyExecutableLinesFilter(
+            $data,
+            $filter,
+            new FileAnalyser(new ParsingSourceAnalyser, true, true),
+        );
+
+        $lineCoverage = $data->lineCoverage()[$file] ?? [];
+
+        ksort($lineCoverage);
+
+        return $lineCoverage;
     }
 
     /**

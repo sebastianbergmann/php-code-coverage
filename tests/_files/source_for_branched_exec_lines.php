@@ -385,6 +385,18 @@ class MyClass
             && $var;                        // 0
         $var = $var                         // +1
             && true;                        // 0
+        $var = \PHP_VERSION_ID >= 80100     // +1
+            && $var;                        // 0
+        $var = -1                           // +1
+            && $var;                        // 0
+        $var = \defined('FOO')              // +1
+            && $var;                        // 0
+        $var = $var                         // +1
+            && \function_exists('foo');     // 0
+        $var = $var                         // +1
+            && self::C1 > 1;                // 0
+        $var = $var                         // +1
+            && self::$staticState;          // +1
         $var = $var                         // +1
             || $var;                        // 0
         if ($var                            // +1

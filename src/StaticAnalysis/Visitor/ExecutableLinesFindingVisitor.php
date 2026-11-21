@@ -26,6 +26,7 @@ use function str_replace;
 use function strtolower;
 use function trim;
 use PhpParser\Node;
+use PhpParser\NodeFinder;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -101,6 +102,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     ];
     private int $nextBranch = 0;
     private readonly string $source;
+    private readonly NodeFinder $nodeFinder;
 
     /**
      * @var LinesType
@@ -165,7 +167,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
     public function __construct(string $source)
     {
-        $this->source = str_replace("\r\n", "\n", $source);
+        $this->source     = str_replace("\r\n", "\n", $source);
+        $this->nodeFinder = new NodeFinder;
     }
 
     public function enterNode(Node $node): null
@@ -714,10 +717,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if ($this->isConstant($node->left) || $this->isConstant($node->right)) {
-            return;
-        }
-
         $line = $node->right->getStartLine();
 
         if ($line <= $node->left->getEndLine() ||
@@ -726,14 +725,30 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if (!$this->containsVariable($node->left) ||
+            !$this->containsVariable($node->right)) {
+            return;
+        }
+
         $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
     }
 
-    private function isConstant(Node\Expr $expr): bool
+    /**
+     * An expression that does not contain a variable may be evaluated when
+     * the file is compiled: the compiler substitutes constants and folds
+     * operators that are applied to them (\PHP_VERSION_ID >= 80100, -1, ...),
+     * and the optimizer of OPcache evaluates calls such as
+     * \function_exists('name') and \defined('NAME'). The line of such an
+     * expression then carries no opcode and can only get its status from
+     * another line of its branch.
+     */
+    private function containsVariable(Node\Expr $expr): bool
     {
-        return $expr instanceof Node\Scalar ||
-               $expr instanceof Node\Expr\ConstFetch ||
-               $expr instanceof Node\Expr\ClassConstFetch;
+        return null !== $this->nodeFinder->findFirst(
+            $expr,
+            static fn (Node $node): bool => $node instanceof Node\Expr\Variable ||
+                                            $node instanceof Node\Expr\StaticPropertyFetch,
+        );
     }
 
     /**

@@ -353,6 +353,22 @@ final class FilterProcessorTest extends TestCase
         );
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkUnexecutedTernaryArmInOperandOfBooleanAndInArrayLiteralAsExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_ternary_in_operand_of_boolean_and_in_array_literal.php');
+
+        // Line coverage as reported by Xdebug 3.6 after calling
+        // row(true, false, 1): the first arm of the ternary operator (line 6)
+        // was not executed
+        $this->assertSame(
+            [5 => 1, 6 => -1, 7 => 1],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [5 => 1, 6 => -1, 7 => 1, 8 => -1, 9 => 1],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterKeepsRawDataForFileThatCannotBeParsed(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_that_cannot_be_parsed.php');

@@ -538,6 +538,17 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         }
     }
 
+    public function testTernaryInOperandOfBooleanAndInsideArrayLiteralCreatesSeparateBranches(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_ternary_in_operand_of_boolean_and_in_array_literal.php',
+        );
+
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 6);
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 7);
+        $this->assertLinesAreInDifferentBranches($executableLines, 6, 7);
+    }
+
     public function testBooleanAndInsideExpressionThatIsEvaluatedBeforeItIsCompiledDoesNotCreateSeparateBranch(): void
     {
         $executableLines = $this->executableLinesGroupedByBranch(

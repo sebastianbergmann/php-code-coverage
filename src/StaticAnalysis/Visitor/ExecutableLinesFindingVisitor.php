@@ -754,13 +754,6 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
-        if ($this->isArrayItemValue($node)) {
-            $this->rememberArrayItemValue($node->left);
-            $this->rememberArrayItemValue($node->right);
-
-            return;
-        }
-
         $line = $node->right->getStartLine();
 
         if ($line <= $node->left->getEndLine() ||

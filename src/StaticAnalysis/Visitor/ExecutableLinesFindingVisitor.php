@@ -188,6 +188,20 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
      */
     private array $arrayItemValues = [];
 
+    /**
+     * @var array<int, true> keyed by line number, the lines on which an
+     *                       expression statement or a return statement starts
+     */
+    private array $statementStartLines = [];
+
+    /**
+     * @var array<int, true> keyed by spl_object_id() of the property fetches,
+     *                       array accesses, and method calls in the operand
+     *                       of ??, isset(), and empty(), which PHP may read
+     *                       without warnings
+     */
+    private array $expressionsReadQuietly = [];
+
     public function __construct(string $source)
     {
         $this->source     = str_replace("\r\n", "\n", $source);
@@ -218,6 +232,13 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\PropertyHook) {
             $this->propertyHookDepth++;
         }
+
+        if ($node instanceof Node\Stmt\Expression ||
+            $node instanceof Node\Stmt\Return_) {
+            $this->statementStartLines[$node->getStartLine()] = true;
+        }
+
+        $this->rememberExpressionsReadQuietly($node);
 
         $this->collectMatchingComments($node);
 
@@ -294,8 +315,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Expr\BinaryOp\BooleanAnd ||
-            $node instanceof Node\Expr\BinaryOp\LogicalAnd) {
-            $this->enterBooleanAnd($node);
+            $node instanceof Node\Expr\BinaryOp\LogicalAnd ||
+            $node instanceof Node\Expr\BinaryOp\BooleanOr ||
+            $node instanceof Node\Expr\BinaryOp\LogicalOr) {
+            $this->enterShortCircuitingOperator($node);
 
             return null;
         }
@@ -747,24 +770,24 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * The line of the right operand of a && that spans multiple lines gets a
-     * branch of its own: the right operand is not evaluated when the left
-     * operand is false, and its line must then not get its status from the
-     * other lines of the statement.
+     * The line of the right operand of a && or || that spans multiple lines
+     * gets a branch of its own: the right operand is not evaluated when the
+     * left operand decides the result, and its line must then not get its
+     * status from the other lines of the statement.
      *
      * Whether this has an effect depends on what the driver reports. Xdebug
      * and PCOV only report the line of the last operand of an assignment or
      * of an expression statement as not executed: the line of any other
      * right operand also holds an opcode that is executed when the operand is
-     * not evaluated (the jump of the && that follows, or the opcode that
-     * returns the result). PCOV reports more of these lines as not executed
-     * when the optimizer of OPcache is enabled.
+     * not evaluated (the jump of the operator that follows, or the opcode
+     * that returns the result). PCOV reports more of these lines as not
+     * executed when the optimizer of OPcache is enabled.
      *
      * The grouping is kept wherever the line of an operand may not carry an
      * opcode of its own, as that line could then no longer get its status
      * from the other lines of the statement.
      */
-    private function enterBooleanAnd(Node\Expr\BinaryOp $node): void
+    private function enterShortCircuitingOperator(Node\Expr\BinaryOp $node): void
     {
         $this->enterDefault($node);
 
@@ -794,7 +817,138 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
             return;
         }
 
+        if (($node instanceof Node\Expr\BinaryOp\BooleanOr || $node instanceof Node\Expr\BinaryOp\LogicalOr) &&
+            !$this->lineOfOperandBeforeJumpHasStatusOfItsOwn($node->left)) {
+            return;
+        }
+
         $this->executableLinesGroupedByBranch[$line] = ++$this->nextBranch;
+    }
+
+    /**
+     * Xdebug does not report every opcode as executed: not the jump of ||
+     * (JMPNZ_EX) and of the nullsafe operator (JMP_NULL), not the opcodes of
+     * isset(), a static property, and clone, and not the opcodes of a
+     * property fetch or an array access that is read without warnings. A
+     * variable is not compiled to an opcode of its own.
+     *
+     * The line of the left operand of || on which no opcode is executed that
+     * Xdebug reports can only get its status from the line of the right
+     * operand: PHP attributes the opcode that uses the value of the
+     * expression to that line, and that opcode is always executed.
+     *
+     * Such a line has a status of its own when a statement starts on it, or
+     * when the operand is compiled to an opcode that is executed whenever
+     * the line is reached and that Xdebug and PCOV report. The jump of &&
+     * (JMPZ_EX) is reported.
+     */
+    private function lineOfOperandBeforeJumpHasStatusOfItsOwn(Node\Expr $operand): bool
+    {
+        $line = $operand->getEndLine();
+
+        if (isset($this->statementStartLines[$line])) {
+            return true;
+        }
+
+        // The left operand of || is evaluated whenever the || is
+        if ($operand instanceof Node\Expr\BinaryOp\BooleanOr ||
+            $operand instanceof Node\Expr\BinaryOp\LogicalOr) {
+            return $this->lineOfOperandBeforeJumpHasStatusOfItsOwn($operand->left);
+        }
+
+        if ($operand instanceof Node\Expr\MethodCall ||
+            $operand instanceof Node\Expr\NullsafeMethodCall ||
+            $operand instanceof Node\Expr\PropertyFetch ||
+            $operand instanceof Node\Expr\NullsafePropertyFetch ||
+            $operand instanceof Node\Expr\ArrayDimFetch) {
+            return $this->lineOfChainHasStatusOfItsOwn($operand, $line);
+        }
+
+        return $operand instanceof Node\Expr\FuncCall ||
+               $operand instanceof Node\Expr\StaticCall ||
+               $operand instanceof Node\Expr\New_ ||
+               $operand instanceof Node\Expr\Assign ||
+               $operand instanceof Node\Expr\BooleanNot ||
+               $operand instanceof Node\Expr\Instanceof_ ||
+               $operand instanceof Node\Expr\Ternary ||
+               $operand instanceof Node\Expr\Cast\Bool_ ||
+               $operand instanceof Node\Expr\BinaryOp\BooleanAnd ||
+               $operand instanceof Node\Expr\BinaryOp\LogicalAnd ||
+               $operand instanceof Node\Expr\BinaryOp\Coalesce ||
+               $operand instanceof Node\Expr\BinaryOp\Identical ||
+               $operand instanceof Node\Expr\BinaryOp\NotIdentical ||
+               $operand instanceof Node\Expr\BinaryOp\Equal ||
+               $operand instanceof Node\Expr\BinaryOp\NotEqual ||
+               $operand instanceof Node\Expr\BinaryOp\Smaller ||
+               $operand instanceof Node\Expr\BinaryOp\SmallerOrEqual ||
+               $operand instanceof Node\Expr\BinaryOp\Greater ||
+               $operand instanceof Node\Expr\BinaryOp\GreaterOrEqual;
+    }
+
+    /**
+     * A method call, a property fetch, and an array access are compiled to
+     * an opcode that Xdebug reports, unless they are read without warnings.
+     * That opcode is not executed when a nullsafe operator before it in the
+     * chain skips the rest of the chain. When the object of that nullsafe
+     * operator ends on the same line, the line is reached nevertheless, and
+     * only has a status of its own when that object has.
+     *
+     * @param Node\Expr\ArrayDimFetch|Node\Expr\MethodCall|Node\Expr\NullsafeMethodCall|Node\Expr\NullsafePropertyFetch|Node\Expr\PropertyFetch $chain
+     */
+    private function lineOfChainHasStatusOfItsOwn(Node\Expr $chain, int $line): bool
+    {
+        if (isset($this->expressionsReadQuietly[spl_object_id($chain)])) {
+            return false;
+        }
+
+        $expr = $chain;
+
+        while ($expr instanceof Node\Expr\MethodCall ||
+               $expr instanceof Node\Expr\NullsafeMethodCall ||
+               $expr instanceof Node\Expr\PropertyFetch ||
+               $expr instanceof Node\Expr\NullsafePropertyFetch ||
+               $expr instanceof Node\Expr\ArrayDimFetch) {
+            if (($expr instanceof Node\Expr\NullsafeMethodCall || $expr instanceof Node\Expr\NullsafePropertyFetch) &&
+                $expr->var->getEndLine() === $line) {
+                return $this->lineOfOperandBeforeJumpHasStatusOfItsOwn($expr->var);
+            }
+
+            $expr = $expr->var;
+        }
+
+        return true;
+    }
+
+    /**
+     * PHP reads the operand of ??, isset(), and empty() without warnings for
+     * an undefined variable, property, or array element: a property fetch or
+     * an array access in such an operand is compiled to another opcode.
+     */
+    private function rememberExpressionsReadQuietly(Node $node): void
+    {
+        $expressions = [];
+
+        if ($node instanceof Node\Expr\BinaryOp\Coalesce) {
+            $expressions[] = $node->left;
+        } elseif ($node instanceof Node\Expr\AssignOp\Coalesce) {
+            $expressions[] = $node->var;
+        } elseif ($node instanceof Node\Expr\Isset_) {
+            $expressions = $node->vars;
+        } elseif ($node instanceof Node\Expr\Empty_) {
+            $expressions[] = $node->expr;
+        }
+
+        foreach ($expressions as $expr) {
+            while ($expr instanceof Node\Expr\MethodCall ||
+                   $expr instanceof Node\Expr\NullsafeMethodCall ||
+                   $expr instanceof Node\Expr\PropertyFetch ||
+                   $expr instanceof Node\Expr\NullsafePropertyFetch ||
+                   $expr instanceof Node\Expr\ArrayDimFetch) {
+                $this->expressionsReadQuietly[spl_object_id($expr)] = true;
+
+                $expr = $expr->var;
+            }
+        }
     }
 
     /**

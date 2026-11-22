@@ -565,6 +565,34 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertLinesAreInDifferentBranches($executableLines, 53, 54);
     }
 
+    public function testBooleanOrOnMultipleLinesCreatesSeparateBranchForLineOfRightOperand(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_boolean_or_on_multiple_lines.php',
+        );
+
+        // Assignment
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 6);
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 7);
+        $this->assertLinesAreInDifferentBranches($executableLines, 6, 7);
+
+        // Argument of a function call: the other lines of the function call
+        // stay grouped
+        $this->assertLinesAreInDifferentBranches($executableLines, 15, 16);
+        $this->assertLinesAreInSameBranch($executableLines, 14, 15);
+        $this->assertLinesAreInSameBranch($executableLines, 14, 17);
+
+        // Element of an array literal: the grouping is kept
+        $this->assertLinesAreInSameBranch($executableLines, 25, 26);
+
+        // The left operand is a variable on a line on which no statement
+        // starts: the grouping is kept
+        $this->assertLinesAreInSameBranch($executableLines, 33, 34);
+
+        // The left operand is a comparison on such a line
+        $this->assertLinesAreInDifferentBranches($executableLines, 42, 43);
+    }
+
     public function testLineOfRightOperandOfBooleanAndIsNotMarkedAsBranchOperator(): void
     {
         $branchOperatorLines = $this->visit(

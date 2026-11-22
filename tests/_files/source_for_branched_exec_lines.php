@@ -398,6 +398,15 @@ class MyClass
         $var = $var                         // +1
             && self::$staticState;          // +1
         $var = $var                         // +1
+            || $var;                        // +1
+        $var = $var                         // +1
+            || $var                         // +2
+            || $var;                        // -1
+        $var = ($var                        // +2
+            or $var);                       // +1
+        $var = $var                         // +1
+            || false;                       // 0
+        $var = \PHP_VERSION_ID < 80100      // +1
             || $var;                        // 0
         if ($var                            // +1
             && $var

@@ -593,6 +593,40 @@ final class ExecutableLinesFindingVisitorTest extends TestCase
         $this->assertLinesAreInDifferentBranches($executableLines, 42, 43);
     }
 
+    public function testNullsafeMethodCallOrPropertyFetchOnLineOfItsOwnCreatesSeparateBranch(): void
+    {
+        $executableLines = $this->executableLinesGroupedByBranch(
+            __DIR__ . '/../../../_files/source_nullsafe_on_multiple_lines.php',
+        );
+
+        // Method calls
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 6);
+        $this->assertLinesAreInDifferentBranches($executableLines, 5, 7);
+        $this->assertLinesAreInDifferentBranches($executableLines, 6, 7);
+
+        // Property fetches
+        $this->assertLinesAreInDifferentBranches($executableLines, 12, 13);
+        $this->assertLinesAreInDifferentBranches($executableLines, 12, 14);
+        $this->assertLinesAreInDifferentBranches($executableLines, 13, 14);
+
+        // Method call with arguments on multiple lines: its lines stay
+        // grouped
+        $this->assertLinesAreInDifferentBranches($executableLines, 21, 22);
+        $this->assertLinesAreInSameBranch($executableLines, 22, 23);
+        $this->assertLinesAreInSameBranch($executableLines, 22, 24);
+
+        // The object is a variable on a line on which no statement starts:
+        // the grouping is kept
+        $this->assertLinesAreInSameBranch($executableLines, 32, 33);
+
+        // The object is a nullsafe method call on a variable on such a
+        // line: the grouping is kept
+        $this->assertLinesAreInSameBranch($executableLines, 41, 42);
+
+        // Element of an array literal: the grouping is kept
+        $this->assertLinesAreInSameBranch($executableLines, 50, 51);
+    }
+
     public function testLineOfRightOperandOfBooleanAndIsNotMarkedAsBranchOperator(): void
     {
         $branchOperatorLines = $this->visit(

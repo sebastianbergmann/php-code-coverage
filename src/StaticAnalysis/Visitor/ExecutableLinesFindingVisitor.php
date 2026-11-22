@@ -374,10 +374,18 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
             $this->setLineBranch($node->getStartLine(), $node->getEndLine(), $branch);
 
+            if ($node instanceof Node\Expr\NullsafeMethodCall) {
+                $this->enterNullsafe($node);
+            }
+
             return null;
         }
 
         $this->enterDefault($node);
+
+        if ($node instanceof Node\Expr\NullsafePropertyFetch) {
+            $this->enterNullsafe($node);
+        }
 
         return null;
     }
@@ -826,16 +834,63 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
+     * The lines of a nullsafe method call or property fetch that starts on a
+     * line of its own get a branch of their own: the method is not called,
+     * and the property is not fetched, when the object is null, and these
+     * lines must then not get their status from the lines before them.
+     *
+     * The grouping is kept when the line the object expression ends on may
+     * depend on these lines for its status, see
+     * {@see lineOfOperandBeforeJumpHasStatusOfItsOwn()}.
+     */
+    private function enterNullsafe(Node\Expr\NullsafeMethodCall|Node\Expr\NullsafePropertyFetch $node): void
+    {
+        if ($this->spreadDepth > 0 || $this->constantEvaluationDepth > 0) {
+            return;
+        }
+
+        $objectLine = $node->var->getEndLine();
+        $startLine  = $node->name->getStartLine();
+        $endLine    = $node->getEndLine();
+
+        if ($startLine <= $objectLine ||
+            !isset($this->executableLinesGroupedByBranch[$startLine], $this->executableLinesGroupedByBranch[$objectLine])) {
+            return;
+        }
+
+        if (isset($this->expressionsReadQuietly[spl_object_id($node)]) ||
+            !$this->lineOfOperandBeforeJumpHasStatusOfItsOwn($node->var)) {
+            return;
+        }
+
+        $branch = $this->executableLinesGroupedByBranch[$objectLine];
+
+        for ($line = $startLine; $line <= $endLine; $line++) {
+            if (!isset($this->executableLinesGroupedByBranch[$line]) ||
+                $this->executableLinesGroupedByBranch[$line] !== $branch) {
+                return;
+            }
+        }
+
+        $branch = ++$this->nextBranch;
+
+        for ($line = $startLine; $line <= $endLine; $line++) {
+            $this->executableLinesGroupedByBranch[$line] = $branch;
+        }
+    }
+
+    /**
      * Xdebug does not report every opcode as executed: not the jump of ||
      * (JMPNZ_EX) and of the nullsafe operator (JMP_NULL), not the opcodes of
      * isset(), a static property, and clone, and not the opcodes of a
      * property fetch or an array access that is read without warnings. A
      * variable is not compiled to an opcode of its own.
      *
-     * The line of the left operand of || on which no opcode is executed that
-     * Xdebug reports can only get its status from the line of the right
-     * operand: PHP attributes the opcode that uses the value of the
-     * expression to that line, and that opcode is always executed.
+     * The line of the left operand of ||, or of the object of a nullsafe
+     * operator, on which no opcode is executed that Xdebug reports can only
+     * get its status from the line of the right operand, or of the method
+     * call or property fetch: PHP attributes the opcode that uses the value
+     * of the expression to that line, and that opcode is always executed.
      *
      * Such a line has a status of its own when a statement starts on it, or
      * when the operand is compiled to an opcode that is executed whenever

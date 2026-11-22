@@ -537,6 +537,165 @@ final class FilterProcessorTest extends TestCase
         );
     }
 
+    public function testApplyExecutableLinesFilterDoesNotMarkLinesAfterNullsafeOperatorThatWereNotExecutedAsExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_nullsafe_on_multiple_lines.php');
+
+        // Line coverage as reported by Xdebug 3.6 after every function was
+        // called with null.
+        //
+        // The lines of the method call and of the property fetches after a
+        // nullsafe operator (6, 13, 14, 22, 23) are reported as not executed.
+        // Line 7 also holds the opcode that returns the value.
+        //
+        // Lines 32 and 41 are reported as not executed although they were
+        // executed: Xdebug does not report the jump of the nullsafe operator,
+        // which is the only opcode that is executed on them. They keep the
+        // status of the line that follows them.
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => -1,
+                7  => 1,
+                12 => 1,
+                13 => -1,
+                14 => -1,
+                16 => 1,
+                21 => 1,
+                22 => -1,
+                23 => -1,
+                24 => -1,
+                26 => 1,
+                32 => 1,
+                33 => 1,
+                34 => 1,
+                41 => 1,
+                42 => 1,
+                43 => 1,
+                49 => 1,
+                50 => 1,
+                51 => 1,
+                52 => 1,
+                57 => 1,
+                58 => 1,
+                60 => 1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    6  => -1,
+                    7  => 1,
+                    8  => -1,
+                    12 => 1,
+                    13 => -1,
+                    14 => -1,
+                    16 => 1,
+                    17 => -1,
+                    21 => 1,
+                    22 => -1,
+                    23 => -1,
+                    26 => 1,
+                    27 => -1,
+                    31 => 1,
+                    32 => -1,
+                    33 => 1,
+                    34 => 1,
+                    36 => -1,
+                    40 => 1,
+                    41 => -1,
+                    42 => 1,
+                    43 => 1,
+                    45 => -1,
+                    50 => 1,
+                    51 => 1,
+                    53 => -1,
+                    57 => 1,
+                    58 => 1,
+                    60 => 1,
+                    61 => -1,
+                    62 => 1,
+                ],
+            ),
+        );
+    }
+
+    public function testApplyExecutableLinesFilterDoesNotMarkLinesAfterNullsafeOperatorThatWereExecutedAsNotExecuted(): void
+    {
+        $file = self::realpath(__DIR__ . '/../_files/source_nullsafe_on_multiple_lines.php');
+
+        // Line coverage as reported by Xdebug 3.6 after every function was
+        // called with objects whose methods return, and whose properties
+        // hold, values that are not null. Line 32 is reported as not executed
+        // although it was executed, see above.
+        $this->assertSame(
+            [
+                5  => 1,
+                6  => 1,
+                7  => 1,
+                12 => 1,
+                13 => 1,
+                14 => 1,
+                16 => 1,
+                21 => 1,
+                22 => 1,
+                23 => 1,
+                24 => 1,
+                26 => 1,
+                32 => 1,
+                33 => 1,
+                34 => 1,
+                41 => 1,
+                42 => 1,
+                43 => 1,
+                49 => 1,
+                50 => 1,
+                51 => 1,
+                52 => 1,
+                57 => 1,
+                58 => 1,
+                60 => 1,
+            ],
+            $this->lineCoverageAfterExecutableLinesFilter(
+                $file,
+                [
+                    5  => 1,
+                    6  => 1,
+                    7  => 1,
+                    8  => -1,
+                    12 => 1,
+                    13 => 1,
+                    14 => 1,
+                    16 => 1,
+                    17 => -1,
+                    21 => 1,
+                    22 => 1,
+                    23 => 1,
+                    26 => 1,
+                    27 => -1,
+                    31 => 1,
+                    32 => -1,
+                    33 => 1,
+                    34 => 1,
+                    36 => -1,
+                    40 => 1,
+                    41 => 1,
+                    42 => 1,
+                    43 => 1,
+                    45 => -1,
+                    50 => 1,
+                    51 => 1,
+                    53 => -1,
+                    57 => 1,
+                    58 => 1,
+                    60 => 1,
+                    61 => -1,
+                    62 => 1,
+                ],
+            ),
+        );
+    }
+
     public function testApplyExecutableLinesFilterDoesNotMarkOperandOfBooleanAndThatIsEvaluatedByCompilerAsNotExecuted(): void
     {
         $file = self::realpath(__DIR__ . '/../_files/source_boolean_and_with_operand_without_variable.php');

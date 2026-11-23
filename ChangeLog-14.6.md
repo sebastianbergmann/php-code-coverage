@@ -17,6 +17,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * `Driver::linesDependOnCompilation()` declares whether the lines that a driver reports depend on how PHP compiled the code. It returns `true` by default, which is correct for drivers that observe the bytecode PHP executes, such as Xdebug and PCOV. For a driver that returns `false`, the executable lines are determined from the bytecode no matter how OPcache is configured in the process that collects code coverage
 * `CacheWarmer::warmCache()` has an optional `$classifier` parameter, so that the cache can also be warmed with the results of the bytecode analysis
 
+#### Serialization and Merging
+
+* `Serialization\Serializer::write()` writes code coverage data that already is in the structure that is serialized, such as the data returned by `Serialization\Merger::merge()`, to a file
+
 #### Report Generation
 
 * [#1056](https://github.com/sebastianbergmann/php-code-coverage/issues/1056): The XML report includes branch and path coverage

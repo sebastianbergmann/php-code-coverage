@@ -98,13 +98,29 @@ final readonly class Serializer
         $coverageData = clone $codeCoverage->getData();
         $basePath     = (new PathReducer)->reduce($coverageData, $codeCoverage->filter()->files());
 
-        $data = [
-            'buildInformation' => $buildInformation,
-            'basePath'         => $basePath,
-            'codeCoverage'     => $coverageData,
-            'testResults'      => $codeCoverage->getTests(),
-        ];
+        $this->write(
+            $target,
+            [
+                'buildInformation' => $buildInformation,
+                'basePath'         => $basePath,
+                'codeCoverage'     => $coverageData,
+                'testResults'      => $codeCoverage->getTests(),
+            ],
+        );
+    }
 
+    /**
+     * Writes code coverage data that already is in the structure that is serialized,
+     * such as the data returned by Merger::merge(), to a file that can be read using
+     * Unserializer::unserialize().
+     *
+     * @param non-empty-string   $target
+     * @param SerializedCoverage $data
+     *
+     * @throws PharPrefixCouldNotBeStrippedException
+     */
+    public function write(string $target, array $data): void
+    {
         $serializedData = serialize($data);
 
         if (Phar::isBundled()) {

@@ -138,6 +138,22 @@ final class SerializerTest extends TestCase
         $this->assertSame(['BankAccount.php'], $data['codeCoverage']->coveredFiles());
     }
 
+    public function testWritesDataThatAlreadyIsInTheStructureThatIsSerialized(): void
+    {
+        $first  = TEST_FILES_PATH . 'tmp/first.php';
+        $second = TEST_FILES_PATH . 'tmp/second.php';
+        $target = TEST_FILES_PATH . 'tmp/merged.php';
+
+        (new Serializer)->serialize($first, $this->getLineCoverageForBankAccount());
+        (new Serializer)->serialize($second, $this->getLineCoverageForBankAccount());
+
+        $merged = (new Merger)->merge([$first, $second]);
+
+        (new Serializer)->write($target, $merged);
+
+        $this->assertEquals($merged, (new Unserializer)->unserialize($target));
+    }
+
     public function testSerializedDataPreservesTestResults(): void
     {
         $coverage = $this->getLineCoverageForBankAccount();

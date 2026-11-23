@@ -92,7 +92,7 @@ final class PathReducerTest extends TestCase
 
         $result = (new PathReducer)->reduce($data);
 
-        $this->assertSame('', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR, $result);
         $this->assertSame(['alpha' . DIRECTORY_SEPARATOR . 'x.php', 'beta' . DIRECTORY_SEPARATOR . 'y.php'], $data->coveredFiles());
     }
 
@@ -185,7 +185,7 @@ final class PathReducerTest extends TestCase
         $this->assertSame(['file.php'], $data->coveredFiles());
     }
 
-    public function testReduceIgnoresAdditionalFilesThatOnlyShareTheRootDirectoryWithTheCoveredFiles(): void
+    public function testReduceTakesAdditionalFilesIntoAccountThatOnlyShareTheRootDirectoryWithTheCoveredFiles(): void
     {
         $data = $this->dataWithFiles([
             DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'alpha' . DIRECTORY_SEPARATOR . 'a.php',
@@ -199,7 +199,27 @@ final class PathReducerTest extends TestCase
             ],
         );
 
-        $this->assertSame(DIRECTORY_SEPARATOR . 'common', $result);
+        $this->assertSame(DIRECTORY_SEPARATOR, $result);
+
+        $this->assertSame(
+            [
+                'common' . DIRECTORY_SEPARATOR . 'alpha' . DIRECTORY_SEPARATOR . 'a.php',
+                'common' . DIRECTORY_SEPARATOR . 'beta' . DIRECTORY_SEPARATOR . 'b.php',
+            ],
+            $data->coveredFiles(),
+        );
+    }
+
+    public function testReduceIgnoresAdditionalFilesThatShareNoDirectoryWithTheCoveredFiles(): void
+    {
+        $data = $this->dataWithFiles([
+            'src' . DIRECTORY_SEPARATOR . 'alpha' . DIRECTORY_SEPARATOR . 'a.php',
+            'src' . DIRECTORY_SEPARATOR . 'beta' . DIRECTORY_SEPARATOR . 'b.php',
+        ]);
+
+        $result = (new PathReducer)->reduce($data, ['lib' . DIRECTORY_SEPARATOR . 'c.php']);
+
+        $this->assertSame('src', $result);
 
         $this->assertSame(
             [

@@ -14,7 +14,10 @@ use function array_sum;
 use function basename;
 use function preg_match;
 use function range;
-use function str_replace;
+use function str_ends_with;
+use function str_starts_with;
+use function strlen;
+use function substr;
 use function time;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\Node\Directory;
@@ -87,7 +90,7 @@ final class Cobertura
             $packageElement    = $document->createElement('package');
             $packageComplexity = 0;
 
-            $packageElement->setAttribute('name', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
+            $packageElement->setAttribute('name', $this->ensureUtf8($this->relativePath($item, $report)));
 
             $linesValid   = $item->numberOfExecutableLines();
             $linesCovered = $item->numberOfExecutedLines();
@@ -126,7 +129,7 @@ final class Cobertura
                 $classElement = $document->createElement('class');
 
                 $classElement->setAttribute('name', $this->ensureUtf8($className));
-                $classElement->setAttribute('filename', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
+                $classElement->setAttribute('filename', $this->ensureUtf8($this->relativePath($item, $report)));
                 $classElement->setAttribute('line-rate', (string) $lineRate);
                 $classElement->setAttribute('branch-rate', (string) $branchRate);
                 $classElement->setAttribute('complexity', (string) $class->ccn);
@@ -204,7 +207,7 @@ final class Cobertura
 
             $classElement = $document->createElement('class');
             $classElement->setAttribute('name', $this->ensureUtf8(basename($item->pathAsString())));
-            $classElement->setAttribute('filename', $this->ensureUtf8(str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString())));
+            $classElement->setAttribute('filename', $this->ensureUtf8($this->relativePath($item, $report)));
 
             $methodsElement = $document->createElement('methods');
 
@@ -295,5 +298,26 @@ final class Cobertura
         }
 
         return $buffer;
+    }
+
+    /**
+     * The path of a file, relative to the directory the report is for.
+     */
+    private function relativePath(File $file, Directory $report): string
+    {
+        $prefix = $report->pathAsString();
+
+        // The path of the root directory already ends with the directory separator
+        if (!str_ends_with($prefix, DIRECTORY_SEPARATOR)) {
+            $prefix .= DIRECTORY_SEPARATOR;
+        }
+
+        $path = $file->pathAsString();
+
+        if (str_starts_with($path, $prefix)) {
+            return substr($path, strlen($prefix));
+        }
+
+        return $path;
     }
 }

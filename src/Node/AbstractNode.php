@@ -44,7 +44,7 @@ abstract class AbstractNode implements Countable
 
     public function __construct(string $name, ?self $parent = null)
     {
-        if (str_ends_with($name, DIRECTORY_SEPARATOR)) {
+        if ($name !== DIRECTORY_SEPARATOR && str_ends_with($name, DIRECTORY_SEPARATOR)) {
             $name = substr($name, 0, -1);
         }
 
@@ -326,8 +326,15 @@ abstract class AbstractNode implements Countable
             return;
         }
 
+        $parentPath = $this->parent->pathAsString();
+
+        // The path of the root directory already ends with the directory separator
+        if (!str_ends_with($parentPath, DIRECTORY_SEPARATOR)) {
+            $parentPath .= DIRECTORY_SEPARATOR;
+        }
+
         $this->pathAsArray  = $this->parent->pathAsArray();
-        $this->pathAsString = $this->parent->pathAsString() . DIRECTORY_SEPARATOR . $this->name;
+        $this->pathAsString = $parentPath . $this->name;
 
         $this->pathAsArray[] = $this;
     }

@@ -13,6 +13,7 @@ use const DIRECTORY_SEPARATOR;
 use function array_key_exists;
 use function array_merge;
 use function assert;
+use function str_ends_with;
 use function str_starts_with;
 use function strlen;
 use function substr;
@@ -155,7 +156,10 @@ final readonly class Merger
      */
     private function relativePath(string $directory, string $path): ?string
     {
-        $directory .= DIRECTORY_SEPARATOR;
+        // The path of the root directory already ends with the directory separator
+        if (!str_ends_with($directory, DIRECTORY_SEPARATOR)) {
+            $directory .= DIRECTORY_SEPARATOR;
+        }
 
         if (!str_starts_with($path, $directory)) {
             return null;

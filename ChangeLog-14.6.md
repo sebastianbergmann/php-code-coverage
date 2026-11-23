@@ -63,6 +63,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 #### Report Generation
 
+* Reports are empty when the root directory is all that the paths of the source files have in common, unless the current working directory is the root directory
 * The control flow graphs of the HTML report show the edge that leads to the exit of a function as not covered, even when it is the only edge out of a branch that was executed
 * The JSONL report reports the line that a branch ends on as not covered when one of the edges out of that branch leads to the exit of the function
 

@@ -15,6 +15,7 @@ use function explode;
 use function is_array;
 use function is_file;
 use function sha1_file;
+use function str_ends_with;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -62,7 +63,7 @@ final readonly class Builder
             if ($commonPath === '.') {
                 $rootPath = $basePath;
             } else {
-                $rootPath = $basePath . DIRECTORY_SEPARATOR . $commonPath;
+                $rootPath = $this->path($basePath, $commonPath);
             }
         }
 
@@ -82,6 +83,20 @@ final readonly class Builder
         );
 
         return $root;
+    }
+
+    /**
+     * The path of the root directory already ends with the directory separator.
+     *
+     * @return non-empty-string
+     */
+    private function path(string $directory, string $name): string
+    {
+        if (!str_ends_with($directory, DIRECTORY_SEPARATOR)) {
+            $directory .= DIRECTORY_SEPARATOR;
+        }
+
+        return $directory . $name;
     }
 
     /**
@@ -127,7 +142,7 @@ final readonly class Builder
 
             if ($value instanceof FileCoverageData) {
                 $key      = substr($key, 0, -2);
-                $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
+                $filename = $this->path($root->pathAsString(), $key);
 
                 $sha1 = is_file($filename) ? sha1_file($filename) : false;
 

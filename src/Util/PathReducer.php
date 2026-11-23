@@ -34,15 +34,16 @@ final class PathReducer
      * Reduces the paths by cutting the longest common start path, renames the
      * files in the coverage data accordingly, and returns the common path.
      *
-     * Returns an empty string when there are no covered files.
+     * Returns an empty string when there are no covered files, or when they
+     * have no common path. Returns the directory separator when the root
+     * directory is all that they have in common.
      *
      * The additional files are not part of the coverage data, but the common
      * path is the one that the covered files share with them. When they are
      * the files that could have been covered then the common path, and with
      * it the paths the covered files are renamed to, do not depend on which
      * of these files actually were covered. The additional files are ignored
-     * when the covered files share no directory with them, or only the root
-     * directory.
+     * when the covered files have no common path with them.
      *
      * @param list<non-empty-string> $additionalFiles
      */
@@ -121,10 +122,9 @@ final class PathReducer
             }
         }
 
-        // A common path that is empty, or only the root directory, cannot be
-        // told apart from no common path at all by the consumers of this
-        // method: the additional files must not be the reason for that
-        if ($additionalFiles !== [] && ($commonPath === '' || $commonPath === DIRECTORY_SEPARATOR)) {
+        // The additional files must not be the reason why the covered files,
+        // which have a common path, are not renamed at all
+        if ($additionalFiles !== [] && $commonPath === '') {
             return $this->reduce($data);
         }
 
@@ -134,6 +134,10 @@ final class PathReducer
             if ($path['covered'] && $newPath !== '' && $newPath !== $path['original']) {
                 $data->renameFile($path['original'], $newPath);
             }
+        }
+
+        if ($commonPath === DIRECTORY_SEPARATOR) {
+            return $commonPath;
         }
 
         return substr($commonPath, 0, -1);

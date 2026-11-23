@@ -23,6 +23,7 @@ use function is_dir;
 use function is_file;
 use function is_writable;
 use function ksort;
+use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function strcmp;
@@ -434,7 +435,12 @@ final class Facade
 
     private function relativePath(string $path, string $sourceRoot): string
     {
-        $prefix = $sourceRoot . DIRECTORY_SEPARATOR;
+        $prefix = $sourceRoot;
+
+        // The path of the root directory already ends with the directory separator
+        if (!str_ends_with($prefix, DIRECTORY_SEPARATOR)) {
+            $prefix .= DIRECTORY_SEPARATOR;
+        }
 
         if (str_starts_with($path, $prefix)) {
             $path = substr($path, strlen($prefix));

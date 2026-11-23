@@ -32,6 +32,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * The HTML report shows, next to a line that is covered, how many tests cover it. When the driver collects hit counts, it shows how often the line was executed instead. Numbers of 1000 and more are abbreviated (`1.23k`, for example), the exact number is shown in the popover that lists the tests that cover the line
 * The HTML report has navigation between the pieces of code that are not covered: the `n` and `p` keys, and two buttons, jump to the next and to the previous one. In the views for branch coverage and path coverage, lines that are only partially covered are included
 
+#### Static Analysis
+
+* `StaticAnalysis\SourceLines` tells what the syntax of a source file says about a line: `linesOfStatementAt()` returns the lines of the statement that the line belongs to, and `codeUnitAt()` returns the name of the method or function that the line belongs to. Which lines of a statement that spans multiple lines are executable depends on how the executable lines were determined when the code coverage data was collected. This allows a tool that works with the code coverage data of single lines, such as phpcov when it calculates the code coverage of the lines that were changed, to relate a line of such a statement that is not executable to the lines of that statement that are
+
 ### Changed
 
 #### Data Collection and Data Processing

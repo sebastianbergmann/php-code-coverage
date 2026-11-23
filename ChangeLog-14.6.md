@@ -64,6 +64,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * The HTML report lists a directory that contains nothing but another directory, or nothing but a single file, together with what it contains (`Report/Html/Renderer`, for example) instead of requiring a click for each level. The same applies to a namespace that contains nothing but another namespace
 * The view for branch coverage of the HTML report shows, next to a line that a branch with more than one successor ends on, which of the edges out of that branch were taken. Previously, it showed whether the branches that these edges lead to were executed, and only for one such branch per line
   * Where the edges lead to is listed in the popover of the line, together with the tests that cover the line, and in the new "Leads to" column of the "Branches" section
+* When the executable lines of a file are determined from its bytecode, not all lines of a statement that spans multiple lines are executable: the line of an argument of a function call, for instance, is not. Such a line is not counted as an executable line. The reports listed below treat it as a line of its statement nevertheless. Which lines belong to the same statement is determined from the syntax, whether they were executed is not: this only applies to a statement of which all executable lines were executed by the same tests, or of which no executable line was executed
+  * The JSONL report lists such a line as not covered (`uncovered`) when the executable lines of its statement were not executed, and as covered by a test (`covers`) when that test executed them. The ranges of lines that are reported are therefore not interrupted by the lines of a statement that are not executable
 
 ### Fixed
 

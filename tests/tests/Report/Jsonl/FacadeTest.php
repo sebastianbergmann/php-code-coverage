@@ -27,8 +27,10 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 use SplFileInfo;
@@ -184,6 +186,105 @@ final class FacadeTest extends TestCase
     }
 
     /**
+     * Lines 2 to 4 are one statement of which only line 2 is executable, as
+     * are lines 6 to 8 of which only line 6 is executable. Only the latter
+     * was not executed.
+     */
+    public function testReportsAllLinesOfStatementThatWasNotExecutedAsNotCovered(): void
+    {
+        $report = $this->reportForFileWithFunctions(
+            [2 => [0 => 1], 6 => []],
+            ['f' => new Function_('f', 'f', '', 1, 9, 'function f(): void', 1)],
+            linesOfStatements: [2 => 1, 3 => 1, 4 => 1, 6 => 2, 7 => 2, 8 => 2],
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'file'       => 'functions.php',
+                    'executable' => 2,
+                    'executed'   => 1,
+                    'uncovered'  => ['6-8'],
+                    'symbols'    => [
+                        ['name' => 'f', 'lines' => '1-9', 'state' => 'partial', 'uncovered' => ['6-8']],
+                    ],
+                ],
+            ],
+            $this->coverageRecords($report),
+        );
+    }
+
+    /**
+     * Lines 2 to 4 are one statement of which lines 2 and 3 are executable.
+     * Line 4 is not reported as not covered: line 2 was executed.
+     */
+    public function testDoesNotReportLineThatIsNotExecutableAsNotCoveredWhenLineOfItsStatementWasExecuted(): void
+    {
+        $report = $this->reportForFileWithFunctions(
+            [2 => [0 => 1], 3 => []],
+            ['f' => new Function_('f', 'f', '', 1, 5, 'function f(): void', 1)],
+            linesOfStatements: [2 => 1, 3 => 1, 4 => 1],
+        );
+
+        $this->assertSame(
+            [
+                ['name' => 'f', 'lines' => '1-5', 'state' => 'partial', 'uncovered' => ['3']],
+            ],
+            $this->symbolRecords($report),
+        );
+    }
+
+    /**
+     * No executable line of the function was executed. That lines of its
+     * statements that are not executable are reported as not covered does not
+     * change how its state is determined.
+     */
+    public function testLinesThatAreNotExecutableDoNotChangeTheStateOfSymbol(): void
+    {
+        $report = $this->reportForFileWithFunctions(
+            [2 => [], 6 => [0 => 1]],
+            [
+                'f' => new Function_('f', 'f', '', 1, 4, 'function f(): void', 1),
+                'g' => new Function_('g', 'g', '', 5, 7, 'function g(): void', 1),
+            ],
+            linesOfStatements: [2 => 1, 3 => 1, 6 => 2],
+        );
+
+        $this->assertSame(
+            [
+                ['name' => 'f', 'lines' => '1-4', 'state' => 'uncovered'],
+                ['name' => 'g', 'lines' => '5-7', 'state' => 'covered'],
+            ],
+            $this->symbolRecords($report),
+        );
+    }
+
+    /**
+     * Lines 2 to 4 are one statement of which only line 2 is executable.
+     */
+    public function testReportsAllLinesOfStatementThatTestExecutedAsCoveredByThatTest(): void
+    {
+        $report = $this->reportForFileWithFunctions(
+            [2 => [0 => 1], 6 => []],
+            ['f' => new Function_('f', 'f', '', 1, 9, 'function f(): void', 1)],
+            linesOfStatements: [2 => 1, 3 => 1, 4 => 1, 6 => 2, 7 => 2, 8 => 2],
+        );
+
+        $records = [];
+
+        foreach ($this->linesOf($this->process($report) . DIRECTORY_SEPARATOR . 'tests.jsonl') as $line) {
+            $records[] = json_decode($line, true, 512, JSON_THROW_ON_ERROR);
+        }
+
+        $this->assertSame(
+            [
+                ['test' => 'ExampleTest::testOne', 'covers' => ['functions.php' => ['2-4']]],
+            ],
+            $records,
+        );
+    }
+
+    /**
      * Every line of the function was executed, but the edge out of the
      * decision on line 2 that leads to the branch on line 4 was never taken.
      */
@@ -320,8 +421,9 @@ final class FacadeTest extends TestCase
      * @param array<positive-int, ?array<non-negative-int, positive-int>> $lineCoverage
      * @param array<string, Function_>                                    $functions
      * @param array<non-empty-string, ProcessedFunctionCoverageData>      $functionCoverage
+     * @param array<positive-int, int>                                    $linesOfStatements
      */
-    private function reportForFileWithFunctions(array $lineCoverage, array $functions, array $functionCoverage = [], ?bool $hasBranchCoverageData = null): DirectoryNode
+    private function reportForFileWithFunctions(array $lineCoverage, array $functions, array $functionCoverage = [], ?bool $hasBranchCoverageData = null, array $linesOfStatements = []): DirectoryNode
     {
         $root = new DirectoryNode('/path/to/src');
 
@@ -333,6 +435,7 @@ final class FacadeTest extends TestCase
                 $functions,
                 $functionCoverage,
                 $hasBranchCoverageData ?? $functionCoverage !== [],
+                $linesOfStatements,
             ),
         );
 
@@ -344,8 +447,9 @@ final class FacadeTest extends TestCase
      * @param array<positive-int, ?array<non-negative-int, positive-int>> $lineCoverage
      * @param array<string, Function_>                                    $functions
      * @param array<non-empty-string, ProcessedFunctionCoverageData>      $functionCoverage
+     * @param array<positive-int, int>                                    $linesOfStatements
      */
-    private function file(string $name, DirectoryNode $parent, array $lineCoverage, array $functions = [], array $functionCoverage = [], bool $hasBranchCoverageData = false): FileNode
+    private function file(string $name, DirectoryNode $parent, array $lineCoverage, array $functions = [], array $functionCoverage = [], bool $hasBranchCoverageData = false, array $linesOfStatements = []): FileNode
     {
         return new FileNode(
             $name,
@@ -359,6 +463,21 @@ final class FacadeTest extends TestCase
             $functions,
             new LinesOfCode(10, 0, 10),
             $hasBranchCoverageData,
+            false,
+            null,
+            SourceLines::fromAnalysisResult(
+                new AnalysisResult(
+                    [],
+                    [],
+                    [],
+                    [],
+                    new LinesOfCode(10, 0, 10),
+                    $linesOfStatements,
+                    [],
+                    [],
+                    [],
+                ),
+            ),
         );
     }
 

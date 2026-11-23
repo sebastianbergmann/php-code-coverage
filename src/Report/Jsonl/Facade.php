@@ -15,6 +15,7 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const SORT_STRING;
 use function array_any;
+use function array_keys;
 use function count;
 use function fclose;
 use function fopen;
@@ -198,6 +199,12 @@ final class Facade
                 }
             }
 
+            foreach ($file->lineCoverageDataInheritedFromStatements() as $line => $tests) {
+                foreach ($tests ?? [] as $testIndex) {
+                    $lines[$testIndex][] = $line;
+                }
+            }
+
             foreach ($lines as $testIndex => $linesOfTest) {
                 if (!isset($testData[$testIndex])) {
                     // @codeCoverageIgnoreStart
@@ -242,7 +249,8 @@ final class Facade
      */
     private function fileRecord(FileNode $file, string $path): array
     {
-        $lineCoverage = $file->lineCoverageData();
+        $lineCoverage               = $file->lineCoverageData();
+        $linesOfUncoveredStatements = $this->linesOfUncoveredStatements($file);
 
         $record = [
             'file'       => $this->ensureUtf8($path),
@@ -250,13 +258,13 @@ final class Facade
             'executed'   => $file->numberOfExecutedLines(),
         ];
 
-        $uncovered = RangeEncoder::encode($this->uncoveredLines($lineCoverage));
+        $uncovered = RangeEncoder::encode([...$this->uncoveredLines($lineCoverage), ...array_keys($linesOfUncoveredStatements)]);
 
         if ($uncovered !== []) {
             $record['uncovered'] = $uncovered;
         }
 
-        $symbols = $this->symbols($file, $lineCoverage);
+        $symbols = $this->symbols($file, $lineCoverage, $linesOfUncoveredStatements);
 
         if ($symbols !== []) {
             $record['symbols'] = $symbols;
@@ -284,11 +292,37 @@ final class Facade
     }
 
     /**
+     * Returns the lines that are not executable, but that belong to a
+     * statement of which no executable line was executed.
+     *
+     * Which lines of a statement that spans multiple lines are executable
+     * depends on how the executable lines were determined when the code
+     * coverage data was collected. With these lines, the lines that are
+     * reported as not covered are the lines of the statements that are not
+     * covered either way. They are not counted as executable lines.
+     *
+     * @return array<positive-int, true>
+     */
+    private function linesOfUncoveredStatements(FileNode $file): array
+    {
+        $lines = [];
+
+        foreach ($file->lineCoverageDataInheritedFromStatements() as $line => $tests) {
+            if ($tests === []) {
+                $lines[$line] = true;
+            }
+        }
+
+        return $lines;
+    }
+
+    /**
      * @param array<positive-int, ?array<TestIndexType, positive-int>> $lineCoverage
+     * @param array<positive-int, true>                                $linesOfUncoveredStatements
      *
      * @return list<array<string, mixed>>
      */
-    private function symbols(FileNode $file, array $lineCoverage): array
+    private function symbols(FileNode $file, array $lineCoverage, array $linesOfUncoveredStatements): array
     {
         $functionCoverage = $file->functionCoverageData();
         $symbols          = [];
@@ -330,7 +364,7 @@ final class Facade
         $records = [];
 
         foreach ($symbols as $symbol) {
-            $record = $this->symbolRecord($symbol['name'], $symbol['startLine'], $symbol['endLine'], $lineCoverage, $symbol['branches']);
+            $record = $this->symbolRecord($symbol['name'], $symbol['startLine'], $symbol['endLine'], $lineCoverage, $linesOfUncoveredStatements, $symbol['branches']);
 
             if ($record === null) {
                 continue;
@@ -344,26 +378,33 @@ final class Facade
 
     /**
      * @param array<positive-int, ?array<TestIndexType, positive-int>> $lineCoverage
-     * @param ?array<int, ProcessedBranchCoverageData>                 $branches     null when the driver collected no branch coverage
+     * @param array<positive-int, true>                                $linesOfUncoveredStatements the lines that are reported as not covered without being counted as executable lines, see linesOfUncoveredStatements()
+     * @param ?array<int, ProcessedBranchCoverageData>                 $branches                   null when the driver collected no branch coverage
      *
      * @return ?array<string, mixed>
      */
-    private function symbolRecord(string $name, int $startLine, int $endLine, array $lineCoverage, ?array $branches): ?array
+    private function symbolRecord(string $name, int $startLine, int $endLine, array $lineCoverage, array $linesOfUncoveredStatements, ?array $branches): ?array
     {
-        $executableLines = 0;
-        $uncoveredLines  = [];
+        $executableLines      = 0;
+        $uncoveredLines       = [];
+        $reportedAsNotCovered = [];
 
         for ($line = $startLine; $line <= $endLine; $line++) {
             $tests = $lineCoverage[$line] ?? null;
 
             if ($tests === null) {
+                if (isset($linesOfUncoveredStatements[$line])) {
+                    $reportedAsNotCovered[] = $line;
+                }
+
                 continue;
             }
 
             $executableLines++;
 
             if ($tests === []) {
-                $uncoveredLines[] = $line;
+                $uncoveredLines[]       = $line;
+                $reportedAsNotCovered[] = $line;
             }
         }
 
@@ -398,7 +439,7 @@ final class Facade
         ];
 
         if ($state === 'partial' && $uncoveredLines !== []) {
-            $record['uncovered'] = RangeEncoder::encode($uncoveredLines);
+            $record['uncovered'] = RangeEncoder::encode($reportedAsNotCovered);
         }
 
         if ($branchCoverage !== null) {

@@ -12,9 +12,11 @@ namespace SebastianBergmann\CodeCoverage\Report;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function file_get_contents;
+use function rtrim;
 use function str_replace;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Report\Html\Views;
 use SebastianBergmann\CodeCoverage\Serialization\Serializer;
 use SebastianBergmann\CodeCoverage\Serialization\Unserializer;
@@ -263,6 +265,32 @@ final class FacadeTest extends TestCase
         $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'meta.json');
         $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'coverage.jsonl');
         $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'tests.jsonl');
+    }
+
+    /**
+     * Only line 4 of the statement on lines 4 to 8 has code coverage data,
+     * line 6 is ignored using an annotation.
+     */
+    public function testLineThatIsIgnoredIsNotReportedAsLineOfItsStatementForSerializedData(): void
+    {
+        $serializedFile = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'FacadeTest_serialized.php';
+
+        (new Serializer)->serialize($serializedFile, $this->getLineCoverageForBankAccount());
+
+        $serializedData = (new Unserializer)->unserialize($serializedFile);
+
+        $serializedData['codeCoverage'] = new ProcessedCodeCoverageData;
+        $serializedData['codeCoverage']->setLineCoverage(['source_with_ignored_line_of_statement.php' => [4 => []]]);
+        $serializedData['basePath'] = rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR);
+
+        $target = TEST_FILES_PATH . 'tmp';
+
+        Facade::fromSerializedData($serializedData)->renderJsonl($target);
+
+        $this->assertSame(
+            '{"file":"source_with_ignored_line_of_statement.php","executable":1,"executed":0,"uncovered":["4-5","7-8"],"symbols":[{"name":"greet","lines":"2-9","state":"uncovered"}]}' . "\n",
+            file_get_contents($target . DIRECTORY_SEPARATOR . 'coverage.jsonl'),
+        );
     }
 
     public function testRenderXml(): void

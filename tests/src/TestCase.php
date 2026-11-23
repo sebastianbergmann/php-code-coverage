@@ -22,6 +22,7 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\Granularity;
 use SebastianBergmann\CodeCoverage\Node\Builder;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
@@ -684,6 +685,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function setUpXdebugStubForFileWithEval(): Driver
     {
         $stub = $this->createStub(Driver::class);
+
+        $stub
+            ->method('granularity')
+            ->willReturn(Granularity::Line);
 
         $stub
             ->method('stop')

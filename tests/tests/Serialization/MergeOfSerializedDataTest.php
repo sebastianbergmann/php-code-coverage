@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\FakeDriver;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\Report\Facade;
 use SebastianBergmann\CodeCoverage\TestCase;
@@ -127,19 +128,7 @@ final class MergeOfSerializedDataTest extends TestCase
             }
         }
 
-        $driver = $this->createStub(Driver::class);
-
-        $driver
-            ->method('name')
-            ->willReturn('driver');
-
-        $driver
-            ->method('version')
-            ->willReturn('1.0.0');
-
-        $driver
-            ->method('stop')
-            ->willReturn(RawCodeCoverageData::fromLineCoverage($lineCoverage));
+        $driver = new FakeDriver(RawCodeCoverageData::fromLineCoverage($lineCoverage));
 
         $filter = new Filter;
 

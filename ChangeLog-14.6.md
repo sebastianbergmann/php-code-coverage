@@ -50,6 +50,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Processing the code coverage data of a test is faster. The status of a line is only propagated to the other lines of its branch for the lines that share their branch with another line, instead of for every executable line of each file the test executed code in
 * `CodeCoverage::merge()` is faster when the code coverage of many processes is merged. `Filter::includeFile()` and `Filter::includeFiles()`, which are used to include the files of the filter of the object that is merged, no longer resolve the path of a file that is already included under the given path
 
+#### Serialization and Merging
+
+* Serialized code coverage data records the granularity the code coverage driver was configured with: line coverage, or line and branch coverage, or line, branch, and path coverage
+* `Serialization\Merger::merge()` throws a `GranularityMismatchException` when not all files were written with the same granularity: branch and path coverage that is merged with code coverage data that was collected without it lacks what was executed while the latter was collected, and was reported as if it were complete. The new, optional `$requireMatchingGranularity` parameter can be used to merge such files nevertheless. The granularity of files that were written by an older version is not known and is not compared
+
 #### Report Generation
 
 * The HTML report lists a directory that contains nothing but another directory, or nothing but a single file, together with what it contains (`Report/Html/Renderer`, for example) instead of requiring a click for each level. The same applies to a namespace that contains nothing but another namespace

@@ -36,18 +36,26 @@ final readonly class Merger
      * locations, on different machines for instance, has base paths that do not match,
      * and is merged by the paths relative to them.
      *
+     * The granularity is what the code coverage driver was configured to collect: line
+     * coverage, or line and branch coverage, or line, branch, and path coverage. Branch
+     * and path coverage that is merged with code coverage data that was collected without
+     * it is incomplete: what was executed while the latter was collected is missing from it.
+     * The granularity of files that were written by a version of this library that did not
+     * record it is not known, and cannot be compared.
+     *
      * @param iterable<non-empty-string> $paths
      *
      * @throws BasePathMismatchException
      * @throws DriverMismatchException
      * @throws EmptyPathListException
      * @throws GitInformationMismatchException
+     * @throws GranularityMismatchException
      * @throws MixedGitInformationException
      * @throws RuntimeMismatchException
      *
      * @return SerializedCoverage
      */
-    public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true, bool $requireMatchingBasePaths = false): array
+    public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true, bool $requireMatchingBasePaths = false, bool $requireMatchingGranularity = true): array
     {
         $unserializer = new Unserializer;
 
@@ -76,6 +84,17 @@ final readonly class Merger
                 $this->assertGitInformationMatches($first, $item);
             }
 
+            if (!$this->granularityMatches($first, $item)) {
+                if ($requireMatchingGranularity) {
+                    throw new GranularityMismatchException(
+                        $first['buildInformation']['phpCodeCoverage']['driverInformation']['granularity'] ?? 'unknown',
+                        $item['buildInformation']['phpCodeCoverage']['driverInformation']['granularity'] ?? 'unknown',
+                    );
+                }
+
+                $granularityIsTheSameForAllFiles = false;
+            }
+
             assert(isset($mergedBasePath));
 
             $mergedBasePath = $this->alignPaths($mergedCoverage, $mergedBasePath, $item['codeCoverage'], $item['basePath'], $requireMatchingBasePaths);
@@ -102,6 +121,11 @@ final readonly class Merger
                 'driverInformation'   => $first['buildInformation']['phpCodeCoverage']['driverInformation'],
             ],
         ];
+
+        if (isset($granularityIsTheSameForAllFiles)) {
+            // The merged data was not collected with one granularity
+            unset($buildInformation['phpCodeCoverage']['driverInformation']['granularity']);
+        }
 
         if (array_key_exists('git', $first['buildInformation'])) {
             $buildInformation['git'] = $first['buildInformation']['git'];
@@ -239,6 +263,23 @@ final readonly class Merger
         ) {
             throw new DriverMismatchException;
         }
+    }
+
+    /**
+     * @param SerializedCoverage $reference
+     * @param SerializedCoverage $current
+     */
+    private function granularityMatches(array $reference, array $current): bool
+    {
+        $referenceDriver = $reference['buildInformation']['phpCodeCoverage']['driverInformation'];
+        $currentDriver   = $current['buildInformation']['phpCodeCoverage']['driverInformation'];
+
+        if (!array_key_exists('granularity', $referenceDriver) ||
+            !array_key_exists('granularity', $currentDriver)) {
+            return true;
+        }
+
+        return $referenceDriver['granularity'] === $currentDriver['granularity'];
     }
 
     /**

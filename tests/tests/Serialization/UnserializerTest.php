@@ -287,6 +287,20 @@ final class UnserializerTest extends TestCase
         (new Unserializer)->unserialize($target);
     }
 
+    public function testThrowsExceptionWhenGranularityIsNotValid(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+        file_put_contents(
+            $target,
+            '<?php // phpunit/php-code-coverage serialization format ' . Serializer::SERIALIZATION_FORMAT . "\nreturn ['buildInformation' => ['timestamp' => '2024-01-01', 'runtime' => ['name' => 'PHP', 'version' => '8.3', 'vendorUrl' => 'https://php.net'], 'phpCodeCoverage' => ['version' => '12.0.0', 'serializationFormat' => 1, 'driverInformation' => ['name' => 'Xdebug', 'version' => '3.0.0', 'granularity' => 'invalid']]]];",
+        );
+
+        $this->expectException(InvalidCoverageDataException::class);
+        $this->expectExceptionMessageIsOrContains("invalid 'buildInformation.phpCodeCoverage.driverInformation.granularity' key");
+
+        (new Unserializer)->unserialize($target);
+    }
+
     public function testThrowsExceptionWhenCodeCoverageIsNotProcessedCodeCoverageData(): void
     {
         $target = TEST_FILES_PATH . 'tmp/serialized.php';

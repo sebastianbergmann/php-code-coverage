@@ -196,6 +196,25 @@ final class SerializerTest extends TestCase
         $this->assertEquals($coverage->driverInformation(), $phpCodeCoverage['driverInformation']);
     }
 
+    public function testSerializedDataHasGranularityTheDriverWasConfiguredWith(): void
+    {
+        $target = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        (new Serializer)->serialize($target, $this->getLineCoverageForBankAccount());
+
+        $data = (new Unserializer)->unserialize($target);
+
+        $this->assertArrayHasKey('granularity', $data['buildInformation']['phpCodeCoverage']['driverInformation']);
+        $this->assertSame('Line', $data['buildInformation']['phpCodeCoverage']['driverInformation']['granularity']);
+
+        (new Serializer)->serialize($target, $this->getPathCoverageForBankAccount());
+
+        $data = (new Unserializer)->unserialize($target);
+
+        $this->assertArrayHasKey('granularity', $data['buildInformation']['phpCodeCoverage']['driverInformation']);
+        $this->assertSame('LineBranchAndPath', $data['buildInformation']['phpCodeCoverage']['driverInformation']['granularity']);
+    }
+
     public function testSerializationWorksWhenDataContainsSingleQuotes(): void
     {
         $coverage = $this->getLineCoverageForFileWithEval();

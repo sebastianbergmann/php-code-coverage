@@ -28,6 +28,7 @@ use SebastianBergmann\CodeCoverage\Version;
 #[CoversClass(DriverMismatchException::class)]
 #[CoversClass(EmptyPathListException::class)]
 #[CoversClass(GitInformationMismatchException::class)]
+#[CoversClass(GranularityMismatchException::class)]
 #[CoversClass(MixedGitInformationException::class)]
 #[CoversClass(RuntimeMismatchException::class)]
 #[Small]
@@ -439,6 +440,48 @@ final class MergerTest extends TestCase
         $this->expectException(DriverMismatchException::class);
 
         (new Merger)->merge([$pathA, $pathB]);
+    }
+
+    public function testThrowsExceptionWhenGranularityDiffers(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'LineBranchAndPath']]]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'Line']]]]));
+
+        $this->expectException(GranularityMismatchException::class);
+        $this->expectExceptionMessageIsOrContains('Granularity mismatch: code coverage data was collected with granularity "LineBranchAndPath" for the first file but with granularity "Line" for another file');
+
+        (new Merger)->merge([$pathA, $pathB]);
+    }
+
+    public function testDoesNotThrowExceptionWhenGranularityDiffersButIsNotRequiredToMatch(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'LineBranchAndPath']]]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'Line']]]]));
+
+        $result = (new Merger)->merge([$pathA, $pathB], true, true, true, false, false);
+
+        $this->assertArrayNotHasKey('granularity', $result['buildInformation']['phpCodeCoverage']['driverInformation']);
+    }
+
+    public function testMergedResultHasGranularityOfTheFilesWhenItIsTheSameForAllOfThem(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'LineAndBranch']]]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'LineAndBranch']]]]));
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertArrayHasKey('granularity', $result['buildInformation']['phpCodeCoverage']['driverInformation']);
+        $this->assertSame('LineAndBranch', $result['buildInformation']['phpCodeCoverage']['driverInformation']['granularity']);
+    }
+
+    public function testGranularityIsNotComparedWhenItIsNotKnown(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['buildInformation' => ['phpCodeCoverage' => ['driverInformation' => ['granularity' => 'LineBranchAndPath']]]]));
+        $pathB = $this->writeFile('b.php', $this->makeItem());
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertArrayHasKey('codeCoverage', $result);
     }
 
     public function testThrowsExceptionWhenSomeFilesHaveGitAndOthersDont(): void

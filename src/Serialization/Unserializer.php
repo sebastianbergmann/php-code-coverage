@@ -13,6 +13,7 @@ use function array_key_exists;
 use function fclose;
 use function fgets;
 use function fopen;
+use function in_array;
 use function is_array;
 use function is_bool;
 use function is_int;
@@ -142,6 +143,11 @@ final readonly class Unserializer
             if (!array_key_exists($key, $driverInformation) || !is_string($driverInformation[$key]) || $driverInformation[$key] === '') {
                 throw new InvalidCoverageDataException('Coverage data is missing valid \'buildInformation.phpCodeCoverage.driverInformation.' . $key . '\' key');
             }
+        }
+
+        if (array_key_exists('granularity', $driverInformation) &&
+            !in_array($driverInformation['granularity'], ['Line', 'LineAndBranch', 'LineBranchAndPath'], true)) {
+            throw new InvalidCoverageDataException('Coverage data has invalid \'buildInformation.phpCodeCoverage.driverInformation.granularity\' key');
         }
 
         if (array_key_exists('git', $buildInformation)) {

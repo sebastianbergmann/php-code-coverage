@@ -37,6 +37,7 @@ use SebastianBergmann\GitState\Builder as GitStateBuilder;
  *             driverInformation: array{
  *                 name: non-empty-string,
  *                 version: non-empty-string,
+ *                 granularity?: 'Line'|'LineAndBranch'|'LineBranchAndPath',
  *             },
  *         },
  *         git?: array{

@@ -556,15 +556,16 @@ final class CodeCoverage
     }
 
     /**
-     * @return array{name: non-empty-string, version: non-empty-string}
+     * @return array{name: non-empty-string, version: non-empty-string, granularity: 'Line'|'LineAndBranch'|'LineBranchAndPath'}
      *
      * @internal This method is not covered by the backward compatibility promise for phpunit/php-code-coverage
      */
     public function driverInformation(): array
     {
         return [
-            'name'    => $this->driver->name(),
-            'version' => $this->driver->version(),
+            'name'        => $this->driver->name(),
+            'version'     => $this->driver->version(),
+            'granularity' => $this->driver->granularity()->name,
         ];
     }
 

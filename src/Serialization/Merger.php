@@ -9,10 +9,16 @@
  */
 namespace SebastianBergmann\CodeCoverage\Serialization;
 
+use const DIRECTORY_SEPARATOR;
 use function array_key_exists;
 use function array_merge;
 use function assert;
+use function str_starts_with;
+use function strlen;
+use function substr;
+use function usort;
 use DateTimeImmutable;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Version;
 
 /**
@@ -42,6 +48,7 @@ final readonly class Merger
                 $first = $unserializer->unserialize($path);
 
                 $mergedCoverage    = clone $first['codeCoverage'];
+                $mergedBasePath    = $first['basePath'];
                 $mergedTestResults = [$first['testResults']];
 
                 continue;
@@ -61,6 +68,10 @@ final readonly class Merger
                 $this->assertGitInformationMatches($first, $item);
             }
 
+            assert(isset($mergedBasePath));
+
+            $mergedBasePath = $this->alignPaths($mergedCoverage, $mergedBasePath, $item['codeCoverage'], $item['basePath']);
+
             $mergedCoverage->merge($item['codeCoverage']);
 
             $mergedTestResults[] = $item['testResults'];
@@ -71,6 +82,7 @@ final readonly class Merger
         }
 
         assert(isset($mergedCoverage));
+        assert(isset($mergedBasePath));
         assert(isset($mergedTestResults));
 
         $buildInformation = [
@@ -89,10 +101,89 @@ final readonly class Merger
 
         return [
             'buildInformation' => $buildInformation,
-            'basePath'         => $first['basePath'],
+            'basePath'         => $mergedBasePath,
             'codeCoverage'     => $mergedCoverage,
             'testResults'      => array_merge(...$mergedTestResults),
         ];
+    }
+
+    /**
+     * The paths in serialized code coverage data are relative to the base path of that data:
+     * data that has a different base path must not be merged by these paths as they are.
+     *
+     * When one base path is a directory below the other one then the paths of the data that
+     * has the base path further down are moved onto the base path further up.
+     *
+     * When neither base path is below the other one then the paths are left alone, and the
+     * base path of the data that was merged so far is kept: this is what code coverage data
+     * that was collected for the same files in different locations, on different machines
+     * for instance, looks like.
+     *
+     * @return string the base path of the merged data
+     */
+    private function alignPaths(ProcessedCodeCoverageData $merged, string $mergedBasePath, ProcessedCodeCoverageData $current, string $currentBasePath): string
+    {
+        if ($mergedBasePath === $currentBasePath || $current->coveredFiles() === []) {
+            return $mergedBasePath;
+        }
+
+        if ($merged->coveredFiles() === []) {
+            return $currentBasePath;
+        }
+
+        $prefix = $this->relativePath($mergedBasePath, $currentBasePath);
+
+        if ($prefix !== null) {
+            $this->prefixFiles($current, $prefix);
+
+            return $mergedBasePath;
+        }
+
+        $prefix = $this->relativePath($currentBasePath, $mergedBasePath);
+
+        if ($prefix !== null) {
+            $this->prefixFiles($merged, $prefix);
+
+            return $currentBasePath;
+        }
+
+        return $mergedBasePath;
+    }
+
+    /**
+     * @return ?non-empty-string the path relative to the directory, null when the path is not below the directory
+     */
+    private function relativePath(string $directory, string $path): ?string
+    {
+        $directory .= DIRECTORY_SEPARATOR;
+
+        if (!str_starts_with($path, $directory)) {
+            return null;
+        }
+
+        $relativePath = substr($path, strlen($directory));
+
+        if ($relativePath === '') {
+            return null;
+        }
+
+        return $relativePath;
+    }
+
+    /**
+     * @param non-empty-string $prefix
+     */
+    private function prefixFiles(ProcessedCodeCoverageData $data, string $prefix): void
+    {
+        $files = $data->coveredFiles();
+
+        // Longest path first: a file must not be renamed to the path of
+        // a file that has not been renamed yet
+        usort($files, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
+
+        foreach ($files as $file) {
+            $data->renameFile($file, $prefix . DIRECTORY_SEPARATOR . $file);
+        }
     }
 
     /**

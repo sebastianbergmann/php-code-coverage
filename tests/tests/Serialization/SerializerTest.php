@@ -14,10 +14,12 @@ use function count;
 use function fclose;
 use function fgets;
 use function fopen;
+use function realpath;
 use function trim;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Medium;
+use PHPUnit\Framework\Attributes\Ticket;
 use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -112,6 +114,28 @@ final class SerializerTest extends TestCase
                 $data['basePath'] . DIRECTORY_SEPARATOR . $relativeFile,
             );
         }
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1408')]
+    public function testBasePathDoesNotDependOnWhichFilesWereCovered(): void
+    {
+        $coverage = $this->getLineCoverageForBankAccount();
+        $target   = TEST_FILES_PATH . 'tmp/serialized.php';
+
+        $coverage->filter()->includeFile(TEST_FILES_PATH . 'filter' . DIRECTORY_SEPARATOR . 'a.php');
+        $coverage->excludeUncoveredFiles();
+
+        (new Serializer)->serialize($target, $coverage);
+
+        $data = require $target;
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('basePath', $data);
+        $this->assertArrayHasKey('codeCoverage', $data);
+        $this->assertInstanceOf(ProcessedCodeCoverageData::class, $data['codeCoverage']);
+
+        $this->assertSame(realpath(TEST_FILES_PATH), $data['basePath']);
+        $this->assertSame(['BankAccount.php'], $data['codeCoverage']->coveredFiles());
     }
 
     public function testSerializedDataPreservesTestResults(): void

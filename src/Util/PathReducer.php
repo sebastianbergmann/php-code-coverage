@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Util;
 
 use const DIRECTORY_SEPARATOR;
+use function array_diff;
 use function array_keys;
 use function array_shift;
 use function basename;
@@ -34,8 +35,18 @@ final class PathReducer
      * files in the coverage data accordingly, and returns the common path.
      *
      * Returns an empty string when there are no covered files.
+     *
+     * The additional files are not part of the coverage data, but the common
+     * path is the one that the covered files share with them. When they are
+     * the files that could have been covered then the common path, and with
+     * it the paths the covered files are renamed to, do not depend on which
+     * of these files actually were covered. The additional files are ignored
+     * when the covered files share no directory with them, or only the root
+     * directory.
+     *
+     * @param list<non-empty-string> $additionalFiles
      */
-    public function reduce(ProcessedCodeCoverageData $data): string
+    public function reduce(ProcessedCodeCoverageData $data, array $additionalFiles = []): string
     {
         $coveredFiles = $data->coveredFiles();
 
@@ -43,7 +54,9 @@ final class PathReducer
             return '';
         }
 
-        if (count($coveredFiles) === 1) {
+        $additionalFiles = array_diff($additionalFiles, $coveredFiles);
+
+        if (count($coveredFiles) === 1 && $additionalFiles === []) {
             $file       = $coveredFiles[0];
             $normalised = $file;
 
@@ -63,21 +76,18 @@ final class PathReducer
         $paths = [];
 
         foreach ($coveredFiles as $coveredFile) {
-            $normalised = $coveredFile;
-
-            if (str_starts_with($coveredFile, 'phar://')) {
-                $normalised = str_replace('/', DIRECTORY_SEPARATOR, substr($coveredFile, 7));
-            }
-
-            $parts = explode(DIRECTORY_SEPARATOR, $normalised);
-
-            if ($parts[0] === '') {
-                $parts[0] = DIRECTORY_SEPARATOR;
-            }
-
             $paths[] = [
                 'original' => $coveredFile,
-                'parts'    => $parts,
+                'covered'  => true,
+                'parts'    => $this->parts($coveredFile),
+            ];
+        }
+
+        foreach ($additionalFiles as $additionalFile) {
+            $paths[] = [
+                'original' => $additionalFile,
+                'covered'  => false,
+                'parts'    => $this->parts($additionalFile),
             ];
         }
 
@@ -111,14 +121,41 @@ final class PathReducer
             }
         }
 
+        // A common path that is empty, or only the root directory, cannot be
+        // told apart from no common path at all by the consumers of this
+        // method: the additional files must not be the reason for that
+        if ($additionalFiles !== [] && ($commonPath === '' || $commonPath === DIRECTORY_SEPARATOR)) {
+            return $this->reduce($data);
+        }
+
         foreach ($paths as $path) {
             $newPath = implode(DIRECTORY_SEPARATOR, $path['parts']);
 
-            if ($newPath !== '' && $newPath !== $path['original']) {
+            if ($path['covered'] && $newPath !== '' && $newPath !== $path['original']) {
                 $data->renameFile($path['original'], $newPath);
             }
         }
 
         return substr($commonPath, 0, -1);
+    }
+
+    /**
+     * @param non-empty-string $file
+     *
+     * @return non-empty-list<string>
+     */
+    private function parts(string $file): array
+    {
+        if (str_starts_with($file, 'phar://')) {
+            $file = str_replace('/', DIRECTORY_SEPARATOR, substr($file, 7));
+        }
+
+        $parts = explode(DIRECTORY_SEPARATOR, $file);
+
+        if ($parts[0] === '') {
+            $parts[0] = DIRECTORY_SEPARATOR;
+        }
+
+        return $parts;
     }
 }

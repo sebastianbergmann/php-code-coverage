@@ -9,13 +9,16 @@
  */
 namespace SebastianBergmann\CodeCoverage\Serialization;
 
+use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 use function array_replace_recursive;
 use function file_put_contents;
+use function implode;
 use function serialize;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\Ticket;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Version;
@@ -73,6 +76,197 @@ final class MergerTest extends TestCase
         $result = (new Merger)->merge([$pathA, $pathB]);
 
         $this->assertSame('/home/user/project', $result['basePath']);
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1408')]
+    public function testPathsAreMovedOntoBasePathOfMergedDataWhenBasePathOfFileIsBelowIt(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('a', [$this->relativePath('Alpha', 'One.php') => 8, $this->relativePath('Beta', 'Two.php') => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src', 'Alpha')],
+                $this->coverage('b', ['One.php' => 13]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
+
+        $this->assertSame(
+            [
+                $this->relativePath('Alpha', 'One.php') => [8 => [0 => 1], 13 => [1 => 1]],
+                $this->relativePath('Beta', 'Two.php')  => [8 => [0 => 1]],
+            ],
+            $result['codeCoverage']->lineCoverage(),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1408')]
+    public function testPathsOfMergedDataAreMovedOntoBasePathOfFileWhenBasePathOfMergedDataIsBelowIt(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src', 'Alpha')],
+                $this->coverage('a', ['One.php' => 13]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('b', [$this->relativePath('Alpha', 'One.php') => 8, $this->relativePath('Beta', 'Two.php') => 8]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
+
+        $this->assertEquals(
+            [
+                $this->relativePath('Alpha', 'One.php') => [8 => [1 => 1], 13 => [0 => 1]],
+                $this->relativePath('Beta', 'Two.php')  => [8 => [1 => 1]],
+            ],
+            $result['codeCoverage']->lineCoverage(),
+        );
+    }
+
+    public function testFileIsNotConfusedWithFileOfSameNameWhenPathsAreMoved(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('a', ['One.php' => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src', 'Alpha')],
+                $this->coverage('b', ['One.php' => 13, $this->relativePath('Alpha', 'One.php') => 21, $this->relativePath('Alpha', 'Alpha', 'One.php') => 34]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
+
+        $this->assertSame(
+            [
+                $this->relativePath('Alpha', 'Alpha', 'Alpha', 'One.php') => [34 => [1 => 1]],
+                $this->relativePath('Alpha', 'Alpha', 'One.php')          => [21 => [1 => 1]],
+                $this->relativePath('Alpha', 'One.php')                   => [13 => [1 => 1]],
+                'One.php'                                                 => [8 => [0 => 1]],
+            ],
+            $result['codeCoverage']->lineCoverage(),
+        );
+    }
+
+    #[Ticket('https://github.com/sebastianbergmann/php-code-coverage/issues/1408')]
+    public function testBasePathOfFileIsUsedWhenMergedDataHasNoCoveredFiles(): void
+    {
+        $pathA = $this->writeFile('a.php', $this->makeItem(['basePath' => '']));
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('b', ['One.php' => 8]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
+        $this->assertSame(['One.php'], $result['codeCoverage']->coveredFiles());
+    }
+
+    public function testBasePathOfMergedDataIsKeptWhenFileHasNoCoveredFiles(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src', 'Alpha')],
+                $this->coverage('a', ['One.php' => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile('b.php', $this->makeItem(['basePath' => '']));
+        $pathC = $this->writeFile('c.php', $this->makeItem(['basePath' => $this->path('project', 'src')]));
+
+        $result = (new Merger)->merge([$pathA, $pathB, $pathC]);
+
+        $this->assertSame($this->path('project', 'src', 'Alpha'), $result['basePath']);
+        $this->assertSame(['One.php'], $result['codeCoverage']->coveredFiles());
+    }
+
+    public function testPathsAreNotMovedWhenNeitherBasePathIsBelowTheOther(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('first', 'project', 'src')],
+                $this->coverage('a', ['One.php' => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('second', 'project', 'src')],
+                $this->coverage('b', ['One.php' => 13]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB]);
+
+        $this->assertSame($this->path('first', 'project', 'src'), $result['basePath']);
+        $this->assertSame(['One.php' => [8 => [0 => 1], 13 => [1 => 1]]], $result['codeCoverage']->lineCoverage());
+    }
+
+    public function testPathsAreNotMovedWhenBasePathOnlyStartsWithTheOtherBasePath(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('a', ['One.php' => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src-old')],
+                $this->coverage('b', ['One.php' => 13]),
+            ),
+        );
+
+        $pathC = $this->writeFile(
+            'c.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src') . DIRECTORY_SEPARATOR],
+                $this->coverage('c', ['One.php' => 21]),
+            ),
+        );
+
+        $result = (new Merger)->merge([$pathA, $pathB, $pathC]);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
+        $this->assertSame(['One.php'], $result['codeCoverage']->coveredFiles());
     }
 
     public function testMergedResultHasFreshTimestamp(): void
@@ -310,6 +504,44 @@ final class MergerTest extends TestCase
         yield $this->writeFile('a.php', $this->makeItem(['basePath' => '/home/user/project']));
 
         yield $this->writeFile('b.php', $this->makeItem(['basePath' => '/home/user/project']));
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private function path(string ...$segments): string
+    {
+        return DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments);
+    }
+
+    /**
+     * @param non-empty-string $segment
+     *
+     * @return non-empty-string
+     */
+    private function relativePath(string $segment, string ...$segments): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [$segment, ...$segments]);
+    }
+
+    /**
+     * @param non-empty-string                      $testId
+     * @param array<non-empty-string, positive-int> $executedLines
+     */
+    private function coverage(string $testId, array $executedLines): ProcessedCodeCoverageData
+    {
+        $lineCoverage = [];
+
+        foreach ($executedLines as $file => $line) {
+            $lineCoverage[$file] = [$line => [0 => 1]];
+        }
+
+        $coverage = new ProcessedCodeCoverageData;
+
+        $coverage->setTestIds([$testId]);
+        $coverage->setLineCoverage($lineCoverage);
+
+        return $coverage;
     }
 
     /**

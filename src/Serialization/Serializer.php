@@ -96,7 +96,7 @@ final readonly class Serializer
         }
 
         $coverageData = clone $codeCoverage->getData();
-        $basePath     = (new PathReducer)->reduce($coverageData);
+        $basePath     = (new PathReducer)->reduce($coverageData, $codeCoverage->filter()->files());
 
         $data = [
             'buildInformation' => $buildInformation,

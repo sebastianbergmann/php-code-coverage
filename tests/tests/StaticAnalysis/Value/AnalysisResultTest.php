@@ -157,6 +157,30 @@ final class AnalysisResultTest extends TestCase
         $this->assertSame([], $this->analysisResult()->deadLines());
     }
 
+    public function testLinesOfStatementsAreTheExecutableLinesByDefault(): void
+    {
+        $executableLines = [7 => 1, 8 => 1, 10 => 2];
+
+        $this->assertSame(
+            $executableLines,
+            $this->analysisResult(executableLines: $executableLines)->linesOfStatements(),
+        );
+    }
+
+    public function testHasLinesOfStatementsThatAreNotTheExecutableLines(): void
+    {
+        $executableLines   = [7 => 7, 10 => 10];
+        $linesOfStatements = [7 => 1, 8 => 1, 10 => 2];
+
+        $analysisResult = $this->analysisResult(
+            executableLines: $executableLines,
+            linesOfStatements: $linesOfStatements,
+        );
+
+        $this->assertSame($executableLines, $analysisResult->executableLines());
+        $this->assertSame($linesOfStatements, $analysisResult->linesOfStatements());
+    }
+
     public function testWasParsedWhenThereIsNoParseError(): void
     {
         $analysisResult = $this->analysisResult();
@@ -183,8 +207,9 @@ final class AnalysisResultTest extends TestCase
      * @param array<positive-int, true> $deadLines
      * @param array<int, true>          $ignoredLines
      * @param ?non-empty-string         $parseError
+     * @param ?array<positive-int, int> $linesOfStatements
      */
-    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = [], ?string $parseError = null): AnalysisResult
+    private function analysisResult(array $interfaces = [], array $classes = [], array $traits = [], array $functions = [], ?LinesOfCode $linesOfCode = null, array $executableLines = [], array $branchOperatorLines = [], array $deadLines = [], array $ignoredLines = [], ?string $parseError = null, ?array $linesOfStatements = null): AnalysisResult
     {
         return new AnalysisResult(
             $interfaces,
@@ -197,6 +222,7 @@ final class AnalysisResultTest extends TestCase
             $deadLines,
             $ignoredLines,
             $parseError,
+            $linesOfStatements,
         );
     }
 }

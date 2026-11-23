@@ -70,6 +70,11 @@ final readonly class AnalysisResult
     private ?string $parseError;
 
     /**
+     * @var ?LinesType
+     */
+    private ?array $linesOfStatements;
+
+    /**
      * @param array<string, Interface_> $interfaces
      * @param array<string, Class_>     $classes
      * @param array<string, Trait_>     $traits
@@ -79,8 +84,9 @@ final readonly class AnalysisResult
      * @param array<positive-int, true> $deadLines
      * @param array<int, true>          $ignoredLines
      * @param ?non-empty-string         $parseError
+     * @param ?LinesType                $linesOfStatements   null when the executable lines were determined from the syntax (see linesOfStatements())
      */
-    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines, ?string $parseError = null)
+    public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $branchOperatorLines, array $deadLines, array $ignoredLines, ?string $parseError = null, ?array $linesOfStatements = null)
     {
         $this->interfaces          = $interfaces;
         $this->classes             = $classes;
@@ -92,6 +98,7 @@ final readonly class AnalysisResult
         $this->deadLines           = $deadLines;
         $this->ignoredLines        = $ignoredLines;
         $this->parseError          = $parseError;
+        $this->linesOfStatements   = $linesOfStatements;
 
         $branches          = [];
         $multiLineBranches = [];
@@ -176,6 +183,25 @@ final readonly class AnalysisResult
     public function executableLinesOfMultiLineBranches(): array
     {
         return $this->executableLinesOfMultiLineBranches;
+    }
+
+    /**
+     * The lines that belong to a statement according to the syntax of the
+     * file, each mapped to an identifier that the lines of the same statement
+     * share.
+     *
+     * These are the executable lines when the executable lines were determined
+     * from the syntax. When they were determined from the bytecode, a line of
+     * a statement that spans multiple lines is only executable when the
+     * bytecode has an opcode on that line, and no executable line shares its
+     * branch with another line. Which lines belong to the same statement is
+     * then only known from here.
+     *
+     * @return LinesType
+     */
+    public function linesOfStatements(): array
+    {
+        return $this->linesOfStatements ?? $this->executableLines;
     }
 
     /**

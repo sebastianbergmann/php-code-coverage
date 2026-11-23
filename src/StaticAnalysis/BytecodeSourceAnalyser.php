@@ -19,7 +19,9 @@ use function array_intersect_key;
  * executable line forms a branch of its own: lines do not share the status of
  * other lines (see RawCodeCoverageData::markExecutableLineByBranch()), and no
  * lines are added for operators that the syntax analysis knows are executed
- * (see AnalysisResult::branchOperatorLines()).
+ * (see AnalysisResult::branchOperatorLines()). Which lines belong to the same
+ * statement according to the syntax is kept (see
+ * AnalysisResult::linesOfStatements()).
  *
  * The analysis of the syntax is used as it is when the file cannot be parsed
  * or compiled.
@@ -77,6 +79,8 @@ final readonly class BytecodeSourceAnalyser implements SourceAnalyser
             [],
             array_intersect_key($result->deadLines(), $lines),
             $result->ignoredLines(),
+            null,
+            $result->linesOfStatements(),
         );
     }
 }

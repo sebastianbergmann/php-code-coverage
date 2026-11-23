@@ -101,6 +101,21 @@ final class BytecodeSourceAnalyserTest extends TestCase
         $this->assertTrue($result->wasParsed());
     }
 
+    public function testKeepsWhichLinesBelongToTheSameStatementAccordingToTheSyntax(): void
+    {
+        $file   = TEST_FILES_PATH . 'source_for_bytecode_analysis.php';
+        $syntax = $this->analyse(new ParsingSourceAnalyser, $file);
+
+        $result = $this->analyse(
+            new BytecodeSourceAnalyser(new ParsingSourceAnalyser, $this->bytecodeLines($file, [18, 24, 26, 31])),
+            $file,
+        );
+
+        $this->assertSame([18 => 18, 24 => 24, 26 => 26, 31 => 31], $result->executableLines());
+        $this->assertSame($syntax->executableLines(), $result->linesOfStatements());
+        $this->assertNotSame($result->executableLines(), $result->linesOfStatements());
+    }
+
     public function testOnlyCountsDeadLinesThatWereDeterminedToBeExecutableFromBytecode(): void
     {
         $file   = TEST_FILES_PATH . 'source_with_dead_code_in_various_contexts.php';

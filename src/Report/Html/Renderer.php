@@ -714,6 +714,42 @@ abstract class Renderer
     }
 
     /**
+     * A line that is not executable, but that belongs to a statement that has
+     * executable lines, is shown like the lines of that statement (see
+     * FileNode::lineCoverageDataInheritedFromStatements()). It has neither a
+     * count nor a popover: these are what is known about an executable line.
+     *
+     * @param ?list<TestIndexType>               $tests
+     * @param array<TestIndexType, TestDataType> $testData
+     */
+    protected function cssClassForLineOfStatement(?array $tests, array $testData): string
+    {
+        if ($tests === null) {
+            return 'warning';
+        }
+
+        if ($tests === []) {
+            return 'danger';
+        }
+
+        $class = 'covered-by-large-tests';
+
+        foreach ($tests as $test) {
+            $size = $testData[$test]['size'] ?? null;
+
+            if ($size === 'small') {
+                return 'covered-by-small-tests';
+            }
+
+            if ($size === 'medium') {
+                $class = 'covered-by-medium-tests';
+            }
+        }
+
+        return $class;
+    }
+
+    /**
      * The list item for a test is the same everywhere that test covers a line,
      * and a test usually covers many lines, so it is only built once.
      *

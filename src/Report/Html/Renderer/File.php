@@ -491,12 +491,13 @@ final class File extends Renderer
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
 
-        $coverageData      = $node->lineCoverageData();
-        $collectsHitCounts = $node->collectsHitCounts();
-        $testData          = $node->testData();
-        $codeLines         = $this->highlightedSourceFor($node);
-        $lines             = '';
-        $i                 = 1;
+        $coverageData          = $node->lineCoverageData();
+        $inheritedCoverageData = $node->lineCoverageDataInheritedFromStatements();
+        $collectsHitCounts     = $node->collectsHitCounts();
+        $testData              = $node->testData();
+        $codeLines             = $this->highlightedSourceFor($node);
+        $lines                 = '';
+        $i                     = 1;
 
         foreach ($codeLines as $line) {
             $trClass        = '';
@@ -548,6 +549,8 @@ final class File extends Renderer
                     $popoverContent .= '&lt;/ul&gt;';
                     $trClass = $lineCss . ' popin';
                 }
+            } elseif (array_key_exists($i, $inheritedCoverageData)) {
+                $trClass = $this->cssClassForLineOfStatement($inheritedCoverageData[$i], $testData);
             }
 
             $popover = '';

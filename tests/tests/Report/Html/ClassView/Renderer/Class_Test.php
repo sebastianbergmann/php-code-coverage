@@ -33,7 +33,9 @@ use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\NamespaceNode;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\ParentSection;
 use SebastianBergmann\CodeCoverage\Report\Html\ClassView\Node\TraitSection;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 
 #[CoversClass(Class_::class)]
 #[Small]
@@ -186,6 +188,104 @@ final class Class_Test extends TestCase
 
         $this->assertStringContainsString('covered-by-small-tests', $output);
         $this->assertStringContainsString('covered-by-medium-tests', $output);
+    }
+
+    /**
+     * Lines 9 and 10 are one statement of which only line 9 is executable.
+     */
+    public function testShowsLineThatIsNotExecutableLikeTheStatementItBelongsTo(): void
+    {
+        $renderer = $this->createRenderer(false);
+
+        $rootDir = new Directory('root');
+        $method  = new ProcessedMethodType(
+            'doSomething',
+            'public',
+            'public function doSomething(): void',
+            7,
+            10,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            100,
+            1,
+            '',
+        );
+        $processedClass = new ProcessedClassType(
+            'Example\\ExampleClass',
+            'Example',
+            ['doSomething' => $method],
+            5,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            100,
+            1,
+            '',
+        );
+
+        $fileNode = new File(
+            'ExampleClass.php',
+            $rootDir,
+            'abc',
+            [9 => []],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(16, 0, 16),
+            false,
+            false,
+            null,
+            SourceLines::fromAnalysisResult(
+                new AnalysisResult(
+                    [],
+                    [],
+                    [],
+                    [],
+                    new LinesOfCode(16, 0, 16),
+                    [9 => 1, 10 => 1],
+                    [],
+                    [],
+                    [],
+                ),
+            ),
+        );
+
+        $parent = new NamespaceNode('Example', 'Example');
+        $parent->promoteToRoot();
+
+        $classNode = new ClassNode(
+            'Example\\ExampleClass',
+            'Example',
+            TEST_FILES_PATH . 'ClassView' . DIRECTORY_SEPARATOR . 'ExampleClass.php',
+            5,
+            16,
+            $processedClass,
+            $fileNode,
+            [],
+            [],
+            $parent,
+        );
+
+        $renderer->render($classNode, $this->outputFile());
+
+        $output = file_get_contents($this->outputFile);
+
+        $this->assertNotFalse($output);
+
+        $this->assertStringContainsString('<tr class="danger"><td class="line-number"><a id="9"', $output);
+        $this->assertStringContainsString('<tr class="danger"><td class="line-number"><a id="10"', $output);
+        $this->assertStringContainsString('<tr><td class="line-number"><a id="11"', $output);
     }
 
     public function testSkipsLinesOutsideOfSourceFile(): void

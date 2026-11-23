@@ -21,7 +21,9 @@ use function uniqid;
 use function unlink;
 use FilesystemIterator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
@@ -29,7 +31,9 @@ use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 use SplFileInfo;
 
 #[CoversClass(File::class)]
@@ -37,6 +41,22 @@ use SplFileInfo;
 final class FileTest extends TestCase
 {
     private string $directory;
+
+    /**
+     * @return non-empty-array<non-empty-string, array{non-empty-string, ?array<non-negative-int, positive-int>}>
+     */
+    public static function statementProvider(): array
+    {
+        return [
+            'statement that was executed by small test'            => ['covered-by-small-tests', [0 => 1]],
+            'statement that was executed by medium test'           => ['covered-by-medium-tests', [1 => 1]],
+            'statement that was executed by large test'            => ['covered-by-large-tests', [2 => 1]],
+            'statement that was executed by medium and small test' => ['covered-by-small-tests', [1 => 1, 0 => 1]],
+            'statement that was executed by large and medium test' => ['covered-by-medium-tests', [2 => 1, 1 => 1]],
+            'statement that was not executed'                      => ['danger', []],
+            'statement that cannot be executed'                    => ['warning', null],
+        ];
+    }
 
     protected function setUp(): void
     {
@@ -62,6 +82,46 @@ final class FileTest extends TestCase
         }
 
         rmdir($this->directory);
+    }
+
+    /**
+     * Lines 13 and 14 are one statement of which only line 13 is executable.
+     *
+     * @param non-empty-string                       $expected
+     * @param ?array<non-negative-int, positive-int> $tests
+     */
+    #[DataProvider('statementProvider')]
+    #[TestDox('Shows line that is not executable like the statement it belongs to: $_dataName')]
+    public function testShowsLineThatIsNotExecutableLikeTheStatementItBelongsTo(string $expected, ?array $tests): void
+    {
+        $this->renderer(false, false)->render(
+            $this->fileWithStatements([13 => $tests], [13 => 1, 14 => 1]),
+            $this->target(),
+        );
+
+        $html = file_get_contents($this->target() . '.html');
+
+        $this->assertNotFalse($html);
+
+        $this->assertStringContainsString(
+            '<tr class="' . $expected . '"><td class="line-number"><a id="14" href="#14">14</a></td><td class="hit-count"></td>',
+            $html,
+        );
+    }
+
+    public function testDoesNotShowLineThatIsNotExecutableLikeAnotherStatement(): void
+    {
+        $this->renderer(false, false)->render(
+            $this->fileWithStatements([13 => []], [13 => 1, 14 => 2]),
+            $this->target(),
+        );
+
+        $html = file_get_contents($this->target() . '.html');
+
+        $this->assertNotFalse($html);
+
+        $this->assertStringContainsString('<tr class="danger"><td class="line-number"><a id="13"', $html);
+        $this->assertStringContainsString('<tr><td class="line-number"><a id="14"', $html);
     }
 
     public function testRendersViewForLineCoverageOnlyWhenBranchCoverageIsNotAvailable(): void
@@ -176,6 +236,46 @@ final class FileTest extends TestCase
     private function target(): string
     {
         return $this->directory . DIRECTORY_SEPARATOR . 'BankAccount.php';
+    }
+
+    /**
+     * @param array<positive-int, ?array<non-negative-int, positive-int>> $lineCoverage
+     * @param array<positive-int, int>                                    $linesOfStatements
+     */
+    private function fileWithStatements(array $lineCoverage, array $linesOfStatements): FileNode
+    {
+        return new FileNode(
+            'BankAccount.php',
+            new DirectoryNode(TEST_FILES_PATH),
+            'abc123',
+            $lineCoverage,
+            [],
+            [
+                0 => ['name' => 'SmallTest::testOne', 'size' => 'small', 'status' => 'passed', 'time' => 0.0],
+                1 => ['name' => 'MediumTest::testOne', 'size' => 'medium', 'status' => 'passed', 'time' => 0.0],
+                2 => ['name' => 'LargeTest::testOne', 'size' => 'large', 'status' => 'passed', 'time' => 0.0],
+            ],
+            [],
+            [],
+            [],
+            new LinesOfCode(35, 0, 35),
+            false,
+            false,
+            null,
+            SourceLines::fromAnalysisResult(
+                new AnalysisResult(
+                    [],
+                    [],
+                    [],
+                    [],
+                    new LinesOfCode(35, 0, 35),
+                    $linesOfStatements,
+                    [],
+                    [],
+                    [],
+                ),
+            ),
+        );
     }
 
     /**

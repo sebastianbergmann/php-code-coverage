@@ -258,6 +258,7 @@ final class Class_ extends Renderer
             $node->startLine(),
             $node->endLine(),
             $node->fileNode()->lineCoverageData(),
+            $node->fileNode()->lineCoverageDataInheritedFromStatements(),
             $node->fileNode()->testData(),
             $node->fileNode()->collectsHitCounts(),
         );
@@ -271,6 +272,7 @@ final class Class_ extends Renderer
                 $section->startLine,
                 $section->endLine,
                 $section->fileNode->lineCoverageData(),
+                $section->fileNode->lineCoverageDataInheritedFromStatements(),
                 $section->fileNode->testData(),
                 $section->fileNode->collectsHitCounts(),
                 'trait-' . $i . '-',
@@ -287,6 +289,7 @@ final class Class_ extends Renderer
                     $method->startLine,
                     $method->endLine,
                     $section->fileNode->lineCoverageData(),
+                    $section->fileNode->lineCoverageDataInheritedFromStatements(),
                     $section->fileNode->testData(),
                     $section->fileNode->collectsHitCounts(),
                     'parent-' . $i . '-',
@@ -308,9 +311,10 @@ final class Class_ extends Renderer
     /**
      * @param non-empty-string                                $filePath
      * @param array<int, ?array<TestIndexType, positive-int>> $coverageData
+     * @param array<int, ?list<TestIndexType>>                $inheritedCoverageData
      * @param array<TestIndexType, TestDataType>              $testData
      */
-    private function renderSourceSection(string $filePath, int $startLine, int $endLine, array $coverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
+    private function renderSourceSection(string $filePath, int $startLine, int $endLine, array $coverageData, array $inheritedCoverageData, array $testData, bool $collectsHitCounts, string $anchorPrefix = ''): string
     {
         $linesTemplate      = new Template($this->templatePath . 'lines.html.dist', '{{', '}}');
         $singleLineTemplate = $this->template($this->templatePath . 'line.html.dist');
@@ -370,6 +374,8 @@ final class Class_ extends Renderer
                     $popoverContent .= '&lt;/ul&gt;';
                     $trClass = $lineCss . ' popin';
                 }
+            } elseif (array_key_exists($i, $inheritedCoverageData)) {
+                $trClass = $this->cssClassForLineOfStatement($inheritedCoverageData[$i], $testData);
             }
 
             $popover = '';

@@ -30,8 +30,15 @@ use SebastianBergmann\CodeCoverage\Version;
 final readonly class Merger
 {
     /**
+     * The base paths of two files match when they are the same directory, or when one
+     * is a directory below the other. Matching base paths are not required by default:
+     * code coverage data that was collected for the same source files in different
+     * locations, on different machines for instance, has base paths that do not match,
+     * and is merged by the paths relative to them.
+     *
      * @param iterable<non-empty-string> $paths
      *
+     * @throws BasePathMismatchException
      * @throws DriverMismatchException
      * @throws EmptyPathListException
      * @throws GitInformationMismatchException
@@ -40,7 +47,7 @@ final readonly class Merger
      *
      * @return SerializedCoverage
      */
-    public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true): array
+    public function merge(iterable $paths, bool $requireMatchingGitInformation = true, bool $requireMatchingPhpVersion = true, bool $requireMatchingCodeCoverageDriver = true, bool $requireMatchingBasePaths = false): array
     {
         $unserializer = new Unserializer;
 
@@ -71,7 +78,7 @@ final readonly class Merger
 
             assert(isset($mergedBasePath));
 
-            $mergedBasePath = $this->alignPaths($mergedCoverage, $mergedBasePath, $item['codeCoverage'], $item['basePath']);
+            $mergedBasePath = $this->alignPaths($mergedCoverage, $mergedBasePath, $item['codeCoverage'], $item['basePath'], $requireMatchingBasePaths);
 
             $mergedCoverage->merge($item['codeCoverage']);
 
@@ -120,9 +127,11 @@ final readonly class Merger
      * that was collected for the same files in different locations, on different machines
      * for instance, looks like.
      *
+     * @throws BasePathMismatchException
+     *
      * @return string the base path of the merged data
      */
-    private function alignPaths(ProcessedCodeCoverageData $merged, string $mergedBasePath, ProcessedCodeCoverageData $current, string $currentBasePath): string
+    private function alignPaths(ProcessedCodeCoverageData $merged, string $mergedBasePath, ProcessedCodeCoverageData $current, string $currentBasePath, bool $requireMatchingBasePaths): string
     {
         if ($mergedBasePath === $currentBasePath || $current->coveredFiles() === []) {
             return $mergedBasePath;
@@ -146,6 +155,10 @@ final readonly class Merger
             $this->prefixFiles($merged, $prefix);
 
             return $currentBasePath;
+        }
+
+        if ($requireMatchingBasePaths) {
+            throw new BasePathMismatchException($mergedBasePath, $currentBasePath);
         }
 
         return $mergedBasePath;

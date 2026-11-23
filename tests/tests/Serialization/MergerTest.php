@@ -24,6 +24,7 @@ use SebastianBergmann\CodeCoverage\TestCase;
 use SebastianBergmann\CodeCoverage\Version;
 
 #[CoversClass(Merger::class)]
+#[CoversClass(BasePathMismatchException::class)]
 #[CoversClass(DriverMismatchException::class)]
 #[CoversClass(EmptyPathListException::class)]
 #[CoversClass(GitInformationMismatchException::class)]
@@ -235,6 +236,55 @@ final class MergerTest extends TestCase
 
         $this->assertSame($this->path('first', 'project', 'src'), $result['basePath']);
         $this->assertSame(['One.php' => [8 => [0 => 1], 13 => [1 => 1]]], $result['codeCoverage']->lineCoverage());
+    }
+
+    public function testThrowsExceptionWhenNeitherBasePathIsBelowTheOtherAndMatchingBasePathsAreRequired(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('first', 'project', 'src')],
+                $this->coverage('a', ['One.php' => 8]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('second', 'project', 'src')],
+                $this->coverage('b', ['One.php' => 13]),
+            ),
+        );
+
+        $this->expectException(BasePathMismatchException::class);
+        $this->expectExceptionMessageIsOrContains('Base path mismatch: "' . $this->path('first', 'project', 'src') . '" and "' . $this->path('second', 'project', 'src') . '" are not the same directory, and neither is a directory below the other');
+
+        (new Merger)->merge([$pathA, $pathB], true, true, true, true);
+    }
+
+    public function testDoesNotThrowExceptionWhenOneBasePathIsBelowTheOtherAndMatchingBasePathsAreRequired(): void
+    {
+        $pathA = $this->writeFile(
+            'a.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src', 'Alpha')],
+                $this->coverage('a', ['One.php' => 13]),
+            ),
+        );
+
+        $pathB = $this->writeFile(
+            'b.php',
+            $this->makeItem(
+                ['basePath' => $this->path('project', 'src')],
+                $this->coverage('b', [$this->relativePath('Beta', 'Two.php') => 8]),
+            ),
+        );
+
+        $pathC = $this->writeFile('c.php', $this->makeItem(['basePath' => '']));
+
+        $result = (new Merger)->merge([$pathA, $pathB, $pathC], true, true, true, true);
+
+        $this->assertSame($this->path('project', 'src'), $result['basePath']);
     }
 
     public function testPathsAreNotMovedWhenBasePathOnlyStartsWithTheOtherBasePath(): void

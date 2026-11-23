@@ -19,6 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 #### Serialization and Merging
 
+* `Serialization\Merger::merge()` has an optional `$requireMatchingBasePaths` parameter. When it is `true`, a `BasePathMismatchException` is thrown when the base paths of two files are not the same directory and neither is a directory below the other. This is not required by default: code coverage data that was collected for the same source files in different locations has base paths that do not match
 * `Serialization\Serializer::write()` writes code coverage data that already is in the structure that is serialized, such as the data returned by `Serialization\Merger::merge()`, to a file
 
 #### Report Generation

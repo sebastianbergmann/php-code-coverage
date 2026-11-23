@@ -50,6 +50,11 @@ final class Directory extends AbstractNode implements IteratorAggregate
     private array $files = [];
 
     /**
+     * @var list<non-empty-string>
+     */
+    private array $filesThatWereNotFound = [];
+
+    /**
      * @var ?array<string, ProcessedClassType>
      */
     private ?array $classes = null;
@@ -153,6 +158,37 @@ final class Directory extends AbstractNode implements IteratorAggregate
         $this->numExecutableLines         = -1;
         $this->numExecutedLines           = -1;
         $this->numExecutedLinesByTestSize = null;
+    }
+
+    /**
+     * Records a file of this directory for which there is code coverage data,
+     * but which is not part of the report because it could not be found.
+     *
+     * @param non-empty-string $path
+     */
+    public function addFileThatWasNotFound(string $path): void
+    {
+        $this->filesThatWereNotFound[] = $path;
+    }
+
+    /**
+     * The files of this directory, and of the directories below it, for which
+     * there is code coverage data, but which are not part of the report
+     * because they could not be found.
+     *
+     * @return list<non-empty-string>
+     */
+    public function filesThatWereNotFound(): array
+    {
+        $files = $this->filesThatWereNotFound;
+
+        foreach ($this->directories as $directory) {
+            foreach ($directory->filesThatWereNotFound() as $file) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
     }
 
     /**

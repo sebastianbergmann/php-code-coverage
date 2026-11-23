@@ -157,6 +157,21 @@ final readonly class Facade
         );
     }
 
+    /**
+     * The files for which there is code coverage data, but which are not part
+     * of the report because they could not be found.
+     *
+     * Code coverage data that was collected in one location and is reported on
+     * in another location, for instance, refers to files that cannot be found
+     * when the path to the source code is not the one the data was collected for.
+     *
+     * @return list<non-empty-string>
+     */
+    public function filesThatWereNotFound(): array
+    {
+        return $this->report->filesThatWereNotFound();
+    }
+
     public function summary(): Summary
     {
         return new Summary(

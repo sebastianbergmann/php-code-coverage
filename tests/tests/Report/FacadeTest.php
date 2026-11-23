@@ -80,6 +80,29 @@ final class FacadeTest extends TestCase
         $this->assertSame(5, $summary->numberOfExecutedLines());
     }
 
+    public function testKnowsFilesThatWereNotFound(): void
+    {
+        $serializedFile = TEST_FILES_PATH . 'tmp' . DIRECTORY_SEPARATOR . 'FacadeTest_serialized.php';
+
+        (new Serializer)->serialize($serializedFile, $this->getLineCoverageForBankAccount());
+
+        $serializedData = (new Unserializer)->unserialize($serializedFile);
+
+        $this->assertSame([], Facade::fromSerializedData($serializedData)->filesThatWereNotFound());
+        $this->assertSame([], Facade::fromObject($this->getLineCoverageForBankAccount())->filesThatWereNotFound());
+
+        $serializedData['basePath'] = DIRECTORY_SEPARATOR . 'does-not-exist';
+
+        $facade = Facade::fromSerializedData($serializedData);
+
+        $this->assertSame(
+            [DIRECTORY_SEPARATOR . 'does-not-exist' . DIRECTORY_SEPARATOR . 'BankAccount.php'],
+            $facade->filesThatWereNotFound(),
+        );
+
+        $this->assertSame(0, $facade->summary()->numberOfExecutableLines());
+    }
+
     public function testSummaryReturnsLineCoverageSummary(): void
     {
         $facade  = Facade::fromObject($this->getLineCoverageForBankAccount());

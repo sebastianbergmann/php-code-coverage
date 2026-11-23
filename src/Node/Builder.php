@@ -166,6 +166,8 @@ final readonly class Builder
                             $sizeBitByTestIndex,
                         ),
                     );
+                } else {
+                    $root->addFileThatWasNotFound($filename);
                 }
             } elseif (is_array($value)) {
                 $child = $root->addDirectory($key);

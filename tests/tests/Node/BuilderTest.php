@@ -62,6 +62,45 @@ final class BuilderTest extends TestCase
         $this->assertCount(0, $root->files());
     }
 
+    public function testRecordsFilesThatWereNotFound(): void
+    {
+        $data = new ProcessedCodeCoverageData;
+
+        $data->setLineCoverage(
+            [
+                'File.php'                                  => [1 => []],
+                'directory' . DIRECTORY_SEPARATOR . 'a.php' => [1 => []],
+                'directory' . DIRECTORY_SEPARATOR . 'b.php' => [1 => []],
+            ],
+        );
+
+        $basePath = DIRECTORY_SEPARATOR . 'does-not-exist';
+
+        $root = $this->builder()->build($data, [], $basePath);
+
+        $this->assertCount(0, $root);
+
+        $this->assertSame(
+            [
+                $basePath . DIRECTORY_SEPARATOR . 'File.php',
+                $basePath . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a.php',
+                $basePath . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'b.php',
+            ],
+            $root->filesThatWereNotFound(),
+        );
+    }
+
+    public function testRecordsNoFilesThatWereNotFoundWhenAllFilesWereFound(): void
+    {
+        $root = $this->builder()->build(
+            $this->getCoverageForFilesWithUncoveredIncluded()->getData(),
+            [],
+        );
+
+        $this->assertCount(2, $root->files());
+        $this->assertSame([], $root->filesThatWereNotFound());
+    }
+
     public function testUsesCurrentDirectoryAsRootPathWhenThereIsNoCommonPath(): void
     {
         $root = $this->builder()->build(new ProcessedCodeCoverageData, []);

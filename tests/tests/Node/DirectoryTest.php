@@ -53,6 +53,38 @@ final class DirectoryTest extends TestCase
         $this->assertCount(1, $root);
     }
 
+    public function testHasNoFilesThatWereNotFoundByDefault(): void
+    {
+        $this->assertSame([], (new Directory('root'))->filesThatWereNotFound());
+    }
+
+    public function testFilesThatWereNotFoundAreAggregatedFromDirectoriesBelow(): void
+    {
+        $root  = new Directory('root');
+        $child = $root->addDirectory('child');
+
+        $root->addFileThatWasNotFound('root/a.php');
+        $child->addFileThatWasNotFound('root/child/b.php');
+        $child->addDirectory('grandchild')->addFileThatWasNotFound('root/child/grandchild/c.php');
+
+        $this->assertSame(
+            [
+                'root/a.php',
+                'root/child/b.php',
+                'root/child/grandchild/c.php',
+            ],
+            $root->filesThatWereNotFound(),
+        );
+
+        $this->assertSame(
+            [
+                'root/child/b.php',
+                'root/child/grandchild/c.php',
+            ],
+            $child->filesThatWereNotFound(),
+        );
+    }
+
     public function testAddDirectoryReturnsNewDirectory(): void
     {
         $root  = new Directory('root');

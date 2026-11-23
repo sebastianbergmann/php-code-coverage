@@ -73,8 +73,19 @@ final readonly class SourceLines
             // @codeCoverageIgnoreEnd
         }
 
-        $analysisResult = (new ParsingSourceAnalyser)->analyse($file, $sourceCode, false, false);
+        return self::fromAnalysisResult(
+            (new ParsingSourceAnalyser)->analyse($file, $sourceCode, false, false),
+        );
+    }
 
+    /**
+     * Uses the result of an analysis that was already performed, so that the
+     * file does not have to be parsed again.
+     *
+     * @internal This method is not covered by the backward compatibility promise for phpunit/php-code-coverage
+     */
+    public static function fromAnalysisResult(AnalysisResult $analysisResult): self
+    {
         $codeUnits = [];
 
         foreach ($analysisResult->classes() as $class) {
@@ -105,7 +116,7 @@ final readonly class SourceLines
             ];
         }
 
-        return new self($analysisResult->executableLines(), $codeUnits);
+        return new self($analysisResult->linesOfStatements(), $codeUnits);
     }
 
     /**

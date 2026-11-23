@@ -95,6 +95,30 @@ final class SourceLinesTest extends TestCase
         );
     }
 
+    public function testCanBeCreatedFromResultOfAnalysisThatWasAlreadyPerformed(): void
+    {
+        $sourceLines = SourceLines::fromAnalysisResult(
+            new AnalysisResult(
+                [],
+                [],
+                [],
+                ['example\\f' => new Function_('f', 'example\\f', 'example', 1, 6, 'function f(): void', 1)],
+                new LinesOfCode(6, 0, 6),
+                [2 => 2, 5 => 5],
+                [],
+                [],
+                [],
+                null,
+                [2 => 1, 3 => 1, 4 => 1, 5 => 2],
+            ),
+        );
+
+        $this->assertSame([2, 3, 4], $sourceLines->linesOfStatementAt(2));
+        $this->assertSame([2, 3, 4], $sourceLines->linesOfStatementAt(3));
+        $this->assertSame([5], $sourceLines->linesOfStatementAt(5));
+        $this->assertSame('example\\f', $sourceLines->codeUnitAt(3));
+    }
+
     public function testKnowsNothingAboutTheLinesOfFileThatCannotBeParsed(): void
     {
         $sourceLines = SourceLines::of(__DIR__ . '/../../_files/source_that_cannot_be_parsed.php');

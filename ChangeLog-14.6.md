@@ -65,7 +65,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 #### Data Collection and Data Processing
 
-* [#1408](https://github.com/sebastianbergmann/php-code-coverage/issues/1408): Merging `.cov` files silently loses data when they cover different sets of files
 * Which edges out of a branch were taken is only recorded for the first test that executes a function. Edges that are only taken by other tests, or only in code coverage data that is merged, are shown as not covered in the control flow graphs of the HTML report and are reported as not covered by the JSONL report
 
 #### Serialization and Merging

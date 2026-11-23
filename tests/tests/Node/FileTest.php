@@ -11,15 +11,19 @@ namespace SebastianBergmann\CodeCoverage\Node;
 
 use function array_fill;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedPathCoverageData;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\AnalysisResult;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Visibility;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
@@ -28,6 +32,21 @@ use SebastianBergmann\CodeCoverage\Test\TestSizes;
 #[Small]
 final class FileTest extends TestCase
 {
+    /**
+     * @return non-empty-array<non-empty-string, array{array<positive-int, ?array<non-negative-int, positive-int>>}>
+     */
+    public static function statementWithLinesThatDoNotHaveTheSameCodeCoverageDataProvider(): array
+    {
+        return [
+            'line that was executed and line that was not executed'       => [[2 => [0 => 1], 3 => []]],
+            'line that was not executed and line that was executed'       => [[2 => [], 3 => [0 => 1]]],
+            'lines that were executed by different tests'                 => [[2 => [0 => 1], 3 => [1 => 1]]],
+            'line that was executed by test that did not execute another' => [[2 => [0 => 1, 1 => 1], 3 => [0 => 1]]],
+            'line that was executed and line that cannot be executed'     => [[2 => [0 => 1], 3 => null]],
+            'line that cannot be executed and line that was not executed' => [[2 => null, 3 => []]],
+        ];
+    }
+
     public function testCountReturnsOne(): void
     {
         $file = $this->createFileNode();
@@ -692,6 +711,131 @@ final class FileTest extends TestCase
         $file = $this->createFileNodeWithTestedClassAndTrait();
 
         $this->assertArrayHasKey('MyTrait', $file->rawTraits());
+    }
+
+    public function testNoLineInheritsCodeCoverageDataWhenTheStatementsAreNotKnown(): void
+    {
+        $file = new File(
+            'test.php',
+            new Directory('root'),
+            'abc123',
+            [2 => [0 => 1]],
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(10, 0, 10),
+        );
+
+        $this->assertSame([], $file->lineCoverageDataInheritedFromStatements());
+    }
+
+    public function testLineThatIsNotExecutableInheritsTheTestsThatExecutedTheLinesOfItsStatement(): void
+    {
+        $file = $this->createFileNodeWithStatements([2 => [3 => 1, 1 => 5], 3 => [1 => 2, 3 => 1]]);
+
+        $this->assertSame(
+            [4 => [3, 1], 5 => [3, 1]],
+            $file->lineCoverageDataInheritedFromStatements(),
+        );
+    }
+
+    public function testLineThatIsNotExecutableIsNotExecutedWhenNoLineOfItsStatementWasExecuted(): void
+    {
+        $file = $this->createFileNodeWithStatements([2 => [], 4 => []]);
+
+        $this->assertSame(
+            [3 => [], 5 => []],
+            $file->lineCoverageDataInheritedFromStatements(),
+        );
+    }
+
+    public function testLineThatIsNotExecutableCannotBeExecutedWhenNoLineOfItsStatementCanBeExecuted(): void
+    {
+        $file = $this->createFileNodeWithStatements([2 => null]);
+
+        $this->assertSame(
+            [3 => null, 4 => null, 5 => null],
+            $file->lineCoverageDataInheritedFromStatements(),
+        );
+    }
+
+    /**
+     * @param array<positive-int, ?array<non-negative-int, positive-int>> $lineCoverageData
+     */
+    #[DataProvider('statementWithLinesThatDoNotHaveTheSameCodeCoverageDataProvider')]
+    #[TestDox('Line that is not executable does not inherit code coverage data from statement with $_dataName')]
+    public function testLineThatIsNotExecutableDoesNotInheritCodeCoverageDataWhenTheLinesOfItsStatementDoNotHaveTheSame(array $lineCoverageData): void
+    {
+        $file = $this->createFileNodeWithStatements($lineCoverageData);
+
+        $this->assertSame([], $file->lineCoverageDataInheritedFromStatements());
+    }
+
+    public function testLineThatIsIgnoredDoesNotInheritCodeCoverageData(): void
+    {
+        $file = $this->createFileNodeWithStatements([2 => [0 => 1]], [4 => true]);
+
+        $this->assertSame(
+            [3 => [0], 5 => [0]],
+            $file->lineCoverageDataInheritedFromStatements(),
+        );
+    }
+
+    public function testLineDoesNotInheritCodeCoverageDataFromAnotherStatement(): void
+    {
+        $file = $this->createFileNodeWithStatements([1 => [0 => 1], 7 => [0 => 1], 8 => []]);
+
+        $this->assertSame([], $file->lineCoverageDataInheritedFromStatements());
+    }
+
+    public function testLinesThatInheritCodeCoverageDataAreNotCounted(): void
+    {
+        $file = $this->createFileNodeWithStatements([2 => [0 => 1]]);
+
+        $this->assertSame([2 => [0 => 1]], $file->lineCoverageData());
+        $this->assertSame(1, $file->numberOfExecutableLines());
+        $this->assertSame(1, $file->numberOfExecutedLines());
+    }
+
+    /**
+     * Lines 2 to 5 are one statement; lines 7, 8, and 9 are a statement each.
+     *
+     * @param array<positive-int, ?array<non-negative-int, positive-int>> $lineCoverageData
+     * @param array<int, true>                                            $ignoredLines
+     */
+    private function createFileNodeWithStatements(array $lineCoverageData, array $ignoredLines = []): File
+    {
+        return new File(
+            'test.php',
+            new Directory('root'),
+            'abc123',
+            $lineCoverageData,
+            [],
+            [],
+            [],
+            [],
+            [],
+            new LinesOfCode(10, 0, 10),
+            false,
+            false,
+            null,
+            SourceLines::fromAnalysisResult(
+                new AnalysisResult(
+                    [],
+                    [],
+                    [],
+                    [],
+                    new LinesOfCode(10, 0, 10),
+                    [2 => 1, 3 => 1, 4 => 1, 5 => 1, 7 => 2, 8 => 3, 9 => 4],
+                    [],
+                    [],
+                    [],
+                ),
+            ),
+            $ignoredLines,
+        );
     }
 
     private function createFileNodeWithTestedClassAndTrait(): File

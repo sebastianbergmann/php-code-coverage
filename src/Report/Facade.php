@@ -207,11 +207,18 @@ final readonly class Facade
     }
 
     /**
+     * Whether annotations were used for ignoring code when the code coverage
+     * data was collected is not known here. They are used: a line that was
+     * ignored then is known to be ignored, so that it does not inherit code
+     * coverage data from the statement it belongs to (see
+     * Node\File::lineCoverageDataInheritedFromStatements()). Nothing else
+     * that the report is built from depends on this.
+     *
      * @param SerializedCoverage $serializedCoverage
      */
     private static function buildReport(array $serializedCoverage): Directory
     {
-        return new Builder(new FileAnalyser(new ParsingSourceAnalyser, false, false))->build(
+        return new Builder(new FileAnalyser(new ParsingSourceAnalyser, true, false))->build(
             $serializedCoverage['codeCoverage'],
             $serializedCoverage['testResults'],
             $serializedCoverage['basePath'],

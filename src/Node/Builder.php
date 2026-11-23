@@ -20,6 +20,7 @@ use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
 use SebastianBergmann\CodeCoverage\Util\PathReducer;
 
@@ -164,6 +165,8 @@ final readonly class Builder
                             $value->functionCoverage !== [],
                             $collectsHitCounts,
                             $sizeBitByTestIndex,
+                            SourceLines::fromAnalysisResult($analysisResult),
+                            $analysisResult->ignoredLines(),
                         ),
                     );
                 } else {

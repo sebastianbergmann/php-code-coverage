@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
+use function rtrim;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Medium;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
@@ -87,6 +88,49 @@ final class BuilderTest extends TestCase
                 $basePath . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'b.php',
             ],
             $root->filesThatWereNotFound(),
+        );
+    }
+
+    /**
+     * Only line 7 of the statement on lines 7 to 11 has code coverage data.
+     */
+    public function testLetsLinesOfFileInheritCodeCoverageDataFromTheirStatement(): void
+    {
+        $data = new ProcessedCodeCoverageData;
+
+        $data->setLineCoverage(['source_for_source_lines.php' => [7 => []]]);
+
+        $root = $this->builder()->build($data, [], rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR));
+
+        $this->assertCount(1, $root->files());
+
+        $this->assertSame(
+            [8 => [], 9 => [], 10 => [], 11 => []],
+            $root->files()[0]->lineCoverageDataInheritedFromStatements(),
+        );
+    }
+
+    /**
+     * Only line 4 of the statement on lines 4 to 8 has code coverage data,
+     * line 6 is ignored using an annotation.
+     */
+    public function testDoesNotLetLineThatIsIgnoredInheritCodeCoverageDataFromItsStatement(): void
+    {
+        $data = new ProcessedCodeCoverageData;
+
+        $data->setLineCoverage(['source_with_ignored_line_of_statement.php' => [4 => []]]);
+
+        $root = new Builder(new FileAnalyser(new ParsingSourceAnalyser, true, false))->build(
+            $data,
+            [],
+            rtrim(TEST_FILES_PATH, DIRECTORY_SEPARATOR),
+        );
+
+        $this->assertCount(1, $root->files());
+
+        $this->assertSame(
+            [5 => [], 7 => [], 8 => []],
+            $root->files()[0]->lineCoverageDataInheritedFromStatements(),
         );
     }
 

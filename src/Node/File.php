@@ -9,7 +9,10 @@
  */
 namespace SebastianBergmann\CodeCoverage\Node;
 
+use function array_diff_key;
 use function array_filter;
+use function array_key_exists;
+use function array_keys;
 use function count;
 use SebastianBergmann\CodeCoverage\Data\ProcessedBranchCoverageData;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
@@ -24,6 +27,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Function_;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Method;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\SourceLines;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 use SebastianBergmann\CodeCoverage\Test\TestSizes;
 
@@ -130,6 +134,17 @@ final class File extends AbstractNode
      * @var array<string, Trait_>
      */
     private readonly array $rawTraits;
+    private readonly ?SourceLines $sourceLines;
+
+    /**
+     * @var array<int, true>
+     */
+    private readonly array $ignoredLines;
+
+    /**
+     * @var ?array<positive-int, ?list<TestIndexType>>
+     */
+    private ?array $lineCoverageDataInheritedFromStatements = null;
 
     /**
      * Resolves the size of each test to the bit that represents it, so that the
@@ -165,8 +180,10 @@ final class File extends AbstractNode
      * @param array<string, Trait_>                                    $traits
      * @param array<string, Function_>                                 $functions
      * @param ?array<TestIndexType, TestSizeSet>                       $sizeBitByTestIndex   derived from $testData when not given
+     * @param ?SourceLines                                             $sourceLines          no line inherits code coverage data from its statement when not given (see lineCoverageDataInheritedFromStatements())
+     * @param array<int, true>                                         $ignoredLines         the lines that do not inherit code coverage data from their statement because they are ignored
      */
-    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false, ?array $sizeBitByTestIndex = null)
+    public function __construct(string $name, AbstractNode $parent, string $sha1, array $lineCoverageData, array $functionCoverageData, array $testData, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, bool $hasBranchCoverageData = false, bool $collectsHitCounts = false, ?array $sizeBitByTestIndex = null, ?SourceLines $sourceLines = null, array $ignoredLines = [])
     {
         parent::__construct($name, $parent);
 
@@ -179,6 +196,8 @@ final class File extends AbstractNode
         $this->collectsHitCounts     = $collectsHitCounts;
         $this->rawClasses            = $classes;
         $this->rawTraits             = $traits;
+        $this->sourceLines           = $sourceLines;
+        $this->ignoredLines          = $ignoredLines;
 
         $this->calculateStatistics($classes, $traits, $functions, $sizeBitByTestIndex ?? self::sizeBitByTestIndex($testData));
     }
@@ -202,6 +221,96 @@ final class File extends AbstractNode
     public function lineCoverageData(): array
     {
         return $this->lineCoverageData;
+    }
+
+    /**
+     * Returns the code coverage data that the lines that are not executable
+     * inherit from the statement they belong to.
+     *
+     * Which lines of a statement that spans multiple lines are executable
+     * depends on how the executable lines were determined when the code
+     * coverage data was collected: the line of an argument of a function
+     * call, for instance, is not executable when they were determined from
+     * the bytecode. Such a line is not part of lineCoverageData() and is not
+     * counted. A report that shows or refers to a statement as a whole has
+     * to know what to show for it nevertheless.
+     *
+     * The syntax only tells which lines belong to the same statement. It does
+     * not decide whether a line was executed: a line that is not executable
+     * only inherits code coverage data when the code coverage data of all
+     * executable lines of its statement is the same. It is then mapped to the
+     * tests that executed these lines, to an empty list when none of them was
+     * executed, and to null when none of them can be executed.
+     *
+     * When the executable lines of a statement were not executed by the same
+     * tests, not all of the statement is executed whenever it is executed:
+     * the operand of a ?? operator that spans multiple lines is an example.
+     * Nothing is known then about the lines of that statement that are not
+     * executable, and they do not inherit code coverage data.
+     *
+     * A line that is ignored does not inherit code coverage data.
+     *
+     * @return array<positive-int, ?list<TestIndexType>>
+     */
+    public function lineCoverageDataInheritedFromStatements(): array
+    {
+        if ($this->lineCoverageDataInheritedFromStatements !== null) {
+            return $this->lineCoverageDataInheritedFromStatements;
+        }
+
+        $this->lineCoverageDataInheritedFromStatements = [];
+
+        if ($this->sourceLines === null) {
+            return [];
+        }
+
+        $processed = [];
+
+        foreach ($this->lineCoverageData as $line => $_) {
+            if (isset($processed[$line])) {
+                continue;
+            }
+
+            $linesOfStatement = $this->sourceLines->linesOfStatementAt($line);
+
+            if (count($linesOfStatement) < 2) {
+                continue;
+            }
+
+            $linesThatInherit = [];
+            $tests            = $this->lineCoverageData[$line];
+            $isTheSame        = true;
+
+            foreach ($linesOfStatement as $lineOfStatement) {
+                $processed[$lineOfStatement] = true;
+
+                if (!array_key_exists($lineOfStatement, $this->lineCoverageData)) {
+                    if (!isset($this->ignoredLines[$lineOfStatement])) {
+                        $linesThatInherit[] = $lineOfStatement;
+                    }
+
+                    continue;
+                }
+
+                if (!$this->wasExecutedByTheSameTests($tests, $this->lineCoverageData[$lineOfStatement])) {
+                    $isTheSame = false;
+                }
+            }
+
+            if (!$isTheSame) {
+                continue;
+            }
+
+            if ($tests !== null) {
+                $tests = array_keys($tests);
+            }
+
+            foreach ($linesThatInherit as $lineThatInherits) {
+                $this->lineCoverageDataInheritedFromStatements[$lineThatInherits] = $tests;
+            }
+        }
+
+        return $this->lineCoverageDataInheritedFromStatements;
     }
 
     /**
@@ -483,6 +592,19 @@ final class File extends AbstractNode
     public function numberOfTestedFunctionsByTestSize(int $testSizes): int
     {
         return $this->numTestedFunctionsByTestSize[$testSizes];
+    }
+
+    /**
+     * @param ?array<TestIndexType, positive-int> $a
+     * @param ?array<TestIndexType, positive-int> $b
+     */
+    private function wasExecutedByTheSameTests(?array $a, ?array $b): bool
+    {
+        if ($a === null || $b === null) {
+            return $a === $b;
+        }
+
+        return count($a) === count($b) && array_diff_key($a, $b) === [];
     }
 
     /**

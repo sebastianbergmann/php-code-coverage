@@ -63,7 +63,7 @@ class EmptyDataProviderRule implements Rule
 		foreach ($returnStatements as $returnStatement) {
 			$returnExpr = $returnStatement->getReturnNode()->expr;
 			if ($returnExpr === null) {
-				return [];
+				continue;
 			}
 
 			$returnType = $returnStatement->getScope()->getType($returnExpr);

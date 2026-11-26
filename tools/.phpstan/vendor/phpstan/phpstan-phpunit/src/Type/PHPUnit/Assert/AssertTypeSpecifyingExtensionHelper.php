@@ -20,6 +20,9 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\SpecifiedTypes;
 use PHPStan\Analyser\TypeSpecifier;
 use PHPStan\Analyser\TypeSpecifierContext;
+use PHPStan\Type\FloatType;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\UnionType;
 use ReflectionObject;
 use function array_key_exists;
 use function count;
@@ -149,10 +152,30 @@ class AssertTypeSpecifyingExtensionHelper
 					$actual->value,
 					$expected->value,
 				),
+				'GreaterThanOrEqual' => static function (Scope $scope, Arg $expected, Arg $actual): ?Expr\BinaryOp\GreaterOrEqual {
+					if (!self::isIntOrFloat($scope, $expected) || !self::isIntOrFloat($scope, $actual)) {
+						return null;
+					}
+
+					return new Expr\BinaryOp\GreaterOrEqual(
+						$actual->value,
+						$expected->value,
+					);
+				},
 				'LessThan' => static fn (Scope $scope, Arg $expected, Arg $actual): Expr\BinaryOp\Smaller => new Expr\BinaryOp\Smaller(
 					$actual->value,
 					$expected->value,
 				),
+				'LessThanOrEqual' => static function (Scope $scope, Arg $expected, Arg $actual): ?Expr\BinaryOp\SmallerOrEqual {
+					if (!self::isIntOrFloat($scope, $expected) || !self::isIntOrFloat($scope, $actual)) {
+						return null;
+					}
+
+					return new Expr\BinaryOp\SmallerOrEqual(
+						$actual->value,
+						$expected->value,
+					);
+				},
 				'InstanceOf' => static fn (Scope $scope, Arg $class, Arg $object): Instanceof_ => new Instanceof_(
 					$object->value,
 					$class->value,
@@ -302,6 +325,11 @@ class AssertTypeSpecifyingExtensionHelper
 		}
 
 		return self::$resolvers;
+	}
+
+	private static function isIntOrFloat(Scope $scope, Arg $arg): bool
+	{
+		return (new UnionType([new IntegerType(), new FloatType()]))->isSuperTypeOf($scope->getType($arg->value))->yes();
 	}
 
 }

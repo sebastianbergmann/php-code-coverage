@@ -24,6 +24,7 @@ use PHPStan\Type\FileTypeMapper;
 use function array_merge;
 use function count;
 use function explode;
+use function is_string;
 use function preg_match;
 use function sprintf;
 
@@ -287,9 +288,16 @@ class DataProviderHelper
 					continue;
 				}
 
+				// phpunit does not support named arguments.
+				// we handle them here just to make sure we don't crash on them.
+				$methodName = $args[0] ?? $args['methodName'] ?? null;
+				if (!is_string($methodName)) {
+					continue;
+				}
+
 				$startLine = $node->getStartLine();
 
-				yield [$classReflection, $args[0], $startLine];
+				yield [$classReflection, $methodName, $startLine];
 			}
 
 			return;

@@ -8,7 +8,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
-use PHPStan\Node\InClassMethodNode;
+use PHPStan\Node\MethodReturnStatementsNode;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPUnit\Framework\TestCase;
@@ -21,31 +21,37 @@ use function sprintf;
 use function strtolower;
 
 /**
- * @implements Rule<InClassMethodNode>
+ * @implements Rule<MethodReturnStatementsNode>
  */
 class ShouldCallParentMethodsRule implements Rule
 {
 
 	public function getNodeType(): string
 	{
-		return InClassMethodNode::class;
+		return MethodReturnStatementsNode::class;
 	}
 
 	public function processNode(Node $node, Scope $scope): array
 	{
-		$methodName = $node->getOriginalNode()->name->name;
+		$methodName = $node->getMethodName();
 		if (!in_array(strtolower($methodName), ['setup', 'teardown'], true)) {
 			return [];
 		}
-		if ($scope->getClassReflection() === null) {
+
+		if (
+			$node->getStatementResult()->isAlwaysTerminating()
+			&& $node->getReturnStatements() === []
+			&& $node->getReturnStatementsAfterFinally() === []
+		) {
 			return [];
 		}
 
-		if (!$scope->getClassReflection()->is(TestCase::class)) {
+		$classReflection = $node->getClassReflection();
+		if (!$classReflection->is(TestCase::class)) {
 			return [];
 		}
 
-		$parentClass = $scope->getClassReflection()->getParentClass();
+		$parentClass = $classReflection->getParentClass();
 
 		if ($parentClass === null) {
 			return [];
@@ -59,14 +65,14 @@ class ShouldCallParentMethodsRule implements Rule
 			return [];
 		}
 
-		$stmts = $node->getOriginalNode()->getStmts() ?? [];
+		$stmts = $node->getStatements();
 		if ($this->hasParentClassCall($stmts, strtolower($methodName))) {
 			return [];
 		}
 
 		$errorBuilder = RuleErrorBuilder::message(
 			sprintf('Missing call to parent::%s() method.', $methodName),
-		)->identifier('phpunit.callParent');
+		)->line($node->getStartLine())->identifier('phpunit.callParent');
 
 		if ($scope->isInTrait()) {
 			return [$errorBuilder->build()];
@@ -78,7 +84,7 @@ class ShouldCallParentMethodsRule implements Rule
 		}
 
 		$parentMethodName = $parentMethod->getName();
-		$errorBuilder->fixNode($node->getOriginalNode(), static function (ClassMethod $methodNode) use ($position, $parentMethodName): ClassMethod {
+		$errorBuilder->fixNode($node->getClassMethod(), static function (ClassMethod $methodNode) use ($position, $parentMethodName): ClassMethod {
 			$stmts = $methodNode->stmts ?? [];
 			array_splice($stmts, $position, 0, [
 				new Node\Stmt\Expression(

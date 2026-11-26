@@ -11,16 +11,15 @@ namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_BINARY;
-use const PHP_OS_FAMILY;
 use const PHP_VERSION_ID;
 use function array_key_exists;
 use function array_keys;
 use function array_shift;
 use function fclose;
 use function fgets;
-use function file_put_contents;
 use function filter_var;
 use function function_exists;
+use function fwrite;
 use function implode;
 use function ini_get;
 use function is_resource;
@@ -28,9 +27,6 @@ use function proc_close;
 use function proc_open;
 use function realpath;
 use function rtrim;
-use function sys_get_temp_dir;
-use function tempnam;
-use function unlink;
 use Generator;
 
 /**
@@ -44,6 +40,10 @@ use Generator;
  * collects code coverage. OPcache compiles each file on its own, without
  * substituting constants of other files, so the bytecode does not depend on
  * which other files were compiled before, either.
+ *
+ * The process is told which files to compile, and dumps their bytecode,
+ * through pipes: neither a temporary file nor the null device is used, as
+ * access to them may be denied by an open_basedir restriction.
  *
  * Starting a process takes much longer than compiling a file, so the files
  * that are about to be analysed (see {@see expect()}) are compiled in one
@@ -61,9 +61,9 @@ final class BytecodeLines
     private const string DEBUG_LEVEL = '0x40010000';
 
     /**
-     * Code that compiles the files listed in the file passed as argument.
+     * Code that compiles the files that are listed on the standard input.
      */
-    private const string COMPILE    = 'foreach (file($argv[1], FILE_IGNORE_NEW_LINES) ?: [] as $file) { opcache_compile_file($file); }';
+    private const string COMPILE    = 'foreach (file(\'php://stdin\', FILE_IGNORE_NEW_LINES) ?: [] as $file) { opcache_compile_file($file); }';
     private static ?bool $available = null;
 
     /**
@@ -223,61 +223,46 @@ final class BytecodeLines
      */
     private function dump(array $files): ?array
     {
-        $listOfFiles = tempnam(sys_get_temp_dir(), 'php-code-coverage-bytecode-');
+        $process = @proc_open(
+            [
+                $this->phpBinary,
+                '-n',
+                '-d', 'opcache.enable=1',
+                '-d', 'opcache.enable_cli=1',
+                '-d', 'opcache.file_update_protection=0',
+                '-d', 'opcache.max_accelerated_files=1000000',
+                '-d', 'opcache.jit=disable',
+                '-d', 'opcache.optimization_level=0',
+                '-d', 'opcache.opt_debug_level=' . self::DEBUG_LEVEL,
+                '-d', 'short_open_tag=' . (filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN) ? '1' : '0'),
+                '-d', 'display_errors=0',
+                '-d', 'log_errors=0',
+                '-r', self::COMPILE,
+            ],
+            [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ],
+            $pipes,
+        );
 
-        if ($listOfFiles === false) {
-            // @codeCoverageIgnoreStart
+        if (!is_resource($process) || !isset($pipes[0], $pipes[1], $pipes[2])) {
             return [];
-            // @codeCoverageIgnoreEnd
         }
 
-        try {
-            if (file_put_contents($listOfFiles, implode("\n", $files)) === false) {
-                // @codeCoverageIgnoreStart
-                return [];
-                // @codeCoverageIgnoreEnd
-            }
+        // The process does not print anything on the standard output
+        fclose($pipes[1]);
 
-            $nullDevice = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+        @fwrite($pipes[0], implode("\n", $files));
+        fclose($pipes[0]);
 
-            $process = @proc_open(
-                [
-                    $this->phpBinary,
-                    '-n',
-                    '-d', 'opcache.enable=1',
-                    '-d', 'opcache.enable_cli=1',
-                    '-d', 'opcache.file_update_protection=0',
-                    '-d', 'opcache.max_accelerated_files=1000000',
-                    '-d', 'opcache.jit=disable',
-                    '-d', 'opcache.optimization_level=0',
-                    '-d', 'opcache.opt_debug_level=' . self::DEBUG_LEVEL,
-                    '-d', 'short_open_tag=' . (filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN) ? '1' : '0'),
-                    '-d', 'display_errors=0',
-                    '-d', 'log_errors=0',
-                    '-r', self::COMPILE,
-                    $listOfFiles,
-                ],
-                [
-                    0 => ['file', $nullDevice, 'r'],
-                    1 => ['file', $nullDevice, 'w'],
-                    2 => ['pipe', 'w'],
-                ],
-                $pipes,
-            );
+        $dumped = (new BytecodeDumpParser)->parse($this->linesOf($pipes[2]));
 
-            if (!is_resource($process) || !isset($pipes[2]) || !is_resource($pipes[2])) {
-                return [];
-            }
+        fclose($pipes[2]);
+        proc_close($process);
 
-            $dumped = (new BytecodeDumpParser)->parse($this->linesOf($pipes[2]));
-
-            fclose($pipes[2]);
-            proc_close($process);
-
-            return $dumped;
-        } finally {
-            @unlink($listOfFiles);
-        }
+        return $dumped;
     }
 
     /**

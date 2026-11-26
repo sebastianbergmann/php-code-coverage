@@ -10,8 +10,11 @@
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const DIRECTORY_SEPARATOR;
+use const PATH_SEPARATOR;
 use function array_keys;
 use function copy;
+use function dirname;
+use function ini_set;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
@@ -19,6 +22,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\RequiresPhp;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -79,6 +83,20 @@ final class BytecodeLinesTest extends TestCase
         $this->assertSame(
             [18, 24, 26, 31, 33, 37, 41],
             array_keys((new BytecodeLines)->executableLines($file) ?? []),
+        );
+    }
+
+    #[RequiresPhp('>= 8.6.0-dev')]
+    #[RunInSeparateProcess]
+    public function testDeterminesExecutableLinesOfFileWhenOpenBasedirRestrictionIsInEffect(): void
+    {
+        // The null device cannot be accessed. The directory for temporary files
+        // can, as PHPUnit needs it for a test that is run in a separate process.
+        ini_set('open_basedir', dirname(TEST_FILES_PATH, 2) . PATH_SEPARATOR . sys_get_temp_dir());
+
+        $this->assertSame(
+            [18, 24, 26, 31, 33, 37, 41],
+            array_keys((new BytecodeLines)->executableLines(self::FILE) ?? []),
         );
     }
 
